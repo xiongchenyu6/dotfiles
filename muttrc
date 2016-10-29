@@ -1,0 +1,38 @@
+# Folder hooks
+folder-hook 'account.com.gmail.xiongchenyu' 'source ~/.mutt/account.com.gmail.xiongchenyu'
+# Default account
+source ~/.mutt/account.com.gmail.xiongchenyu
+# Macros for switching accounts
+#macro index <F12> '<sync-mailbox><enter-command>source ~/.mutt/account.com.gmail.gotbletu<enter><change-folder>!<enter>'
+##SECURING
+set move = no #Stop asking to "move read messages to mbox"!
+set imap_keepalive = 900
+
+##Sort by newest conversation first.
+set sort = reverse-threads
+set sort_aux = last-date-received
+
+##Set editor to create new email
+set editor='vim'
+
+auto_view text/html
+bind editor <Tab> complete-query
+bind editor <space> noop
+macro index,pager y "<save-message>=[Gmail]/All Mail<enter><enter>" "Archive"
+macro index,pager d "<save-message>=[Gmail]/Trash<enter><enter>" "Trash"
+macro index gi "<change-folder>=INBOX<enter>" "Go to inbox"
+macro index ga "<change-folder>=[Gmail]/All Mail<enter>" "Go to all mail"
+macro index gs "<change-folder>=[Gmail]/Starred<enter>" "Go to starred messages"
+macro index gd "<change-folder>=[Gmail]/Drafts<enter>" "Go to drafts"
+macro index gs "<change-folder>=[Gmail]/Sent Mail<enter>" "Go to Sent Mail"
+color header yellow default Subject:
+color header cyan default .
+color body brightyellow default [_a-z\.\$A-Z0-9-]+@[a-zA-Z0-9\./\-]+
+color body yellow default (http|ftp)://[_a-zA-Z0-9\./~\-]+
+color quoted green default
+color signature green default
+color indicator yellow blue
+color attachment yellow default
+color status yellow blue
+color tilde blue default
+color normal default default
