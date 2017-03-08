@@ -156,6 +156,16 @@ let g:session_command_aliases = 1
 syntax on
 set ruler
 set number
+set spell
+" For regular expressions turn magic on
+set magic
+
+" 调整缩进后自动选中，方便再次操作
+vnoremap < <gv
+vnoremap > >gv
+
+" 复制选中区到系统剪切板中
+vnoremap <leader>y "+y
 
 let no_buffers_menu=1
 if !exists('g:not_finish_vimplug')
