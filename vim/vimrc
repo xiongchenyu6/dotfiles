@@ -38,6 +38,7 @@ Plug 'scrooloose/nerdtree'
 
 "" nerd tree more like IDE
 Plug 'jistr/vim-nerdtree-tabs'
+Plug 'Xuyuanp/nerdtree-git-plugin'
 
 "" comment
 Plug 'scrooloose/nerdcommenter'
@@ -243,7 +244,7 @@ if exists("*fugitive#statusline")
 endif
 
 " vim-airline
-let g:airline_theme = 'powerlineish'
+let g:airline_theme = 'solarized'
 let g:airline#extensions#syntastic#enabled = 1
 let g:airline#extensions#branch#enabled = 1
 let g:airline#extensions#tabline#enabled = 1

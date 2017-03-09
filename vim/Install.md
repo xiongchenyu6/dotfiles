@@ -30,3 +30,5 @@ sudo make install
 ```bash
 sudo apt-get install git exuberant-ctags ncurses-term curl
 ```
+
+Arch linux Settings
