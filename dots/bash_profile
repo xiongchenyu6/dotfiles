@@ -1,4 +1,9 @@
+if [[ "$OSTYPE" == "linux-gnu" ]]; then
+        # ...
+    else [[ "$OSTYPE" == "darwin"* ]];
+        # Mac OSX
 export ANDROID_HOME='/usr/local/Cellar/android-sdk/24.4.1_1/'
 export PATH=/usr/local/bin:$PATH
 export PATH=/usr/local/sbin:$PATH
 export JAVA_HOME="$(/usr/libexec/java_home -v 1.8)"
+fi
