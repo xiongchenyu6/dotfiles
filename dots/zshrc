@@ -54,7 +54,7 @@ ZSH_THEME="powerlevel9k/powerlevel9k"
 if [[ "$OSTYPE" == "linux-gnu" ]]; then
 plugins=(git zsh-autosuggestions zsh-syntax-highlighting)
         # ...
-elif [[ "$OSTYPE" == "darwin"* ]]; then
+    else [[ "$OSTYPE" == "darwin"* ]];
 plugins=(git zsh-autosuggestions osx zsh-syntax-highlighting)
         # Mac OSX
 fi
@@ -93,7 +93,7 @@ export SSH_KEY_PATH="~/.ssh/rsa_id"
 export PATH=/usr/local/bin:$PATH
 if [[ "$OSTYPE" == "linux-gnu" ]]; then
         # ...
-elif [[ "$OSTYPE" == "darwin"* ]]; then
+    else [[ "$OSTYPE" == "darwin"* ]];
         # Mac OSX
 test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
 
