@@ -11,7 +11,7 @@
 TIME=$(date "+%Y-%m-%d_%H-%M-%S")
 DIR=~/dotfiles/dots # dotfiles directory
 OLDDIR=~/dotfiles_old_"$TIME" # old dotfiles backup directory
-FILES=(ctags muttrc tmux.conf vimrc zshrc) # list of files/folders to symlink in homedir
+FILES=(ctags muttrc tmux.conf vimrc zshrc gitconfig global_ignore) # list of files/folders to symlink in homedir
 
 ##########
 
