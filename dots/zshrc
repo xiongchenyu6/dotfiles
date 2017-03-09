@@ -51,7 +51,13 @@ ZSH_THEME="powerlevel9k/powerlevel9k"
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
+if [[ "$OSTYPE" == "linux-gnu" ]]; then
+plugins=(git zsh-autosuggestions zsh-syntax-highlighting)
+        # ...
+elif [[ "$OSTYPE" == "darwin"* ]]; then
 plugins=(git zsh-autosuggestions osx zsh-syntax-highlighting)
+        # Mac OSX
+fi
 
 source $ZSH/oh-my-zsh.sh
 
@@ -85,8 +91,13 @@ export SSH_KEY_PATH="~/.ssh/rsa_id"
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 export PATH=/usr/local/bin:$PATH
-
+if [[ "$OSTYPE" == "linux-gnu" ]]; then
+        # ...
+elif [[ "$OSTYPE" == "darwin"* ]]; then
+        # Mac OSX
 test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
+
+fi
 
 codi() {
   local syntax="${1:-python}"
