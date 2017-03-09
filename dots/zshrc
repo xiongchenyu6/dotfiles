@@ -87,3 +87,15 @@ export SSH_KEY_PATH="~/.ssh/rsa_id"
 export PATH=/usr/local/bin:$PATH
 
 test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
+
+codi() {
+  local syntax="${1:-python}"
+  shift
+  vim -c \
+    "let g:startify_disable_at_vimenter = 1 |\
+    set bt=nofile ls=0 noru nonu nornu |\
+    hi ColorColumn ctermbg=NONE |\
+    hi VertSplit ctermbg=NONE |\
+    hi NonText ctermfg=0 |\
+    Codi $syntax" "$@"
+}
