@@ -8,7 +8,7 @@ confirmMessage() {
 
 ROOT=$(cd "$(dirname "$1")"; pwd -P) # dotfiles directory
 echo "Moving and creating symlink to bin from /usr/local/bin/ to $ROOT/bin"
-sudo ln -sfn $ROOT/bin /usr/local/bin;
+sudo ln -sfn $ROOT/bin/* /usr/local/bin;
 ./dots/installer.bash "$ROOT/dots";
 
 ANSWER=$(confirmMessage "Do you wanna delete backup dot files")
