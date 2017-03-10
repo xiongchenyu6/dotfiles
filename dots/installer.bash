@@ -2,7 +2,7 @@
 ############################
 # .make.sh
 # This script creates symlinks from the home directory to any desired dotfiles in ~/dotfiles
-# If symlinks already exists, they are skipped, otherwise destiny files are moved to dotfiles 
+# If symlinks already exists, they are skipped, otherwise destiny files are moved to dotfiles
 # folder and respective symlinks created.
 # Note: A backup folder is created with all .dotfiles (not symlinks) desired
 ############################
@@ -11,7 +11,7 @@
 TIME=$(date "+%Y-%m-%d_%H-%M-%S")
 DIR=${1:-$(cd "$(dirname "$1")"; pwd -P)} # dotfiles directory
 OLDDIR=~/dotfiles_old_"$TIME" # old dotfiles backup directory
-FILES=(bash_profile gvimrc emacs ctags muttrc tmux.conf vimrc zshrc gitconfig global_ignore) # list of files/folders to symlink in homedir
+FILES=(bash_profile curlrc gvimrc emacs ctags muttrc tmux.conf vimrc zshrc gitconfig global_ignore) # list of files/folders to symlink in homedir
 
 ##########
 # create dotfiles_old in homedir
