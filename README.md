@@ -32,6 +32,10 @@ sudo make install
 ```bash
 sudo apt-get install git exuberant-ctags ncurses-term curl
 ```
+How to add ibus icon to the tray
+```bash
+gsettings set org.gnome.desktop.input-sources sources "[('xkb', 'us'), ('ibus', 'Unikey')]"
+```
 
 Arch linux Settings
 

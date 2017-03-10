@@ -9,12 +9,12 @@
 
 ########## Variables
 TIME=$(date "+%Y-%m-%d_%H-%M-%S")
-DIR=$(cd "$(dirname "$1")"; pwd -P) # dotfiles directory
+DIR=${1:-$(cd "$(dirname "$1")"; pwd -P)} # dotfiles directory
 OLDDIR=~/dotfiles_old_"$TIME" # old dotfiles backup directory
 FILES=(bash_profile gvimrc emacs ctags muttrc tmux.conf vimrc zshrc gitconfig global_ignore) # list of files/folders to symlink in homedir
 
 ##########
-
+echo $DIR
 # create dotfiles_old in homedir
 echo "Creating $OLDDIR for backup of any existing dotfiles in ~"
 mkdir -p "$OLDDIR"
