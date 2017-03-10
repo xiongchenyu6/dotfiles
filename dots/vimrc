@@ -6,7 +6,6 @@
 "|_| |  \_/  |_|_| |_| |_|
 
 
-
 "*****************************************************************************
 "" Vim-PLug core
 "*****************************************************************************
@@ -61,6 +60,7 @@ Plug 'majutsushi/tagbar'
 Plug 'scrooloose/syntastic'
 Plug 'Yggdroot/indentLine'
 Plug 'tpope/vim-surround'
+
 ""A collection of language packs for Vim
 Plug 'sheerun/vim-polyglot'
 Plug 'Shougo/vimproc.vim', {'do' : 'make'}
@@ -78,6 +78,9 @@ Plug 'Shougo/neosnippet'
 Plug 'Shougo/neosnippet-snippets'
 Plug 'honza/vim-snippets'
 
+"multiple cursor
+Plug 'terryma/vim-multiple-cursors'
+
 "REPL
 Plug 'metakirby5/codi.vim'
 
@@ -85,15 +88,11 @@ Plug 'metakirby5/codi.vim'
 "" Custom bundles
 "*****************************************************************************
 
-" html
-"" HTML Bundle
-Plug 'hail2u/vim-css3-syntax'
+"" Color Bundle for css3
 Plug 'gorodinskiy/vim-coloresque'
 
-" javascript
-"" Javascript Bundle
-Plug 'jelera/vim-javascript-syntax'
-
+"" Javascript anguler react ..
+Plug 'othree/javascript-libraries-syntax.vim'
 
 call plug#end()
 "*****************************************************************************
@@ -167,7 +166,7 @@ syntax on
 set ruler
 set number
 set spell
-set foldenable    
+set foldenable
 
 " For regular expressions turn magic on
 set magic
@@ -582,23 +581,13 @@ endif
   inoremap <expr><C-h> neocomplete#smart_close_popup()."\<C-h>"
   inoremap <expr><BS> neocomplete#smart_close_popup()."\<C-h>"
   " Close popup by <Space>.
-  "inoremap <expr><Space> pumvisible() ? "\<C-y>" : "\<Space>"
-
-  " AutoComplPop like behavior.
-  "let g:neocomplete#enable_auto_select = 1
-
-  " Shell like behavior(not recommended).
-  "set completeopt+=longest
-  "let g:neocomplete#enable_auto_select = 1
-  "let g:neocomplete#disable_auto_complete = 1
-  "inoremap <expr><TAB>  pumvisible() ? "\<Down>" : "\<C-x>\<C-u>"
 
   " Enable omni completion.
-  autocmd FileType css setlocal omnifunc=csscomplete#CompleteCSS
-  autocmd FileType html,markdown setlocal omnifunc=htmlcomplete#CompleteTags
-  autocmd FileType javascript setlocal omnifunc=javascriptcomplete#CompleteJS
-  autocmd FileType python setlocal omnifunc=pythoncomplete#Complete
-  autocmd FileType xml setlocal omnifunc=xmlcomplete#CompleteTags
+  autocmd filetype css setlocal omnifunc=csscomplete#completecss
+  autocmd filetype html,markdown setlocal omnifunc=htmlcomplete#completetags
+  autocmd filetype javascript setlocal omnifunc=javascriptcomplete#completejs
+  autocmd filetype python setlocal omnifunc=pythoncomplete#complete
+  autocmd fileType xml setlocal omnifunc=xmlcomplete#CompleteTags
 
   " Enable heavy omni completion.
   if !exists('g:neocomplete#sources#omni#input_patterns')
@@ -608,7 +597,6 @@ endif
   let g:neocomplete#sources#omni#input_patterns.c = '[^.[:digit:] *\t]\%(\.\|->\)'
   let g:neocomplete#sources#omni#input_patterns.cpp = '[^.[:digit:] *\t]\%(\.\|->\)\|\h\w*::'
   let g:neocomplete#sources#omni#input_patterns.perl = '\h\w*->\h\w*\|\h\w*::'
-
 
   imap <C-k> <Plug>(neosnippet_expand_or_jump)
   smap <C-k> <Plug>(neosnippet_expand_or_jump)
