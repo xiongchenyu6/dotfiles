@@ -47,13 +47,13 @@ POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(vi_mode status root_indicator background_job
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
 #
-plugins=(git zsh-autosuggestions zsh-syntax-highlighting)
+plugins=(react-native tmux git zsh-autosuggestions zsh-syntax-highlighting)
 
 if [[ "$OSTYPE" == "linux-gnu" ]]; then
-    plugins=(ubuntu)
+    plugins+=(ubuntu)
         # ...
     else [[ "$OSTYPE" == "darwin"* ]];
-    plugins=(osx)
+    plugins+=(osx)
         # Mac OSX
 fi
 
