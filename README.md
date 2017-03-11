@@ -11,7 +11,6 @@ sudo cp /usr/include/lua5.1/*.h /usr/include/lua5.1/include/
 cd /tmp
 git clone https://github.com/vim/vim.git
 cd vim
-git checkout v8.0.0142
 make distclean
 ./configure --with-features=huge \
             --enable-rubyinterp \
@@ -48,7 +47,6 @@ git config --global core.excludesfile $HOME/.global_ignore
 git clone git://github.com/zsh-users/zsh-autosuggestions $ZSH_CUSTOM/plugins/zsh-autosuggestions
 
 git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting
-
 
 git clone https://github.com/bhilburn/powerlevel9k.git ~/.oh-my-zsh/custom/themes/powerlevel9k
 
