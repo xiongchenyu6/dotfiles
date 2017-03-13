@@ -1,3 +1,7 @@
+[push]
+  default = current
+[color]
+  ui = auto
 [user]
 	email = xiongchenyu6@gmail.com
 	name = xiongchenyu6
@@ -6,3 +10,5 @@
 	editor = vim
 [credential]
 	helper = cache --timeout=3600
+[github]
+  user = xiongchenyu6

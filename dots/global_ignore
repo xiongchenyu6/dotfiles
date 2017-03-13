@@ -1,1 +1,14 @@
 tags
+*.DS_Store
+*.sw[nop]
+.bundle
+.env
+db/*.sqlite3
+log/*.log
+rerun.txt
+tmp/**/*
+workspace.xml
+.idea/
+node_modules/
+target/
+.meteor/
