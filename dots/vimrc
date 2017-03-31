@@ -84,6 +84,9 @@ Plug 'terryma/vim-multiple-cursors'
 "REPL
 Plug 'metakirby5/codi.vim'
 
+"Emmet"
+"
+Plug 'mattn/emmet-vim'
 "*****************************************************************************
 "" Custom bundles
 "*****************************************************************************
