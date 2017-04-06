@@ -34,28 +34,22 @@ call plug#begin(expand('~/.vim/plugged'))
 
 "" nerd tree
 Plug 'scrooloose/nerdtree'
-
 "" nerd tree more like IDE
 Plug 'jistr/vim-nerdtree-tabs'
 Plug 'Xuyuanp/nerdtree-git-plugin'
+"" github plugin
+Plug 'tpope/vim-fugitive'
+""show change in github
+Plug 'airblade/vim-gitgutter'
 
 "" comment
 Plug 'scrooloose/nerdcommenter'
 
-"" github plugin
-Plug 'tpope/vim-fugitive'
-
 "" Fast search
 Plug 'ctrlpvim/ctrlp.vim'
-Plug 'FelikZ/ctrlp-py-matcher'
-Plug 'vim-airline/vim-airline'
-Plug 'vim-airline/vim-airline-themes'
-
-""show change in github
-Plug 'airblade/vim-gitgutter'
 Plug 'vim-scripts/grep.vim'
+
 Plug 'bronson/vim-trailing-whitespace'
-Plug 'Raimondi/delimitMate'
 Plug 'majutsushi/tagbar'
 Plug 'scrooloose/syntastic'
 Plug 'Yggdroot/indentLine'
@@ -63,20 +57,25 @@ Plug 'tpope/vim-surround'
 
 ""A collection of language packs for Vim
 Plug 'sheerun/vim-polyglot'
-Plug 'Shougo/vimproc.vim', {'do' : 'make'}
 
 "" Vim-Session
 Plug 'xolox/vim-misc'
 Plug 'xolox/vim-session'
 
-"" Color
+"" Color and theme
 Plug 'altercation/vim-colors-solarized'
+Plug 'vim-airline/vim-airline'
+Plug 'vim-airline/vim-airline-themes'
+
+""Auto-complete for haskell
+Plug 'Shougo/vimproc.vim', {'do' : 'make'}
+Plug 'eagletmt/ghcmod-vim'
+Plug 'eagletmt/neco-ghc'
 
 ""Auto-complete
 Plug 'Shougo/neocomplete.vim'
 Plug 'Shougo/neosnippet'
 Plug 'Shougo/neosnippet-snippets'
-Plug 'honza/vim-snippets'
 
 "multiple cursor
 Plug 'terryma/vim-multiple-cursors'
@@ -85,11 +84,13 @@ Plug 'terryma/vim-multiple-cursors'
 Plug 'metakirby5/codi.vim'
 
 "Emmet"
-"
 Plug 'mattn/emmet-vim'
+
 "*****************************************************************************
 "" Custom bundles
 "*****************************************************************************
+
+"Plug 'Raimondi/delimitMate'
 
 "" Color Bundle for css3
 Plug 'gorodinskiy/vim-coloresque'
@@ -545,6 +546,10 @@ endif
   autocmd filetype python setlocal omnifunc=pythoncomplete#complete
   autocmd fileType xml setlocal omnifunc=xmlcomplete#CompleteTags
 
+  " Disable haskell-vim omnifunc
+  let g:haskellmode_completion_ghc = 0
+  autocmd FileType haskell setlocal omnifunc=necoghc#omnifunc
+
   " Enable heavy omni completion.
   if !exists('g:neocomplete#sources#omni#input_patterns')
     let g:neocomplete#sources#omni#input_patterns = {}
@@ -573,4 +578,4 @@ inoremap <left>  <nop>
 inoremap <right> <nop>
 
 ""
-set foldlevelstart=7
+set foldlevelstart=9

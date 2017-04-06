@@ -29,10 +29,10 @@ color header yellow default Subject:
 color header cyan default .
 color body brightyellow default [_a-z\.\$A-Z0-9-]+@[a-zA-Z0-9\./\-]+
 color body yellow default (http|ftp)://[_a-zA-Z0-9\./~\-]+
-color quoted green default
-color signature green default
-color indicator yellow blue
-color attachment yellow default
-color status yellow blue
-color tilde blue default
-color normal default default
+    color quoted green default
+    color signature green default
+    color indicator yellow blue
+    color attachment yellow default
+    color status yellow blue
+    color tilde blue default
+    color normal default default

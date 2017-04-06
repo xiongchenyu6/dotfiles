@@ -1,9 +1,25 @@
 if [[ "$OSTYPE" == "linux-gnu" ]]; then
-        # ...
-    else [[ "$OSTYPE" == "darwin"* ]];
-        # Mac OSX
-export ANDROID_HOME='/usr/local/Cellar/android-sdk/24.4.1_1/'
+    # ...
+else [[ "$OSTYPE" == "darwin"* ]];
+    # Mac OSX
+    export ANDROID_HOME='/usr/local/Cellar/android-sdk/24.4.1_1/'
+    export PATH=/usr/local/bin:$PATH
+    export PATH=/usr/local/sbin:$PATH
+    export JAVA_HOME="$(/usr/libexec/java_home -v 1.8)"
+fi
+# Compilation flags
+export ARCHFLAGS="-arch x86_64"
+
+# ssh
+export SSH_KEY_PATH="~/.ssh/rsa_id"
 export PATH=/usr/local/bin:$PATH
-export PATH=/usr/local/sbin:$PATH
-export JAVA_HOME="$(/usr/libexec/java_home -v 1.8)"
+export PATH=~/.local/bin/:$PATH
+
+alias aws='ssh -i "Freeman.pem" ubuntu@52.220.46.164'
+
+if [[ "$OSTYPE" == "linux-gnu" ]]; then
+    # ...
+else [[ "$OSTYPE" == "darwin"* ]];
+    # Mac OSX
+    test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
 fi

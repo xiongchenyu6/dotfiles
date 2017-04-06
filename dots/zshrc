@@ -8,7 +8,7 @@ plugins=(react-native tmux git zsh-autosuggestions zsh-syntax-highlighting z)
 
 if [[ "$OSTYPE" == "linux-gnu" ]]; then
     plugins+=(ubuntu)
-    else [[ "$OSTYPE" == "darwin"* ]];
+else [[ "$OSTYPE" == "darwin"* ]];
     plugins+=(osx)
 fi
 
@@ -18,65 +18,51 @@ export LANG=en_US.UTF-8
 export TERM="xterm-256color"
 bindkey -v
 export KEYTIMEOUT=1
+source ~/.bash_profile
 
 # Preferred editor for local and remote sessions
 if [[ -n $SSH_CONNECTION ]]; then
-  export EDITOR='vim'
+    export EDITOR='vim'
 else
-  export EDITOR='mvim'
-fi
-
-# Compilation flags
-export ARCHFLAGS="-arch x86_64"
-
-# ssh
-export SSH_KEY_PATH="~/.ssh/rsa_id"
-export PATH=/usr/local/bin:$PATH
-alias aws='ssh -i "Freeman.pem" ubuntu@52.220.46.164'
-if [[ "$OSTYPE" == "linux-gnu" ]]; then
-        # ...
-    else [[ "$OSTYPE" == "darwin"* ]];
-        # Mac OSX
-test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
-
+    export EDITOR='mvim'
 fi
 
 #For easy use code
 codi() {
-  local syntax="${1:-python}"
-  shift
-  vim -c \
-    "let g:startify_disable_at_vimenter = 1 |\
-    set bt=nofile ls=0 noru nonu nornu |\
-    hi ColorColumn ctermbg=NONE |\
-    hi VertSplit ctermbg=NONE |\
-    hi NonText ctermfg=0 |\
-    Codi $syntax" "$@"
+    local syntax="${1:-python}"
+    shift
+    vim -c \
+        "let g:startify_disable_at_vimenter = 1 |\
+        set bt=nofile ls=0 noru nonu nornu |\
+        hi ColorColumn ctermbg=NONE |\
+        hi VertSplit ctermbg=NONE |\
+        hi NonText ctermfg=0 |\
+        Codi $syntax" "$@"
 }
 
 #blow add vi indicator to bar
 function zle-line-init {
-  powerlevel9k_prepare_prompts
-  if (( ${+terminfo[smkx]} )); then
-    printf '%s' ${terminfo[smkx]}
-  fi
-  zle reset-prompt
-  zle -R
+    powerlevel9k_prepare_prompts
+    if (( ${+terminfo[smkx]} )); then
+        printf '%s' ${terminfo[smkx]}
+    fi
+    zle reset-prompt
+    zle -R
 }
 
 function zle-line-finish {
-  powerlevel9k_prepare_prompts
-  if (( ${+terminfo[rmkx]} )); then
-    printf '%s' ${terminfo[rmkx]}
-  fi
-  zle reset-prompt
-  zle -R
+    powerlevel9k_prepare_prompts
+    if (( ${+terminfo[rmkx]} )); then
+        printf '%s' ${terminfo[rmkx]}
+    fi
+    zle reset-prompt
+    zle -R
 }
 
 function zle-keymap-select {
-  powerlevel9k_prepare_prompts
-  zle reset-prompt
-  zle -R
+    powerlevel9k_prepare_prompts
+    zle reset-prompt
+    zle -R
 }
 
 zle -N zle-line-init
