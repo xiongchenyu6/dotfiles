@@ -331,12 +331,6 @@ nnoremap <Tab> gt
 nnoremap <S-Tab> gT
 nnoremap <silent> <S-t> :tabnew<CR>
 
-"" Opens an edit command with the path of the currently edited file filled in
-noremap <Leader>e :e <C-R>=expand("%:p:h") . "/" <CR>
-
-"" Opens a tab edit command with the path of the currently edited file filled
-noremap <Leader>te :tabe <C-R>=expand("%:p:h") . "/" <CR>
-
 "" ctrlp.vim
 set wildmode=list:longest,list:full
 set wildignore+=*.o,*.obj,.git,*.rbc,*.pyc,__pycache__
@@ -350,12 +344,6 @@ let g:ctrlp_map = '<c-p>'
 let g:ctrlp_open_new_file = 'r'
 let g:ctrlp_cache_dir = $HOME . '/.cache/ctrlp'
 
-" snippets
-let g:UltiSnipsExpandTrigger="<tab>"
-let g:UltiSnipsJumpForwardTrigger="<tab>"
-let g:UltiSnipsJumpBackwardTrigger="<c-b>"
-let g:UltiSnipsEditSplit="vertical"
-
 " syntastic
 let g:syntastic_always_populate_loc_list=1
 let g:syntastic_error_symbol='✗'
@@ -366,7 +354,7 @@ let g:syntastic_auto_loc_list=1
 let g:syntastic_aggregate_errors = 1
 
 " Tagbar
-nmap <silent> <F4> :TagbarToggle<CR>
+map <Leader>tb :TagbarToggle<CR>
 let g:tagbar_autofocus = 1
 let tagbar_left=1
 
@@ -399,9 +387,6 @@ noremap <C-k> <C-w>k
 noremap <C-l> <C-w>l
 noremap <C-h> <C-w>h
 
-"" Open current line on GitHub
-nnoremap <Leader>o :.Gbrowse<CR>
-
 " 相对行号: 行号变成相对，可以用 nj/nk 进行跳转
 set relativenumber number
 au FocusLost * :set norelativenumber number
@@ -426,7 +411,6 @@ nnoremap <C-n> :call NumberToggle()<cr>
 "*****************************************************************************
 
 " Change Working Directory to that of the current file
-cmap cwd lcd %:p:h
 cmap cd. lcd %:p:h
 
 " For when you forget to sudo.. Really Write the file.
@@ -549,6 +533,8 @@ endif
   " Disable haskell-vim omnifunc
   let g:haskellmode_completion_ghc = 0
   autocmd FileType haskell setlocal omnifunc=necoghc#omnifunc
+  " Show detailed information (type) of symbols.
+  let g:necoghc_enable_detailed_browse = 1
 
   " Enable heavy omni completion.
   if !exists('g:neocomplete#sources#omni#input_patterns')
@@ -567,6 +553,12 @@ endif
 "" Self Customise
 "*****************************************************************************
 
+"GHC-MOD
+map <silent> gy :GhcModTypeInsert<CR>
+map <silent> gs :GhcModSplitFunCase<CR>
+map <silent> gt :GhcModType<CR>
+map <silent> gc :GhcModTypeClear<CR>
+
 ""Hard Mode
 nnoremap <up>    <nop>
 nnoremap <down>  <nop>
@@ -579,3 +571,9 @@ inoremap <right> <nop>
 
 ""
 set foldlevelstart=9
+
+let g:codi#interpreters = {
+            \ 'haskell': {
+            \ 'bin': ['stack','ghci'],
+            \ },
+            \ }
