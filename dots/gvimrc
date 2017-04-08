@@ -1,4 +1,7 @@
 " - font type and size setting.
+
+set mousemodel=popup
+"set guioptions=egmrti
 set guioptions-=T           " Remove the toolbar
 set lines=40                " 40 lines of text instead of 24
 if has('win32')

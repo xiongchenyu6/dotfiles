@@ -32,15 +32,11 @@ call plug#begin(expand('~/.vim/plugged'))
 "" Plug install packages
 "*****************************************************************************
 
-"" nerd tree
-Plug 'scrooloose/nerdtree'
-"" nerd tree more like IDE
-Plug 'jistr/vim-nerdtree-tabs'
-Plug 'Xuyuanp/nerdtree-git-plugin'
+"" nerd tree & make nerd tree more like IDE
+Plug 'scrooloose/nerdtree' | Plug 'jistr/vim-nerdtree-tabs' | Plug 'Xuyuanp/nerdtree-git-plugin'
+
 "" github plugin
-Plug 'tpope/vim-fugitive'
-""show change in github
-Plug 'airblade/vim-gitgutter'
+Plug 'tpope/vim-fugitive' | Plug 'airblade/vim-gitgutter'
 
 "" comment
 Plug 'scrooloose/nerdcommenter'
@@ -51,9 +47,9 @@ Plug 'vim-scripts/grep.vim'
 
 Plug 'bronson/vim-trailing-whitespace'
 Plug 'majutsushi/tagbar'
-Plug 'neomake/neomake'
 Plug 'Yggdroot/indentLine'
 Plug 'tpope/vim-surround'
+Plug 'neomake/neomake'
 
 ""A collection of language packs for Vim
 Plug 'sheerun/vim-polyglot'
@@ -64,18 +60,21 @@ Plug 'xolox/vim-session'
 
 "" Color and theme
 Plug 'altercation/vim-colors-solarized'
-Plug 'vim-airline/vim-airline'
-Plug 'vim-airline/vim-airline-themes'
+Plug 'vim-airline/vim-airline' | Plug 'vim-airline/vim-airline-themes'
 
-""Auto-complete for haskell
 Plug 'Shougo/vimproc.vim', {'do' : 'make'}
-Plug 'eagletmt/ghcmod-vim'
-Plug 'eagletmt/neco-ghc'
 
 ""Auto-complete
-Plug 'Shougo/neocomplete.vim'
-Plug 'Shougo/neosnippet'
-Plug 'Shougo/neosnippet-snippets'
+Plug 'Shougo/neocomplete.vim' | Plug 'Shougo/neosnippet' | Plug 'Shougo/neosnippet-snippets'
+
+"*****************************************************************************
+"" Custom bundles
+"*****************************************************************************
+
+"Plug 'Raimondi/delimitMate'
+
+""Auto-complete for haskell
+Plug 'eagletmt/ghcmod-vim' | Plug 'eagletmt/neco-ghc'
 
 Plug 'godlygeek/tabular'
 
@@ -84,12 +83,6 @@ Plug 'metakirby5/codi.vim'
 
 "Emmet"
 Plug 'mattn/emmet-vim'
-
-"*****************************************************************************
-"" Custom bundles
-"*****************************************************************************
-
-"Plug 'Raimondi/delimitMate'
 
 "" Color Bundle for css3
 Plug 'gorodinskiy/vim-coloresque'
@@ -150,18 +143,6 @@ set fileformats=unix,dos,mac
 set showcmd
 set history=1000                    " Store a ton of history (default is 20)
 
-if exists('$SHELL')
-    set shell=$SHELL
-else
-    set shell=/bin/sh
-endif
-
-" session management
-let g:session_directory = "~/.vim/session"
-let g:session_autoload = "no"
-let g:session_autosave = "no"
-let g:session_command_aliases = 1
-
 "*****************************************************************************
 "" Visual Settings
 "*****************************************************************************
@@ -171,36 +152,18 @@ set number
 set spell
 set foldenable
 set foldmethod=syntax
+set foldlevelstart=9
+
+set tags=./.vimtags,vimtags;
 
 " For regular expressions turn magic on
 set magic
 
-" 调整缩进后自动选中，方便再次操作
-vnoremap < <gv
-vnoremap > >gv
-
-" 复制选中区到系统剪切板中
-vnoremap <leader>y "+y
-
-let no_buffers_menu=1
-if !exists('g:not_finish_vimplug')
-  set background=dark
-  colorscheme solarized
-  "colorscheme molokai
-endif
-
-set mousemodel=popup
-set guioptions=egmrti
-set gfn=Monospace\ 10
-
-
 "" Disable the blinking cursor.
 set gcr=a:blinkon0
-set scrolloff=3
 
-if &term == 'xterm' || &term == 'screen'
-    set t_Co=256            " Enable 256 colors to stop the CSApprox warning and make xterm vim shine
-endif
+" Keep 3 lines below and above the cursor
+set scrolloff=3
 
 "" Status bar
 set laststatus=2
@@ -215,14 +178,9 @@ set titlestring=%F
 
 set statusline=%F%m%r%h%w%=(%{&ff}/%Y)\ (line\ %l\/%L,\ col\ %c)\
 
-" Search mappings: These will make it so that going to the next one in a
-" search will center on the line it's found in.
-nnoremap n nzzzv
-nnoremap N Nzzzv
-
-if exists("*fugitive#statusline")
-  set statusline+=%{fugitive#statusline()}
-endif
+set background=dark
+colorscheme solarized
+"colorscheme molokai
 
 " vim-airline
 let g:airline_theme = 'solarized'
@@ -230,11 +188,30 @@ let g:airline#extensions#branch#enabled = 1
 let g:airline#extensions#tabline#enabled = 1
 let g:airline#extensions#tagbar#enabled = 1
 let g:airline#extensions#tabline#buffer_nr_show = 1
-let g:airline_skip_empty_sections = 1
+
+if &term == 'xterm' || &term == 'screen'
+    set t_Co=256            " Enable 256 colors to stop the CSApprox warning and make xterm vim shine
+endif
+
+if exists("*fugitive#statusline")
+  set statusline+=%{fugitive#statusline()}
+endif
 
 "*****************************************************************************
 "" Abbreviations
 "*****************************************************************************
+
+if exists('$SHELL')
+    set shell=$SHELL
+else
+    set shell=/bin/sh
+endif
+
+" session management
+let g:session_directory = "~/.vim/session"
+let g:session_autoload = "no"
+let g:session_autosave = "no"
+let g:session_command_aliases = 1
 
 "" NERDTree configuration
 let g:NERDTreeChDirMode=2
@@ -245,12 +222,6 @@ let g:nerdtree_tabs_focus_on_files=1
 let g:NERDTreeMapOpenInTabSilent = '<RightMouse>'
 let NERDTreeKeepTreeInNewTab=1
 
-set wildignore+=*/tmp/*,*.so,*.swp,*.zip,*.pyc,*.db,*.sqlite
-" Customise ctrl-p ignored files
-set wildignore+=*/.git/*,*.so,*.swp,*.zip,**/node_modules
-" ignore play framework build dir
-set wildignore+=*/target/*
-
 map <C-e> <plug>NERDTreeTabsToggle<CR>
 nmap <leader>nt :NERDTreeFind<CR>
 
@@ -259,6 +230,16 @@ nnoremap <silent> <leader>f :Rgrep<CR>
 let Grep_Default_Options = '-IR'
 let Grep_Skip_Files = '*.log *.db'
 let Grep_Skip_Dirs = '.git node_modules'
+
+" syntastic
+autocmd! BufWritePost * Neomake
+let g:neomake_open_list = 0
+
+autocmd BufWinEnter quickfix nnoremap <silent> <buffer>
+      \   q :cclose<cr>:lclose<cr>
+autocmd BufEnter * if (winnr('$') == 1 && &buftype ==# 'quickfix' ) |
+      \   bd|
+      \   q | endif
 
 "*****************************************************************************
 "" Functions
@@ -270,6 +251,14 @@ if !exists('*s:setupWrapping')
     set textwidth=79
   endfunction
 endif
+
+function! NumberToggle()
+  if(&relativenumber == 1)
+    set norelativenumber number
+  else
+    set relativenumber
+  endif
+endfunc
 
 "*****************************************************************************
 "" Autocmd Rules
@@ -331,8 +320,13 @@ nnoremap <S-Tab> gT
 nnoremap <silent> <S-t> :tabnew<CR>
 
 "" ctrlp.vim
+
+" Customise ctrl-p ignored files
 set wildmode=list:longest,list:full
-set wildignore+=*.o,*.obj,.git,*.rbc,*.pyc,__pycache__
+set wildignore+=*.o,*.obj,.git,*.rbc,__pycache__,*/tmp/*,*.so,*.swp,*.zip,*.pyc,*.db,*.sqlite
+set wildignore+=*/.git/*,*.so,*.swp,*.zip,**/node_modules
+" ignore play framework build dir
+set wildignore+=*/target/*
 let g:ctrlp_custom_ignore = '\v[\/](node_modules|target|dist)|(\.(swp|tox|ico|git|hg|svn))$'
 let g:ctrlp_user_command = "find %s -type f | grep -Ev '"+ g:ctrlp_custom_ignore +"'"
 let g:ctrlp_use_caching = 1
@@ -343,10 +337,6 @@ let g:ctrlp_map = '<c-p>'
 let g:ctrlp_open_new_file = 'r'
 let g:ctrlp_cache_dir = $HOME . '/.cache/ctrlp'
 
-" syntastic
-autocmd! BufWritePost * Neomake
-let g:neomake_open_list = 0
-autocmd BufWritePost *.hs GhcModCheckAndLintAsync
 
 " Tagbar
 map <Leader>tt :TagbarToggle<CR>
@@ -382,6 +372,11 @@ noremap <C-k> <C-w>k
 noremap <C-l> <C-w>l
 noremap <C-h> <C-w>h
 
+" Search mappings: These will make it so that going to the next one in a
+" search will center on the line it's found in.
+nnoremap n nzzzv
+nnoremap N Nzzzv
+
 " 相对行号: 行号变成相对，可以用 nj/nk 进行跳转
 set relativenumber number
 au FocusLost * :set norelativenumber number
@@ -391,15 +386,14 @@ au FocusGained * :set relativenumber
 autocmd InsertEnter * :set norelativenumber number
 autocmd InsertLeave * :set relativenumber
 
-function! NumberToggle()
-  if(&relativenumber == 1)
-    set norelativenumber number
-  else
-    set relativenumber
-  endif
-endfunc
-
 nnoremap <C-n> :call NumberToggle()<cr>
+
+" 调整缩进后自动选中，方便再次操作
+vnoremap < <gv
+vnoremap > >gv
+
+" 复制选中区到系统剪切板中
+vnoremap <leader>y "+y
 
 "*****************************************************************************
 "" Custom command maps
@@ -410,17 +404,6 @@ cmap cd. lcd %:p:h
 
 " For when you forget to sudo.. Really Write the file.
 cmap w!! w !sudo tee % >/dev/null
-
-"*****************************************************************************
-"" Custom language configs
-"*****************************************************************************
-
-" html
-" for html files, 2 spaces
-autocmd Filetype html setlocal ts=2 sw=2 expandtab
-
-" javascript
-let g:javascript_enable_domhtmlcss = 1
 
 "*****************************************************************************
 "" Convenience variables
@@ -461,6 +444,27 @@ else
   let g:airline_symbols.readonly = ''
   let g:airline_symbols.linenr = ''
 endif
+
+"*****************************************************************************
+"" Tabularize configuration
+"*****************************************************************************
+
+nmap <Leader>a& :Tabularize /&<CR>
+vmap <Leader>a& :Tabularize /&<CR>
+nmap <Leader>a= :Tabularize /^[^=]*\zs=<CR>
+vmap <Leader>a= :Tabularize /^[^=]*\zs=<CR>
+nmap <Leader>a=> :Tabularize /=><CR>
+vmap <Leader>a=> :Tabularize /=><CR>
+nmap <Leader>a: :Tabularize /:<CR>
+vmap <Leader>a: :Tabularize /:<CR>
+nmap <Leader>a:: :Tabularize /:\zs<CR>
+vmap <Leader>a:: :Tabularize /:\zs<CR>
+nmap <Leader>a, :Tabularize /,<CR>
+vmap <Leader>a, :Tabularize /,<CR>
+nmap <Leader>a,, :Tabularize /,\zs<CR>
+vmap <Leader>a,, :Tabularize /,\zs<CR>
+nmap <Leader>a<Bar> :Tabularize /<Bar><CR>
+vmap <Leader>a<Bar> :Tabularize /<Bar><CR>
 
 "*****************************************************************************
 "" Auto complete configuration
@@ -517,17 +521,11 @@ endif
   autocmd filetype python setlocal omnifunc=pythoncomplete#complete
   autocmd fileType xml setlocal omnifunc=xmlcomplete#CompleteTags
 
-  " Disable haskell-vim omnifunc
-  let g:haskellmode_completion_ghc = 0
-  autocmd FileType haskell setlocal omnifunc=necoghc#omnifunc
-  " Show detailed information (type) of symbols.
-  let g:necoghc_enable_detailed_browse = 1
-
   " Enable heavy omni completion.
   if !exists('g:neocomplete#sources#omni#input_patterns')
     let g:neocomplete#sources#omni#input_patterns = {}
   endif
-  "let g:neocomplete#sources#omni#input_patterns.php = '[^. \t]->\h\w*\|\h\w*::'
+  let g:neocomplete#sources#omni#input_patterns.php = '[^. \t]->\h\w*\|\h\w*::'
   let g:neocomplete#sources#omni#input_patterns.c = '[^.[:digit:] *\t]\%(\.\|->\)'
   let g:neocomplete#sources#omni#input_patterns.cpp = '[^.[:digit:] *\t]\%(\.\|->\)\|\h\w*::'
   let g:neocomplete#sources#omni#input_patterns.perl = '\h\w*->\h\w*\|\h\w*::'
@@ -537,29 +535,25 @@ endif
 " }
 
 "*****************************************************************************
-"" Tabularize configuration
+"" Custom language configs
 "*****************************************************************************
 
-nmap <Leader>a& :Tabularize /&<CR>
-vmap <Leader>a& :Tabularize /&<CR>
-nmap <Leader>a= :Tabularize /^[^=]*\zs=<CR>
-vmap <Leader>a= :Tabularize /^[^=]*\zs=<CR>
-nmap <Leader>a=> :Tabularize /=><CR>
-vmap <Leader>a=> :Tabularize /=><CR>
-nmap <Leader>a: :Tabularize /:<CR>
-vmap <Leader>a: :Tabularize /:<CR>
-nmap <Leader>a:: :Tabularize /:\zs<CR>
-vmap <Leader>a:: :Tabularize /:\zs<CR>
-nmap <Leader>a, :Tabularize /,<CR>
-vmap <Leader>a, :Tabularize /,<CR>
-nmap <Leader>a,, :Tabularize /,\zs<CR>
-vmap <Leader>a,, :Tabularize /,\zs<CR>
-nmap <Leader>a<Bar> :Tabularize /<Bar><CR>
-vmap <Leader>a<Bar> :Tabularize /<Bar><CR>
+" javascript
+let g:used_javascript_libs = 'underscore,jquery,react,flux'
+autocmd BufReadPre *.js let b:javascript_lib_use_jquery = 1
+autocmd BufReadPre *.js let b:javascript_lib_use_underscore = 1
+autocmd BufReadPre *.js let b:javascript_lib_use_react = 1
 
-"*****************************************************************************
-"" Self Customise
-"*****************************************************************************
+let g:javascript_enable_domhtmlcss = 1
+
+" Haskell
+autocmd BufWritePost *.hs GhcModCheckAndLintAsync
+
+" Disable haskell-vim omnifunc
+let g:haskellmode_completion_ghc = 0
+autocmd FileType haskell setlocal omnifunc=necoghc#omnifunc
+" Show detailed information (type) of symbols.
+let g:necoghc_enable_detailed_browse = 1
 
 "GHC-MOD
 map <silent> gy :GhcModTypeInsert<CR>
@@ -567,24 +561,7 @@ map <silent> gs :GhcModSplitFunCase<CR>
 map <silent> gt :GhcModType<CR>
 map <silent> gc :GhcModTypeClear<CR>
 
-""Hard Mode
-nnoremap <up>    <nop>
-nnoremap <down>  <nop>
-nnoremap <left>  <nop>
-nnoremap <right> <nop>
-inoremap <up>    <nop>
-inoremap <down>  <nop>
-inoremap <left>  <nop>
-inoremap <right> <nop>
-
-""
-set foldlevelstart=9
-
-let g:used_javascript_libs = 'underscore,jquery,react,flux'
-autocmd BufReadPre *.js let b:javascript_lib_use_jquery = 1
-autocmd BufReadPre *.js let b:javascript_lib_use_underscore = 1
-autocmd BufReadPre *.js let b:javascript_lib_use_react = 1
-
+" Tags for tagbar
 if executable('lushtags')
     let g:tagbar_type_haskell = {
         \ 'ctagsbin' : 'lushtags',
@@ -615,4 +592,18 @@ if executable('lushtags')
     \ }
 endif
 
-set tags=./.vimtags,vimtags;
+"*****************************************************************************
+"" Self Customise
+"*****************************************************************************
+
+
+""Hard Mode
+nnoremap <up>    <nop>
+nnoremap <down>  <nop>
+nnoremap <left>  <nop>
+nnoremap <right> <nop>
+inoremap <up>    <nop>
+inoremap <down>  <nop>
+inoremap <left>  <nop>
+inoremap <right> <nop>
+
