@@ -14,6 +14,7 @@ export ARCHFLAGS="-arch x86_64"
 export SSH_KEY_PATH="~/.ssh/rsa_id"
 export PATH=/usr/local/bin:$PATH
 export PATH=~/.local/bin/:$PATH
+export PATH=~/.stack/programs/x86_64-osx/ghc-8.0.2/bin:$PATH
 
 alias aws='ssh -i "Freeman.pem" ubuntu@52.220.46.164'
 

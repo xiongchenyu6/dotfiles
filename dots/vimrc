@@ -51,7 +51,7 @@ Plug 'vim-scripts/grep.vim'
 
 Plug 'bronson/vim-trailing-whitespace'
 Plug 'majutsushi/tagbar'
-Plug 'scrooloose/syntastic'
+Plug 'neomake/neomake'
 Plug 'Yggdroot/indentLine'
 Plug 'tpope/vim-surround'
 
@@ -77,8 +77,7 @@ Plug 'Shougo/neocomplete.vim'
 Plug 'Shougo/neosnippet'
 Plug 'Shougo/neosnippet-snippets'
 
-"multiple cursor
-Plug 'terryma/vim-multiple-cursors'
+Plug 'godlygeek/tabular'
 
 "REPL
 Plug 'metakirby5/codi.vim'
@@ -126,9 +125,9 @@ set ttyfast
 set backspace=indent,eol,start
 
 "" Tabs. May be overriten by autocmd rules
-set tabstop=4
-set softtabstop=0
-set shiftwidth=4
+set tabstop=2
+set softtabstop=2
+set shiftwidth=2
 set expandtab
 
 "" Map leader to ,
@@ -227,10 +226,10 @@ endif
 
 " vim-airline
 let g:airline_theme = 'solarized'
-let g:airline#extensions#syntastic#enabled = 1
 let g:airline#extensions#branch#enabled = 1
 let g:airline#extensions#tabline#enabled = 1
 let g:airline#extensions#tagbar#enabled = 1
+let g:airline#extensions#tabline#buffer_nr_show = 1
 let g:airline_skip_empty_sections = 1
 
 "*****************************************************************************
@@ -345,16 +344,12 @@ let g:ctrlp_open_new_file = 'r'
 let g:ctrlp_cache_dir = $HOME . '/.cache/ctrlp'
 
 " syntastic
-let g:syntastic_always_populate_loc_list=1
-let g:syntastic_error_symbol='✗'
-let g:syntastic_warning_symbol='⚠'
-let g:syntastic_style_error_symbol = '✗'
-let g:syntastic_style_warning_symbol = '⚠'
-let g:syntastic_auto_loc_list=1
-let g:syntastic_aggregate_errors = 1
+autocmd! BufWritePost * Neomake
+let g:neomake_open_list = 0
+autocmd BufWritePost *.hs GhcModCheckAndLintAsync
 
 " Tagbar
-map <Leader>tb :TagbarToggle<CR>
+map <Leader>tt :TagbarToggle<CR>
 let g:tagbar_autofocus = 1
 let tagbar_left=1
 
@@ -427,12 +422,6 @@ autocmd Filetype html setlocal ts=2 sw=2 expandtab
 " javascript
 let g:javascript_enable_domhtmlcss = 1
 
-" vim-javascript
-augroup vimrc-javascript
-  autocmd!
-  autocmd FileType javascript set tabstop=4|set shiftwidth=4|set expandtab softtabstop=4
-augroup END
-
 "*****************************************************************************
 "" Convenience variables
 "*****************************************************************************
@@ -487,8 +476,6 @@ endif
   let g:neocomplete#enable_smart_case = 1
   " Set minimum syntax keyword length.
   let g:neocomplete#enable_auto_delimiter = 1
-  let g:neocomplete#max_list = 15
-  let g:neocomplete#force_overwrite_completefunc = 1
   "let g:neocomplete#enable_auto_select = 1
 
   " Define dictionary.
@@ -550,6 +537,27 @@ endif
 " }
 
 "*****************************************************************************
+"" Tabularize configuration
+"*****************************************************************************
+
+nmap <Leader>a& :Tabularize /&<CR>
+vmap <Leader>a& :Tabularize /&<CR>
+nmap <Leader>a= :Tabularize /^[^=]*\zs=<CR>
+vmap <Leader>a= :Tabularize /^[^=]*\zs=<CR>
+nmap <Leader>a=> :Tabularize /=><CR>
+vmap <Leader>a=> :Tabularize /=><CR>
+nmap <Leader>a: :Tabularize /:<CR>
+vmap <Leader>a: :Tabularize /:<CR>
+nmap <Leader>a:: :Tabularize /:\zs<CR>
+vmap <Leader>a:: :Tabularize /:\zs<CR>
+nmap <Leader>a, :Tabularize /,<CR>
+vmap <Leader>a, :Tabularize /,<CR>
+nmap <Leader>a,, :Tabularize /,\zs<CR>
+vmap <Leader>a,, :Tabularize /,\zs<CR>
+nmap <Leader>a<Bar> :Tabularize /<Bar><CR>
+vmap <Leader>a<Bar> :Tabularize /<Bar><CR>
+
+"*****************************************************************************
 "" Self Customise
 "*****************************************************************************
 
@@ -572,8 +580,39 @@ inoremap <right> <nop>
 ""
 set foldlevelstart=9
 
-let g:codi#interpreters = {
-            \ 'haskell': {
-            \ 'bin': ['stack','ghci'],
-            \ },
-            \ }
+let g:used_javascript_libs = 'underscore,jquery,react,flux'
+autocmd BufReadPre *.js let b:javascript_lib_use_jquery = 1
+autocmd BufReadPre *.js let b:javascript_lib_use_underscore = 1
+autocmd BufReadPre *.js let b:javascript_lib_use_react = 1
+
+if executable('lushtags')
+    let g:tagbar_type_haskell = {
+        \ 'ctagsbin' : 'lushtags',
+        \ 'ctagsargs' : '--ignore-parse-error --',
+        \ 'kinds' : [
+            \ 'm:module:0',
+            \ 'e:exports:1',
+            \ 'i:imports:1',
+            \ 't:declarations:0',
+            \ 'd:declarations:1',
+            \ 'n:declarations:1',
+            \ 'f:functions:0',
+            \ 'c:constructors:0'
+        \ ],
+        \ 'sro' : '.',
+        \ 'kind2scope' : {
+            \ 'd' : 'data',
+            \ 'n' : 'newtype',
+            \ 'c' : 'constructor',
+            \ 't' : 'type'
+        \ },
+        \ 'scope2kind' : {
+            \ 'data' : 'd',
+            \ 'newtype' : 'n',
+            \ 'constructor' : 'c',
+            \ 'type' : 't'
+        \ }
+    \ }
+endif
+
+set tags=./.vimtags,vimtags;
