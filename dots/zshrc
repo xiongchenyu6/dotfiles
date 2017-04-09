@@ -1,10 +1,11 @@
 export ZSH=~/.oh-my-zsh
+export TERM="xterm-256color"
 
 ZSH_THEME="powerlevel9k/powerlevel9k"
 POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(context dir rbenv vcs)
 POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(vi_mode status root_indicator background_jobs history time)
 
-plugins=(react-native tmux git zsh-autosuggestions zsh-syntax-highlighting z)
+plugins=(vi-mode react-native tmux git zsh-autosuggestions zsh-syntax-highlighting z)
 
 if [[ "$OSTYPE" == "linux-gnu" ]]; then
     plugins+=(ubuntu)
@@ -15,7 +16,6 @@ fi
 source $ZSH/oh-my-zsh.sh
 
 export LANG=en_US.UTF-8
-export TERM="xterm-256color"
 bindkey -v
 export KEYTIMEOUT=1
 source ~/.bash_profile
@@ -39,32 +39,3 @@ codi() {
         hi NonText ctermfg=0 |\
         Codi $syntax" "$@"
 }
-
-#blow add vi indicator to bar
-function zle-line-init {
-    powerlevel9k_prepare_prompts
-    if (( ${+terminfo[smkx]} )); then
-        printf '%s' ${terminfo[smkx]}
-    fi
-    zle reset-prompt
-    zle -R
-}
-
-function zle-line-finish {
-    powerlevel9k_prepare_prompts
-    if (( ${+terminfo[rmkx]} )); then
-        printf '%s' ${terminfo[rmkx]}
-    fi
-    zle reset-prompt
-    zle -R
-}
-
-function zle-keymap-select {
-    powerlevel9k_prepare_prompts
-    zle reset-prompt
-    zle -R
-}
-
-zle -N zle-line-init
-zle -N ale-line-finish
-zle -N zle-keymap-select
