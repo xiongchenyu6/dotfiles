@@ -43,13 +43,13 @@ Plug 'scrooloose/nerdcommenter'
 
 "" Fast search
 Plug 'ctrlpvim/ctrlp.vim'
-Plug 'vim-scripts/grep.vim'
+Plug 'mhinz/vim-grepper'
 
 Plug 'bronson/vim-trailing-whitespace'
 Plug 'majutsushi/tagbar'
 Plug 'Yggdroot/indentLine'
 Plug 'tpope/vim-surround'
-Plug 'neomake/neomake'
+Plug 'w0rp/ale'
 
 ""A collection of language packs for Vim
 Plug 'sheerun/vim-polyglot'
@@ -59,8 +59,9 @@ Plug 'xolox/vim-misc'
 Plug 'xolox/vim-session'
 
 "" Color and theme
-Plug 'altercation/vim-colors-solarized'
-Plug 'vim-airline/vim-airline' | Plug 'vim-airline/vim-airline-themes'
+Plug 'flazz/vim-colorschemes'
+Plug 'itchyny/lightline.vim'
+Plug 'taohex/lightline-buffer'
 
 Plug 'Shougo/vimproc.vim', {'do' : 'make'}
 
@@ -71,12 +72,13 @@ Plug 'Shougo/neocomplete.vim' | Plug 'Shougo/neosnippet' | Plug 'Shougo/neosnipp
 "" Custom bundles
 "*****************************************************************************
 
+Plug 'marijnh/tern_for_vim'
 "Plug 'Raimondi/delimitMate'
 
 ""Auto-complete for haskell
 Plug 'eagletmt/ghcmod-vim' | Plug 'eagletmt/neco-ghc'
 
-Plug 'godlygeek/tabular'
+Plug 'junegunn/vim-easy-align'
 
 "REPL
 Plug 'metakirby5/codi.vim'
@@ -97,7 +99,6 @@ call plug#end()
 " Required:
 filetype plugin indent on
 
-
 "*****************************************************************************
 "Enable below if the code not Working
 "let g:codi#log = '/tmp/codi.log'
@@ -109,6 +110,7 @@ filetype plugin indent on
 set encoding=utf-8
 set fileencoding=utf-8
 set fileencodings=utf-8
+scriptencoding utf-8
 ""set boolean
 set bomb
 set binary
@@ -128,20 +130,28 @@ let mapleader=','
 
 "" Enable hidden buffers
 set hidden
+set showtabline=2
+" Set 7 lines to the cursor - when moving vertically using j/k
+set so=7
 
 "" Searching
 set hlsearch
 set incsearch
 set ignorecase
 set smartcase
+" Show matching brackets when text indicator is over them
+set showmatch
+" How many tenths of a second to blink when matching brackets
+set mat=2
 
 "" Directories for swp files
 set nobackup
+set nowb
 set noswapfile
 
 set fileformats=unix,dos,mac
 set showcmd
-set history=1000                    " Store a ton of history (default is 20)
+set history=700                    " Store a ton of history (default is 20)
 
 "*****************************************************************************
 "" Visual Settings
@@ -162,9 +172,6 @@ set magic
 "" Disable the blinking cursor.
 set gcr=a:blinkon0
 
-" Keep 3 lines below and above the cursor
-set scrolloff=3
-
 "" Status bar
 set laststatus=2
 
@@ -182,19 +189,8 @@ set background=dark
 colorscheme solarized
 "colorscheme molokai
 
-" vim-airline
-let g:airline_theme = 'solarized'
-let g:airline#extensions#branch#enabled = 1
-let g:airline#extensions#tabline#enabled = 1
-let g:airline#extensions#tagbar#enabled = 1
-let g:airline#extensions#tabline#buffer_nr_show = 1
-
 if &term == 'xterm' || &term == 'screen'
-    set t_Co=256            " Enable 256 colors to stop the CSApprox warning and make xterm vim shine
-endif
-
-if exists("*fugitive#statusline")
-  set statusline+=%{fugitive#statusline()}
+  set t_Co=256            " Enable 256 colors to stop the CSApprox warning and make xterm vim shine
 endif
 
 "*****************************************************************************
@@ -202,9 +198,9 @@ endif
 "*****************************************************************************
 
 if exists('$SHELL')
-    set shell=$SHELL
+  set shell=$SHELL
 else
-    set shell=/bin/sh
+  set shell=/bin/sh
 endif
 
 " session management
@@ -225,21 +221,19 @@ let NERDTreeKeepTreeInNewTab=1
 map <C-e> <plug>NERDTreeTabsToggle<CR>
 nmap <leader>nt :NERDTreeFind<CR>
 
-" grep.vim
-nnoremap <silent> <leader>f :Rgrep<CR>
-let Grep_Default_Options = '-IR'
-let Grep_Skip_Files = '*.log *.db'
-let Grep_Skip_Dirs = '.git node_modules'
+" ack.vim
+nmap gs <plug>(GrepperOperator)
+xmap gs <plug>(GrepperOperator)
+nnoremap <leader>fg :Grepper -tool git<cr>
+nnoremap <leader>fa :Grepper -tool ag<cr>
+nnoremap <leader>fs :Grepper -tool ag -side<cr>
+nnoremap <leader>*  :Grepper -tool ag -cword -noprompt<cr>
 
-" syntastic
-autocmd! BufWritePost * Neomake
-let g:neomake_open_list = 0
-
-autocmd BufWinEnter quickfix nnoremap <silent> <buffer>
-      \   q :cclose<cr>:lclose<cr>
-autocmd BufEnter * if (winnr('$') == 1 && &buftype ==# 'quickfix' ) |
-      \   bd|
-      \   q | endif
+let g:grepper           = {}
+let g:grepper.tools     = ['git', 'ag', 'grep']
+let g:grepper.open      = 1
+let g:grepper.jump      = 1
+let g:grepper.next_tool = '<leader>g'
 
 "*****************************************************************************
 "" Functions
@@ -333,15 +327,12 @@ let g:ctrlp_use_caching = 1
 
 cnoremap <C-P> <C-R>=expand("%:p:h") . "/" <CR>
 noremap <leader>b :CtrlPBuffer<CR>
-let g:ctrlp_map = '<c-p>'
 let g:ctrlp_open_new_file = 'r'
 let g:ctrlp_cache_dir = $HOME . '/.cache/ctrlp'
-
 
 " Tagbar
 map <Leader>tt :TagbarToggle<CR>
 let g:tagbar_autofocus = 1
-let tagbar_left=1
 
 " Disable visualbell
 set noerrorbells visualbell t_vb=
@@ -395,6 +386,17 @@ vnoremap > >gv
 " 复制选中区到系统剪切板中
 vnoremap <leader>y "+y
 
+"syntastic
+
+nmap <silent> <C-z> <Plug>(ale_previous_wrap)
+nmap <silent> <C-x> <Plug>(ale_next_wrap)
+
+" Start interactive EasyAlign in visual mode (e.g. vipga)
+xmap ga <Plug>(EasyAlign)
+
+" Start interactive EasyAlign for a motion/text object (e.g. gaip)
+nmap ga <Plug>(EasyAlign)
+
 "*****************************************************************************
 "" Custom command maps
 "*****************************************************************************
@@ -406,132 +408,262 @@ cmap cd. lcd %:p:h
 cmap w!! w !sudo tee % >/dev/null
 
 "*****************************************************************************
-"" Convenience variables
+"" Light Line Settings
 "*****************************************************************************
+let g:lightline = {
+      \ 'colorscheme': 'solarized',
+      \ 'active': {
+      \   'left': [ [ 'mode', 'paste' ], [ 'readonly', 'fugitive', 'gitgutter', 'ale', 'filename' ], ['ctrlpmark'] ],
+      \   'right': [ [ 'lineinfo' ], ['percent'], [ 'filetype', 'spell', 'fileformat', 'fileencoding' ] ]
+      \ },
+      \ 'tabline': {
+      \ 'left': [ [ 'bufferinfo' ], [ 'bufferbefore', 'buffercurrent', 'bufferafter' ], ],
+      \ 'right': [ [ 'close' ], ],
+      \ },
+      \ 'component': {
+      \   'spell': '%{&spell?&spelllang:"no spell"}',
+      \ },
+      \ 'component_visible_condition': {
+      \   'readonly': '(&filetype!="help"&& &readonly)',
+      \ },
+      \ 'component_function': {
+      \   'fugitive': 'LightlineFugitive',
+      \   'gitgutter': 'LightlineGutter',
+      \     'ale' : 'LightlineAle',
+      \   'filename': 'LightlineFilename',
+      \   'fileformat': 'LightlineFileformat',
+      \   'filetype': 'LightlineFiletype',
+      \   'fileencoding': 'LightlineFileencoding',
+      \   'mode': 'LightlineMode',
+      \   'ctrlpmark': 'CtrlPMark',
+      \ 'bufferbefore': 'lightline#buffer#bufferbefore',
+      \ 'bufferafter': 'lightline#buffer#bufferafter',
+      \ 'bufferinfo': 'lightline#buffer#bufferinfo',
+      \ },
+      \ 'component_expand': {
+      \ 'buffercurrent': 'lightline#buffer#buffercurrent2',
+      \ },
+      \ 'component_type': {
+      \ 'buffercurrent': 'tabsel',
+      \ },
+      \ 'separator': { 'left': "\ue0b0", 'right': "\ue0b2" },
+      \ 'subseparator': { 'left': "\ue0b1", 'right': "\ue0b3" }
+      \ }
 
-" vim-airline
-if !exists('g:airline_symbols')
-  let g:airline_symbols = {}
-endif
+function! LightlineModified()
+  return &ft =~ 'help' ? '' : &modified ? '+' : &modifiable ? '' : '-'
+endfunction
 
-if !exists('g:airline_powerline_fonts')
-  let g:airline#extensions#tabline#left_sep = ' '
-  let g:airline#extensions#tabline#left_alt_sep = '|'
-  let g:airline_left_sep          = '▶'
-  let g:airline_left_alt_sep      = '»'
-  let g:airline_right_sep         = '◀'
-  let g:airline_right_alt_sep     = '«'
-  let g:airline#extensions#branch#prefix     = '⤴' "➔, ➥, ⎇
-  let g:airline#extensions#readonly#symbol   = '⊘'
-  let g:airline#extensions#linecolumn#prefix = '¶'
-  let g:airline#extensions#paste#symbol      = 'ρ'
-  let g:airline_symbols.linenr    = '␊'
-  let g:airline_symbols.branch    = '⎇'
-  let g:airline_symbols.paste     = 'ρ'
-  let g:airline_symbols.paste     = 'Þ'
-  let g:airline_symbols.paste     = '∥'
-  let g:airline_symbols.whitespace = 'Ξ'
-else
-  let g:airline#extensions#tabline#left_sep = ''
-  let g:airline#extensions#tabline#left_alt_sep = ''
+function! LightlineReadonly()
+  return &ft !~? 'help' && &readonly ? 'RO' : ''
+endfunction
 
-  " powerline symbols
-  let g:airline_left_sep = ''
-  let g:airline_left_alt_sep = ''
-  let g:airline_right_sep = ''
-  let g:airline_right_alt_sep = ''
-  let g:airline_symbols.branch = ''
-  let g:airline_symbols.readonly = ''
-  let g:airline_symbols.linenr = ''
-endif
+function! LightlineFilename()
+  let fname = expand('%:t')
+  return fname == 'ControlP' && has_key(g:lightline, 'ctrlp_item') ? g:lightline.ctrlp_item :
+        \ fname == '__Tagbar__' ? g:lightline.fname :
+        \ fname =~ '__Gundo\|NERD_tree' ? '' :
+        \ &ft == 'vimfiler' ? vimfiler#get_status_string() :
+        \ &ft == 'unite' ? unite#get_status_string() :
+        \ &ft == 'vimshell' ? vimshell#get_status_string() :
+        \ ('' != LightlineReadonly() ? LightlineReadonly() . ' ' : '') .
+        \ ('' != fname ? fname : '[No Name]') .
+        \ ('' != LightlineModified() ? ' ' . LightlineModified() : '')
+endfunction
 
-"*****************************************************************************
-"" Tabularize configuration
-"*****************************************************************************
 
-nmap <Leader>a& :Tabularize /&<CR>
-vmap <Leader>a& :Tabularize /&<CR>
-nmap <Leader>a= :Tabularize /^[^=]*\zs=<CR>
-vmap <Leader>a= :Tabularize /^[^=]*\zs=<CR>
-nmap <Leader>a=> :Tabularize /=><CR>
-vmap <Leader>a=> :Tabularize /=><CR>
-nmap <Leader>a: :Tabularize /:<CR>
-vmap <Leader>a: :Tabularize /:<CR>
-nmap <Leader>a:: :Tabularize /:\zs<CR>
-vmap <Leader>a:: :Tabularize /:\zs<CR>
-nmap <Leader>a, :Tabularize /,<CR>
-vmap <Leader>a, :Tabularize /,<CR>
-nmap <Leader>a,, :Tabularize /,\zs<CR>
-vmap <Leader>a,, :Tabularize /,\zs<CR>
-nmap <Leader>a<Bar> :Tabularize /<Bar><CR>
-vmap <Leader>a<Bar> :Tabularize /<Bar><CR>
+function! LightlineAle()
+  return ALEGetStatusLine()
+endfunction
+
+function! LightlineFugitive()
+  try
+    if expand('%:t') !~? 'Tagbar\|Gundo\|NERD' && &ft !~? 'vimfiler' && exists('*fugitive#head')
+      let mark = ' '  " edit here for cool mark
+      let branch = fugitive#head()
+      return branch !=# '' ? mark.branch : ''
+    endif
+  catch
+  endtry
+  return ''
+endfunction
+
+function! LightlineGutter()
+  if ! exists('*GitGutterGetHunkSummary')
+        \ || ! get(g:, 'gitgutter_enabled', 0)
+        \ || winwidth('.') <= 90
+    return ''
+  endif
+  let symbols = [
+        \ g:gitgutter_sign_added . ' ',
+        \ g:gitgutter_sign_modified . ' ',
+        \ g:gitgutter_sign_removed . ' '
+        \ ]
+  let hunks = GitGutterGetHunkSummary()
+  let ret = []
+  for i in [0, 1, 2]
+    if hunks[i] > 0
+      call add(ret, symbols[i] . hunks[i])
+    endif
+  endfor
+  return join(ret, ' ')
+endfunction
+
+function! LightlineFileformat()
+  return winwidth(0) > 70 ? &fileformat : ''
+endfunction
+
+function! LightlineFiletype()
+  return winwidth(0) > 70 ? (&filetype !=# '' ? &filetype : 'no ft') : ''
+endfunction
+
+function! LightlineFileencoding()
+  return winwidth(0) > 70 ? (&fenc !=# '' ? &fenc : &enc) : ''
+endfunction
+
+function! LightlineMode()
+  let fname = expand('%:t')
+  return fname == '__Tagbar__' ? 'Tagbar' :
+        \ fname == 'ControlP' ? 'CtrlP' :
+        \ fname =~ 'NERD_tree' ? 'NERDTree' :
+        \ winwidth(0) > 60 ? lightline#mode() : ''
+endfunction
+
+function! CtrlPMark()
+  if expand('%:t') =~ 'ControlP' && has_key(g:lightline, 'ctrlp_item')
+    call lightline#link('iR'[g:lightline.ctrlp_regex])
+    return lightline#concatenate([g:lightline.ctrlp_prev, g:lightline.ctrlp_item
+          \ , g:lightline.ctrlp_next], 0)
+  else
+    return ''
+  endif
+endfunction
+
+let g:ctrlp_status_func = {
+      \ 'main': 'CtrlPStatusFunc_1',
+      \ 'prog': 'CtrlPStatusFunc_2',
+      \ }
+
+function! CtrlPStatusFunc_1(focus, byfname, regex, prev, item, next, marked)
+  let g:lightline.ctrlp_regex = a:regex
+  let g:lightline.ctrlp_prev = a:prev
+  let g:lightline.ctrlp_item = a:item
+  let g:lightline.ctrlp_next = a:next
+  return lightline#statusline(0)
+endfunction
+
+function! CtrlPStatusFunc_2(str)
+  return lightline#statusline(0)
+endfunction
+
+let g:tagbar_status_func = 'TagbarStatusFunc'
+
+function! TagbarStatusFunc(current, sort, fname, ...) abort
+  let g:lightline.fname = a:fname
+  return lightline#statusline(0)
+endfunction
+
+let g:ale_statusline_format = ['✘ %d', '⚠ %d', '⬥ ok']
+let g:ale_open_list = 0
+
+" vim-gitgutter
+let g:gitgutter_sign_added = '✚'
+let g:gitgutter_sign_modified = '➜'
+let g:gitgutter_sign_removed = '✘'
+
+" lightline-buffer ui settings
+" replace these symbols with ascii characters if your environment does not support unicode
+let g:lightline_buffer_logo = ' '
+let g:lightline_buffer_readonly_icon = ''
+let g:lightline_buffer_modified_icon = '✭'
+let g:lightline_buffer_git_icon = ' '
+let g:lightline_buffer_ellipsis_icon = '..'
+let g:lightline_buffer_expand_left_icon = '◀ '
+let g:lightline_buffer_expand_right_icon = ' ▶'
+let g:lightline_buffer_active_buffer_left_icon = ''
+let g:lightline_buffer_active_buffer_right_icon = ''
+let g:lightline_buffer_separator_icon = ' '
+
+" lightline-buffer function settings
+let g:lightline_buffer_show_bufnr = 1
+let g:lightline_buffer_rotate = 0
+let g:lightline_buffer_fname_mod = ':t'
+let g:lightline_buffer_excludes = ['vimfiler']
+
+let g:lightline_buffer_maxflen = 30
+let g:lightline_buffer_maxfextlen = 3
+let g:lightline_buffer_minflen = 16
+let g:lightline_buffer_minfextlen = 3
+let g:lightline_buffer_reservelen = 20
 
 "*****************************************************************************
 "" Auto complete configuration
 "*****************************************************************************
-
 " neocomplete {
 
-  " Disable AutoComplPop.
-  let g:acp_enableAtStartup = 0
-  " Use neocomplete.
-  let g:neocomplete#enable_at_startup = 1
-  " Use smartcase.
-  let g:neocomplete#enable_smart_case = 1
-  " Set minimum syntax keyword length.
-  let g:neocomplete#enable_auto_delimiter = 1
-  "let g:neocomplete#enable_auto_select = 1
+" Disable AutoComplPop.
+let g:acp_enableAtStartup = 0
+" Use neocomplete.
+let g:neocomplete#enable_at_startup = 1
+" Use smartcase.
+let g:neocomplete#enable_smart_case = 1
+" Set minimum syntax keyword length.
+let g:neocomplete#enable_auto_delimiter = 1
+"let g:neocomplete#enable_auto_select = 1
 
-  " Define dictionary.
-  let g:neocomplete#sources#dictionary#dictionaries = {
-              \ 'default' : '',
-              \ 'vimshell' : $HOME.'/.vimshell_hist',
-              \ 'scheme' : $HOME.'/.gosh_completions'
-              \ }
+" Define dictionary.
+let g:neocomplete#sources#dictionary#dictionaries = {
+      \ 'default' : '',
+      \ 'vimshell' : $HOME.'/.vimshell_hist',
+      \ 'scheme' : $HOME.'/.gosh_completions'
+      \ }
 
-  " Define keyword.
-  if !exists('g:neocomplete#keyword_patterns')
-      let g:neocomplete#keyword_patterns = {}
-  endif
-  let g:neocomplete#keyword_patterns['default'] = '\h\w*'
+" Define keyword.
+if !exists('g:neocomplete#keyword_patterns')
+  let g:neocomplete#keyword_patterns = {}
+endif
+let g:neocomplete#keyword_patterns['default'] = '\h\w*'
 
-  " Plugin key-mappings.
-  inoremap <expr><C-g>     neocomplete#undo_completion()
-  inoremap <expr><C-l>     neocomplete#complete_common_string()
+" Plugin key-mappings.
+inoremap <expr><C-g>     neocomplete#undo_completion()
+inoremap <expr><C-l>     neocomplete#complete_common_string()
 
-  " Recommended key-mappings.
-  " <CR>: close popup and save indent.
-  inoremap <silent> <CR> <C-r>=<SID>my_cr_function()<CR>
-  function! s:my_cr_function()
-    "return (pumvisible() ? "\<C-y>" : "" ) . "\<CR>"
-    " For no inserting <CR> key.
-    return pumvisible() ? "\<C-y>" : "\<CR>"
-  endfunction
-  " <TAB>: completion.
-  inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
-  " <C-h>, <BS>: close popup and delete backword char.
-  inoremap <expr><C-h> neocomplete#smart_close_popup()."\<C-h>"
-  inoremap <expr><BS> neocomplete#smart_close_popup()."\<C-h>"
-  " Close popup by <Space>.
+" Recommended key-mappings.
+" <CR>: close popup and save indent.
+inoremap <silent> <CR> <C-r>=<SID>my_cr_function()<CR>
+function! s:my_cr_function()
+  "return (pumvisible() ? "\<C-y>" : "" ) . "\<CR>"
+  " For no inserting <CR> key.
+  return pumvisible() ? "\<C-y>" : "\<CR>"
+endfunction
+" <TAB>: completion.
+inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
+" <C-h>, <BS>: close popup and delete backword char.
+inoremap <expr><C-h> neocomplete#smart_close_popup()."\<C-h>"
+inoremap <expr><BS> neocomplete#smart_close_popup()."\<C-h>"
+" Close popup by <Space>.
 
-  " Enable omni completion.
-  autocmd filetype css setlocal omnifunc=csscomplete#completecss
-  autocmd filetype html,markdown setlocal omnifunc=htmlcomplete#completetags
-  autocmd filetype javascript setlocal omnifunc=javascriptcomplete#completejs
-  autocmd filetype python setlocal omnifunc=pythoncomplete#complete
-  autocmd fileType xml setlocal omnifunc=xmlcomplete#CompleteTags
+" Enable omni completion.
+augroup testgroup
+  au filetype css setlocal omnifunc=csscomplete#completecss
+  au filetype html,markdown setlocal omnifunc=htmlcomplete#completetags
+  au filetype javascript setlocal omnifunc=tern#Complete
+  au filetype python setlocal omnifunc=pythoncomplete#complete
+  au fileType xml setlocal omnifunc=xmlcomplete#CompleteTags
+  au FileType haskell setlocal omnifunc=necoghc#omnifunc
+augroup END
 
-  " Enable heavy omni completion.
-  if !exists('g:neocomplete#sources#omni#input_patterns')
-    let g:neocomplete#sources#omni#input_patterns = {}
-  endif
-  let g:neocomplete#sources#omni#input_patterns.php = '[^. \t]->\h\w*\|\h\w*::'
-  let g:neocomplete#sources#omni#input_patterns.c = '[^.[:digit:] *\t]\%(\.\|->\)'
-  let g:neocomplete#sources#omni#input_patterns.cpp = '[^.[:digit:] *\t]\%(\.\|->\)\|\h\w*::'
-  let g:neocomplete#sources#omni#input_patterns.perl = '\h\w*->\h\w*\|\h\w*::'
+" Enable heavy omni completion.
+if !exists('g:neocomplete#sources#omni#input_patterns')
+  let g:neocomplete#sources#omni#input_patterns = {}
+endif
+let g:neocomplete#sources#omni#input_patterns.php = '[^. \t]->\h\w*\|\h\w*::'
+let g:neocomplete#sources#omni#input_patterns.c = '[^.[:digit:] *\t]\%(\.\|->\)'
+let g:neocomplete#sources#omni#input_patterns.cpp = '[^.[:digit:] *\t]\%(\.\|->\)\|\h\w*::'
+let g:neocomplete#sources#omni#input_patterns.perl = '\h\w*->\h\w*\|\h\w*::'
 
-  imap <C-k> <Plug>(neosnippet_expand_or_jump)
-  smap <C-k> <Plug>(neosnippet_expand_or_jump)
+imap <C-k> <Plug>(neosnippet_expand_or_jump)
+smap <C-k> <Plug>(neosnippet_expand_or_jump)
 " }
 
 "*****************************************************************************
@@ -539,63 +671,56 @@ vmap <Leader>a<Bar> :Tabularize /<Bar><CR>
 "*****************************************************************************
 
 " javascript
-let g:used_javascript_libs = 'underscore,jquery,react,flux'
-autocmd BufReadPre *.js let b:javascript_lib_use_jquery = 1
-autocmd BufReadPre *.js let b:javascript_lib_use_underscore = 1
-autocmd BufReadPre *.js let b:javascript_lib_use_react = 1
-
 let g:javascript_enable_domhtmlcss = 1
 
 " Haskell
-autocmd BufWritePost *.hs GhcModCheckAndLintAsync
 
 " Disable haskell-vim omnifunc
 let g:haskellmode_completion_ghc = 0
-autocmd FileType haskell setlocal omnifunc=necoghc#omnifunc
 " Show detailed information (type) of symbols.
 let g:necoghc_enable_detailed_browse = 1
 
 "GHC-MOD
-map <silent> gy :GhcModTypeInsert<CR>
-map <silent> gs :GhcModSplitFunCase<CR>
-map <silent> gt :GhcModType<CR>
-map <silent> gc :GhcModTypeClear<CR>
+map <silent> <Space>y :GhcModTypeInsert<CR>
+map <silent> <Space>s :GhcModSplitFunCase<CR>
+map <silent> <Space>t :GhcModType<CR>
+map <silent> <Space>h :GhcModTypeClear<CR>
+map <silent> <Space>c :GhcModCheckAndLintAsync<CR>
 
 " Tags for tagbar
 if executable('lushtags')
-    let g:tagbar_type_haskell = {
+  let g:tagbar_type_haskell = {
         \ 'ctagsbin' : 'lushtags',
         \ 'ctagsargs' : '--ignore-parse-error --',
         \ 'kinds' : [
-            \ 'm:module:0',
-            \ 'e:exports:1',
-            \ 'i:imports:1',
-            \ 't:declarations:0',
-            \ 'd:declarations:1',
-            \ 'n:declarations:1',
-            \ 'f:functions:0',
-            \ 'c:constructors:0'
+        \ 'm:module:0',
+        \ 'e:exports:1',
+        \ 'i:imports:1',
+        \ 't:declarations:0',
+        \ 'd:declarations:1',
+        \ 'n:declarations:1',
+        \ 'f:functions:0',
+        \ 'c:constructors:0'
         \ ],
         \ 'sro' : '.',
         \ 'kind2scope' : {
-            \ 'd' : 'data',
-            \ 'n' : 'newtype',
-            \ 'c' : 'constructor',
-            \ 't' : 'type'
+        \ 'd' : 'data',
+        \ 'n' : 'newtype',
+        \ 'c' : 'constructor',
+        \ 't' : 'type'
         \ },
         \ 'scope2kind' : {
-            \ 'data' : 'd',
-            \ 'newtype' : 'n',
-            \ 'constructor' : 'c',
-            \ 'type' : 't'
+        \ 'data' : 'd',
+        \ 'newtype' : 'n',
+        \ 'constructor' : 'c',
+        \ 'type' : 't'
         \ }
-    \ }
+        \ }
 endif
 
 "*****************************************************************************
 "" Self Customise
 "*****************************************************************************
-
 
 ""Hard Mode
 nnoremap <up>    <nop>
@@ -606,4 +731,3 @@ inoremap <up>    <nop>
 inoremap <down>  <nop>
 inoremap <left>  <nop>
 inoremap <right> <nop>
-
