@@ -19,7 +19,6 @@ export LANG=en_US.UTF-8
 bindkey -v
 export KEYTIMEOUT=1
 source ~/.bash_profile
-
 # Preferred editor for local and remote sessions
 if [[ -n $SSH_CONNECTION ]]; then
     export EDITOR='vim'
