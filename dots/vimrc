@@ -44,15 +44,18 @@ Plug 'scrooloose/nerdcommenter'
 "" Fast search
 Plug 'ctrlpvim/ctrlp.vim'
 Plug 'mhinz/vim-grepper'
-
 Plug 'bronson/vim-trailing-whitespace'
+
 Plug 'majutsushi/tagbar'
 Plug 'Yggdroot/indentLine'
 Plug 'tpope/vim-surround'
 Plug 'w0rp/ale'
+"Auto add parathese
 Plug 'Raimondi/delimitMate'
 ""A collection of language packs for Vim
 Plug 'sheerun/vim-polyglot'
+""Auto format support
+Plug 'Chiel92/vim-autoformat'
 
 "" Vim-Session
 Plug 'xolox/vim-misc'
@@ -73,7 +76,7 @@ Plug 'Shougo/neocomplete.vim' | Plug 'Shougo/neosnippet' | Plug 'Shougo/neosnipp
 "*****************************************************************************
 
 Plug 'marijnh/tern_for_vim'
-"Plug 'Raimondi/delimitMate'
+Plug 'christoomey/vim-tmux-navigator'
 
 ""Auto-complete for haskell
 Plug 'eagletmt/ghcmod-vim' | Plug 'eagletmt/neco-ghc'
@@ -94,7 +97,6 @@ Plug 'othree/javascript-libraries-syntax.vim'
 
 call plug#end()
 "*****************************************************************************
-
 
 " Required:
 filetype plugin indent on
@@ -125,8 +127,9 @@ set softtabstop=2
 set shiftwidth=2
 set expandtab
 
-"" Map leader to ,
-let mapleader=','
+"" Map leader to space
+nnoremap <SPACE> <Nop>
+let mapleader="\<Space>"
 
 "" Enable hidden buffers
 set hidden
@@ -401,6 +404,9 @@ let g:session_directory = "~/.vim/session"
 let g:session_autoload = "no"
 let g:session_autosave = "no"
 let g:session_command_aliases = 1
+"Tmux
+" Write all buffers before navigating from Vim to tmux pane
+let g:tmux_navigator_save_on_switch = 2
 
 "" NERDTree configuration
 let g:NERDTreeChDirMode=2
@@ -668,11 +674,11 @@ let g:haskellmode_completion_ghc = 0
 let g:necoghc_enable_detailed_browse = 1
 
 "GHC-MOD
-map <silent> <Space>y :GhcModTypeInsert<CR>
-map <silent> <Space>s :GhcModSplitFunCase<CR>
-map <silent> <Space>t :GhcModType<CR>
-map <silent> <Space>h :GhcModTypeClear<CR>
-map <silent> <Space>c :GhcModCheckAndLintAsync<CR>
+"map <silent> <Space>y :GhcModTypeInsert<CR>
+"map <silent> <Space>s :GhcModSplitFunCase<CR>
+"map <silent> <Space>t :GhcModType<CR>
+"map <silent> <Space>h :GhcModTypeClear<CR>
+"map <silent> <Space>c :GhcModCheckAndLintAsync<CR>
 
 " Tags for tagbar
 if executable('lushtags')
