@@ -32,8 +32,12 @@ call plug#begin('~/.config/nvim/plugged')
 "" Plug install packages
 "*****************************************************************************
 
+"" Fast search
 "" nerd tree & make nerd tree more like IDE
 Plug 'Shougo/unite.vim' | Plug 'Shougo/vimfiler.vim'
+
+""Most Recently used
+Plug 'Shougo/neomru.vim'
 
 "" github plugin
 Plug 'tpope/vim-fugitive' | Plug 'airblade/vim-gitgutter'
@@ -41,45 +45,50 @@ Plug 'tpope/vim-fugitive' | Plug 'airblade/vim-gitgutter'
 "" comment
 Plug 'scrooloose/nerdcommenter'
 
-"" Fast search
-Plug 'ctrlpvim/ctrlp.vim'
-Plug 'mhinz/vim-grepper'
-
-"Plug 'bronson/vim-trailing-whitespace'
 Plug 'majutsushi/tagbar'
 Plug 'Yggdroot/indentLine'
 Plug 'tpope/vim-surround'
 Plug 'w0rp/ale'
 Plug 'Raimondi/delimitMate'
-""A collection of language packs for Vim
-Plug 'sheerun/vim-polyglot'
 
 "" Vim-Session
 Plug 'xolox/vim-misc'
 Plug 'xolox/vim-session'
 
-"" Color and theme
+"" Color theme and icons
 Plug 'rafi/awesome-vim-colorschemes'
 Plug 'itchyny/lightline.vim'
 Plug 'taohex/lightline-buffer'
+Plug 'ryanoasis/vim-devicons'
 
 Plug 'Shougo/vimproc.vim', {'do' : 'make'}
 
 ""Auto-complete
-Plug 'Shougo/neocomplete.vim' | Plug 'Shougo/neosnippet' | Plug 'Shougo/neosnippet-snippets'
+Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+Plug 'Shougo/neosnippet'
+Plug 'Shougo/neosnippet-snippets'
+Plug 'honza/vim-snippets'
 
+Plug 'Raimondi/delimitMate'
+Plug 'christoomey/vim-tmux-navigator'
+
+""better poly syntax
+Plug 'sheerun/vim-polyglot'
 "*****************************************************************************
 "" Custom bundles
 "*****************************************************************************
 
-Plug 'marijnh/tern_for_vim'
-"Plug 'Raimondi/delimitMate'
+""Auto-complete for Javascript
+Plug 'carlitux/deoplete-ternjs', {'do':['npm install -g tern'], 'for': ['javascript', 'javascript.jsx'] }
+Plug 'othree/jspc.vim', { 'for': ['javascript', 'javascript.jsx'] }
 
 ""Auto-complete for haskell
 Plug 'eagletmt/ghcmod-vim' | Plug 'eagletmt/neco-ghc'
 
 Plug 'junegunn/vim-easy-align'
 
+""Auto-complete for Javascript
+Plug 'Shougo/vimshell.vim'
 "REPL
 Plug 'metakirby5/codi.vim'
 
@@ -89,9 +98,5 @@ Plug 'mattn/emmet-vim'
 "" Color Bundle for css3
 Plug 'gorodinskiy/vim-coloresque'
 
-"" Javascript anguler react ..
-Plug 'othree/javascript-libraries-syntax.vim'
-
 call plug#end()
 "*****************************************************************************
-

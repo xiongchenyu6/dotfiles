@@ -49,8 +49,7 @@ git remote add dritter https://github.com/dritter/powerlevel9k.git
 git fetch dritter
 git checkout -t dritter/async_all_the_segments
 
-wget https://github.com/powerline/powerline/raw/develop/font/PowerlineSymbols.otf 
-mv PowerlineSymbols.otf ~/.fonts/
-fc-cache -vf ~/.fonts/
+brew tap caskroom/fonts
+brew cask install font-hack-nerd-font
 
 brew services start mariadb
