@@ -50,7 +50,7 @@ Plug 'majutsushi/tagbar'
 Plug 'Yggdroot/indentLine'
 Plug 'tpope/vim-surround'
 Plug 'w0rp/ale'
-
+Plug 'Raimondi/delimitMate'
 ""A collection of language packs for Vim
 Plug 'sheerun/vim-polyglot'
 
