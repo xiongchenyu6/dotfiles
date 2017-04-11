@@ -51,8 +51,6 @@ set spell
 set foldmethod=syntax
 set foldlevelstart=99
 
-set tags=./.vimtags,vimtags;
-
 " For regular expressions turn magic on
 set magic
 
@@ -403,12 +401,6 @@ endfunction
 "*****************************************************************************
 "" Autocmd Rules
 "*****************************************************************************
-"" The PC is fast enough, do syntax highlight syncing from start unless 200 lines
-augroup vimrc-sync-fromstart
-  autocmd!
-  autocmd BufEnter * :syntax sync maxlines=200
-augroup END
-
 "" Remember cursor position
 augroup vimrc-remember-cursor-position
   autocmd!
@@ -454,9 +446,7 @@ map <Leader>tt :TagbarToggle<CR>
 "let g:tagbar_autofocus = 1
 
 "" Copy/Paste/Cut
-if has('unnamedplus')
-  set clipboard=unnamed,unnamedplus
-endif
+set clipboard=unnamed
 
 "" Buffer nav
 noremap <leader>z :bp<CR>
@@ -489,9 +479,6 @@ autocmd InsertLeave * :set relativenumber
 " 调整缩进后自动选中，方便再次操作
 vnoremap < <gv
 vnoremap > >gv
-
-" 复制选中区到系统剪切板中
-vnoremap <leader>y "+y
 
 "syntastic
 

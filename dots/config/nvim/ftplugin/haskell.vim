@@ -11,3 +11,12 @@ map <silent> ,t :GhcModType<CR>
 map <silent> ,c :GhcModTypeClear<CR>
 map <silent> ,cc :GhcModCheckAndLintAsync<CR>
 
+let g:easytags_languages = {
+\   'haskell': {
+\       'cmd': 'lushtags',
+\       'args': [],
+\       'fileoutput_opt': '-f',
+\       'stdout_opt': '-f-',
+\       'recurse_flag': '-R'
+\   }
+\}

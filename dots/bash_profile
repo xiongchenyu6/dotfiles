@@ -7,8 +7,6 @@ else [[ "$OSTYPE" == "darwin"* ]];
     export PATH=/usr/local/sbin:$PATH
     export JAVA_HOME="$(/usr/libexec/java_home -v 1.8)"
 fi
-# Compilation flags
-export ARCHFLAGS="-arch x86_64"
 
 # ssh
 export SSH_KEY_PATH="~/.ssh/rsa_id"

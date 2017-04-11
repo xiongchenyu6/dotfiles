@@ -45,7 +45,10 @@ Plug 'tpope/vim-fugitive' | Plug 'airblade/vim-gitgutter'
 "" comment
 Plug 'scrooloose/nerdcommenter'
 
+"" Tags 
 Plug 'majutsushi/tagbar'
+Plug 'xolox/vim-easytags'
+
 Plug 'Yggdroot/indentLine'
 Plug 'tpope/vim-surround'
 Plug 'w0rp/ale'
@@ -70,7 +73,10 @@ Plug 'Shougo/neosnippet-snippets'
 Plug 'honza/vim-snippets'
 
 Plug 'Raimondi/delimitMate'
+
+""Tmux compatibility
 Plug 'christoomey/vim-tmux-navigator'
+Plug 'roxma/vim-tmux-clipboard'
 
 ""better poly syntax
 Plug 'sheerun/vim-polyglot'
