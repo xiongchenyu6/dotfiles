@@ -1,9 +1,17 @@
-scriptencoding utf-8
-source ~/.config/nvim/plugins.vim
+"" Freeman Nvim Settings for back up
+"  __ _       _
+" / _/__   __(_)_ __ ___
+"| |_|\ \ / /| | '_ ` _ \
+"|  _| \ V / | | | | | | |
+"|_| |  \_/  |_|_| |_| |_|
+
 
 "*****************************************************************************
 "" Basic Setup
 "*****************************************************************************"
+
+scriptencoding utf-8
+source ~/.config/nvim/plugins.vim
 
 ""set boolean
 set bomb
@@ -85,8 +93,8 @@ colorscheme solarized8_dark_high
 let g:lightline = {
       \ 'colorscheme': 'solarized',
       \ 'active': {
-      \   'left': [ [ 'mode', 'paste' ], [ 'readonly', 'fugitive', 'gitgutter', 'ale', 'filename' ], ['ctrlpmark'] ],
-      \   'right': [ [ 'lineinfo' ], ['percent'], [ 'filetype', 'spell', 'fileformat', 'fileencoding' ] ]
+      \   'left': [ [ 'mode', 'paste' ], [ 'readonly', 'fugitive', 'gitgutter', 'ale', 'filename' ] ],
+      \   'right': [ [ 'lineinfo' ], ['percent'], [ 'filetype', 'fileformat', 'fileencoding' ] ]
       \ },
       \ 'tabline': {
       \ 'left': [ [ 'bufferinfo' ], [ 'bufferbefore', 'buffercurrent', 'bufferafter' ], ],
@@ -107,7 +115,6 @@ let g:lightline = {
       \   'filetype': 'LightlineFiletype',
       \   'fileencoding': 'LightlineFileencoding',
       \   'mode': 'LightlineMode',
-      \   'ctrlpmark': 'CtrlPMark',
       \ 'bufferbefore': 'lightline#buffer#bufferbefore',
       \ 'bufferafter': 'lightline#buffer#bufferafter',
       \ 'bufferinfo': 'lightline#buffer#bufferinfo',
@@ -139,13 +146,14 @@ function! LightlineFilename()
         \ &ft == 'unite' ? unite#get_status_string() :
         \ &ft == 'vimshell' ? vimshell#get_status_string() :
         \ ('' != LightlineReadonly() ? LightlineReadonly() . ' ' : '') .
-        \ ('' != fname ? fname : '[No Name]') .
         \ ('' != LightlineModified() ? ' ' . LightlineModified() : '')
 endfunction
 
-
 function! LightlineAle()
-  return ALEGetStatusLine()
+  let fname = expand('%:t')
+  return &ft == 'vimfiler' ? '' :
+        \ fname == '__Tagbar__' ? '' :
+        \ ALEGetStatusLine()
 endfunction
 
 function! LightlineFugitive()
@@ -199,33 +207,6 @@ function! LightlineMode()
         \ fname == 'ControlP' ? 'CtrlP' :
         \ fname =~ 'NERD_tree' ? 'NERDTree' :
         \ winwidth(0) > 60 ? lightline#mode() : ''
-endfunction
-
-function! CtrlPMark()
-  if expand('%:t') =~ 'ControlP' && has_key(g:lightline, 'ctrlp_item')
-    call lightline#link('iR'[g:lightline.ctrlp_regex])
-    return lightline#concatenate([g:lightline.ctrlp_prev, g:lightline.ctrlp_item
-          \ , g:lightline.ctrlp_next], 0)
-  else
-    return ''
-  endif
-endfunction
-
-let g:ctrlp_status_func = {
-      \ 'main': 'CtrlPStatusFunc_1',
-      \ 'prog': 'CtrlPStatusFunc_2',
-      \ }
-
-function! CtrlPStatusFunc_1(focus, byfname, regex, prev, item, next, marked)
-  let g:lightline.ctrlp_regex = a:regex
-  let g:lightline.ctrlp_prev = a:prev
-  let g:lightline.ctrlp_item = a:item
-  let g:lightline.ctrlp_next = a:next
-  return lightline#statusline(0)
-endfunction
-
-function! CtrlPStatusFunc_2(str)
-  return lightline#statusline(0)
 endfunction
 
 let g:tagbar_status_func = 'TagbarStatusFunc'
@@ -342,9 +323,6 @@ endfunction
 
 autocmd FileType unite call s:unite_settings()
 
-" adding the column to vimfiler 
-let g:webdevicons_enable_vimfiler = 1
-
 let g:vimfiler_enable_auto_cd = 1
 let g:vimfiler_enable_clipboard = 0
 let g:vimfiler_as_default_explorer = 1
@@ -365,13 +343,7 @@ let g:vimfiler_readonly_file_icon = '○'
 autocmd FileType vimfiler setlocal nonumber
 autocmd FileType vimfiler setlocal norelativenumber
 autocmd FileType vimfiler nunmap <buffer> <C-l>
-autocmd FileType vimfiler nunmap <buffer> <S-m>
 autocmd FileType vimfiler nmap <buffer> r   <Plug>(vimfiler_redraw_screen)
-autocmd FileType vimfiler nmap <buffer> u   <Plug>(vimfiler_switch_to_parent_directory)
-autocmd FileType vimfiler nmap <buffer> <Leader>n           <Plug>(vimfiler_new_file)
-autocmd FileType vimfiler nmap <buffer> <silent><Leader>r   <Plug>(vimfiler_rename_file)
-autocmd FileType vimfiler nmap <buffer> <silent><Leader>m   <Plug>(vimfiler_move_file)
-autocmd FileType vimfiler nmap <buffer> <S-m-k> <Plug>(vimfiler_make_directory)
 
 nmap <silent><buffer><expr> <Cr> vimfiler#smart_cursor_map(
       \ "\<Plug>(vimfiler_expand_tree)",
@@ -381,8 +353,8 @@ nnoremap <C-e> :VimFilerExplorer -parent -toggle -status -split -winwidth=30 -no
 
 " session management
 let g:session_directory = "~/.config/nvim/session"
-let g:session_autoload = "no"
-let g:session_autosave = "no"
+let g:session_autoload = "yes"
+let g:session_autosave = "yes"
 let g:session_command_aliases = 1
 
 "Tmux
@@ -425,6 +397,8 @@ set autoread
 "*****************************************************************************
 "" Mappings
 "*****************************************************************************
+nnoremap <expr> k (v:count == 0 ? 'gk' : 'k')
+nnoremap <expr> j (v:count == 0 ? 'gj' : 'j')
 
 "" Split
 noremap <Leader>h :<C-u>split<CR>
@@ -504,39 +478,30 @@ cmap w!! w !sudo tee % >/dev/null
 "*****************************************************************************
 "" Auto complete configuration
 "*****************************************************************************
-call deoplete#enable()
+let g:deoplete#enable_at_startup = 1
+let g:deoplete#complete_method="omnifunc"
 
-autocmd InsertLeave,CompleteDone * if pumvisible() == 0 | pclose | endif
+let g:deoplete#omni_patterns = {}
 
-" deoplete tab-complete
-inoremap <expr><tab> pumvisible() ? "\<c-n>" : "\<tab>"
-" tern
-autocmd FileType javascript nnoremap <silent> <buffer> gb :TernDef<CR>
+augroup omnifuncs
+  autocmd!
+  autocmd FileType css setlocal omnifunc=csscomplete#CompleteCSS
+ autocmd FileType html,markdown setlocal omnifunc=htmlcomplete#CompleteTags
+  autocmd FileType python setlocal omnifunc=pythoncomplete#Complete
+  autocmd FileType xml setlocal omnifunc=xmlcomplete#CompleteTags
+augroup end
 
-augroup testgroup
-  au filetype css setlocal omnifunc=csscomplete#completecss
-  au filetype html,markdown setlocal omnifunc=htmlcomplete#completetags
-  au filetype python setlocal omnifunc=pythoncomplete#complete
-  au fileType xml setlocal omnifunc=xmlcomplete#CompleteTags
-augroup END
+autocmd FileType javascript let g:SuperTabDefaultCompletionType = "<c-x><c-o>"
+let g:UltiSnipsExpandTrigger="<C-j>"
+inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
 
-let g:tern_request_timeout = 1
-let g:deoplete#omni#functions = {}
-
-" Snipppets -----------------------------------------------------------------
-" Enable snipMate compatibility feature.
-let g:neosnippet#enable_snipmate_compatibility = 1
-let g:neosnippet#expand_word_boundary = 1
-
-" Plugin key-mappings.
-" Note: It must be "imap" and "smap".  It uses <Plug> mappings.
-imap <C-k>     <Plug>(neosnippet_expand_or_jump)
-smap <C-k>     <Plug>(neosnippet_expand_or_jump)
-xmap <C-k>     <Plug>(neosnippet_expand_target)
+" close the preview window when you're not using it
+let g:SuperTabClosePreviewOnPopupClose = 1
 
 "*****************************************************************************
 "" Self Customise
 "*****************************************************************************
+let g:WebDevIconsOS = 'Darwin'
 
 ""Hard Mode
 nnoremap <up>    <nop>

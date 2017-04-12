@@ -15,6 +15,7 @@ export PATH=~/.local/bin/:$PATH
 export PATH=~/.stack/programs/x86_64-osx/ghc-8.0.2/bin:$PATH
 
 alias aws='ssh -i "Freeman.pem" ubuntu@52.220.46.164'
+alias awss='ssh -i "Freeman.pem" ubuntu@52.220.46.164 -t tmux a'
 alias vim='nvim'
 
 if [[ "$OSTYPE" == "linux-gnu" ]]; then

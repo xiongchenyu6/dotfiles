@@ -4,9 +4,10 @@ export TERM="xterm-256color"
 
 POWERLEVEL9K_MODE='nerdfont-fontconfig'
 POWERLEVEL9K_VCS_SHOW_SUBMODULE_DIRTY=false
+
 ZSH_THEME="powerlevel9k/powerlevel9k"
 POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(disk_usage dir dir_writable vcs)
-POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(vi_mode status root_indicator ram_joined background_jobs time)
+POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(vi_mode status root_indicator background_jobs ram)
 
 plugins=(vi-mode react-native tmux git zsh-autosuggestions zsh-syntax-highlighting z)
 
