@@ -206,6 +206,7 @@ function! LightlineMode()
   return fname == '__Tagbar__' ? 'Tagbar' :
         \ fname == 'ControlP' ? 'CtrlP' :
         \ fname =~ 'NERD_tree' ? 'NERDTree' :
+        \ fname == 'denite' ? denite#get_status_mode() :
         \ winwidth(0) > 60 ? lightline#mode() : ''
 endfunction
 
@@ -252,32 +253,69 @@ let g:lightline_buffer_reservelen = 20
 "*****************************************************************************
 "" Abbreviations
 "*****************************************************************************
-let g:unite_ignore_source_files = ['node_modules/', '.meteor/']
 
-call unite#custom#source('file_rec,file_rec/async', 'ignore_pattern', '\.meteor/')
+" Denite --------------------------------------------------------------------{{{
+"
+call denite#custom#option('default', 'prompt', '❯')
+"  \     'rg', '--glob', '!.git', ''
 
-let g:unite_prompt = "➤ "
-let g:unite_winheight = 20
-let g:unite_split_rule = 'botright'
-let g:unite_enable_ignore_case = 1
-let g:unite_enable_smart_case = 1
-let g:unite_enable_start_insert = 1
+call denite#custom#source(
+      \ 'file_rec', 'vars', {
+      \   'command': [
+      \      'ag', '--follow','--nogroup','--hidden', '-g', '', '--ignore', '.git', '--ignore', '*.png'
+      \   ] })
 
-let g:unite_source_file_mru_limit = 200
-let g:unite_source_history_yank_enable = 1
-let g:unite_source_rec_max_cache_files=5000
+	" Ag command on grep source
+	call denite#custom#var('grep', 'command', ['ag'])
+	call denite#custom#var('grep', 'default_opts',
+			\ ['-i', '--vimgrep'])
+	call denite#custom#var('grep', 'recursive_opts', [])
+	call denite#custom#var('grep', 'pattern_opt', [])
+	call denite#custom#var('grep', 'separator', ['--'])
+	call denite#custom#var('grep', 'final_opts', [])
 
-let g:unite_source_grep_command = 'ag'
-let g:unite_source_grep_default_opts = '--line-numbers --nocolor --nogroup --hidden --ignore ' .
-      \  '''.hg'' --ignore ''.svn'' --ignore ''.git'' --ignore ''.bzr'''
-let g:unite_source_grep_recursive_opt = ''
+" call denite#custom#source('file_rec', 'sorters', ['sorter_sublime'])
+" call denite#custom#option('default', 'statusline', 0)
+call denite#custom#option('default', 'highlight-matched-char', '')
+call denite#custom#option('default', 'highlight-matched-range', '')
+hi deniteMatched guibg=None
+hi deniteMatchedChar guibg=None
 
-" Git from unite_source_grep_recursive_optnite...ERMERGERD -----------------------------------------------{{{
-let g:unite_source_menu_menus = get(g:,'unite_source_menu_menus',{})
-let g:unite_source_menu_menus.git = {
+nnoremap <silent> <c-p> :Denite -auto-resize file_rec<CR>
+nnoremap <silent> <leader>b :Denite -auto-resize buffer<CR>
+nnoremap <silent> <Leader>u : Denite line -prompt-direction="top"<CR>
+nnoremap <Leader>r : Denite -auto-resize file_mru<CR>
+nnoremap <Leader>f : Denite -no-empty grep:.<cr>
+nnoremap <Leader>g : Denite -auto-resize -silent -start-insert menu:git<CR>
+
+let s:menus = {}
+
+call denite#custom#map(
+      \ 'insert',
+      \ '<C-n>',
+      \ '<denite:move_to_next_line>',
+      \ 'noremap'
+      \)
+call denite#custom#map(
+      \ 'insert',
+      \ '<C-p>',
+      \ '<denite:move_to_previous_line>',
+      \ 'noremap'
+      \)
+
+call denite#custom#filter('matcher_ignore_globs', 'ignore_globs',
+      \ [ '.git/', '.meteor/', '.ropeproject/', '__pycache__/',
+      \   'venv/', 'images/', '*.min.*', 'img/', 'fonts/'])
+
+call denite#custom#var('menu', 'menus', s:menus)
+
+"}}}
+
+" Git from denite...ERMERGERD -----------------------------------------------{{{
+let s:menus.git = {
       \ 'description' : 'Fugitive interface',
       \}
-let g:unite_source_menu_menus.git.command_candidates = [
+let s:menus.git.command_candidates = [
       \[' git status', 'Gstatus'],
       \[' git diff', 'Gvdiff'],
       \[' git commit', 'Gcommit'],
@@ -308,59 +346,28 @@ let g:unite_source_menu_menus.git.command_candidates = [
       \] " Append ' --' after log to get commit info commit buffers
 "}}}
 
-nnoremap <C-p> : Unite file_rec/async<CR>
-nnoremap <Leader>b : Unite buffer<CR>
-nnoremap <Leader>r : Unite file_mru<CR>
-nnoremap <Leader>f : Unite grep:.<cr>
-nnoremap <Leader>u : Unite line -prompt-direction="top"<CR>
-nnoremap <Leader>g : Unite -silent -start-insert menu:git<CR>
+"" NERDTree configuration
+let g:NERDTreeChDirMode=2
+let g:NERDTreeIgnore=['\.rbc$', '\~$', '\.pyc$', '\.db$', '\.sqlite$', '__pycache__']
+let g:NERDTreeSortOrder=['^__\.py$', '\/$', '*', '\.swp$', '\.bak$', '\~$']
+let g:NERDTreeShowBookmarks=1
+let g:nerdtree_tabs_focus_on_files=1
+let g:NERDTreeMapOpenInTabSilent = '<RightMouse>'
+let NERDTreeKeepTreeInNewTab=1
 
-function! s:unite_settings()
-  nmap <buffer> <esc> <plug>(unite_exit)
-  imap <buffer> <esc> <plug>(unite_exit)
-  imap <silent><buffer> <C-k> <C-p>
-  imap <silent><buffer> <C-j> <C-n>
-  imap <silent><buffer> <C-d> <CR>
-  call unite#filters#matcher_default#use(['matcher_fuzzy'])
-  call unite#filters#sorter_default#use(['sorter_rank'])
-  call unite#custom#source('file_rec,file_rec/async', 'ignore_pattern', '(\.meta$|\.tmp)')
-endfunction
-
-autocmd FileType unite call s:unite_settings()
-
-let g:vimfiler_enable_auto_cd = 1
-let g:vimfiler_enable_clipboard = 0
-let g:vimfiler_as_default_explorer = 1
-let g:vimfiler_safe_mode_by_default = 0
-let g:vimfiler_ignore_pattern = '\%(.DS_Store\|.pyc\|.git\w*\|.sw\w*\|.hg\|.svn\)$'
-let g:vimfiler_force_overwrite_statusline = 0
-
-let g:vimfiler_tree_leaf_icon = ''
-let g:vimfiler_tree_opened_icon = '▾'
-let g:vimfiler_tree_closed_icon = '▸'
-let g:vimfiler_default_columns = ''
-let g:vimfiler_explorer_columns = ''
-let g:vimfiler_tree_indentation = 3
-let g:vimfiler_file_icon = '·'
-let g:vimfiler_marked_file_icon = '✩'
-let g:vimfiler_readonly_file_icon = '○'
-
-autocmd FileType vimfiler setlocal nonumber
-autocmd FileType vimfiler setlocal norelativenumber
-autocmd FileType vimfiler nunmap <buffer> <C-l>
-autocmd FileType vimfiler nmap <buffer> r   <Plug>(vimfiler_redraw_screen)
-
-nmap <silent><buffer><expr> <Cr> vimfiler#smart_cursor_map(
-      \ "\<Plug>(vimfiler_expand_tree)",
-      \ "\<Plug>(vimfiler_edit_file)")
-
-nnoremap <C-e> :VimFilerExplorer -parent -toggle -status -split -winwidth=30 -no-quit<CR>
+map <C-e> <plug>NERDTreeTabsToggle<CR>
+nmap <silent> <leader>nt :NERDTreeFind<CR>
 
 " session management
 let g:session_directory = "~/.config/nvim/session"
 let g:session_autoload = "yes"
 let g:session_autosave = "yes"
 let g:session_command_aliases = 1
+
+"" Tabs
+nnoremap <Tab> gt
+nnoremap <S-Tab> gT
+nnoremap <silent> <S-t> :tabnew<CR>
 
 "Tmux
 " Write all buffers before navigating from Vim to tmux pane
@@ -490,28 +497,28 @@ let g:deoplete#enable_at_startup = 1
 augroup omnifuncs
   autocmd!
   autocmd FileType css setlocal omnifunc=csscomplete#CompleteCSS
- autocmd FileType html,markdown setlocal omnifunc=htmlcomplete#CompleteTags
+  autocmd FileType html,markdown setlocal omnifunc=htmlcomplete#CompleteTags
   autocmd FileType python setlocal omnifunc=pythoncomplete#Complete
   autocmd FileType xml setlocal omnifunc=xmlcomplete#CompleteTags
 augroup end
 
-let g:UltiSnipsExpandTrigger="<C-j>"
-inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
+  let g:UltiSnipsExpandTrigger="<C-j>"
+  inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
 
-" close the preview window when you're not using it
-let g:SuperTabClosePreviewOnPopupClose = 1
+  " close the preview window when you're not using it
+  let g:SuperTabClosePreviewOnPopupClose = 1
 
-"*****************************************************************************
-"" Self Customise
-"*****************************************************************************
-let g:WebDevIconsOS = 'Darwin'
+  "*****************************************************************************
+  "" Self Customise
+  "*****************************************************************************
+  let g:WebDevIconsOS = 'Darwin'
 
-""Hard Mode
-nnoremap <up>    <nop>
-nnoremap <down>  <nop>
-nnoremap <left>  <nop>
-nnoremap <right> <nop>
-inoremap <up>    <nop>
-inoremap <down>  <nop>
-inoremap <left>  <nop>
-inoremap <right> <nop>
+  ""Hard Mode
+  nnoremap <up>    <nop>
+  nnoremap <down>  <nop>
+  nnoremap <left>  <nop>
+  nnoremap <right> <nop>
+  inoremap <up>    <nop>
+  inoremap <down>  <nop>
+  inoremap <left>  <nop>
+  inoremap <right> <nop>

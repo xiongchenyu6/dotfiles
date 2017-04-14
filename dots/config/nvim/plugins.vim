@@ -23,13 +23,12 @@ call plug#begin('~/.config/nvim/plugged')
 "*****************************************************************************
 "" Plug install packages
 "*****************************************************************************
+""Nerd Tree
+Plug 'scrooloose/nerdtree' | Plug 'jistr/vim-nerdtree-tabs' | Plug 'Xuyuanp/nerdtree-git-plugin'
 
 "" Fast search and Most Recently used
-Plug 'Shougo/unite.vim' 
+Plug 'Shougo/denite.nvim', { 'do': ':UpdateRemotePlugins' }
 Plug 'Shougo/neomru.vim'
-
-"" File explore
-Plug 'Shougo/vimfiler.vim'
 
 "" github plugin
 Plug 'tpope/vim-fugitive' | Plug 'airblade/vim-gitgutter'
