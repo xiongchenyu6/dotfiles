@@ -252,6 +252,9 @@ let g:lightline_buffer_reservelen = 20
 "*****************************************************************************
 "" Abbreviations
 "*****************************************************************************
+let g:unite_ignore_source_files = ['node_modules/', '.meteor/']
+
+call unite#custom#source('file_rec,file_rec/async', 'ignore_pattern', '\.meteor/')
 
 let g:unite_prompt = "➤ "
 let g:unite_winheight = 20
@@ -305,7 +308,9 @@ let g:unite_source_menu_menus.git.command_candidates = [
       \] " Append ' --' after log to get commit info commit buffers
 "}}}
 
-nnoremap <C-p> : Unite buffer file_mru file/async file_rec/async<CR>
+nnoremap <C-p> : Unite file_rec/async<CR>
+nnoremap <Leader>b : Unite buffer<CR>
+nnoremap <Leader>r : Unite file_mru<CR>
 nnoremap <Leader>f : Unite grep:.<cr>
 nnoremap <Leader>u : Unite line -prompt-direction="top"<CR>
 nnoremap <Leader>g : Unite -silent -start-insert menu:git<CR>
@@ -422,6 +427,8 @@ map <Leader>tt :TagbarToggle<CR>
 "" Copy/Paste/Cut
 set clipboard=unnamed
 
+set pastetoggle=<F2>
+
 "" Buffer nav
 noremap <leader>z :bp<CR>
 noremap <leader>q :bp<CR>
@@ -479,9 +486,6 @@ cmap w!! w !sudo tee % >/dev/null
 "" Auto complete configuration
 "*****************************************************************************
 let g:deoplete#enable_at_startup = 1
-let g:deoplete#complete_method="omnifunc"
-
-let g:deoplete#omni_patterns = {}
 
 augroup omnifuncs
   autocmd!
@@ -491,7 +495,6 @@ augroup omnifuncs
   autocmd FileType xml setlocal omnifunc=xmlcomplete#CompleteTags
 augroup end
 
-autocmd FileType javascript let g:SuperTabDefaultCompletionType = "<c-x><c-o>"
 let g:UltiSnipsExpandTrigger="<C-j>"
 inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
 

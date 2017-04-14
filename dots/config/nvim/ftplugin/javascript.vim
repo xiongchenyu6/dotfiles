@@ -7,7 +7,6 @@ let g:tern#filetypes = [
                 \ 'jsx',
                 \ 'javascript.jsx',
                 \ 'vue',
-                \ '...'
                 \ ]
 
 let g:deoplete#omni#functions = get(g:, 'deoplete#omni#functions', {})
@@ -16,3 +15,4 @@ let g:deoplete#omni#functions.javascript = [
 		  \ 'tern#Complete',
 		  \ 'jspc#omni'
       \]
+

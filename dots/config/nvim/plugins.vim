@@ -73,7 +73,6 @@ Plug 'roxma/vim-tmux-clipboard'
 
 ""Auto-complete
 Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
-Plug 'ervandew/supertab'
 Plug 'SirVer/ultisnips'
 Plug 'honza/vim-snippets'
 
