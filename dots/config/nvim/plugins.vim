@@ -31,7 +31,7 @@ Plug 'Shougo/denite.nvim', { 'do': ':UpdateRemotePlugins' }
 Plug 'Shougo/neomru.vim'
 
 "" github plugin
-Plug 'tpope/vim-fugitive' | Plug 'airblade/vim-gitgutter'
+Plug 'tpope/vim-fugitive' | Plug 'airblade/vim-gitgutter' | Plug 'tpope/vim-rhubarb'
 
 "" comment
 Plug 'scrooloose/nerdcommenter'
