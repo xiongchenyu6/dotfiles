@@ -13,8 +13,23 @@
 scriptencoding utf-8
 source ~/.config/nvim/plugins.vim
 
-""set boolean
-set bomb
+" Identify platform {
+let g:MAC = has('macunix')
+let g:LINUX = has('unix') && !has('macunix') && !has('win32unix')
+let g:WINDOWS = has('win32') || has('win64')
+" }
+
+" Windows Compatible {
+" On Windows, also use '.vim' instead of 'vimfiles'; this makes synchronization
+" across (heterogeneous) systems easier.
+if g:WINDOWS
+    set runtimepath=$HOME/.vim,$VIM/vimfiles,$VIMRUNTIME,$VIM/vimfiles/after,$HOME/.vim/after
+endif
+" }
+
+let g:vim_dir = $HOME.'/.config/nvim'
+
+set runtimepath+=$HOME/.config/nvim
 
 "" Tabs. May be overriten by autocmd rules
 set tabstop=2
@@ -68,21 +83,11 @@ set relativenumber number
 "Save on buffer switch
 set autowrite
 
-"" Status bar
-set laststatus=2
-
+""Change cursor when change to insert mode
+let $NVIM_TUI_ENABLE_CURSOR_SHAPE = 1
 "" Use modeline overrides
 set modeline
 set modelines=10
-
-set title
-set titleold="Terminal"
-set titlestring=%F
-
-set statusline=%F%m%r%h%w%=(%{&ff}/%Y)\ (line\ %l\/%L,\ col\ %c)\
-
-let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
-let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
 
 set termguicolors
 colorscheme solarized8_dark_high
@@ -91,130 +96,130 @@ colorscheme solarized8_dark_high
 "" Light Line Settings
 "*****************************************************************************
 let g:lightline = {
-      \ 'colorscheme': 'solarized',
-      \ 'active': {
-      \   'left': [ [ 'mode', 'paste' ], [ 'readonly', 'fugitive', 'gitgutter', 'ale', 'filename' ] ],
-      \   'right': [ [ 'lineinfo' ], ['percent'], [ 'filetype', 'fileformat', 'fileencoding' ] ]
-      \ },
-      \ 'tabline': {
-      \ 'left': [ [ 'bufferinfo' ], [ 'bufferbefore', 'buffercurrent', 'bufferafter' ], ],
-      \ 'right': [ [ 'close' ], ],
-      \ },
-      \ 'component': {
-      \   'spell': '%{&spell?&spelllang:"no spell"}',
-      \ },
-      \ 'component_visible_condition': {
-      \   'readonly': '(&filetype!="help"&& &readonly)',
-      \ },
-      \ 'component_function': {
-      \   'fugitive': 'LightlineFugitive',
-      \   'gitgutter': 'LightlineGutter',
-      \   'ale' : 'LightlineAle',
-      \   'filename': 'LightlineFilename',
-      \   'fileformat': 'LightlineFileformat',
-      \   'filetype': 'LightlineFiletype',
-      \   'fileencoding': 'LightlineFileencoding',
-      \   'mode': 'LightlineMode',
-      \ 'bufferbefore': 'lightline#buffer#bufferbefore',
-      \ 'bufferafter': 'lightline#buffer#bufferafter',
-      \ 'bufferinfo': 'lightline#buffer#bufferinfo',
-      \ },
-      \ 'component_expand': {
-      \ 'buffercurrent': 'lightline#buffer#buffercurrent2',
-      \ },
-      \ 'component_type': {
-      \ 'buffercurrent': 'tabsel',
-      \ },
-      \ 'separator': { 'left': "\ue0b0", 'right': "\ue0b2" },
-      \ 'subseparator': { 'left': "\ue0b1", 'right': "\ue0b3" }
-      \ }
+			\ 'colorscheme': 'solarized',
+			\ 'active': {
+			\   'left': [ [ 'mode', 'paste' ], [ 'readonly', 'fugitive', 'gitgutter', 'ale', 'filename' ] ],
+			\   'right': [ [ 'lineinfo' ], ['percent'], [ 'filetype', 'fileformat', 'fileencoding' ] ]
+			\ },
+			\ 'tabline': {
+			\ 'left': [ [ 'bufferinfo' ], [ 'bufferbefore', 'buffercurrent', 'bufferafter' ], ],
+			\ 'right': [ [ 'close' ], ],
+			\ },
+			\ 'component': {
+			\   'spell': '%{&spell?&spelllang:"no spell"}',
+			\ },
+			\ 'component_visible_condition': {
+			\   'readonly': '(&filetype!="help"&& &readonly)',
+			\ },
+			\ 'component_function': {
+			\   'fugitive': 'LightlineFugitive',
+			\   'gitgutter': 'LightlineGutter',
+			\   'ale' : 'LightlineAle',
+			\   'filename': 'LightlineFilename',
+			\   'fileformat': 'LightlineFileformat',
+			\   'filetype': 'LightlineFiletype',
+			\   'fileencoding': 'LightlineFileencoding',
+			\   'mode': 'LightlineMode',
+			\ 'bufferbefore': 'lightline#buffer#bufferbefore',
+			\ 'bufferafter': 'lightline#buffer#bufferafter',
+			\ 'bufferinfo': 'lightline#buffer#bufferinfo',
+			\ },
+			\ 'component_expand': {
+			\ 'buffercurrent': 'lightline#buffer#buffercurrent2',
+			\ },
+			\ 'component_type': {
+			\ 'buffercurrent': 'tabsel',
+			\ },
+			\ 'separator': { 'left': "\ue0b0", 'right': "\ue0b2" },
+			\ 'subseparator': { 'left': "\ue0b1", 'right': "\ue0b3" }
+			\ }
 
 function! LightlineModified()
-  return &ft =~ 'help' ? '' : &modified ? '+' : &modifiable ? '' : '-'
+	return &ft =~ 'help' ? '' : &modified ? '+' : &modifiable ? '' : '-'
 endfunction
 
 function! LightlineReadonly()
-  return &ft !~? 'help' && &readonly ? 'RO' : ''
+	return &ft !~? 'help' && &readonly ? 'RO' : ''
 endfunction
 
 function! LightlineFilename()
-  let fname = expand('%:t')
-  return fname == 'ControlP' && has_key(g:lightline, 'ctrlp_item') ? g:lightline.ctrlp_item :
-        \ fname == '__Tagbar__' ? g:lightline.fname :
-        \ fname =~ '__Gundo\|NERD_tree' ? '' :
-        \ &ft == 'vimfiler' ? vimfiler#get_status_string() :
-        \ &ft == 'unite' ? unite#get_status_string() :
-        \ &ft == 'vimshell' ? vimshell#get_status_string() :
-        \ ('' != LightlineReadonly() ? LightlineReadonly() . ' ' : '') .
-        \ ('' != LightlineModified() ? ' ' . LightlineModified() : '')
+	let fname = expand('%:t')
+	return fname == 'ControlP' && has_key(g:lightline, 'ctrlp_item') ? g:lightline.ctrlp_item :
+				\ fname == '__Tagbar__' ? g:lightline.fname :
+				\ fname =~ '__Gundo\|NERD_tree' ? '' :
+				\ &ft == 'vimfiler' ? vimfiler#get_status_string() :
+				\ &ft == 'unite' ? unite#get_status_string() :
+				\ &ft == 'vimshell' ? vimshell#get_status_string() :
+				\ ('' != LightlineReadonly() ? LightlineReadonly() . ' ' : '') .
+				\ ('' != LightlineModified() ? ' ' . LightlineModified() : '')
 endfunction
 
 function! LightlineAle()
-  let fname = expand('%:t')
-  return &ft == 'vimfiler' ? '' :
-        \ fname == '__Tagbar__' ? '' :
-        \ ALEGetStatusLine()
+	let fname = expand('%:t')
+	return &ft == 'vimfiler' ? '' :
+				\ fname == '__Tagbar__' ? '' :
+				\ ALEGetStatusLine()
 endfunction
 
 function! LightlineFugitive()
-  try
-    if expand('%:t') !~? 'Tagbar\|Gundo\|NERD' && &ft !~? 'vimfiler' && exists('*fugitive#head')
-      let mark = ' '  " edit here for cool mark
-      let branch = fugitive#head()
-      return branch !=# '' ? mark.branch : ''
-    endif
-  catch
-  endtry
-  return ''
+	try
+		if expand('%:t') !~? 'Tagbar\|Gundo\|NERD' && &ft !~? 'vimfiler' && exists('*fugitive#head')
+			let mark = ' '  " edit here for cool mark
+			let branch = fugitive#head()
+			return branch !=# '' ? mark.branch : ''
+		endif
+	catch
+	endtry
+	return ''
 endfunction
 
 function! LightlineGutter()
-  if ! exists('*GitGutterGetHunkSummary')
-        \ || ! get(g:, 'gitgutter_enabled', 0)
-        \ || winwidth('.') <= 90
-    return ''
-  endif
-  let symbols = [
-        \ g:gitgutter_sign_added . ' ',
-        \ g:gitgutter_sign_modified . ' ',
-        \ g:gitgutter_sign_removed . ' '
-        \ ]
-  let hunks = GitGutterGetHunkSummary()
-  let ret = []
-  for i in [0, 1, 2]
-    if hunks[i] > 0
-      call add(ret, symbols[i] . hunks[i])
-    endif
-  endfor
-  return join(ret, ' ')
+	if ! exists('*GitGutterGetHunkSummary')
+				\ || ! get(g:, 'gitgutter_enabled', 0)
+				\ || winwidth('.') <= 90
+		return ''
+	endif
+	let symbols = [
+				\ g:gitgutter_sign_added . ' ',
+				\ g:gitgutter_sign_modified . ' ',
+				\ g:gitgutter_sign_removed . ' '
+				\ ]
+	let hunks = GitGutterGetHunkSummary()
+	let ret = []
+	for i in [0, 1, 2]
+		if hunks[i] > 0
+			call add(ret, symbols[i] . hunks[i])
+		endif
+	endfor
+	return join(ret, ' ')
 endfunction
 
 function! LightlineFileformat()
-  return winwidth(0) > 70 ? (&fileformat . ' ' . WebDevIconsGetFileFormatSymbol()) : ''
+	return winwidth(0) > 70 ? (&fileformat . ' ' . WebDevIconsGetFileFormatSymbol()) : ''
 endfunction
 
 function! LightlineFiletype()
-  return winwidth(0) > 70 ? (strlen(&filetype) ? &filetype . ' ' . WebDevIconsGetFileTypeSymbol() : 'no ft') : ''
+	return winwidth(0) > 70 ? (strlen(&filetype) ? &filetype . ' ' . WebDevIconsGetFileTypeSymbol() : 'no ft') : ''
 endfunction
 
 function! LightlineFileencoding()
-  return winwidth(0) > 70 ? (&fenc !=# '' ? &fenc : &enc) : ''
+	return winwidth(0) > 70 ? (&fenc !=# '' ? &fenc : &enc) : ''
 endfunction
 
 function! LightlineMode()
-  let fname = expand('%:t')
-  return fname == '__Tagbar__' ? 'Tagbar' :
-        \ fname == 'ControlP' ? 'CtrlP' :
-        \ fname =~ 'NERD_tree' ? 'NERDTree' :
-        \ fname == 'denite' ? denite#get_status_mode() :
-        \ winwidth(0) > 60 ? lightline#mode() : ''
+	let fname = expand('%:t')
+	return fname == '__Tagbar__' ? 'Tagbar' :
+				\ fname == 'ControlP' ? 'CtrlP' :
+				\ fname =~ 'NERD_tree' ? 'NERDTree' :
+				\ fname == 'denite' ? denite#get_status_mode() :
+				\ winwidth(0) > 60 ? lightline#mode() : ''
 endfunction
 
 let g:tagbar_status_func = 'TagbarStatusFunc'
 
 function! TagbarStatusFunc(current, sort, fname, ...) abort
-  let g:lightline.fname = a:fname
-  return lightline#statusline(0)
+	let g:lightline.fname = a:fname
+	return lightline#statusline(0)
 endfunction
 
 let g:ale_statusline_format = ['✘ %d', '⚠ %d', '⬥ ok']
@@ -260,19 +265,19 @@ call denite#custom#option('default', 'prompt', '❯')
 "  \     'rg', '--glob', '!.git', ''
 
 call denite#custom#source(
-      \ 'file_rec', 'vars', {
-      \   'command': [
-      \      'ag', '--follow','--nogroup','--hidden', '-g', '', '--ignore', '.git', '--ignore', '*.png'
-      \   ] })
+			\ 'file_rec', 'vars', {
+			\   'command': [
+			\      'ag', '--follow','--nogroup','--hidden', '-g', '', '--ignore', '.git', '--ignore', '*.png'
+			\   ] })
 
-	" Ag command on grep source
-	call denite#custom#var('grep', 'command', ['ag'])
-	call denite#custom#var('grep', 'default_opts',
+" Ag command on grep source
+call denite#custom#var('grep', 'command', ['ag'])
+call denite#custom#var('grep', 'default_opts',
 			\ ['-i', '--vimgrep'])
-	call denite#custom#var('grep', 'recursive_opts', [])
-	call denite#custom#var('grep', 'pattern_opt', [])
-	call denite#custom#var('grep', 'separator', ['--'])
-	call denite#custom#var('grep', 'final_opts', [])
+call denite#custom#var('grep', 'recursive_opts', [])
+call denite#custom#var('grep', 'pattern_opt', [])
+call denite#custom#var('grep', 'separator', ['--'])
+call denite#custom#var('grep', 'final_opts', [])
 
 " call denite#custom#source('file_rec', 'sorters', ['sorter_sublime'])
 " call denite#custom#option('default', 'statusline', 0)
@@ -291,21 +296,21 @@ nnoremap <Leader>g : Denite -auto-resize -silent -start-insert menu:git<CR>
 let s:menus = {}
 
 call denite#custom#map(
-      \ 'insert',
-      \ '<C-n>',
-      \ '<denite:move_to_next_line>',
-      \ 'noremap'
-      \)
+			\ 'insert',
+			\ '<C-n>',
+			\ '<denite:move_to_next_line>',
+			\ 'noremap'
+			\)
 call denite#custom#map(
-      \ 'insert',
-      \ '<C-p>',
-      \ '<denite:move_to_previous_line>',
-      \ 'noremap'
-      \)
+			\ 'insert',
+			\ '<C-p>',
+			\ '<denite:move_to_previous_line>',
+			\ 'noremap'
+			\)
 
 call denite#custom#filter('matcher_ignore_globs', 'ignore_globs',
-      \ [ '.git/', '.meteor/', '.ropeproject/', '__pycache__/',
-      \   'venv/', 'images/', '*.min.*', 'img/', 'fonts/'])
+			\ [ '.git/', '.meteor/', '.ropeproject/', '__pycache__/',
+			\   'venv/', 'images/', '*.min.*', 'img/', 'fonts/'])
 
 call denite#custom#var('menu', 'menus', s:menus)
 
@@ -313,37 +318,37 @@ call denite#custom#var('menu', 'menus', s:menus)
 
 " Git from denite...ERMERGERD -----------------------------------------------{{{
 let s:menus.git = {
-      \ 'description' : 'Fugitive interface',
-      \}
+			\ 'description' : 'Fugitive interface',
+			\}
 let s:menus.git.command_candidates = [
-      \[' git status', 'Gstatus'],
-      \[' git diff', 'Gvdiff'],
-      \[' git commit', 'Gcommit'],
-      \[' git stage/add', 'Gwrite'],
-      \[' git checkout', 'Gread'],
-      \[' git rm', 'Gremove'],
-      \[' git cd', 'Gcd'],
-      \[' git push', 'exe "Git! push " input("remote/branch: ")'],
-      \[' git pull', 'exe "Git! pull " input("remote/branch: ")'],
-      \[' git pull rebase', 'exe "Git! pull --rebase " input("branch: ")'],
-      \[' git checkout branch', 'exe "Git! checkout " input("branch: ")'],
-      \[' git fetch', 'Gfetch'],
-      \[' git merge', 'Gmerge'],
-      \[' git browse', 'Gbrowse'],
-      \[' git head', 'Gedit HEAD^'],
-      \[' git parent', 'edit %:h'],
-      \[' git log commit buffers', 'Glog --'],
-      \[' git log current file', 'Glog -- %'],
-      \[' git log last n commits', 'exe "Glog -" input("num: ")'],
-      \[' git log first n commits', 'exe "Glog --reverse -" input("num: ")'],
-      \[' git log until date', 'exe "Glog --until=" input("day: ")'],
-      \[' git log grep commits',  'exe "Glog --grep= " input("string: ")'],
-      \[' git log pickaxe',  'exe "Glog -S" input("string: ")'],
-      \[' git index', 'exe "Gedit " input("branchname\:filename: ")'],
-      \[' git mv', 'exe "Gmove " input("destination: ")'],
-      \[' git grep',  'exe "Ggrep " input("string: ")'],
-      \[' git prompt', 'exe "Git! " input("command: ")'],
-      \] " Append ' --' after log to get commit info commit buffers
+			\[' git status', 'Gstatus'],
+			\[' git diff', 'Gvdiff'],
+			\[' git commit', 'Gcommit'],
+			\[' git stage/add', 'Gwrite'],
+			\[' git checkout', 'Gread'],
+			\[' git rm', 'Gremove'],
+			\[' git cd', 'Gcd'],
+			\[' git push', 'exe "Git! push " input("remote/branch: ")'],
+			\[' git pull', 'exe "Git! pull " input("remote/branch: ")'],
+			\[' git pull rebase', 'exe "Git! pull --rebase " input("branch: ")'],
+			\[' git checkout branch', 'exe "Git! checkout " input("branch: ")'],
+			\[' git fetch', 'Gfetch'],
+			\[' git merge', 'Gmerge'],
+			\[' git browse', 'Gbrowse'],
+			\[' git head', 'Gedit HEAD^'],
+			\[' git parent', 'edit %:h'],
+			\[' git log commit buffers', 'Glog --'],
+			\[' git log current file', 'Glog -- %'],
+			\[' git log last n commits', 'exe "Glog -" input("num: ")'],
+			\[' git log first n commits', 'exe "Glog --reverse -" input("num: ")'],
+			\[' git log until date', 'exe "Glog --until=" input("day: ")'],
+			\[' git log grep commits',  'exe "Glog --grep= " input("string: ")'],
+			\[' git log pickaxe',  'exe "Glog -S" input("string: ")'],
+			\[' git index', 'exe "Gedit " input("branchname\:filename: ")'],
+			\[' git mv', 'exe "Gmove " input("destination: ")'],
+			\[' git grep',  'exe "Ggrep " input("string: ")'],
+			\[' git prompt', 'exe "Git! " input("command: ")'],
+			\] " Append ' --' after log to get commit info commit buffers
 "}}}
 
 "" NERDTree configuration
@@ -359,9 +364,9 @@ map <C-e> <plug>NERDTreeTabsToggle<CR>
 nmap <silent> <leader>nt :NERDTreeFind<CR>
 
 " session management
-let g:session_directory = "~/.config/nvim/session"
-let g:session_autoload = "yes"
-let g:session_autosave = "yes"
+let g:session_directory = vim_dir."/session"
+let g:session_autoload = "no"
+let g:session_autosave = "no"
 let g:session_command_aliases = 1
 
 "" Tabs
@@ -377,9 +382,9 @@ let g:tmux_navigator_save_on_switch = 2
 "" Functions
 "*****************************************************************************
 function s:setupWrapping()
-  set wrap
-  set wm=2
-  set textwidth=79
+	set wrap
+	set wm=2
+	set textwidth=79
 endfunction
 
 "*****************************************************************************
@@ -387,21 +392,21 @@ endfunction
 "*****************************************************************************
 "" Remember cursor position
 augroup vimrc-remember-cursor-position
-  autocmd!
-  autocmd BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g`\"" | endif
+	autocmd!
+	autocmd BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g`\"" | endif
 augroup END
 
 "" txt
 augroup vimrc-wrapping
-  autocmd!
-  autocmd BufRead,BufNewFile *.txt call s:setupWrapping()
+	autocmd!
+	autocmd BufRead,BufNewFile *.txt call s:setupWrapping()
 augroup END
 
 "" make/cmake
 augroup vimrc-make-cmake
-  autocmd!
-  autocmd FileType make setlocal noexpandtab
-  autocmd BufNewFile,BufRead CMakeLists.txt setlocal filetype=cmake
+	autocmd!
+	autocmd FileType make setlocal noexpandtab
+	autocmd BufNewFile,BufRead CMakeLists.txt setlocal filetype=cmake
 augroup END
 
 set autoread
@@ -483,6 +488,7 @@ nmap ga <Plug>(EasyAlign)
 "" Custom command maps
 "*****************************************************************************
 
+let g:indentLine_setConceal = 0
 " Change Working Directory to that of the current file
 cmap cd. lcd %:p:h
 
@@ -495,30 +501,50 @@ cmap w!! w !sudo tee % >/dev/null
 let g:deoplete#enable_at_startup = 1
 
 augroup omnifuncs
-  autocmd!
-  autocmd FileType css setlocal omnifunc=csscomplete#CompleteCSS
-  autocmd FileType html,markdown setlocal omnifunc=htmlcomplete#CompleteTags
-  autocmd FileType python setlocal omnifunc=pythoncomplete#Complete
-  autocmd FileType xml setlocal omnifunc=xmlcomplete#CompleteTags
+	autocmd!
+	autocmd FileType css setlocal omnifunc=csscomplete#CompleteCSS
+	autocmd FileType html,markdown setlocal omnifunc=htmlcomplete#CompleteTags
+	autocmd FileType python setlocal omnifunc=pythoncomplete#Complete
+	autocmd FileType xml setlocal omnifunc=xmlcomplete#CompleteTags
 augroup end
 
-  let g:UltiSnipsExpandTrigger="<C-j>"
-  inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
+	let g:UltiSnipsExpandTrigger="<C-j>"
+	inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
 
-  " close the preview window when you're not using it
-  let g:SuperTabClosePreviewOnPopupClose = 1
+	" close the preview window when you're not using it
+	let g:SuperTabClosePreviewOnPopupClose = 1
 
-  "*****************************************************************************
-  "" Self Customise
-  "*****************************************************************************
-  let g:WebDevIconsOS = 'Darwin'
+	"*****************************************************************************
+	"" Self Customise
+	"*****************************************************************************
+	let g:WebDevIconsOS = 'Darwin'
 
-  ""Hard Mode
-  nnoremap <up>    <nop>
-  nnoremap <down>  <nop>
-  nnoremap <left>  <nop>
-  nnoremap <right> <nop>
-  inoremap <up>    <nop>
-  inoremap <down>  <nop>
-  inoremap <left>  <nop>
-  inoremap <right> <nop>
+	""Hard Mode
+	nnoremap <up>    <nop>
+	nnoremap <down>  <nop>
+	nnoremap <left>  <nop>
+	nnoremap <right> <nop>
+	inoremap <up>    <nop>
+	inoremap <down>  <nop>
+	inoremap <left>  <nop>
+	inoremap <right> <nop>
+
+	""Vim wiki
+	" // --- vimwiki --- //
+	let g:vimwiki_list = [{'path': '~/Dropbox/vimwiki/',
+				\'template_path': '~/Dropbox/vimwiki/template/',
+				\'template_default': 'default',
+				\'template_ext': '.html',
+				\'auto_toc': 1,
+				\'path_html': '~/Github/xiongchenyu6.github.io/'}]
+""			\'auto_tags': 1,
+
+  let g:vimwiki_use_mouse = 1 
+	map <F4> :VimwikiAll2HTML<cr>'
+	nmap <F10> <Plug>VimwikiTabIndex
+	map <Leader>wt <Plug>VimwikiToggleListItem
+	let g:vimwiki_hl_headers = 1
+	let g:vimwiki_hl_cb_checked = 1
+	let g:vimwiki_table_mappings = 0
+  let g:vimwiki_option_auto_toc = 1
+

@@ -65,6 +65,9 @@ Plug 'Shougo/vimproc.vim', {'do' : 'make'}
 Plug 'Raimondi/delimitMate'
 Plug 'junegunn/vim-easy-align'
 Plug 'metakirby5/codi.vim'
+Plug 'vimwiki/vimwiki'
+Plug 'mhinz/vim-startify'
+Plug 'mattn/calendar-vim'
 
 ""Tmux compatibility
 Plug 'christoomey/vim-tmux-navigator'
