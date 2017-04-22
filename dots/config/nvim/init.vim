@@ -11,7 +11,6 @@
 "*****************************************************************************"
 
 scriptencoding utf-8
-source ~/.config/nvim/plugins.vim
 
 " Identify platform {
 let g:MAC = has('macunix')
@@ -30,6 +29,8 @@ endif
 let g:vim_dir = $HOME.'/.config/nvim'
 
 set runtimepath+=$HOME/.config/nvim
+
+source $HOME/.config/nvim/plugins.vim
 
 "" Tabs. May be overriten by autocmd rules
 set tabstop=2
