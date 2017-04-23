@@ -289,7 +289,7 @@ hi deniteMatchedChar guibg=None
 
 nnoremap <silent> <c-p> :Denite -auto-resize file_rec<CR>
 nnoremap <silent> <leader>b :Denite -auto-resize buffer<CR>
-nnoremap <silent> <Leader>u : Denite line -prompt-direction="top"<CR>
+nnoremap <silent> <Leader>l : Denite line -prompt-direction="top"<CR>
 nnoremap <Leader>r : Denite -auto-resize file_mru<CR>
 nnoremap <Leader>f : Denite -no-empty grep:.<cr>
 nnoremap <Leader>g : Denite -auto-resize -silent -start-insert menu:git<CR>
@@ -370,6 +370,11 @@ let g:session_autoload = "no"
 let g:session_autosave = "no"
 let g:session_command_aliases = 1
 
+" Enable persistent undo so that undo history persists across vim sessions
+set undofile
+set undodir=undo
+nmap <silent> <leader>u :MundoToggle<CR>
+
 "" Tabs
 nnoremap <Tab> gt
 nnoremap <S-Tab> gT
@@ -378,7 +383,6 @@ nnoremap <silent> <S-t> :tabnew<CR>
 "Tmux
 " Write all buffers before navigating from Vim to tmux pane
 let g:tmux_navigator_save_on_switch = 2
-
 "*****************************************************************************
 "" Functions
 "*****************************************************************************

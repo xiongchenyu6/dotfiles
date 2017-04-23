@@ -68,6 +68,7 @@ Plug 'metakirby5/codi.vim'
 Plug 'vimwiki/vimwiki'
 Plug 'mhinz/vim-startify'
 Plug 'mattn/calendar-vim'
+Plug 'simnalamburt/vim-mundo'
 
 ""Tmux compatibility
 Plug 'christoomey/vim-tmux-navigator'
@@ -77,7 +78,6 @@ Plug 'roxma/vim-tmux-clipboard'
 Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
 Plug 'SirVer/ultisnips'
 Plug 'honza/vim-snippets'
-
 
 "*****************************************************************************
 "" Custom bundles

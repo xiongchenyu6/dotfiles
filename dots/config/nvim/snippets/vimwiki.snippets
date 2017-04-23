@@ -2,9 +2,9 @@ snippet blog
 	%title $1
 
 	 = ${1:title} =
-	tags=${2}
+	 =====`strftime("%Y/%m/%d %H:%M:%S")`=====
+	 ======${2}======
 
-	Create Time=`strftime("%Y/%m/%d %H:%M:%S")`
 
 snippet image
 	{{https://xiongchenyu6.github.io/images/${1}}}
