@@ -12,3 +12,4 @@ workspace.xml
 node_modules/
 target/
 .meteor/
+.vim/

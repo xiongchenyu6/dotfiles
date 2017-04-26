@@ -361,7 +361,7 @@ let g:nerdtree_tabs_focus_on_files=1
 let g:NERDTreeMapOpenInTabSilent = '<RightMouse>'
 let NERDTreeKeepTreeInNewTab=1
 
-map <C-e> <plug>NERDTreeTabsToggle<CR>
+map <silent> <leader>ft <plug>NERDTreeTabsToggle<CR>
 nmap <silent> <leader>nt :NERDTreeFind<CR>
 
 " session management
@@ -372,7 +372,7 @@ let g:session_command_aliases = 1
 
 " Enable persistent undo so that undo history persists across vim sessions
 set undofile
-set undodir=undo
+set undodir=~/.vim/undo
 nmap <silent> <leader>u :MundoToggle<CR>
 
 "" Tabs
@@ -383,6 +383,7 @@ nnoremap <silent> <S-t> :tabnew<CR>
 "Tmux
 " Write all buffers before navigating from Vim to tmux pane
 let g:tmux_navigator_save_on_switch = 2
+
 "*****************************************************************************
 "" Functions
 "*****************************************************************************
@@ -423,8 +424,8 @@ nnoremap <expr> k (v:count == 0 ? 'gk' : 'k')
 nnoremap <expr> j (v:count == 0 ? 'gj' : 'j')
 
 "" Split
-noremap <Leader>h :<C-u>split<CR>
-noremap <Leader>v :<C-u>vsplit<CR>
+noremap <Leader>ws :<C-u>split<CR>
+noremap <Leader>wv :<C-u>vsplit<CR>
 
 " session management
 nnoremap <leader>so :OpenSession<Space>
@@ -439,7 +440,7 @@ nnoremap <silent> <S-t> :tabnew<CR>
 
 " Tagbar
 map <Leader>tt :TagbarToggle<CR>
-"let g:tagbar_autofocus = 1
+let g:tagbar_autofocus = 1
 
 "" Copy/Paste/Cut
 set clipboard=unnamed
@@ -459,11 +460,10 @@ noremap <leader>c :bd<CR>
 nnoremap <silent> <leader><space> :noh<cr>
 
 "" Switching windows
-nmap <BS> <C-W>h
-noremap <C-j> <C-w>j
-noremap <C-k> <C-w>k
-noremap <C-l> <C-w>l
-noremap <C-h> <C-w>h
+noremap <leader>wj <C-w>j
+noremap <leader>wk <C-w>k
+noremap <leader>wl <C-w>l
+noremap <leader>wh <C-w>h
 
 " Search mappings: These will make it so that going to the next one in a
 " search will center on the line it's found in.
@@ -547,9 +547,14 @@ augroup end
   let g:vimwiki_use_mouse = 1 
 	map <F4> :VimwikiAll2HTML<cr>'
 	nmap <F10> <Plug>VimwikiTabIndex
+  nmap <F9> <Plug>VimwikiUISelect
 	map <Leader>wt <Plug>VimwikiToggleListItem
 	let g:vimwiki_hl_headers = 1
 	let g:vimwiki_hl_cb_checked = 1
 	let g:vimwiki_table_mappings = 0
   let g:vimwiki_option_auto_toc = 1
+  let g:vimwiki_folding='list'
 
+set noimdisable
+autocmd! InsertLeave * set imdisable|set iminsert=0
+autocmd! InsertEnter * set noimdisable|set iminsert=0

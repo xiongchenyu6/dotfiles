@@ -1,15 +1,17 @@
-export LANG=en_US.UTF-8
 export ZSH=~/.oh-my-zsh
-export TERM="xterm-256color"
+export LANGUAGE=en_US.UTF-8
+export LANG=en_US.UTF-8
+export LC_ALL=en_US.UTF-8
+export TERM=xterm-256color
 
 POWERLEVEL9K_MODE='nerdfont-fontconfig'
 POWERLEVEL9K_VCS_SHOW_SUBMODULE_DIRTY=false
 
 ZSH_THEME="powerlevel9k/powerlevel9k"
 POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(disk_usage dir dir_writable vcs)
-POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(vi_mode status root_indicator background_jobs ram)
+POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(status root_indicator background_jobs ram)
 
-plugins=(vi-mode react-native tmux git zsh-autosuggestions zsh-syntax-highlighting z)
+plugins=(react-native tmux git zsh-autosuggestions zsh-syntax-highlighting z)
 
 if [[ "$OSTYPE" == "linux-gnu" ]]; then
     plugins+=(ubuntu)
@@ -19,8 +21,6 @@ fi
 
 source $ZSH/oh-my-zsh.sh
 
-bindkey -v
-export KEYTIMEOUT=1
 source ~/.bash_profile
 # Preferred editor for local and remote sessions
 if [[ -n $SSH_CONNECTION ]]; then
@@ -41,32 +41,3 @@ codi() {
         hi NonText ctermfg=0 |\
         Codi $syntax" "$@"
 }
-
-#blow add vi indicator to bar
-function zle-line-init {
-  powerlevel9k_prepare_prompts
-  if (( ${+terminfo[smkx]} )); then
-    printf '%s' ${terminfo[smkx]}
-  fi
-  zle reset-prompt
-  zle -R
-}
-
-function zle-line-finish {
-  powerlevel9k_prepare_prompts
-  if (( ${+terminfo[rmkx]} )); then
-    printf '%s' ${terminfo[rmkx]}
-  fi
-  zle reset-prompt
-  zle -R
-}
-
-function zle-keymap-select {
-  powerlevel9k_prepare_prompts
-  zle reset-prompt
-  zle -R
-}
-
-zle -N zle-line-init
-zle -N ale-line-finish
-zle -N zle-keymap-select
