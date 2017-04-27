@@ -1,0 +1,726 @@
+"" Freeman Vim Settings for back up
+"  __ _       _
+" / _/__   __(_)_ __ ___
+"| |_|\ \ / /| | '_ ` _ \
+"|  _| \ V / | | | | | | |
+"|_| |  \_/  |_|_| |_| |_|
+
+
+"*****************************************************************************
+"" Vim-PLug core
+"*****************************************************************************
+
+if has('vim_starting')
+  set nocompatible               " Be iMproved
+endif
+
+let vimplug_exists=expand('~/.vim/autoload/plug.vim')
+
+if !filereadable(vimplug_exists)
+  echo "Installing Vim-Plug..."
+  echo ""
+  silent !\curl -fLo ~/.vim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+  let g:not_finish_vimplug = "yes"
+
+  autocmd VimEnter * PlugInstall
+endif
+
+" Required(The plug in below will be install):
+call plug#begin(expand('~/.vim/plugged'))
+
+"*****************************************************************************
+"" Plug install packages
+"*****************************************************************************
+
+"" nerd tree & make nerd tree more like IDE
+Plug 'scrooloose/nerdtree' | Plug 'jistr/vim-nerdtree-tabs' | Plug 'Xuyuanp/nerdtree-git-plugin'
+
+"" github plugin
+Plug 'tpope/vim-fugitive' | Plug 'airblade/vim-gitgutter'
+
+"" comment
+Plug 'scrooloose/nerdcommenter'
+
+"" Fast search
+Plug 'ctrlpvim/ctrlp.vim'
+Plug 'mhinz/vim-grepper'
+Plug 'bronson/vim-trailing-whitespace'
+
+Plug 'majutsushi/tagbar'
+Plug 'Yggdroot/indentLine'
+Plug 'tpope/vim-surround'
+Plug 'w0rp/ale'
+"Auto add parathese
+Plug 'Raimondi/delimitMate'
+""A collection of language packs for Vim
+Plug 'sheerun/vim-polyglot'
+""Auto format support
+Plug 'Chiel92/vim-autoformat'
+
+"" Vim-Session
+Plug 'xolox/vim-misc'
+Plug 'xolox/vim-session'
+
+"" Color and theme
+Plug 'rafi/awesome-vim-colorschemes'
+Plug 'itchyny/lightline.vim'
+Plug 'taohex/lightline-buffer'
+
+Plug 'Shougo/vimproc.vim', {'do' : 'make'}
+
+""Auto-complete
+Plug 'Shougo/neocomplete.vim' | Plug 'Shougo/neosnippet' | Plug 'Shougo/neosnippet-snippets'
+
+"*****************************************************************************
+"" Custom bundles
+"*****************************************************************************
+
+Plug 'marijnh/tern_for_vim'
+Plug 'christoomey/vim-tmux-navigator'
+
+""Auto-complete for haskell
+Plug 'eagletmt/ghcmod-vim' | Plug 'eagletmt/neco-ghc'
+
+Plug 'junegunn/vim-easy-align'
+
+"REPL
+Plug 'metakirby5/codi.vim'
+
+"Emmet"
+Plug 'mattn/emmet-vim'
+
+"" Color Bundle for css3
+Plug 'gorodinskiy/vim-coloresque'
+
+"" Javascript anguler react ..
+Plug 'othree/javascript-libraries-syntax.vim'
+
+call plug#end()
+"*****************************************************************************
+
+" Required:
+filetype plugin indent on
+
+"*****************************************************************************
+"Enable below if the code not Working
+"let g:codi#log = '/tmp/codi.log'
+"*****************************************************************************
+"" Basic Setup
+"*****************************************************************************"
+
+"" Encoding
+set encoding=utf-8
+set fileencoding=utf-8
+set fileencodings=utf-8
+scriptencoding utf-8
+""set boolean
+set bomb
+set binary
+set ttyfast
+
+"" Fix backspace indent
+set backspace=indent,eol,start
+
+"" Tabs. May be overriten by autocmd rules
+set tabstop=2
+set softtabstop=2
+set shiftwidth=2
+set expandtab
+
+"" Map leader to space
+nnoremap <SPACE> <Nop>
+let mapleader="\<Space>"
+
+"" Enable hidden buffers
+set hidden
+set showtabline=2
+" Set 7 lines to the cursor - when moving vertically using j/k
+set so=7
+
+"" Searching
+set hlsearch
+set incsearch
+set ignorecase
+set smartcase
+" Show matching brackets when text indicator is over them
+set showmatch
+" How many tenths of a second to blink when matching brackets
+set mat=2
+
+"" Directories for swp files
+set nobackup
+set nowb
+set noswapfile
+
+set fileformats=unix,dos,mac
+set showcmd
+set history=700                    " Store a ton of history (default is 20)
+
+"*****************************************************************************
+"" Visual Settings
+"*****************************************************************************
+syntax on
+set ruler
+set number
+set spell
+"set foldenable
+set foldmethod=syntax
+set foldlevelstart=99
+
+set tags=./.vimtags,vimtags;
+
+" For regular expressions turn magic on
+set magic
+"" Disable the blinking cursor.
+set gcr=a:blinkon0
+
+" 相对行号: 行号变成相对，可以用 nj/nk 进行跳转
+set relativenumber number
+
+"Save on buffer switch
+set autowrite
+
+"" Status bar
+set laststatus=2
+
+"" Use modeline overrides
+set modeline
+set modelines=10
+
+set title
+set titleold="Terminal"
+set titlestring=%F
+
+set statusline=%F%m%r%h%w%=(%{&ff}/%Y)\ (line\ %l\/%L,\ col\ %c)\
+
+let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
+let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
+
+set termguicolors
+colorscheme solarized8_dark_high
+"colorscheme molokai
+
+"*****************************************************************************
+"" Light Line Settings
+"*****************************************************************************
+let g:lightline = {
+      \ 'colorscheme': 'solarized',
+      \ 'active': {
+      \   'left': [ [ 'mode', 'paste' ], [ 'readonly', 'fugitive', 'gitgutter', 'ale', 'filename' ], ['ctrlpmark'] ],
+      \   'right': [ [ 'lineinfo' ], ['percent'], [ 'filetype', 'spell', 'fileformat', 'fileencoding' ] ]
+      \ },
+      \ 'tabline': {
+      \ 'left': [ [ 'bufferinfo' ], [ 'bufferbefore', 'buffercurrent', 'bufferafter' ], ],
+      \ 'right': [ [ 'close' ], ],
+      \ },
+      \ 'component': {
+      \   'spell': '%{&spell?&spelllang:"no spell"}',
+      \ },
+      \ 'component_visible_condition': {
+      \   'readonly': '(&filetype!="help"&& &readonly)',
+      \ },
+      \ 'component_function': {
+      \   'fugitive': 'LightlineFugitive',
+      \   'gitgutter': 'LightlineGutter',
+      \     'ale' : 'LightlineAle',
+      \   'filename': 'LightlineFilename',
+      \   'fileformat': 'LightlineFileformat',
+      \   'filetype': 'LightlineFiletype',
+      \   'fileencoding': 'LightlineFileencoding',
+      \   'mode': 'LightlineMode',
+      \   'ctrlpmark': 'CtrlPMark',
+      \ 'bufferbefore': 'lightline#buffer#bufferbefore',
+      \ 'bufferafter': 'lightline#buffer#bufferafter',
+      \ 'bufferinfo': 'lightline#buffer#bufferinfo',
+      \ },
+      \ 'component_expand': {
+      \ 'buffercurrent': 'lightline#buffer#buffercurrent2',
+      \ },
+      \ 'component_type': {
+      \ 'buffercurrent': 'tabsel',
+      \ },
+      \ 'separator': { 'left': "\ue0b0", 'right': "\ue0b2" },
+      \ 'subseparator': { 'left': "\ue0b1", 'right': "\ue0b3" }
+      \ }
+
+function! LightlineModified()
+  return &ft =~ 'help' ? '' : &modified ? '+' : &modifiable ? '' : '-'
+endfunction
+
+function! LightlineReadonly()
+  return &ft !~? 'help' && &readonly ? 'RO' : ''
+endfunction
+
+function! LightlineFilename()
+  let fname = expand('%:t')
+  return fname == 'ControlP' && has_key(g:lightline, 'ctrlp_item') ? g:lightline.ctrlp_item :
+        \ fname == '__Tagbar__' ? g:lightline.fname :
+        \ fname =~ '__Gundo\|NERD_tree' ? '' :
+        \ &ft == 'vimfiler' ? vimfiler#get_status_string() :
+        \ &ft == 'unite' ? unite#get_status_string() :
+        \ &ft == 'vimshell' ? vimshell#get_status_string() :
+        \ ('' != LightlineReadonly() ? LightlineReadonly() . ' ' : '') .
+        \ ('' != fname ? fname : '[No Name]') .
+        \ ('' != LightlineModified() ? ' ' . LightlineModified() : '')
+endfunction
+
+
+function! LightlineAle()
+  return ALEGetStatusLine()
+endfunction
+
+function! LightlineFugitive()
+  try
+    if expand('%:t') !~? 'Tagbar\|Gundo\|NERD' && &ft !~? 'vimfiler' && exists('*fugitive#head')
+      let mark = ' '  " edit here for cool mark
+      let branch = fugitive#head()
+      return branch !=# '' ? mark.branch : ''
+    endif
+  catch
+  endtry
+  return ''
+endfunction
+
+function! LightlineGutter()
+  if ! exists('*GitGutterGetHunkSummary')
+        \ || ! get(g:, 'gitgutter_enabled', 0)
+        \ || winwidth('.') <= 90
+    return ''
+  endif
+  let symbols = [
+        \ g:gitgutter_sign_added . ' ',
+        \ g:gitgutter_sign_modified . ' ',
+        \ g:gitgutter_sign_removed . ' '
+        \ ]
+  let hunks = GitGutterGetHunkSummary()
+  let ret = []
+  for i in [0, 1, 2]
+    if hunks[i] > 0
+      call add(ret, symbols[i] . hunks[i])
+    endif
+  endfor
+  return join(ret, ' ')
+endfunction
+
+function! LightlineFileformat()
+  return winwidth(0) > 70 ? &fileformat : ''
+endfunction
+
+function! LightlineFiletype()
+  return winwidth(0) > 70 ? (&filetype !=# '' ? &filetype : 'no ft') : ''
+endfunction
+
+function! LightlineFileencoding()
+  return winwidth(0) > 70 ? (&fenc !=# '' ? &fenc : &enc) : ''
+endfunction
+
+function! LightlineMode()
+  let fname = expand('%:t')
+  return fname == '__Tagbar__' ? 'Tagbar' :
+        \ fname == 'ControlP' ? 'CtrlP' :
+        \ fname =~ 'NERD_tree' ? 'NERDTree' :
+        \ winwidth(0) > 60 ? lightline#mode() : ''
+endfunction
+
+function! CtrlPMark()
+  if expand('%:t') =~ 'ControlP' && has_key(g:lightline, 'ctrlp_item')
+    call lightline#link('iR'[g:lightline.ctrlp_regex])
+    return lightline#concatenate([g:lightline.ctrlp_prev, g:lightline.ctrlp_item
+          \ , g:lightline.ctrlp_next], 0)
+  else
+    return ''
+  endif
+endfunction
+
+let g:ctrlp_status_func = {
+      \ 'main': 'CtrlPStatusFunc_1',
+      \ 'prog': 'CtrlPStatusFunc_2',
+      \ }
+
+function! CtrlPStatusFunc_1(focus, byfname, regex, prev, item, next, marked)
+  let g:lightline.ctrlp_regex = a:regex
+  let g:lightline.ctrlp_prev = a:prev
+  let g:lightline.ctrlp_item = a:item
+  let g:lightline.ctrlp_next = a:next
+  return lightline#statusline(0)
+endfunction
+
+function! CtrlPStatusFunc_2(str)
+  return lightline#statusline(0)
+endfunction
+
+let g:tagbar_status_func = 'TagbarStatusFunc'
+
+function! TagbarStatusFunc(current, sort, fname, ...) abort
+  let g:lightline.fname = a:fname
+  return lightline#statusline(0)
+endfunction
+
+let g:ale_statusline_format = ['✘ %d', '⚠ %d', '⬥ ok']
+let g:ale_open_list = 0
+
+" vim-gitgutter
+let g:gitgutter_sign_added = '✚'
+let g:gitgutter_sign_modified = '➜'
+let g:gitgutter_sign_removed = '✘'
+
+" lightline-buffer ui settings
+" replace these symbols with ascii characters if your environment does not support unicode
+let g:lightline_buffer_logo = ' '
+let g:lightline_buffer_readonly_icon = ''
+let g:lightline_buffer_modified_icon = '✭'
+let g:lightline_buffer_git_icon = ' '
+let g:lightline_buffer_ellipsis_icon = '..'
+let g:lightline_buffer_expand_left_icon = '◀ '
+let g:lightline_buffer_expand_right_icon = ' ▶'
+let g:lightline_buffer_active_buffer_left_icon = ''
+let g:lightline_buffer_active_buffer_right_icon = ''
+let g:lightline_buffer_separator_icon = ' '
+
+" lightline-buffer function settings
+let g:lightline_buffer_show_bufnr = 1
+let g:lightline_buffer_rotate = 0
+let g:lightline_buffer_fname_mod = ':t'
+let g:lightline_buffer_excludes = ['vimfiler']
+
+let g:lightline_buffer_maxflen = 30
+let g:lightline_buffer_maxfextlen = 3
+let g:lightline_buffer_minflen = 16
+let g:lightline_buffer_minfextlen = 3
+let g:lightline_buffer_reservelen = 20
+
+"*****************************************************************************
+"" Abbreviations
+"*****************************************************************************
+
+if exists('$SHELL')
+  set shell=$SHELL
+else
+  set shell=/bin/sh
+endif
+
+" session management
+let g:session_directory = "~/.vim/session"
+let g:session_autoload = "no"
+let g:session_autosave = "no"
+let g:session_command_aliases = 1
+"Tmux
+" Write all buffers before navigating from Vim to tmux pane
+let g:tmux_navigator_save_on_switch = 2
+
+"" NERDTree configuration
+let g:NERDTreeChDirMode=2
+let g:NERDTreeIgnore=['\.rbc$', '\~$', '\.pyc$', '\.db$', '\.sqlite$', '__pycache__']
+let g:NERDTreeSortOrder=['^__\.py$', '\/$', '*', '\.swp$', '\.bak$', '\~$']
+let g:NERDTreeShowBookmarks=1
+let g:nerdtree_tabs_focus_on_files=1
+let g:NERDTreeMapOpenInTabSilent = '<RightMouse>'
+let NERDTreeKeepTreeInNewTab=1
+
+map <C-e> <plug>NERDTreeTabsToggle<CR>
+nmap <leader>nt :NERDTreeFind<CR>
+
+" Grepper
+nmap gs <plug>(GrepperOperator)
+xmap gs <plug>(GrepperOperator)
+nnoremap <leader>fg :Grepper -tool git<cr>
+nnoremap <leader>fa :Grepper -tool ag<cr>
+nnoremap <leader>fs :Grepper -tool ag -side<cr>
+nnoremap <leader>*  :Grepper -tool ag -cword -noprompt<cr>
+
+let g:grepper           = {}
+let g:grepper.tools     = ['git', 'ag', 'grep']
+let g:grepper.open      = 1
+let g:grepper.jump      = 1
+let g:grepper.next_tool = '<leader>g'
+
+"*****************************************************************************
+"" Functions
+"*****************************************************************************
+function s:setupWrapping()
+  set wrap
+  set wm=2
+  set textwidth=79
+endfunction
+
+"*****************************************************************************
+"" Autocmd Rules
+"*****************************************************************************
+"" The PC is fast enough, do syntax highlight syncing from start unless 200 lines
+augroup vimrc-sync-fromstart
+  autocmd!
+  autocmd BufEnter * :syntax sync maxlines=200
+augroup END
+
+"" Remember cursor position
+augroup vimrc-remember-cursor-position
+  autocmd!
+  autocmd BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g`\"" | endif
+augroup END
+
+"" txt
+augroup vimrc-wrapping
+  autocmd!
+  autocmd BufRead,BufNewFile *.txt call s:setupWrapping()
+augroup END
+
+"" make/cmake
+augroup vimrc-make-cmake
+  autocmd!
+  autocmd FileType make setlocal noexpandtab
+  autocmd BufNewFile,BufRead CMakeLists.txt setlocal filetype=cmake
+augroup END
+
+set autoread
+
+"*****************************************************************************
+"" Mappings
+"*****************************************************************************
+
+"" Split
+noremap <Leader>h :<C-u>split<CR>
+noremap <Leader>v :<C-u>vsplit<CR>
+
+"" Git
+noremap <Leader>ga :Gwrite<CR>
+noremap <Leader>gc :Gcommit<CR>
+noremap <Leader>gsh :Gpush<CR>
+noremap <Leader>gll :Gpull<CR>
+noremap <Leader>gs :Gstatus<CR>
+noremap <Leader>gb :Gblame<CR>
+noremap <Leader>gd :Gvdiff<CR>
+noremap <Leader>gr :Gremove<CR>
+
+" session management
+nnoremap <leader>so :OpenSession<Space>
+nnoremap <leader>ss :SaveSession<Space>
+nnoremap <leader>sd :DeleteSession<CR>
+nnoremap <leader>sc :CloseSession<CR>
+
+"" Tabs
+nnoremap <Tab> gt
+nnoremap <S-Tab> gT
+nnoremap <silent> <S-t> :tabnew<CR>
+
+"" ctrlp.vim
+
+" Customise ctrl-p ignored files
+set wildmode=list:longest,list:full
+set wildignore+=*.o,*.obj,.git,*.rbc,__pycache__,*/tmp/*,*.so,*.swp,*.zip,*.pyc,*.db,*.sqlite
+set wildignore+=*/.git/*,*.so,*.swp,*.zip,**/node_modules
+" ignore play framework build dir
+set wildignore+=*/target/*
+let g:ctrlp_custom_ignore = '\v[\/](node_modules|target|dist)|(\.(swp|tox|ico|git|hg|svn))$'
+let g:ctrlp_user_command = "find %s -type f | grep -Ev '"+ g:ctrlp_custom_ignore +"'"
+let g:ctrlp_use_caching = 1
+
+cnoremap <C-P> <C-R>=expand("%:p:h") . "/" <CR>
+noremap <leader>b :CtrlPBuffer<CR>
+let g:ctrlp_open_new_file = 'r'
+let g:ctrlp_cache_dir = $HOME . '/.cache/ctrlp'
+
+" Tagbar
+map <Leader>tt :TagbarToggle<CR>
+let g:tagbar_autofocus = 1
+
+" Disable visualbell
+set noerrorbells visualbell t_vb=
+if has('autocmd')
+  autocmd GUIEnter * set visualbell t_vb=
+endif
+
+"" Copy/Paste/Cut
+if has('unnamedplus')
+  set clipboard=unnamed,unnamedplus
+endif
+
+"" Buffer nav
+noremap <leader>z :bp<CR>
+noremap <leader>q :bp<CR>
+noremap <leader>x :bn<CR>
+noremap <leader>w :bn<CR>
+
+"" Close buffer
+noremap <leader>c :bd<CR>
+
+"" Clean search (highlight)
+nnoremap <silent> <leader><space> :noh<cr>
+
+"" Switching windows
+noremap <C-j> <C-w>j
+noremap <C-k> <C-w>k
+noremap <C-l> <C-w>l
+noremap <C-h> <C-w>h
+
+" Search mappings: These will make it so that going to the next one in a
+" search will center on the line it's found in.
+nnoremap n nzzzv
+nnoremap N Nzzzv
+
+" 插入模式下用绝对行号, 普通模式下用相对
+autocmd InsertEnter * :set norelativenumber number
+autocmd InsertLeave * :set relativenumber
+
+" 调整缩进后自动选中，方便再次操作
+vnoremap < <gv
+vnoremap > >gv
+
+" 复制选中区到系统剪切板中
+vnoremap <leader>y "+y
+
+"syntastic
+
+nmap <silent> <C-z> <Plug>(ale_previous_wrap)
+nmap <silent> <C-x> <Plug>(ale_next_wrap)
+
+" Start interactive EasyAlign in visual mode (e.g. vipga)
+xmap ga <Plug>(EasyAlign)
+
+" Start interactive EasyAlign for a motion/text object (e.g. gaip)
+nmap ga <Plug>(EasyAlign)
+
+"*****************************************************************************
+"" Custom command maps
+"*****************************************************************************
+
+" Change Working Directory to that of the current file
+cmap cd. lcd %:p:h
+
+" For when you forget to sudo.. Really Write the file.
+cmap w!! w !sudo tee % >/dev/null
+
+"*****************************************************************************
+"" Auto complete configuration
+"*****************************************************************************
+" neocomplete {
+
+" Disable AutoComplPop.
+let g:acp_enableAtStartup = 0
+" Use neocomplete.
+let g:neocomplete#enable_at_startup = 1
+" Use smartcase.
+let g:neocomplete#enable_smart_case = 1
+" Set minimum syntax keyword length.
+let g:neocomplete#enable_auto_delimiter = 1
+"let g:neocomplete#enable_auto_select = 1
+
+" Define dictionary.
+let g:neocomplete#sources#dictionary#dictionaries = {
+      \ 'default' : '',
+      \ 'vimshell' : $HOME.'/.vimshell_hist',
+      \ 'scheme' : $HOME.'/.gosh_completions'
+      \ }
+
+" Define keyword.
+if !exists('g:neocomplete#keyword_patterns')
+  let g:neocomplete#keyword_patterns = {}
+endif
+let g:neocomplete#keyword_patterns['default'] = '\h\w*'
+
+" Plugin key-mappings.
+inoremap <expr><C-g>     neocomplete#undo_completion()
+inoremap <expr><C-l>     neocomplete#complete_common_string()
+
+" Recommended key-mappings.
+" <CR>: close popup and save indent.
+inoremap <silent> <CR> <C-r>=<SID>my_cr_function()<CR>
+function! s:my_cr_function()
+  "return (pumvisible() ? "\<C-y>" : "" ) . "\<CR>"
+  " For no inserting <CR> key.
+  return pumvisible() ? "\<C-y>" : "\<CR>"
+endfunction
+" <TAB>: completion.
+inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
+" <C-h>, <BS>: close popup and delete backword char.
+inoremap <expr><C-h> neocomplete#smart_close_popup()."\<C-h>"
+inoremap <expr><BS> neocomplete#smart_close_popup()."\<C-h>"
+" Close popup by <Space>.
+
+" Enable omni completion.
+augroup testgroup
+  au filetype css setlocal omnifunc=csscomplete#completecss
+  au filetype html,markdown setlocal omnifunc=htmlcomplete#completetags
+  au filetype javascript setlocal omnifunc=tern#Complete
+  au filetype python setlocal omnifunc=pythoncomplete#complete
+  au fileType xml setlocal omnifunc=xmlcomplete#CompleteTags
+  au FileType haskell setlocal omnifunc=necoghc#omnifunc
+augroup END
+
+" Enable heavy omni completion.
+if !exists('g:neocomplete#sources#omni#input_patterns')
+  let g:neocomplete#sources#omni#input_patterns = {}
+endif
+let g:neocomplete#sources#omni#input_patterns.php = '[^. \t]->\h\w*\|\h\w*::'
+let g:neocomplete#sources#omni#input_patterns.c = '[^.[:digit:] *\t]\%(\.\|->\)'
+let g:neocomplete#sources#omni#input_patterns.cpp = '[^.[:digit:] *\t]\%(\.\|->\)\|\h\w*::'
+let g:neocomplete#sources#omni#input_patterns.perl = '\h\w*->\h\w*\|\h\w*::'
+
+imap <C-k> <Plug>(neosnippet_expand_or_jump)
+smap <C-k> <Plug>(neosnippet_expand_or_jump)
+" }
+
+"*****************************************************************************
+"" Custom language configs
+"*****************************************************************************
+
+" javascript
+let g:javascript_enable_domhtmlcss = 1
+
+" Haskell
+
+" Disable haskell-vim omnifunc
+let g:haskellmode_completion_ghc = 0
+" Show detailed information (type) of symbols.
+let g:necoghc_enable_detailed_browse = 1
+
+"GHC-MOD
+"map <silent> <Space>y :GhcModTypeInsert<CR>
+"map <silent> <Space>s :GhcModSplitFunCase<CR>
+"map <silent> <Space>t :GhcModType<CR>
+"map <silent> <Space>h :GhcModTypeClear<CR>
+"map <silent> <Space>c :GhcModCheckAndLintAsync<CR>
+
+" Tags for tagbar
+if executable('lushtags')
+  let g:tagbar_type_haskell = {
+        \ 'ctagsbin' : 'lushtags',
+        \ 'ctagsargs' : '--ignore-parse-error --',
+        \ 'kinds' : [
+        \ 'm:module:0',
+        \ 'e:exports:1',
+        \ 'i:imports:1',
+        \ 't:declarations:0',
+        \ 'd:declarations:1',
+        \ 'n:declarations:1',
+        \ 'f:functions:0',
+        \ 'c:constructors:0'
+        \ ],
+        \ 'sro' : '.',
+        \ 'kind2scope' : {
+        \ 'd' : 'data',
+        \ 'n' : 'newtype',
+        \ 'c' : 'constructor',
+        \ 't' : 'type'
+        \ },
+        \ 'scope2kind' : {
+        \ 'data' : 'd',
+        \ 'newtype' : 'n',
+        \ 'constructor' : 'c',
+        \ 'type' : 't'
+        \ }
+        \ }
+endif
+
+"*****************************************************************************
+"" Self Customise
+"*****************************************************************************
+
+""Hard Mode
+nnoremap <up>    <nop>
+nnoremap <down>  <nop>
+nnoremap <left>  <nop>
+nnoremap <right> <nop>
+inoremap <up>    <nop>
+inoremap <down>  <nop>
+inoremap <left>  <nop>
+inoremap <right> <nop>
