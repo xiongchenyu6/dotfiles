@@ -1,1 +1,29 @@
-export PATH=$HOME/bin:/usr/local/bin:$PATH
+if [[ "$OSTYPE" == "linux-gnu" ]]; then
+    # ...
+else [[ "$OSTYPE" == "darwin"* ]];
+    # Mac OSX
+    export ANDROID_HOME='/usr/local/share/android-sdk'
+    export PATH=/usr/local/bin:$PATH
+    export PATH=/usr/local/sbin:$PATH
+    export PATH=~/.local/bin/:$PATH
+    export JAVA_HOME="$(/usr/libexec/java_home -v 1.8)"
+fi
+
+# ssh
+export SSH_KEY_PATH="~/.ssh/rsa_id"
+export PATH=~/.stack/programs/x86_64-osx/ghc-8.0.2/bin:$PATH
+
+#android
+alias eml='/usr/local/share/android-sdk/emulator/emulator -avd Nexus_S_API_25'
+
+# amazon
+alias aws='ssh -i "Freeman.pem" ubuntu@52.220.46.164'
+alias awss='ssh -i "Freeman.pem" ubuntu@52.220.46.164 -t tmux a'
+alias vim='nvim'
+
+if [[ "$OSTYPE" == "linux-gnu" ]]; then
+    # ...
+else [[ "$OSTYPE" == "darwin"* ]];
+    # Mac OSX
+    test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
+fi

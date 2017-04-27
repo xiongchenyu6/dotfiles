@@ -11,7 +11,7 @@ ZSH_THEME="powerlevel9k/powerlevel9k"
 POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(disk_usage dir dir_writable vcs)
 POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(status root_indicator background_jobs ram)
 
-plugins=(react-native tmux git zsh-autosuggestions zsh-syntax-highlighting z)
+plugins=(emacs react-native tmux git zsh-autosuggestions zsh-syntax-highlighting z)
 
 if [[ "$OSTYPE" == "linux-gnu" ]]; then
     plugins+=(ubuntu)
@@ -21,7 +21,6 @@ fi
 
 source $ZSH/oh-my-zsh.sh
 
-source ~/.bash_profile
 # Preferred editor for local and remote sessions
 if [[ -n $SSH_CONNECTION ]]; then
     export EDITOR='vim'
