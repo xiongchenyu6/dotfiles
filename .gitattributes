@@ -6,3 +6,4 @@
 *.env.json filter=git-crypt diff=git-crypt
 *.yaml filter=git-crypt diff=git-crypt
 *.yml filter=git-crypt diff=git-crypt
+netrc filter=git-crypt diff=git-crypt

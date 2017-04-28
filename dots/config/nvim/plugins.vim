@@ -2,7 +2,7 @@
 "" Vim-PLug core
 "*****************************************************************************
 " check whether vim-plug is installed and install it if necessary
-let plugpath = expand('<sfile>:p:h'). '/autoload/plug.vim'
+let plugpath = expand('<sfile>:p:h'). '~/.config/nvim/autoload/plug.vim'
 if !filereadable(plugpath)
     if executable('curl')
         let plugurl = 'https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'

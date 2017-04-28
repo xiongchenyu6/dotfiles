@@ -1,0 +1,28 @@
+[general]
+accounts = Gmail
+maxsyncaccounts = 3
+pythonfile = ~/.offlineimap.py
+
+[Account Gmail]
+localrepository = Local
+remoterepository = Remote
+
+[Repository Local]
+type = Maildir
+localfolders = ~/Mail
+
+[Repository Remote]
+type = IMAP
+remotehost = imap.gmail.com
+remoteuser = xiongchenyu6@gmail.com
+remotepasseval = getnetrc(machine="imap.gmail.com",login='xiongchenyu6@gmail')['password']
+ssl = yes
+
+oauth2_client_id = 903515141994-l1ol14h7ute5sa26ol27oafnfnd659hu.apps.googleusercontent.com
+oauth2_client_secret = cXiJFAAocxj9zWpCJwtt50eM
+oauth2_request_url = https://accounts.google.com/o/oauth2/token
+oauth2_refresh_token = 1/Eixy5I_PRGB_Nki8dKvLs1uSTZPwPEabzDr_7vEKG3I
+
+sslcacertfile = /etc/ssl/certs/ca-bundle.crt
+maxconnections = 1
+realdelete = no

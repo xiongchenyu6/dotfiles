@@ -1,17 +1,19 @@
 export ZSH=~/.oh-my-zsh
-export LANGUAGE=en_US.UTF-8
-export LANG=en_US.UTF-8
-export LC_ALL=en_US.UTF-8
-export TERM=xterm-256color
 
 POWERLEVEL9K_MODE='nerdfont-fontconfig'
 POWERLEVEL9K_VCS_SHOW_SUBMODULE_DIRTY=false
 
-ZSH_THEME="powerlevel9k/powerlevel9k"
+if [ -n "$INSIDE_EMACS" ]; then
+    export ZSH_THEME="robbyrussell"
+else
+    export ZSH_THEME="powerlevel9k/powerlevel9k"
+  fi
+
 POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(disk_usage dir dir_writable vcs)
 POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(status root_indicator background_jobs ram)
 
 plugins=(emacs react-native tmux git zsh-autosuggestions zsh-syntax-highlighting z)
+source $ZSH/oh-my-zsh.sh
 
 if [[ "$OSTYPE" == "linux-gnu" ]]; then
     plugins+=(ubuntu)
@@ -19,7 +21,6 @@ else [[ "$OSTYPE" == "darwin"* ]];
     plugins+=(osx)
 fi
 
-source $ZSH/oh-my-zsh.sh
 
 # Preferred editor for local and remote sessions
 if [[ -n $SSH_CONNECTION ]]; then
@@ -27,16 +28,3 @@ if [[ -n $SSH_CONNECTION ]]; then
 else
     export EDITOR='mvim'
 fi
-
-#For easy use code
-codi() {
-    local syntax="${1:-python}"
-    shift
-    vim -c \
-        "let g:startify_disable_at_vimenter = 1 |\
-        set bt=nofile ls=0 noru nonu nornu |\
-        hi ColorColumn ctermbg=NONE |\
-        hi VertSplit ctermbg=NONE |\
-        hi NonText ctermfg=0 |\
-        Codi $syntax" "$@"
-}

@@ -12,6 +12,11 @@ fi
 # ssh
 export SSH_KEY_PATH="~/.ssh/rsa_id"
 export PATH=~/.stack/programs/x86_64-osx/ghc-8.0.2/bin:$PATH
+export PATH="/usr/local/opt/sqlite/bin:$PATH"
+export LANGUAGE=en_US.UTF-8
+export LANG=en_US.UTF-8
+export LC_ALL=en_US.UTF-8
+export TERM=xterm-256color
 
 #android
 alias eml='/usr/local/share/android-sdk/emulator/emulator -avd Nexus_S_API_25'
@@ -25,5 +30,4 @@ if [[ "$OSTYPE" == "linux-gnu" ]]; then
     # ...
 else [[ "$OSTYPE" == "darwin"* ]];
     # Mac OSX
-    test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
 fi

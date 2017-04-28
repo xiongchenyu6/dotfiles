@@ -50,6 +50,5 @@ git fetch dritter
 git checkout -t dritter/async_all_the_segments
 
 brew tap caskroom/fonts
-brew cask install font-hack-nerd-font
-
+brew cask install font-Inconsolata-nerd-font-mono
 brew services start mariadb
