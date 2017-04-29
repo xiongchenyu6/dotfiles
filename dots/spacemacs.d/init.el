@@ -345,6 +345,8 @@ you should place your code here."
             (setq flycheck-eslintrc rc-path)))))
 
   (add-hook 'flycheck-mode-hook 'codefalling//reset-eslint-rc)
+
+  (setq paradox-github-token 3db959a368a082f4290d0c81313e46418d29f199)
   )
 
 (defun dotspacemacs/emacs-custom-settings ()

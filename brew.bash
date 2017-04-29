@@ -52,3 +52,7 @@ git checkout -t dritter/async_all_the_segments
 brew tap caskroom/fonts
 brew cask install font-Inconsolata-nerd-font-mono
 brew services start mariadb
+
+brew tap d12frosted/emacs-plus
+brew install emacs-plus
+brew linkapps emacs-plus
