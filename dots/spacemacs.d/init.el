@@ -31,6 +31,7 @@ values."
    ;; List of configuration layers to load.
    dotspacemacs-configuration-layers
    '(
+     python
      ;; ----------------------------------------------------------------
      ;; Example of useful layers you may want to use right away.
      ;; Uncomment some layer names and press <SPC f e R> (Vim style) or
@@ -45,19 +46,25 @@ values."
      markdown
      (org :variables org-projectile-file "~/Dropbox/Org/ProjectsTodo.org")
      (shell :variables
-             shell-default-height 30
-             shell-default-position 'bottom
-             shell-default-shell 'ansi-term)
+            shell-default-height 30
+            shell-default-position 'bottom
+            shell-default-shell 'ansi-term)
      (haskell :variables
               haskell-completion-backend 'ghc-mod
               haskell-process-type 'stack-ghci)
      javascript
      html
+     react
+     plantuml
      dash
      erc
      mu4e
      spell-checking
-     syntax-checking
+     (syntax-checking :variables syntax-checking-enable-tooltips t)
+     (wakatime :variables
+               wakatime-api-key  "06fb08d0-68a4-4b39-bbb0-d34d325dc046"
+               ;; use the actual wakatime path
+               wakatime-cli-path "/usr/local/bin/wakatime")
      )
    ;; List of additional packages that will be installed without being
    ;; wrapped in a layer. If you need some configuration for these
@@ -261,13 +268,13 @@ values."
    ;; This variable can also be set to a property list for finer control:
    ;; (default nil)
    dotspacemacs-line-numbers '(:relative t
-               :disabled-for-modes dired-mode
-               doc-view-mode
-               markdown-mode
-               org-mode
-               pdf-view-mode
-               text-mode
-               :size-limit-kb 1000)
+                                         :disabled-for-modes dired-mode
+                                         doc-view-mode
+                                         markdown-mode
+                                         org-mode
+                                         pdf-view-mode
+                                         text-mode
+                                         :size-limit-kb 1000)
    ;; Code folding method. Possible values are `evil' and `origami'.
    ;; (default 'evil)
    dotspacemacs-folding-method 'evil
@@ -317,15 +324,27 @@ layers configuration.
 This is the place where most of your configurations should be done. Unless it is
 explicitly specified that a variable should be set before a package is loaded,
 you should place your code here."
-(define-key evil-normal-state-map (kbd "j") 'evil-next-visual-line)
-(define-key evil-normal-state-map (kbd "k") 'evil-previous-visual-line)
-(custom-set-variables
- '(org-directory "~/Dropbox/Org"
- '(org-agenda-files (list org-directory)))
- )
-(setq mu4e-maildir "~/Mail" mu4e-view-show-images t mu4e-update-interval 300 mu4e-index-lazy-check t)
-(setq helm-dash-browser-func 'eww)
-)
+  (define-key evil-normal-state-map (kbd "j") 'evil-next-visual-line)
+  (define-key evil-normal-state-map (kbd "k") 'evil-previous-visual-line)
+  (setq mu4e-maildir "~/Mail" mu4e-view-show-images t mu4e-update-interval 300 mu4e-index-lazy-check t)
+  (setq helm-dash-browser-func 'eww)
+  ;; use local eslint if one exists
+  (defun my/use-eslint-from-node-modules ()
+    (let ((eslint (if (projectile-project-p)
+                       (concat (projectile-project-root) "node_modules/eslint/bin/eslint.js"))))
+      (if (file-exists-p eslint) (setq-default flycheck-javascript-eslint-executable eslint))))
+
+  (add-hook 'flycheck-mode-hook 'my/use-eslint-from-node-modules)
+  (defun codefalling//reset-eslint-rc ()
+    (let ((rc-path (if (projectile-project-p)
+                       (concat (projectile-project-root) ".eslintrc"))))
+      (if (file-exists-p rc-path)
+          (progn
+            (message rc-path)
+            (setq flycheck-eslintrc rc-path)))))
+
+  (add-hook 'flycheck-mode-hook 'codefalling//reset-eslint-rc)
+  )
 
 (defun dotspacemacs/emacs-custom-settings ()
   "Emacs custom settings.
@@ -338,10 +357,11 @@ This function is called at the very end of Spacemacs initialization."
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(evil-want-Y-yank-to-eol nil)
+ '(org-agenda-files (list org-directory))
  '(org-directory "~/Dropbox/Org")
  '(package-selected-packages
    (quote
-    (mu4e-maildirs-extension mu4e-alert erc-yt erc-view-log erc-terminal-notifier erc-social-graph erc-image erc-hl-nicks gmail-message-mode ham-mode html-to-markdown flymd edit-server helm-dash dash-at-point magithub magit-gh-pulls github-search github-clone gist gh marshal logito ht symon string-inflection meghanada helm-purpose window-purpose imenu-list groovy-mode groovy-imports pcache gradle-mode company-emacs-eclim eclim browse-at-remote ghc haskell-mode skewer-mode simple-httpd json-snatcher json-reformat multiple-cursors js2-mode dash-functional tern haml-mode web-completion-data alert log4e gntp markdown-mode gitignore-mode fringe-helper git-gutter+ git-gutter flyspell-correct pos-tip flycheck magit magit-popup git-commit with-editor sbt-mode scala-mode company yasnippet auto-complete define-word xterm-color ws-butler winum which-key web-mode web-beautify volatile-highlights vi-tilde-fringe uuidgen use-package unfill toc-org tagedit spaceline smeargle slim-mode shell-pop scss-mode sass-mode reveal-in-osx-finder restart-emacs rainbow-delimiters pug-mode popwin persp-mode pcre2el pbcopy paradox osx-trash osx-dictionary orgit org-projectile org-present org-pomodoro org-download org-bullets open-junk-file noflet neotree mwim multi-term move-text mmm-mode markdown-toc magit-gitflow macrostep lorem-ipsum livid-mode linum-relative link-hint less-css-mode launchctl json-mode js2-refactor js-doc intero info+ indent-guide hungry-delete htmlize hlint-refactor hl-todo hindent highlight-parentheses highlight-numbers highlight-indentation hide-comnt help-fns+ helm-themes helm-swoop helm-projectile helm-mode-manager helm-make helm-hoogle helm-gitignore helm-flx helm-descbinds helm-css-scss helm-company helm-c-yasnippet helm-ag haskell-snippets google-translate golden-ratio gnuplot gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link git-gutter-fringe git-gutter-fringe+ gh-md fuzzy flyspell-correct-helm flycheck-pos-tip flycheck-haskell flx-ido fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-magit evil-lisp-state evil-indent-plus evil-iedit-state evil-exchange evil-escape evil-ediff evil-args evil-anzu eval-sexp-fu eshell-z eshell-prompt-extras esh-help ensime emmet-mode elisp-slime-nav dumb-jump diff-hl company-web company-tern company-statistics company-ghci company-ghc company-cabal column-enforce-mode coffee-mode cmm-mode clean-aindent-mode auto-yasnippet auto-highlight-symbol auto-dictionary auto-compile aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line ac-ispell))))
+    (plantuml-mode wakatime-mode helm helm-core s yapfify pyvenv pytest pyenv-mode py-isort pip-requirements live-py-mode hy-mode helm-pydoc cython-mode company-anaconda anaconda-mode pythonic spotify helm-spotify multi mu4e-maildirs-extension mu4e-alert erc-yt erc-view-log erc-terminal-notifier erc-social-graph erc-image erc-hl-nicks gmail-message-mode ham-mode html-to-markdown flymd edit-server helm-dash dash-at-point magithub magit-gh-pulls github-search github-clone gist gh marshal logito ht symon string-inflection meghanada helm-purpose window-purpose imenu-list groovy-mode groovy-imports pcache gradle-mode company-emacs-eclim eclim browse-at-remote ghc haskell-mode skewer-mode simple-httpd json-snatcher json-reformat multiple-cursors js2-mode dash-functional tern haml-mode web-completion-data alert log4e gntp markdown-mode gitignore-mode fringe-helper git-gutter+ git-gutter flyspell-correct pos-tip flycheck magit magit-popup git-commit with-editor sbt-mode scala-mode company yasnippet auto-complete define-word xterm-color ws-butler winum which-key web-mode web-beautify volatile-highlights vi-tilde-fringe uuidgen use-package unfill toc-org tagedit spaceline smeargle slim-mode shell-pop scss-mode sass-mode reveal-in-osx-finder restart-emacs rainbow-delimiters pug-mode popwin persp-mode pcre2el pbcopy paradox osx-trash osx-dictionary orgit org-projectile org-present org-pomodoro org-download org-bullets open-junk-file noflet neotree mwim multi-term move-text mmm-mode markdown-toc magit-gitflow macrostep lorem-ipsum livid-mode linum-relative link-hint less-css-mode launchctl json-mode js2-refactor js-doc intero info+ indent-guide hungry-delete htmlize hlint-refactor hl-todo hindent highlight-parentheses highlight-numbers highlight-indentation hide-comnt help-fns+ helm-themes helm-swoop helm-projectile helm-mode-manager helm-make helm-hoogle helm-gitignore helm-flx helm-descbinds helm-css-scss helm-company helm-c-yasnippet helm-ag haskell-snippets google-translate golden-ratio gnuplot gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link git-gutter-fringe git-gutter-fringe+ gh-md fuzzy flyspell-correct-helm flycheck-pos-tip flycheck-haskell flx-ido fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-magit evil-lisp-state evil-indent-plus evil-iedit-state evil-exchange evil-escape evil-ediff evil-args evil-anzu eval-sexp-fu eshell-z eshell-prompt-extras esh-help ensime emmet-mode elisp-slime-nav dumb-jump diff-hl company-web company-tern company-statistics company-ghci company-ghc company-cabal column-enforce-mode coffee-mode cmm-mode clean-aindent-mode auto-yasnippet auto-highlight-symbol auto-dictionary auto-compile aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line ac-ispell))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.

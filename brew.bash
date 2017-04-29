@@ -27,9 +27,9 @@ brew cask install "${apps[@]}"
 services=(
     node
     tmux
-    vim
     mariadb
     git
+    haskell
 )
 # Install and Setup MySQL
 brew install "${services[@]}"
