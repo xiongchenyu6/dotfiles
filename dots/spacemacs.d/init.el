@@ -42,6 +42,7 @@ values."
      better-defaults
      scala
      emacs-lisp
+     git
      github
      markdown
      (org :variables org-projectile-file "~/Dropbox/Org/ProjectsTodo.org")
