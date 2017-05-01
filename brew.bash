@@ -60,3 +60,4 @@ brew linkapps emacs-plus
 brew install ledger
 
 brew install poppler automake
+brew install msmtp

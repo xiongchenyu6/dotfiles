@@ -24,71 +24,66 @@ values."
    ;; List of additional paths where to look for configuration layers.
    ;; Paths must have a trailing slash (i.e. `~/.mycontribs/') dotspacemacs-configuration-layer-path '()
    ;; List of configuration layers to load.
-   dotspacemacs-configuration-layers '(python
-   ;; ----------------------------------------------------------------
-   ;; Example of useful layers you may want to use right away.
-   ;; Uncomment some layer names and press <SPC f e R> (Vim style) or
-   ;; <M-m f e R> (Emacs style) to install them.
-   ;; ---------------------------------------------------------------- helm auto-completion better-defaults scala
-   emacs-lisp
-   git
-   github
-   markdown
-   (org :variables org-projectile-file
-        "~/Dropbox/Org/ProjectsTodo.org")
-   (shell :variables shell-default-height
-          30 shell-default-position 'bottom shell-default-shell
-          'multiterm)
-   (haskell :variables haskell-completion-backend'ghc-mod
-            haskell-process-type 'stack-ghci)
-   javascript
-   html
-   react
-   plantuml
-   dash
-   erc
-   emoji
-   xkcd
-   mu4e
-   semantic
-   finance
-   pdf-tools
-   (ranger :variables ranger-show-preview
-           t)
-   fasd
-   (geolocation :variables geolocation-enable-weather-forecast
-                t)
-   spell-checking
-   (auto-completion :variables auto-completion-enable-help-tooltip
-                    t auto-completion-enable-sort-by-usage t)
-   (syntax-checking :variables syntax-checking-enable-tooltips
-                    t)
-   (wakatime :variables wakatime-api-key
-             "06fb08d0-68a4-4b39-bbb0-d34d325dc046"
-             ;; use the actual wakatime path
-             wakatime-cli-path
-             "/usr/local/bin/wakatime"))
-  ;; List of additional packages that will be installed without being
-  ;; wrapped in a layer. If you need some configuration for these
-  ;; packages, then consider creating a layer. You can also put the
-  ;; configuration in `dotspacemacs/user-config'.
-  dotspacemacs-additional-packages
-  '()
-  ;; A list of packages that cannot be updated.
-  dotspacemacs-frozen-packages
-  '()
-  ;; A list of packages that will not be installed and loaded.
-  dotspacemacs-excluded-packages
-  '(evil-escape)
-  ;; Defines the behaviour of Spacemacs when installing packages.
-  ;; Possible values are `used-only', `used-but-keep-unused' and `all'.
-  ;; `used-only' installs only explicitly used packages and uninstall any
-  ;; unused packages as well as their unused dependencies.
-  ;; `used-but-keep-unused' installs only the used packages but won't uninstall
-  ;; them if they become unused. `all' installs *all* packages supported by
-  ;; Spacemacs and never uninstall them. (default is `used-only')
-  dotspacemacs-install-packages
-  'used-only))
+   dotspacemacs-configuration-layers '(
+                                       vimscript
+                                       python
+                                       emacs-lisp
+                                       git
+                                       github
+                                       markdown
+                                       (org :variables org-projectile-file
+                                            "~/Dropbox/Org/ProjectsTodo.org")
+                                       (shell :variables shell-default-height
+                                              30 shell-default-position 'bottom shell-default-shell
+                                              'multiterm)
+                                       (haskell :variables haskell-completion-backend'ghc-mod
+                                                haskell-process-type 'stack-ghci)
+                                       javascript
+                                       html
+                                       react
+                                       plantuml
+                                       dash
+                                       erc
+                                       emoji
+                                       xkcd
+                                       mu4e
+                                       finance
+                                       pdf-tools
+                                       (ranger :variables ranger-show-preview
+                                               t)
+                                       fasd
+                                       (geolocation :variables geolocation-enable-weather-forecast
+                                                    t)
+                                       spell-checking
+                                       (auto-completion :variables auto-completion-enable-help-tooltip
+                                                        t auto-completion-enable-sort-by-usage t)
+                                       (syntax-checking :variables syntax-checking-enable-tooltips
+                                                        t)
+                                       (wakatime :variables wakatime-api-key
+                                                 "06fb08d0-68a4-4b39-bbb0-d34d325dc046"
+                                                 ;; use the actual wakatime path wakatime-cli-path
+                                                 "/usr/local/bin/wakatime"))
+   ;; List of additional packages that will be installed without being
+   ;; wrapped in a layer. If you need some configuration for these
+   ;; packages, then consider creating a layer. You can also put the
+   ;; configuration in `dotspacemacs/user-config'.
+   dotspacemacs-additional-packages
+   '()
+   ;; A list of packages that cannot be updated.
+   dotspacemacs-frozen-packages
+   '()
+   ;; A list of packages that will not be installed and loaded.
+   dotspacemacs-excluded-packages
+   '(evil-escape)
+   ;; Defines the behaviour of Spacemacs when installing packages.
+   ;; Possible values are `used-only', `used-but-keep-unused' and `all'.
+   ;; `used-only' installs only explicitly used packages and uninstall any
+   ;; unused packages as well as their unused dependencies.
+   ;; `used-but-keep-unused' installs only the used packages but won't uninstall
+   ;; them if they become unused. `all' installs *all* packages supported by
+   ;; Spacemacs and never uninstall them. (default is `used-only')
+   dotspacemacs-install-packages
+   'used-only))
 
 (defun dotspacemacs/init ()
   "Initialization function.
@@ -109,10 +104,12 @@ values."
    ;; If non nil then spacemacs will check for updates at startup
    ;; when the current branch is not `develop'. Note that checking for
    ;; new versions works via git commands, thus it calls GitHub services
-   ;; whenever you start Emacs. (default nil) dotspacemacs-check-for-update nil
+   ;; whenever you start Emacs. (default nil)
+   dotspacemacs-check-for-update nil
    ;; If non-nil, a form that evaluates to a package directory. For example, to
    ;; use different package directories for different Emacs versions, set this
-   ;; to `emacs-version'. dotspacemacs-elpa-subdirectory nil
+   ;; to `emacs-version'.
+   dotspacemacs-elpa-subdirectory nil
    ;; One of `vim', `emacs' or `hybrid'.
    ;; `hybrid' is like `vim' except that `insert state' is replaced by the
    ;; `hybrid state' with `emacs' key bindings. The value can also be a list
@@ -379,25 +376,21 @@ you should place your code here."
   (setq ranger-show-literal nil)
   (setq ranfasdger-ignored-extensions '("mkv" "iso" "mp4"))
   (setq ranger-max-preview-size 10)
-  ;; irc
-  (setq rcirc-server-alist
-       '(("irc.freenode.net"
-          :port "6667"
-          :user "boj"
-          :nick "boj"
-          :channels ("#haskell"
-                     "#haskell-beginners"
-                     "#haskell-infrastructure"))))
-  (setq rcirc-omit-responses '("JOIN" "PART" "QUIT" "NICK" "AWAY"))
-  (defun bojo/rcirc-setup ()
-   (set (make-local-variable 'scroll-conservatively) 8192))
-  (add-hook 'rcirc-mode-hook 'bojo/rcirc-setup)
   ;;mu4e
-  (setq mu4e-maildir "~/Mail"
-        mu4e-view-show-images
-        t mu4e-update-interval 300
-        mu4e-index-lazy-check
-        t)
+  (setq mu4e-attachment-dir "~/Downloads"
+        mu4e-maildir "~/Mail"
+        mu4e-get-mail-command "mbsync -a"
+        mu4e-update-interval 60
+        mu4e-view-show-images t
+        mu4e-index-lazy-check t
+        mu4e-html2text-command "w3m -dump -T text/html")
+  ;;use msmtp
+  (setq message-send-mail-function 'message-send-mail-with-sendmail)
+  (setq sendmail-program "msmtp")
+  ; tell msmtp to choose the SMTP server according to the from field in the outgoing email
+  (setq message-sendmail-extra-arguments '("--read-envelope-from"))
+  (setq message-sendmail-f-is-evil 't)
+
   ;;dash settings
   (setq helm-dash-browser-func 'eww)
   ;;geolocation settings
@@ -530,70 +523,70 @@ you should place your code here."
       (setq org-agenda-compact-blocks t)
       ;; Custom agenda command definitions
       (setq org-agenda-custom-commands '(("N" "Notes"
-                                           tags
-                                           "NOTE"
-                                           ((org-agenda-overriding-header "Notes")
-                                            (org-tags-match-list-sublevels t)))
-                                          ("h" "Habits"
-                                           tags-todo
-                                           "STYLE=\"habit\""
-                                           ((org-agenda-overriding-header "Habits")
-                                            (org-agenda-sorting-strategy '(todo-state-down effort-up category-keep))))
-                                          (" " "Agenda"
-                                           ((agenda "" nil)
-                                            (tags "REFILE"
-                                                  ((org-agenda-overriding-header "Tasks to Refile")
-                                                   (org-tags-match-list-sublevels nil)))
-                                            (tags-todo "-CANCELLED/!"
-                                                       ((org-agenda-overriding-header "Stuck Projects")
-                                                        (org-agenda-skip-function 'bh/skip-non-stuck-projects)
-                                                        (org-agenda-sorting-strategy '(category-keep))))
-                                            (tags-todo "-HOLD-CANCELLED/!"
-                                                       ((org-agenda-overriding-header "Projects")
-                                                        (org-agenda-skip-function 'bh/skip-non-projects)
-                                                        (org-tags-match-list-sublevels 'indented)
-                                                        (org-agenda-sorting-strategy '(category-keep))))
-                                            (tags-todo "-CANCELLED/!NEXT"
-                                                       ((org-agenda-overriding-header (concat "Project Next Tasks"
-                                                                                              (if bh/hide-scheduled-and-waiting-next-tasks
-                                                                                                  "" " (including WAITING and SCHEDULED tasks)")))
-                                                        (org-agenda-skip-function 'bh/skip-projects-and-habits-and-single-tasks)
-                                                        (org-tags-match-list-sublevels t)
-                                                        (org-agenda-todo-ignore-scheduled bh/hide-scheduled-and-waiting-next-tasks)
-                                                        (org-agenda-todo-ignore-deadlines bh/hide-scheduled-and-waiting-next-tasks)
-                                                        (org-agenda-todo-ignore-with-date bh/hide-scheduled-and-waiting-next-tasks)
-                                                        (org-agenda-sorting-strategy '(todo-state-down effort-up category-keep))))
-                                            (tags-todo "-REFILE-CANCELLED-WAITING-HOLD/!"
-                                                       ((org-agenda-overriding-header (concat "Project Subtasks"
-                                                                                              (if bh/hide-scheduled-and-waiting-next-tasks
-                                                                                                  "" " (including WAITING and SCHEDULED tasks)")))
-                                                        (org-agenda-skip-function 'bh/skip-non-project-tasks)
-                                                        (org-agenda-todo-ignore-scheduled bh/hide-scheduled-and-waiting-next-tasks)
-                                                        (org-agenda-todo-ignore-deadlines bh/hide-scheduled-and-waiting-next-tasks)
-                                                        (org-agenda-todo-ignore-with-date bh/hide-scheduled-and-waiting-next-tasks)
-                                                        (org-agenda-sorting-strategy '(category-keep))))
-                                            (tags-todo "-REFILE-CANCELLED-WAITING-HOLD/!"
-                                                       ((org-agenda-overriding-header (concat "Standalone Tasks"
-                                                                                              (if bh/hide-scheduled-and-waiting-next-tasks
-                                                                                                  "" " (including WAITING and SCHEDULED tasks)")))
-                                                        (org-agenda-skip-function 'bh/skip-project-tasks)
-                                                        (org-agenda-todo-ignore-scheduled bh/hide-scheduled-and-waiting-next-tasks)
-                                                        (org-agenda-todo-ignore-deadlines bh/hide-scheduled-and-waiting-next-tasks)
-                                                        (org-agenda-todo-ignore-with-date bh/hide-scheduled-and-waiting-next-tasks)
-                                                        (org-agenda-sorting-strategy '(category-keep))))
-                                            (tags-todo "-CANCELLED+WAITING|HOLD/!"
-                                                       ((org-agenda-overriding-header (concat "Waiting and Postponed Tasks"
-                                                                                              (if bh/hide-scheduled-and-waiting-next-tasks
-                                                                                                  "" " (including WAITING and SCHEDULED tasks)")))
-                                                        (org-agenda-skip-function 'bh/skip-non-tasks)
-                                                        (org-tags-match-list-sublevels nil)
-                                                        (org-agenda-todo-ignore-scheduled bh/hide-scheduled-and-waiting-next-tasks)
-                                                        (org-agenda-todo-ignore-deadlines bh/hide-scheduled-and-waiting-next-tasks)))
-                                            (tags "-REFILE/"
-                                                  ((org-agenda-overriding-header "Tasks to Archive")
-                                                   (org-agenda-skip-function 'bh/skip-non-archivable-tasks)
-                                                   (org-tags-match-list-sublevels nil))))
-                                           nil)))
+                                          tags
+                                          "NOTE"
+                                          ((org-agenda-overriding-header "Notes")
+                                           (org-tags-match-list-sublevels t)))
+                                         ("h" "Habits"
+                                          tags-todo
+                                          "STYLE=\"habit\""
+                                          ((org-agenda-overriding-header "Habits")
+                                           (org-agenda-sorting-strategy '(todo-state-down effort-up category-keep))))
+                                         (" " "Agenda"
+                                          ((agenda "" nil)
+                                           (tags "REFILE"
+                                                 ((org-agenda-overriding-header "Tasks to Refile")
+                                                  (org-tags-match-list-sublevels nil)))
+                                           (tags-todo "-CANCELLED/!"
+                                                      ((org-agenda-overriding-header "Stuck Projects")
+                                                       (org-agenda-skip-function 'bh/skip-non-stuck-projects)
+                                                       (org-agenda-sorting-strategy '(category-keep))))
+                                           (tags-todo "-HOLD-CANCELLED/!"
+                                                      ((org-agenda-overriding-header "Projects")
+                                                       (org-agenda-skip-function 'bh/skip-non-projects)
+                                                       (org-tags-match-list-sublevels 'indented)
+                                                       (org-agenda-sorting-strategy '(category-keep))))
+                                           (tags-todo "-CANCELLED/!NEXT"
+                                                      ((org-agenda-overriding-header (concat "Project Next Tasks"
+                                                                                             (if bh/hide-scheduled-and-waiting-next-tasks
+                                                                                                 "" " (including WAITING and SCHEDULED tasks)")))
+                                                       (org-agenda-skip-function 'bh/skip-projects-and-habits-and-single-tasks)
+                                                       (org-tags-match-list-sublevels t)
+                                                       (org-agenda-todo-ignore-scheduled bh/hide-scheduled-and-waiting-next-tasks)
+                                                       (org-agenda-todo-ignore-deadlines bh/hide-scheduled-and-waiting-next-tasks)
+                                                       (org-agenda-todo-ignore-with-date bh/hide-scheduled-and-waiting-next-tasks)
+                                                       (org-agenda-sorting-strategy '(todo-state-down effort-up category-keep))))
+                                           (tags-todo "-REFILE-CANCELLED-WAITING-HOLD/!"
+                                                      ((org-agenda-overriding-header (concat "Project Subtasks"
+                                                                                             (if bh/hide-scheduled-and-waiting-next-tasks
+                                                                                                 "" " (including WAITING and SCHEDULED tasks)")))
+                                                       (org-agenda-skip-function 'bh/skip-non-project-tasks)
+                                                       (org-agenda-todo-ignore-scheduled bh/hide-scheduled-and-waiting-next-tasks)
+                                                       (org-agenda-todo-ignore-deadlines bh/hide-scheduled-and-waiting-next-tasks)
+                                                       (org-agenda-todo-ignore-with-date bh/hide-scheduled-and-waiting-next-tasks)
+                                                       (org-agenda-sorting-strategy '(category-keep))))
+                                           (tags-todo "-REFILE-CANCELLED-WAITING-HOLD/!"
+                                                      ((org-agenda-overriding-header (concat "Standalone Tasks"
+                                                                                             (if bh/hide-scheduled-and-waiting-next-tasks
+                                                                                                 "" " (including WAITING and SCHEDULED tasks)")))
+                                                       (org-agenda-skip-function 'bh/skip-project-tasks)
+                                                       (org-agenda-todo-ignore-scheduled bh/hide-scheduled-and-waiting-next-tasks)
+                                                       (org-agenda-todo-ignore-deadlines bh/hide-scheduled-and-waiting-next-tasks)
+                                                       (org-agenda-todo-ignore-with-date bh/hide-scheduled-and-waiting-next-tasks)
+                                                       (org-agenda-sorting-strategy '(category-keep))))
+                                           (tags-todo "-CANCELLED+WAITING|HOLD/!"
+                                                      ((org-agenda-overriding-header (concat "Waiting and Postponed Tasks"
+                                                                                             (if bh/hide-scheduled-and-waiting-next-tasks
+                                                                                                 "" " (including WAITING and SCHEDULED tasks)")))
+                                                       (org-agenda-skip-function 'bh/skip-non-tasks)
+                                                       (org-tags-match-list-sublevels nil)
+                                                       (org-agenda-todo-ignore-scheduled bh/hide-scheduled-and-waiting-next-tasks)
+                                                       (org-agenda-todo-ignore-deadlines bh/hide-scheduled-and-waiting-next-tasks)))
+                                           (tags "-REFILE/"
+                                                 ((org-agenda-overriding-header "Tasks to Archive")
+                                                  (org-agenda-skip-function 'bh/skip-non-archivable-tasks)
+                                                  (org-tags-match-list-sublevels nil))))
+                                          nil)))
       (defun bh/verify-refile-target ()
         (add-hook 'org-clock-out-hook 'bh/remove-empty-drawer-on-clock-out
                   'append)))))
@@ -677,7 +670,10 @@ This function is called at the very end of Spacemacs initialization."
  '(evil-want-Y-yank-to-eol nil)
  '(package-selected-packages
    (quote
-    (yapfify xterm-color xkcd web-mode web-beautify wakatime-mode theme-changer tagedit sunshine stickyfunc-enhance srefactor smeargle slim-mode shell-pop scss-mode sass-mode rase ranger pyvenv pytest pyenv-mode py-isort pug-mode plantuml-mode pip-requirements pdf-tools tablist osx-location orgit org-projectile org-present org-pomodoro org-download multi-term mu4e-maildirs-extension mu4e-alert alert log4e gntp mmm-mode markdown-toc markdown-mode magit-gitflow magit-gh-pulls livid-mode skewer-mode simple-httpd live-py-mode less-css-mode ledger-mode json-mode json-snatcher json-reformat js2-refactor multiple-cursors js2-mode js-doc intero hy-mode htmlize hlint-refactor hindent helm-pydoc helm-hoogle helm-gitignore helm-dash helm-css-scss helm-company helm-c-yasnippet haskell-snippets haml-mode gnuplot gitignore-mode github-search github-clone github-browse-file gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link gist gh marshal logito pcache ht gh-md fuzzy flyspell-correct-helm flyspell-correct flycheck-pos-tip flycheck-ledger flycheck-haskell flycheck fasd evil-magit magit magit-popup git-commit with-editor eshell-z eshell-prompt-extras esh-help erc-yt erc-view-log erc-terminal-notifier erc-social-graph erc-image erc-hl-nicks emoji-cheat-sheet-plus emmet-mode dash-at-point cython-mode company-web web-completion-data company-tern dash-functional tern company-statistics company-quickhelp pos-tip company-ghci company-ghc ghc haskell-mode company-emoji company-cabal company-anaconda company coffee-mode cmm-mode auto-yasnippet yasnippet auto-dictionary anaconda-mode pythonic ac-ispell auto-complete ws-butler winum which-key volatile-highlights vi-tilde-fringe uuidgen use-package toc-org spaceline powerline restart-emacs request rainbow-delimiters popwin persp-mode pcre2el paradox spinner org-plus-contrib org-bullets open-junk-file neotree move-text macrostep lorem-ipsum linum-relative link-hint info+ indent-guide hydra hungry-delete hl-todo highlight-parentheses highlight-numbers parent-mode highlight-indentation hide-comnt help-fns+ helm-themes helm-swoop helm-projectile helm-mode-manager helm-make projectile pkg-info epl helm-flx helm-descbinds helm-ag google-translate golden-ratio flx-ido flx fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state evil-indent-plus evil-iedit-state evil-exchange evil-escape evil-ediff evil-args evil-anzu eval-sexp-fu elisp-slime-nav dumb-jump diminish define-word column-enforce-mode clean-aindent-mode bind-key auto-highlight-symbol auto-compile aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line))))
+    (vimrc-mode dactyl-mode yapfify xterm-color xkcd web-mode web-beautify wakatime-mode theme-changer tagedit sunshine stickyfunc-enhance srefactor smeargle slim-mode shell-pop scss-mode sass-mode rase ranger pyvenv pytest pyenv-mode py-isort pug-mode plantuml-mode pip-requirements pdf-tools tablist osx-location orgit org-projectile org-present org-pomodoro org-download multi-term mu4e-maildirs-extension mu4e-alert alert log4e gntp mmm-mode markdown-toc markdown-mode magit-gitflow magit-gh-pulls livid-mode skewer-mode simple-httpd live-py-mode less-css-mode ledger-mode json-mode json-snatcher json-reformat js2-refactor multiple-cursors js2-mode js-doc intero hy-mode htmlize hlint-refactor hindent helm-pydoc helm-hoogle helm-gitignore helm-dash helm-css-scss helm-company helm-c-yasnippet haskell-snippets haml-mode gnuplot gitignore-mode github-search github-clone github-browse-file gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link gist gh marshal logito pcache ht gh-md fuzzy flyspell-correct-helm flyspell-correct flycheck-pos-tip flycheck-ledger flycheck-haskell flycheck fasd evil-magit magit magit-popup git-commit with-editor eshell-z eshell-prompt-extras esh-help erc-yt erc-view-log erc-terminal-notifier erc-social-graph erc-image erc-hl-nicks emoji-cheat-sheet-plus emmet-mode dash-at-point cython-mode company-web web-completion-data company-tern dash-functional tern company-statistics company-quickhelp pos-tip company-ghci company-ghc ghc haskell-mode company-emoji company-cabal company-anaconda company coffee-mode cmm-mode auto-yasnippet yasnippet auto-dictionary anaconda-mode pythonic ac-ispell auto-complete ws-butler winum which-key volatile-highlights vi-tilde-fringe uuidgen use-package toc-org spaceline powerline restart-emacs request rainbow-delimiters popwin persp-mode pcre2el paradox spinner org-plus-contrib org-bullets open-junk-file neotree move-text macrostep lorem-ipsum linum-relative link-hint info+ indent-guide hydra hungry-delete hl-todo highlight-parentheses highlight-numbers parent-mode highlight-indentation hide-comnt help-fns+ helm-themes helm-swoop helm-projectile helm-mode-manager helm-make projectile pkg-info epl helm-flx helm-descbinds helm-ag google-translate golden-ratio flx-ido flx fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state evil-indent-plus evil-iedit-state evil-exchange evil-escape evil-ediff evil-args evil-anzu eval-sexp-fu elisp-slime-nav dumb-jump diminish define-word column-enforce-mode clean-aindent-mode bind-key auto-highlight-symbol auto-compile aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line)))
+ '(send-mail-function (quote smtpmail-send-it))
+ '(smtpmail-smtp-server "smtp.gmail.com")
+ '(smtpmail-smtp-service 25))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
