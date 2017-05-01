@@ -49,7 +49,7 @@ values."
      (shell :variables
             shell-default-height 30
             shell-default-position 'bottom
-            shell-default-shell 'ansi-term)
+            shell-default-shell 'multiterm)
      (haskell :variables
               haskell-completion-backend 'ghc-mod
               haskell-process-type 'stack-ghci)
@@ -60,6 +60,10 @@ values."
      dash
      erc
      mu4e
+     finance
+     (geolocation :variables
+                  geolocation-enable-location-service t
+                  geolocation-enable-weather-forecast t)
      spell-checking
      (syntax-checking :variables syntax-checking-enable-tooltips t)
      (wakatime :variables
@@ -75,7 +79,7 @@ values."
    ;; A list of packages that cannot be updated.
    dotspacemacs-frozen-packages '()
    ;; A list of packages that will not be installed and loaded.
-   dotspacemacs-excluded-packages '()
+   dotspacemacs-excluded-packages '(evil-escape)
    ;; Defines the behaviour of Spacemacs when installing packages.
    ;; Possible values are `used-only', `used-but-keep-unused' and `all'.
    ;; `used-only' installs only explicitly used packages and uninstall any
@@ -306,7 +310,7 @@ values."
    ;; `trailing' to delete only the whitespace at end of lines, `changed'to
    ;; delete only whitespace for changed lines or `nil' to disable cleanup.
    ;; (default nil)
-   dotspacemacs-whitespace-cleanup 'trailing
+   dotspacemacs-whitespace-cleanup 'nil
    ))
 
 (defun dotspacemacs/user-init ()
@@ -318,36 +322,83 @@ before packages are loaded. If you are unsure, you should try in setting them in
 `dotspacemacs/user-config' first."
   )
 
-(defun dotspacemacs/user-config ()
-  "Configuration function for user code.
+(defun dotspacemacs/user-config () "Configuration function for user code.
 This function is called at the very end of Spacemacs initialization after
 layers configuration.
 This is the place where most of your configurations should be done. Unless it is
 explicitly specified that a variable should be set before a package is loaded,
 you should place your code here."
+  (setq spacemacs-buffer--warnings nil)
   (define-key evil-normal-state-map (kbd "j") 'evil-next-visual-line)
   (define-key evil-normal-state-map (kbd "k") 'evil-previous-visual-line)
   (setq mu4e-maildir "~/Mail" mu4e-view-show-images t mu4e-update-interval 300 mu4e-index-lazy-check t)
   (setq helm-dash-browser-func 'eww)
-  ;; use local eslint if one exists
-  (defun my/use-eslint-from-node-modules ()
-    (let ((eslint (if (projectile-project-p)
-                       (concat (projectile-project-root) "node_modules/eslint/bin/eslint.js"))))
-      (if (file-exists-p eslint) (setq-default flycheck-javascript-eslint-executable eslint))))
-
-  (add-hook 'flycheck-mode-hook 'my/use-eslint-from-node-modules)
-  (defun codefalling//reset-eslint-rc ()
-    (let ((rc-path (if (projectile-project-p)
-                       (concat (projectile-project-root) ".eslintrc"))))
-      (if (file-exists-p rc-path)
-          (progn
-            (message rc-path)
-            (setq flycheck-eslintrc rc-path)))))
-
-  (add-hook 'flycheck-mode-hook 'codefalling//reset-eslint-rc)
-
-  (setq paradox-github-token 3db959a368a082f4290d0c81313e46418d29f199)
-  )
+  (setq sunshine-appid "da749c5e70ad565dea92c3de52683711")
+  (setq sunshine-location "050335,SG")
+  (setq sunshine-show-icons t)
+  (setq sunshine-units 'metric)
+  (setq paradox-github-token '3db959a368a082f4290d0c81313e46418d29f199)
+  (add-to-list 'auto-mode-alist '("\\.ledger$" . ledger-mode))
+  (setq
+   org-directory "~/Dropbox/Org"
+   org-agenda-files (list "~/Dropbox/Org/agenda")
+   org-default-notes-file (concat org-directory "/refiles.org"))
+(setq org-publish-project-alist
+      '(("org"
+           :base-directory "~/org/"
+           :publishing-directory "~/public_html"
+           :section-numbers nil
+           :table-of-contents nil
+           :style "<link rel=\"stylesheet\"
+                     href=\"../other/mystyle.css\"
+                     type=\"text/css\"/>")))
+  (setq org-todo-keywords
+        (quote ((sequence "TODO(t)" "NEXT(n)" "|" "DONE(d)")
+                (sequence "WAITING(w@/!)" "HOLD(h@/!)" "|" "CANCELLED(c@/!)" "PHONE" "MEETING"))))
+  (setq org-todo-keyword-faces
+        (quote (("TODO" :foreground "red" :weight bold)
+                ("NEXT" :foreground "blue" :weight bold)
+                ("DONE" :foreground "forest green" :weight bold)
+                ("WAITING" :foreground "orange" :weight bold)
+                ("HOLD" :foreground "magenta" :weight bold)
+                ("CANCELLED" :foreground "forest green" :weight bold)
+                ("MEETING" :foreground "forest green" :weight bold)
+                ("PHONE" :foreground "forest green" :weight bold))))
+  (setq org-use-fast-todo-selection t)
+  (setq org-treat-S-cursor-todo-selection-as-state-change nil)
+  (setq org-todo-state-tags-triggers
+        (quote (("CANCELLED" ("CANCELLED" . t))
+                ("WAITING" ("WAITING" . t))
+                ("HOLD" ("WAITING") ("HOLD" . t))
+                (done ("WAITING") ("HOLD"))
+                ("TODO" ("WAITING") ("CANCELLED") ("HOLD"))
+                ("NEXT" ("WAITING") ("CANCELLED") ("HOLD"))
+                ("DONE" ("WAITING") ("CANCELLED") ("HOLD")))))
+  ;; Capture templates for: TODO tasks, Notes, appointments, phone calls, meetings, and org-protocol
+  (setq org-capture-templates
+        (quote (("t" "todo" entry (file "~/Dropbox/org/refile.org")
+                 "* TODO %?\n%U\n%a\n" :clock-in t :clock-resume t)
+                ("r" "respond" entry (file "~/Dropbox/org/refile.org")
+                 "* NEXT Respond to %:from on %:subject\nSCHEDULED: %t\n%U\n%a\n" :clock-in t :clock-resume t :immediate-finish t)
+                ("n" "note" entry (file "~/Dropbox/org/refile.org")
+                 "* %? :NOTE:\n%U\n%a\n" :clock-in t :clock-resume t)
+                ("j" "Journal" entry (file+datetree "~/Dropbox/org/diary.org")
+                 "* %?\n%U\n" :clock-in t :clock-resume t)
+                ("w" "org-protocol" entry (file "~/Dropbox/org/refile.org")
+                 "* TODO Review %c\n%U\n" :immediate-finish t)
+                ("m" "Meeting" entry (file "~/Dropbox/org/refile.org")
+                 "* MEETING with %? :MEETING:\n%U" :clock-in t :clock-resume t)
+                ("p" "Phone call" entry (file "~/Dropbox/org/refile.org")
+                 "* PHONE %? :PHONE:\n%U" :clock-in t :clock-resume t)
+                ("h" "Habit" entry (file "~/Dropbox/org/refile.org")
+                 "* NEXT %?\n%U\n%a\nSCHEDULED: %(format-time-string \"%<<%Y-%m-%d %a .+1d/3d>>\")\n:PROPERTIES:\n:STYLE: habit\n:REPEAT_TO_STATE: NEXT\n:END:\n"))))
+  ;; Remove empty LOGBOOK drawers on clock out
+  (defun bh/remove-empty-drawer-on-clock-out ()
+    (interactive)
+    (save-excursion
+      (beginning-of-line 0)
+      (org-remove-empty-drawer-at "LOGBOOK" (point))
+  (add-hook 'org-clock-out-hook 'bh/remove-empty-drawer-on-clock-out 'append))))
 
 (defun dotspacemacs/emacs-custom-settings ()
   "Emacs custom settings.
@@ -360,11 +411,33 @@ This function is called at the very end of Spacemacs initialization."
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(evil-want-Y-yank-to-eol nil)
- '(org-agenda-files (list org-directory))
+ '(org-agenda-files
+   (quote
+    ("/Users/fruittec/Dropbox/Org/Epromotion.org" "/Users/fruittec/Dropbox/Org/gtd.org" "/Users/fruittec/Dropbox/Org/journal.org")))
  '(org-directory "~/Dropbox/Org")
  '(package-selected-packages
    (quote
-    (plantuml-mode wakatime-mode helm helm-core s yapfify pyvenv pytest pyenv-mode py-isort pip-requirements live-py-mode hy-mode helm-pydoc cython-mode company-anaconda anaconda-mode pythonic spotify helm-spotify multi mu4e-maildirs-extension mu4e-alert erc-yt erc-view-log erc-terminal-notifier erc-social-graph erc-image erc-hl-nicks gmail-message-mode ham-mode html-to-markdown flymd edit-server helm-dash dash-at-point magithub magit-gh-pulls github-search github-clone gist gh marshal logito ht symon string-inflection meghanada helm-purpose window-purpose imenu-list groovy-mode groovy-imports pcache gradle-mode company-emacs-eclim eclim browse-at-remote ghc haskell-mode skewer-mode simple-httpd json-snatcher json-reformat multiple-cursors js2-mode dash-functional tern haml-mode web-completion-data alert log4e gntp markdown-mode gitignore-mode fringe-helper git-gutter+ git-gutter flyspell-correct pos-tip flycheck magit magit-popup git-commit with-editor sbt-mode scala-mode company yasnippet auto-complete define-word xterm-color ws-butler winum which-key web-mode web-beautify volatile-highlights vi-tilde-fringe uuidgen use-package unfill toc-org tagedit spaceline smeargle slim-mode shell-pop scss-mode sass-mode reveal-in-osx-finder restart-emacs rainbow-delimiters pug-mode popwin persp-mode pcre2el pbcopy paradox osx-trash osx-dictionary orgit org-projectile org-present org-pomodoro org-download org-bullets open-junk-file noflet neotree mwim multi-term move-text mmm-mode markdown-toc magit-gitflow macrostep lorem-ipsum livid-mode linum-relative link-hint less-css-mode launchctl json-mode js2-refactor js-doc intero info+ indent-guide hungry-delete htmlize hlint-refactor hl-todo hindent highlight-parentheses highlight-numbers highlight-indentation hide-comnt help-fns+ helm-themes helm-swoop helm-projectile helm-mode-manager helm-make helm-hoogle helm-gitignore helm-flx helm-descbinds helm-css-scss helm-company helm-c-yasnippet helm-ag haskell-snippets google-translate golden-ratio gnuplot gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link git-gutter-fringe git-gutter-fringe+ gh-md fuzzy flyspell-correct-helm flycheck-pos-tip flycheck-haskell flx-ido fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-magit evil-lisp-state evil-indent-plus evil-iedit-state evil-exchange evil-escape evil-ediff evil-args evil-anzu eval-sexp-fu eshell-z eshell-prompt-extras esh-help ensime emmet-mode elisp-slime-nav dumb-jump diff-hl company-web company-tern company-statistics company-ghci company-ghc company-cabal column-enforce-mode coffee-mode cmm-mode clean-aindent-mode auto-yasnippet auto-highlight-symbol auto-dictionary auto-compile aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line ac-ispell))))
+    (ledger-mode flycheck-ledger async theme-changer sunshine rase osx-location plantuml-mode wakatime-mode helm helm-core s yapfify pyvenv pytest pyenv-mode py-isort pip-requirements live-py-mode hy-mode helm-pydoc cython-mode company-anaconda anaconda-mode pythonic spotify helm-spotify multi mu4e-maildirs-extension mu4e-alert erc-yt erc-view-log erc-terminal-notifier erc-social-graph erc-image erc-hl-nicks gmail-message-mode ham-mode html-to-markdown flymd edit-server helm-dash dash-at-point magithub magit-gh-pulls github-search github-clone gist gh marshal logito ht symon string-inflection meghanada helm-purpose window-purpose imenu-list groovy-mode groovy-imports pcache gradle-mode company-emacs-eclim eclim browse-at-remote ghc haskell-mode skewer-mode simple-httpd json-snatcher json-reformat multiple-cursors js2-mode dash-functional tern haml-mode web-completion-data alert log4e gntp markdown-mode gitignore-mode fringe-helper git-gutter+ git-gutter flyspell-correct pos-tip flycheck magit magit-popup git-commit with-editor sbt-mode scala-mode company yasnippet auto-complete define-word xterm-color ws-butler winum which-key web-mode web-beautify volatile-highlights vi-tilde-fringe uuidgen use-package unfill toc-org tagedit spaceline smeargle slim-mode shell-pop scss-mode sass-mode reveal-in-osx-finder restart-emacs rainbow-delimiters pug-mode popwin persp-mode pcre2el pbcopy paradox osx-trash osx-dictionary orgit org-projectile org-present org-pomodoro org-download org-bullets open-junk-file noflet neotree mwim multi-term move-text mmm-mode markdown-toc magit-gitflow macrostep lorem-ipsum livid-mode linum-relative link-hint less-css-mode launchctl json-mode js2-refactor js-doc intero info+ indent-guide hungry-delete htmlize hlint-refactor hl-todo hindent highlight-parentheses highlight-numbers highlight-indentation hide-comnt help-fns+ helm-themes helm-swoop helm-projectile helm-mode-manager helm-make helm-hoogle helm-gitignore helm-flx helm-descbinds helm-css-scss helm-company helm-c-yasnippet helm-ag haskell-snippets google-translate golden-ratio gnuplot gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link git-gutter-fringe git-gutter-fringe+ gh-md fuzzy flyspell-correct-helm flycheck-pos-tip flycheck-haskell flx-ido fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-magit evil-lisp-state evil-indent-plus evil-iedit-state evil-exchange evil-escape evil-ediff evil-args evil-anzu eval-sexp-fu eshell-z eshell-prompt-extras esh-help ensime emmet-mode elisp-slime-nav dumb-jump diff-hl company-web company-tern company-statistics company-ghci company-ghc company-cabal column-enforce-mode coffee-mode cmm-mode clean-aindent-mode auto-yasnippet auto-highlight-symbol auto-dictionary auto-compile aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line ac-ispell))))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
+)
+(defun dotspacemacs/emacs-custom-settings ()
+  "Emacs custom settings.
+This is an auto-generated function, do not modify its content directly, use
+Emacs customize menu instead.
+This function is called at the very end of Spacemacs initialization."
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(package-selected-packages
+   (quote
+    (evil-escape yapfify xterm-color ws-butler winum which-key web-mode web-beautify wakatime-mode volatile-highlights vi-tilde-fringe uuidgen use-package unfill toc-org theme-changer tagedit symon sunshine string-inflection spaceline smeargle slim-mode shell-pop scss-mode sass-mode restart-emacs rase rainbow-delimiters pyvenv pytest pyenv-mode py-isort pug-mode popwin plantuml-mode pip-requirements persp-mode pcre2el paradox osx-location orgit org-projectile org-present org-pomodoro org-download org-bullets open-junk-file noflet neotree mwim multi-term mu4e-maildirs-extension mu4e-alert move-text mmm-mode meghanada markdown-toc magithub magit-gitflow magit-gh-pulls macrostep lorem-ipsum livid-mode live-py-mode linum-relative link-hint less-css-mode ledger-mode json-mode js2-refactor js-doc intero info+ indent-guide hy-mode hungry-delete htmlize hlint-refactor hl-todo hindent highlight-parentheses highlight-numbers highlight-indentation hide-comnt help-fns+ helm-themes helm-swoop helm-pydoc helm-purpose helm-projectile helm-mode-manager helm-make helm-hoogle helm-gitignore helm-flx helm-descbinds helm-dash helm-css-scss helm-company helm-c-yasnippet helm-ag haskell-snippets groovy-mode groovy-imports gradle-mode google-translate golden-ratio gnuplot github-search github-clone gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link git-gutter-fringe git-gutter-fringe+ gist gh-md fuzzy flyspell-correct-helm flycheck-pos-tip flycheck-ledger flycheck-haskell flx-ido fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-magit evil-lisp-state evil-indent-plus evil-iedit-state evil-exchange evil-ediff evil-args evil-anzu eval-sexp-fu eshell-z eshell-prompt-extras esh-help erc-yt erc-view-log erc-terminal-notifier erc-social-graph erc-image erc-hl-nicks ensime emmet-mode elisp-slime-nav dumb-jump diff-hl define-word dash-at-point cython-mode company-web company-tern company-statistics company-ghci company-ghc company-emacs-eclim company-cabal company-anaconda column-enforce-mode coffee-mode cmm-mode clean-aindent-mode browse-at-remote auto-yasnippet auto-highlight-symbol auto-dictionary auto-compile aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line ac-ispell))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.

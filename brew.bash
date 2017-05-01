@@ -56,3 +56,5 @@ brew services start mariadb
 brew tap d12frosted/emacs-plus
 brew install emacs-plus
 brew linkapps emacs-plus
+
+brew install ledger
