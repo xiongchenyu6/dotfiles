@@ -100,4 +100,6 @@ Plug 'mattn/emmet-vim'
 "" Color Bundle for css3
 Plug 'gorodinskiy/vim-coloresque'
 
+Plug 'wakatime/vim-wakatime'
+
 call plug#end()

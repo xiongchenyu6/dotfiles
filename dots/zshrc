@@ -12,7 +12,7 @@ else
 POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(disk_usage dir dir_writable vcs)
 POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(status root_indicator background_jobs ram)
 
-plugins=(emacs react-native tmux git zsh-autosuggestions zsh-syntax-highlighting z)
+plugins=(emacs react-native tmux git zsh-autosuggestions zsh-syntax-highlighting)
 source $ZSH/oh-my-zsh.sh
 
 if [[ "$OSTYPE" == "linux-gnu" ]]; then
@@ -21,6 +21,7 @@ else [[ "$OSTYPE" == "darwin"* ]];
     plugins+=(osx)
 fi
 
+export PKG_CONFIG_PATH=/usr/local/Cellar/pkg-config/0.29.2/bin/pkg-config:/usr/local/lib/pkgconfig:/opt/X11/lib/pkgconfig
 
 # Preferred editor for local and remote sessions
 if [[ -n $SSH_CONNECTION ]]; then
