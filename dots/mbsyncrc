@@ -1,0 +1,71 @@
+########################################
+# Gmail
+########################################
+
+IMAPAccount gmail
+Host imap.gmail.com
+User xiongchenyu6@gmail.com
+PassCmd "gpg2 -q --pinentry-mode loopback --for-your-eyes-only --no-tty -d ~/.password/gmail.gpg"
+AuthMechs LOGIN
+SSLType IMAPS
+CertificateFile /etc/ssl/certs/ca-bundle.crt
+
+IMAPStore gmail-remote
+Account gmail
+
+MaildirStore gmail-local
+Path ~/Mail/gmail
+Inbox ~/Mail/gmail/INBOX
+
+Channel gmail-inbox
+Master :gmail-remote:
+Slave :gmail-local:
+Patterns "INBOX" "Arch*"
+Create Both
+Expunge Both
+SyncState *
+
+Channel gmail-trash
+Master :gmail-remote:"[Gmail]/Trash"
+Slave :gmail-local:trash
+Create Both
+Expunge Both
+SyncState *
+
+Channel gmail-sent
+Master :gmail-remote:"[Gmail]/Sent Mail"
+Slave :gmail-local:sent
+Create Both
+Expunge Both
+SyncState *
+
+Group gmail
+Channel gmail-inbox
+Channel gmail-sent
+Channel gmail-trash
+
+########################################
+# Office
+########################################
+
+IMAPAccount office
+Host outlook.office365.com 
+User cxiong001@e.ntu.edu.sg
+PassCmd "gpg2 -q --pinentry-mode loopback --for-your-eyes-only --no-tty -d ~/.password/office.gpg"
+AuthMechs LOGIN
+SSLType IMAPS
+
+IMAPStore office-remote
+Account office
+
+MaildirStore office-local
+Path ~/Mail/office/
+Inbox ~/Mail/office/inbox
+
+Channel office
+Master :office-remote:
+Slave :office-local:
+Create Both
+Expunge Both
+SyncState *
+Patterns *
