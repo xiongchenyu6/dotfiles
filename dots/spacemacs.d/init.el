@@ -50,6 +50,7 @@ values."
      react
      plantuml
      dash
+     osx
      (erc :variables
           erc-erver-list
           '(("irc.freenode.net"
@@ -311,11 +312,6 @@ values."
    dotspacemacs-whitespace-cleanup 'nil))
 
 (defun dotspacemacs/user-init ()
-  ;; (org-babel-do-load-languages
-  ;;  'org-babel-load-languages
-  ;;  '((python . t)
-  ;;    (js . t)
-  ;;    (emacs-lisp . t)))
   "Initialization function for user code.
 It is called immediately after `dotspacemacs/init', before layer configuration
 executes.
@@ -333,6 +329,7 @@ you should place your code here."
   (setq spacemacs-buffer--warnings nil)
   (setq require-final-newline nil)
   (setq undo-tree-auto-save-history t)
+  (setq undo-tree-history-directory-alist '(("." . "~/.emacs.d/undo")))
   ;;Set key jump only one line
   (define-key evil-normal-state-map (kbd "j") 'evil-next-visual-line)
   (define-key evil-normal-state-map (kbd "k") 'evil-previous-visual-line)
@@ -344,7 +341,6 @@ you should place your code here."
   (setq ranfasdger-ignored-extensions '("mkv" "iso" "mp4" "avi"))
   (setq ranger-max-preview-size 10)
   ;; ERC CONFIG
-
   (spacemacs|use-package-add-hook erc
     :post-config
     (progn
@@ -432,27 +428,54 @@ you should place your code here."
   (setq org-publish-project-alist
         '(("orgfiles"
            :base-directory "~/Dropbox/Org/"
-           :base-extension
-           :publishing-directory "~/html/notebook/"
+           :base-extension "org"
+           :publishing-directory "~/html/"
            :publishing-function org-twbs-publish-to-html
            :with-sub-superscript nil
-           :exclude "PrivatePage.org"   ;; regexp
+           :recursive t
+           :timestamp t
+           :exclude-tags "noexport"
+           :auto-sitemap t                ; Generate sitemap.org automagically...
+           :sitemap-filename "index.org"  ; ... call it sitemap.org (it's the default)...
+           :sitemap-title "Freeman's notebook"
+           :sitemap "index.html"
+           :author "Freeman"
+           :email "xiongchenyu6@gamil.com"
+           :time-stamp-file t
            :makeindex t
-           :with-toc t)
-          ("images"
+           :with-toc t
+           :with-timestamps t
+           :html-link-home "index.html")
+          ("blog-static"
            :base-directory "~/Dropbox/Org"
-           :base-extension "jpg\\|gif\\|png"
-           :publishing-directory "~/html/notebook/"
-           :publishing-function org-publish-attachment)
-          ("other"
-           :base-directory "~/Dropbox/Org"
-           :base-extension "css\\|el"
-           :publishing-directory "~/html/notebook/"
-           :publishing-function org-publish-attachment)
-          ("website" :components ("orgfiles" "images" "other"))))
+           :base-extension "css\\|js\\|png\\|jpg\\|gif\\|pdf\\|mp3\\|ogg\\|swf"
+           :publishing-directory "~/html/"
+           :recursive t
+           :publishing-function org-publish-attachment
+           )
+          ("website" :components ("orgfiles" "blog-static"))))
+  (setq org-export-date-timestamp-format "%Y-%m-%d")
+  (setq org-twbs-postamble 't)
+  (setq org-twbs-postamble-format
+        '(("en" "<div id='disqus_thread'></div>
+            <script type='text/javascript'>
+                var disqus_shortname = 'blogfreeman';
+                (function() {
+                    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+                    dsq.src = 'https://' + disqus_shortname + '.disqus.com/embed.js';
+                    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+                })();
+            </script>
+            <noscript>Please enable JavaScript to view the <a href='https://disqus.com/?ref_noscript' rel='nofollow'>comments powered by Disqus.</a></noscript>
+            <p class='author'>Author: %a (%e)</p><p>Exported At %T. Created by %c </p>
+            <a href='#' class='back-to-top' id='fixed-back-to-top' style='display: inline;'></a>"
+           )))
+  (setq org-use-fast-todo-selection t)
+  (setq org-treat-S-cursor-todo-selection-as-state-change nil)
+  (setq org-deadline-warning-days 14)
+  (setq org-agenda-start-on-weekday nil)
   (setq org-todo-keywords '((sequence "TODO(t)" "NEXT(n)" "|" "DONE(d)")
-                            (sequence "WAITING(w@/!)" "HOLD(h@/!)" "|"
-                                      "CANCELLED(c@/!)" "PHONE" "MEETING")))
+                            (sequence "WAITING(w@/!)" "HOLD(h@/!)" "|" "CANCELLED(c@/!)")))
   (setq org-todo-keyword-faces
         '(("TODO" :foreground "red"
            :weight bold)
@@ -465,13 +488,7 @@ you should place your code here."
           ("HOLD" :foreground "magenta"
            :weight bold)
           ("CANCELLED" :foreground "forest green"
-           :weight bold)
-          ("MEETING" :foreground "forest green"
-           :weight bold)
-          ("PHONE" :foreground "forest green"
            :weight bold)))
-  (setq org-use-fast-todo-selection t)
-  (setq org-treat-S-cursor-todo-selection-as-state-change nil)
   (setq org-todo-state-tags-triggers
         '(("CANCELLED"
            ("CANCELLED" . t))
@@ -494,6 +511,25 @@ you should place your code here."
            ("WAITING")
            ("CANCELLED")
            ("HOLD"))))
+  ;; Tags with fast selection keys
+  (setq org-tag-alist
+        '((:startgroup)
+          ("@errand" . ?e)
+          ("@office" . ?o)
+          ("@home" . ?H)
+          ("@school" . ?s)
+          (:endgroup)
+          ("WAITING" . ?w)
+          ("HOLD" . ?h)
+          ("PERSONAL" . ?P)
+          ("WORK" . ?W)
+          ("FARM" . ?F)
+          ("ORG" . ?O)
+          ("crypt" . ?E)
+          ("NOTE" . ?n)
+          ("CANCELLED" . ?c)
+          ("FLAGGED" . ??)))
+
   ;; Capture templates for: TODO tasks, Notes, appointments, phone calls, meetings, and org-protocol
   (setq org-capture-templates
         '(("t" "todo"
@@ -502,42 +538,18 @@ you should place your code here."
            "* TODO %?\n%U\n%a\n"
            :clock-in t
            :clock-resume t)
-          ("r" "respond"
-           entry
-           (file "~/Dropbox/org/refile.org")
-           "* NEXT Respond to %:from on %:subject\nSCHEDULED: %t\n%U\n%a\n"
-           :clock-in t
-           :clock-resume t
-           :immediate-finish t)
-          ("n" "note"
+          ("l" "link-note"
            entry
            (file "~/Dropbox/org/refile.org")
            "* %? :NOTE:\n%U\n%a\n"
            :clock-in t
            :clock-resume t)
-          ("j" "Journal"
-           entry
-           (file+datetree "~/Dropbox/org/diary.org")
-           "* %?\n%U\n"
-           :clock-in t
-           :clock-resume t)
-          ("w" "org-protocol"
+          ("n" "note"
            entry
            (file "~/Dropbox/org/refile.org")
-           "* TODO Review %c\n%U\n"
-           :immediate-finish t)
-          ("m" "Meeting"
-           entry
-           (file "~/Dropbox/org/refile.org")
-           "* MEETING with %? :MEETING:\n%U"
-           :clock-in t
-           :clock-resume t)
-          ("p" "Phone call"
-           entry
-           (file "~/Dropbox/org/refile.org")
-           "* PHONE %? :PHONE:\n%U"
-           :clock-in t
-           :clock-resume t)
+           "* %? :NOTE:\n%U\n%c\n"
+           :prepend t
+           :kill-buffer t)
           ("h" "Habit"
            entry
            (file "~/Dropbox/org/refile.org")
@@ -547,105 +559,86 @@ you should place your code here."
     (interactive)
     (save-excursion
       (beginning-of-line 0)
-      (org-remove-empty-drawer-at "LOGBOOK" (point))
-      ;; Targets include this file and any file contributing to the agenda - up to 9 levels deep
-      (setq org-refile-targets '((nil :maxlevel . 9)
-                                 (org-agenda-files :maxlevel . 9)))
-      ;; Do not dim blocked tasks
-      (setq org-agenda-dim-blocked-tasks nil)
-      ;; Compact the block agenda view
-      (setq org-agenda-compact-blocks t)
-      ;; Custom agenda command definitions
-      (setq org-agenda-custom-commands
-            '(("N" "Notes"
-               tags
-               "NOTE"
-               ((org-agenda-overriding-header "Notes")
-                (org-tags-match-list-sublevels t)))
-              ("h" "Habits"
-               tags-todo
-               "STYLE=\"habit\""
-               ((org-agenda-overriding-header "Habits")
-                (org-agenda-sorting-strategy '(todo-state-down effort-up category-keep))))
-              (" " "Agenda"
-               ((agenda "" nil)
-                (tags "REFILE"
-                      ((org-agenda-overriding-header "Tasks to Refile")
-                       (org-tags-match-list-sublevels nil)))
-                (tags-todo "-CANCELLED/!"
-                           ((org-agenda-overriding-header "Stuck Projects")
-                            (org-agenda-skip-function 'bh/skip-non-stuck-projects)
-                            (org-agenda-sorting-strategy '(category-keep))))
-                (tags-todo "-HOLD-CANCELLED/!"
-                           ((org-agenda-overriding-header "Projects")
-                            (org-agenda-skip-function 'bh/skip-non-projects)
-                            (org-tags-match-list-sublevels 'indented)
-                            (org-agenda-sorting-strategy '(category-keep))))
-                (tags-todo "-CANCELLED/!NEXT"
-                           ((org-agenda-overriding-header (concat "Project Next Tasks"
-                                                                  (if bh/hide-scheduled-and-waiting-next-tasks
-                                                                      "" " (including WAITING and SCHEDULED tasks)")))
-                            (org-agenda-skip-function 'bh/skip-projects-and-habits-and-single-tasks)
-                            (org-tags-match-list-sublevels t)
-                            (org-agenda-todo-ignore-scheduled bh/hide-scheduled-and-waiting-next-tasks)
-                            (org-agenda-todo-ignore-deadlines bh/hide-scheduled-and-waiting-next-tasks)
-                            (org-agenda-todo-ignore-with-date bh/hide-scheduled-and-waiting-next-tasks)
-                            (org-agenda-sorting-strategy '(todo-state-down effort-up category-keep))))
-                (tags-todo "-REFILE-CANCELLED-WAITING-HOLD/!"
-                           ((org-agenda-overriding-header (concat "Project Subtasks"
-                                                                  (if bh/hide-scheduled-and-waiting-next-tasks
-                                                                      "" " (including WAITING and SCHEDULED tasks)")))
-                            (org-agenda-skip-function 'bh/skip-non-project-tasks)
-                            (org-agenda-todo-ignore-scheduled bh/hide-scheduled-and-waiting-next-tasks)
-                            (org-agenda-todo-ignore-deadlines bh/hide-scheduled-and-waiting-next-tasks)
-                            (org-agenda-todo-ignore-with-date bh/hide-scheduled-and-waiting-next-tasks)
-                            (org-agenda-sorting-strategy '(category-keep))))
-                (tags-todo "-REFILE-CANCELLED-WAITING-HOLD/!"
-                           ((org-agenda-overriding-header (concat "Standalone Tasks"
-                                                                  (if bh/hide-scheduled-and-waiting-next-tasks
-                                                                      "" " (including WAITING and SCHEDULED tasks)")))
-                            (org-agenda-skip-function 'bh/skip-project-tasks)
-                            (org-agenda-todo-ignore-scheduled bh/hide-scheduled-and-waiting-next-tasks)
-                            (org-agenda-todo-ignore-deadlines bh/hide-scheduled-and-waiting-next-tasks)
-                            (org-agenda-todo-ignore-with-date bh/hide-scheduled-and-waiting-next-tasks)
-                            (org-agenda-sorting-strategy '(category-keep))))
-                (tags-todo "-CANCELLED+WAITING|HOLD/!"
-                           ((org-agenda-overriding-header (concat "Waiting and Postponed Tasks"
-                                                                  (if bh/hide-scheduled-and-waiting-next-tasks
-                                                                      "" " (including WAITING and SCHEDULED tasks)")))
-                            (org-agenda-skip-function 'bh/skip-non-tasks)
-                            (org-tags-match-list-sublevels nil)
-                            (org-agenda-todo-ignore-scheduled bh/hide-scheduled-and-waiting-next-tasks)
-                            (org-agenda-todo-ignore-deadlines bh/hide-scheduled-and-waiting-next-tasks)))
-                (tags "-REFILE/"
-                      ((org-agenda-overriding-header "Tasks to Archive")
-                       (org-agenda-skip-function 'bh/skip-non-archivable-tasks)
-                       (org-tags-match-list-sublevels nil))))
-               nil)))
-      (defun bh/verify-refile-target ()
-        (add-hook 'org-clock-out-hook 'bh/remove-empty-drawer-on-clock-out
-                  'append))))
-                                        ; Tags with fast selection keys
-  (setq org-tag-alist '((:startgroup)
-                        ("@errand" . ?e)
-                        ("@office" . ?o)
-                        ("@home" . ?H)
-                        ("@school" . ?s)
-                        (:endgroup)
-                        ("WAITING" . ?w)
-                        ("HOLD" . ?h)
-                        ("PERSONAL" . ?P)
-                        ("WORK" . ?W)
-                        ("FARM" . ?F)
-                        ("ORG" . ?O)
-                        ("crypt" . ?E)
-                        ("NOTE" . ?n)
-                        ("CANCELLED" . ?c)
-                        ("FLAGGED" . ??)))
+      (org-remove-empty-drawer-at "LOGBOOK" (point))))
+  (add-hook 'org-clock-out-hook 'bh/remove-empty-drawer-on-clock-out 'append)
 
-                                        ; Allow setting single tags without the menu
+  ;; Targets include this file and any file contributing to the agenda - up to 9 levels deep
+  (setq org-refile-targets '((nil :maxlevel . 9)
+                             (org-agenda-files :maxlevel . 9)))
+  ;; Do not dim blocked tasks
+  (setq org-agenda-dim-blocked-tasks nil)
+  ;; Compact the block agenda view
+  (setq org-agenda-compact-blocks t)
+  ;; Custom agenda command definitions
+  (setq org-agenda-custom-commands
+        '(("N" "Notes"
+           tags
+           "NOTE"
+           ((org-agenda-overriding-header "Notes")
+            (org-tags-match-list-sublevels t)))
+          ("h" "Habits"
+           tags-todo
+           "STYLE=\"habit\""
+           ((org-agenda-overriding-header "Habits")
+            (org-agenda-sorting-strategy '(todo-state-down effort-up category-keep))))
+          (" " "Agenda"
+           ((agenda "" nil)
+            (tags "REFILE"
+                  ((org-agenda-overriding-header "Tasks to Refile")
+                   (org-tags-match-list-sublevels nil)))
+            (tags-todo "-CANCELLED/!"
+                       ((org-agenda-overriding-header "Stuck Projects")
+                        (org-agenda-skip-function 'bh/skip-non-stuck-projects)
+                        (org-agenda-sorting-strategy '(category-keep))))
+            (tags-todo "-HOLD-CANCELLED/!"
+                       ((org-agenda-overriding-header "Projects")
+                        (org-agenda-skip-function 'bh/skip-non-projects)
+                        (org-tags-match-list-sublevels 'indented)
+                        (org-agenda-sorting-strategy '(category-keep))))
+            (tags-todo "-CANCELLED/!NEXT"
+                       ((org-agenda-overriding-header (concat "Project Next Tasks"
+                                                              (if bh/hide-scheduled-and-waiting-next-tasks
+                                                                  "" " (including WAITING and SCHEDULED tasks)")))
+                        (org-agenda-skip-function 'bh/skip-projects-and-habits-and-single-tasks)
+                        (org-tags-match-list-sublevels t)
+                        (org-agenda-todo-ignore-scheduled bh/hide-scheduled-and-waiting-next-tasks)
+                        (org-agenda-todo-ignore-deadlines bh/hide-scheduled-and-waiting-next-tasks)
+                        (org-agenda-todo-ignore-with-date bh/hide-scheduled-and-waiting-next-tasks)
+                        (org-agenda-sorting-strategy '(todo-state-down effort-up category-keep))))
+            (tags-todo "-REFILE-CANCELLED-WAITING-HOLD/!"
+                       ((org-agenda-overriding-header (concat "Project Subtasks"
+                                                              (if bh/hide-scheduled-and-waiting-next-tasks
+                                                                  "" " (including WAITING and SCHEDULED tasks)")))
+                        (org-agenda-skip-function 'bh/skip-non-project-tasks)
+                        (org-agenda-todo-ignore-scheduled bh/hide-scheduled-and-waiting-next-tasks)
+                        (org-agenda-todo-ignore-deadlines bh/hide-scheduled-and-waiting-next-tasks)
+                        (org-agenda-todo-ignore-with-date bh/hide-scheduled-and-waiting-next-tasks)
+                        (org-agenda-sorting-strategy '(category-keep))))
+            (tags-todo "-REFILE-CANCELLED-WAITING-HOLD/!"
+                       ((org-agenda-overriding-header (concat "Standalone Tasks"
+                                                              (if bh/hide-scheduled-and-waiting-next-tasks
+                                                                  "" " (including WAITING and SCHEDULED tasks)")))
+                        (org-agenda-skip-function 'bh/skip-project-tasks)
+                        (org-agenda-todo-ignore-scheduled bh/hide-scheduled-and-waiting-next-tasks)
+                        (org-agenda-todo-ignore-deadlines bh/hide-scheduled-and-waiting-next-tasks)
+                        (org-agenda-todo-ignore-with-date bh/hide-scheduled-and-waiting-next-tasks)
+                        (org-agenda-sorting-strategy '(category-keep))))
+            (tags-todo "-CANCELLED+WAITING|HOLD/!"
+                       ((org-agenda-overriding-header (concat "Waiting and Postponed Tasks"
+                                                              (if bh/hide-scheduled-and-waiting-next-tasks
+                                                                  "" " (including WAITING and SCHEDULED tasks)")))
+                        (org-agenda-skip-function 'bh/skip-non-tasks)
+                        (org-tags-match-list-sublevels nil)
+                        (org-agenda-todo-ignore-scheduled bh/hide-scheduled-and-waiting-next-tasks)
+                        (org-agenda-todo-ignore-deadlines bh/hide-scheduled-and-waiting-next-tasks)))
+            (tags "-REFILE/"
+                  ((org-agenda-overriding-header "Tasks to Archive")
+                   (org-agenda-skip-function 'bh/skip-non-archivable-tasks)
+                   (org-tags-match-list-sublevels nil))))
+           nil)))
   (setq org-fast-tag-selection-single-key (quote expert))
   (setq spaceline-org-clock-p t)
+  (setq org-babel-python-command "python3")
   (org-babel-do-load-languages
    (quote org-babel-load-languages)
    (quote ((emacs-lisp . t)
@@ -656,6 +649,7 @@ you should place your code here."
            (haskell . t)
            (sh . t)
            (ledger . t)
+           (dot . t)
            (org . t)
            (plantuml . t)
            (js . t))))
@@ -672,7 +666,7 @@ you should place your code here."
  '(evil-want-Y-yank-to-eol nil)
  '(package-selected-packages
    (quote
-    (org-plus-contrib ox-twbs ox-reveal ox-gfm yapfify xterm-color xkcd ws-butler winum which-key web-mode web-beautify wakatime-mode volatile-highlights vimrc-mode vi-tilde-fringe uuidgen use-package toc-org theme-changer tagedit sunshine spaceline smeargle slim-mode shell-pop scss-mode sass-mode restart-emacs rase ranger rainbow-delimiters pyvenv pytest pyenv-mode py-isort pug-mode popwin plantuml-mode pip-requirements persp-mode pdf-tools pcre2el paradox osx-location orgit org-projectile org-present org-pomodoro org-download org-bullets open-junk-file neotree multi-term mu4e-maildirs-extension mu4e-alert move-text mmm-mode markdown-toc magit-gitflow magit-gh-pulls macrostep lorem-ipsum livid-mode live-py-mode linum-relative link-hint less-css-mode ledger-mode json-mode js2-refactor js-doc intero info+ indent-guide hy-mode hungry-delete htmlize hlint-refactor hl-todo hindent highlight-parentheses highlight-numbers highlight-indentation hide-comnt help-fns+ helm-themes helm-swoop helm-pydoc helm-projectile helm-mode-manager helm-make helm-hoogle helm-gitignore helm-flx helm-descbinds helm-dash helm-css-scss helm-company helm-c-yasnippet helm-ag haskell-snippets google-translate golden-ratio gnuplot github-search github-clone github-browse-file gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link gist gh-md fuzzy flyspell-correct-helm flycheck-pos-tip flycheck-ledger flycheck-haskell flx-ido fill-column-indicator fasd fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-magit evil-lisp-state evil-indent-plus evil-iedit-state evil-exchange evil-ediff evil-args evil-anzu eval-sexp-fu eshell-z eshell-prompt-extras esh-help erc-yt erc-view-log erc-terminal-notifier erc-social-graph erc-image erc-hl-nicks emoji-cheat-sheet-plus emmet-mode elisp-slime-nav dumb-jump define-word dash-at-point dactyl-mode cython-mode company-web company-tern company-statistics company-quickhelp company-ghci company-ghc company-emoji company-cabal company-anaconda column-enforce-mode coffee-mode cmm-mode clean-aindent-mode auto-yasnippet auto-highlight-symbol auto-dictionary auto-compile aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line ac-ispell))))
+    (reveal-in-osx-finder pbcopy osx-trash osx-dictionary launchctl org-plus-contrib ox-twbs ox-reveal ox-gfm yapfify xterm-color xkcd ws-butler winum which-key web-mode web-beautify wakatime-mode volatile-highlights vimrc-mode vi-tilde-fringe uuidgen use-package toc-org theme-changer tagedit sunshine spaceline smeargle slim-mode shell-pop scss-mode sass-mode restart-emacs rase ranger rainbow-delimiters pyvenv pytest pyenv-mode py-isort pug-mode popwin plantuml-mode pip-requirements persp-mode pdf-tools pcre2el paradox osx-location orgit org-projectile org-present org-pomodoro org-download org-bullets open-junk-file neotree multi-term mu4e-maildirs-extension mu4e-alert move-text mmm-mode markdown-toc magit-gitflow magit-gh-pulls macrostep lorem-ipsum livid-mode live-py-mode linum-relative link-hint less-css-mode ledger-mode json-mode js2-refactor js-doc intero info+ indent-guide hy-mode hungry-delete htmlize hlint-refactor hl-todo hindent highlight-parentheses highlight-numbers highlight-indentation hide-comnt help-fns+ helm-themes helm-swoop helm-pydoc helm-projectile helm-mode-manager helm-make helm-hoogle helm-gitignore helm-flx helm-descbinds helm-dash helm-css-scss helm-company helm-c-yasnippet helm-ag haskell-snippets google-translate golden-ratio gnuplot github-search github-clone github-browse-file gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link gist gh-md fuzzy flyspell-correct-helm flycheck-pos-tip flycheck-ledger flycheck-haskell flx-ido fill-column-indicator fasd fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-magit evil-lisp-state evil-indent-plus evil-iedit-state evil-exchange evil-ediff evil-args evil-anzu eval-sexp-fu eshell-z eshell-prompt-extras esh-help erc-yt erc-view-log erc-terminal-notifier erc-social-graph erc-image erc-hl-nicks emoji-cheat-sheet-plus emmet-mode elisp-slime-nav dumb-jump define-word dash-at-point dactyl-mode cython-mode company-web company-tern company-statistics company-quickhelp company-ghci company-ghc company-emoji company-cabal company-anaconda column-enforce-mode coffee-mode cmm-mode clean-aindent-mode auto-yasnippet auto-highlight-symbol auto-dictionary auto-compile aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line ac-ispell))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
