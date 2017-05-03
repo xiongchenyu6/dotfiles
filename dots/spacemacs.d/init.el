@@ -33,7 +33,6 @@ values."
      git
      github
      markdown
-     org
      (org :variables
           org-enable-bootstrap-support t
           org-enable-github-support t
@@ -52,7 +51,7 @@ values."
      plantuml
      dash
      (erc :variables
-          erc-server-list
+          erc-erver-list
           '(("irc.freenode.net"
              :port "6697"
              :ssl t
@@ -63,23 +62,18 @@ values."
      mu4e
      finance
      pdf-tools
-     (ranger :variables ranger-show-preview
-             t)
+     (ranger :variables ranger-show-preview t)
      fasd
-     (geolocation :variables geolocation-enable-weather-forecast
-                  t)
+     (geolocation :variables geolocation-enable-weather-forecast t)
      spell-checking
      (auto-completion :variables
                       auto-completion-enable-snippets-in-popup t
                       auto-completion-enable-help-tooltip t
                       auto-completion-enable-sort-by-usage t)
-     (syntax-checking :variables syntax-checking-enable-tooltips
-                      t)
-     (wakatime :variables wakatime-api-key
-               "06fb08d0-68a4-4b39-bbb0-d34d325dc046"
+     (syntax-checking :variables syntax-checking-enable-tooltips t)
+     (wakatime :variables wakatime-api-key "06fb08d0-68a4-4b39-bbb0-d34d325dc046"
                ;; use the actual wakatime path
-               wakatime-cli-path
-               "/usr/local/bin/wakatime"))
+               wakatime-cli-path "/usr/local/bin/wakatime"))
    ;; List of additional packages that will be installed without being
    ;; wrapped in a layer. If you need some configuration for these
    ;; packages, then consider creating a layer. You can also put the
@@ -338,6 +332,7 @@ explicitly specified that a variable should be set before a package is loaded,
 you should place your code here."
   (setq spacemacs-buffer--warnings nil)
   (setq require-final-newline nil)
+  (setq undo-tree-auto-save-history t)
   ;;Set key jump only one line
   (define-key evil-normal-state-map (kbd "j") 'evil-next-visual-line)
   (define-key evil-normal-state-map (kbd "k") 'evil-previous-visual-line)
@@ -346,14 +341,13 @@ you should place your code here."
   (setq ranger-cleanup-eagerly t)
   (setq ranger-show-hidden nil)
   (setq ranger-show-literal nil)
-  (setq ranfasdger-ignored-extensions '("mkv" "iso" "mp4"))
+  (setq ranfasdger-ignored-extensions '("mkv" "iso" "mp4" "avi"))
   (setq ranger-max-preview-size 10)
   ;; ERC CONFIG
 
   (spacemacs|use-package-add-hook erc
     :post-config
     (progn
-
       ;; if imagemagick isn't supported, we don't want inline images
       (unless (fboundp 'imagemagick-types)
         (setq erc-modules (-remove-item 'image erc-modules)))
@@ -382,7 +376,7 @@ you should place your code here."
   (setq mu4e-attachment-dir "~/Downloads"
         mu4e-maildir "~/Mail"
         mu4e-get-mail-command "mbsync -a"
-        mu4e-update-interval 60
+        mu4e-update-interval 300
         mu4e-view-show-images t
         mu4e-view-prefer-html t
         mu4e-sent-messages-behavior 'delete
@@ -438,7 +432,7 @@ you should place your code here."
   (setq org-publish-project-alist
         '(("orgfiles"
            :base-directory "~/Dropbox/Org/"
-           :base-extension "org"
+           :base-extension
            :publishing-directory "~/html/notebook/"
            :publishing-function org-twbs-publish-to-html
            :with-sub-superscript nil
@@ -553,13 +547,10 @@ you should place your code here."
     (interactive)
     (save-excursion
       (beginning-of-line 0)
-      (org-remove-empty-drawer-at "LOGBOOK"
-                                  (point))
-                                        ; Targets include this file and any file contributing to the agenda - up to 9 levels deep
-      (setq org-refile-targets '((nil :maxlevel .
-                                      9)
-                                 (org-agenda-files :maxlevel .
-                                                   9)))
+      (org-remove-empty-drawer-at "LOGBOOK" (point))
+      ;; Targets include this file and any file contributing to the agenda - up to 9 levels deep
+      (setq org-refile-targets '((nil :maxlevel . 9)
+                                 (org-agenda-files :maxlevel . 9)))
       ;; Do not dim blocked tasks
       (setq org-agenda-dim-blocked-tasks nil)
       ;; Compact the block agenda view
@@ -639,7 +630,7 @@ you should place your code here."
                         ("@errand" . ?e)
                         ("@office" . ?o)
                         ("@home" . ?H)
-                        ("@farm" . ?f)
+                        ("@school" . ?s)
                         (:endgroup)
                         ("WAITING" . ?w)
                         ("HOLD" . ?h)
@@ -647,7 +638,6 @@ you should place your code here."
                         ("WORK" . ?W)
                         ("FARM" . ?F)
                         ("ORG" . ?O)
-                        ("NORANG" . ?N)
                         ("crypt" . ?E)
                         ("NOTE" . ?n)
                         ("CANCELLED" . ?c)
@@ -656,8 +646,6 @@ you should place your code here."
                                         ; Allow setting single tags without the menu
   (setq org-fast-tag-selection-single-key (quote expert))
   (setq spaceline-org-clock-p t)
-                                        ; For tag searches ignore tasks with scheduled and deadline dates
-  (setq org-agenda-tags-todo-honor-ignore-options t)
   (org-babel-do-load-languages
    (quote org-babel-load-languages)
    (quote ((emacs-lisp . t)

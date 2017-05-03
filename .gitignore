@@ -2,3 +2,4 @@
 session/
 plugged/
 undo/
+*undo-tree*
