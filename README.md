@@ -3,10 +3,24 @@
 ## Usage
 To use this simple run the brew installation shell script.
 ## My application list
-| Usage | Application            |
-|-------|------------------------|
-| Email | imap:mbsync stmp:msmtp |
-| Crypt | gnu2                   |
+| Usage              | Application              |
+|--------------------|--------------------------|
+| Email              | imap:mbsync smtp:msmtp   |
+| Crypt              | gnu2                     |
+| Editor             | Emacs, neovim            |
+| Ide                | Intellij                 |
+| Termial            | Iterm2                   |
+| Chat               | QQ, Wechat, Erc          |
+| Presentation       | Reveal.js                |
+| GTD                | Org Agenda               |
+| Notes              | Onenote -> Org Mode      |
+| Graph Draw         | Plantuml, Ditaa, Gnuplot |
+| Documentation View | Dash                     |
+| Book Writing       | Gitbook                  |
+| Finance            | Ledger                   |
+| Auto Deploy        | Pm2, Docker              |
+| Academic Writing   | Pandadoc, Org mode       |
+
 ```bash
 gsettings set org.gnome.desktop.input-sources sources "[('xkb', 'us'), ('ibus', 'Unikey')]"
 ```
