@@ -10,12 +10,18 @@ if test ! $(which brew); then
   yes "" | ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
 fi
 
-brew tap homebrew/versions
-brew tap homebrew/dupes
-brew tap Goles/battery
-
-# Make sure we’re using the latest Homebrew.
 brew update
+
+taps=(
+    homebrew/versions
+    homebrew/dupes
+    Goles/battery
+    d12frosted/emacs-plus
+    caskroom/fonts
+)
+
+brew tap "${taps[@]}"
+
 apps=(
     google-chrome
     sequel-pro
@@ -25,6 +31,12 @@ apps=(
 brew cask install "${apps[@]}"
 
 services=(
+    ledger
+    emacs-plus
+    poppler
+    automake
+    msmtp
+    isync
     node
     tmux
     mariadb
@@ -44,20 +56,7 @@ git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:
 
 git clone https://github.com/bhilburn/powerlevel9k.git ~/.oh-my-zsh/custom/themes/powerlevel9k
 
-cd ~/.oh-my-zsh/custom/themes/powerlevel9k/
-git remote add dritter https://github.com/dritter/powerlevel9k.git
-git fetch dritter
-git checkout -t dritter/async_all_the_segments
-
-brew tap caskroom/fonts
 brew cask install font-Inconsolata-nerd-font-mono
 brew services start mariadb
-
-brew tap d12frosted/emacs-plus
-brew install emacs-plus
+brew services start emacs-plus
 brew linkapps emacs-plus
-
-brew install ledger
-
-brew install poppler automake
-brew install msmtp
