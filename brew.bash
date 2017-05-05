@@ -34,6 +34,7 @@ apps=(
     react-native-debugger
     dropbox
     neteasemusic
+    xquartz
 )
 brew cask install "${apps[@]}"
 
