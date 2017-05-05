@@ -593,7 +593,7 @@ you should place your code here."
            (python . t)
            (gnuplot . t)
            (haskell . t)
-           (sh . t)
+           (shell . t)
            (ledger . t)
            (dot . t)
            (org . t)
