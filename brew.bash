@@ -27,10 +27,28 @@ apps=(
     sequel-pro
     java
     iterm2
+    qq
+    robomongo
+    obs
+    flux
+    react-native-debugger
+    dropbox
+    neteasemusic
 )
 brew cask install "${apps[@]}"
 
 services=(
+    openssl
+    git-crypt
+    termianl-notifier
+    ispell
+    scala
+    neovim/neovim/neovim
+    watchman
+    w3m
+    fasd
+    mu
+    cmake
     ledger
     emacs-plus
     poppler
@@ -40,8 +58,16 @@ services=(
     node
     tmux
     mariadb
+    gnupg
     git
     haskell
+    python3
+    sbt
+    ctags
+    ditaa
+    plantuml
+    ag
+    reattach-to-user-namespace
 )
 # Install and Setup MySQL
 brew install "${services[@]}"
