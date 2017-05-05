@@ -37,13 +37,13 @@ values."
           org-enable-bootstrap-support t
           org-enable-github-support t
           org-enable-reveal-js-support t
-          org-projectile-file "~/Dropbox/Org/Projects.org")
+          org-projectile-file "~/Github/Org/Projects.org")
      (shell :variables
             shell-default-height 30
             shell-default-position 'bottom
             shell-default-shell 'multiterm)
      (haskell :variables
-              haskell-completion-backend'ghc-mod
+              haskell-completion-backend'intero
               haskell-process-type 'stack-ghci)
      javascript
      html
@@ -63,10 +63,10 @@ values."
      mu4e
      finance
      pdf-tools
-     (ranger :variables ranger-show-preview t)
-     fasd
-     (geolocation :variables geolocation-enable-weather-forecast t)
      spell-checking
+     fasd
+     (ranger :variables ranger-show-preview t)
+     (geolocation :variables geolocation-enable-weather-forecast t)
      (auto-completion :variables
                       auto-completion-enable-snippets-in-popup t
                       auto-completion-enable-help-tooltip t
@@ -421,13 +421,13 @@ you should place your code here."
   ;;ledger settins
   (add-to-list 'auto-mode-alist
                '("\\.ledger$" . ledger-mode))
-  (setq org-directory "~/Dropbox/Org"
-        org-agenda-files (list "~/Dropbox/Org")
+  (setq org-directory "~/Github/Org"
+        org-agenda-files (list org-directory)
         org-agenda-diary-file (concat org-directory "/diary.org")
         org-default-notes-file (concat org-directory "/refile.org"))
   (setq org-publish-project-alist
         '(("orgfiles"
-           :base-directory "~/Dropbox/Org/"
+           :base-directory "~/Github/Org/"
            :base-extension "org"
            :publishing-directory "~/html/"
            :publishing-function org-twbs-publish-to-html
@@ -447,7 +447,7 @@ you should place your code here."
            :with-timestamps t
            :html-link-home "index.html")
           ("blog-static"
-           :base-directory "~/Dropbox/Org"
+           :base-directory "~/Github/Org"
            :base-extension "css\\|js\\|png\\|jpg\\|gif\\|pdf\\|mp3\\|ogg\\|swf"
            :publishing-directory "~/html/"
            :recursive t
@@ -534,25 +534,25 @@ you should place your code here."
   (setq org-capture-templates
         '(("t" "todo"
            entry
-           (file "~/Dropbox/org/refile.org")
+           (file "~/Github/org/refile.org")
            "* TODO %?\n%U\n%a\n"
            :clock-in t
            :clock-resume t)
           ("l" "link-note"
            entry
-           (file "~/Dropbox/org/refile.org")
+           (file "~/Github/org/refile.org")
            "* %? :NOTE:\n%U\n%a\n"
            :clock-in t
            :clock-resume t)
           ("n" "note"
            entry
-           (file "~/Dropbox/org/refile.org")
+           (file "~/Github/org/refile.org")
            "* %? :NOTE:\n%U\n%c\n"
            :prepend t
            :kill-buffer t)
           ("h" "Habit"
            entry
-           (file "~/Dropbox/org/refile.org")
+           (file "~/Github/org/refile.org")
            "* NEXT %?\n%U\n%a\nSCHEDULED: %(format-time-string \"%<<%Y-%m-%d %a .+1d/3d>>\")\n:PROPERTIES:\n:STYLE: habit\n:REPEAT_TO_STATE: NEXT\n:END:\n")))
   ;; Remove empty LOGBOOK drawers on clock out
   (defun bh/remove-empty-drawer-on-clock-out ()

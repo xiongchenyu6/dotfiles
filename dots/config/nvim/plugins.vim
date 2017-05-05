@@ -84,7 +84,7 @@ Plug 'honza/vim-snippets'
 "*****************************************************************************
 
 ""Auto-complete for haskell
-Plug 'eagletmt/ghcmod-vim' | Plug 'eagletmt/neco-ghc'
+Plug 'myfreeweb/intero.nvim'
 
 ""Auto-complete for Shell
 Plug 'Shougo/vimshell.vim'

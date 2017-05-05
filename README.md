@@ -1,5 +1,12 @@
 # Freeman Settings
 
+## Usage
+To use this simple run the brew installation shell script.
+## My application list
+| Usage | Application            |
+|-------|------------------------|
+| Email | imap:mbsync stmp:msmtp |
+| Crypt | gnu2                   |
 ```bash
 gsettings set org.gnome.desktop.input-sources sources "[('xkb', 'us'), ('ibus', 'Unikey')]"
 ```

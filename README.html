@@ -13,7 +13,17 @@
 
 <h1>Freeman Settings</h1>
 
-<p><code>bash
+<h2>Usage</h2>
+
+<p>To use this simple run the brew installation shell script.</p>
+
+<h2>My application list</h2>
+
+<p>| Usage | Application            |
+|-------|------------------------|
+| Email | imap:mbsync stmp:msmtp |
+| Crypt | gnu2                   |
+<code>bash
 gsettings set org.gnome.desktop.input-sources sources "[('xkb', 'us'), ('ibus', 'Unikey')]"
 </code></p>
 
@@ -24,6 +34,12 @@ gsettings set org.gnome.desktop.input-sources sources "[('xkb', 'us'), ('ibus', 
 2. I need to use playframework for development and the emacs support ensime very well.</p>
 
 <p>I move from emacs to vim then to neovim and now I am using the spacemacs, I think the configuration for everyone will become the same after long period of learning and copying from others, so it is good to give the community driven software a try.</p>
+
+<p>cp /path/to/backups/*.gpg ~/.gnupg/</p>
+
+<h1>or, if you exported the ownertrust</h1>
+
+<p>gpg --import-ownertrust chrisroos-ownertrust-gpg.txt</p>
 
 </body>
 </html>
