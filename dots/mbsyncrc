@@ -8,7 +8,7 @@ User xiongchenyu6@gmail.com
 PassCmd "gpg2 -q --pinentry-mode loopback --for-your-eyes-only --no-tty -d ~/.password/gmail.gpg"
 AuthMechs LOGIN
 SSLType IMAPS
-CertificateFile /etc/ssl/certs/ca-bundle.crt
+CertificateFile /etc/ssl/cert.pem
 
 IMAPStore gmail-remote
 Account gmail

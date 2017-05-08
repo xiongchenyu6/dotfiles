@@ -13,9 +13,6 @@ fi
 brew update
 
 taps=(
-    homebrew/versions
-    homebrew/dupes
-    Goles/battery
     d12frosted/emacs-plus
     caskroom/fonts
 )
@@ -41,14 +38,14 @@ brew cask install "${apps[@]}"
 services=(
     openssl
     git-crypt
-    termianl-notifier
+    terminal-notifier
     ispell
     scala
     neovim/neovim/neovim
     watchman
     w3m
     fasd
-    mu
+    'mu --with-emacs'
     cmake
     ledger
     emacs-plus
@@ -61,7 +58,7 @@ services=(
     mariadb
     gnupg
     git
-    haskell
+    gnuplot
     python3
     sbt
     ctags
