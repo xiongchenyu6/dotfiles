@@ -11,8 +11,6 @@ stalonetray &
 
 xscreensaver -no-splash &
 
-xmodmap ~/.xmodmap
-
 # Set background image with feh
 feh --bg-scale /usr/share/backgrounds/warty-final-ubuntu.png &
 # Start udiskie to handle media
@@ -23,5 +21,7 @@ xfce4-power-manager &
 if [ -x /usr/bin/nm-applet ] ; then
    nm-applet --sm-disable &
 fi
+
+xmodmap ~/.xmodmap
 
 exec xmonad
