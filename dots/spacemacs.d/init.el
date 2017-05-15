@@ -26,6 +26,7 @@ values."
    ;; List of configuration layers to load.
    dotspacemacs-configuration-layers
    '(
+     csv
      gtags
      graphviz
      vimscript
@@ -39,7 +40,7 @@ values."
           org-enable-bootstrap-support t
           org-enable-github-support t
           org-enable-reveal-js-support t
-          org-projectile-file "~/Github/Org/Projects.org")
+          org-projectile-file "~/Dropbox/Org/Projects.org")
      (shell :variables
             shell-default-height 30
             shell-default-position 'bottom
@@ -48,6 +49,7 @@ values."
               haskell-completion-backend'intero
               haskell-process-type 'stack-ghci)
      javascript
+     scala
      html
      react
      plantuml
@@ -71,6 +73,8 @@ values."
            mu4e-enable-notifications t)
      (ranger :variables ranger-show-preview t)
      (auto-completion :variables
+                      auto-completion-tab-key-behavior 'complete
+                      auto-completion-complete-with-key-sequence-delay 0
                       auto-completion-enable-snippets-in-popup t
                       auto-completion-enable-help-tooltip t
                       auto-completion-enable-sort-by-usage t)
@@ -328,7 +332,7 @@ before packages are loaded. If you are unsure, you should try in setting them in
 This function is called at the very end of Spacemacs initialization after
 layers configuration.
 This is the place where most of your configurations should be done. Unless it is
-explicitly specified that a variable should be set before a package is loaded,
+
 you should place your code here."
   (setq spacemacs-buffer--warnings nil)
   (setq require-final-newline nil)
@@ -337,6 +341,23 @@ you should place your code here."
   ;;Set key jump only one line
   (define-key evil-normal-state-map (kbd "j") 'evil-next-visual-line)
   (define-key evil-normal-state-map (kbd "k") 'evil-previous-visual-line)
+  (setq ensime-startup-notification nil)
+  (setq ensime-startup-snapshot-notification nil)
+  (use-package ensime
+    :commands ensime ensime-mode)
+  (add-hook 'java-mode-hook 'ensime-mode)
+  (add-hook 'scala-mode-hook 'ensime-mode)
+
+  (use-package sbt-mode
+    :commands sbt-start sbt-command
+    :config
+    ;; WORKAROUND: https://github.com/ensime/emacs-sbt-mode/issues/31
+    ;; allows using SPACE when in the minibuffer
+    (substitute-key-definition
+     'minibuffer-complete-word
+     'self-insert-command
+     minibuffer-local-completion-map))
+  (global-company-mode)
   ;;ranger settings
   (setq ranger-cleanup-on-disable t)
   (setq ranger-cleanup-eagerly t)
@@ -375,19 +396,20 @@ you should place your code here."
   ;;mu4e
   (setq mu4e-attachment-dir "~/Downloads/"
         mu4e-maildir "~/Mail/"
-        mu4e-get-mail-command "mbsync -a"
+        mu4e-get-mail-command "mbsync -a -q"
         mu4e-update-interval 60
-        mu4e-view-show-images t
+        mu4e-view-show-images  t
         mu4e-view-prefer-html t
         mu4e-sent-messages-behavior 'delete
         message-kill-buffer-on-exit t
-        mu4e-hide-index-messages t
+        mu4e-headers-auto-update t
         org-mu4e-link-query-in-headers-mode nil
         ;;mu4e-html2text-command "w3m -dump -T text/html"
         mu4e-index-lazy-check t)
   ;;use msmtp
   (setq send-mail-function 'message-send-mail-with-sendmail)
   (setq sendmail-program "msmtp")
+  (setq mu4e-alert-set-default-style 'notifier)
                                         ; tell msmtp to choose the SMTP server according to the from field in the outgoing email
   (setq message-sendmail-extra-arguments '("--read-envelope-from"))
   (setq message-sendmail-f-is-evil 't)
@@ -423,15 +445,20 @@ you should place your code here."
   ;;parabox
   (setq paradox-github-token '3db959a368a082f4290d0c81313e46418d29f199)
   ;;ledger settins
+  (setq inhibit-read-only t)
   (add-to-list 'auto-mode-alist
                '("\\.ledger$" . ledger-mode))
-  (setq org-directory "~/Github/Org"
+  (setq org-directory "~/Dropbox/Org"
         org-agenda-files (list org-directory)
         org-agenda-diary-file (concat org-directory "/diary.org")
         org-default-notes-file (concat org-directory "/refile.org"))
+  ;; Set to the name of the file where new notes will be stored
+  (setq org-mobile-inbox-for-pull (concat org-directory "/refile.org"))
+  ;; Set to <your Dropbox root directory>/MobileOrg.
+  (setq org-mobile-directory "~/Dropbox/Apps/MobileOrg")
   (setq org-publish-project-alist
         '(("orgfiles"
-           :base-directory "~/Github/Org/"
+           :base-directory "~/Dropbox/Org/"
            :base-extension "org"
            :publishing-directory "~/html/"
            :publishing-function org-twbs-publish-to-html
@@ -451,7 +478,7 @@ you should place your code here."
            :with-timestamps t
            :html-link-home "index.html")
           ("blog-static"
-           :base-directory "~/Github/Org"
+           :base-directory "~/Dropbox/Org"
            :base-extension "css\\|js\\|png\\|jpg\\|gif\\|pdf\\|mp3\\|ogg\\|swf"
            :publishing-directory "~/html/"
            :recursive t
@@ -538,25 +565,25 @@ you should place your code here."
   (setq org-capture-templates
         '(("t" "todo"
            entry
-           (file "~/Github/org/refile.org")
+           (file "~/Dropbox/Org/refile.org")
            "* TODO %?\n%U\n%a\n"
            :clock-in t
            :clock-resume t)
           ("l" "link-note"
            entry
-           (file "~/Github/org/refile.org")
+           (file "~/Dropbox/Org/refile.org")
            "* %? :NOTE:\n%U\n%a\n"
            :clock-in t
            :clock-resume t)
           ("n" "note"
            entry
-           (file "~/Github/org/refile.org")
+           (file "~/Dropbox/Org/refile.org")
            "* %? :NOTE:\n%U\n%c\n"
            :prepend t
            :kill-buffer t)
           ("h" "Habit"
            entry
-           (file "~/Github/org/refile.org")
+           (file "~/Dropbox/Org/refile.org")
            "* NEXT %?\n%U\n%a\nSCHEDULED: %(format-time-string \"%<<%Y-%m-%d %a .+1d/3d>>\")\n:PROPERTIES:\n:STYLE: habit\n:REPEAT_TO_STATE: NEXT\n:END:\n")))
   ;; Remove empty LOGBOOK drawers on clock out
   (defun bh/remove-empty-drawer-on-clock-out ()
@@ -615,7 +642,7 @@ you should place your code here."
  '(evil-want-Y-yank-to-eol nil)
  '(package-selected-packages
    (quote
-    (vmd-mode helm-gtags ggtags git-gutter-fringe+ git-gutter-fringe fringe-helper git-gutter+ git-gutter diff-hl selectric-mode powerline tablist spinner alert log4e gntp markdown-mode skewer-mode simple-httpd json-snatcher json-reformat multiple-cursors js2-mode hydra parent-mode projectile request haml-mode graphviz-dot-mode gitignore-mode gh marshal logito pcache ht flyspell-correct flycheck pkg-info epl flx magit magit-popup git-commit with-editor smartparens iedit anzu evil goto-chg undo-tree highlight diminish web-completion-data dash-functional tern pos-tip ghc haskell-mode company bind-map bind-key yasnippet packed anaconda-mode pythonic f dash s helm avy helm-core async auto-complete popup reveal-in-osx-finder pbcopy osx-trash osx-dictionary launchctl org-plus-contrib ox-twbs ox-reveal ox-gfm yapfify xterm-color xkcd ws-butler winum which-key web-mode web-beautify wakatime-mode volatile-highlights vimrc-mode vi-tilde-fringe uuidgen use-package toc-org theme-changer tagedit sunshine spaceline smeargle slim-mode shell-pop scss-mode sass-mode restart-emacs rase ranger rainbow-delimiters pyvenv pytest pyenv-mode py-isort pug-mode popwin plantuml-mode pip-requirements persp-mode pdf-tools pcre2el paradox osx-location orgit org-projectile org-present org-pomodoro org-download org-bullets open-junk-file neotree multi-term mu4e-maildirs-extension mu4e-alert move-text mmm-mode markdown-toc magit-gitflow magit-gh-pulls macrostep lorem-ipsum livid-mode live-py-mode linum-relative link-hint less-css-mode ledger-mode json-mode js2-refactor js-doc intero info+ indent-guide hy-mode hungry-delete htmlize hlint-refactor hl-todo hindent highlight-parentheses highlight-numbers highlight-indentation hide-comnt help-fns+ helm-themes helm-swoop helm-pydoc helm-projectile helm-mode-manager helm-make helm-hoogle helm-gitignore helm-flx helm-descbinds helm-dash helm-css-scss helm-company helm-c-yasnippet helm-ag haskell-snippets google-translate golden-ratio gnuplot github-search github-clone github-browse-file gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link gist gh-md fuzzy flyspell-correct-helm flycheck-pos-tip flycheck-ledger flycheck-haskell flx-ido fill-column-indicator fasd fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-magit evil-lisp-state evil-indent-plus evil-iedit-state evil-exchange evil-ediff evil-args evil-anzu eval-sexp-fu eshell-z eshell-prompt-extras esh-help erc-yt erc-view-log erc-terminal-notifier erc-social-graph erc-image erc-hl-nicks emoji-cheat-sheet-plus emmet-mode elisp-slime-nav dumb-jump define-word dash-at-point dactyl-mode cython-mode company-web company-tern company-statistics company-quickhelp company-ghci company-ghc company-emoji company-cabal company-anaconda column-enforce-mode coffee-mode cmm-mode clean-aindent-mode auto-yasnippet auto-highlight-symbol auto-dictionary auto-compile aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line ac-ispell))))
+    (company-emacs-eclim eclim noflet ensime sbt-mode scala-mode csv-mode vmd-mode helm-gtags ggtags git-gutter-fringe+ git-gutter-fringe fringe-helper git-gutter+ git-gutter diff-hl selectric-mode powerline tablist spinner alert log4e gntp markdown-mode skewer-mode simple-httpd json-snatcher json-reformat multiple-cursors js2-mode hydra parent-mode projectile request haml-mode graphviz-dot-mode gitignore-mode gh marshal logito pcache ht flyspell-correct flycheck pkg-info epl flx magit magit-popup git-commit with-editor smartparens iedit anzu evil goto-chg undo-tree highlight diminish web-completion-data dash-functional tern pos-tip ghc haskell-mode company bind-map bind-key yasnippet packed anaconda-mode pythonic f dash s helm avy helm-core async auto-complete popup reveal-in-osx-finder pbcopy osx-trash osx-dictionary launchctl org-plus-contrib ox-twbs ox-reveal ox-gfm yapfify xterm-color xkcd ws-butler winum which-key web-mode web-beautify wakatime-mode volatile-highlights vimrc-mode vi-tilde-fringe uuidgen use-package toc-org theme-changer tagedit sunshine spaceline smeargle slim-mode shell-pop scss-mode sass-mode restart-emacs rase ranger rainbow-delimiters pyvenv pytest pyenv-mode py-isort pug-mode popwin plantuml-mode pip-requirements persp-mode pdf-tools pcre2el paradox osx-location orgit org-projectile org-present org-pomodoro org-download org-bullets open-junk-file neotree multi-term mu4e-maildirs-extension mu4e-alert move-text mmm-mode markdown-toc magit-gitflow magit-gh-pulls macrostep lorem-ipsum livid-mode live-py-mode linum-relative link-hint less-css-mode ledger-mode json-mode js2-refactor js-doc intero info+ indent-guide hy-mode hungry-delete htmlize hlint-refactor hl-todo hindent highlight-parentheses highlight-numbers highlight-indentation hide-comnt help-fns+ helm-themes helm-swoop helm-pydoc helm-projectile helm-mode-manager helm-make helm-hoogle helm-gitignore helm-flx helm-descbinds helm-dash helm-css-scss helm-company helm-c-yasnippet helm-ag haskell-snippets google-translate golden-ratio gnuplot github-search github-clone github-browse-file gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link gist gh-md fuzzy flyspell-correct-helm flycheck-pos-tip flycheck-ledger flycheck-haskell flx-ido fill-column-indicator fasd fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-magit evil-lisp-state evil-indent-plus evil-iedit-state evil-exchange evil-ediff evil-args evil-anzu eval-sexp-fu eshell-z eshell-prompt-extras esh-help erc-yt erc-view-log erc-terminal-notifier erc-social-graph erc-image erc-hl-nicks emoji-cheat-sheet-plus emmet-mode elisp-slime-nav dumb-jump define-word dash-at-point dactyl-mode cython-mode company-web company-tern company-statistics company-quickhelp company-ghci company-ghc company-emoji company-cabal company-anaconda column-enforce-mode coffee-mode cmm-mode clean-aindent-mode auto-yasnippet auto-highlight-symbol auto-dictionary auto-compile aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line ac-ispell))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
