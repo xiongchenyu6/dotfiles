@@ -1,12 +1,12 @@
 
-xmonad.hs:21:14: Warning:
+xmonad.hs:23:14: Warning:
     In the use of ‘defaultConfig’ (imported from XMonad.Config):
     Deprecated: "Use def (from Data.Default, and re-exported by XMonad and XMonad.Config) instead."
 
-xmonad.hs:23:51: Warning:
+xmonad.hs:25:71: Warning:
     In the use of ‘defaultConfig’ (imported from XMonad.Config):
     Deprecated: "Use def (from Data.Default, and re-exported by XMonad and XMonad.Config) instead."
 
-xmonad.hs:24:51: Warning:
+xmonad.hs:26:51: Warning:
     In the use of ‘defaultConfig’ (imported from XMonad.Config):
     Deprecated: "Use def (from Data.Default, and re-exported by XMonad and XMonad.Config) instead."
