@@ -29,3 +29,6 @@ if [[ -n $SSH_CONNECTION ]]; then
 else
     export EDITOR='mvim'
 fi
+
+export NVM_DIR="/home/fruittec/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"  # This loads nvm

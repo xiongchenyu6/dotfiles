@@ -1,15 +1,26 @@
 import XMonad
 import XMonad.Hooks.DynamicLog
+import XMonad.Config
 import XMonad.Hooks.ManageDocks
 import XMonad.Util.Run(spawnPipe)
 import XMonad.Util.EZConfig(additionalKeys)
 import System.IO
 
+myManageHook = composeAll
+  [ className =? "emacs"      --> doShift "1:dev"
+  , className =? "emacsclient"  --> doShift "1:dev"
+  , className =? "chromium-browser"  --> doShift "2:web"
+  ,className =? "Chromium"       --> doShift "2:web"
+  , className =? "Google-chrome"  --> doShift "2:web"
+  , manageDocks
+  ]
+
 main = do
     xmproc <- spawnPipe "xmobar"
 
     xmonad $ defaultConfig
-        { manageHook = manageDocks <+> manageHook defaultConfig
+        { workspaces = ["1:dev","2:web","3:game","4:comm","5:ham","6:tmp","7:dvi","8","9","0","-","="]
+        ,manageHook = myManageHook <+> manageHook defaultConfig
         , layoutHook = avoidStruts  $  layoutHook defaultConfig
         , logHook = dynamicLogWithPP xmobarPP
                         { ppOutput = hPutStrLn xmproc
