@@ -22,6 +22,11 @@ if [ -x /usr/bin/nm-applet ] ; then
    nm-applet --sm-disable &
 fi
 
-xmodmap ~/.xmodmap
+if [ -x /usr/bin/gnome-power-manager ] ; then
+   sleep 3
+   gnome-power-manager &
+fi
+
+(sleep 1; xmodmap ~/.xmodmap) &
 
 exec xmonad
