@@ -1,0 +1,1 @@
+/home/fruittec/Github/dotfiles/dots/spacemacs.d
