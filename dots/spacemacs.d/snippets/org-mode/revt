@@ -10,7 +10,6 @@
 #+OPTIONS: timestamp:t p:t
 #+OPTIONS: todo:t
 #+OPTIONS: TeX:t
-##Do the right thing automatically (MathJax)
 #+OPTIONS: LaTeX:t          
 #+OPTIONS: skip:t @:t ::t |:t ^:t f:t
 #+REVEAL_ROOT: http://cdn.jsdelivr.net/reveal.js/3.0.0/
