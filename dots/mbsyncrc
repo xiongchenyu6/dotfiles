@@ -1,4 +1,30 @@
 ########################################
+# Office
+########################################
+
+IMAPAccount office
+Host outlook.office365.com 
+User cxiong001@e.ntu.edu.sg
+PassCmd "gpg2 -q --pinentry-mode loopback --for-your-eyes-only --no-tty -d ~/.password/office.gpg"
+AuthMechs LOGIN
+SSLType IMAPS
+
+IMAPStore office-remote
+Account office
+
+MaildirStore office-local
+Path ~/Mail/office/
+Inbox ~/Mail/office/inbox
+
+Channel office
+Master :office-remote:
+Slave :office-local:
+Create Both
+Expunge Both
+SyncState *
+Patterns *
+
+########################################
 # Gmail
 ########################################
 
@@ -44,28 +70,3 @@ Channel gmail-inbox
 Channel gmail-sent
 Channel gmail-trash
 
-########################################
-# Office
-########################################
-
-IMAPAccount office
-Host outlook.office365.com 
-User cxiong001@e.ntu.edu.sg
-PassCmd "gpg2 -q --pinentry-mode loopback --for-your-eyes-only --no-tty -d ~/.password/office.gpg"
-AuthMechs LOGIN
-SSLType IMAPS
-
-IMAPStore office-remote
-Account office
-
-MaildirStore office-local
-Path ~/Mail/office/
-Inbox ~/Mail/office/inbox
-
-Channel office
-Master :office-remote:
-Slave :office-local:
-Create Both
-Expunge Both
-SyncState *
-Patterns *

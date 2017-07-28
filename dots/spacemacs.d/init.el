@@ -5,10 +5,12 @@
 (defun dotspacemacs/layers ()
   "Configuration Layers declaration.
 You should not put any user code in this function besides modifying the variable
+
 values."
   (setq-default
    ;; Base distribution to use. This is a layer contained in the directory
-   ;; `+distribution'. For now available distributions are `spacemacs-base';; or `spacemacs'. (default 'spacemacs) dotspacemacs-distribution 'spacemacs
+   ;; `+distribution'. For now available distributions are `spacemacs-base';; or `spacemacs'. (default 'spacemacs)
+   dotspacemacs-distribution 'spacemacs
    ;; Lazy installation of layers (i.e. layers are installed only when a file
    ;; with a supported type is opened). Possible values are `all', `unused'
    ;; and `nil'. `unused' will lazy install only unused layers (i.e. layers
@@ -17,20 +19,22 @@ values."
    ;; listed in `dotspacemacs-configuration-layers'. `nil' disable the lazy
    ;; installation feature and you have to explicitly list a layer in the
    ;; variable `dotspacemacs-configuration-layers' to install it.
-   ;; (default 'unused) dotspacemacs-enable-lazy-installation 'unused
+   ;; (default 'unused)
+   dotspacemacs-enable-lazy-installation `unused
    ;; If non-nil then Spacemacs will ask for confirmation before installing
-   ;; a layer lazily. (default t) dotspacemacs-ask-for-lazy-installation t
+   ;; a layer lazily. (default t)
+   dotspacemacs-ask-for-lazy-installation t
    ;; If non-nil layers with lazy install support are lazy installed.
    ;; List of additional paths where to look for configuration layers.
-   ;; Paths must have a trailing slash (i.e. `~/.mycontribs/') dotspacemacs-configuration-layer-path '()
+   ;; Paths must have a trailing slash (i.e. `~/.mycontribs/')
+   dotspacemacs-configuration-layer-path '()
    ;; List of configuration layers to load.
    dotspacemacs-configuration-layers
    '(
+     typescript
      sql
-     csv
      gtags
      graphviz
-     vimscript
      python
      emacs-lisp
      git
@@ -57,35 +61,42 @@ values."
      dash
      osx
      (erc :variables
-          erc-erver-list
+          erc-server-list
           '(("irc.freenode.net"
              :port "6697"
              :ssl t
-             :nick "FreemanXiong")
+             :nick "FreemanXiong"
+             :password "19930616")
             ))
-     emoji
-     xkcd
+     ;; emoji
+     ;; xkcd
      finance
      latex
      pdf-tools
      spell-checking
      fasd
+     search-engine
      (mu4e :variables
            mu4e-enable-mode-line t
            mu4e-enable-notifications t)
      (ranger :variables ranger-show-preview t)
      (auto-completion :variables
                       auto-completion-tab-key-behavior 'complete
-                      auto-completion-complete-with-key-sequence-delay 0
+                      auto-completion-return-key-behavior nil
+                      auto-completion-complete-with-key-sequence-delay 0.1
                       auto-completion-enable-snippets-in-popup t
                       auto-completion-enable-help-tooltip t
                       auto-completion-enable-sort-by-usage t)
      (syntax-checking :variables
-                      syntax-checking-enable-by-default t)
+                      syntax-checking-enable-by-default nil)
      (wakatime :variables wakatime-api-key "06fb08d0-68a4-4b39-bbb0-d34d325dc046"
                ;; use the actual wakatime path
                wakatime-cli-path "/usr/local/bin/wakatime")
-     (geolocation :variables geolocation-enable-weather-forecast t))
+     ;; (geolocation :variables
+     ;;              geolocation-enable-automatic-theme-changer nil
+     ;;              geolocation-enable-location-service nil
+     ;;              geolocation-enable-weather-forecast t)
+     )
    ;; List of additional packages that will be installed without being
    ;; wrapped in a layer. If you need some configuration for these
    ;; packages, then consider creating a layer. You can also put the
@@ -97,7 +108,9 @@ values."
    '()
    ;; A list of packages that will not be installed and loaded.
    dotspacemacs-excluded-packages
-   '(evil-escape)
+   '(evil-escape
+     meghanada
+     )
    ;; Defines the behaviour of Spacemacs when installing packages.
    ;; Possible values are `used-only', `used-but-keep-unused' and `all'.
    ;; `used-only' installs only explicitly used packages and uninstall any
@@ -148,14 +161,14 @@ values."
    ;; directory. A string value must be a path to an image format supported
    ;; by your Emacs build.
    ;; If the value is nil then no banner is displayed. (default 'official)
-   dotspacemacs-startup-banner 'official
+   dotspacemacs-startup-banner nil
    ;; List of items to show in startup buffer or an association list of
    ;; the form `(list-type . list-size)`. If nil then it is disabled.
    ;; Possible values for list-type are:
    ;; `recents' `bookmarks' `projects' `agenda' `todos'."
    ;; List sizes may be nil, in which case
    ;; `spacemacs-buffer-startup-lists-length' takes effect.
-   dotspacemacs-startup-lists '((bookmarks . 2) (recents . 5) (projects . 7))
+   dotspacemacs-startup-lists '((todos . 2) (agenda . 5) (recents . 7))
    ;; True if the home buffer should respond to resize events.
    dotspacemacs-startup-buffer-responsive t
    ;; Default major mode of the scratch buffer (default `text-mode')
@@ -163,13 +176,20 @@ values."
    ;; List of themes, the first of the list is loaded when spacemacs starts.
    ;; Press <SPC> T n to cycle to the next theme in the list (works great
    ;; with 2 themes variants, one dark and one light)
-   dotspacemacs-themes '(spacemacs-dark spacemacs-light)
+   dotspacemacs-themes '(
+                         monokai
+                         dracula
+                         spacemacs-dark
+                         solarized-dark
+                         zenburn)
    ;; If non nil the cursor color matches the state color in GUI Emacs.
    dotspacemacs-colorize-cursor-according-to-state
    t
    ;; Default font, or prioritized list of fonts. `powerline-scale' allows to
    ;; quickly tweak the mode-line size to make separators look not too crappy.
-   dotspacemacs-default-font '("InconsolataForPowerline Nerd Font" :size 18
+   dotspacemacs-default-font '(
+                               "Source Code Pro" :size 14
+                               ;; "InconsolataForPowerline Nerd Font" :size 18
                                :weight normal
                                :width normal
                                :powerline-scale 1.1)
@@ -310,7 +330,7 @@ values."
    ;; List of search tool executable names. Spacemacs uses the first installed
    ;; tool of the list. Supported tools are `ag', `pt', `ack' and `grep'.
    ;; (default '("ag" "pt" "ack" "grep"))
-   dotspacemacs-search-tools '("ag" "pt" "ack" "grep")
+   dotspacemacs-search-tools '("pt" "grep")
    ;; The default package repository used if no explicit repository has been
    ;; specified with an installed package.
    ;; Not used for now. (default nil)
@@ -320,7 +340,7 @@ values."
    ;; `trailing' to delete only the whitespace at end of lines, `changed'to
    ;; delete only whitespace for changed lines or `nil' to disable cleanup.
    ;; (default nil)
-   dotspacemacs-whitespace-cleanup 'nil))
+   dotspacemacs-whitespace-cleanup 'trailing))
 
 (defun dotspacemacs/user-init ()
   "Initialization function for user code.
@@ -334,15 +354,14 @@ before packages are loaded. If you are unsure, you should try in setting them in
   ;; use local eslint from node_modules before global
   ;; http://emacs.stackexchange.com/questions/21205/flycheck-with-file-relative-eslint-executable
   (defun my/use-eslint-from-node-modules ()
-    (let ((rc-path (if (projectile-project-p)
+    (let ((eslint-path (if (projectile-project-p)
                        (concat (projectile-project-root) "node_modules/eslint/bin/eslint.js"))))
-      (if (file-exists-p rc-path)
+      (if (file-exists-p eslint-path)
           (progn
-            (message rc-path)
-            (setq flycheck-javascript-eslint-executable rc-path)))))
+            (message eslint-path)
+            (setq flycheck-javascript-eslint-executable eslint-path)))))
 
   (add-hook 'flycheck-mode-hook #'my/use-eslint-from-node-modules)
-  (setq js-indent-level 2)
   "Configuration function for user code.
 This function is called at the very end of Spacemacs initialization after
 layers configuration.
@@ -352,27 +371,18 @@ you should place your code here."
   (setq spacemacs-buffer--warnings nil)
   (setq require-final-newline nil)
   (setq undo-tree-auto-save-history t)
-  (setq undo-tree-history-directory-alist '(("." . "~/.emacs.d/undo")))
+  (setq undo-tree-history-directory-alist '(("." . "~/.emacs.d.undo/undo")))
   ;;Set key jump only one line
   (define-key evil-normal-state-map (kbd "j") 'evil-next-visual-line)
   (define-key evil-normal-state-map (kbd "k") 'evil-previous-visual-line)
+
+  (setq exec-path (append exec-path '("/usr/local/bin")))
+  (setq exec-path (append exec-path '("/usr/local/sbin")))
+  (add-hook 'prog-mode-hook 'spacemacs/toggle-hungry-delete-on)
   (setq ensime-startup-notification nil)
   (setq ensime-startup-snapshot-notification nil)
-  (use-package ensime
-    :commands ensime ensime-mode)
   (add-hook 'java-mode-hook 'ensime-mode)
-  (add-hook 'scala-mode-hook 'ensime-mode)
 
-  (use-package sbt-mode
-    :commands sbt-start sbt-command
-    :config
-    ;; WORKAROUND: https://github.com/ensime/emacs-sbt-mode/issues/31
-    ;; allows using SPACE when in the minibuffer
-    (substitute-key-definition
-     'minibuffer-complete-word
-     'self-insert-command
-     minibuffer-local-completion-map))
-  (global-company-mode)
   ;;ranger settings
   (setq ranger-cleanup-on-disable t)
   (setq ranger-cleanup-eagerly t)
@@ -454,7 +464,6 @@ you should place your code here."
   ;; Turn off js2 mode errors & warnings (we lean on eslint/standard)
   (setq js2-mode-show-parse-errors nil)
   (setq js2-mode-show-strict-warnings nil)
-  (setq-default js2-basic-offset 2)
 
   ;;dash settings
   (setq helm-dash-browser-func 'eww)
@@ -663,21 +672,26 @@ you should place your code here."
            (js . t))))
   (setq org-agenda-persistent-filter t)
   (setq org-ditaa-jar-path "/usr/local/Cellar/ditaa/0.10/libexec/ditaa0_10.jar")
-  (setq org-plantuml-jar-path "/usr/local/Cellar/plantuml/1.2017.13/libexec/plantuml.jar")
+  (setq org-plantuml-jar-path "/usr/local/Cellar/plantuml/1.2017.14/libexec/plantuml.jar")
   (setq org-confirm-babel-evaluate nil)
   (add-to-list 'org-src-lang-modes (quote ("plantuml" . fundamental))))
+(defun dotspacemacs/emacs-custom-settings ()
+  "Emacs custom settings.
+This is an auto-generated function, do not modify its content directly, use
+Emacs customize menu instead.
+This function is called at the very end of Spacemacs initialization."
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(evil-want-Y-yank-to-eol nil)
  '(package-selected-packages
    (quote
-    (haskell-mode sbt-mode company helm-core yasnippet magit with-editor sql-indent ggtags ensime diff-hl smartparens flycheck company-auctex auctex-latexmk auctex vmd-mode evil helm gh markdown-mode reveal-in-osx-finder pbcopy osx-trash osx-dictionary launchctl org-plus-contrib ox-twbs ox-reveal ox-gfm yapfify xterm-color xkcd ws-butler winum which-key web-mode web-beautify wakatime-mode volatile-highlights vimrc-mode vi-tilde-fringe uuidgen use-package toc-org theme-changer tagedit sunshine spaceline smeargle slim-mode shell-pop scss-mode sass-mode restart-emacs rase ranger rainbow-delimiters pyvenv pytest pyenv-mode py-isort pug-mode popwin plantuml-mode pip-requirements persp-mode pdf-tools pcre2el paradox osx-location orgit org-projectile org-present org-pomodoro org-download org-bullets open-junk-file neotree multi-term mu4e-maildirs-extension mu4e-alert move-text mmm-mode markdown-toc magit-gitflow magit-gh-pulls macrostep lorem-ipsum livid-mode live-py-mode linum-relative link-hint less-css-mode ledger-mode json-mode js2-refactor js-doc intero info+ indent-guide hy-mode hungry-delete htmlize hlint-refactor hl-todo hindent highlight-parentheses highlight-numbers highlight-indentation hide-comnt help-fns+ helm-themes helm-swoop helm-pydoc helm-projectile helm-mode-manager helm-make helm-hoogle helm-gitignore helm-flx helm-descbinds helm-dash helm-css-scss helm-company helm-c-yasnippet helm-ag haskell-snippets google-translate golden-ratio gnuplot github-search github-clone github-browse-file gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link gist gh-md fuzzy flyspell-correct-helm flycheck-pos-tip flycheck-ledger flycheck-haskell flx-ido fill-column-indicator fasd fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-magit evil-lisp-state evil-indent-plus evil-iedit-state evil-exchange evil-ediff evil-args evil-anzu eval-sexp-fu eshell-z eshell-prompt-extras esh-help erc-yt erc-view-log erc-terminal-notifier erc-social-graph erc-image erc-hl-nicks emoji-cheat-sheet-plus emmet-mode elisp-slime-nav dumb-jump define-word dash-at-point dactyl-mode cython-mode company-web company-tern company-statistics company-quickhelp company-ghci company-ghc company-emoji company-cabal company-anaconda column-enforce-mode coffee-mode cmm-mode clean-aindent-mode auto-yasnippet auto-highlight-symbol auto-dictionary auto-compile aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line ac-ispell))))
+    (dash zenburn-theme solarized-theme monokai-theme dracula-theme magit sbt-mode auctex smartparens evil window-purpose helm helm-core yasnippet skewer-mode js2-mode ghub markdown-mode projectile with-editor org-plus-contrib auctex-latexmk evil-escape define-word yapfify xterm-color ws-butler winum which-key web-mode web-beautify wakatime-mode volatile-highlights vmd-mode vimrc-mode vi-tilde-fringe uuidgen use-package toc-org tide tagedit symon sunshine string-inflection sql-indent spaceline smeargle slim-mode shell-pop scss-mode sass-mode reveal-in-osx-finder restart-emacs rase ranger rainbow-delimiters pyvenv pytest pyenv-mode py-isort pug-mode popwin plantuml-mode pip-requirements persp-mode pdf-tools pcre2el pbcopy password-generator paradox ox-twbs ox-reveal ox-gfm osx-trash osx-dictionary orgit org-projectile org-present org-pomodoro org-download org-bullets org-brain open-junk-file noflet neotree multi-term mu4e-maildirs-extension mu4e-alert move-text mmm-mode meghanada markdown-toc magithub magit-gitflow magit-gh-pulls macrostep lorem-ipsum livid-mode live-py-mode linum-relative link-hint less-css-mode ledger-mode launchctl json-mode js2-refactor js-doc intero info+ indent-guide impatient-mode hy-mode hungry-delete hlint-refactor hl-todo hindent highlight-parentheses highlight-numbers highlight-indentation hide-comnt help-fns+ helm-themes helm-swoop helm-pydoc helm-purpose helm-projectile helm-mode-manager helm-make helm-hoogle helm-gtags helm-gitignore helm-flx helm-descbinds helm-dash helm-css-scss helm-company helm-c-yasnippet helm-ag haskell-snippets groovy-mode groovy-imports graphviz-dot-mode gradle-mode google-translate golden-ratio gnuplot github-search github-clone gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link git-gutter-fringe git-gutter-fringe+ gist gh-md ggtags fuzzy flyspell-correct-helm flycheck-pos-tip flycheck-ledger flycheck-haskell flx-ido fill-column-indicator fasd fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-org evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-magit evil-lisp-state evil-lion evil-indent-plus evil-iedit-state evil-exchange evil-ediff evil-args evil-anzu eval-sexp-fu eshell-z eshell-prompt-extras esh-help erc-yt erc-view-log erc-terminal-notifier erc-social-graph erc-image erc-hl-nicks ensime engine-mode emmet-mode elisp-slime-nav editorconfig dumb-jump diff-hl dash-at-point dante dactyl-mode cython-mode csv-mode company-web company-tern company-statistics company-quickhelp company-ghci company-ghc company-emacs-eclim company-cabal company-auctex company-anaconda column-enforce-mode coffee-mode cmm-mode clean-aindent-mode browse-at-remote auto-yasnippet auto-highlight-symbol auto-dictionary auto-compile aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line ac-ispell))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  )
+)

@@ -12,12 +12,12 @@ else
 POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(disk_usage dir dir_writable vcs)
 POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(status root_indicator background_jobs ram)
 
-plugins=(zsh-wakatime fasd emacs react-native tmux git zsh-autosuggestions zsh-syntax-highlighting)
+plugins=(zsh-wakatime osx fasd emacs react-native tmux git zsh-autosuggestions zsh-syntax-highlighting)
 source $ZSH/oh-my-zsh.sh
 
 if [[ "$OSTYPE" == "linux-gnu" ]]; then
     plugins+=(ubuntu)
-else [[ "$OSTYPE" == "darwin"* ]];
+else [[ "$OSTYPE" == "darwin*" ]];
     plugins+=(osx)
 fi
 
