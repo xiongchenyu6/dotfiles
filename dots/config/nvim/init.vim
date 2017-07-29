@@ -268,11 +268,11 @@ call denite#custom#option('default', 'prompt', '❯')
 call denite#custom#source(
 			\ 'file_rec', 'vars', {
 			\   'command': [
-			\      'ag', '--follow','--nogroup','--hidden', '-g', '', '--ignore', '.git', '--ignore', '*.png'
+			\      'pt', '--follow','--nogroup','--hidden', '-g', '', '--ignore', '.git', '--ignore', '*.png'
 			\   ] })
 
 " Ag command on grep source
-call denite#custom#var('grep', 'command', ['ag'])
+call denite#custom#var('grep', 'command', ['pt'])
 call denite#custom#var('grep', 'default_opts',
 			\ ['-i', '--vimgrep'])
 call denite#custom#var('grep', 'recursive_opts', [])
