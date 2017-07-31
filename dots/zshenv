@@ -27,6 +27,7 @@ alias eml='/usr/local/share/android-sdk/emulator/emulator -avd Nexus_S_API_25'
 alias aws='ssh -i "Freeman.pem" ubuntu@52.220.46.164'
 alias awss='ssh -i "Freeman.pem" ubuntu@52.220.46.164 -t tmux a'
 alias vim='nvim'
+alias git=hub
 
 if [[ "$OSTYPE" == "linux-gnu" ]]; then
     # ...
