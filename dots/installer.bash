@@ -15,7 +15,7 @@ OLDDIR=~/dotfiles_old_"$TIME" # old dotfiles backup directory
 #Use neovim rather than vim 8
 FILES=(zshenv curlrc ctags mbsyncrc msmtprc tmux.conf zshrc gitconfig global_ignore ideavimrc) # list of symlink
 
-DIRECTORYS=(config oh-my-zsh spacemacs.d)
+DIRECTORYS=(config oh-my-zsh spacemacs.d password monad)
 ##########
 # create dotfiles_old in homedir
 echo "Creating $OLDDIR for backup of any existing dotfiles in ~"

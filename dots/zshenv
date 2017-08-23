@@ -11,10 +11,8 @@ fi
 
 # ssh
 export SSH_KEY_PATH="~/.ssh/rsa_id"
-export PATH=~/.stack/programs/x86_64-osx/ghc-8.0.2/bin:$PATH
-export PATH=~/.config/yarn/global/node_modules/bin:$PATH
+export PATH=~/.stack/programs/x86_64-osx/ghc-8.2.2/bin:$PATH
 export PATH=/usr/local/opt/sqlite/bin:$PATH
-export PATH="$PATH:$(yarn global bin)"
 export PATH=/usr/local/opt/imagemagick@6/bin:$PATH
 export PATH=~/Library/Haskell/bin:$PATH
 export LANGUAGE=en_US.UTF-8
