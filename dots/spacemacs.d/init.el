@@ -92,7 +92,6 @@ values."
      (clojure :variables clojure-enable-fancify-symbols t)
      latex
      (haskell :variables
-              haskell-enable-hindent-style "johan-tibell"
               haskell-completion-backend 'intero)
      ;; (geolocation :variables
      ;;              geolocation-enable-automatic-theme-changer nil

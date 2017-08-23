@@ -27,7 +27,7 @@ apps=(
     dropbox
     # xquartz
     intellij-idea
-    font-inconsolata-nerd-font-mono 
+    font-inconsolata-nerd-font-mono
     font-source-code-pro
 )
 brew cask install "${apps[@]}"
@@ -38,17 +38,14 @@ services=(
     fasd
     openssl
     git-crypt
-    terminal-notifier
     haskell-stack
     ispell
-    scala
+   # scala
     neovim
     watchman
     w3m
     fasd
-    mu —with-emacs
     ledger
-    emacs-plus
     poppler
     automake
     msmtp
@@ -63,11 +60,13 @@ services=(
     python3
     sbt
     the_platinum_searcher
+    reattach-to-user-namespace
+    emacs-plus
     ditaa
     plantuml
-    watchman
-    reattach-to-user-namespace
+    mu —with-emacs
     global --with-pygments --with-ctags
+    terminal-notifier
 )
 # Install and Setup MySQL
 brew install "${services[@]}"
