@@ -12,10 +12,13 @@ fi
 
 brew update
 
+
 brew tap caskroom/fonts
 brew tap d12frosted/emacs-plus
 
+
 apps=(
+    dropbox
     google-chrome
     sequel-pro
     java
@@ -28,13 +31,17 @@ apps=(
     dropbox
     neteasemusic
     xquartz
+    font-inconsolata-nerd-font-mono 
+    font-source-code-pro
 )
 brew cask install "${apps[@]}"
 
 services=(
+    fasd
     openssl
     git-crypt
     terminal-notifier
+    haskell-stack
     ispell
     scala
     neovim
@@ -54,12 +61,16 @@ services=(
     mariadb
     gnupg
     git
+    git-crypt
+    imagemagick
     gnuplot
     python3
     sbt
+    the_platinum_searcher
     ditaa
     plantuml
-    ag
+    watchman
+    yarn
     reattach-to-user-namespace
     global --with-pygments --with-ctags
 )

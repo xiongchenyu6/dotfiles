@@ -13,13 +13,17 @@ fi
 export SSH_KEY_PATH="~/.ssh/rsa_id"
 export PATH=~/.stack/programs/x86_64-osx/ghc-8.0.2/bin:$PATH
 export PATH=~/.config/yarn/global/node_modules/bin:$PATH
-export PATH="/usr/local/opt/sqlite/bin:$PATH"
+export PATH=/usr/local/opt/sqlite/bin:$PATH
 export PATH="$PATH:$(yarn global bin)"
+export PATH=/usr/local/opt/imagemagick@6/bin:$PATH
+export PATH=~/Library/Haskell/bin:$PATH
 export LANGUAGE=en_US.UTF-8
 export LANG=en_US.UTF-8
 export LC_ALL=en_US.UTF-8
 export TERM=xterm-256color
-
+# export https_proxy=http://127.0.0.1:64396
+# export http_proxy=$https_proxy
+# ftp_proxy = $https_proxy
 #android
 alias eml='/usr/local/share/android-sdk/emulator/emulator -avd Nexus_S_API_25'
 
@@ -27,6 +31,7 @@ alias eml='/usr/local/share/android-sdk/emulator/emulator -avd Nexus_S_API_25'
 alias aws='ssh -i "Freeman.pem" ubuntu@52.220.46.164'
 alias awss='ssh -i "Freeman.pem" ubuntu@52.220.46.164 -t tmux a'
 alias vim='nvim'
+alias git=hub
 
 if [[ "$OSTYPE" == "linux-gnu" ]]; then
     # ...
