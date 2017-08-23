@@ -61,7 +61,7 @@ services=(
     sbt
     the_platinum_searcher
     reattach-to-user-namespace
-    emacs-plus
+    emacs-plus --HEAD --with-natural-title-bars
     ditaa
     plantuml
     mu —with-emacs
