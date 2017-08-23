@@ -5,7 +5,7 @@
 IMAPAccount office
 Host outlook.office365.com 
 User cxiong001@e.ntu.edu.sg
-PassCmd "gpg2 -q --pinentry-mode loopback --for-your-eyes-only --no-tty -d ~/.password/office.gpg"
+PassCmd "gpg -q --pinentry-mode loopback --for-your-eyes-only --no-tty -d ~/.password/office.gpg"
 AuthMechs LOGIN
 SSLType IMAPS
 
@@ -31,7 +31,7 @@ Patterns *
 IMAPAccount gmail
 Host imap.gmail.com
 User xiongchenyu6@gmail.com
-PassCmd "gpg2 -q --pinentry-mode loopback --for-your-eyes-only --no-tty -d ~/.password/gmail.gpg"
+PassCmd "gpg -q --pinentry-mode loopback --for-your-eyes-only --no-tty -d ~/.password/gmail.gpg"
 AuthMechs LOGIN
 SSLType IMAPS
 CertificateFile /etc/ssl/cert.pem
