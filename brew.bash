@@ -12,12 +12,8 @@ fi
 
 brew update
 
-taps=(
-    d12frosted/emacs-plus
-    caskroom/fonts
-)
-
-brew tap "${taps[@]}"
+brew tap caskroom/fonts
+brew tap d12frosted/emacs-plus
 
 apps=(
     google-chrome
@@ -41,11 +37,11 @@ services=(
     terminal-notifier
     ispell
     scala
-    neovim/neovim/neovim
+    neovim
     watchman
     w3m
     fasd
-    'mu --with-emacs'
+    mu
     cmake
     ledger
     emacs-plus
@@ -61,11 +57,11 @@ services=(
     gnuplot
     python3
     sbt
-    ctags
     ditaa
     plantuml
     ag
     reattach-to-user-namespace
+    global --with-pygments --with-ctags
 )
 # Install and Setup MySQL
 brew install "${services[@]}"
