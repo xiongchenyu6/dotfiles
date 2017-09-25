@@ -1,4 +1,11 @@
 ;; -*- mode: emacs-lisp -*-
+
+
+
+
+
+
+
 ;; This file is loaded by Spacemacs at startup.
 ;; It must be stored in your home directory.
 
@@ -7,6 +14,7 @@
 You should not put any user code in this function besides modifying the variable
 
 values."
+
   (setq-default
    ;; Base distribution to use. This is a layer contained in the directory
    ;; `+distribution'. For now available distributions are `spacemacs-base';; or `spacemacs'. (default 'spacemacs)
@@ -30,7 +38,8 @@ values."
    dotspacemacs-configuration-layer-path '()
    ;; List of configuration layers to load.
    dotspacemacs-configuration-layers
-   '(php
+   '(yaml
+     php
      git
      github
      version-control
@@ -52,9 +61,13 @@ values."
              :password "19930616")
             ))
      ;; emoji
-     ;; xkcd
+     xkcd
      ;; search-engine
+     (colors :variables
+             colors-enable-nyan-cat-progress-bar t)
      fasd
+     (chinese :variables
+               chinese-enable-youdao-dict nil)
      finance
      pdf-tools
      spell-checking
@@ -81,17 +94,16 @@ values."
           org-enable-reveal-js-support t
           org-projectile-file "~/Dropbox/Org/Projects.org")
      typescript
-     javascript
+     (javascript :variables javascript-disable-tern-port-files nil)
+     purescript
      scala
      html
-     react
      plantuml
      graphviz
-     python
      emacs-lisp
-     (clojure :variables clojure-enable-fancify-symbols t)
      latex
      (haskell :variables
+              haskell-process-type 'stack-ghci
               haskell-completion-backend 'intero)
      ;; (geolocation :variables
      ;;              geolocation-enable-automatic-theme-changer nil
@@ -103,14 +115,15 @@ values."
    ;; packages, then consider creating a layer. You can also put the
    ;; configuration in `dotspacemacs/user-config'.
    dotspacemacs-additional-packages
-   '()
+   '(
+     shakespeare-mode
+     )
    ;; A list of packages that cannot be updated.
    dotspacemacs-frozen-packages
    '()
    ;; A list of packages that will not be installed and loaded.
    dotspacemacs-excluded-packages
    '(evil-escape
-     meghanada
      )
    ;; Defines the behaviour of Spacemacs when installing packages.
    ;; Possible values are `used-only', `used-but-keep-unused' and `all'.
@@ -177,17 +190,12 @@ values."
    ;; List of themes, the first of the list is loaded when spacemacs starts.
    ;; Press <SPC> T n to cycle to the next theme in the list (works great
    ;; with 2 themes variants, one dark and one light)
-   dotspacemacs-themes '(
-                         monokai
+   dotspacemacs-themes '(spacemacs-dark
                          dracula
-                         spacemacs-dark
-                         spacemacs-light
-                         solarized-dark
-                         solarized-light
-                         zenburn)
+                         molokai
+                         sanityinc-solarized-dark)
    ;; If non nil the cursor color matches the state color in GUI Emacs.
-   dotspacemacs-colorize-cursor-according-to-state
-   t
+   dotspacemacs-colorize-cursor-according-to-state t
    ;; Default font, or prioritized list of fonts. `powerline-scale' allows to
    ;; quickly tweak the mode-line size to make separators look not too crappy.
    dotspacemacs-default-font '(
@@ -344,7 +352,6 @@ values."
    ;; delete only whitespace for changed lines or `nil' to disable cleanup.
    ;; (default nil)
    dotspacemacs-whitespace-cleanup 'trailing))
-
 (defun dotspacemacs/user-init ()
   "Initialization function for user code.
 It is called immediately after `dotspacemacs/init', before layer configuration
@@ -408,7 +415,7 @@ you should place your code here."
         (setq erc-modules (-remove-item 'image erc-modules)))
 
       (setq erc-autojoin-channels-alist
-            '(("freenode.net" "##javascript" "#Haskell"))
+            '(("freenode.net" "#haskell-beginners"))
             erc-hide-list '("JOIN" "PART" "QUIT" "NICK" "MODE" "353")
             erc-track-exclude-types '("JOIN" "PART" "QUIT" "NICK" "MODE" "353")
             erc-track-exclude-server-buffer t
@@ -444,7 +451,7 @@ you should place your code here."
   (setq send-mail-function 'message-send-mail-with-sendmail)
   (setq sendmail-program "msmtp")
   (setq mu4e-alert-set-default-style 'notifier)
-                                        ; tell msmtp to choose the SMTP server according to the from field in the outgoing email
+  ;; tell msmtp to choose the SMTP server according to the from field in the outgoing email
   (setq message-sendmail-extra-arguments '("--read-envelope-from"))
   (setq message-sendmail-f-is-evil 't)
   ;; convert org mode to HTML automatically
@@ -685,6 +692,6 @@ you should place your code here."
            (js . t))))
   (setq org-agenda-persistent-filter t)
   (setq org-ditaa-jar-path "/usr/local/Cellar/ditaa/0.10/libexec/ditaa0_10.jar")
-  (setq org-plantuml-jar-path "/usr/local/Cellar/plantuml/1.2017.14/libexec/plantuml.jar")
+  (setq org-plantuml-jar-path "~/plantuml.jar")
   (setq org-confirm-babel-evaluate nil)
   (add-to-list 'org-src-lang-modes (quote ("plantuml" . fundamental))))

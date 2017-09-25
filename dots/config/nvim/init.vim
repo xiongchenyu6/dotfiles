@@ -91,13 +91,13 @@ set modeline
 set modelines=10
 
 set termguicolors
-colorscheme solarized8_dark_high
+colorscheme molokai
 
 "*****************************************************************************
 "" Light Line Settings
 "*****************************************************************************
 let g:lightline = {
-			\ 'colorscheme': 'solarized',
+			\ 'colorscheme': 'molokai',
 			\ 'active': {
 			\   'left': [ [ 'mode', 'paste' ], [ 'readonly', 'fugitive', 'gitgutter', 'ale', 'filename' ] ],
 			\   'right': [ [ 'lineinfo' ], ['percent'], [ 'filetype', 'fileformat', 'fileencoding' ] ]
@@ -533,27 +533,6 @@ augroup end
 	inoremap <down>  <nop>
 	inoremap <left>  <nop>
 	inoremap <right> <nop>
-
-	""Vim wiki
-	" // --- vimwiki --- //
-	let g:vimwiki_list = [{'path': '~/Dropbox/vimwiki/',
-				\'template_path': '~/Dropbox/vimwiki/template/',
-				\'template_default': 'default',
-				\'template_ext': '.html',
-				\'auto_toc': 1,
-				\'path_html': '~/Github/xiongchenyu6.github.io/'}]
-""			\'auto_tags': 1,
-
-  let g:vimwiki_use_mouse = 1 
-	map <F4> :VimwikiAll2HTML<cr>'
-	nmap <F10> <Plug>VimwikiTabIndex
-  nmap <F9> <Plug>VimwikiUISelect
-	map <Leader>wt <Plug>VimwikiToggleListItem
-	let g:vimwiki_hl_headers = 1
-	let g:vimwiki_hl_cb_checked = 1
-	let g:vimwiki_table_mappings = 0
-  let g:vimwiki_option_auto_toc = 1
-  let g:vimwiki_folding='list'
 
 set noimdisable
 autocmd! InsertLeave * set imdisable|set iminsert=0

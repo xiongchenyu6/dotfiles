@@ -1,1 +1,0 @@
-/Users/xiongchenyu/github/dotfiles/dots/spacemacs.d

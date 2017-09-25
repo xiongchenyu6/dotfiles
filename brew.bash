@@ -40,7 +40,7 @@ services=(
     git-crypt
     haskell-stack
     ispell
-   # scala
+    scala
     neovim
     watchman
     w3m
@@ -61,12 +61,12 @@ services=(
     sbt
     the_platinum_searcher
     reattach-to-user-namespace
-    emacs-plus --HEAD --with-natural-title-bars
     ditaa
     plantuml
-    mu —with-emacs
-    global --with-pygments --with-ctags
     terminal-notifier
+    emacs-plus --HEAD --with-natural-title-bars
+    mu --with-emacs
+    global --with-pygments --with-ctags
 )
 # Install and Setup MySQL
 brew install "${services[@]}"

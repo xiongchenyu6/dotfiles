@@ -15,6 +15,7 @@ export PATH=~/.stack/programs/x86_64-osx/ghc-8.2.2/bin:$PATH
 export PATH=/usr/local/opt/sqlite/bin:$PATH
 export PATH=/usr/local/opt/imagemagick@6/bin:$PATH
 export PATH=~/Library/Haskell/bin:$PATH
+export PATH=/Library/TeX/Root/bin/x86_64-darwin:$PATH
 export LANGUAGE=en_US.UTF-8
 export LANG=en_US.UTF-8
 export LC_ALL=en_US.UTF-8
