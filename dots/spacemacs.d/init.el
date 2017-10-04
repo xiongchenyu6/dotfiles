@@ -1,11 +1,4 @@
 ;; -*- mode: emacs-lisp -*-
-
-
-
-
-
-
-
 ;; This file is loaded by Spacemacs at startup.
 ;; It must be stored in your home directory.
 
@@ -38,11 +31,12 @@ values."
    dotspacemacs-configuration-layer-path '()
    ;; List of configuration layers to load.
    dotspacemacs-configuration-layers
-   '(yaml
+   '(python
      php
      git
      github
      version-control
+     ivy
      (markdown :variables markdown-live-preview-engine 'vmd)
      (shell :variables
             shell-default-height 30
@@ -51,7 +45,6 @@ values."
      dash
      osx
      (gtags :variables gtags-enable-by-default t)
-     ;; semantic
      (erc :variables
           erc-server-list
           '(("irc.freenode.net"
@@ -60,9 +53,6 @@ values."
              :nick "FreemanXiong"
              :password "19930616")
             ))
-     ;; emoji
-     xkcd
-     ;; search-engine
      (colors :variables
              colors-enable-nyan-cat-progress-bar t)
      fasd
@@ -75,12 +65,11 @@ values."
            mu4e-enable-mode-line t
            mu4e-alert-set-default-style 'notifier
            mu4e-enable-notifications t)
-     (ranger :variables ranger-show-preview t)
      (auto-completion :variables
                       auto-completion-tab-key-behavior 'complete
                       auto-completion-return-key-behavior nil
                       auto-completion-complete-with-key-sequence-delay 0.0
-                      auto-completion-enable-snippets-in-popup nil
+                      auto-completion-enable-snippets-in-popup t
                       auto-completion-enable-help-tooltip t
                       auto-completion-enable-sort-by-usage t)
      (syntax-checking :variables
@@ -93,6 +82,7 @@ values."
           org-enable-github-support t
           org-enable-reveal-js-support t
           org-projectile-file "~/Dropbox/Org/Projects.org")
+     yaml
      typescript
      (javascript :variables javascript-disable-tern-port-files nil)
      purescript
@@ -105,10 +95,10 @@ values."
      (haskell :variables
               haskell-process-type 'stack-ghci
               haskell-completion-backend 'intero)
-     ;; (geolocation :variables
-     ;;              geolocation-enable-automatic-theme-changer nil
-     ;;              geolocation-enable-location-service nil
-     ;;              geolocation-enable-weather-forecast t)
+     (geolocation :variables
+                  geolocation-enable-automatic-theme-changer nil
+                  geolocation-enable-location-service nil
+                  geolocation-enable-weather-forecast t)
      )
    ;; List of additional packages that will be installed without being
    ;; wrapped in a layer. If you need some configuration for these
@@ -381,6 +371,8 @@ This is the place where most of your configurations should be done. Unless it is
 
 you should place your code here."
   (setq spacemacs-buffer--warnings nil)
+  (when (string= system-type "darwin")
+    (setq dired-use-ls-dired nil))
   (setq require-final-newline nil)
   (setq undo-tree-auto-save-history t)
   (setq undo-tree-history-directory-alist '(("." . "~/.emacs.d.undo/undo")))
@@ -695,3 +687,27 @@ you should place your code here."
   (setq org-plantuml-jar-path "~/plantuml.jar")
   (setq org-confirm-babel-evaluate nil)
   (add-to-list 'org-src-lang-modes (quote ("plantuml" . fundamental))))
+(defun dotspacemacs/emacs-custom-settings ()
+  "Emacs custom settings.
+This is an auto-generated function, do not modify its content directly, use
+Emacs customize menu instead.
+This function is called at the very end of Spacemacs initialization."
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(evil-want-Y-yank-to-eol nil)
+ '(package-selected-packages
+   (quote
+    (sunshine wgrep smex ivy-purpose ivy-hydra flyspell-correct-ivy counsel-projectile counsel-dash helm helm-core counsel swiper ivy typescript-mode powerline request purescript-mode tablist spinner org-category-capture projectile alert log4e gntp markdown-mode skewer-mode json-snatcher json-reformat multiple-cursors js2-mode simple-httpd hydra parent-mode haml-mode gitignore-mode fringe-helper git-gutter+ git-gutter gh marshal logito pcache ht flyspell-correct flx org-plus-contrib magit magit-popup git-commit with-editor smartparens iedit anzu evil goto-chg undo-tree highlight sbt-mode scala-mode diminish flycheck pkg-info epl web-completion-data dash-functional tern pos-tip php-mode ghc haskell-mode company f dash s bind-map bind-key yasnippet packed auctex async pinyinlib avy auto-complete popup window-purpose imenu-list symon string-inflection pyim pyim-basedict password-generator org-brain meghanada impatient-mode gradle-mode flyspell-correct-popup evil-org evil-lion editorconfig dante company-php ac-php-core xcscope company-emacs-eclim eclim browse-at-remote auctex-latexmk yaml-mode xterm-color xkcd ws-butler winum which-key web-mode web-beautify wakatime-mode volatile-highlights vmd-mode vi-tilde-fringe uuidgen use-package toc-org tide tagedit spaceline smeargle slim-mode shell-pop shakespeare-mode scss-mode sass-mode reveal-in-osx-finder restart-emacs ranger rainbow-mode rainbow-identifiers rainbow-delimiters pug-mode psci psc-ide popwin plantuml-mode phpunit phpcbf php-extras php-auto-yasnippets persp-mode pdf-tools pcre2el pbcopy paradox pangu-spacing ox-twbs ox-reveal ox-gfm osx-trash osx-dictionary orgit org-projectile org-present org-pomodoro org-download org-bullets open-junk-file noflet neotree multi-term mu4e-maildirs-extension mu4e-alert move-text molokai-theme mmm-mode markdown-toc magit-gitflow magit-gh-pulls macrostep lorem-ipsum livid-mode linum-relative link-hint ledger-mode launchctl json-mode js2-refactor js-doc intero info+ indent-guide hungry-delete htmlize hlint-refactor hl-todo hindent highlight-parentheses highlight-numbers highlight-indentation hide-comnt help-fns+ helm-themes helm-swoop helm-projectile helm-mode-manager helm-make helm-hoogle helm-gtags helm-gitignore helm-flx helm-descbinds helm-dash helm-css-scss helm-company helm-c-yasnippet helm-ag haskell-snippets graphviz-dot-mode google-translate golden-ratio gnuplot github-search github-clone github-browse-file gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link git-gutter-fringe git-gutter-fringe+ gist gh-md ggtags fuzzy flyspell-correct-helm flycheck-pos-tip flycheck-ledger flycheck-haskell flx-ido find-by-pinyin-dired fill-column-indicator fasd fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-magit evil-lisp-state evil-indent-plus evil-iedit-state evil-exchange evil-ediff evil-args evil-anzu eval-sexp-fu eshell-z eshell-prompt-extras esh-help erc-yt erc-view-log erc-terminal-notifier erc-social-graph erc-image erc-hl-nicks ensime emmet-mode elisp-slime-nav dumb-jump drupal-mode dracula-theme diff-hl dash-at-point company-web company-tern company-statistics company-quickhelp company-ghci company-ghc company-cabal company-auctex column-enforce-mode color-theme-sanityinc-solarized color-identifiers-mode coffee-mode cmm-mode clean-aindent-mode auto-yasnippet auto-highlight-symbol auto-dictionary auto-compile aggressive-indent adaptive-wrap ace-window ace-pinyin ace-link ace-jump-helm-line ac-ispell)))
+ '(psc-ide-add-import-on-completion t t)
+ '(psc-ide-rebuild-on-save nil t)
+ '(tramp-syntax (quote default) nil (tramp)))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
+)
