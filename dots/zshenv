@@ -6,20 +6,20 @@ else [[ "$OSTYPE" == "darwin"* ]];
     export PATH=/usr/local/bin:$PATH
     export PATH=/usr/local/sbin:$PATH
     export PATH=~/.local/bin/:$PATH
-    export JAVA_HOME="$(/usr/libexec/java_home -v 1.8)"
+    export JAVA_HOME="$(/usr/libexec/java_home)"
+    export JDK_HOME="$(/usr/libexec/java_home)"
+    export SPARK_HOME='/usr/local/Cellar/apache-spark/2.2.0/'
 fi
 
 # ssh
+
 export SSH_KEY_PATH="~/.ssh/rsa_id"
-export PATH=~/.stack/programs/x86_64-osx/ghc-8.2.2/bin:$PATH
-export PATH=/usr/local/opt/sqlite/bin:$PATH
-export PATH=/usr/local/opt/imagemagick@6/bin:$PATH
-export PATH=~/Library/Haskell/bin:$PATH
-export PATH=/Library/TeX/Root/bin/x86_64-darwin:$PATH
+export LC_ALL=en_US.UTF-8
 export LANGUAGE=en_US.UTF-8
 export LANG=en_US.UTF-8
-export LC_ALL=en_US.UTF-8
 export TERM=xterm-256color
+
+export GHTOKEN="ad38f8a815e974c98db2abd6f5ff304eca53400f"
 # export https_proxy=http://127.0.0.1:64396
 # export http_proxy=$https_proxy
 # ftp_proxy = $https_proxy
