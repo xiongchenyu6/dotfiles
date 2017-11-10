@@ -29,7 +29,6 @@
      fasd
      (chinese :variables
                chinese-enable-youdao-dict nil)
-     finance
      pdf-tools
      spell-checking
      (mu4e :variables
@@ -82,7 +81,6 @@
      )
    dotspacemacs-install-packages
    'used-only))
-
 (defun dotspacemacs/init ()
   (setq-default
    dotspacemacs-check-for-update nil
@@ -156,7 +154,6 @@ executes.
  This function is mostly useful for variables that need to be set
 before packages are loaded. If you are unsure, you should try in setting them in
 `dotspacemacs/user-config' first.")
-
 (defun dotspacemacs/user-config ()
   ;; use local eslint from node_modules before global
   ;; http://emacs.stackexchange.com/questions/21205/flycheck-with-file-relative-eslint-executable
@@ -305,8 +302,6 @@ you should place your code here."
   (setq paradox-github-token '3db959a368a082f4290d0c81313e46418d29f199)
   ;;ledger settins
   (setq inhibit-read-only t)
-  (add-to-list 'auto-mode-alist
-               '("\\.ledger$" . ledger-mode))
   (setq org-directory "~/Dropbox/Org"
         org-agenda-files (list org-directory)
         org-agenda-diary-file (concat org-directory "/diary.org")
@@ -500,9 +495,8 @@ you should place your code here."
            (gnuplot . t)
            (haskell . t)
            (shell . t)
-           (ledger . t)
+           (scala . t)
            (dot . t)
-           (org . t)
            (plantuml . t)
            (js . t))))
   (setq org-agenda-persistent-filter t)

@@ -25,7 +25,6 @@ apps=(
     iterm2
     qq
     dropbox
-    # xquartz
     intellij-idea
     font-inconsolata-nerd-font-mono
     font-source-code-pro
@@ -45,7 +44,6 @@ services=(
     watchman
     w3m
     fasd
-    ledger
     poppler
     automake
     msmtp
