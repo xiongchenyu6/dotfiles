@@ -23,7 +23,12 @@
      dash
      osx
      (gtags :variables gtags-enable-by-default t)
-     erc
+     (erc :variables
+          erc-server-list
+          '(("irc.freenode.net"
+             :port "6697"
+             :ssl t
+             :nick "FreemanXiong")))
       (colors :variables
              colors-enable-nyan-cat-progress-bar t)
      fasd
