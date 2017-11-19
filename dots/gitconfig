@@ -13,4 +13,4 @@
 	helper = cache --timeout=3600
 [github]
 	user = xiongchenyu6@gmail.com
-	oauth-token = 6988c273f6df1c79e950d8ec724966355e773f59
+	oauth-token = 0cc28d1690379ee6de60de07f6b0719ccda7ab64
