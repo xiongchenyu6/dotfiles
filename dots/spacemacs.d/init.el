@@ -203,9 +203,23 @@ you should place your code here."
   (setq ranger-show-literal nil)
   (setq ranfasdger-ignored-extensions '("mkv" "iso" "mp4" "avi"))
   (setq ranger-max-preview-size 10)
+
   ;; haskell
-  (add-hook 'haskell-mode-hook 'turn-on-haskell-indent)
-  (setq haskell-indent 2)
+  (defun haskell-evil-open-above ()
+    (interactive)
+    (evil-digit-argument-or-evil-beginning-of-line)
+    (haskell-indentation-newline-and-indent)
+    (evil-previous-line)
+    (haskell-indentation-indent-line)
+    (evil-append-line nil))
+
+  (defun haskell-evil-open-below ()
+    (interactive)
+    (evil-append-line nil)
+    (haskell-indentation-newline-and-indent))
+
+  (evil-define-key 'normal haskell-mode-map "o" 'haskell-evil-open-below
+    "O" 'haskell-evil-open-above)
 
   ;; ERC CONFIG
   (spacemacs|use-package-add-hook erc
