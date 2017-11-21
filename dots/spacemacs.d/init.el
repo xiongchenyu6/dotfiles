@@ -12,8 +12,7 @@
      git
      github
      version-control
-     helm
-     imenu-list
+     imenu-list ;; space b i
      (markdown :variables markdown-live-preview-engine 'vmd)
      (shell :variables
             shell-default-height 30
@@ -196,6 +195,7 @@ you should place your code here."
   (add-hook 'java-mode-hook 'ensime-mode)
 
   (setq magit-repository-directories '("~/Github/"))
+
   ;;ranger settings
   (setq ranger-cleanup-on-disable t)
   (setq ranger-cleanup-eagerly t)
