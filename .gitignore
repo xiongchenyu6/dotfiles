@@ -4,3 +4,4 @@ plugged/
 undo/
 *undo-tree*
 node_modules/
+.DS_Store
