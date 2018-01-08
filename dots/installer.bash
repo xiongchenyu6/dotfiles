@@ -13,7 +13,7 @@ DIR=${1:-$(cd "$(dirname "$1")"; pwd -P)} # dotfiles directory
 OLDDIR=~/dotfiles_old_"$TIME" # old dotfiles backup directory
 
 #Use neovim rather than vim 8
-FILES=(zshenv authinfo.gpg curlrc ctags mbsyncrc msmtprc tmux.conf aria2.conf zshrc gitconfig global_ignore ideavimrc) # list of symlink
+FILES=(zshenv authinfo.gpg curlrc ctags mbsyncrc msmtprc tmux.conf aria2.conf zshrc gitconfig global_ignore ideavimrc ensime-server.conf) # list of symlink
 
 DIRECTORYS=(config oh-my-zsh spacemacs.d password monad)
 ##########
