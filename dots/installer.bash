@@ -6,6 +6,23 @@
 # folder and respective symlinks created.
 # Note: A backup folder is created with all .dotfiles (not symlinks) desired
 ############################
+########## Functions
+
+confirmMessage() {
+    read -p "$1 ([m]ac or [l]inux): " REPLY
+    case $(echo $REPLY | tr '[A-Z]' '[a-z]') in
+        m|mac) echo "mac" ;;
+        *)     echo "linux" ;;
+    esac
+}
+
+ANSWER=$(confirmMessage "Witch version do you want to install")
+
+if [ "mac" = $ANSWER ]; then
+    echo "mac"
+else
+    echo "linux";
+fi
 
 ########## Variables
 TIME=$(date "+%Y-%m-%d_%H-%M-%S")
@@ -16,6 +33,9 @@ OLDDIR=~/dotfiles_old_"$TIME" # old dotfiles backup directory
 FILES=(zshenv authinfo.gpg curlrc ctags mbsyncrc msmtprc tmux.conf aria2.conf zshrc gitconfig global_ignore ideavimrc ensime-server.conf) # list of symlink
 
 DIRECTORYS=(config oh-my-zsh spacemacs.d password monad)
+
+MACFILES=(kdbrc)
+LINUXFILES=(xmonadrc)
 ##########
 # create dotfiles_old in homedir
 echo "Creating $OLDDIR for backup of any existing dotfiles in ~"
