@@ -1,4 +1,5 @@
 ;; -*- mode: emacs-lisp -*-
+
 (defun dotspacemacs/layers ()
   (setq-default
    dotspacemacs-distribution 'spacemacs
@@ -8,7 +9,7 @@
    dotspacemacs-configuration-layers
    '(csv
      sql
-     python
+     helm
      git
      github
      version-control
@@ -36,6 +37,8 @@
                chinese-enable-youdao-dict nil)
      spell-checking
      (mu4e :variables
+           mu4e-use-maildirs-extension t
+           mu4e-enable-async-operations t
            mu4e-enable-mode-line t
            mu4e-enable-notifications t)
      (auto-completion :variables
@@ -89,19 +92,19 @@
    'used-only))
 (defun dotspacemacs/init ()
   (setq-default
-   dotspacemacs-check-for-update nil
+   dotspacemacs-check-for-update t
    dotspacemacs-elpa-subdirectory nil
    dotspacemacs-editing-style 'hybrid
    dotspacemacs-verbose-loading nil
    dotspacemacs-startup-banner nil
-   dotspacemacs-startup-lists '((todos . 5) (agenda . 5) (recents . 3)(projects . 3))
+   dotspacemacs-startup-lists '((recents . 3)(projects . 3))
    dotspacemacs-startup-buffer-responsive t
    dotspacemacs-scratch-mode 'text-mode
    dotspacemacs-themes '(spacemacs-dark
                          molokai)
    dotspacemacs-colorize-cursor-according-to-state t
    dotspacemacs-default-font '(
-                               ;; "Source Code Pro" :size 13
+                               ;; "Source Code Pro" :size 12
                                "InconsolataForPowerline Nerd Font" :size 14
                                :weight normal
                                :width normal
@@ -131,7 +134,7 @@
    dotspacemacs-which-key-delay 0.4
    dotspacemacs-which-key-position 'bottom
    dotspacemacs-loading-progress-bar t
-   dotspacemacs-fullscreen-at-startup nil
+   dotspacemacs-fullscreen-at-startup t
    dotspacemacs-fullscreen-use-non-native nil
    dotspacemacs-maximized-at-startup nil
    dotspacemacs-active-transparency 90
@@ -139,6 +142,7 @@
    dotspacemacs-show-transient-state-title t
    dotspacemacs-show-transient-state-color-guide t
    dotspacemacs-mode-line-unicode-symbols t
+   dotspacemacs-mode-line-theme 'spacemacs
    dotspacemacs-smooth-scrolling t
    dotspacemacs-line-numbers '(:relative t :disabled-for-modes dired-mode
                                          doc-view-mode markdown-mode org-mode pdf-view-mode
@@ -152,6 +156,7 @@
    dotspacemacs-default-package-repository nil
    dotspacemacs-whitespace-cleanup 'trailing))
 (defun dotspacemacs/user-init ()
+  (setq exec-path-from-shell-arguments '("-l"))
   "Initialization function for user code.
 It is called immediately after `dotspacemacs/init', before layer configuration
 executes.
@@ -159,6 +164,15 @@ executes.
 before packages are loaded. If you are unsure, you should try in setting them in
 `dotspacemacs/user-config' first.")
 (defun dotspacemacs/user-config ()
+  (evilified-state-evilify-map mu4e-headers-mode-map
+    :mode mu4e-headers-mode
+    :bindings
+    (kbd "n") 'mu4e-headers-next)
+
+  (evilified-state-evilify-map mu4e-view-mode-map
+    :mode mu4e-view-mode
+    :bindings
+    (kbd "n") 'mu4e-view-headers-next)
   ;; use local eslint from node_modules before global
   ;; http://emacs.stackexchange.com/questions/21205/flycheck-with-file-relative-eslint-executable
   (defun my/use-eslint-from-node-modules ()
@@ -252,7 +266,9 @@ you should place your code here."
               #'helm-yank-text-at-point--move-to-beginning)
   (setq erc-image-inline-rescale 400)
   ;;mu4e
-  (setq mu4e-change-filenames-when-moving t)
+
+  ;; give me ISO(ish) format date-time stamps in the header list
+  (setq mu4e-headers-date-format "%Y-%m-%d %H:%M")
   (setq mu4e-attachment-dir "~/Downloads/"
         mu4e-maildir "~/Mail"
         mu4e-get-mail-command "mbsync -a -q"
@@ -263,11 +279,22 @@ you should place your code here."
         message-kill-buffer-on-exit t
         mu4e-headers-auto-update t
         org-mu4e-link-query-in-headers-mode nil
-        ;;mu4e-html2text-command "w3m -dump -T text/html"
+        mu4e-html2text-command "w3m -dump -T text/html"
         )
-  ;;use msmtp
-  (setq send-mail-function 'message-send-mail-with-sendmail)
-  (setq sendmail-program "msmtp")
+  ;; (setq send-mail-function 'message-send-mail-with-sendmail)
+  ;; (setq sendmail-program "msmtp")
+  (setq message-send-mail-function 'smtpmail-send-it
+        starttls-use-gnutls t
+        user-mail-address "xiongchenyu6@gmail.com"
+        smtpmail-starttls-credentials
+        '(("smtp.gmail.com" 587 nil nil))
+        smtpmail-auth-credentials
+        (expand-file-name "~/.authinfo.gpg")
+        smtpmail-default-smtp-server "smtp.gmail.com"
+        smtpmail-smtp-server "smtp.gmail.com"
+        smtpmail-smtp-service 587
+        smtpmail-debug-info t)
+
   (with-eval-after-load 'mu4e-alert
     ;; Enable Desktop notifications
     (mu4e-alert-set-default-style 'notifier))
@@ -293,7 +320,7 @@ you should place your code here."
 
   ;; gpg
   (setq epg-gpg-program "gpg2")
-  (add-hook 'mu4e-compose-mode-hook 'epa-mail-mode)
+  (add-hook 'mu4e-compose-mode-hook 'org-mu4e-compose-org-mode)
   (add-hook 'mu4e-view-mode-hook 'epa-mail-mode)
 
   ;; Turn off js2 mode errors & warnings (we lean on eslint/standard)
@@ -496,20 +523,19 @@ you should place your code here."
   (setq org-babel-python-command "python3")
   (setq python-shell-interpreter "python3")
   (setq org-plantuml-jar-path "~/plantuml.jar")
-  (setq org-confirm-babel-evaluate nil)
-  (org-babel-do-load-languages
-   (quote org-babel-load-languages)
-   (quote ((emacs-lisp . t)
-           (ditaa . t)
-           (python . t)
-           (plantuml . t)
-           (gnuplot . t)
-           (haskell . t)
-           (shell . t)
-           (scala . t)
-           (c . t)
-           (dot . t)
-           (js . t))))
+  (with-eval-after-load 'org
+    (setq org-confirm-babel-evaluate nil)
+    (org-babel-do-load-languages 'org-babel-load-languages '((js . t)
+                                                             (emacs-lisp . t)
+                                                             (ditaa . t)
+                                                             (python . t)
+                                                             (plantuml . t)
+                                                             (gnuplot . t)
+                                                             (haskell . t)
+                                                             (shell . t)
+                                                             (scala . t)
+                                                             (dot . t)
+                                                             )))
   (setq org-ditaa-jar-path "/usr/local/Cellar/ditaa/0.10/libexec/ditaa0_10.jar")
   (setq org-agenda-persistent-filter t)
   (add-to-list 'org-src-lang-modes (quote ("plantuml" . fundamental))))
@@ -524,8 +550,7 @@ This function is called at the very end of Spacemacs initialization."
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
-   (quote
-    (auctex-latexmk magit yapfify yaml-mode xterm-color ws-butler winum which-key web-mode web-beautify wakatime-mode volatile-highlights vmd-mode vi-tilde-fringe uuidgen use-package treemacs-projectile treemacs-evil toc-org tide tagedit symon sunshine string-inflection sql-indent spaceline smeargle slim-mode shell-pop shakespeare-mode scss-mode sass-mode reveal-in-osx-finder restart-emacs rainbow-mode rainbow-identifiers rainbow-delimiters pyvenv pytest pyim pyenv-mode py-isort pug-mode popwin plantuml-mode pippel pip-requirements persp-mode pcre2el pbcopy password-generator paradox pangu-spacing ox-twbs ox-reveal ox-hugo ox-gfm overseer osx-trash osx-dictionary orgit org-projectile org-present org-pomodoro org-journal org-download org-bullets org-brain open-junk-file noflet nameless mvn multi-term mu4e-maildirs-extension mu4e-alert move-text molokai-theme mmm-mode meghanada maven-test-mode markdown-toc magit-gitflow magit-gh-pulls macrostep lorem-ipsum livid-mode live-py-mode linum-relative link-hint launchctl json-mode js2-refactor js-doc intero info+ indent-guide importmagic impatient-mode hy-mode hungry-delete hlint-refactor hl-todo hindent highlight-parentheses highlight-numbers highlight-indentation hide-comnt help-fns+ helm-themes helm-swoop helm-pydoc helm-purpose helm-projectile helm-mode-manager helm-make helm-hoogle helm-gtags helm-gitignore helm-flx helm-descbinds helm-dash helm-css-scss helm-company helm-c-yasnippet helm-ag haskell-snippets groovy-mode groovy-imports graphviz-dot-mode gradle-mode google-translate golden-ratio gnuplot github-search github-clone gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link git-gutter-fringe git-gutter-fringe+ gist ghub gh-md ggtags geiser fuzzy flyspell-correct-helm flycheck-pos-tip flycheck-haskell flx-ido find-by-pinyin-dired fill-column-indicator fasd fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-org evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-magit evil-lisp-state evil-lion evil-indent-plus evil-iedit-state evil-exchange evil-ediff evil-cleverparens evil-args evil-anzu eval-sexp-fu eshell-z eshell-prompt-extras esh-help erc-yt erc-view-log erc-terminal-notifier erc-social-graph erc-image erc-hl-nicks ensime emmet-mode elisp-slime-nav editorconfig dumb-jump diminish diff-hl dash-at-point dante cython-mode csv-mode company-web company-tern company-statistics company-quickhelp company-ghci company-ghc company-emacs-eclim company-cabal company-auctex company-anaconda column-enforce-mode color-identifiers-mode coffee-mode cmm-mode clean-aindent-mode browse-at-remote auto-yasnippet auto-highlight-symbol auto-dictionary auto-compile aggressive-indent adaptive-wrap ace-pinyin ace-link ace-jump-helm-line ac-ispell))))
+   '(auctex-latexmk yasnippet-snippets yaml-mode xterm-color ws-butler winum which-key web-mode web-beautify wakatime-mode volatile-highlights vmd-mode vi-tilde-fringe uuidgen use-package treemacs-projectile treemacs-evil toc-org tide tagedit symon sunshine string-inflection sql-indent spaceline-all-the-icons smeargle slim-mode shell-pop shakespeare-mode scss-mode sass-mode reveal-in-osx-finder restart-emacs rainbow-mode rainbow-identifiers rainbow-delimiters pyim pug-mode popwin plantuml-mode persp-mode pcre2el pbcopy password-generator paradox pangu-spacing ox-twbs ox-reveal ox-hugo ox-gfm overseer osx-trash osx-dictionary orgit org-projectile org-present org-pomodoro org-mime org-journal org-download org-bullets org-brain open-junk-file noflet nameless mvn multi-term mu4e-maildirs-extension mu4e-alert move-text molokai-theme mmm-mode meghanada maven-test-mode markdown-toc magit-gitflow magit-gh-pulls macrostep lorem-ipsum livid-mode linum-relative link-hint launchctl json-mode js2-refactor js-doc intero info+ indent-guide impatient-mode hungry-delete hlint-refactor hl-todo hindent highlight-parentheses highlight-numbers highlight-indentation hide-comnt help-fns+ helm-themes helm-swoop helm-purpose helm-projectile helm-mu helm-mode-manager helm-make helm-hoogle helm-gtags helm-gitignore helm-flx helm-descbinds helm-dash helm-css-scss helm-company helm-c-yasnippet helm-ag haskell-snippets groovy-mode groovy-imports graphviz-dot-mode gradle-mode google-translate golden-ratio gnuplot github-search github-clone gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link git-gutter-fringe git-gutter-fringe+ gist gh-md ggtags geiser fuzzy flyspell-correct-helm flycheck-pos-tip flycheck-haskell flx-ido find-by-pinyin-dired fill-column-indicator fasd fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-org evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-magit evil-lisp-state evil-lion evil-indent-plus evil-iedit-state evil-exchange evil-ediff evil-cleverparens evil-args evil-anzu eval-sexp-fu eshell-z eshell-prompt-extras esh-help erc-yt erc-view-log erc-terminal-notifier erc-social-graph erc-image erc-hl-nicks ensime emmet-mode elisp-slime-nav editorconfig dumb-jump diminish diff-hl dash-at-point dante csv-mode counsel-projectile company-web company-tern company-statistics company-quickhelp company-ghci company-ghc company-emacs-eclim company-cabal company-auctex column-enforce-mode color-identifiers-mode coffee-mode cmm-mode clean-aindent-mode browse-at-remote auto-yasnippet auto-highlight-symbol auto-dictionary auto-compile aggressive-indent adaptive-wrap ace-pinyin ace-link ace-jump-helm-line ac-ispell)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
