@@ -7,10 +7,17 @@
 	name = xiongchenyu6
 	signingkey = FEB33C147207641D
 [core]
-	excludesfile = /home/xeina/.global_ignore
+	excludesfile = /Users/xiongchenyu/.global_ignore
 	editor = vim
 [credential]
 	helper = cache --timeout=3600
 [github]
 	user = xiongchenyu6@gmail.com
 	oauth-token = 0cc28d1690379ee6de60de07f6b0719ccda7ab64
+[alias]
+	ignore = "!gi() { curl -L -s https://www.gitignore.io/api/$@ ;}; gi"
+	s = status
+	l = log
+	lo = log --oneline
+	ultimate-log = log --graph --oneline --decorate
+	amend = commit -a --amend

@@ -21,6 +21,9 @@
             shell-default-height 30
             shell-default-position 'bottom
             shell-default-shell 'multiterm)
+     (slack :variables
+            slack-prefer-current-team t
+            slack-display-team-name nil)
      dash
      osx
      (gtags :variables gtags-enable-by-default t)
@@ -34,8 +37,10 @@
              colors-enable-nyan-cat-progress-bar t)
      fasd
      (chinese :variables
-               chinese-enable-youdao-dict nil)
-     spell-checking
+              chinese-enable-youdao-dict nil)
+     (spell-checking :variables
+                     enable-flyspell-auto-completion t
+                     spell-checking-enable-auto-dictionary t)
      (mu4e :variables
            mu4e-use-maildirs-extension t
            mu4e-enable-async-operations t
@@ -49,10 +54,11 @@
                       auto-completion-enable-help-tooltip t
                       auto-completion-enable-sort-by-usage t)
      (syntax-checking :variables
-                      syntax-checking-enable-by-default nil)
+                      syntax-checking-enable-by-default t)
      (wakatime :variables wakatime-api-key "06fb08d0-68a4-4b39-bbb0-d34d325dc046"
                ;; use the actual wakatime path
                wakatime-cli-path "/usr/local/bin/wakatime")
+     bibtex
      (org :variables
           org-enable-bootstrap-support t
           org-enable-github-support t
@@ -74,7 +80,10 @@
      latex
      (haskell :variables
               haskell-process-type 'stack-ghci
-              haskell-completion-backend 'intero)
+              haskell-completion-backend 'dante
+              ;; haskell-completion-backend 'intero
+              ;; haskell-completion-backend 'ghci
+              )
      (geolocation :variables
                   geolocation-enable-automatic-theme-changer nil
                   geolocation-enable-location-service nil
@@ -121,7 +130,7 @@
    dotspacemacs-visual-line-move-text nil
    dotspacemacs-ex-substitute-global nil
    dotspacemacs-default-layout-name "Default"
-   dotspacemacs-display-default-layout nil
+   dotspacemacs-display-default-layout t
    dotspacemacs-auto-resume-layouts nil
    dotspacemacs-large-file-size 0.5
    dotspacemacs-auto-save-file-location 'original
@@ -248,6 +257,11 @@ you should place your code here."
 
       (add-hook 'erc-mode-hook 'turn-off-show-smartparens-mode)))
 
+  (setq slack-enable-emoji t)
+  (with-eval-after-load 'slack
+    (when (file-exists-p "~/Dropbox/org/emacs-slack.el")
+      (load "~/Dropbox/org/emacs-slack.el")))
+
   (setq ensime-startup-notification nil)
   (setq ensime-startup-snapshot-notification nil)
   ;;For better search use C-w
@@ -345,8 +359,11 @@ you should place your code here."
   (setq org-mobile-inbox-for-pull (concat org-directory "/refile.org"))
   ;; Set to <your Dropbox root directory>/MobileOrg.
   (setq org-mobile-directory "~/Dropbox/Apps/MobileOrg")
-  (setq org-latex-compiler "pdflatex")
+  (setq org-latex-compiler "latexmk -pdf %f")
   (setq spaceline-org-clock-p t)
+  (setq org-ref-default-bibliography '("~/Dropbox/Org/Papers/references.bib")
+        org-ref-pdf-directory "~/Dropbox/Org/Papers/"
+        org-ref-bibliography-notes "~/Dropbox/Org/Papers/notes.org")
   (require 'ox-latex)
   (setq org-latex-caption-above '(table image))
   (add-to-list 'org-latex-classes
@@ -498,6 +515,8 @@ you should place your code here."
       (org-remove-empty-drawer-at "LOGBOOK" (point))))
   (add-hook 'org-clock-out-hook 'bh/remove-empty-drawer-on-clock-out 'append)
 
+
+
   ;; Targets include this file and any file contributing to the agenda - up to 9 levels deep
   (setq org-refile-targets '((nil :maxlevel . 9)
                              (org-agenda-files :maxlevel . 9)))
@@ -525,17 +544,19 @@ you should place your code here."
   (setq org-plantuml-jar-path "~/plantuml.jar")
   (with-eval-after-load 'org
     (setq org-confirm-babel-evaluate nil)
-    (org-babel-do-load-languages 'org-babel-load-languages '((js . t)
-                                                             (emacs-lisp . t)
-                                                             (ditaa . t)
-                                                             (python . t)
-                                                             (plantuml . t)
-                                                             (gnuplot . t)
-                                                             (haskell . t)
-                                                             (shell . t)
-                                                             (scala . t)
-                                                             (dot . t)
-                                                             )))
+    (org-babel-do-load-languages
+     'org-babel-load-languages
+     '((js . t)
+       (emacs-lisp . t)
+       (ditaa . t)
+       (python . t)
+       (plantuml . t)
+       (gnuplot . t)
+       (haskell . t)
+       (shell . t)
+       (scala . t)
+       (dot . t)
+       )))
   (setq org-ditaa-jar-path "/usr/local/Cellar/ditaa/0.10/libexec/ditaa0_10.jar")
   (setq org-agenda-persistent-filter t)
   (add-to-list 'org-src-lang-modes (quote ("plantuml" . fundamental))))
@@ -550,7 +571,7 @@ This function is called at the very end of Spacemacs initialization."
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
-   '(auctex-latexmk yasnippet-snippets yaml-mode xterm-color ws-butler winum which-key web-mode web-beautify wakatime-mode volatile-highlights vmd-mode vi-tilde-fringe uuidgen use-package treemacs-projectile treemacs-evil toc-org tide tagedit symon sunshine string-inflection sql-indent spaceline-all-the-icons smeargle slim-mode shell-pop shakespeare-mode scss-mode sass-mode reveal-in-osx-finder restart-emacs rainbow-mode rainbow-identifiers rainbow-delimiters pyim pug-mode popwin plantuml-mode persp-mode pcre2el pbcopy password-generator paradox pangu-spacing ox-twbs ox-reveal ox-hugo ox-gfm overseer osx-trash osx-dictionary orgit org-projectile org-present org-pomodoro org-mime org-journal org-download org-bullets org-brain open-junk-file noflet nameless mvn multi-term mu4e-maildirs-extension mu4e-alert move-text molokai-theme mmm-mode meghanada maven-test-mode markdown-toc magit-gitflow magit-gh-pulls macrostep lorem-ipsum livid-mode linum-relative link-hint launchctl json-mode js2-refactor js-doc intero info+ indent-guide impatient-mode hungry-delete hlint-refactor hl-todo hindent highlight-parentheses highlight-numbers highlight-indentation hide-comnt help-fns+ helm-themes helm-swoop helm-purpose helm-projectile helm-mu helm-mode-manager helm-make helm-hoogle helm-gtags helm-gitignore helm-flx helm-descbinds helm-dash helm-css-scss helm-company helm-c-yasnippet helm-ag haskell-snippets groovy-mode groovy-imports graphviz-dot-mode gradle-mode google-translate golden-ratio gnuplot github-search github-clone gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link git-gutter-fringe git-gutter-fringe+ gist gh-md ggtags geiser fuzzy flyspell-correct-helm flycheck-pos-tip flycheck-haskell flx-ido find-by-pinyin-dired fill-column-indicator fasd fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-org evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-magit evil-lisp-state evil-lion evil-indent-plus evil-iedit-state evil-exchange evil-ediff evil-cleverparens evil-args evil-anzu eval-sexp-fu eshell-z eshell-prompt-extras esh-help erc-yt erc-view-log erc-terminal-notifier erc-social-graph erc-image erc-hl-nicks ensime emmet-mode elisp-slime-nav editorconfig dumb-jump diminish diff-hl dash-at-point dante csv-mode counsel-projectile company-web company-tern company-statistics company-quickhelp company-ghci company-ghc company-emacs-eclim company-cabal company-auctex column-enforce-mode color-identifiers-mode coffee-mode cmm-mode clean-aindent-mode browse-at-remote auto-yasnippet auto-highlight-symbol auto-dictionary auto-compile aggressive-indent adaptive-wrap ace-pinyin ace-link ace-jump-helm-line ac-ispell)))
+   '(org-ref pdf-tools key-chord tablist helm-bibtex parsebib biblio biblio-core slack circe oauth2 websocket emojify emoji-cheat-sheet-plus company-emoji web-mode helm helm-core yasnippet-snippets yaml-mode xterm-color ws-butler winum which-key web-beautify wakatime-mode volatile-highlights vmd-mode vi-tilde-fringe uuidgen use-package treemacs-projectile treemacs-evil toc-org tide tagedit symon sunshine string-inflection sql-indent spaceline-all-the-icons smeargle slim-mode shell-pop shakespeare-mode scss-mode sass-mode reveal-in-osx-finder restart-emacs rainbow-mode rainbow-identifiers rainbow-delimiters pyim pug-mode popwin plantuml-mode persp-mode pcre2el pbcopy password-generator paradox pangu-spacing ox-twbs ox-reveal ox-hugo ox-gfm overseer osx-trash osx-dictionary orgit org-projectile org-present org-pomodoro org-mime org-journal org-download org-bullets org-brain open-junk-file noflet nameless mvn multi-term mu4e-maildirs-extension mu4e-alert move-text molokai-theme mmm-mode meghanada maven-test-mode markdown-toc magit-gitflow magit-gh-pulls macrostep lorem-ipsum livid-mode linum-relative link-hint launchctl json-mode js2-refactor js-doc intero indent-guide impatient-mode hungry-delete hlint-refactor hl-todo hindent highlight-parentheses highlight-numbers highlight-indentation helm-xref helm-themes helm-swoop helm-purpose helm-projectile helm-mu helm-mode-manager helm-make helm-hoogle helm-gtags helm-gitignore helm-flx helm-descbinds helm-dash helm-css-scss helm-company helm-c-yasnippet helm-ag haskell-snippets groovy-mode groovy-imports graphviz-dot-mode gradle-mode google-translate golden-ratio gnuplot github-search github-clone gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link git-gutter-fringe git-gutter-fringe+ gist gh-md ggtags geiser fuzzy font-lock+ flyspell-popup flyspell-correct-helm flycheck-pos-tip flycheck-haskell flx-ido find-by-pinyin-dired fill-column-indicator fasd fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-org evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-magit evil-lisp-state evil-lion evil-indent-plus evil-iedit-state evil-exchange evil-ediff evil-cleverparens evil-args evil-anzu eval-sexp-fu eshell-z eshell-prompt-extras esh-help erc-yt erc-view-log erc-terminal-notifier erc-social-graph erc-image erc-hl-nicks ensime emmet-mode elisp-slime-nav editorconfig dumb-jump diminish diff-hl dash-at-point dante csv-mode counsel-projectile company-web company-tern company-statistics company-quickhelp company-ghci company-ghc company-emacs-eclim company-cabal company-auctex column-enforce-mode color-identifiers-mode coffee-mode cmm-mode clean-aindent-mode centered-cursor-mode browse-at-remote auto-yasnippet auto-highlight-symbol auto-dictionary auto-compile auctex-latexmk aggressive-indent adaptive-wrap ace-pinyin ace-link ace-jump-helm-line ac-ispell)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.

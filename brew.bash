@@ -38,7 +38,7 @@ services=(
     openssl
     git-crypt
     haskell-stack
-    ispell
+    aspell
     scala
     neovim
     watchman
