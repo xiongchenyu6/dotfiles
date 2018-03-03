@@ -102,10 +102,6 @@ let g:lightline = {
 			\   'left': [ [ 'mode', 'paste' ], [ 'readonly', 'fugitive', 'gitgutter', 'ale', 'filename' ] ],
 			\   'right': [ [ 'lineinfo' ], ['percent'], [ 'filetype', 'fileformat', 'fileencoding' ] ]
 			\ },
-			\ 'tabline': {
-			\ 'left': [ [ 'bufferinfo' ], [ 'bufferbefore', 'buffercurrent', 'bufferafter' ], ],
-			\ 'right': [ [ 'close' ], ],
-			\ },
 			\ 'component': {
 			\   'spell': '%{&spell?&spelllang:"no spell"}',
 			\ },
@@ -274,7 +270,7 @@ call denite#custom#source(
 " Ag command on grep source
 call denite#custom#var('grep', 'command', ['pt'])
 call denite#custom#var('grep', 'default_opts',
-			\ ['-i', '--vimgrep'])
+			\ ['-i'])
 call denite#custom#var('grep', 'recursive_opts', [])
 call denite#custom#var('grep', 'pattern_opt', [])
 call denite#custom#var('grep', 'separator', ['--'])
@@ -287,12 +283,14 @@ call denite#custom#option('default', 'highlight-matched-range', '')
 hi deniteMatched guibg=None
 hi deniteMatchedChar guibg=None
 
-nnoremap <silent> <c-p> :Denite -auto-resize file_rec<CR>
-nnoremap <silent> <leader>b :Denite -auto-resize buffer<CR>
-nnoremap <silent> <Leader>l : Denite line -prompt-direction="top"<CR>
-nnoremap <Leader>r : Denite -auto-resize file_mru<CR>
-nnoremap <Leader>f : Denite -no-empty grep:.<cr>
-nnoremap <Leader>g : Denite -auto-resize -silent -start-insert menu:git<CR>
+nnoremap <silent> <c-p> :Denite file_rec<CR>
+nnoremap <silent> <leader>b :Denite buffer<CR>
+nnoremap <silent> <Leader>s : Denite line<CR>
+nnoremap <Leader>m :<C-u>Denite -auto-resize file_mru<CR>
+nnoremap <Leader>g :<C-u>Denite -auto-resize menu:git<CR>
+nnoremap <leader>f :<C-u>DeniteBufferDir file_rec<CR>
+nnoremap <leader>8 :<C-u>DeniteCursorWord grep:. -mode=normal<CR>
+nnoremap <leader>/ :<C-u>DeniteBufferDir grep:. -mode=normal<CR>
 
 let s:menus = {}
 
@@ -428,10 +426,10 @@ noremap <Leader>ws :<C-u>split<CR>
 noremap <Leader>wv :<C-u>vsplit<CR>
 
 " session management
-nnoremap <leader>so :OpenSession<Space>
-nnoremap <leader>ss :SaveSession<Space>
-nnoremap <leader>sd :DeleteSession<CR>
-nnoremap <leader>sc :CloseSession<CR>
+"nnoremap <leader>so :OpenSession<Space>
+"nnoremap <leader>ss :SaveSession<Space>
+"nnoremap <leader>sd :DeleteSession<CR>
+"nnoremap <leader>sc :CloseSession<CR>
 
 "" Tabs
 nnoremap <Tab> gt
@@ -449,12 +447,12 @@ set pastetoggle=<F2>
 
 "" Buffer nav
 noremap <leader>z :bp<CR>
-noremap <leader>q :bp<CR>
 noremap <leader>x :bn<CR>
-noremap <leader>w :bn<CR>
+noremap [b :bp<CR>
+noremap ]b :bn<CR>
 
 "" Close buffer
-noremap <leader>c :bd<CR>
+noremap <leader>wx :bd<CR>
 
 "" Clean search (highlight)
 nnoremap <silent> <leader><space> :noh<cr>
@@ -523,16 +521,6 @@ augroup end
 	"" Self Customise
 	"*****************************************************************************
 	let g:WebDevIconsOS = 'Darwin'
-
-	""Hard Mode
-	nnoremap <up>    <nop>
-	nnoremap <down>  <nop>
-	nnoremap <left>  <nop>
-	nnoremap <right> <nop>
-	inoremap <up>    <nop>
-	inoremap <down>  <nop>
-	inoremap <left>  <nop>
-	inoremap <right> <nop>
 
 set noimdisable
 autocmd! InsertLeave * set imdisable|set iminsert=0

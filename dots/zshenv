@@ -3,8 +3,7 @@ if [[ "$OSTYPE" == "linux-gnu" ]]; then
 else [[ "$OSTYPE" == "darwin"* ]];
     # Mac OSX
     export ANDROID_HOME='/usr/local/share/android-sdk'
-    export PATH=/usr/local/bin:$PATH
-    export PATH=/usr/local/sbin:$PATH
+    export PATH=/usr/local/bin:$PATH export PATH=/usr/local/sbin:$PATH
     export PATH=~/.local/bin/:$PATH
     export JAVA_HOME="$(/usr/libexec/java_home)"
     export JDK_HOME="$(/usr/libexec/java_home)"
@@ -26,11 +25,12 @@ export GHTOKEN="ad38f8a815e974c98db2abd6f5ff304eca53400f"
 #android
 alias eml='/usr/local/share/android-sdk/emulator/emulator -avd Nexus_S_API_25'
 
+# LeadIq env
+export DATABASE_URL="jdbc:postgresql://localhost/pg_dev"
 # amazon
-alias aws='ssh -i "Freeman.pem" ubuntu@52.220.46.164'
-alias awss='ssh -i "Freeman.pem" ubuntu@52.220.46.164 -t tmux a'
 alias vim='nvim'
 alias git=hub
+export SBT_OPTS="-Xmx2G"
 
 if [[ "$OSTYPE" == "linux-gnu" ]]; then
     # ...

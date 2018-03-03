@@ -12,10 +12,8 @@ fi
 
 brew update
 
-
 brew tap caskroom/fonts
 brew tap d12frosted/emacs-plus
-
 
 apps=(
     dropbox
@@ -28,46 +26,44 @@ apps=(
     intellij-idea
     font-inconsolata-nerd-font-mono
     font-source-code-pro
+    amethyst
 )
-brew cask install "${apps[@]}"
 
-services=(
-    wakatime-cli
-    hub
-    fasd
-    openssl
-    git-crypt
-    haskell-stack
-    aspell
-    scala
-    neovim
-    watchman
-    w3m
-    fasd
-    poppler
-    automake
-    msmtp
-    isync
-    node
-    tmux
-    mysql
-    gnupg
-    git
-    git-crypt
-    gnuplot
-    python3
-    sbt
-    the_platinum_searcher
-    reattach-to-user-namespace
-    ditaa
-    plantuml
-    terminal-notifier
-    emacs-plus --HEAD --with-natural-title-bars
-    mu --with-emacs
-    global --with-pygments --with-ctags
-)
-# Install and Setup MySQL
-brew install "${services[@]}"
+brew install wakatime-cli
+brew install hub
+brew install fasd
+brew install openssl
+brew install git-crypt
+brew install haskell-stack
+brew install aspell
+brew install scala
+brew install neovim
+brew install watchman
+brew install w3m
+brew install fasd
+brew install poppler
+brew install automake
+brew install msmtp
+brew install isync
+brew install node
+brew install tmux
+brew install mysql
+brew install gnupg
+brew install git
+brew install git-crypt
+brew install gnuplot
+brew install python3
+brew install sbt
+brew install the_platinum_searcher
+brew install reattach-to-user-namespace
+brew install ditaa
+brew install plantuml
+brew install terminal-notifier
+brew install emacs-plus --HEAD --with-natural-title-bars
+brew install mu --with-emacs
+brew install global --with-pygments --with-ctags
+
+brew cask install "${apps[@]}"
 brew cleanup
 
 sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
@@ -81,10 +77,13 @@ git clone https://github.com/bhilburn/powerlevel9k.git ~/.oh-my-zsh/custom/theme
 
 cd ~/.oh-my-zsh/custom/plugins && git clone https://github.com/wbingli/zsh-wakatime.git
 
+curl -fLo ~/.config/nvim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+
+
 brew services start mysql
 brew services start emacs-plus
 brew linkapps emacs-plus
 
-mkdir ~/Mail
-mkdir ~/Mail/office
-mkdir ~/Mail/gmail
+mkdir ~/Maildir
+mkdir ~/Maildir/office
+mkdir ~/Maildir/gmail

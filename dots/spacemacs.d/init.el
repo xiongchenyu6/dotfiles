@@ -9,7 +9,6 @@
    dotspacemacs-configuration-layers
    '(csv
      sql
-     helm
      git
      github
      version-control
@@ -20,7 +19,7 @@
      (shell :variables
             shell-default-height 30
             shell-default-position 'bottom
-            shell-default-shell 'multiterm)
+            shell-default-shell 'eshell)
      (slack :variables
             slack-prefer-current-team t
             slack-display-team-name nil)
@@ -36,13 +35,14 @@
      (colors :variables
              colors-enable-nyan-cat-progress-bar t)
      fasd
+     emoji
      (chinese :variables
               chinese-enable-youdao-dict nil)
      (spell-checking :variables
-                     enable-flyspell-auto-completion t
-                     spell-checking-enable-auto-dictionary t)
+                     spell-checking-enable-by-default nil
+                     enable-flyspell-auto-completion t)
      (mu4e :variables
-           mu4e-use-maildirs-extension t
+           mu4e-use-maildirs-extension nil
            mu4e-enable-async-operations t
            mu4e-enable-mode-line t
            mu4e-enable-notifications t)
@@ -53,8 +53,7 @@
                       auto-completion-enable-snippets-in-popup t
                       auto-completion-enable-help-tooltip t
                       auto-completion-enable-sort-by-usage t)
-     (syntax-checking :variables
-                      syntax-checking-enable-by-default t)
+     syntax-checking
      (wakatime :variables wakatime-api-key "06fb08d0-68a4-4b39-bbb0-d34d325dc046"
                ;; use the actual wakatime path
                wakatime-cli-path "/usr/local/bin/wakatime")
@@ -74,14 +73,15 @@
      (scala :variables
             scala-use-unicode-arrows t)
      (java :variables java-backend 'ensime)
-     graphviz
+     idris
+     php
      emacs-lisp
-     scheme
+     clojure
      latex
      (haskell :variables
               haskell-process-type 'stack-ghci
-              haskell-completion-backend 'dante
-              ;; haskell-completion-backend 'intero
+              ;; haskell-completion-backend 'dante
+              haskell-completion-backend 'intero
               ;; haskell-completion-backend 'ghci
               )
      (geolocation :variables
@@ -103,7 +103,11 @@
   (setq-default
    dotspacemacs-check-for-update t
    dotspacemacs-elpa-subdirectory nil
-   dotspacemacs-editing-style 'hybrid
+   dotspacemacs-editing-style '(hybrid :variables
+                                       hybrid-mode-enable-evilified-state t
+                                       hybrid-mode-enable-hjkl-bindings nil
+                                       hybrid-mode-use-evil-search-module nil
+                                       hybrid-mode-default-state 'normal)
    dotspacemacs-verbose-loading nil
    dotspacemacs-startup-banner nil
    dotspacemacs-startup-lists '((recents . 3)(projects . 3))
@@ -143,9 +147,9 @@
    dotspacemacs-which-key-delay 0.4
    dotspacemacs-which-key-position 'bottom
    dotspacemacs-loading-progress-bar t
-   dotspacemacs-fullscreen-at-startup t
-   dotspacemacs-fullscreen-use-non-native nil
-   dotspacemacs-maximized-at-startup nil
+   dotspacemacs-fullscreen-at-startup nil
+   dotspacemacs-fullscreen-use-non-native t
+   dotspacemacs-maximized-at-startup t
    dotspacemacs-active-transparency 90
    dotspacemacs-inactive-transparency 90
    dotspacemacs-show-transient-state-title t
@@ -173,15 +177,6 @@ executes.
 before packages are loaded. If you are unsure, you should try in setting them in
 `dotspacemacs/user-config' first.")
 (defun dotspacemacs/user-config ()
-  (evilified-state-evilify-map mu4e-headers-mode-map
-    :mode mu4e-headers-mode
-    :bindings
-    (kbd "n") 'mu4e-headers-next)
-
-  (evilified-state-evilify-map mu4e-view-mode-map
-    :mode mu4e-view-mode
-    :bindings
-    (kbd "n") 'mu4e-view-headers-next)
   ;; use local eslint from node_modules before global
   ;; http://emacs.stackexchange.com/questions/21205/flycheck-with-file-relative-eslint-executable
   (defun my/use-eslint-from-node-modules ()
@@ -206,12 +201,7 @@ before packages are loaded. If you are unsure, you should try in setting them in
    web-mode-code-indent-offset 2
    web-mode-attr-indent-offset 2
    )
-  "Configuration function for user code.
-This function is called at the very end of Spacemacs initialization after
-layers configuration.
-This is the place where most of your configurations should be done. Unless it is
 
-you should place your code here."
   (setq spacemacs-buffer--warnings nil)
   (when (string= system-type "darwin")
     (setq dired-use-ls-dired nil))
@@ -224,9 +214,8 @@ you should place your code here."
 
   (setq exec-path (append exec-path '("/usr/local/bin")))
   (setq exec-path (append exec-path '("/usr/local/sbin")))
-  ;; (add-hook 'prog-mode-hook 'spacemacs/toggle-hungry-delete-on)
 
-  (setq magit-repository-directories '("~/github/"))
+  (setq magit-repository-directories '("~/git/"))
 
   ;;autocomplete
   (global-company-mode t)
@@ -259,8 +248,8 @@ you should place your code here."
 
   (setq slack-enable-emoji t)
   (with-eval-after-load 'slack
-    (when (file-exists-p "~/Dropbox/org/emacs-slack.el")
-      (load "~/Dropbox/org/emacs-slack.el")))
+    (when (file-exists-p "~/Dropbox/Org/emacs-slack.el")
+      (load "~/Dropbox/Org/emacs-slack.el")))
 
   (setq ensime-startup-notification nil)
   (setq ensime-startup-snapshot-notification nil)
@@ -284,7 +273,7 @@ you should place your code here."
   ;; give me ISO(ish) format date-time stamps in the header list
   (setq mu4e-headers-date-format "%Y-%m-%d %H:%M")
   (setq mu4e-attachment-dir "~/Downloads/"
-        mu4e-maildir "~/Mail"
+        mu4e-maildir "~/Maildir/"
         mu4e-get-mail-command "mbsync -a -q"
         mu4e-update-interval 100
         mu4e-view-show-images  t
@@ -310,7 +299,6 @@ you should place your code here."
         smtpmail-debug-info t)
 
   (with-eval-after-load 'mu4e-alert
-    ;; Enable Desktop notifications
     (mu4e-alert-set-default-style 'notifier))
   ;; tell msmtp to choose the SMTP server according to the from field in the outgoing email
   (setq message-sendmail-extra-arguments '("--read-envelope-from"))
@@ -360,20 +348,18 @@ you should place your code here."
   ;; Set to <your Dropbox root directory>/MobileOrg.
   (setq org-mobile-directory "~/Dropbox/Apps/MobileOrg")
   (setq org-latex-compiler "latexmk -pdf %f")
-  (setq spaceline-org-clock-p t)
   (setq org-ref-default-bibliography '("~/Dropbox/Org/Papers/references.bib")
         org-ref-pdf-directory "~/Dropbox/Org/Papers/"
         org-ref-bibliography-notes "~/Dropbox/Org/Papers/notes.org")
-  (require 'ox-latex)
-  (setq org-latex-caption-above '(table image))
-  (add-to-list 'org-latex-classes
-               '("koma-article"
-                 "\\documentclass{scrartcl}"
-                 ("\\section{%s}" . "\\section*{%s}")
-                 ("\\subsection{%s}" . "\\subsection*{%s}")
-                 ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
-                 ("\\paragraph{%s}" . "\\paragraph*{%s}")
-                 ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
+  (with-eval-after-load 'ox-latex
+    (add-to-list 'org-latex-classes
+                 '("koma-article"
+                   "\\documentclass{scrartcl}"
+                   ("\\section{%s}" . "\\section*{%s}")
+                   ("\\subsection{%s}" . "\\subsection*{%s}")
+                   ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+                   ("\\paragraph{%s}" . "\\paragraph*{%s}")
+                   ("\\subparagraph{%s}" . "\\subparagraph*{%s}"))))
   (setq org-publish-project-alist
         '(("orgfiles"
            :base-directory "~/Dropbox/Org/"
@@ -405,10 +391,12 @@ you should place your code here."
            :publishing-function org-publish-attachment
            )
           ("website" :components ("orgfiles" "blog-static"))))
+  (setq indent-guide-global-mode t)
   (setq org-export-date-timestamp-format "%Y-%m-%d")
   (setq org-twbs-postamble 't)
   (setq org-twbs-postamble-format
-        '(("en" "<div id='disqus_thread'></div>
+        '(("en" "<div id='disqus_thread'>
+            </div>
             <script type='text/javascript'>
                 var disqus_shortname = 'blogfreeman';
                 (function() {
@@ -417,8 +405,10 @@ you should place your code here."
                     (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
                 })();
             </script>
-            <noscript>Please enable JavaScript to view the <a href='https://disqus.com/?ref_noscript' rel='nofollow'>comments powered by Disqus.</a></noscript>
-            <p class='author'>Author: %a (%e)</p><p>Exported At %T. Created by %c </p>
+            <p class='author'>
+              Author: %a (%e)
+            </p>
+            <p>Exported At %T. Created by %c </p>
             <a href='#' class='back-to-top' id='fixed-back-to-top' style='display: inline;'></a>"
            )))
   (setq org-todo-keywords '((sequence "TODO(t)" "NEXT(n)" "|" "DONE(d)")
@@ -520,28 +510,10 @@ you should place your code here."
   ;; Targets include this file and any file contributing to the agenda - up to 9 levels deep
   (setq org-refile-targets '((nil :maxlevel . 9)
                              (org-agenda-files :maxlevel . 9)))
-  ;; Do not dim blocked tasks
-  (setq org-agenda-dim-blocked-tasks nil)
-  ;; Compact the block agenda view
-  (setq org-agenda-compact-blocks t)
-  ;; Custom agenda command definitions
-  (setq org-agenda-custom-commands
-        '(("N" "Notes"
-           tags
-           "NOTE"
-           ((org-agenda-overriding-header "Notes")
-            (org-tags-match-list-sublevels t)))
-          ("h" "Habits"
-           tags-todo
-           "STYLE=\"habit\""
-           ((org-agenda-overriding-header "Habits")
-            (org-agenda-sorting-strategy '(todo-state-down effort-up category-keep))))
-          ))
-  (setq org-fast-tag-selection-single-key (quote expert))
-  (setq spaceline-org-clock-p t)
+
   (setq org-babel-python-command "python3")
   (setq python-shell-interpreter "python3")
-  (setq org-plantuml-jar-path "~/plantuml.jar")
+  (setq org-plantuml-jar-path "~/Dropbox/plantuml.jar")
   (with-eval-after-load 'org
     (setq org-confirm-babel-evaluate nil)
     (org-babel-do-load-languages
@@ -556,10 +528,12 @@ you should place your code here."
        (shell . t)
        (scala . t)
        (dot . t)
-       )))
+       ))
+    (add-to-list 'org-src-lang-modes (quote ("plantuml" . fundamental)))
+    )
   (setq org-ditaa-jar-path "/usr/local/Cellar/ditaa/0.10/libexec/ditaa0_10.jar")
   (setq org-agenda-persistent-filter t)
-  (add-to-list 'org-src-lang-modes (quote ("plantuml" . fundamental))))
+  )
 (defun dotspacemacs/emacs-custom-settings ()
   "Emacs custom settings.
 This is an auto-generated function, do not modify its content directly, use
@@ -571,7 +545,7 @@ This function is called at the very end of Spacemacs initialization."
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
-   '(org-ref pdf-tools key-chord tablist helm-bibtex parsebib biblio biblio-core slack circe oauth2 websocket emojify emoji-cheat-sheet-plus company-emoji web-mode helm helm-core yasnippet-snippets yaml-mode xterm-color ws-butler winum which-key web-beautify wakatime-mode volatile-highlights vmd-mode vi-tilde-fringe uuidgen use-package treemacs-projectile treemacs-evil toc-org tide tagedit symon sunshine string-inflection sql-indent spaceline-all-the-icons smeargle slim-mode shell-pop shakespeare-mode scss-mode sass-mode reveal-in-osx-finder restart-emacs rainbow-mode rainbow-identifiers rainbow-delimiters pyim pug-mode popwin plantuml-mode persp-mode pcre2el pbcopy password-generator paradox pangu-spacing ox-twbs ox-reveal ox-hugo ox-gfm overseer osx-trash osx-dictionary orgit org-projectile org-present org-pomodoro org-mime org-journal org-download org-bullets org-brain open-junk-file noflet nameless mvn multi-term mu4e-maildirs-extension mu4e-alert move-text molokai-theme mmm-mode meghanada maven-test-mode markdown-toc magit-gitflow magit-gh-pulls macrostep lorem-ipsum livid-mode linum-relative link-hint launchctl json-mode js2-refactor js-doc intero indent-guide impatient-mode hungry-delete hlint-refactor hl-todo hindent highlight-parentheses highlight-numbers highlight-indentation helm-xref helm-themes helm-swoop helm-purpose helm-projectile helm-mu helm-mode-manager helm-make helm-hoogle helm-gtags helm-gitignore helm-flx helm-descbinds helm-dash helm-css-scss helm-company helm-c-yasnippet helm-ag haskell-snippets groovy-mode groovy-imports graphviz-dot-mode gradle-mode google-translate golden-ratio gnuplot github-search github-clone gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link git-gutter-fringe git-gutter-fringe+ gist gh-md ggtags geiser fuzzy font-lock+ flyspell-popup flyspell-correct-helm flycheck-pos-tip flycheck-haskell flx-ido find-by-pinyin-dired fill-column-indicator fasd fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-org evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-magit evil-lisp-state evil-lion evil-indent-plus evil-iedit-state evil-exchange evil-ediff evil-cleverparens evil-args evil-anzu eval-sexp-fu eshell-z eshell-prompt-extras esh-help erc-yt erc-view-log erc-terminal-notifier erc-social-graph erc-image erc-hl-nicks ensime emmet-mode elisp-slime-nav editorconfig dumb-jump diminish diff-hl dash-at-point dante csv-mode counsel-projectile company-web company-tern company-statistics company-quickhelp company-ghci company-ghc company-emacs-eclim company-cabal company-auctex column-enforce-mode color-identifiers-mode coffee-mode cmm-mode clean-aindent-mode centered-cursor-mode browse-at-remote auto-yasnippet auto-highlight-symbol auto-dictionary auto-compile auctex-latexmk aggressive-indent adaptive-wrap ace-pinyin ace-link ace-jump-helm-line ac-ispell)))
+   '(auctex-latexmk yasnippet-snippets yaml-mode xterm-color ws-butler winum which-key web-mode web-beautify wakatime-mode volatile-highlights vmd-mode vi-tilde-fringe uuidgen use-package treemacs-projectile treemacs-evil toc-org tide tagedit symon sunshine string-inflection sql-indent spaceline-all-the-icons smeargle slim-mode slack shell-pop shakespeare-mode scss-mode sayid sass-mode reveal-in-osx-finder restart-emacs rainbow-mode rainbow-identifiers rainbow-delimiters pyim pug-mode popwin plantuml-mode phpunit phpcbf php-extras php-auto-yasnippets persp-mode pcre2el pbcopy password-generator paradox pangu-spacing ox-twbs ox-reveal ox-hugo ox-gfm overseer osx-trash osx-dictionary orgit org-ref org-projectile org-present org-pomodoro org-mime org-journal org-download org-bullets org-brain open-junk-file noflet nameless mvn multi-term mu4e-maildirs-extension mu4e-alert move-text molokai-theme mmm-mode meghanada maven-test-mode markdown-toc magit-gitflow magit-gh-pulls macrostep lorem-ipsum livid-mode linum-relative link-hint less-css-mode launchctl json-mode js2-refactor js-doc intero indent-guide impatient-mode idris-mode hungry-delete hlint-refactor hl-todo hindent highlight-parentheses highlight-numbers highlight-indentation helm-xref helm-themes helm-swoop helm-purpose helm-projectile helm-mu helm-mode-manager helm-make helm-hoogle helm-gtags helm-gitignore helm-flx helm-descbinds helm-dash helm-css-scss helm-company helm-c-yasnippet helm-ag haskell-snippets groovy-mode groovy-imports gradle-mode google-translate golden-ratio gnuplot github-search github-clone gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link git-gutter-fringe git-gutter-fringe+ gist gh-md ggtags fuzzy font-lock+ flyspell-popup flyspell-correct-helm flycheck-pos-tip flycheck-haskell flx-ido find-by-pinyin-dired fill-column-indicator fasd fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-org evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-magit evil-lisp-state evil-lion evil-indent-plus evil-iedit-state evil-exchange evil-ediff evil-cleverparens evil-args evil-anzu eshell-z eshell-prompt-extras esh-help erc-yt erc-view-log erc-terminal-notifier erc-social-graph erc-image erc-hl-nicks ensime emoji-cheat-sheet-plus emmet-mode elisp-slime-nav editorconfig dumb-jump drupal-mode diminish diff-hl dash-at-point dante csv-mode counsel-projectile company-web company-tern company-statistics company-quickhelp company-php company-ghci company-ghc company-emoji company-emacs-eclim company-cabal company-auctex column-enforce-mode color-identifiers-mode coffee-mode cmm-mode clojure-snippets clojure-cheatsheet clj-refactor clean-aindent-mode cider-eval-sexp-fu centered-cursor-mode browse-at-remote auto-yasnippet auto-highlight-symbol auto-dictionary auto-compile aggressive-indent adaptive-wrap ace-pinyin ace-link ace-jump-helm-line ac-ispell)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.

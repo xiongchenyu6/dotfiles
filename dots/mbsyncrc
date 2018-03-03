@@ -13,8 +13,8 @@ IMAPStore office-remote
 Account office
 
 MaildirStore office-local
-Path ~/Mail/office/
-Inbox ~/Mail/office/inbox
+Path ~/Maildir/office/
+Inbox ~/Maildir/office/inbox
 SubFolders Legacy
 
 Channel office
@@ -41,8 +41,8 @@ IMAPStore gmail-remote
 Account gmail
 
 MaildirStore gmail-local
-Path ~/Mail/gmail
-Inbox ~/Mail/gmail/INBOX
+Path ~/Maildir/gmail
+Inbox ~/Maildir/gmail/INBOX
 SubFolders Legacy
 
 Channel gmail-inbox

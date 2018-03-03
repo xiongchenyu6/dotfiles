@@ -9,6 +9,7 @@
 [core]
 	excludesfile = /Users/xiongchenyu/.global_ignore
 	editor = vim
+	autocrlf = input
 [credential]
 	helper = cache --timeout=3600
 [github]
