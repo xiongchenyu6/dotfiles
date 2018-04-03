@@ -25,6 +25,7 @@ apps=(
     dropbox
     intellij-idea
     font-inconsolata-nerd-font-mono
+    font-inconsolata-nerd-font
     font-source-code-pro
     amethyst
 )

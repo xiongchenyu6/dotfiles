@@ -31,10 +31,15 @@ alias eml='/usr/local/share/android-sdk/emulator/emulator -avd Nexus_S_API_25'
 # LeadIq env
 export DATABASE_URL="jdbc:postgresql://localhost/pg_dev"
 
+# FYP env
+export FYP_Mysql_URL="jdbc:mysql://127.0.0.1:3306/fyp?useSSL=false&useEncode=true&characterEncoding=gbk"
+export FYP_Mysql_U="root"
+export FYP_Mysql_P=""
+
 # UniwebPay Env
-export Uniwebpay_Mysql_Username = "root"
-export Uniwebpay_Mysql_Password = ""
-export Uniwebpay_Url = "http://localhost:9000"
+export Uniwebpay_Mysql_U="root"
+export Uniwebpay_Mysql_P=""
+export Uniwebpay_Url="http://localhost:9000"
 
 # amazon
 alias vim='nvim'
