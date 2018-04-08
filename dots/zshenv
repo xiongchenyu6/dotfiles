@@ -28,8 +28,17 @@ export GHTOKEN="ad38f8a815e974c98db2abd6f5ff304eca53400f"
 #android
 alias eml='/usr/local/share/android-sdk/emulator/emulator -avd Nexus_S_API_25'
 
-# LeadIq env
+# Postgress Env
+export PGHOST=localhost
+export PGPORT=5432
+export PGDATA='/usr/local/var/postgres'
+
+# Leadiq env
 export DATABASE_URL="jdbc:postgresql://localhost/pg_dev"
+export LEAD_SEARCH_ENABLE=true
+export LEAD_SEARCH_HOST="localhost"
+export LEAD_SEARCH_PORT="9300"
+export LEAD_SEARCH_CLUSTER_NAME="elasticsearch_xiongchenyu"
 
 # FYP env
 export FYP_Mysql_URL="jdbc:mysql://127.0.0.1:3306/fyp?useSSL=false&useEncode=true&characterEncoding=gbk"
@@ -43,5 +52,8 @@ export Uniwebpay_Url="http://localhost:9000"
 
 # amazon
 alias vim='nvim'
+alias cat=ccat
 alias git=hub
+alias yolo='git commit -m "$(curl -s whatthecommit.com/index.txt)"'
+alias ef='f -e emacsclient -n'
 export SBT_OPTS="-Xmx4G"

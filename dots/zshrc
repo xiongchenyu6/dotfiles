@@ -5,6 +5,7 @@ POWERLEVEL9K_VCS_SHOW_SUBMODULE_DIRTY=true
 POWERLEVEL9K_DIR_OMIT_FIRST_CHARACTER=true
 POWERLEVEL9K_DIR_WRITABLE_FORBIDDEN_FOREGROUND="white"
 POWERLEVEL9K_COMMAND_EXECUTION_TIME_THRESHOLD=0
+POWERLEVEL9K_SHOW_CHANGESET=true
 
 if [ -n "$INSIDE_EMACS" ]; then
     export ZSH_THEME="robbyrussell"
@@ -15,10 +16,11 @@ else
 POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(root_indicator disk_usage dir dir_writable vcs)
 POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(status background_jobs command_execution_time)
 
-plugins=(zsh-wakatime osx fasd brew emacs tmux git scala stack sbt aws colored-man-pages zsh-autosuggestions zsh-syntax-highlighting zsh-256color)
+plugins=(zsh-wakatime osx fasd brew emacs tmux git scala stack sbt aws docker docker-compose colored-man-pages colorize extract zsh-autosuggestions zsh-syntax-highlighting zsh-256color)
 source $ZSH/oh-my-zsh.sh
 
-POWERLEVEL9K_HOME_SUB_ICON="$(print_icon "HOME_ICON" )"
+POWERLEVEL9K_HOME_ICON="$(print_icon "HOME_ICON" )"
+POWERLEVEL9K_HOME_SUB_ICON="$(print_icon "HOME_SUB_ICON" )"
 POWERLEVEL9K_DIR_PATH_SEPARATOR=" $(print_icon "LEFT_SUBSEGMENT_SEPARATOR") "
 
 if [[ "$OSTYPE" == "linux-gnu" ]]; then
@@ -29,6 +31,7 @@ fi
 
 export PKG_CONFIG_PATH=/usr/local/Cellar/pkg-config/0.29.2/bin/pkg-config:/usr/local/lib/pkgconfig:/opt/X11/lib/pkgconfig
 
+eval "$(fasd --init posix-alias zsh-hook)"
 # Preferred editor for local and remote sessions
 if [[ -n $SSH_CONNECTION ]]; then
     export EDITOR='vim'
