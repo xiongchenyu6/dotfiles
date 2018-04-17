@@ -14,6 +14,8 @@
 	<string>manual</string>
 	<key>AutoHideTmuxClientSession</key>
 	<true/>
+	<key>CheckTestRelease</key>
+	<false/>
 	<key>CopyLastNewline</key>
 	<true/>
 	<key>CopySelection</key>
@@ -1298,8 +1300,10 @@
 	</dict>
 	<key>NSWindow Frame NSFontPanel</key>
 	<string>939 345 445 77 0 0 1920 1200 </string>
+	<key>NSWindow Frame SUUpdateAlert</key>
+	<string>650 606 620 392 0 0 1920 1200 </string>
 	<key>NSWindow Frame SharedPreferences</key>
-	<string>2430 567 796 473 1920 406 1920 1080 </string>
+	<string>2430 589 796 473 1920 406 1920 1080 </string>
 	<key>NSWindow Frame iTerm Window 0</key>
 	<string>0 771 1920 429 0 0 1920 1200 </string>
 	<key>NeverWarnAboutMeta</key>
@@ -2023,16 +2027,18 @@
 	<key>SUHasLaunchedBefore</key>
 	<true/>
 	<key>SULastCheckTime</key>
-	<date>2018-04-07T13:09:03Z</date>
+	<date>2018-04-08T14:18:11Z</date>
 	<key>SUSendProfileInfo</key>
 	<false/>
 	<key>SplitPaneDimmingAmount</key>
 	<real>0.4066531450320513</real>
 	<key>StretchTabsToFillBar</key>
 	<false/>
+	<key>TabStyle</key>
+	<integer>1</integer>
 	<key>WordCharacters</key>
 	<string>/-+\~_.</string>
 	<key>iTerm Version</key>
-	<string>3.1.5</string>
+	<string>3.1.6beta5</string>
 </dict>
 </plist>

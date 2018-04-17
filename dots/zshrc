@@ -7,11 +7,6 @@ POWERLEVEL9K_DIR_WRITABLE_FORBIDDEN_FOREGROUND="white"
 POWERLEVEL9K_COMMAND_EXECUTION_TIME_THRESHOLD=0
 POWERLEVEL9K_SHOW_CHANGESET=true
 
-if [ -n "$INSIDE_EMACS" ]; then
-    export ZSH_THEME="robbyrussell"
-else
-    export ZSH_THEME="powerlevel9k/powerlevel9k"
-  fi
 
 POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(root_indicator disk_usage dir dir_writable vcs)
 POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(status background_jobs command_execution_time)
@@ -19,9 +14,14 @@ POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(status background_jobs command_execution_tim
 plugins=(zsh-wakatime osx fasd brew emacs tmux git scala stack sbt aws docker docker-compose colored-man-pages colorize extract zsh-autosuggestions zsh-syntax-highlighting zsh-256color)
 source $ZSH/oh-my-zsh.sh
 
-POWERLEVEL9K_HOME_ICON="$(print_icon "HOME_ICON" )"
-POWERLEVEL9K_HOME_SUB_ICON="$(print_icon "HOME_SUB_ICON" )"
-POWERLEVEL9K_DIR_PATH_SEPARATOR=" $(print_icon "LEFT_SUBSEGMENT_SEPARATOR") "
+if [ -n "$INSIDE_EMACS" ]; then
+    export ZSH_THEME="robbyrussell"
+else
+    export ZSH_THEME="powerlevel9k/powerlevel9k"
+    POWERLEVEL9K_HOME_ICON="$(print_icon "HOME_ICON" )"
+    POWERLEVEL9K_HOME_SUB_ICON="$(print_icon "HOME_SUB_ICON" )"
+    POWERLEVEL9K_DIR_PATH_SEPARATOR=" $(print_icon "LEFT_SUBSEGMENT_SEPARATOR") "
+  fi
 
 if [[ "$OSTYPE" == "linux-gnu" ]]; then
     plugins+=(ubuntu)
