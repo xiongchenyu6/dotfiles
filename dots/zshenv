@@ -3,12 +3,14 @@ if [[ "$OSTYPE" == "linux-gnu" ]]; then
 else [[ "$OSTYPE" == "darwin"* ]];
     # Mac OSX
     export ANDROID_HOME='/usr/local/share/android-sdk'
+    export JAVA_HOME="$(/usr/libexec/java_home)"
+    export GOPATH=~/.local/bin/:$PATH
+    export SCALA_HOME=/usr/local/opt/scala/idea
+    export JDK_HOME="$(/usr/libexec/java_home)"
+    export SPARK_HOME='/usr/local/Cellar/apache-spark/2.2.0/'
     export PATH=/usr/local/bin:$PATH
     export PATH=/usr/local/sbin:$PATH
     export PATH=~/.local/bin/:$PATH
-    export JAVA_HOME="$(/usr/libexec/java_home)"
-    export JDK_HOME="$(/usr/libexec/java_home)"
-    export SPARK_HOME='/usr/local/Cellar/apache-spark/2.2.0/'
 fi
 
 # ssh
@@ -39,6 +41,8 @@ export LEAD_SEARCH_ENABLE=true
 export LEAD_SEARCH_HOST="localhost"
 export LEAD_SEARCH_PORT="9300"
 export LEAD_SEARCH_CLUSTER_NAME="elasticsearch_xiongchenyu"
+export DATA_SCRIPTS_ES_CLUSTER_NAME="elasticsearch_xiongchenyu"
+export DATA_SCRIPTS_ES_URI="localhost:9300"
 
 # FYP env
 export FYP_Mysql_URL="jdbc:mysql://127.0.0.1:3306/fyp?useSSL=false&useEncode=true&characterEncoding=gbk"
