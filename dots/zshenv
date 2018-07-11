@@ -4,7 +4,7 @@ else [[ "$OSTYPE" == "darwin"* ]];
     # Mac OSX
     export ANDROID_HOME='/usr/local/share/android-sdk'
     export JAVA_HOME="$(/usr/libexec/java_home)"
-    export GOPATH=~/.local/bin/:$PATH
+    export GOPATH=~/.local/
     export SCALA_HOME=/usr/local/opt/scala/idea
     export JDK_HOME="$(/usr/libexec/java_home)"
     export SPARK_HOME='/usr/local/Cellar/apache-spark/2.2.0/'
@@ -60,4 +60,4 @@ alias cat=ccat
 alias git=hub
 alias yolo='git commit -m "$(curl -s whatthecommit.com/index.txt)"'
 alias ef='f -e emacsclient -n'
-export SBT_OPTS="-Xmx4G"
+export SBT_OPTS="-Xmx8G"

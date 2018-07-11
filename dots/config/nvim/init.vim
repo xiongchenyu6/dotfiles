@@ -154,8 +154,8 @@ endfunction
 function! LightlineAle()
 	let fname = expand('%:t')
 	return &ft == 'vimfiler' ? '' :
-				\ fname == '__Tagbar__' ? '' :
-				\ ALEGetStatusLine()
+				\ fname == '__Tagbar__' ? '' : ''
+
 endfunction
 
 function! LightlineFugitive()
@@ -500,8 +500,7 @@ cmap w!! w !sudo tee % >/dev/null
 
 "*****************************************************************************
 "" Auto complete configuration
-"*****************************************************************************
-let g:deoplete#enable_at_startup = 1
+"*************************************************************************pip3 install --upgrade neovip3 install --upgrade neovimm****
 
 augroup omnifuncs
 	autocmd!
@@ -510,6 +509,8 @@ augroup omnifuncs
 	autocmd FileType python setlocal omnifunc=pythoncomplete#Complete
 	autocmd FileType xml setlocal omnifunc=xmlcomplete#CompleteTags
 augroup end
+
+let g:deoplete#enable_at_startup = 1
 
 	let g:UltiSnipsExpandTrigger="<C-j>"
 	inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
