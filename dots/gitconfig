@@ -22,3 +22,5 @@
 	lo = log --oneline
 	ultimate-log = log --graph --oneline --decorate
 	amend = commit -a --amend
+[url "git@gitlab.com:"]
+	insteadOf = https://gitlab.com/

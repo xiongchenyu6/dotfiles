@@ -4,13 +4,14 @@ else [[ "$OSTYPE" == "darwin"* ]];
     # Mac OSX
     export ANDROID_HOME='/usr/local/share/android-sdk'
     export JAVA_HOME="$(/usr/libexec/java_home)"
-    export GOPATH=~/.local/
+    export GOPATH=$HOME/go
     export SCALA_HOME=/usr/local/opt/scala/idea
     export JDK_HOME="$(/usr/libexec/java_home)"
-    export SPARK_HOME='/usr/local/Cellar/apache-spark/2.2.0/'
     export PATH=/usr/local/bin:$PATH
     export PATH=/usr/local/sbin:$PATH
     export PATH=~/.local/bin/:$PATH
+    export PATH=~/git/leadiq-tools/aliases/:$PATH
+    export PATH=$PATH:$GOROOT/bin:$GOPATH/bin
 fi
 
 # ssh
@@ -43,7 +44,7 @@ export LEAD_SEARCH_PORT="9300"
 export LEAD_SEARCH_CLUSTER_NAME="elasticsearch_xiongchenyu"
 export DATA_SCRIPTS_ES_CLUSTER_NAME="elasticsearch_xiongchenyu"
 export DATA_SCRIPTS_ES_URI="localhost:9300"
-
+export LEADIQ_DEV_DOCKER_VOLUMES="/Volumes/mongo/docker"
 # FYP env
 export FYP_Mysql_URL="jdbc:mysql://127.0.0.1:3306/fyp?useSSL=false&useEncode=true&characterEncoding=gbk"
 export FYP_Mysql_U="root"
