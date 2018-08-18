@@ -14,8 +14,9 @@ else [[ "$OSTYPE" == "darwin"* ]];
     export PATH=$PATH:$GOROOT/bin:$GOPATH/bin
 fi
 
-# ssh
+export GTAGSLABEL=pygments
 
+# ssh
 export SSH_KEY_PATH="~/.ssh/rsa_id"
 export LC_ALL=en_US.UTF-8
 export LANGUAGE=en_US.UTF-8
@@ -44,7 +45,7 @@ export LEAD_SEARCH_PORT="9300"
 export LEAD_SEARCH_CLUSTER_NAME="elasticsearch_xiongchenyu"
 export DATA_SCRIPTS_ES_CLUSTER_NAME="elasticsearch_xiongchenyu"
 export DATA_SCRIPTS_ES_URI="localhost:9300"
-export LEADIQ_DEV_DOCKER_VOLUMES="/Volumes/mongo/docker"
+#export LEADIQ_DEV_DOCKER_VOLUMES="/Volumes/mongo/docker"
 # FYP env
 export FYP_Mysql_URL="jdbc:mysql://127.0.0.1:3306/fyp?useSSL=false&useEncode=true&characterEncoding=gbk"
 export FYP_Mysql_U="root"
