@@ -1,0 +1,31 @@
+# -*- mode: snippet -*-
+#name : Leadiq Script
+#contributor: Freeman <xiongchenyu6@gmail.com>
+# --
+
+package $1
+
+import java.nio.file.Paths
+
+import akka.stream.alpakka.csv.scaladsl.CsvParsing
+import akka.stream.scaladsl.FileIO
+import common.mongo.MongoID
+import models.{LocationInfo, MergedCompany}
+import play.api.libs.json.Json
+import services.Scripting
+import akka.stream.scaladsl.Sink
+import common.mongo._
+
+object $2 extends App with Scripting {
+
+  runAndCleanUp(mongoDao[$3]($"{name}").flatMap { dao =>
+    FileIO
+      .fromPath(Paths.get("address.csv"))
+      .via(CsvParsing.lineScanner())
+      .map { byteString =>
+      }
+      .mapAsyncUnordered(parallelism = 4) {
+      }
+      .runWith(Sink.ignore)
+  })
+}
