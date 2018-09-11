@@ -46,10 +46,6 @@ export LEAD_SEARCH_CLUSTER_NAME="elasticsearch_xiongchenyu"
 export DATA_SCRIPTS_ES_CLUSTER_NAME="elasticsearch_xiongchenyu"
 export DATA_SCRIPTS_ES_URI="localhost:9300"
 #export LEADIQ_DEV_DOCKER_VOLUMES="/Volumes/mongo/docker"
-# FYP env
-export FYP_Mysql_URL="jdbc:mysql://127.0.0.1:3306/fyp?useSSL=false&useEncode=true&characterEncoding=gbk"
-export FYP_Mysql_U="root"
-export FYP_Mysql_P=""
 
 # UniwebPay Env
 export Uniwebpay_Mysql_U="root"
@@ -62,4 +58,5 @@ alias cat=ccat
 alias git=hub
 alias yolo='git commit -m "$(curl -s whatthecommit.com/index.txt)"'
 alias ef='f -e emacsclient -n'
+alias ensime="gtags & sbt clean ensimeConfig test:compile ensimeServerIndex"
 export SBT_OPTS="-Xmx8G"
