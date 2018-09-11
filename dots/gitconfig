@@ -17,10 +17,11 @@
 	oauth-token = 0cc28d1690379ee6de60de07f6b0719ccda7ab64
 [alias]
 	ignore = "!gi() { curl -L -s https://www.gitignore.io/api/$@ ;}; gi"
-	s = status
-	l = log
-	lo = log --oneline
-	ultimate-log = log --graph --oneline --decorate
-	amend = commit -a --amend
 [url "git@gitlab.com:"]
 	insteadOf = https://gitlab.com/
+[magithub]
+	online = false
+[magithub "status"]
+	includeStatusHeader = false
+	includePullRequestsSection = false
+	includeIssuesSection = false
