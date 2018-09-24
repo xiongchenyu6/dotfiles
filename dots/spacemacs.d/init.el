@@ -8,7 +8,7 @@
    dotspacemacs-configuration-layer-path '()
    dotspacemacs-configuration-layers
    '(
-     csv
+     ivy
      docker
      sql
      git
@@ -26,8 +26,8 @@
      (chinese :variables
               chinese-enable-youdao-dict nil)
      (spell-checking :variables
-                     spell-checking-enable-by-default nil
-                     enable-flyspell-auto-completion t)
+                     spell-checking-enable-by-default t
+                     enable-flyspell-auto-completion nil)
      (mu4e :variables
            mu4e-use-maildirs-extension nil
            mu4e-enable-async-operations t
@@ -59,14 +59,13 @@
      plantuml
      (scala :variables
             scala-use-unicode-arrows t)
-     idris
+     go
      emacs-lisp
-     latex
      (haskell :variables
               haskell-process-type 'stack-ghci
-              haskell-completion-backend 'dante
+              ;; haskell-completion-backend 'dante
               haskell-enable-hindent t
-              ;; haskell-completion-backend 'intero
+              haskell-completion-backend 'intero
               )
      )
    dotspacemacs-additional-packages
@@ -156,6 +155,8 @@ executes.
 before packages are loaded. If you are unsure, you should try in setting them in
 `dotspacemacs/user-config' first.")
 (defun dotspacemacs/user-config ()
+  (auto-save-visited-mode 1)
+  (setq auto-save-visited-interval 1)
   (with-eval-after-load "haskell-mode"
     ;; This changes the evil "O" and "o" keys for haskell-mode to make sure that
     ;; indentation is done correctly. See
@@ -192,17 +193,6 @@ before packages are loaded. If you are unsure, you should try in setting them in
   (global-set-key [(control ?h)] 'delete-backward-char)
   (add-hook 'flycheck-mode-hook #'my/use-eslint-from-node-modules)
   (setq js2-include-node-externs t)
-  (setq typescript-indent-level 2)
-  (setq-default
-   js2-basic-offset 2
-   js-indent-level 2
-   ;; web-mode
-   css-indent-offset 2
-   web-mode-markup-indent-offset 2
-   web-mode-css-indent-offset 2
-   web-mode-code-indent-offset 2
-   web-mode-attr-indent-offset 2
-   )
 
   (setq spacemacs-buffer--warnings nil)
   (when (string= system-type "darwin")
@@ -224,23 +214,8 @@ before packages are loaded. If you are unsure, you should try in setting them in
 
   (setq ensime-startup-notification nil)
   (setq ensime-startup-snapshot-notification nil)
-  ;;For better search use C-w
-  (defun helm-yank-text-at-point--move-to-beginning (orig-func &rest args)
-    "Initialize `helm-yank-point' to the beginning of word at point."
-    (unless helm-yank-point
-      (setq helm-yank-point
-            (with-helm-current-buffer
-              (save-excursion
-                (let ((fwd-fn (or helm-yank-text-at-point-function #'forward-word)))
-                  (funcall fwd-fn -1))
-                (point)))))
-    (apply orig-func args))
 
-  (advice-add 'helm-yank-text-at-point :around
-              #'helm-yank-text-at-point--move-to-beginning)
-  (setq erc-image-inline-rescale 400)
   ;;mu4e
-
   ;; give me ISO(ish) format date-time stamps in the header list
   (setq mu4e-headers-date-format "%Y-%m-%d %H:%M")
   (setq mu4e-attachment-dir "~/Downloads/"
@@ -303,8 +278,7 @@ before packages are loaded. If you are unsure, you should try in setting them in
 
   ;;parabox
   (setq paradox-github-token '3db959a368a082f4290d0c81313e46418d29f199)
-  ;;ledger settins
-  (setq inhibit-read-only t)
+
   (setq org-journal-dir "~/Dropbox/Org/journal/")
   (setq org-directory "~/Dropbox/Org"
         org-agenda-files (list org-directory)
@@ -441,6 +415,7 @@ before packages are loaded. If you are unsure, you should try in setting them in
        (dot . t)
        ))
     (add-to-list 'org-src-lang-modes (quote ("plantuml" . fundamental)))
+    (golden-ratio-mode 1)
     )
   (setq org-ditaa-jar-path "/usr/local/Cellar/ditaa/0.11.0/libexec/ditaa-0.11.0-standalone.jar")
   (setq org-agenda-persistent-filter t)
@@ -456,7 +431,7 @@ This function is called at the very end of Spacemacs initialization."
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
-   '(evil-matchit counsel iedit htmlize magit hydra yasnippet-snippets yaml-mode xterm-color ws-butler winum which-key web-mode web-beautify wakatime-mode volatile-highlights vmd-mode vi-tilde-fringe uuidgen use-package toc-org tagedit symon swiper string-inflection sql-indent spaceline-all-the-icons smeargle slim-mode shell-pop scss-mode sass-mode reveal-in-osx-finder restart-emacs rainbow-mode rainbow-identifiers rainbow-delimiters pyim pug-mode psci psc-ide prettier-js popwin plantuml-mode persp-mode pcre2el password-generator paradox pangu-spacing ox-twbs ox-reveal ox-hugo ox-gfm overseer osx-trash osx-dictionary orgit org-projectile org-present org-pomodoro org-mime org-journal org-download org-bullets org-brain open-junk-file noflet neotree nameless mvn multi-term mu4e-maildirs-extension mu4e-alert move-text molokai-theme mmm-mode meghanada maven-test-mode markdown-toc magithub magit-svn magit-gitflow magit-gh-pulls macrostep lorem-ipsum livid-mode link-hint launchctl json-navigator js2-refactor js-doc intero indent-guide impatient-mode idris-mode hungry-delete hlint-refactor hl-todo hindent highlight-parentheses highlight-numbers highlight-indentation helm-xref helm-themes helm-swoop helm-purpose helm-projectile helm-mu helm-mode-manager helm-make helm-hoogle helm-gtags helm-gitignore helm-git-grep helm-flx helm-descbinds helm-dash helm-css-scss helm-company helm-c-yasnippet helm-ag haskell-snippets groovy-mode groovy-imports gradle-mode google-translate golden-ratio gnuplot gitignore-templates github-search github-clone gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link git-gutter-fringe git-gutter-fringe+ gist gh-md ggtags fuzzy font-lock+ flyspell-popup flyspell-correct-helm flycheck-pos-tip flycheck-haskell flx-ido find-by-pinyin-dired fill-column-indicator fancy-battery eyebrowse expand-region evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-org evil-numbers evil-nerd-commenter evil-mc evil-magit evil-lisp-state evil-lion evil-indent-plus evil-iedit-state evil-goggles evil-exchange evil-ediff evil-cleverparens evil-args evil-anzu eval-sexp-fu eshell-z eshell-prompt-extras esh-help ensime emmet-mode elisp-slime-nav editorconfig dumb-jump dotenv-mode doom-modeline dockerfile-mode docker diminish diff-hl dash-at-point dante csv-mode counsel-projectile company-web company-tern company-statistics company-quickhelp company-ghci company-ghc company-emacs-eclim company-cabal company-auctex column-enforce-mode color-identifiers-mode cmm-mode clean-aindent-mode chinese-conv centered-cursor-mode browse-at-remote auto-yasnippet auto-highlight-symbol auto-dictionary auto-compile aggressive-indent ace-window ace-pinyin ace-link ace-jump-helm-line ac-ispell)))
+   '(ox-hugo yasnippet-snippets yaml-mode xterm-color ws-butler winum which-key wgrep web-mode web-beautify wakatime-mode volatile-highlights vmd-mode vi-tilde-fringe uuidgen use-package toc-org tagedit symon string-inflection sql-indent spaceline-all-the-icons smex smeargle slim-mode shell-pop scss-mode sass-mode reveal-in-osx-finder restart-emacs request rainbow-mode rainbow-identifiers rainbow-delimiters pyim pug-mode psci psc-ide prettier-js popwin plantuml-mode persp-mode pcre2el password-generator paradox pangu-spacing ox-twbs ox-reveal ox-gfm overseer osx-trash osx-dictionary orgit org-projectile org-present org-pomodoro org-mime org-journal org-download org-bullets org-brain open-junk-file noflet neotree nameless mvn multi-term mu4e-maildirs-extension mu4e-alert move-text molokai-theme mmm-mode meghanada maven-test-mode markdown-toc magithub magit-svn magit-gitflow magit-gh-pulls macrostep lorem-ipsum livid-mode link-hint launchctl json-navigator js2-refactor js-doc ivy-yasnippet ivy-xref ivy-purpose ivy-hydra intero indent-guide impatient-mode hungry-delete hlint-refactor hl-todo hindent highlight-parentheses highlight-numbers highlight-indentation helm-make helm-descbinds helm-css-scss helm-company helm-c-yasnippet helm-ag haskell-snippets groovy-mode groovy-imports gradle-mode google-translate golden-ratio godoctor go-tag go-rename go-impl go-guru go-gen-test go-fill-struct go-eldoc gnuplot gitignore-templates gitignore-mode github-search github-clone gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link git-gutter-fringe git-gutter-fringe+ gist gh-md ggtags fuzzy font-lock+ flyspell-popup flyspell-correct-ivy flyspell-correct-helm flycheck-pos-tip flycheck-haskell flx-ido find-by-pinyin-dired fill-column-indicator fancy-battery eyebrowse expand-region evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-org evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-magit evil-lisp-state evil-lion evil-indent-plus evil-iedit-state evil-goggles evil-exchange evil-ediff evil-cleverparens evil-args evil-anzu eval-sexp-fu eshell-z eshell-prompt-extras esh-help ensime emmet-mode elisp-slime-nav editorconfig dumb-jump dotenv-mode doom-modeline dockerfile-mode docker diminish diff-hl dash-at-point dante csv-mode counsel-projectile counsel-gtags counsel-dash counsel-css company-web company-tern company-statistics company-quickhelp company-go company-ghci company-ghc company-emacs-eclim company-cabal company-auctex column-enforce-mode color-identifiers-mode cmm-mode clean-aindent-mode chinese-conv centered-cursor-mode browse-at-remote auto-yasnippet auto-highlight-symbol auto-dictionary auto-compile auctex-latexmk aggressive-indent ace-window ace-pinyin ace-link ace-jump-helm-line ac-ispell)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
