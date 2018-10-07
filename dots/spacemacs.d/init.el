@@ -7,8 +7,8 @@
    dotspacemacs-ask-for-lazy-installation t
    dotspacemacs-configuration-layer-path '()
    dotspacemacs-configuration-layers
-   '(vimscript
-     csv
+   '(
+     ivy
      docker
      sql
      git
@@ -17,8 +17,7 @@
      (markdown :variables markdown-live-preview-engine 'vmd)
      (shell :variables
             shell-default-height 30
-            shell-default-position 'bottom
-            shell-default-shell 'ansi-term)
+            shell-default-position 'bottom)
      dash
      osx
      (gtags :variables gtags-enable-by-default t)
@@ -27,8 +26,8 @@
      (chinese :variables
               chinese-enable-youdao-dict nil)
      (spell-checking :variables
-                     spell-checking-enable-by-default nil
-                     enable-flyspell-auto-completion t)
+                     spell-checking-enable-by-default t
+                     enable-flyspell-auto-completion nil)
      (mu4e :variables
            mu4e-use-maildirs-extension nil
            mu4e-enable-async-operations t
@@ -45,7 +44,7 @@
      (wakatime :variables wakatime-api-key "06fb08d0-68a4-4b39-bbb0-d34d325dc046"
                ;; use the actual wakatime path
                wakatime-cli-path "/usr/local/bin/wakatime")
-     bibtex
+     ;; bibtex
      (org :variables
           org-enable-bootstrap-support t
           org-enable-github-support t
@@ -55,23 +54,22 @@
           org-projectile-file "~/Dropbox/Org/Projects.org")
      yaml
      (javascript :variables javascript-disable-tern-port-files nil)
+     purescript
      html
      plantuml
      (scala :variables
             scala-use-unicode-arrows t)
-     (java :variables java-backend 'ensime)
-     idris
+     go
      emacs-lisp
-     latex
      (haskell :variables
               haskell-process-type 'stack-ghci
-              haskell-completion-backend 'dante
+              ;; haskell-completion-backend 'dante
               haskell-enable-hindent t
-              ;; haskell-completion-backend 'intero
+              haskell-completion-backend 'intero
               )
      )
    dotspacemacs-additional-packages
-   '(vue-mode)
+   '()
    dotspacemacs-frozen-packages
    '()
    dotspacemacs-excluded-packages
@@ -81,7 +79,7 @@
    'used-only))
 (defun dotspacemacs/init ()
   (setq-default
-   dotspacemacs-check-for-update t
+   dotspacemacs-check-for-update nil
    dotspacemacs-elpa-subdirectory nil
    dotspacemacs-editing-style '(hybrid :variables
                                        hybrid-mode-enable-evilified-state t
@@ -91,14 +89,14 @@
    dotspacemacs-verbose-loading nil
    dotspacemacs-startup-banner nil
    dotspacemacs-startup-lists '((recents . 3)(projects . 3))
-   dotspacemacs-startup-buffer-responsive t
+   dotspacemacs-startup-buffer-responsive nil
    dotspacemacs-scratch-mode 'text-mode
    dotspacemacs-themes '(spacemacs-dark
                          molokai)
    dotspacemacs-colorize-cursor-according-to-state t
    dotspacemacs-default-font '(
-                                "Source Code Pro" :size 15
-                              ;; "InconsolataForPowerline Nerd Font" :size 14
+                               "Source Code Pro" :size 15
+                               ;; "InconsolataForPowerline Nerd Font" :size 14
                                :weight normal
                                :width normal
                                :powerline-scale 1.1)
@@ -139,12 +137,12 @@
    dotspacemacs-smooth-scrolling t
    dotspacemacs-line-numbers '(:relative t :disabled-for-modes dired-mode
                                          doc-view-mode markdown-mode org-mode pdf-view-mode
-                                         text-mode :size-limit-kb 1000)
+                                         text-mode :size-limit-kb 100)
    dotspacemacs-folding-method 'evil
    dotspacemacs-smartparens-strict-mode nil
    dotspacemacs-smart-closing-parenthesis nil
    dotspacemacs-highlight-delimiters 'all
-   dotspacemacs-persistent-server nil
+   dotspacemacs-persistent-server t
    dotspacemacs-search-tools '("pt" "grep")
    dotspacemacs-default-package-repository nil
    dotspacemacs-whitespace-cleanup 'trailing))
@@ -157,6 +155,8 @@ executes.
 before packages are loaded. If you are unsure, you should try in setting them in
 `dotspacemacs/user-config' first.")
 (defun dotspacemacs/user-config ()
+  (auto-save-visited-mode 1)
+  (setq auto-save-visited-interval 1)
   (with-eval-after-load "haskell-mode"
     ;; This changes the evil "O" and "o" keys for haskell-mode to make sure that
     ;; indentation is done correctly. See
@@ -193,17 +193,6 @@ before packages are loaded. If you are unsure, you should try in setting them in
   (global-set-key [(control ?h)] 'delete-backward-char)
   (add-hook 'flycheck-mode-hook #'my/use-eslint-from-node-modules)
   (setq js2-include-node-externs t)
-  (setq typescript-indent-level 2)
-  (setq-default
-   js2-basic-offset 2
-   js-indent-level 2
-   ;; web-mode
-   css-indent-offset 2
-   web-mode-markup-indent-offset 2
-   web-mode-css-indent-offset 2
-   web-mode-code-indent-offset 2
-   web-mode-attr-indent-offset 2
-   )
 
   (setq spacemacs-buffer--warnings nil)
   (when (string= system-type "darwin")
@@ -222,26 +211,12 @@ before packages are loaded. If you are unsure, you should try in setting them in
 
   ;;autocomplete
   (global-company-mode t)
+  (golden-ratio-mode t)
 
   (setq ensime-startup-notification nil)
   (setq ensime-startup-snapshot-notification nil)
-  ;;For better search use C-w
-  (defun helm-yank-text-at-point--move-to-beginning (orig-func &rest args)
-    "Initialize `helm-yank-point' to the beginning of word at point."
-    (unless helm-yank-point
-      (setq helm-yank-point
-            (with-helm-current-buffer
-              (save-excursion
-                (let ((fwd-fn (or helm-yank-text-at-point-function #'forward-word)))
-                  (funcall fwd-fn -1))
-                (point)))))
-    (apply orig-func args))
 
-  (advice-add 'helm-yank-text-at-point :around
-              #'helm-yank-text-at-point--move-to-beginning)
-  (setq erc-image-inline-rescale 400)
   ;;mu4e
-
   ;; give me ISO(ish) format date-time stamps in the header list
   (setq mu4e-headers-date-format "%Y-%m-%d %H:%M")
   (setq mu4e-attachment-dir "~/Downloads/"
@@ -304,8 +279,7 @@ before packages are loaded. If you are unsure, you should try in setting them in
 
   ;;parabox
   (setq paradox-github-token '3db959a368a082f4290d0c81313e46418d29f199)
-  ;;ledger settins
-  (setq inhibit-read-only t)
+
   (setq org-journal-dir "~/Dropbox/Org/journal/")
   (setq org-directory "~/Dropbox/Org"
         org-agenda-files (list org-directory)
@@ -444,7 +418,7 @@ before packages are loaded. If you are unsure, you should try in setting them in
     (add-to-list 'org-src-lang-modes (quote ("plantuml" . fundamental)))
     )
   (setq org-ditaa-jar-path "/usr/local/Cellar/ditaa/0.11.0/libexec/ditaa-0.11.0-standalone.jar")
-  (setq org-agenda-persistent-filter t)
+  (setq create-lockfiles nil)
   )
 (defun dotspacemacs/emacs-custom-settings ()
   "Emacs custom settings.
@@ -457,7 +431,7 @@ This function is called at the very end of Spacemacs initialization."
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
-   '(auctex-latexmk yasnippet-snippets yaml-mode xterm-color ws-butler winum which-key web-mode web-beautify wakatime-mode vue-mode volatile-highlights vmd-mode vimrc-mode vi-tilde-fringe uuidgen use-package toc-org tagedit symon string-inflection sql-indent spaceline-all-the-icons smeargle slim-mode shell-pop scss-mode sass-mode reveal-in-osx-finder restart-emacs rainbow-mode rainbow-identifiers rainbow-delimiters pyim pug-mode prettier-js popwin plantuml-mode persp-mode pcre2el password-generator paradox pangu-spacing ox-twbs ox-reveal ox-hugo ox-gfm overseer osx-trash osx-dictionary orgit org-ref org-projectile org-present org-pomodoro org-mime org-journal org-download org-bullets org-brain open-junk-file noflet neotree nameless mvn multi-term mu4e-maildirs-extension mu4e-alert move-text molokai-theme meghanada maven-test-mode markdown-toc magithub magit-svn magit-gitflow magit-gh-pulls macrostep lorem-ipsum livid-mode link-hint launchctl json-navigator js2-refactor js-doc intero indent-guide impatient-mode idris-mode hungry-delete hlint-refactor hl-todo hindent highlight-parentheses highlight-numbers highlight-indentation helm-xref helm-themes helm-swoop helm-purpose helm-projectile helm-mu helm-mode-manager helm-make helm-hoogle helm-gtags helm-gitignore helm-git-grep helm-flx helm-descbinds helm-dash helm-css-scss helm-company helm-c-yasnippet helm-ag haskell-snippets groovy-mode groovy-imports gradle-mode google-translate golden-ratio gnuplot gitignore-templates github-search github-clone gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link git-gutter-fringe git-gutter-fringe+ gist gh-md ggtags fuzzy font-lock+ flyspell-popup flyspell-correct-helm flycheck-pos-tip flycheck-haskell flx-ido find-by-pinyin-dired fill-column-indicator fancy-battery eyebrowse expand-region evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-org evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-magit evil-lisp-state evil-lion evil-indent-plus evil-iedit-state evil-goggles evil-exchange evil-ediff evil-cleverparens evil-args evil-anzu eval-sexp-fu eshell-z eshell-prompt-extras esh-help ensime emmet-mode elisp-slime-nav editorconfig dumb-jump dotenv-mode doom-modeline dockerfile-mode docker diminish diff-hl dash-at-point dante dactyl-mode csv-mode counsel-projectile company-web company-tern company-statistics company-quickhelp company-ghci company-ghc company-emacs-eclim company-cabal company-auctex column-enforce-mode color-identifiers-mode cmm-mode clean-aindent-mode chinese-conv centered-cursor-mode browse-at-remote auto-yasnippet auto-highlight-symbol auto-dictionary auto-compile aggressive-indent ace-window ace-pinyin ace-link ace-jump-helm-line ac-ispell)))
+   '(ox-hugo helm projectile yasnippet-snippets yaml-mode xterm-color ws-butler winum which-key wgrep web-mode web-beautify wakatime-mode volatile-highlights vmd-mode vi-tilde-fringe uuidgen use-package toc-org tagedit symon string-inflection sql-indent spaceline-all-the-icons smex smeargle slim-mode shell-pop scss-mode sass-mode reveal-in-osx-finder restart-emacs request rainbow-mode rainbow-identifiers rainbow-delimiters pyim pug-mode psci psc-ide prettier-js popwin plantuml-mode persp-mode pcre2el password-generator paradox pangu-spacing ox-twbs ox-reveal ox-gfm overseer osx-trash osx-dictionary orgit org-projectile org-present org-pomodoro org-mime org-journal org-download org-bullets org-brain open-junk-file noflet neotree nameless mvn multi-term mu4e-maildirs-extension mu4e-alert move-text molokai-theme mmm-mode meghanada maven-test-mode markdown-toc magithub magit-svn magit-gitflow magit-gh-pulls macrostep lorem-ipsum livid-mode link-hint launchctl json-navigator js2-refactor js-doc ivy-yasnippet ivy-xref ivy-purpose ivy-hydra intero indent-guide impatient-mode hungry-delete hlint-refactor hl-todo hindent highlight-parentheses highlight-numbers highlight-indentation helm-make helm-core haskell-snippets groovy-mode groovy-imports gradle-mode google-translate golden-ratio godoctor go-tag go-rename go-impl go-guru go-gen-test go-fill-struct go-eldoc gnuplot gitignore-templates gitignore-mode github-search github-clone gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link git-gutter-fringe git-gutter-fringe+ gist gh-md ggtags fuzzy font-lock+ flyspell-correct-ivy flycheck-pos-tip flycheck-haskell flx-ido find-by-pinyin-dired fill-column-indicator fancy-battery eyebrowse expand-region evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-org evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-magit evil-lisp-state evil-lion evil-indent-plus evil-iedit-state evil-goggles evil-exchange evil-ediff evil-cleverparens evil-args evil-anzu eval-sexp-fu eshell-z eshell-prompt-extras esh-help ensime emmet-mode elisp-slime-nav editorconfig dumb-jump dotenv-mode doom-modeline dockerfile-mode docker diminish diff-hl dash-at-point dante counsel-projectile counsel-gtags counsel-dash counsel-css company-web company-tern company-statistics company-quickhelp company-go company-ghci company-ghc company-emacs-eclim company-cabal column-enforce-mode color-identifiers-mode cmm-mode clean-aindent-mode chinese-conv centered-cursor-mode browse-at-remote auto-yasnippet auto-highlight-symbol auto-dictionary auto-compile aggressive-indent ace-window ace-pinyin ace-link ac-ispell)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
