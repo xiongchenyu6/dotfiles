@@ -47,15 +47,6 @@ export DATA_SCRIPTS_ES_CLUSTER_NAME="elasticsearch_xiongchenyu"
 export DATA_SCRIPTS_ES_URI="localhost:9300"
 #export LEADIQ_DEV_DOCKER_VOLUMES="/Volumes/mongo/docker"
 
-#chatchat env
-# export AWS_ACCESS_KEY_ID=AKIAJPYRDFVKNXRLDS2Q
-# export AWS_SECRET_ACCESS_KEY=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
-
-#Memo env
-export AWS_ACCESS_KEY_ID=AKIAJEU74FZUUWQ2DHZQ
-export AWS_SECRET_ACCESS_KEY=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
-export AWS_REGION_DYNAMODB=ap-southeast-1
-
 # UniwebPay Env
 export Uniwebpay_Mysql_U="root"
 export Uniwebpay_Mysql_P=""
