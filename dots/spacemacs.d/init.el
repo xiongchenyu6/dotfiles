@@ -7,13 +7,14 @@
    dotspacemacs-ask-for-lazy-installation t
    dotspacemacs-configuration-layer-path '()
    dotspacemacs-configuration-layers
-   '(
+   '(nginx
      ivy
      docker
-     sql
+     ;; sql
      git
      github
      version-control
+     restclient
      (markdown :variables markdown-live-preview-engine 'vmd)
      (shell :variables
             shell-default-height 30
@@ -54,16 +55,15 @@
           org-projectile-file "~/Dropbox/Org/Projects.org")
      yaml
      (javascript :variables javascript-disable-tern-port-files nil)
-     purescript
-     html
-     plantuml
-     (scala :variables
-            scala-use-unicode-arrows t)
-     go
+     ;; rust
+     ;; html
+     ;; plantuml
+     ;; (scala :variables
+     ;;        scala-use-unicode-arrows t)
+     ;; go
      emacs-lisp
      (haskell :variables
               haskell-process-type 'stack-ghci
-              ;; haskell-completion-backend 'dante
               haskell-enable-hindent t
               haskell-completion-backend 'intero
               )
@@ -111,7 +111,7 @@
    dotspacemacs-retain-visual-state-on-shift t
    dotspacemacs-visual-line-move-text nil
    dotspacemacs-ex-substitute-global nil
-   dotspacemacs-default-layout-name "Default"
+   dotspacemacs-default-layout-name "Bitmain"
    dotspacemacs-display-default-layout t
    dotspacemacs-auto-resume-layouts nil
    dotspacemacs-large-file-size 0.5
@@ -412,7 +412,6 @@ before packages are loaded. If you are unsure, you should try in setting them in
        (gnuplot . t)
        (haskell . t)
        (shell . t)
-       (scala . t)
        (dot . t)
        ))
     (add-to-list 'org-src-lang-modes (quote ("plantuml" . fundamental)))
@@ -431,7 +430,7 @@ This function is called at the very end of Spacemacs initialization."
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
-   '(ox-hugo helm projectile yasnippet-snippets yaml-mode xterm-color ws-butler winum which-key wgrep web-mode web-beautify wakatime-mode volatile-highlights vmd-mode vi-tilde-fringe uuidgen use-package toc-org tagedit symon string-inflection sql-indent spaceline-all-the-icons smex smeargle slim-mode shell-pop scss-mode sass-mode reveal-in-osx-finder restart-emacs request rainbow-mode rainbow-identifiers rainbow-delimiters pyim pug-mode psci psc-ide prettier-js popwin plantuml-mode persp-mode pcre2el password-generator paradox pangu-spacing ox-twbs ox-reveal ox-gfm overseer osx-trash osx-dictionary orgit org-projectile org-present org-pomodoro org-mime org-journal org-download org-bullets org-brain open-junk-file noflet neotree nameless mvn multi-term mu4e-maildirs-extension mu4e-alert move-text molokai-theme mmm-mode meghanada maven-test-mode markdown-toc magithub magit-svn magit-gitflow magit-gh-pulls macrostep lorem-ipsum livid-mode link-hint launchctl json-navigator js2-refactor js-doc ivy-yasnippet ivy-xref ivy-purpose ivy-hydra intero indent-guide impatient-mode hungry-delete hlint-refactor hl-todo hindent highlight-parentheses highlight-numbers highlight-indentation helm-make helm-core haskell-snippets groovy-mode groovy-imports gradle-mode google-translate golden-ratio godoctor go-tag go-rename go-impl go-guru go-gen-test go-fill-struct go-eldoc gnuplot gitignore-templates gitignore-mode github-search github-clone gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link git-gutter-fringe git-gutter-fringe+ gist gh-md ggtags fuzzy font-lock+ flyspell-correct-ivy flycheck-pos-tip flycheck-haskell flx-ido find-by-pinyin-dired fill-column-indicator fancy-battery eyebrowse expand-region evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-org evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-magit evil-lisp-state evil-lion evil-indent-plus evil-iedit-state evil-goggles evil-exchange evil-ediff evil-cleverparens evil-args evil-anzu eval-sexp-fu eshell-z eshell-prompt-extras esh-help ensime emmet-mode elisp-slime-nav editorconfig dumb-jump dotenv-mode doom-modeline dockerfile-mode docker diminish diff-hl dash-at-point dante counsel-projectile counsel-gtags counsel-dash counsel-css company-web company-tern company-statistics company-quickhelp company-go company-ghci company-ghc company-emacs-eclim company-cabal column-enforce-mode color-identifiers-mode cmm-mode clean-aindent-mode chinese-conv centered-cursor-mode browse-at-remote auto-yasnippet auto-highlight-symbol auto-dictionary auto-compile aggressive-indent ace-window ace-pinyin ace-link ac-ispell)))
+   '(org-journal hl-todo highlight-numbers flycheck-haskell doom-modeline projectile magit yasnippet org-plus-contrib yasnippet-snippets yaml-mode xterm-color ws-butler winum which-key wgrep web-beautify wakatime-mode volatile-highlights vmd-mode vi-tilde-fringe uuidgen use-package toc-org symon string-inflection spaceline-all-the-icons smex smeargle shrink-path shell-pop reveal-in-osx-finder restart-emacs request rainbow-mode rainbow-identifiers rainbow-delimiters pyim prettier-js popwin persp-mode pcre2el password-generator parent-mode paradox pangu-spacing ox-twbs ox-reveal ox-hugo ox-gfm overseer osx-trash osx-dictionary orgit org-projectile org-present org-pomodoro org-mime org-download org-bullets org-brain open-junk-file ob-restclient ob-http nginx-mode neotree nameless multi-term mu4e-maildirs-extension mu4e-alert move-text molokai-theme mmm-mode markdown-toc magithub magit-svn magit-gitflow magit-gh-pulls macrostep lorem-ipsum livid-mode link-hint launchctl json-navigator js2-refactor js-doc ivy-yasnippet ivy-xref ivy-purpose ivy-hydra intero indent-guide hungry-delete htmlize hlint-refactor hindent highlight-parentheses highlight-indentation helm-make haskell-snippets google-translate golden-ratio gnuplot gitignore-templates gitignore-mode github-search github-clone gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link git-gutter-fringe git-gutter-fringe+ gist gh-md ggtags fuzzy font-lock+ flyspell-correct-ivy flycheck-pos-tip flx-ido find-by-pinyin-dired fill-column-indicator fancy-battery eyebrowse expand-region evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-org evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-magit evil-lisp-state evil-lion evil-indent-plus evil-iedit-state evil-goggles evil-exchange evil-ediff evil-cleverparens evil-args evil-anzu eval-sexp-fu eshell-z eshell-prompt-extras esh-help elisp-slime-nav eldoc-eval editorconfig dumb-jump dotenv-mode dockerfile-mode docker diminish diff-hl dash-at-point dante counsel-projectile counsel-gtags counsel-dash company-tern company-statistics company-restclient company-quickhelp company-ghci company-ghc company-cabal column-enforce-mode color-identifiers-mode cmm-mode clean-aindent-mode chinese-conv centered-cursor-mode browse-at-remote auto-yasnippet auto-highlight-symbol auto-dictionary auto-compile aggressive-indent ace-window ace-pinyin ace-link ac-ispell)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.

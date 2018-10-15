@@ -1331,7 +1331,7 @@
 	<key>HideTab</key>
 	<true/>
 	<key>Hotkey</key>
-	<true/>
+	<false/>
 	<key>HotkeyChar</key>
 	<integer>39</integer>
 	<key>HotkeyCode</key>
@@ -1344,32 +1344,8 @@
 	<true/>
 	<key>MaxVertically</key>
 	<false/>
-	<key>NSFontPanelSizeList</key>
-	<array>
-		<string>9</string>
-		<string>10</string>
-		<string>11</string>
-		<string>12</string>
-		<string>13</string>
-		<string>14</string>
-		<string>15</string>
-		<string>16</string>
-		<string>17</string>
-		<string>18</string>
-		<string>24</string>
-		<string>36</string>
-		<string>48</string>
-		<string>64</string>
-		<string>72</string>
-		<string>96</string>
-		<string>144</string>
-		<string>288</string>
-		<string>17</string>
-	</array>
-	<key>NSFontPanelSizeSliderParams</key>
-	<string>2 0 100</string>
 	<key>NSNavLastRootDirectory</key>
-	<string>~/Library/Mobile Documents/com~apple~CloudDocs/BackgroudImage</string>
+	<string>~/git/dotfiles/dots</string>
 	<key>NSNavPanelExpandedSizeForOpenMode</key>
 	<string>{712, 448}</string>
 	<key>NSQuotedKeystrokeBinding</key>
@@ -1403,19 +1379,12 @@
 	</data>
 	<key>NSTableView Supports v2 KeyBingingTable</key>
 	<true/>
-	<key>NSToolbar Configuration com.apple.NSColorPanel</key>
-	<dict>
-		<key>TB Is Shown</key>
-		<integer>1</integer>
-	</dict>
 	<key>NSWindow Frame NSFontPanel</key>
-	<string>939 345 445 77 0 0 1920 1200 </string>
-	<key>NSWindow Frame SUUpdateAlert</key>
-	<string>650 606 620 392 0 0 1920 1200 </string>
+	<string>467 137 750 103 0 0 1440 878 </string>
 	<key>NSWindow Frame SharedPreferences</key>
-	<string>565 153 796 473 0 0 1920 1178 </string>
+	<string>202 177 958 470 0 0 1280 778 </string>
 	<key>NSWindow Frame iTerm Window 0</key>
-	<string>0 0 1920 1178 0 0 1920 1178 </string>
+	<string>0 0 1440 878 0 0 1440 878 </string>
 	<key>NeverWarnAboutMeta</key>
 	<true/>
 	<key>NeverWarnAboutMeta_selection</key>
@@ -2000,7 +1969,7 @@
 			<key>Non-ASCII Ligatures</key>
 			<true/>
 			<key>Normal Font</key>
-			<string>InconsolataForPowerlineNerdFontCM-Medium 16</string>
+			<string>InconsolataNerdFontComplete-Medium 14</string>
 			<key>Only The Default BG Color Uses Transparency</key>
 			<false/>
 			<key>Open Toolbelt</key>
@@ -2046,7 +2015,7 @@
 			<key>Smart Cursor Color</key>
 			<true/>
 			<key>Space</key>
-			<integer>0</integer>
+			<integer>1</integer>
 			<key>Sync Title</key>
 			<false/>
 			<key>Tags</key>
@@ -2066,7 +2035,7 @@
 			<key>Use Italic Font</key>
 			<true/>
 			<key>Use Non-ASCII Font</key>
-			<true/>
+			<false/>
 			<key>Use Tab Color</key>
 			<false/>
 			<key>Vertical Spacing</key>
@@ -2082,15 +2051,9 @@
 	<key>NoSyncHaveWarnedAboutPasteConfirmationChange</key>
 	<true/>
 	<key>NoSyncInstallationId</key>
-	<string>68C454E5-52D2-40F5-90BB-83E0A727E10A</string>
-	<key>NoSyncNeverRemindPrefsChangesLostForFile</key>
-	<true/>
-	<key>NoSyncNeverRemindPrefsChangesLostForFile_selection</key>
-	<integer>0</integer>
-	<key>NoSyncPermissionToShowTip</key>
-	<false/>
+	<string>574064C2-411B-4BC9-AFC4-B7986698903D</string>
 	<key>NoSyncTimeOfFirstLaunchOfVersionWithTip</key>
-	<real>541307030.41763496</real>
+	<real>560671736.72325003</real>
 	<key>PMPrintingExpandedStateForPrint2</key>
 	<false/>
 	<key>PointerActions</key>
@@ -2127,29 +2090,25 @@
 		</dict>
 	</dict>
 	<key>PrefsCustomFolder</key>
-	<string>/Users/xiongchenyu/git/dotfiles</string>
+	<string>/Users/chenyu.xiong/git/dotfiles</string>
 	<key>Print In Black And White</key>
 	<true/>
 	<key>PromptOnQuit</key>
 	<false/>
 	<key>QuitWhenAllWindowsClosed</key>
 	<true/>
-	<key>SUAutomaticallyUpdate</key>
-	<true/>
 	<key>SUEnableAutomaticChecks</key>
 	<true/>
 	<key>SUFeedAlternateAppNameKey</key>
 	<string>iTerm</string>
 	<key>SUFeedURL</key>
-	<string>https://iterm2.com/appcasts/final.xml?shard=18</string>
+	<string>https://iterm2.com/appcasts/final.xml?shard=45</string>
 	<key>SUHasLaunchedBefore</key>
 	<true/>
 	<key>SULastCheckTime</key>
-	<date>2018-07-25T13:28:59Z</date>
+	<date>2018-10-15T09:05:06Z</date>
 	<key>SUSendProfileInfo</key>
 	<false/>
-	<key>SUSkippedVersion</key>
-	<string>3.1.6</string>
 	<key>SavePasteHistory</key>
 	<true/>
 	<key>ShowFullScreenTabBar</key>
@@ -2167,6 +2126,6 @@
 	<key>findMode_iTerm</key>
 	<integer>0</integer>
 	<key>iTerm Version</key>
-	<string>3.1.7</string>
+	<string>3.2.3</string>
 </dict>
 </plist>
