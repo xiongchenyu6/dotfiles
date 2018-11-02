@@ -1,5 +1,4 @@
 ;; -*- mode: emacs-lisp -*-
-
 (defun dotspacemacs/layers ()
   (setq-default
    dotspacemacs-distribution 'spacemacs
@@ -10,38 +9,41 @@
    '(nginx
      ivy
      docker
-     ;; sql
      git
      github
      version-control
      restclient
-     (markdown :variables markdown-live-preview-engine 'vmd)
+     (multiple-cursors :variables multiple-cursors-backend 'evil-mc)
+     ;; (markdown :variables markdown-live-preview-engine 'vmd)
      (shell :variables
             shell-default-height 30
             shell-default-position 'bottom)
      dash
      osx
      (gtags :variables gtags-enable-by-default t)
-     (colors :variables
-             colors-enable-nyan-cat-progress-bar t)
-     (chinese :variables
-              chinese-enable-youdao-dict nil)
+     ;; (colors :variables
+     ;;         colors-enable-nyan-cat-progress-bar t)
+     ;; (chinese :variables
+     ;;          chinese-enable-youdao-dict nil)
      (spell-checking :variables
                      spell-checking-enable-by-default t
                      enable-flyspell-auto-completion nil)
-     (mu4e :variables
-           mu4e-use-maildirs-extension nil
-           mu4e-enable-async-operations t
-           mu4e-enable-mode-line t
-           mu4e-enable-notifications t)
+     ;; (mu4e :variables
+     ;;       mu4e-use-maildirs-extension nil
+     ;;       mu4e-enable-async-operations t
+     ;;       mu4e-enable-mode-line t
+     ;;       mu4e-enable-notifications t)
+     templates
      (auto-completion :variables
                       auto-completion-tab-key-behavior 'complete
                       auto-completion-return-key-behavior 'complete
-                      auto-completion-complete-with-key-sequence-delay 0.0
+                      auto-completion-complete-with-key-sequence-delay 0.1
+                      auto-completion-idle-delay 0.2
                       auto-completion-enable-snippets-in-popup t
                       auto-completion-enable-help-tooltip t
-                      auto-completion-enable-sort-by-usage t)
-     syntax-checking
+                      auto-completion-enable-sort-by-usage t
+                      spacemacs-default-company-backends '(company-dabbrev-code company-gtags company-keywords company-files company-dabbrev company-files company-semantic company-abbrev company-keywords company-bbdb company-capf company-ispell))
+     (syntax-checking :variables syntax-checking-enable-by-default t)
      (wakatime :variables wakatime-api-key "06fb08d0-68a4-4b39-bbb0-d34d325dc046"
                ;; use the actual wakatime path
                wakatime-cli-path "/usr/local/bin/wakatime")
@@ -56,20 +58,19 @@
      yaml
      (javascript :variables javascript-disable-tern-port-files nil)
      ;; rust
-     ;; html
+     html
      ;; plantuml
      ;; (scala :variables
      ;;        scala-use-unicode-arrows t)
      ;; go
      emacs-lisp
      (haskell :variables
-              haskell-process-type 'stack-ghci
-              haskell-enable-hindent t
               haskell-completion-backend 'intero
               )
+     nixos
      )
    dotspacemacs-additional-packages
-   '()
+   '(nix-sandbox)
    dotspacemacs-frozen-packages
    '()
    dotspacemacs-excluded-packages
@@ -155,6 +156,25 @@ executes.
 before packages are loaded. If you are unsure, you should try in setting them in
 `dotspacemacs/user-config' first.")
 (defun dotspacemacs/user-config ()
+  ;; Configure flycheck to use Nix
+  ;; https://github.com/travisbhartwell/nix-emacs#flycheck
+  ;; Requires `nix-sandbox` package added to dotspacemacs-additional-packages
+  (setq flycheck-command-wrapper-function
+        (lambda (command) (apply 'nix-shell-command (nix-current-sandbox) command)))
+  (setq flycheck-executable-find
+        (lambda (cmd) (nix-executable-find (nix-current-sandbox) cmd)))
+
+  ;; Configure haskell-mode (haskell-cabal) to use Nix
+  (setq haskell-process-wrapper-function
+        (lambda (args) (apply 'nix-shell-command (nix-current-sandbox) args)))
+
+  ;; Configure haskell-mode to use cabal new-style builds
+  (setq haskell-process-type 'cabal-new-repl)
+
+  ;; We have limit flycheck to haskell because the above wrapper configuration is global (!)
+  ;; FIXME: How? Using mode local variables?
+  (setq flycheck-global-modes '(haskell-mode))
+
   (auto-save-visited-mode 1)
   (setq auto-save-visited-interval 1)
   (with-eval-after-load "haskell-mode"
@@ -178,7 +198,6 @@ before packages are loaded. If you are unsure, you should try in setting them in
       "o" 'haskell-evil-open-below
       "O" 'haskell-evil-open-above)
     )
-  (setq mac-pass-command-to-system nil)
 
   ;; use local eslint from node_modules before global
   ;; http://emacs.stackexchange.com/questions/21205/flycheck-with-file-relative-eslint-executable
@@ -190,7 +209,6 @@ before packages are loaded. If you are unsure, you should try in setting them in
             (message eslint-path)
             (setq flycheck-javascript-eslint-executable eslint-path)))))
 
-  (global-set-key [(control ?h)] 'delete-backward-char)
   (add-hook 'flycheck-mode-hook #'my/use-eslint-from-node-modules)
   (setq js2-include-node-externs t)
 
@@ -418,6 +436,12 @@ before packages are loaded. If you are unsure, you should try in setting them in
     )
   (setq org-ditaa-jar-path "/usr/local/Cellar/ditaa/0.11.0/libexec/ditaa-0.11.0-standalone.jar")
   (setq create-lockfiles nil)
+  ;; nice face
+  (custom-set-faces
+   '(company-tooltip-common
+     ((t (:inherit company-tooltip :weight bold :underline nil))))
+   '(company-tooltip-common-selection
+     ((t (:inherit company-tooltip-selection :weight bold :underline nil)))))
   )
 (defun dotspacemacs/emacs-custom-settings ()
   "Emacs custom settings.
@@ -430,11 +454,18 @@ This function is called at the very end of Spacemacs initialization."
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
-   '(org-journal hl-todo highlight-numbers flycheck-haskell doom-modeline projectile magit yasnippet org-plus-contrib yasnippet-snippets yaml-mode xterm-color ws-butler winum which-key wgrep web-beautify wakatime-mode volatile-highlights vmd-mode vi-tilde-fringe uuidgen use-package toc-org symon string-inflection spaceline-all-the-icons smex smeargle shrink-path shell-pop reveal-in-osx-finder restart-emacs request rainbow-mode rainbow-identifiers rainbow-delimiters pyim prettier-js popwin persp-mode pcre2el password-generator parent-mode paradox pangu-spacing ox-twbs ox-reveal ox-hugo ox-gfm overseer osx-trash osx-dictionary orgit org-projectile org-present org-pomodoro org-mime org-download org-bullets org-brain open-junk-file ob-restclient ob-http nginx-mode neotree nameless multi-term mu4e-maildirs-extension mu4e-alert move-text molokai-theme mmm-mode markdown-toc magithub magit-svn magit-gitflow magit-gh-pulls macrostep lorem-ipsum livid-mode link-hint launchctl json-navigator js2-refactor js-doc ivy-yasnippet ivy-xref ivy-purpose ivy-hydra intero indent-guide hungry-delete htmlize hlint-refactor hindent highlight-parentheses highlight-indentation helm-make haskell-snippets google-translate golden-ratio gnuplot gitignore-templates gitignore-mode github-search github-clone gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link git-gutter-fringe git-gutter-fringe+ gist gh-md ggtags fuzzy font-lock+ flyspell-correct-ivy flycheck-pos-tip flx-ido find-by-pinyin-dired fill-column-indicator fancy-battery eyebrowse expand-region evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-org evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-magit evil-lisp-state evil-lion evil-indent-plus evil-iedit-state evil-goggles evil-exchange evil-ediff evil-cleverparens evil-args evil-anzu eval-sexp-fu eshell-z eshell-prompt-extras esh-help elisp-slime-nav eldoc-eval editorconfig dumb-jump dotenv-mode dockerfile-mode docker diminish diff-hl dash-at-point dante counsel-projectile counsel-gtags counsel-dash company-tern company-statistics company-restclient company-quickhelp company-ghci company-ghc company-cabal column-enforce-mode color-identifiers-mode cmm-mode clean-aindent-mode chinese-conv centered-cursor-mode browse-at-remote auto-yasnippet auto-highlight-symbol auto-dictionary auto-compile aggressive-indent ace-window ace-pinyin ace-link ac-ispell)))
+   (quote
+    (web-mode tagedit slim-mode scss-mode sass-mode pug-mode impatient-mode haml-mode emmet-mode counsel-css company-web web-completion-data confluence xml-rpc ox-hugo docker magit yatemplate yasnippet-snippets yaml-mode xterm-color ws-butler winum which-key wgrep web-beautify wakatime-mode volatile-highlights vi-tilde-fringe uuidgen use-package toc-org tablist symon string-inflection spaceline-all-the-icons smex smeargle shell-pop reveal-in-osx-finder restart-emacs request rainbow-delimiters prettier-js popwin persp-mode pcre2el password-generator paradox ox-twbs ox-reveal ox-gfm overseer osx-trash osx-dictionary orgit org-projectile org-present org-pomodoro org-mime org-journal org-download org-bullets org-brain open-junk-file ob-restclient ob-http nix-sandbox nix-mode nginx-mode neotree nameless multi-term move-text molokai-theme magithub magit-svn magit-gitflow magit-gh-pulls macrostep lorem-ipsum livid-mode link-hint launchctl json-navigator json-mode js2-refactor js-doc ivy-yasnippet ivy-xref ivy-purpose ivy-hydra intero indent-guide hungry-delete htmlize hlint-refactor hl-todo hindent highlight-parentheses highlight-numbers highlight-indentation helm-make haskell-snippets google-translate golden-ratio gnuplot gitignore-templates gitignore-mode github-search github-clone gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link git-gutter-fringe git-gutter-fringe+ gist ggtags fuzzy font-lock+ flyspell-correct-ivy flycheck-pos-tip flycheck-haskell flx-ido fill-column-indicator fancy-battery eyebrowse expand-region evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-org evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-magit evil-lisp-state evil-lion evil-indent-plus evil-iedit-state evil-goggles evil-exchange evil-ediff evil-cleverparens evil-args evil-anzu eval-sexp-fu eshell-z eshell-prompt-extras esh-help elisp-slime-nav editorconfig dumb-jump dotenv-mode doom-modeline dockerfile-mode docker-tramp diminish diff-hl dash-at-point dante counsel-projectile counsel-gtags counsel-dash company-tern company-statistics company-restclient company-quickhelp company-nixos-options company-ghci company-ghc company-cabal column-enforce-mode cmm-mode clean-aindent-mode centered-cursor-mode browse-at-remote auto-yasnippet auto-highlight-symbol auto-dictionary auto-compile aggressive-indent ace-window ace-link ac-ispell)))
+ '(safe-local-variable-values
+   (quote
+    ((dante-repl-command-line "stack" "repl" dante-target)
+     (javascript-backend . tern)
+     (javascript-backend . lsp)))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- )
+ '(company-tooltip-common ((t (:inherit company-tooltip :weight bold :underline nil))))
+ '(company-tooltip-common-selection ((t (:inherit company-tooltip-selection :weight bold :underline nil)))))
 )

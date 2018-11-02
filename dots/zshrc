@@ -48,3 +48,5 @@ else
 
 test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
 
+ . /Users/chenyu.xiong/.nix-profile/etc/profile.d/nix.sh
+
