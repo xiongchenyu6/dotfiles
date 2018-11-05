@@ -61,3 +61,5 @@ alias ef='f -e emacsclient -n'
 alias ensime="gtags & sbt clean ensimeConfig test:compile ensimeServerIndex"
 
 export SBT_OPTS="-Xmx8G"
+
+export PKG_CONFIG_PATH="/usr/local/opt/libxml2/lib/pkgconfig"
