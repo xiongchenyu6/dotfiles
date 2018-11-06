@@ -15,10 +15,6 @@
 [github]
 	user = xiongchenyu6@gmail.com
 	oauth-token = 0cc28d1690379ee6de60de07f6b0719ccda7ab64
-[alias]
-	ignore = "!gi() { curl -L -s https://www.gitignore.io/api/$@ ;}; gi"
-[url "git@gitlab.com:"]
-	insteadOf = https://gitlab.com/
 [magithub]
 	online = false
 [magithub "status"]
