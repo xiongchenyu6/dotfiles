@@ -9,3 +9,4 @@ config/.config/google-chrome/
 ./config/.config/google-chrome/
 /config/.config/google-chrome/*
 */config/.config/google-chrome/*
+tmux/.tmux/plugins

@@ -1,0 +1,33 @@
+
+#!/bin/zsh
+
+# Load resources
+
+xrdb -merge .Xresources
+
+# Set up an icon tray
+stalonetray &
+
+# Fire up apps
+
+xscreensaver -no-splash &
+
+# Set background image with feh
+feh --bg-scale /usr/share/backgrounds/warty-final-ubuntu.png &
+# Start udiskie to handle media
+udiskie &
+
+xfce4-power-manager &
+
+if [ -x /usr/bin/nm-applet ] ; then
+   nm-applet --sm-disable &
+fi
+
+if [ -x /usr/bin/gnome-power-manager ] ; then
+   sleep 3
+   gnome-power-manager &
+fi
+
+(sleep 1; xmodmap ~/.Xmodmap) &
+
+exec xmonad

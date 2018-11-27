@@ -1,0 +1,13 @@
+" - font type and size setting.
+
+set mousemodel=popup
+"set guioptions=egmrti
+set guioptions-=T           " Remove the toolbar
+set lines=40                " 40 lines of text instead of 24
+if has('win32')
+    set guifont=Consolas:h12   " Win32.
+elseif has('gui_macvim')
+    set guifont=Monaco:h14     " OSX.
+else
+    set guifont=Monospace\ 10  " Linux.
+endif

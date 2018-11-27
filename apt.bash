@@ -7,8 +7,5 @@ git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:
 git clone https://github.com/bhilburn/powerlevel9k.git ~/.oh-my-zsh/custom/themes/powerlevel9k
 
 cd ~/.oh-my-zsh/custom/themes/powerlevel9k/
-git remote add dritter https://github.com/dritter/powerlevel9k.git
-git fetch dritter
-git checkout -t dritter/async_all_the_segments
 
 wget https://github.com/powerline/powerline/raw/develop/font/PowerlineSymbols.otf mv PowerlineSymbols.otf ~/.fonts/ fc-cache -vf ~/.fonts/

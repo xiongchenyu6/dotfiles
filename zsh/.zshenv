@@ -54,7 +54,6 @@ export Uniwebpay_Url="http://localhost:9000"
 
 # amazon
 alias vim='nvim'
-alias cat=ccat
 alias git=hub
 alias yolo='git commit -m "$(curl -s whatthecommit.com/index.txt)"'
 alias ef='f -e emacsclient -n'
