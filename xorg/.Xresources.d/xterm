@@ -1,0 +1,13 @@
+! Make alt-a/e/f/b bindings work
+xterm*eightBitInput:     false
+! Remove superfluous border
+xterm*borderWidth:       0
+! Fix Ctrl-H in emacs
+xterm*ttyModes:          erase ^?
+! Bind keys for font size manipulation
+XTerm.VT100.translations: #override \
+Ctrl <Key> KP_Subtract: smaller-vt-font() \n\
+Ctrl <Key> KP_Add: larger-vt-font()
+XTerm*renderFont: true
+XTerm.vt100.faceName:SauceCodePro Nerd Font:style=Regular:size=18:antialias=true
+

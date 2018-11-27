@@ -1,0 +1,638 @@
+{
+   "checksum": "3fd8c3a38720e110ff00797eb97c6706",
+   "roots": {
+      "bookmark_bar": {
+         "children": [ {
+            "children": [ {
+               "date_added": "13132164190985272",
+               "id": "63",
+               "name": "Hacker News",
+               "sync_transaction_version": "1",
+               "type": "url",
+               "url": "https://news.ycombinator.com/"
+            }, {
+               "date_added": "13132164203956750",
+               "id": "64",
+               "meta_info": {
+                  "last_visited_desktop": "13185553049828903"
+               },
+               "name": "programming",
+               "sync_transaction_version": "1",
+               "type": "url",
+               "url": "https://www.reddit.com/r/programming/"
+            }, {
+               "date_added": "13132165204864728",
+               "id": "65",
+               "meta_info": {
+                  "last_visited_desktop": "13181496867258837"
+               },
+               "name": "Dribbble - Show and tell for designers",
+               "sync_transaction_version": "1",
+               "type": "url",
+               "url": "https://dribbble.com/"
+            }, {
+               "date_added": "13132165272738099",
+               "id": "66",
+               "meta_info": {
+                  "last_visited_desktop": "13187078607917904"
+               },
+               "name": "Unmatched Style",
+               "sync_transaction_version": "1",
+               "type": "url",
+               "url": "http://unmatchedstyle.com/"
+            }, {
+               "date_added": "13164889815831384",
+               "id": "67",
+               "meta_info": {
+                  "last_visited_desktop": "13181497008992843"
+               },
+               "name": "Oregon Programming Languages Summer School | University of Oregon",
+               "sync_transaction_version": "1",
+               "type": "url",
+               "url": "https://www.cs.uoregon.edu/research/summerschool/summer17/topics.php"
+            }, {
+               "date_added": "13185603042246718",
+               "id": "68",
+               "meta_info": {
+                  "last_visited_desktop": "13186732425641659"
+               },
+               "name": "functor.tokyo",
+               "sync_transaction_version": "1",
+               "type": "url",
+               "url": "https://functor.tokyo/"
+            } ],
+            "date_added": "13121461947878709",
+            "date_modified": "13187776505175910",
+            "id": "7",
+            "name": "Read",
+            "sync_transaction_version": "1",
+            "type": "folder"
+         }, {
+            "children": [ {
+               "date_added": "13104355850090235",
+               "id": "50",
+               "name": "YouTube to mp3 Converter",
+               "sync_transaction_version": "1",
+               "type": "url",
+               "url": "http://www.youtube-mp3.org/"
+            }, {
+               "date_added": "13098298360811000",
+               "id": "51",
+               "name": "VoiceBase - APIs for Speech Recognition & Speech Analytics",
+               "sync_transaction_version": "1",
+               "type": "url",
+               "url": "https://www.voicebase.com/"
+            }, {
+               "date_added": "13132084207106320",
+               "id": "52",
+               "meta_info": {
+                  "last_visited_desktop": "13181497111549687"
+               },
+               "name": "Color wheel | Color schemes - Adobe Color CC",
+               "sync_transaction_version": "1",
+               "type": "url",
+               "url": "https://color.adobe.com/create/color-wheel/?base=2&rule=Analogous&selected=0&name=My%20Color%20Theme&mode=rgb&rgbvalues=1,0.37051258370168383,0.030187624347664754,0.91,0.1971844570908117,0.04550000000000004,1,0,0,0.91,0.04550000000000004,0.5655609957394202,0.8947320730398133,0.050000000000000044,1&swatchOrder=0,1,2,3,4"
+            }, {
+               "date_added": "13120986828946311",
+               "id": "53",
+               "meta_info": {
+                  "last_visited_desktop": "13181497099304921"
+               },
+               "name": "JSONLint - The JSON Validator.",
+               "sync_transaction_version": "1",
+               "type": "url",
+               "url": "http://jsonlint.com/#"
+            }, {
+               "date_added": "13120317219892406",
+               "id": "54",
+               "meta_info": {
+                  "last_visited_desktop": "13186845024656604"
+               },
+               "name": "RegExr: Learn, Build, & Test RegEx",
+               "sync_transaction_version": "1",
+               "type": "url",
+               "url": "http://regexr.com/"
+            }, {
+               "date_added": "13157622354750346",
+               "id": "55",
+               "name": "https://reveal-js-multiplex-ccjbegmaii.now.sh",
+               "sync_transaction_version": "1",
+               "type": "url",
+               "url": "https://reveal-js-multiplex-ccjbegmaii.now.sh/"
+            }, {
+               "date_added": "13158172129188331",
+               "id": "56",
+               "meta_info": {
+                  "last_visited_desktop": "13181497091688096"
+               },
+               "name": "Point Free problems in Haskell - Stack Overflow",
+               "sync_transaction_version": "1",
+               "type": "url",
+               "url": "https://stackoverflow.com/questions/29596285/point-free-problems-in-haskell/29596461#29596461"
+            }, {
+               "date_added": "13159281712006346",
+               "id": "57",
+               "meta_info": {
+                  "last_visited_desktop": "13181987699446125"
+               },
+               "name": "Network.Wai.Middleware.HttpAuth",
+               "sync_transaction_version": "1",
+               "type": "url",
+               "url": "https://hackage.haskell.org/package/wai-extra-3.0.7.1/docs/Network-Wai-Middleware-HttpAuth.html"
+            }, {
+               "date_added": "13162794542953817",
+               "id": "58",
+               "meta_info": {
+                  "last_visited_desktop": "13185553075630293"
+               },
+               "name": "httpbin(1): HTTP Client Testing Service",
+               "sync_transaction_version": "1",
+               "type": "url",
+               "url": "http://httpbin.org/"
+            }, {
+               "date_added": "13164544282711821",
+               "id": "59",
+               "meta_info": {
+                  "last_visited_desktop": "13187069310054525"
+               },
+               "name": "应用 - 精品MAC应用分享",
+               "sync_transaction_version": "1",
+               "type": "url",
+               "url": "http://xclient.info/s/25/?_=792591379c90f99c44a8e61f66f9a92e"
+            }, {
+               "date_added": "13131782596871190",
+               "id": "60",
+               "meta_info": {
+                  "last_visited_desktop": "13184487677215476"
+               },
+               "name": "Dashboard | HackerRank",
+               "sync_transaction_version": "1",
+               "type": "url",
+               "url": "https://www.hackerrank.com/dashboard"
+            }, {
+               "date_added": "13185428410692624",
+               "id": "61",
+               "meta_info": {
+                  "last_visited_desktop": "13185428410693139"
+               },
+               "name": "Compiler Explorer",
+               "sync_transaction_version": "1",
+               "type": "url",
+               "url": "https://godbolt.org/"
+            }, {
+               "date_added": "13185861928168905",
+               "id": "62",
+               "meta_info": {
+                  "last_visited_desktop": "13185864156688355"
+               },
+               "name": "Haskell Code Explorer",
+               "sync_transaction_version": "1",
+               "type": "url",
+               "url": "https://haskell-code-explorer.mfix.io/"
+            } ],
+            "date_added": "13138449179257592",
+            "date_modified": "13187776505176170",
+            "id": "8",
+            "name": "Tools",
+            "sync_transaction_version": "1",
+            "type": "folder"
+         }, {
+            "children": [ {
+               "date_added": "13186465783231467",
+               "id": "41",
+               "name": "fomantic ui",
+               "sync_transaction_version": "1",
+               "type": "url",
+               "url": "https://www.google.com.sg/search?num=20&safe=active&lei=1e7oW7mcF9m-9QPU0pTAAw&q=fomantic%20ui&ved=0ahUKEwi51MWz8M3eAhWSeysKHXqQAS0QsKwBCAQoAg"
+            }, {
+               "date_added": "13137255095318513",
+               "id": "42",
+               "meta_info": {
+                  "last_visited_desktop": "13186216999880002"
+               },
+               "name": "index",
+               "sync_transaction_version": "1",
+               "type": "url",
+               "url": "https://xiongchenyu6.github.io/"
+            }, {
+               "date_added": "13146362396533787",
+               "id": "43",
+               "meta_info": {
+                  "last_visited_desktop": "13184299295319906"
+               },
+               "name": "Billing Management Console",
+               "sync_transaction_version": "1",
+               "type": "url",
+               "url": "https://console.aws.amazon.com/billing/home?nc2=h_m_bc#/"
+            }, {
+               "date_added": "13121714305553203",
+               "id": "44",
+               "name": "百度网盘-全部文件",
+               "sync_transaction_version": "1",
+               "type": "url",
+               "url": "http://pan.baidu.com/disk/home?errno=0&errmsg=Auth%20Login%20Sucess&stoken=f035081b13f09c16243ec0c43ee343ac7f9deac915c59506d23c604a1eabd1664739c11b692ebe91d551f67e48b7f1aba175d1836a0a1b112901c6fb2294dde800ef2c8c01fe&bduss=e65410499cb054d2319c40bb8eb36ae2cd59e755065c2e9eb1332d4d9b7a6a2381b1ea30a27628b9f0b78a2e828f143f4269445bcfa340c091b35ba91e15dce861aa18b288990d396f4be689810a4e8d924b2528006eef8d929a1dc87158415e10543354a032ed16698059c5deecb39f094573d29bbba2bb606d70d8a6931cb0be6bba34da5dea3ad650eea7f36d0624f8044490a688ca4586067141f1ac957b163216fc0e9769cd5445cea1eda2150eda9dea1a402fec433e48e44e6aa2a8fce0bc3b6e3222&ssnerror=0#list/path=%2F"
+            }, {
+               "date_added": "13122067732292600",
+               "id": "45",
+               "name": "Disqus - The #1 way to build an audience on your website",
+               "sync_transaction_version": "1",
+               "type": "url",
+               "url": "https://disqus.com/"
+            }, {
+               "date_added": "13148355852315065",
+               "id": "46",
+               "meta_info": {
+                  "last_visited_desktop": "13185552987872188"
+               },
+               "name": "Learn Anything",
+               "sync_transaction_version": "1",
+               "type": "url",
+               "url": "https://learn-anything.xyz/"
+            }, {
+               "date_added": "13165164690622542",
+               "id": "47",
+               "meta_info": {
+                  "last_visited_desktop": "13185287946734923"
+               },
+               "name": "BugMeNot: share logins",
+               "sync_transaction_version": "1",
+               "type": "url",
+               "url": "http://bugmenot.com/"
+            }, {
+               "date_added": "13185449788203676",
+               "id": "48",
+               "meta_info": {
+                  "last_visited_desktop": "13185449788203951"
+               },
+               "name": "Queensland FP Lab - Home",
+               "sync_transaction_version": "1",
+               "type": "url",
+               "url": "http://qfpl.io/"
+            }, {
+               "date_added": "13185545219577654",
+               "id": "49",
+               "meta_info": {
+                  "last_visited_desktop": "13185603300560849"
+               },
+               "name": "Learn X in Y Minutes: Scenic Programming Language Tours",
+               "sync_transaction_version": "1",
+               "type": "url",
+               "url": "https://learnxinyminutes.com/"
+            } ],
+            "date_added": "13144729713253715",
+            "date_modified": "13187776505176300",
+            "id": "9",
+            "name": "Daily",
+            "sync_transaction_version": "1",
+            "type": "folder"
+         }, {
+            "children": [ {
+               "date_added": "13132867583596188",
+               "id": "36",
+               "meta_info": {
+                  "last_visited_desktop": "13183954489036171"
+               },
+               "name": "AWSEd_Student_Career_Pathways",
+               "sync_transaction_version": "1",
+               "type": "url",
+               "url": "https://www.awseducate.com/student/s/careerpath"
+            }, {
+               "date_added": "13134533145021655",
+               "id": "37",
+               "meta_info": {
+                  "last_visited_desktop": "13182274448136734"
+               },
+               "name": "Starting Out - Learn You a Haskell for Great Good!",
+               "sync_transaction_version": "1",
+               "type": "url",
+               "url": "http://learnyouahaskell.com/starting-out"
+            }, {
+               "date_added": "13109262214615153",
+               "id": "38",
+               "name": "英语音标,英语音标发音表-48个英语国际音标发音表学习视频",
+               "sync_transaction_version": "1",
+               "type": "url",
+               "url": "http://en-yinbiao.xiao84.com/"
+            }, {
+               "date_added": "13138359494497645",
+               "id": "39",
+               "meta_info": {
+                  "last_visited_desktop": "13182878899606449"
+               },
+               "name": "Home | Codewars",
+               "sync_transaction_version": "1",
+               "type": "url",
+               "url": "http://www.codewars.com/dashboard"
+            }, {
+               "date_added": "13147329267134958",
+               "id": "40",
+               "meta_info": {
+                  "last_visited_desktop": "13185288190996306"
+               },
+               "name": "Introduction · Clojure - building a simple web app",
+               "sync_transaction_version": "1",
+               "type": "url",
+               "url": "http://practicalli.github.io/clojure-webapps/"
+            } ],
+            "date_added": "13121461947879832",
+            "date_modified": "13187776505176425",
+            "id": "10",
+            "name": "Tutorial",
+            "sync_transaction_version": "1",
+            "type": "folder"
+         }, {
+            "children": [ {
+               "date_added": "13132583335114505",
+               "id": "30",
+               "meta_info": {
+                  "last_visited_desktop": "13187341057350348"
+               },
+               "name": "VisuAlgo - visualising data structures and algorithms through animation",
+               "sync_transaction_version": "1",
+               "type": "url",
+               "url": "https://visualgo-translation.club/en"
+            }, {
+               "date_added": "13133112894491606",
+               "id": "31",
+               "meta_info": {
+                  "last_visited_desktop": "13187341057354902"
+               },
+               "name": "Electrical Engineering and Computer Science | MIT OpenCourseWare | Free Online Course Materials",
+               "sync_transaction_version": "1",
+               "type": "url",
+               "url": "https://ocw.mit.edu/courses/electrical-engineering-and-computer-science/"
+            }, {
+               "date_added": "13145858656182080",
+               "id": "32",
+               "meta_info": {
+                  "last_visited_desktop": "13187341057361364"
+               },
+               "name": "stoeffel/awesome-fp-js: A curated list of awesome functional programming stuff in js",
+               "sync_transaction_version": "1",
+               "type": "url",
+               "url": "https://github.com/stoeffel/awesome-fp-js"
+            }, {
+               "date_added": "13109158079808681",
+               "id": "33",
+               "meta_info": {
+                  "last_visited_desktop": "13187341057369260"
+               },
+               "name": "Computer System: A Programmer’s Perspective (深入理解计算机系统) 读书总结 | 学步园",
+               "sync_transaction_version": "1",
+               "type": "url",
+               "url": "http://www.xuebuyuan.com/1126259.html#title-0"
+            }, {
+               "date_added": "13148444265332078",
+               "id": "34",
+               "meta_info": {
+                  "last_visited_desktop": "13187341057376330"
+               },
+               "name": "1A: Overview and Introduction to Lisp | Video Lectures | Structure and Interpretation of Computer Programs | Electrical Engineering and Computer Science | MIT OpenCourseWare",
+               "sync_transaction_version": "1",
+               "type": "url",
+               "url": "https://ocw.mit.edu/courses/electrical-engineering-and-computer-science/6-001-structure-and-interpretation-of-computer-programs-spring-2005/video-lectures/1a-overview-and-introduction-to-lisp/"
+            }, {
+               "date_added": "13156149629222505",
+               "id": "35",
+               "meta_info": {
+                  "last_visited_desktop": "13187341057384337"
+               },
+               "name": "Typeclassopedia - HaskellWiki",
+               "sync_transaction_version": "1",
+               "type": "url",
+               "url": "https://wiki.haskell.org/Typeclassopedia"
+            } ],
+            "date_added": "13121461947880614",
+            "date_modified": "13187776505176549",
+            "id": "11",
+            "name": "Study",
+            "sync_transaction_version": "1",
+            "type": "folder"
+         }, {
+            "children": [ {
+               "date_added": "13115579336587547",
+               "id": "27",
+               "meta_info": {
+                  "last_visited_desktop": "13186590420720031"
+               },
+               "name": "Library Genesis",
+               "sync_transaction_version": "1",
+               "type": "url",
+               "url": "http://www.libgen.io/search.php?req=circuit+analysis&open=0&res=25&view=simple&phrase=1&column=def"
+            }, {
+               "date_added": "13137351167008112",
+               "id": "28",
+               "meta_info": {
+                  "last_visited_desktop": "13185553215209509"
+               },
+               "name": "Open-source tool that uses simple textual descriptions to draw UML diagrams.",
+               "sync_transaction_version": "1",
+               "type": "url",
+               "url": "http://plantuml.com/"
+            }, {
+               "date_added": "13108523835852958",
+               "id": "29",
+               "name": "ChromePlus · comeforu2012/truth Wiki · GitHub",
+               "sync_transaction_version": "1",
+               "type": "url",
+               "url": "https://github.com/comeforu2012/truth/wiki/ChromePlus"
+            } ],
+            "date_added": "13137351193102670",
+            "date_modified": "13187776505176683",
+            "id": "12",
+            "name": "Source",
+            "sync_transaction_version": "1",
+            "type": "folder"
+         }, {
+            "children": [ {
+               "date_added": "13167473159067152",
+               "id": "25",
+               "meta_info": {
+                  "last_visited_desktop": "13185966220286083"
+               },
+               "name": "cVim Options",
+               "sync_transaction_version": "1",
+               "type": "url",
+               "url": "chrome-extension://ihlenndgcmojhcghmfjfneahoeklbjjh/pages/options.html"
+            }, {
+               "date_added": "13167473154840447",
+               "id": "26",
+               "meta_info": {
+                  "last_visited_desktop": "13187177227259857"
+               },
+               "name": "My chrome settings",
+               "sync_transaction_version": "1",
+               "type": "url",
+               "url": "https://gist.github.com/xiongchenyu6/14c205924c372447489869d2670193d9"
+            } ],
+            "date_added": "13180672153283757",
+            "date_modified": "13187776505176809",
+            "id": "13",
+            "name": "Settings",
+            "sync_transaction_version": "1",
+            "type": "folder"
+         }, {
+            "children": [ {
+               "date_added": "13183527888723780",
+               "id": "19",
+               "meta_info": {
+                  "last_visited_desktop": "13187152976845233"
+               },
+               "name": "ChatChat Wiki - Confluence",
+               "sync_transaction_version": "1",
+               "type": "url",
+               "url": "https://chatdotchat.atlassian.net/wiki/spaces/CHAT/overview"
+            }, {
+               "date_added": "13183527996549415",
+               "id": "20",
+               "meta_info": {
+                  "last_visited_desktop": "13184242008820937"
+               },
+               "name": "System dashboard - Jira",
+               "sync_transaction_version": "1",
+               "type": "url",
+               "url": "https://chatdotchat.atlassian.net/secure/Dashboard.jspa"
+            }, {
+               "date_added": "13183528023349573",
+               "id": "21",
+               "meta_info": {
+                  "last_visited_desktop": "13187705355486608"
+               },
+               "name": "chatchat — Bitbucket",
+               "sync_transaction_version": "1",
+               "type": "url",
+               "url": "https://bitbucket.org/chatchat/"
+            }, {
+               "date_added": "13183809572635453",
+               "id": "22",
+               "meta_info": {
+                  "last_visited_desktop": "13186657784415689"
+               },
+               "name": "Cassandra Web",
+               "sync_transaction_version": "1",
+               "type": "url",
+               "url": "http://52.221.232.142:3000/lighting_test/miniapp"
+            }, {
+               "date_added": "13184051148069015",
+               "id": "23",
+               "meta_info": {
+                  "last_visited_desktop": "13187026856148974"
+               },
+               "name": "wire-server/deploy/services-demo/conf/nginz at develop · wireapp/wire-server",
+               "sync_transaction_version": "1",
+               "type": "url",
+               "url": "https://github.com/wireapp/wire-server/tree/develop/deploy/services-demo/conf/nginz"
+            }, {
+               "date_added": "13184142724226183",
+               "id": "24",
+               "meta_info": {
+                  "last_visited_desktop": "13187432137278356"
+               },
+               "name": "https://staging.chat.chat/swagger-ui/",
+               "sync_transaction_version": "1",
+               "type": "url",
+               "url": "https://staging.chat.chat/swagger-ui/"
+            }, {
+               "date_added": "13187778457205341",
+               "id": "69",
+               "meta_info": {
+                  "last_visited_desktop": "13187778457205889"
+               },
+               "name": "molokai color theme for xterm",
+               "sync_transaction_version": "6",
+               "type": "url",
+               "url": "https://gist.github.com/vreon/845878"
+            } ],
+            "date_added": "13183527881510782",
+            "date_modified": "13187778457205341",
+            "id": "14",
+            "name": "Bitmain",
+            "sync_transaction_version": "1",
+            "type": "folder"
+         }, {
+            "date_added": "13183270390823138",
+            "id": "15",
+            "meta_info": {
+               "last_visited_desktop": "13187682290149624"
+            },
+            "name": "Time Traveling Recursion Schemes · jtobin.io",
+            "sync_transaction_version": "1",
+            "type": "url",
+            "url": "https://jtobin.io/time-traveling-recursion"
+         }, {
+            "date_added": "13184229117709229",
+            "id": "16",
+            "meta_info": {
+               "last_visited_desktop": "13186994611510972"
+            },
+            "name": "Pointfree.io",
+            "sync_transaction_version": "1",
+            "type": "url",
+            "url": "http://pointfree.io/"
+         }, {
+            "date_added": "13185275459047296",
+            "id": "17",
+            "meta_info": {
+               "last_visited_desktop": "13187252182321626"
+            },
+            "name": "DontFearTheProfunctorOptics/ProfunctorOptics.md at master · hablapps/DontFearTheProfunctorOptics",
+            "sync_transaction_version": "2",
+            "type": "url",
+            "url": "https://github.com/hablapps/DontFearTheProfunctorOptics/blob/master/ProfunctorOptics.md"
+         }, {
+            "date_added": "13185287554683327",
+            "id": "18",
+            "meta_info": {
+               "last_visited_desktop": "13187676754208312"
+            },
+            "name": "Queensland FP Lab - Behaviors",
+            "sync_transaction_version": "1",
+            "type": "url",
+            "url": "https://qfpl.io/posts/reflex/basics/behaviors/"
+         } ],
+         "date_added": "13187776433111719",
+         "date_modified": "13185287554683327",
+         "id": "1",
+         "name": "Bookmarks bar",
+         "type": "folder"
+      },
+      "other": {
+         "children": [ {
+            "date_added": "13184956328268810",
+            "id": "5",
+            "meta_info": {
+               "last_visited_desktop": "13187275088307505"
+            },
+            "name": "Installation — Reflex 0.5 documentation",
+            "sync_transaction_version": "1",
+            "type": "url",
+            "url": "http://docs.reflex-frp.org/en/latest/installation.html#minimal-dev-env-using-reflex-platform"
+         }, {
+            "date_added": "13185376163598745",
+            "id": "6",
+            "meta_info": {
+               "last_visited_desktop": "13187275088313443"
+            },
+            "name": "baabuljannah.com/Base.hs at non-obelisk · Rizilab/baabuljannah.com",
+            "sync_transaction_version": "1",
+            "type": "url",
+            "url": "https://github.com/Rizilab/baabuljannah.com/blob/non-obelisk/frontend/src/UI/Base.hs"
+         } ],
+         "date_added": "13187776433111722",
+         "date_modified": "13185376163598745",
+         "id": "2",
+         "name": "Other bookmarks",
+         "type": "folder"
+      },
+      "sync_transaction_version": "6",
+      "synced": {
+         "children": [  ],
+         "date_added": "13187776433111723",
+         "date_modified": "0",
+         "id": "3",
+         "name": "Mobile bookmarks",
+         "type": "folder"
+      }
+   },
+   "version": 1
+}

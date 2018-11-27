@@ -5,3 +5,7 @@ undo/
 *undo-tree*
 node_modules/
 .DS_Store
+config/.config/google-chrome/
+./config/.config/google-chrome/
+/config/.config/google-chrome/*
+*/config/.config/google-chrome/*

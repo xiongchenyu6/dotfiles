@@ -1,0 +1,10 @@
+#define SOLARIZED_DARK
+#include ".Xresources.d/schemes/molokai"
+#include ".Xresources.d/fonts"
+#include ".Xresources.d/urxvt"
+#include ".Xresources.d/xterm"
+
+XTerm.vt100.translations: #override \n\
+  Ctrl <Key> minus: smaller-vt-font() \n\
+  Ctrl <Key> plus: larger-vt-font()
+

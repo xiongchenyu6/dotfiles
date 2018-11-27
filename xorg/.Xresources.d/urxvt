@@ -1,0 +1,25 @@
+! In built settings
+URxvt*termName:             rxvt-unicode-256color
+URxvt.perl-ext-common:      default,clipboard,matcher,font-size
+URxvt.scrollBar:            false
+URxvt.font:                 xft:Inconsolata Nerd Font Complete:antialias=true\
+URxvt.font:                 xft:Sauce Code Pro Nerd Font Complete:antialias=true\
+                            -wuncon-siji-medium-r-normal--10-100-75-75-c-80-iso10646-1
+URxvt.url-launcher:         google-chrome-stable
+URxvt.underlineURLs:        true
+URxvt.clipboard.autocopy:   true
+URxvt.saveLines:            16384
+URxvt.secondaryScroll:      true
+
+! Extension Settings: Font-size
+URxvt.font-size.step: 4
+
+! Keybindings
+#define KEYSYM_PLUS 0x2b
+#define KEYSYM_MINUS 0x2d
+#define KEYSYM_EQUALS 0x3d
+
+URxvt.keysym.C-0:               font-size:reset
+URxvt.keysym.C-KEYSYM_PLUS:     font-size:increase
+URxvt.keysym.C-KEYSYM_EQUALS:   font-size:increase
+URxvt.keysym.C-KEYSYM_MINUS:    font-size:decrease
