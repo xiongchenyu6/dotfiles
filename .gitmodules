@@ -4,3 +4,6 @@
 [submodule "emacs/.emacs.d"]
 	path = emacs/.emacs.d
 	url = https://github.com/syl20bnr/spacemacs
+[submodule "password"]
+	path = password/.password-store
+	url = https://github.com/xiongchenyu6/password-store

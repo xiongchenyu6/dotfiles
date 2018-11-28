@@ -1,3 +1,24 @@
-2018/11/27-15:48:39.607 602 Reusing MANIFEST /home/chenyu/.config/chromium/Default/Extension State/MANIFEST-000001
-2018/11/27-15:48:39.608 602 Recovering log #3
-2018/11/27-15:48:39.608 602 Reusing old log /home/chenyu/.config/chromium/Default/Extension State/000003.log 
+2018/11/30-13:33:04.159 1674 Reusing MANIFEST /home/chenyu/.config/chromium/Default/Extension State/MANIFEST-000001
+2018/11/30-13:33:04.159 1674 Recovering log #25
+2018/11/30-13:33:04.163 1674 Reusing old log /home/chenyu/.config/chromium/Default/Extension State/000025.log 
+2018/11/30-14:13:51.432 5202 Level-0 table #29: started
+2018/11/30-14:13:51.453 5202 Level-0 table #29: 1866507 bytes OK
+2018/11/30-14:13:51.459 5202 Delete type=0 #25
+2018/11/30-14:13:51.460 5202 Compacting 4@0 + 1@1 files
+2018/11/30-14:13:51.478 5202 Generated table #30@0: 7 keys, 16140 bytes
+2018/11/30-14:13:51.478 5202 Compacted 4@0 + 1@1 files => 16140 bytes
+2018/11/30-14:13:51.482 5202 compacted to: files[ 0 1 1 0 0 0 0 ]
+2018/11/30-14:13:51.482 5202 Delete type=2 #23
+2018/11/30-14:13:51.482 5202 Delete type=2 #26
+2018/11/30-14:13:51.482 5202 Delete type=2 #21
+2018/11/30-14:13:51.483 5202 Delete type=2 #29
+2018/11/30-14:13:51.483 5202 Delete type=2 #19
+2018/11/30-15:58:23.223 5202 Level-0 table #32: started
+2018/11/30-15:58:23.270 5202 Level-0 table #32: 1948750 bytes OK
+2018/11/30-15:58:23.282 5202 Delete type=0 #28
+2018/11/30-17:47:59.113 5202 Level-0 table #34: started
+2018/11/30-17:47:59.142 5202 Level-0 table #34: 1946220 bytes OK
+2018/11/30-17:47:59.147 5202 Delete type=0 #31
+2018/11/30-20:01:41.880 5202 Level-0 table #36: started
+2018/11/30-20:01:41.910 5202 Level-0 table #36: 1877799 bytes OK
+2018/11/30-20:01:41.916 5202 Delete type=0 #33

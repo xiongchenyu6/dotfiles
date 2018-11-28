@@ -13,8 +13,8 @@ IMAPStore office-remote
 Account office
 
 MaildirStore office-local
-Path ~/Maildir/office/
-Inbox ~/Maildir/office/inbox
+Path ~/maildir/office/
+Inbox ~/maildir/office/inbox
 SubFolders Legacy
 
 Channel office
@@ -32,7 +32,7 @@ Patterns *
 IMAPAccount gmail
 Host imap.gmail.com
 User xiongchenyu6@gmail.com
-PassCmd "gpg -q --pinentry-mode loopback --for-your-eyes-only --no-tty -d ~/.password/gmail.gpg"
+PassCmd "pass google.com/xiongchenyu6@gmail.com"
 AuthMechs LOGIN
 SSLType IMAPS
 CertificateFile /etc/ssl/cert.pem
@@ -41,8 +41,8 @@ IMAPStore gmail-remote
 Account gmail
 
 MaildirStore gmail-local
-Path ~/Maildir/gmail
-Inbox ~/Maildir/gmail/INBOX
+Path ~/maildir/gmail
+Inbox ~/maildir/gmail/INBOX
 SubFolders Legacy
 
 Channel gmail-inbox

@@ -1,3 +1,6 @@
-2018/11/27-15:48:38.524 607 Reusing MANIFEST /home/chenyu/.config/chromium/Default/Sync Data/LevelDB/MANIFEST-000001
-2018/11/27-15:48:38.524 607 Recovering log #3
-2018/11/27-15:48:38.528 607 Reusing old log /home/chenyu/.config/chromium/Default/Sync Data/LevelDB/000003.log 
+2018/11/30-13:33:03.031 1678 Reusing MANIFEST /home/chenyu/.config/chromium/Default/Sync Data/LevelDB/MANIFEST-000001
+2018/11/30-13:33:03.031 1678 Recovering log #12
+2018/11/30-13:33:03.034 1678 Reusing old log /home/chenyu/.config/chromium/Default/Sync Data/LevelDB/000012.log 
+2018/11/30-17:39:52.918 5202 Level-0 table #16: started
+2018/11/30-17:39:52.962 5202 Level-0 table #16: 747324 bytes OK
+2018/11/30-17:39:52.971 5202 Delete type=0 #12

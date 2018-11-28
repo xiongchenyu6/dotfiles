@@ -5,8 +5,6 @@ undo/
 *undo-tree*
 node_modules/
 .DS_Store
-config/.config/google-chrome/
-./config/.config/google-chrome/
-/config/.config/google-chrome/*
-*/config/.config/google-chrome/*
-tmux/.tmux/plugins
+config/.config/chromium/
+tmux/.tmux/*
+!tmux/.tmux/plugins/tmp

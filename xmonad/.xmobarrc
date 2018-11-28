@@ -1,18 +1,50 @@
 Config { 
-          font = "xft:Bitstream Vera Sans Mono:size=20:antialias=true"
+          font = "xft:Inconsolata Nerd Font Complete:size=7:antialias=true"
         , borderColor = "black"
         , border = TopB
         , bgColor = "black"
         , fgColor = "grey"
         , position = TopW L 100
-        , commands = [ Run Cpu ["-L","3","-H","50","--normal","green","--high","red"] 10
-                        , Run Memory ["-t","Mem: <usedratio>%"] 10
-                        , Run Swap [] 10
-                        , Run Com "uname" ["-s","-r"] "" 36000
-                        , Run Date "%a %b %_d %Y %H:%M:%S" "date" 10
-                        , Run StdinReader
-                        ]
+        -- general behavior
+        , lowerOnStart =     True    -- send to bottom of window stack on start
+        , hideOnStart =      False   -- start with window unmapped (hidden)
+        , allDesktops =      True    -- show on all desktops
+        , overrideRedirect = True    -- set the Override Redirect flag (Xlib)
+        , pickBroadest =     False   -- choose widest display (multi-monitor)
+        , persistent =       True    -- enable/disable hiding (True = disabled)
+        , template = "%StdinReader% | %multicpu% | %coretemp% | %memory% | %dynnetwork% | %bright% }{<fc=#ee9a00>%date%</fc>"
         , sepChar = "%"
         , alignSep = "}{"
-        , template = "%StdinReader% | %cpu% | %memory% * %swap% }{<fc=#ee9a00>%date%</fc> | %uname% "
+        , commands = [ 
+
+                       -- network activity monitor (dynamic interface resolution)
+                          Run DynNetwork     [ "--template" , "<dev>: <tx>kB/s|<rx>kB/s"
+                                             , "--Low"      , "1000"       -- units: kB/s
+                                             , "--High"     , "5000"       -- units: kB/s
+                                             , "--low"      , "green"
+                                             , "--normal"   , "orange"
+                                             , "--high"     , "red"
+                                             ] 10
+                        -- cpu activity monitor
+                        , Run MultiCpu       [ "--template" , "Cpu: <total0>%|<total1>%"
+                                             , "--Low"      , "50"         -- units: %
+                                             , "--High"     , "85"         -- units: %
+                                             , "--low"      , "green"
+                                             , "--normal"   , "orange"
+                                             , "--high"     , "red"
+                                             ] 10
+                       -- cpu core temperature monitor
+                        , Run CoreTemp       [ "--template" , "Temp: <core0>°C|<core1>°C"
+                                             , "--Low"      , "70"        -- units: °C
+                                             , "--High"     , "80"        -- units: °C
+                                             , "--low"      , "green"
+                                             , "--normal"   , "orange"
+                                             , "--high"     , "red"
+                                             ] 50
+                        , Run Memory ["-t","Mem: <usedratio>%"] 10
+                        , Run Com "uname" ["-s","-r"] "" 36000
+                        , Run Date "%a %b %_d %Y %H:%M:%S" "date" 10
+                        , Run Brightness ["--template", "bl: <percent>", "--", "-D", "intel_backlight"] 50
+                        , Run StdinReader
+                        ]
         }

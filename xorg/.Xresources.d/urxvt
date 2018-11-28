@@ -10,6 +10,8 @@ URxvt.underlineURLs:        true
 URxvt.clipboard.autocopy:   true
 URxvt.saveLines:            16384
 URxvt.secondaryScroll:      true
+URxvt.iso14755: false
+URxvt.iso14755_52: false
 
 ! Extension Settings: Font-size
 URxvt.font-size.step: 4
