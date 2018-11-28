@@ -1,3 +1,3 @@
-2018/11/27-15:48:39.063 602 Reusing MANIFEST leveldb/MANIFEST-000001
-2018/11/27-15:48:39.063 602 Recovering log #4
-2018/11/27-15:48:39.064 602 Reusing old log leveldb/000004.log 
+2018/11/29-12:26:56.379 1748 Reusing MANIFEST leveldb/MANIFEST-000001
+2018/11/29-12:26:56.379 1748 Recovering log #9
+2018/11/29-12:26:56.380 1748 Reusing old log leveldb/000009.log 

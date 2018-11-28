@@ -1,3 +1,6 @@
-2018/11/27-15:59:28.967 770 Reusing MANIFEST /home/chenyu/.config/chromium/Default/Extension State/MANIFEST-000001
-2018/11/27-15:59:28.967 770 Recovering log #3
-2018/11/27-15:59:28.967 770 Reusing old log /home/chenyu/.config/chromium/Default/Extension State/000003.log 
+2018/11/29-12:27:37.118 1440 Reusing MANIFEST /home/chenyu/.config/chromium/Default/Extension State/MANIFEST-000001
+2018/11/29-12:27:37.119 1440 Recovering log #14
+2018/11/29-12:27:37.125 1440 Reusing old log /home/chenyu/.config/chromium/Default/Extension State/000014.log 
+2018/11/29-13:46:55.678 3365 Level-0 table #16: started
+2018/11/29-13:46:55.698 3365 Level-0 table #16: 1783155 bytes OK
+2018/11/29-13:46:55.703 3365 Delete type=0 #14

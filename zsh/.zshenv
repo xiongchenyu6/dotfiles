@@ -1,4 +1,7 @@
 if [[ "$OSTYPE" == "linux-gnu" ]]; then
+    export JAVA_HOME='/usr/lib/jvm/java-11-openjdk'
+    export ANDROID_HOME='/opt/android-sdk'
+    export JAVA_OPTS='--add-modules java.se'
     # ...
 else [[ "$OSTYPE" == "darwin"* ]];
     # Mac OSX
@@ -7,12 +10,13 @@ else [[ "$OSTYPE" == "darwin"* ]];
     export GOPATH=$HOME/go
     export SCALA_HOME=/usr/local/opt/scala/idea
     export JDK_HOME="$(/usr/libexec/java_home)"
-    export PATH=/usr/local/bin:$PATH
-    export PATH=/usr/local/sbin:$PATH
-    export PATH=~/.local/bin/:$PATH
-    export PATH=~/git/leadiq-tools/aliases/:$PATH
-    export PATH=$PATH:$GOROOT/bin:$GOPATH/bin
 fi
+
+export PATH=/usr/local/bin:$PATH
+export PATH=/usr/local/sbin:$PATH
+export PATH=~/.local/bin/:$PATH
+export PATH=~/.yarn/bin/:$PATH
+export PATH=$PATH:$GOROOT/bin:$GOPATH/bin
 
 export GTAGSLABEL=pygments
 
@@ -60,5 +64,6 @@ alias ef='f -e emacsclient -n'
 alias ensime="gtags & sbt clean ensimeConfig test:compile ensimeServerIndex"
 
 export SBT_OPTS="-Xmx8G"
+export EDITOR="emacs"
 
 export PKG_CONFIG_PATH="/usr/local/opt/libxml2/lib/pkgconfig"

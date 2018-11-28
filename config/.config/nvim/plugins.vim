@@ -18,7 +18,6 @@ Plug 'scrooloose/nerdcommenter'
 
 "" Tags bar and auto tags update
 Plug 'majutsushi/tagbar'
-Plug 'xolox/vim-easytags'
 
 "" Show indentLine
 Plug 'Yggdroot/indentLine'
@@ -35,7 +34,6 @@ Plug 'xolox/vim-session'
 "" Color theme powerline syntax highlight and icons
 Plug 'rafi/awesome-vim-colorschemes'
 Plug 'itchyny/lightline.vim'
-Plug 'taohex/lightline-buffer'
 Plug 'ryanoasis/vim-devicons'
 ""better poly syntax
 Plug 'sheerun/vim-polyglot'

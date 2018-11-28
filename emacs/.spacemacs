@@ -6,7 +6,8 @@
    dotspacemacs-ask-for-lazy-installation t
    dotspacemacs-configuration-layer-path '()
    dotspacemacs-configuration-layers
-   '(
+   '(react
+     typescript
      ivy
      docker
      git
@@ -14,26 +15,31 @@
      version-control
      restclient
      (multiple-cursors :variables multiple-cursors-backend 'evil-mc)
-     ;; (markdown :variables markdown-live-preview-engine 'vmd)
+     (markdown :variables markdown-live-preview-engine 'vmd)
      (shell :variables
             shell-default-height 30
+            shell-default-shell 'eshell
+            shell-enable-smart-eshell t
             shell-default-position 'bottom)
      dash
      osx
      (gtags :variables gtags-enable-by-default t)
-     ;; (colors :variables
-     ;;         colors-enable-nyan-cat-progress-bar t)
-     ;; (chinese :variables
-     ;;          chinese-enable-youdao-dict nil)
+     (colors :variables
+             colors-enable-nyan-cat-progress-bar t)
+     (chinese :variables
+              chinese-enable-fcitx t
+              chinese-enable-youdao-dict t)
      (spell-checking :variables
                      spell-checking-enable-by-default t
                      enable-flyspell-auto-completion nil)
-     ;; (mu4e :variables
-     ;;       mu4e-use-maildirs-extension nil
-     ;;       mu4e-enable-async-operations t
-     ;;       mu4e-enable-mode-line t
-     ;;       mu4e-enable-notifications t)
+     (mu4e :variables
+           mu4e-use-maildirs-extension nil
+           mu4e-enable-async-operations t
+           mu4e-enable-mode-line t
+           mu4e-enable-notifications t)
      templates
+     pdf
+     epub
      (auto-completion :variables
                       auto-completion-tab-key-behavior 'complete
                       auto-completion-return-key-behavior 'complete
@@ -46,7 +52,7 @@
      (syntax-checking :variables syntax-checking-enable-by-default t)
      (wakatime :variables wakatime-api-key "06fb08d0-68a4-4b39-bbb0-d34d325dc046"
                ;; use the actual wakatime path
-               wakatime-cli-path "/usr/local/bin/wakatime")
+               wakatime-cli-path "wakatime")
      ;; bibtex
      (org :variables
           org-enable-bootstrap-support t
@@ -96,7 +102,7 @@
                          molokai)
    dotspacemacs-colorize-cursor-according-to-state t
    dotspacemacs-default-font '(
-                               "Source Code Pro" :size 15
+                               "Source Code Pro" :size 20
                                ;; "InconsolataForPowerline Nerd Font" :size 14
                                :weight normal
                                :width normal
@@ -148,6 +154,10 @@
    dotspacemacs-default-package-repository nil
    dotspacemacs-whitespace-cleanup 'trailing))
 (defun dotspacemacs/user-init ()
+  (setq configuration-layer--elpa-archives
+        '(("melpa" . "elpa.zilongshanren.com/melpa/")
+          ("org" . "elpa.zilongshanren.com/org/")
+          ("gnu" . "elpa.zilongshanren.com/gnu/")))
   (setq exec-path-from-shell-arguments '("-l"))
   "Initialization function for user code.
 It is called immediately after `dotspacemacs/init', before layer configuration
@@ -159,21 +169,22 @@ before packages are loaded. If you are unsure, you should try in setting them in
   ;; Configure flycheck to use Nix
   ;; https://github.com/travisbhartwell/nix-emacs#flycheck
   ;; Requires `nix-sandbox` package added to dotspacemacs-additional-packages
-  (setq flycheck-command-wrapper-function
-        (lambda (command) (apply 'nix-shell-command (nix-current-sandbox) command)))
-  (setq flycheck-executable-find
-        (lambda (cmd) (nix-executable-find (nix-current-sandbox) cmd)))
+  ;; (setq flycheck-command-wrapper-function
+  ;;       (lambda (command) (apply 'nix-shell-command (nix-current-sandbox) command)))
+  ;; (setq flycheck-executable-find
+  ;;       (lambda (cmd) (nix-executable-find (nix-current-sandbox) cmd)))
 
-  ;; Configure haskell-mode (haskell-cabal) to use Nix
-  (setq haskell-process-wrapper-function
-        (lambda (args) (apply 'nix-shell-command (nix-current-sandbox) args)))
+  ;; (global-set-key [(control ?h)] 'delete-backward-char)
+  ;; ;; Configure haskell-mode (haskell-cabal) to use Nix
+  ;; (setq haskell-process-wrapper-function
+  ;;       (lambda (args) (apply 'nix-shell-command (nix-current-sandbox) args)))
 
-  ;; Configure haskell-mode to use cabal new-style builds
-  (setq haskell-process-type 'cabal-new-repl)
+  ;; ;; Configure haskell-mode to use cabal new-style builds
+  ;; (setq haskell-process-type 'cabal-new-repl)
 
-  ;; We have limit flycheck to haskell because the above wrapper configuration is global (!)
-  ;; FIXME: How? Using mode local variables?
-  (setq flycheck-global-modes '(haskell-mode))
+  ;; ;; We have limit flycheck to haskell because the above wrapper configuration is global (!)
+  ;; ;; FIXME: How? Using mode local variables?
+  ;; (setq flycheck-global-modes '(haskell-mode))
 
   (auto-save-visited-mode 1)
   (setq auto-save-visited-interval 1)
@@ -224,6 +235,8 @@ before packages are loaded. If you are unsure, you should try in setting them in
 
   (setq exec-path (append exec-path '("/usr/local/bin")))
   (setq exec-path (append exec-path '("/usr/local/sbin")))
+  (setq exec-path (append exec-path '("~/.local/bin")))
+  (setq exec-path (append exec-path '("~/.yarn/bin")))
 
   (setq magit-repository-directories '("~/git/"))
 
@@ -454,7 +467,8 @@ This function is called at the very end of Spacemacs initialization."
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
-   '(yatemplate yasnippet-snippets yaml-mode xterm-color ws-butler writeroom-mode visual-fill-column winum wgrep web-mode web-beautify wakatime-mode volatile-highlights vi-tilde-fringe uuidgen toc-org tagedit symon string-inflection spaceline-all-the-icons spaceline powerline smex smeargle slim-mode shell-pop scss-mode sass-mode reveal-in-osx-finder restart-emacs request rainbow-delimiters pug-mode prettier-js popwin persp-mode password-generator paradox spinner ox-twbs ox-reveal ox-hugo ox-gfm overseer osx-trash osx-dictionary orgit org-projectile org-category-capture org-present org-pomodoro alert log4e gntp org-mime org-journal org-download org-bullets org-brain open-junk-file ob-restclient ob-http nix-sandbox nix-mode neotree nameless multi-term move-text molokai-theme magithub markdown-mode ghub+ apiwrap magit-svn magit-gitflow magit-gh-pulls macrostep lorem-ipsum livid-mode skewer-mode link-hint launchctl json-navigator hierarchy js2-refactor multiple-cursors js2-mode js-doc ivy-yasnippet ivy-xref ivy-purpose window-purpose imenu-list ivy-hydra intero indent-guide impatient-mode simple-httpd hungry-delete htmlize hlint-refactor hl-todo hindent highlight-parentheses highlight-numbers parent-mode highlight-indentation helm-make haskell-snippets haml-mode google-translate golden-ratio gnuplot gitignore-templates gitignore-mode github-search github-clone gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link git-gutter-fringe+ git-gutter-fringe fringe-helper git-gutter+ git-gutter gist gh marshal logito pcache ht ggtags fuzzy flyspell-correct-ivy flyspell-correct flycheck-pos-tip flycheck-haskell haskell-mode flycheck flx-ido flx fill-column-indicator fancy-battery eyebrowse expand-region evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-org evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-magit magit git-commit ghub treepy graphql with-editor evil-lisp-state evil-lion evil-indent-plus evil-iedit-state iedit evil-goggles evil-exchange evil-ediff evil-cleverparens smartparens paredit evil-args evil-anzu anzu eval-sexp-fu highlight eshell-z eshell-prompt-extras esh-help emmet-mode elisp-slime-nav editorconfig dumb-jump doom-modeline eldoc-eval shrink-path all-the-icons memoize dockerfile-mode docker json-mode tablist magit-popup docker-tramp json-snatcher json-reformat diff-hl dash-at-point counsel-projectile projectile pkg-info epl counsel-gtags counsel-dash helm-dash helm helm-core counsel-css counsel swiper ivy company-web web-completion-data company-tern dash-functional tern company-statistics company-restclient restclient know-your-http-well company-quickhelp pos-tip company-nixos-options nixos-options company-cabal company column-enforce-mode cmm-mode clean-aindent-mode centered-cursor-mode browse-at-remote f dash s auto-yasnippet yasnippet auto-highlight-symbol auto-dictionary auto-compile packed aggressive-indent ace-window ace-link avy ac-ispell auto-complete popup which-key use-package pcre2el org-plus-contrib hydra font-lock+ evil goto-chg undo-tree dotenv-mode diminish bind-map bind-key async)))
+   (quote
+    (youdao-dictionary names chinese-word-at-point vmd-mode mu4e-maildirs-extension mu4e-alert mmm-mode markdown-toc gh-md fcitx zeal-at-point yatemplate yasnippet-snippets yaml-mode xterm-color ws-butler writeroom-mode winum which-key wgrep web-mode web-beautify wakatime-mode volatile-highlights vi-tilde-fringe uuidgen use-package toc-org tide tagedit symon string-inflection spaceline-all-the-icons smex smeargle slim-mode shell-pop scss-mode sass-mode rjsx-mode reveal-in-osx-finder restart-emacs request rainbow-mode rainbow-identifiers rainbow-delimiters pyim pug-mode prettier-js popwin persp-mode pdf-tools pcre2el password-generator paradox pangu-spacing ox-twbs ox-reveal ox-hugo ox-gfm overseer osx-trash osx-dictionary orgit org-projectile org-present org-pomodoro org-mime org-journal org-download org-bullets org-brain open-junk-file ob-restclient ob-http nov nix-sandbox nix-mode neotree nameless multi-term move-text molokai-theme magithub magit-svn magit-gitflow magit-gh-pulls macrostep lorem-ipsum livid-mode link-hint launchctl json-navigator js2-refactor js-doc ivy-yasnippet ivy-xref ivy-purpose ivy-hydra intero indent-guide impatient-mode hungry-delete hlint-refactor hl-todo hindent highlight-parentheses highlight-numbers highlight-indentation helm-make haskell-snippets google-translate golden-ratio gnuplot gitignore-templates gitignore-mode github-search github-clone gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link git-gutter-fringe git-gutter-fringe+ gist ggtags fuzzy font-lock+ flyspell-correct-ivy flycheck-pos-tip flycheck-haskell flx-ido find-by-pinyin-dired fill-column-indicator fancy-battery eyebrowse expand-region evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-org evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-magit evil-lisp-state evil-lion evil-indent-plus evil-iedit-state evil-goggles evil-exchange evil-ediff evil-cleverparens evil-args evil-anzu eval-sexp-fu eshell-z eshell-prompt-extras esh-help emmet-mode elisp-slime-nav editorconfig dumb-jump dotenv-mode doom-modeline dockerfile-mode docker diminish diff-hl counsel-projectile counsel-gtags counsel-dash counsel-css company-web company-tern company-statistics company-restclient company-quickhelp company-nixos-options company-cabal column-enforce-mode color-identifiers-mode cmm-mode clean-aindent-mode chinese-conv centered-cursor-mode browse-at-remote auto-yasnippet auto-highlight-symbol auto-dictionary auto-compile aggressive-indent ace-window ace-pinyin ace-link ac-ispell))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
