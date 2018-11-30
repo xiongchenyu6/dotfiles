@@ -10,14 +10,13 @@
      chrome
      react
      typescript
-     ivy
      prodigy
      docker
      git
      github
      version-control
      restclient
-     (multiple-cursors :variables multiple-cursors-backend 'evil-mc)
+    ;; (multiple-cursors :variables multiple-cursors-backend 'evil-mc)
      (markdown :variables markdown-live-preview-engine 'vmd)
      (shell :variables
             shell-default-shell 'eshell
@@ -66,7 +65,7 @@
      ;; go
      emacs-lisp
      (haskell :variables
-              haskell-completion-backend 'intero
+               haskell-completion-backend 'intero
               )
      nixos
      )
@@ -97,7 +96,7 @@
                          molokai)
    dotspacemacs-colorize-cursor-according-to-state t
    dotspacemacs-default-font '(
-                               "Source Code Pro" :size 20
+                               "Source Code Pro" :size 14
                                ;; "InconsolataForPowerline Nerd Font" :size 14
                                :weight normal
                                :width normal
@@ -119,7 +118,7 @@
    dotspacemacs-large-file-size 0.5
    dotspacemacs-auto-save-file-location 'original
    dotspacemacs-max-rollback-slots 5
-   dotspacemacs-helm-resize nil
+   dotspacemacs-helm-resize t
    dotspacemacs-helm-no-header nil
    dotspacemacs-helm-position 'bottom
    dotspacemacs-helm-use-fuzzy 'always
@@ -148,18 +147,7 @@
    dotspacemacs-search-tools '("pt" "grep")
    dotspacemacs-default-package-repository nil
    dotspacemacs-whitespace-cleanup 'trailing))
-(defun dotspacemacs/user-init ()
-  (setq configuration-layer--elpa-archives
-        '(("melpa" . "elpa.zilongshanren.com/melpa/")
-          ("org" . "elpa.zilongshanren.com/org/")
-          ("gnu" . "elpa.zilongshanren.com/gnu/")))
-  (setq exec-path-from-shell-arguments '("-l"))
-  "Initialization function for user code.
-It is called immediately after `dotspacemacs/init', before layer configuration
-executes.
- This function is mostly useful for variables that need to be set
-before packages are loaded. If you are unsure, you should try in setting them in
-`dotspacemacs/user-config' first.")
+(defun dotspacemacs/user-init ())
 (defun dotspacemacs/user-config ()
   ;; Configure flycheck to use Nix
   ;; https://github.com/travisbhartwell/nix-emacs#flycheck
@@ -180,7 +168,6 @@ before packages are loaded. If you are unsure, you should try in setting them in
   ;; ;; We have limit flycheck to haskell because the above wrapper configuration is global (!)
   ;; ;; FIXME: How? Using mode local variables?
   ;; (setq flycheck-global-modes '(haskell-mode))
-
   (setq haskell-hoogle-url "http://localhost:8080/?hoogle=%s")
   (setq haskell-hoogle-command nil)
   (auto-save-visited-mode 1)
@@ -237,11 +224,6 @@ before packages are loaded. If you are unsure, you should try in setting them in
   (define-key evil-normal-state-map (kbd "k") 'evil-previous-visual-line)
   (normal-erase-is-backspace-mode 1)
   (global-set-key "\C-h" 'delete-backward-char)
-
-  (setq exec-path (append exec-path '("/usr/local/bin")))
-  (setq exec-path (append exec-path '("/usr/local/sbin")))
-  (setq exec-path (append exec-path '("~/.local/bin")))
-  (setq exec-path (append exec-path '("~/.yarn/bin")))
 
   (setq magit-repository-directories '("~/git/" "~/workplace/"))
 
@@ -375,8 +357,13 @@ This function is called at the very end of Spacemacs initialization."
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
-   (quote
-    (dumb-jump doom-modeline ivy zeal-at-point youdao-dictionary yatemplate yasnippet-snippets yaml-mode xterm-color ws-butler writeroom-mode winum which-key wgrep web-mode web-beautify wakatime-mode volatile-highlights vmd-mode vi-tilde-fringe uuidgen use-package toc-org tide tagedit symon string-inflection spaceline-all-the-icons smex smeargle slim-mode shrink-path shell-pop scss-mode sass-mode rjsx-mode reveal-in-osx-finder restart-emacs request rainbow-mode rainbow-identifiers rainbow-delimiters pyim pug-mode prodigy prettier-js popwin persp-mode pdf-tools pcre2el password-generator paradox pangu-spacing ox-twbs ox-reveal ox-hugo ox-gfm overseer osx-trash osx-dictionary orgit org-projectile org-present org-pomodoro org-mime org-journal org-download org-bullets org-brain open-junk-file ob-restclient ob-http nov nix-sandbox nix-mode neotree nameless multi-term mu4e-maildirs-extension mu4e-alert move-text molokai-theme mmm-mode markdown-toc magithub magit-svn magit-gitflow magit-gh-pulls macrostep lorem-ipsum livid-mode link-hint launchctl json-navigator js2-refactor js-doc ivy-yasnippet ivy-xref ivy-purpose ivy-hydra intero indent-guide impatient-mode hungry-delete hlint-refactor hl-todo hindent highlight-parentheses highlight-numbers highlight-indentation helm-make haskell-snippets google-translate golden-ratio gnuplot gmail-message-mode gitignore-templates gitignore-mode github-search github-clone gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link git-gutter-fringe git-gutter-fringe+ gist gh-md ggtags fuzzy font-lock+ flyspell-correct-ivy flymd flycheck-pos-tip flycheck-haskell flx-ido find-by-pinyin-dired fill-column-indicator fcitx fancy-battery eyebrowse expand-region evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-org evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-magit evil-lisp-state evil-lion evil-indent-plus evil-iedit-state evil-goggles evil-exchange evil-ediff evil-cleverparens evil-args evil-anzu eval-sexp-fu eshell-z eshell-prompt-extras esh-help emmet-mode elisp-slime-nav eldoc-eval editorconfig edit-server dotenv-mode dockerfile-mode docker diminish diff-hl counsel-projectile counsel-gtags counsel-dash counsel-css company-web company-tern company-statistics company-restclient company-quickhelp company-nixos-options company-cabal column-enforce-mode color-identifiers-mode cmm-mode clean-aindent-mode chinese-conv centered-cursor-mode browse-at-remote auto-yasnippet auto-highlight-symbol auto-dictionary auto-compile aggressive-indent ace-window ace-pinyin ace-link ac-ispell))))
+   '(intero youdao-dictionary yatemplate yasnippet-snippets yaml-mode xterm-color ws-butler writeroom-mode winum which-key wgrep web-mode web-beautify wakatime-mode volatile-highlights vmd-mode vi-tilde-fringe uuidgen use-package toc-org tide tagedit symon string-inflection spaceline-all-the-icons smex smeargle slim-mode shell-pop scss-mode sass-mode rjsx-mode reveal-in-osx-finder restart-emacs request rainbow-mode rainbow-identifiers rainbow-delimiters pyim pug-mode prodigy prettier-js popwin persp-mode pdf-tools pcre2el password-generator paradox pangu-spacing ox-reveal overseer osx-trash osx-dictionary orgit org-projectile org-present org-pomodoro org-mime org-journal org-download org-bullets org-brain open-junk-file ob-restclient ob-http nov nix-sandbox nix-mode neotree nameless multi-term mu4e-maildirs-extension mu4e-alert move-text molokai-theme mmm-mode markdown-toc magithub magit-svn magit-gitflow magit-gh-pulls macrostep lsp-haskell lorem-ipsum livid-mode link-hint launchctl json-navigator js2-refactor js-doc ivy-yasnippet ivy-xref ivy-purpose ivy-hydra indent-guide impatient-mode hungry-delete hlint-refactor hl-todo hindent highlight-parentheses highlight-numbers highlight-indentation helm-make haskell-snippets google-translate golden-ratio gnuplot gmail-message-mode gitignore-templates gitignore-mode github-search github-clone gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link git-gutter-fringe git-gutter-fringe+ gist gh-md ggtags fuzzy font-lock+ flyspell-correct-ivy flymd flycheck-pos-tip flycheck-haskell flx-ido find-by-pinyin-dired fill-column-indicator fcitx fancy-battery eyebrowse expand-region evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-org evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-magit evil-lisp-state evil-lion evil-indent-plus evil-iedit-state evil-goggles evil-exchange evil-ediff evil-cleverparens evil-args evil-anzu eval-sexp-fu eshell-z eshell-prompt-extras esh-help emmet-mode elisp-slime-nav editorconfig edit-server dumb-jump dotenv-mode doom-modeline dockerfile-mode docker diminish diff-hl dash-at-point counsel-projectile counsel-gtags counsel-dash counsel-css company-web company-tern company-statistics company-restclient company-quickhelp company-nixos-options company-ghci company-cabal column-enforce-mode color-identifiers-mode cmm-mode clean-aindent-mode chinese-conv centered-cursor-mode browse-at-remote auto-yasnippet auto-highlight-symbol auto-dictionary auto-compile aggressive-indent ace-window ace-pinyin ace-link ac-ispell))
+ '(safe-local-variable-values
+   '((haskell-completion-backend . ghci)
+     (typescript-backend . tide)
+     (typescript-backend . lsp)
+     (javascript-backend . tern)
+     (javascript-backend . lsp))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.

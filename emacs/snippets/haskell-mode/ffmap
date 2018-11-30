@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: compose 2 map
+# key: ffmap
+# --
+(fmap . fmap) ($1) $0
