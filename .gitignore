@@ -5,6 +5,7 @@ undo/
 *undo-tree*
 node_modules/
 .DS_Store
-config/.config/chromium/
+config/.config/*
+!config/.config/nvim
 tmux/.tmux/*
 !tmux/.tmux/plugins/tmp

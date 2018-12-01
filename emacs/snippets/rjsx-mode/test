@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# contributor: freeman
+# name: test
+# key: fffk
+# --
+    $1_total = get_total("$1_values");

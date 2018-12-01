@@ -10,13 +10,12 @@ else [[ "$OSTYPE" == "darwin"* ]];
     export GOPATH=$HOME/go
     export SCALA_HOME=/usr/local/opt/scala/idea
     export JDK_HOME="$(/usr/libexec/java_home)"
+    export PATH=/usr/local/sbin:$PATH
+    export PATH=/usr/local/bin:$PATH
 fi
 
-export PATH=/usr/local/bin:$PATH
-export PATH=/usr/local/sbin:$PATH
-export PATH=~/.local/bin/:$PATH
-export PATH=~/.yarn/bin/:$PATH
-export PATH=$PATH:$GOROOT/bin:$GOPATH/bin
+export PATH=$HOME/.local/bin/:$PATH
+export PATH=$HOME/.yarn/bin/:$PATH
 
 export GTAGSLABEL=pygments
 

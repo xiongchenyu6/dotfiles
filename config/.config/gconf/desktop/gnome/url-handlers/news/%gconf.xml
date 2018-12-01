@@ -1,8 +1,0 @@
-<?xml version="1.0"?>
-<gconf>
-	<entry name="needs_terminal" mtime="1543549959" type="bool" value="false"/>
-	<entry name="enabled" mtime="1543549959" type="bool" value="true"/>
-	<entry name="command" mtime="1543549959" type="string">
-		<stringvalue>/usr/lib/thunderbird/thunderbird %s</stringvalue>
-	</entry>
-</gconf>

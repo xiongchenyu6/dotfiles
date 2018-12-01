@@ -46,7 +46,9 @@
                       auto-completion-complete-with-key-sequence-delay 0.0
                       auto-completion-idle-delay 0.0
                       auto-completion-enable-snippets-in-popup t
-                      auto-completion-enable-help-tooltip t)
+                      auto-completion-enable-help-tooltip t
+                      auto-completion-private-snippets-directory "~/snippets"
+                      )
      (syntax-checking :variables syntax-checking-enable-by-default t)
      (wakatime :variables wakatime-api-key "06fb08d0-68a4-4b39-bbb0-d34d325dc046"
                ;; use the actual wakatime path
@@ -70,7 +72,9 @@
      nixos
      )
    dotspacemacs-additional-packages
-   '(nix-sandbox)
+   '(nix-sandbox
+     exec-path-from-shell
+     )
    dotspacemacs-frozen-packages
    '()
    dotspacemacs-excluded-packages
@@ -90,35 +94,36 @@
    dotspacemacs-verbose-loading nil
    dotspacemacs-startup-banner nil
    dotspacemacs-startup-lists '((recents . 3)(projects . 3))
-   dotspacemacs-startup-buffer-responsive nil
+   dotspacemacs-startup-buffer-responsive t
    dotspacemacs-scratch-mode 'text-mode
    dotspacemacs-themes '(spacemacs-dark
                          molokai)
    dotspacemacs-colorize-cursor-according-to-state t
    dotspacemacs-default-font '(
-                               "Source Code Pro" :size 14
+                               "Source Code Pro" :size 12
                                ;; "InconsolataForPowerline Nerd Font" :size 14
                                :weight normal
                                :width normal
                                :powerline-scale 1.1)
+   dotspacemacs-mode-line-theme '(spacemacs :separator wave :separator-scale 2)
    dotspacemacs-leader-key "SPC"
    dotspacemacs-emacs-command-key "SPC"
    dotspacemacs-ex-command-key ":"
    dotspacemacs-emacs-leader-key "M-m"
    dotspacemacs-major-mode-leader-key ","
    dotspacemacs-major-mode-emacs-leader-key "C-M-m"
-   dotspacemacs-distinguish-gui-tab nil
+   dotspacemacs-distinguish-gui-tab t
    dotspacemacs-remap-Y-to-y$ nil
    dotspacemacs-retain-visual-state-on-shift t
    dotspacemacs-visual-line-move-text nil
    dotspacemacs-ex-substitute-global nil
    dotspacemacs-default-layout-name "Bitmain"
    dotspacemacs-display-default-layout t
-   dotspacemacs-auto-resume-layouts nil
+   dotspacemacs-auto-resume-layouts t
    dotspacemacs-large-file-size 0.5
    dotspacemacs-auto-save-file-location 'original
    dotspacemacs-max-rollback-slots 5
-   dotspacemacs-helm-resize t
+   dotspacemacs-helm-resize nil
    dotspacemacs-helm-no-header nil
    dotspacemacs-helm-position 'bottom
    dotspacemacs-helm-use-fuzzy 'always
@@ -137,18 +142,26 @@
    dotspacemacs-mode-line-theme 'spacemacs
    dotspacemacs-smooth-scrolling t
    dotspacemacs-line-numbers '(:relative t :disabled-for-modes dired-mode
-                                         doc-view-mode markdown-mode org-mode pdf-view-mode
+                                         doc-view-mode markdown-mode pdf-view-mode
                                          text-mode :size-limit-kb 100)
    dotspacemacs-folding-method 'evil
    dotspacemacs-smartparens-strict-mode nil
-   dotspacemacs-smart-closing-parenthesis nil
+   dotspacemacs-smart-closing-parenthesis t
    dotspacemacs-highlight-delimiters 'all
    dotspacemacs-persistent-server t
    dotspacemacs-search-tools '("pt" "grep")
    dotspacemacs-default-package-repository nil
    dotspacemacs-whitespace-cleanup 'trailing))
-(defun dotspacemacs/user-init ())
+(defun dotspacemacs/user-init ()
+  (if (eq system-type 'gnu/linux)
+      (setq-default dotspacemacs-default-font '("Source Code Pro"
+                                                :size 23
+                                                :weight normal
+                                                :width normal
+                                                :powerline-scale 100)))
+  )
 (defun dotspacemacs/user-config ()
+  (exec-path-from-shell-initialize)
   ;; Configure flycheck to use Nix
   ;; https://github.com/travisbhartwell/nix-emacs#flycheck
   ;; Requires `nix-sandbox` package added to dotspacemacs-additional-packages
@@ -357,13 +370,8 @@ This function is called at the very end of Spacemacs initialization."
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
-   '(intero youdao-dictionary yatemplate yasnippet-snippets yaml-mode xterm-color ws-butler writeroom-mode winum which-key wgrep web-mode web-beautify wakatime-mode volatile-highlights vmd-mode vi-tilde-fringe uuidgen use-package toc-org tide tagedit symon string-inflection spaceline-all-the-icons smex smeargle slim-mode shell-pop scss-mode sass-mode rjsx-mode reveal-in-osx-finder restart-emacs request rainbow-mode rainbow-identifiers rainbow-delimiters pyim pug-mode prodigy prettier-js popwin persp-mode pdf-tools pcre2el password-generator paradox pangu-spacing ox-reveal overseer osx-trash osx-dictionary orgit org-projectile org-present org-pomodoro org-mime org-journal org-download org-bullets org-brain open-junk-file ob-restclient ob-http nov nix-sandbox nix-mode neotree nameless multi-term mu4e-maildirs-extension mu4e-alert move-text molokai-theme mmm-mode markdown-toc magithub magit-svn magit-gitflow magit-gh-pulls macrostep lsp-haskell lorem-ipsum livid-mode link-hint launchctl json-navigator js2-refactor js-doc ivy-yasnippet ivy-xref ivy-purpose ivy-hydra indent-guide impatient-mode hungry-delete hlint-refactor hl-todo hindent highlight-parentheses highlight-numbers highlight-indentation helm-make haskell-snippets google-translate golden-ratio gnuplot gmail-message-mode gitignore-templates gitignore-mode github-search github-clone gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link git-gutter-fringe git-gutter-fringe+ gist gh-md ggtags fuzzy font-lock+ flyspell-correct-ivy flymd flycheck-pos-tip flycheck-haskell flx-ido find-by-pinyin-dired fill-column-indicator fcitx fancy-battery eyebrowse expand-region evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-org evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-magit evil-lisp-state evil-lion evil-indent-plus evil-iedit-state evil-goggles evil-exchange evil-ediff evil-cleverparens evil-args evil-anzu eval-sexp-fu eshell-z eshell-prompt-extras esh-help emmet-mode elisp-slime-nav editorconfig edit-server dumb-jump dotenv-mode doom-modeline dockerfile-mode docker diminish diff-hl dash-at-point counsel-projectile counsel-gtags counsel-dash counsel-css company-web company-tern company-statistics company-restclient company-quickhelp company-nixos-options company-ghci company-cabal column-enforce-mode color-identifiers-mode cmm-mode clean-aindent-mode chinese-conv centered-cursor-mode browse-at-remote auto-yasnippet auto-highlight-symbol auto-dictionary auto-compile aggressive-indent ace-window ace-pinyin ace-link ac-ispell))
- '(safe-local-variable-values
-   '((haskell-completion-backend . ghci)
-     (typescript-backend . tide)
-     (typescript-backend . lsp)
-     (javascript-backend . tern)
-     (javascript-backend . lsp))))
+   (quote
+    (exec-path-from-shell zeal-at-point youdao-dictionary yatemplate yasnippet-snippets yaml-mode xterm-color ws-butler writeroom-mode winum which-key web-mode web-beautify wakatime-mode volatile-highlights vmd-mode vi-tilde-fringe uuidgen use-package toc-org tide tagedit symon string-inflection spaceline-all-the-icons smeargle slim-mode shell-pop scss-mode sass-mode rjsx-mode reveal-in-osx-finder restclient-helm restart-emacs rainbow-mode rainbow-identifiers rainbow-delimiters pyim pug-mode prodigy prettier-js popwin persp-mode pdf-tools pcre2el password-generator paradox pangu-spacing ox-reveal overseer osx-trash osx-dictionary orgit org-projectile org-present org-pomodoro org-mime org-journal org-download org-bullets org-brain open-junk-file ob-restclient ob-http nov nix-sandbox nix-mode neotree nameless multi-term mu4e-maildirs-extension mu4e-alert move-text molokai-theme mmm-mode markdown-toc magithub magit-svn magit-gitflow magit-gh-pulls macrostep lorem-ipsum livid-mode link-hint launchctl json-navigator js2-refactor js-doc intero indent-guide impatient-mode hungry-delete hlint-refactor hl-todo hindent highlight-parentheses highlight-numbers highlight-indentation helm-xref helm-themes helm-swoop helm-purpose helm-projectile helm-org-rifle helm-nixos-options helm-mu helm-mode-manager helm-make helm-hoogle helm-gtags helm-gitignore helm-git-grep helm-flx helm-descbinds helm-dash helm-css-scss helm-company helm-c-yasnippet helm-ag haskell-snippets google-translate golden-ratio gnuplot gmail-message-mode gitignore-templates github-search github-clone gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link git-gutter-fringe git-gutter-fringe+ gist gh-md ggtags fuzzy font-lock+ flyspell-correct-helm flymd flycheck-pos-tip flycheck-haskell flx-ido find-by-pinyin-dired fill-column-indicator fcitx fancy-battery eyebrowse expand-region evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-org evil-numbers evil-nerd-commenter evil-matchit evil-magit evil-lisp-state evil-lion evil-indent-plus evil-iedit-state evil-goggles evil-exchange evil-ediff evil-cleverparens evil-args evil-anzu eval-sexp-fu eshell-z eshell-prompt-extras esh-help emmet-mode elisp-slime-nav editorconfig edit-server dumb-jump dotenv-mode doom-modeline dockerfile-mode docker diminish diff-hl counsel-projectile company-web company-tern company-statistics company-restclient company-quickhelp company-nixos-options company-cabal column-enforce-mode color-identifiers-mode cmm-mode clean-aindent-mode chinese-conv centered-cursor-mode browse-at-remote auto-yasnippet auto-highlight-symbol auto-dictionary auto-compile aggressive-indent ace-window ace-pinyin ace-link ace-jump-helm-line ac-ispell))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
