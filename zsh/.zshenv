@@ -1,7 +1,6 @@
 if [[ "$OSTYPE" == "linux-gnu" ]]; then
-    export JAVA_HOME='/usr/lib/jvm/java-11-openjdk'
+    export JAVA_HOME='/usr/lib/jvm/java-8-openjdk'
     export ANDROID_HOME='/opt/android-sdk'
-    export JAVA_OPTS='--add-modules java.se'
     # ...
 else [[ "$OSTYPE" == "darwin"* ]];
     # Mac OSX
@@ -16,6 +15,7 @@ fi
 
 export PATH=$HOME/.local/bin/:$PATH
 export PATH=$HOME/.yarn/bin/:$PATH
+export PATH=$HOME/.nix-profile/bin/:$PATH
 
 export GTAGSLABEL=pygments
 
@@ -62,11 +62,13 @@ alias git=hub
 alias yolo='git commit -m "$(curl -s whatthecommit.com/index.txt)"'
 alias ef='f -e emacsclient -n'
 alias ensime="gtags & sbt clean ensimeConfig test:compile ensimeServerIndex"
-
+export NIX_PATH=$NIX_PATH:$HOME/.nix-defexpr/channels
 export SBT_OPTS="-Xmx8G"
-export EDITOR="emacs"
+export EDITOR="emacsclient"
 
 export PKG_CONFIG_PATH="/usr/local/opt/libxml2/lib/pkgconfig"
+
+export NODE_PATH=$HOME/.config/yarn/global/node_modules
 
 setopt BANG_HIST                 # Treat the '!' character specially during expansion.
 setopt EXTENDED_HISTORY          # Write the history file in the ":start:elapsed;command" format.

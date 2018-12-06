@@ -41,3 +41,10 @@ if [[ -z "$TMUX" ]] ;then
         tmux attach-session -t "$ID" # if available attach to it
     fi
 fi
+
+# tabtab source for serverless package
+# uninstall by removing these lines or running `tabtab uninstall serverless`
+[[ -f /home/chenyu/.config/yarn/global/node_modules/tabtab/.completions/serverless.zsh ]] && . /home/chenyu/.config/yarn/global/node_modules/tabtab/.completions/serverless.zsh
+# tabtab source for sls package
+# uninstall by removing these lines or running `tabtab uninstall sls`
+[[ -f /home/chenyu/.config/yarn/global/node_modules/tabtab/.completions/sls.zsh ]] && . /home/chenyu/.config/yarn/global/node_modules/tabtab/.completions/sls.zsh

@@ -1,31 +1,4 @@
 ########################################
-# Office
-########################################
-
-IMAPAccount office
-Host outlook.office365.com 
-User cxiong001@e.ntu.edu.sg
-PassCmd "gpg -q --pinentry-mode loopback --for-your-eyes-only --no-tty -d ~/.password/office.gpg"
-AuthMechs LOGIN
-SSLType IMAPS
-
-IMAPStore office-remote
-Account office
-
-MaildirStore office-local
-Path ~/maildir/office/
-Inbox ~/maildir/office/inbox
-SubFolders Legacy
-
-Channel office
-Master :office-remote:
-Slave :office-local:
-Create Both
-Expunge Both
-SyncState *
-Patterns *
-
-########################################
 # Gmail
 ########################################
 

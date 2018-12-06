@@ -9,7 +9,6 @@ import           XMonad.Actions.Volume
 import           XMonad.Config.Desktop
 import           XMonad.Hooks.DynamicLog
 import           XMonad.Hooks.EwmhDesktops
-import           XMonad.Hooks.FadeWindows
 import           XMonad.Hooks.ManageDocks
 import           XMonad.Hooks.SetWMName
 import           XMonad.Prompt
@@ -24,25 +23,23 @@ myTerminal = "xterm"
 
 myWorkplace = ["term","edit","web","chat","email","6:tmp"] ++ (show <$> [7..9])
 
-myFadeHook :: Query Opacity
-myFadeHook = composeAll [isUnfocused --> transparency 1, opaque]
-
 myManageHook = composeAll [
     className =? "Xterm"        --> doShift "term"
   , className =? "Urxvt"        --> doShift "term"
   , className =? "Emacs"        --> doShift "edit"
   , className =? "Emacsclient"  --> doShift "edit"
   , className =? "Chromium"     --> doShift "web"
-  , className =? "Thunderbird"     --> doShift "web"
+  , className =? "Thunderbird"  --> doShift "email"
   , className =? "stalonetray"  --> doIgnore
   ]
 
 myStartupHook = do
     setWMName "LG3D"
+    spawnOnce "stalonetray"
     spawnOnce "xterm"
     spawnOnce "emacs"
     spawnOnce "chromium"
-    spawnOnce "thurderbird"
+    spawnOnce "thunderbird"
     spawnOnce "~/.screenlayout/default.sh"
 
 modm = mod4Mask
@@ -60,7 +57,6 @@ main = do
               { ppOutput = hPutStrLn xmproc
               , ppTitle  = xmobarColor "green" "" . shorten 60
               }
-            fadeWindowsLogHook myFadeHook
         , handleEventHook = ewmhDesktopsEventHook
         , startupHook     = myStartupHook
         , modMask         = modm     -- Rebind Mod to the Windows key
@@ -73,8 +69,8 @@ customerKeyMaps = [
         , ((0, xF86XK_AudioLowerVolume), void $ lowerVolume 5 )
         -- Increase volume.
         , ((0, xF86XK_AudioRaiseVolume), void $ raiseVolume 5  )
-        , ((0, xF86XK_MonBrightnessUp), spawn "xbacklight -inc 10" )
-        , ((0, xF86XK_MonBrightnessDown), spawn "xbacklight -dec 10" )
+        -- , ((0, xF86XK_MonBrightnessUp), spawn "xbacklight -inc 10" )
+        -- , ((0, xF86XK_MonBrightnessDown), spawn "xbacklight -dec 10" )
         , ((mod4Mask .|. shiftMask, xK_a), spawn "sleep 0.2; scrot -s '/tmp/%F_%T_$wx$h.png' -e 'xclip -selection clipboard -target image/png -i $f'")
         , ((mod4Mask .|. shiftMask, xK_p), spawn "passmenu")
         , ((mod4Mask, xK_m), manPrompt popupConfig)
