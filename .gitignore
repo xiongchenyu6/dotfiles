@@ -6,6 +6,7 @@ undo/
 node_modules/
 .DS_Store
 config/.config/*
+clojure/.clojure/.cpcache
 !config/.config/nvim
 tmux/.tmux/*
 !tmux/.tmux/plugins/tmp
