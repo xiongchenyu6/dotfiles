@@ -8,7 +8,7 @@
  signingkey = FEB33C147207641D
 [core]
  excludesfile = ~/.global_ignore
- editor = vim
+ editor = nvim
  autocrlf = input
 [credential]
  helper = cache --timeout=3600

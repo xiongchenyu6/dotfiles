@@ -8,11 +8,11 @@
    dotspacemacs-configuration-layers
    '(clojure
      chrome
+     bm
      (purescript :variables
                  purescript-enable-rebuild-on-save t)
      react
      typescript
-     proditgy
      docker
      git
      github
@@ -44,15 +44,7 @@
                       auto-completion-tab-key-behavior nil
                       auto-completion-return-key-behavior 'complete
                       auto-completion-complete-with-key-sequence-delay 0.0
-                      auto-completion-idle-delay 0.0
-                      auto-completion-enable-snippets-in-popup t
-                      auto-completion-enable-help-tooltip t
-                      auto-completion-private-snippets-directory "~/snippets"
-                      )
-     (syntax-checking :variables syntax-checking-enable-by-default t)
-     (wakatime :variables wakatime-api-key "06fb08d0-68a4-4b39-bbb0-d34d325dc046"
-               ;; use the actual wakatime path
-               wakatime-cli-path "wakatime")
+                      auto)
      (org :variables
           org-enable-reveal-js-support t
           org-enable-org-journal-support t
@@ -93,7 +85,7 @@
                                        hybrid-mode-default-state 'normal)
    dotspacemacs-verbose-loading nil
    dotspacemacs-startup-banner nil
-   dotspacemacs-startup-lists '((recents . 3)(projects . 3))
+   dotspacemacs-startup-lists '((recents . 5)(projects . 7))
    dotspacemacs-startup-buffer-responsive t
    dotspacemacs-scratch-mode 'text-mode
    dotspacemacs-themes '(spacemacs-dark
@@ -115,6 +107,7 @@
    dotspacemacs-distinguish-gui-tab t
    dotspacemacs-remap-Y-to-y$ nil
    dotspacemacs-retain-visual-state-on-shift t
+   dotspacemacs-enable-emacs-pdumper t
    dotspacemacs-visual-line-move-text nil
    dotspacemacs-ex-substitute-global nil
    dotspacemacs-default-layout-name "Bitmain"
@@ -124,7 +117,7 @@
    dotspacemacs-auto-save-file-location 'original
    dotspacemacs-max-rollback-slots 5
    dotspacemacs-helm-resize nil
-   dotspacemacs-helm-no-header nil
+   dotspacemacs-helm-no-header t
    dotspacemacs-helm-position 'bottom
    dotspacemacs-helm-use-fuzzy 'always
    dotspacemacs-enable-paste-transient-state nil
@@ -148,6 +141,7 @@
    dotspacemacs-smartparens-strict-mode t
    dotspacemacs-smart-closing-parenthesis t
    dotspacemacs-highlight-delimiters 'all
+   dotspacemacs-enable-server t
    dotspacemacs-persistent-server t
    dotspacemacs-search-tools '("pt" "grep")
    dotspacemacs-default-package-repository nil
@@ -187,47 +181,29 @@
 (setq haskell-hoogle-command nil)
 (auto-save-visited-mode 1)
 (setq auto-save-visited-interval 1)
-(with-eval-after-load "haskell-mode"
-  ;; This changes the evil "O" and "o" keys for haskell-mode to make sure that
-  ;; indentation is done correctly. See
-  ;; https://github.com/haskell/haskell-mode/issues/1265#issuecomment-252492026.
-  (defun haskell-evil-open-above ()
-    (interactive)
-    (evil-digit-argument-or-evil-beginning-of-line)
-    (haskell-indentation-newline-and-indent)
-    (evil-previous-line)
-    (haskell-indentation-indent-line)
-    (evil-append-line nil))
 
-  (defun haskell-evil-open-below ()
-    (interactive)
-    (evil-append-line nil)
-    (haskell-indentation-newline-and-indent))
-
-  (evil-define-key 'normal haskell-mode-map
-    "o" 'haskell-evil-open-below
-    "O" 'haskell-evil-open-above)
+(defmacro indentation-fix (m-name indent-function)
+  `(with-eval-after-load ,(seq-concatenate 'string m-name "-mode")
+     (defun ,(intern (seq-concatenate 'string m-name "-evil-open-above")) ()
+       (interactive)
+       (evil-digit-argument-or-evil-beginning-of-line)
+       ,(list indent-function)
+       (evil-previous-line)
+       ( ,(intern (seq-concatenate 'string m-name "-indentation-indent-line")) )
+       (evil-append-line nil))
+     (defun ,(intern (seq-concatenate 'string m-name "-evil-open-below")) ()
+       (interactive)
+       (evil-append-line nil)
+       ,(list indent-function)
+       )
+     (evil-define-key 'normal haskell-mode-map
+       "o" ',(intern (seq-concatenate 'string m-name "-evil-open-below"))
+       "O" ',(intern (seq-concatenate 'string m-name "-evil-open-above")))
+     )
   )
 
-(with-eval-after-load "purescript-mode"
-  (defun purescript-evil-open-above ()
-    (interactive)
-    (evil-digit-argument-or-evil-beginning-of-line)
-    (purescript-newline-and-indent)
-    (evil-previous-line)
-    (purescript-indentation-indent-line)
-    (evil-append-line nil))
-
-  (defun purescript-evil-open-below ()
-    (interactive)
-    (evil-append-line nil)
-    (purescript-newline-and-indent))
-
-  (evil-define-key 'normal purescript-mode-map
-    "o" 'purescript-evil-open-below
-    "O" 'purescript-evil-open-above)
-  )
-
+(indentation-fix "haskell" haskell-indentation-newline-and-indent)
+(indentation-fix "purescript" purescript-newline-and-indent)
 ;; use local eslint from node_modules before global
 ;; http://emacs.stackexchange.com/questions/21205/flycheck-with-file-relative-eslint-executable
 (defun my/use-eslint-from-node-modules ()
@@ -391,8 +367,13 @@ This function is called at the very end of Spacemacs initialization."
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
-   (quote
-    (doom-modeline counsel company evil zeal-at-point youdao-dictionary yatemplate yasnippet-snippets yaml-mode xterm-color ws-butler writeroom-mode winum which-key web-mode web-beautify wakatime-mode volatile-highlights vmd-mode vi-tilde-fringe uuidgen use-package undo-tree toc-org tide tagedit symon swiper string-inflection spaceline-all-the-icons smeargle slim-mode shrink-path shell-pop scss-mode sass-mode rjsx-mode reveal-in-osx-finder restclient-helm restart-emacs rainbow-delimiters pyim pug-mode psci psc-ide prettier-js popwin persp-mode pdf-tools pcre2el password-generator paradox pangu-spacing ox-reveal overseer osx-trash osx-dictionary orgit org-projectile org-present org-pomodoro org-mime org-journal org-download org-bullets org-brain open-junk-file ob-restclient ob-http nov nix-sandbox nix-mode neotree nameless multi-term mu4e-maildirs-extension mu4e-alert move-text molokai-theme mmm-mode markdown-toc magithub magit-svn magit-gitflow magit-gh-pulls macrostep lorem-ipsum livid-mode link-hint launchctl json-navigator js2-refactor js-doc intero indent-guide impatient-mode hungry-delete hlint-refactor hl-todo hindent highlight-parentheses highlight-numbers highlight-indentation helm-xref helm-themes helm-swoop helm-purpose helm-projectile helm-org-rifle helm-nixos-options helm-mu helm-mode-manager helm-make helm-hoogle helm-gtags helm-gitignore helm-git-grep helm-flx helm-descbinds helm-dash helm-css-scss helm-company helm-c-yasnippet helm-ag haskell-snippets goto-chg google-translate golden-ratio gnuplot gmail-message-mode gitignore-templates github-search github-clone gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link git-gutter-fringe git-gutter-fringe+ gist gh-md ggtags fuzzy font-lock+ flyspell-correct-helm flymd flycheck-pos-tip flycheck-haskell flx-ido find-by-pinyin-dired fill-column-indicator fcitx fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-org evil-numbers evil-nerd-commenter evil-matchit evil-magit evil-lisp-state evil-lion evil-indent-plus evil-iedit-state evil-goggles evil-exchange evil-ediff evil-cleverparens evil-args evil-anzu eshell-z eshell-prompt-extras esh-help emmet-mode elisp-slime-nav eldoc-eval editorconfig edit-server dumb-jump dotenv-mode dockerfile-mode docker diminish diff-hl counsel-projectile company-web company-tern company-statistics company-restclient company-quickhelp company-nixos-options company-cabal column-enforce-mode cmm-mode clojure-snippets clojure-cheatsheet clean-aindent-mode cider-eval-sexp-fu chinese-conv centered-cursor-mode browse-at-remote auto-yasnippet auto-highlight-symbol auto-dictionary auto-compile aggressive-indent ace-window ace-pinyin ace-link ace-jump-helm-line ac-ispell))))
+   '(doom-modeline cider magit zeal-at-point youdao-dictionary yatemplate yasnippet-snippets yaml-mode xterm-color ws-butler writeroom-mode winum which-key web-mode web-beautify volatile-highlights vmd-mode vi-tilde-fringe uuidgen use-package toc-org tide tagedit symon string-inflection spaceline-all-the-icons smeargle slim-mode shrink-path shell-pop sesman scss-mode sass-mode rjsx-mode reveal-in-osx-finder restclient-helm restart-emacs rainbow-delimiters queue pyim pug-mode psci psc-ide prettier-js popwin persp-mode pdf-tools pcre2el password-generator paradox pangu-spacing ox-reveal overseer osx-trash osx-dictionary orgit org-projectile org-present org-pomodoro org-mime org-journal org-download org-bullets org-brain open-junk-file ob-restclient ob-http nov nix-sandbox nix-mode neotree nameless multi-term mu4e-maildirs-extension mu4e-alert move-text molokai-theme mmm-mode markdown-toc magithub magit-svn magit-gitflow magit-gh-pulls macrostep lorem-ipsum livid-mode link-hint launchctl json-navigator js2-refactor js-doc intero indent-guide impatient-mode hungry-delete hlint-refactor hl-todo hindent highlight-parentheses highlight-numbers highlight-indentation helm-xref helm-themes helm-swoop helm-purpose helm-projectile helm-org-rifle helm-nixos-options helm-mu helm-mode-manager helm-make helm-hoogle helm-gtags helm-gitignore helm-git-grep helm-flx helm-descbinds helm-dash helm-css-scss helm-company helm-c-yasnippet helm-ag haskell-snippets google-translate golden-ratio gnuplot gmail-message-mode gitignore-templates github-search github-clone gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link git-gutter-fringe git-gutter-fringe+ gist gh-md ggtags fuzzy font-lock+ flyspell-correct-helm flymd flx-ido find-by-pinyin-dired fill-column-indicator fcitx fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-org evil-numbers evil-nerd-commenter evil-matchit evil-magit evil-lisp-state evil-lion evil-indent-plus evil-iedit-state evil-goggles evil-exchange evil-ediff evil-cleverparens evil-args evil-anzu eshell-z eshell-prompt-extras esh-help emmet-mode elisp-slime-nav eldoc-eval editorconfig edit-server dumb-jump dotenv-mode dockerfile-mode docker diminish diff-hl counsel-projectile company-web company-tern company-statistics company-restclient company-nixos-options company-cabal column-enforce-mode cmm-mode clojure-snippets clojure-mode clojure-cheatsheet clean-aindent-mode cider-eval-sexp-fu chinese-conv centered-cursor-mode browse-at-remote bm auto-yasnippet auto-highlight-symbol auto-dictionary auto-compile aggressive-indent ace-window ace-pinyin ace-link ace-jump-helm-line ac-ispell))
+ '(safe-local-variable-values
+   '((haskell-completion-backend . ghci)
+     (typescript-backend . tide)
+     (typescript-backend . lsp)
+     (javascript-backend . tern)
+     (javascript-backend . lsp))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
