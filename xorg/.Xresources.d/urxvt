@@ -2,9 +2,7 @@
 URxvt*termName:             rxvt-unicode-256color
 URxvt.perl-ext-common:      default,clipboard,matcher,font-size
 URxvt.scrollBar:            false
-URxvt.font:                 xft:Inconsolata Nerd Font:antialias=true\
-URxvt.font:                 xft:Sauce Code Pro Nerd Font Complete:antialias=true\
-                            -wuncon-siji-medium-r-normal--10-100-75-75-c-80-iso10646-1
+URxvt.font:                 xft:Source Code Pro:antialias=true,xft:Inconsolata Nerd Font Mono:style=Medium:antialias=true
 URxvt.url-launcher:         google-chrome-stable
 URxvt.underlineURLs:        true
 URxvt.clipboard.autocopy:   true
@@ -12,6 +10,7 @@ URxvt.saveLines:            16384
 URxvt.secondaryScroll:      true
 URxvt.iso14755: false
 URxvt.iso14755_52: false
+URxvt.imLocale: zh_CN.UTF-8
 
 ! Extension Settings: Font-size
 URxvt.font-size.step: 4
