@@ -14,10 +14,9 @@
                                    0.0 auto-completion-idle-delay 0.0 auto-completion-enable-snippets-in-popup
                                    t auto-completion-enable-help-tooltip t auto-completion-private-snippets-directory
                                    "~/.snippets") python
-                                   (clojure :variables
-                                            clojure-enable-fancify-symbols t
-                                            clojure-enable-sayid t
-                                            clojure-enable-clj-refactor t)
+                                   (clojure :variables clojure-enable-fancify-symbols
+                                            t clojure-enable-sayid t clojure-enable-clj-refactor
+                                            t)
                                    chrome
                                    (chinese :variables chinese-enable-fcitx
                                             t chinese-enable-youdao-dict t)
@@ -31,7 +30,7 @@
                                    (gtags :variables gtags-enable-by-default
                                           t)
                                    (haskell :variables haskell-completion-backend'intero)
-                                   (html :variables web-fmt-tool 'prettier)
+                                   (html :variables web-fmt-tool'prettier)
                                    (javascript :variables javascript-disable-tern-port-files
                                                t)
                                    (markdown :variables markdown-live-preview-engine'vmd)
@@ -40,9 +39,9 @@
                                          t mu4e-enable-notifications t)
                                    nixos
                                    osx
-                                   (org :variables org-enable-reveal-js-support
-                                        t org-enable-org-journal-support t org-projectile-file
-                                        "~/Dropbox/Org/Projects.org")
+                                   (org :variables org-want-todo-bindings
+                                        t org-enable-reveal-js-support t org-enable-org-journal-support
+                                        t org-projectile-file "~/Dropbox/Org/Projects.org")
                                    pdf
                                    (purescript :variables purescript-enable-rebuild-on-save
                                                t)
@@ -52,20 +51,22 @@
                                    semantic
                                    (shell :variables shell-default-shell'eshell
                                           shell-enable-smart-eshell t)
-                                   (spell-checking :variables spell-checking-enable-by-default
-                                                   t enable-flyspell-auto-completion nil)
+                                   (spell-checking :variables spell-checking-enable-auto-dictionary
+                                                   nil enable-flyspell-auto-completion t)
                                    (syntax-checking :variables syntax-checking-enable-by-default
                                                     nil syntax-checking-enable-tooltips t)
                                    (templates :variables templates-private-directory
                                               "~/.templates")
-                                   (typescript :variables
-                                               typescript-fmt-on-save t)
+                                   (typescript :variables typescript-fmt-on-save
+                                               t)
                                    ;; rust
                                    ;; plantuml
                                    ;; (scala :variables
                                    ;;        scala-use-unicode-arrows t)
                                    ;; go
                                    version-control
+                                   vimscrip
+t
                                    yaml)
                 dotspacemacs-additional-packages
                 '(nix-sandbox exec-path-from-shell)
@@ -199,7 +200,9 @@
                 dotspacemacs-default-package-repository
                 nil
                 dotspacemacs-whitespace-cleanup
-                'trailing))
+                'trailing
+                dotspacemacs-pretty-docs
+                t))
 (defun dotspacemacs/user-init ()
   (if (eq system-type 'gnu/linux)
       (setq-default dotspacemacs-default-font '("Source Code Pro" :size 25
@@ -384,7 +387,6 @@
     (org-babel-do-load-languages 'org-babel-load-languages
                                  '((js . t)
                                    (emacs-lisp . t)
-                                   (ditaa . t)
                                    (python . t)
                                    (plantuml . t)
                                    (gnuplot . t)
@@ -393,12 +395,11 @@
                                    (dot . t)))
     (add-to-list 'org-src-lang-modes
                  (quote ("plantuml" . fundamental))))
-  (setq org-ditaa-jar-path "/usr/local/Cellar/ditaa/0.11.0/libexec/ditaa-0.11.0-standalone.jar")
   (setq create-lockfiles nil)
   (setq edit-server-url-major-mode-alist '(("github\\.com" . org-mode)))
   (add-to-list 'load-path "~")
   (require 'tidal)
-  (setq browse-url-browser-function 'eww-browse-url))
+  )
 (defun dotspacemacs/emacs-custom-settings ()
   "Emacs custom settings.
 This is an auto-generated function, do not modify its content directly, use
@@ -410,7 +411,7 @@ This function is called at the very end of Spacemacs initialization."
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
-   '(sayid clj-refactor inflections edn peg zeal-at-point youdao-dictionary yatemplate yasnippet-snippets yapfify yaml-mode xterm-color ws-butler writeroom-mode winum which-key web-mode web-beautify volatile-highlights vmd-mode vi-tilde-fringe uuidgen use-package toc-org tide tagedit symon string-inflection stickyfunc-enhance srefactor spaceline-all-the-icons smeargle slim-mode shell-pop scss-mode sass-mode rjsx-mode reveal-in-osx-finder restclient-helm restart-emacs rainbow-delimiters pyvenv pytest pyim pyenv-mode py-isort pug-mode psci psc-ide prettier-js popwin pippel pipenv pip-requirements persp-mode pdf-tools pcre2el password-generator paradox pangu-spacing ox-reveal overseer osx-trash osx-dictionary orgit org-projectile org-present org-pomodoro org-mime org-journal org-download org-bullets org-brain open-junk-file ob-restclient ob-http nov nix-sandbox nix-mode neotree nameless multi-term mu4e-maildirs-extension mu4e-alert move-text molokai-theme mmm-mode markdown-toc magithub magit-svn magit-gitflow magit-gh-pulls macrostep lorem-ipsum livid-mode live-py-mode link-hint launchctl json-navigator js2-refactor js-doc intero indent-guide importmagic impatient-mode hungry-delete hlint-refactor hl-todo hindent highlight-parentheses highlight-numbers highlight-indentation helm-xref helm-themes helm-swoop helm-pydoc helm-purpose helm-projectile helm-org-rifle helm-nixos-options helm-mu helm-mode-manager helm-make helm-hoogle helm-gtags helm-gitignore helm-git-grep helm-flx helm-descbinds helm-dash helm-css-scss helm-company helm-c-yasnippet helm-ag haskell-snippets google-translate golden-ratio gnuplot gmail-message-mode gitignore-templates github-search github-clone gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link git-gutter-fringe git-gutter-fringe+ gist gh-md ggtags fuzzy font-lock+ flyspell-correct-helm flymd flycheck-pos-tip flycheck-haskell flx-ido find-by-pinyin-dired fill-column-indicator fcitx fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-org evil-numbers evil-nerd-commenter evil-matchit evil-magit evil-lisp-state evil-lion evil-indent-plus evil-iedit-state evil-goggles evil-exchange evil-ediff evil-cleverparens evil-args evil-anzu eshell-z eshell-prompt-extras esh-help emmet-mode elisp-slime-nav editorconfig edit-server dumb-jump dotenv-mode doom-modeline dockerfile-mode docker diminish diff-hl cython-mode counsel-projectile company-web company-tern company-statistics company-restclient company-quickhelp company-nixos-options company-cabal company-anaconda column-enforce-mode cmm-mode clojure-snippets clojure-cheatsheet clean-aindent-mode cider-eval-sexp-fu chinese-conv centered-cursor-mode browse-at-remote auto-yasnippet auto-highlight-symbol auto-dictionary auto-compile aggressive-indent ace-window ace-pinyin ace-link ace-jump-helm-line ac-ispell)))
+   '(pyvenv doom-modeline ace-window counsel ivy git-commit zeal-at-point youdao-dictionary yatemplate yasnippet-snippets yapfify yaml-mode xterm-color ws-butler writeroom-mode winum which-key web-mode web-beautify volatile-highlights vmd-mode vimrc-mode vi-tilde-fringe uuidgen use-package toc-org tide tagedit symon swiper string-inflection stickyfunc-enhance srefactor spaceline-all-the-icons smeargle slim-mode shrink-path shell-pop scss-mode sayid sass-mode rjsx-mode reveal-in-osx-finder restclient-helm restart-emacs rainbow-delimiters pytest pyim pyenv-mode py-isort pug-mode psci psc-ide prettier-js popwin pippel pipenv pip-requirements persp-mode pdf-tools pcre2el password-generator paradox pangu-spacing ox-reveal overseer osx-trash osx-dictionary orgit org-projectile org-present org-pomodoro org-mime org-journal org-download org-bullets org-brain open-junk-file ob-restclient ob-http nov nix-sandbox nix-mode neotree nameless multi-term mu4e-maildirs-extension mu4e-alert move-text molokai-theme mmm-mode markdown-toc magithub magit-svn magit-gitflow magit-gh-pulls macrostep lorem-ipsum livid-mode live-py-mode link-hint launchctl json-navigator js2-refactor js-doc intero indent-guide importmagic impatient-mode hungry-delete hlint-refactor hl-todo hindent highlight-parentheses highlight-numbers highlight-indentation helm-xref helm-themes helm-swoop helm-pydoc helm-purpose helm-projectile helm-org-rifle helm-nixos-options helm-mu helm-mode-manager helm-make helm-hoogle helm-gtags helm-gitignore helm-git-grep helm-flx helm-descbinds helm-dash helm-css-scss helm-company helm-c-yasnippet helm-ag haskell-snippets google-translate golden-ratio gnuplot gmail-message-mode gitignore-templates github-search github-clone gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link git-gutter-fringe git-gutter-fringe+ gist gh-md ggtags fuzzy font-lock+ flyspell-popup flyspell-correct-helm flymd flycheck-pos-tip flycheck-haskell flx-ido find-by-pinyin-dired fill-column-indicator fcitx fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-org evil-numbers evil-nerd-commenter evil-matchit evil-magit evil-lisp-state evil-lion evil-indent-plus evil-iedit-state evil-goggles evil-exchange evil-ediff evil-cleverparens evil-args evil-anzu eshell-z eshell-prompt-extras esh-help emmet-mode elisp-slime-nav eldoc-eval editorconfig edit-server dumb-jump dotenv-mode dockerfile-mode docker diminish diff-hl dactyl-mode cython-mode counsel-projectile company-web company-tern company-statistics company-restclient company-quickhelp company-nixos-options company-cabal company-anaconda column-enforce-mode cmm-mode clojure-snippets clojure-cheatsheet clj-refactor clean-aindent-mode cider-eval-sexp-fu chinese-conv centered-cursor-mode browse-at-remote auto-yasnippet auto-highlight-symbol auto-dictionary auto-compile aggressive-indent ace-pinyin ace-link ace-jump-helm-line ac-ispell)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.

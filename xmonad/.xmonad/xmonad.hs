@@ -19,7 +19,7 @@ import           XMonad.Util.EZConfig         (additionalKeys)
 import           XMonad.Util.Run              (spawnPipe)
 import           XMonad.Util.SpawnOnce
 
-myTerminal = "xterm"
+myTerminal = "urxvt"
 
 myWorkplace = ["term","edit","web","chat","email","6:tmp"] ++ (show <$> [7..9])
 
