@@ -1,6 +1,7 @@
 if [[ "$OSTYPE" == "linux-gnu" ]]; then
     export JAVA_HOME='/usr/lib/jvm/java-8-openjdk'
     export ANDROID_HOME='/opt/android-sdk'
+    export PATH=/opt/ruby2.4/bin:$PATH
     # ...
 else [[ "$OSTYPE" == "darwin"* ]];
     # Mac OSX
@@ -16,6 +17,7 @@ fi
 export PATH=$HOME/.local/bin/:$PATH
 export PATH=$HOME/.yarn/bin/:$PATH
 export PATH=$HOME/.nix-profile/bin/:$PATH
+# export PATH=$HOME/.gem/ruby/2.5.0/bin:$PATH
 
 export GTAGSLABEL=pygments
 
@@ -55,7 +57,11 @@ export DATA_SCRIPTS_ES_URI="localhost:9300"
 export Uniwebpay_Mysql_U="root"
 export Uniwebpay_Mysql_P=""
 export Uniwebpay_Url="http://localhost:9000"
-
+# Hashnest Env
+#
+export MYSQL_USER="root"
+export MYSQL_PASSWORD=""
+export TEST_ENV_NUMVER=1
 # amazon
 alias vim='nvim'
 alias git=hub
