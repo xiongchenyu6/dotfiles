@@ -23,8 +23,8 @@
                                    docker
                                    dash
                                    epub
-                                   (elfeed :variables
-                                           rmh-elfeed-org-files (list "~/Dropbox/Org/elfeed.org"))
+                                   (elfeed :variables rmh-elfeed-org-files
+                                           (list "~/Dropbox/Org/elfeed.org"))
                                    (emacs-lisp :variables emacs-lisp-hide-namespace-prefix
                                                t)
                                    git
@@ -48,6 +48,7 @@
                                    (purescript :variables purescript-enable-rebuild-on-save
                                                t)
                                    ruby-on-rails
+                                   parinfer
                                    react
                                    restclient
                                    ;; (multiple-cursors :variables multiple-cursors-backend 'evil-mc)
@@ -208,9 +209,9 @@
 (defun dotspacemacs/user-init ()
   (if (eq system-type 'gnu/linux)
       (setq-default dotspacemacs-default-font '("Source Code Pro" :size 25
-                                      :weight normal
-                                      :width normal
-                                      :powerline-scale 2.2))))
+                                                :weight normal
+                                                :width normal
+                                                :powerline-scale 2.2))))
 (defun dotspacemacs/user-config ()
   (setq auto-insert-query nil)
   (exec-path-from-shell-initialize)
@@ -287,7 +288,8 @@
   (define-key evil-normal-state-map (kbd "k") 'evil-previous-visual-line)
   (normal-erase-is-backspace-mode 1)
   (global-set-key "\C-h" 'delete-backward-char)
-  (global-set-key (kbd "M-m x x") 'youdao-dictionary-search-at-point+)
+  (global-set-key (kbd "M-m x x")
+                  'youdao-dictionary-search-at-point+)
   (setq magit-repository-directories '("~/git" "~/workplace" "~/test"))
   ;;autocomplete
   (global-company-mode t)
@@ -401,5 +403,4 @@
   (setq create-lockfiles nil)
   (setq edit-server-url-major-mode-alist '(("github\\.com" . org-mode)))
   (add-to-list 'load-path "~")
-  (require 'tidal)
-  )
+  (require 'tidal))

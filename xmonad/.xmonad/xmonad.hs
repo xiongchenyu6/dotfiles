@@ -69,8 +69,8 @@ customerKeyMaps = [
         , ((0, xF86XK_AudioLowerVolume), void $ lowerVolume 5 )
         -- Increase volume.
         , ((0, xF86XK_AudioRaiseVolume), void $ raiseVolume 5  )
-        -- , ((0, xF86XK_MonBrightnessUp), spawn "xbacklight -inc 10" )
-        -- , ((0, xF86XK_MonBrightnessDown), spawn "xbacklight -dec 10" )
+        , ((0, xF86XK_MonBrightnessUp), spawn "xbacklight -inc 10" )
+        , ((0, xF86XK_MonBrightnessDown), spawn "xbacklight -dec 10" )
         , ((mod4Mask .|. shiftMask, xK_a), spawn "sleep 0.2; scrot -s '/tmp/%F_%T_$wx$h.png' -e 'xclip -selection clipboard -target image/png -i $f'")
         , ((mod4Mask .|. shiftMask, xK_p), spawn "passmenu")
         , ((mod4Mask, xK_m), manPrompt popupConfig)
