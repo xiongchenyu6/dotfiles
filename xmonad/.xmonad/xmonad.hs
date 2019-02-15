@@ -36,7 +36,7 @@ myManageHook = composeAll [
 myStartupHook = do
     setWMName "LG3D"
     spawnOnce "stalonetray"
-    spawnOnce "xterm"
+    spawnOnce "urxvt"
     spawnOnce "emacs"
     spawnOnce "chromium"
     spawnOnce "thunderbird"
@@ -47,7 +47,9 @@ modm = mod4Mask
 main :: IO ()
 main = do
     xmproc <- spawnPipe "xmobar"
-    xmonad $ docks $ desktopConfig
+    xmonad 
+       $ docks 
+       $ desktopConfig
         { workspaces = myWorkplace
         , manageHook = manageDocks <+> myManageHook <+> manageHook def
         , layoutHook = avoidStruts $  myLayout
@@ -55,7 +57,7 @@ main = do
         , logHook    = do
             dynamicLogWithPP xmobarPP
               { ppOutput = hPutStrLn xmproc
-              , ppTitle  = xmobarColor "green" "" . shorten 60
+              , ppTitle  = xmobarColor "green" "" . shorten 70
               }
         , handleEventHook = ewmhDesktopsEventHook
         , startupHook     = myStartupHook

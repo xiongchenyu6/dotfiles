@@ -1,5 +1,6 @@
 if [[ "$OSTYPE" == "linux-gnu" ]]; then
     export ZSH=~/.oh-my-zsh
+    ZSH_THEME="powerlevel9k/powerlevel9k"
     POWERLEVEL9K_MODE='nerdfont-complete'
     POWERLEVEL9K_VCS_SHOW_SUBMODULE_DIRTY=true
     POWERLEVEL9K_DIR_OMIT_FIRST_CHARACTER=true
@@ -11,8 +12,6 @@ if [[ "$OSTYPE" == "linux-gnu" ]]; then
     plugins=(zsh-wakatime fzf fasd brew emacs tmux git git-flow git-hubflow github gitignore scala stack sbt aws docker docker-compose colored-man-pages colorize extract zsh-syntax-highlighting zsh-256color archlinux)
     eval "$(fasd --init posix-alias zsh-hook)"
     source $ZSH/oh-my-zsh.sh
-    source /usr/share/zsh-theme-powerlevel9k/powerlevel9k.zsh-theme
-    source /usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
     # If not running interactively, do not do anything
     if [[ -z "$TMUX" ]] ;then
         ID="$( tmux ls | grep -vm1 attached | cut -d: -f1 )" # get the id of a deattached session

@@ -1,4 +1,4 @@
-sudo apt-get install git exuberant-ctags ncurses-term curl
+# sudo apt-get install git exuberant-ctags ncurses-term curl
 
 git clone git://github.com/zsh-users/zsh-autosuggestions $ZSH_CUSTOM/plugins/zsh-autosuggestions
 
@@ -8,4 +8,4 @@ git clone https://github.com/bhilburn/powerlevel9k.git ~/.oh-my-zsh/custom/theme
 
 cd ~/.oh-my-zsh/custom/themes/powerlevel9k/
 
-wget https://github.com/powerline/powerline/raw/develop/font/PowerlineSymbols.otf mv PowerlineSymbols.otf ~/.fonts/ fc-cache -vf ~/.fonts/
+curl -fsSL https://github.com/powerline/powerline/raw/develop/font/PowerlineSymbols.otf mv PowerlineSymbols.otf ~/.fonts/ fc-cache -vf ~/.fonts/
