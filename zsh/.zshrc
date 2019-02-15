@@ -23,7 +23,6 @@ if [[ "$OSTYPE" == "linux-gnu" ]]; then
     fi
 else [[ "$OSTYPE" == "darwin"* ]];
     # Mac OSX
-    export ZSH=~/.oh-my-zsh
     ZSH_THEME="powerlevel9k/powerlevel9k"
     POWERLEVEL9K_MODE='nerdfont-complete'
     POWERLEVEL9K_VCS_SHOW_SUBMODULE_DIRTY=true

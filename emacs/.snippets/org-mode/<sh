@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+#name : <sh org
+#contributor: Freeman <xiongchenyu6@gmail.com>
+# --
+#+BEGIN_SRC shell
+$1
+#+END_SRC
