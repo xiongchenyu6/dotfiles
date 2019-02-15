@@ -13,9 +13,19 @@ if [[ "$OSTYPE" == "linux-gnu" ]]; then
     source $ZSH/oh-my-zsh.sh
     source /usr/share/zsh-theme-powerlevel9k/powerlevel9k.zsh-theme
     source /usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
+    # If not running interactively, do not do anything
+    if [[ -z "$TMUX" ]] ;then
+        ID="$( tmux ls | grep -vm1 attached | cut -d: -f1 )" # get the id of a deattached session
+        if [[ -z "$ID" ]] ;then # if not available create a new one
+            tmux new-session
+        else
+            tmux attach-session -t "$ID" # if available attach to it
+        fi
+    fi
 else [[ "$OSTYPE" == "darwin"* ]];
     # Mac OSX
     export ZSH=~/.oh-my-zsh
+    ZSH_THEME="powerlevel9k/powerlevel9k"
     POWERLEVEL9K_MODE='nerdfont-complete'
     POWERLEVEL9K_VCS_SHOW_SUBMODULE_DIRTY=true
     POWERLEVEL9K_DIR_OMIT_FIRST_CHARACTER=true
@@ -31,20 +41,3 @@ else [[ "$OSTYPE" == "darwin"* ]];
     source $ZSH/oh-my-zsh.sh
     . ~/.nix-profile/etc/profile.d/nix.sh
 fi
-
-# If not running interactively, do not do anything
-if [[ -z "$TMUX" ]] ;then
-    ID="$( tmux ls | grep -vm1 attached | cut -d: -f1 )" # get the id of a deattached session
-    if [[ -z "$ID" ]] ;then # if not available create a new one
-        tmux new-session
-    else
-        tmux attach-session -t "$ID" # if available attach to it
-    fi
-fi
-
-# tabtab source for serverless package
-# uninstall by removing these lines or running `tabtab uninstall serverless`
-[[ -f /home/chenyu/.config/yarn/global/node_modules/tabtab/.completions/serverless.zsh ]] && . /home/chenyu/.config/yarn/global/node_modules/tabtab/.completions/serverless.zsh
-# tabtab source for sls package
-# uninstall by removing these lines or running `tabtab uninstall sls`
-[[ -f /home/chenyu/.config/yarn/global/node_modules/tabtab/.completions/sls.zsh ]] && . /home/chenyu/.config/yarn/global/node_modules/tabtab/.completions/sls.zsh
