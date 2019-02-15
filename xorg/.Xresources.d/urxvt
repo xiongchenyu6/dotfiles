@@ -2,7 +2,7 @@
 URxvt*termName:             rxvt-unicode-256color
 URxvt.perl-ext-common:      default,clipboard,matcher,font-size
 URxvt.scrollBar:            false
-URxvt.font:                 xft:Consolas-with-Yahei:style=Regular:antialias=true,xft:Source Code Pro:antialias=true
+URxvt.font:                 xft:Hack Nerd Font Mono
 URxvt.url-launcher:         chromium
 URxvt.underlineURLs:        true
 URxvt.clipboard.autocopy:   true
