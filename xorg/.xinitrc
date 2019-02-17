@@ -7,7 +7,7 @@ export XMODIFIERS=@im=ibus
 dropbox &
 xmodmap ~/.Xmodmap &
 ibus-daemon --xim &
-#pasystray &
+pasystray &
 xset -b
 xset r rate 200 40
 #xrandr --output VIRTUAL1 --off --output eDP1 --primary --mode 1920x1080 --dpi 500 --pos 0x0 --scale 1.5x1.5

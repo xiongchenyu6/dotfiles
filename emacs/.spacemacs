@@ -20,9 +20,8 @@
                                    chrome
                                    (chinese :variables chinese-enable-fcitx
                                             t chinese-enable-youdao-dict t)
-                                   (c-c++ :variables
-                                          c-c++-enable-clang-support t
-                                          c-c++-default-mode-for-headers 'c++-mode)
+                                   (c-c++ :variables c-c++-enable-clang-support
+                                          t c-c++-default-mode-for-headers 'c++-mode)
                                    docker
                                    dash
                                    epub
@@ -30,7 +29,10 @@
                                            (list "~/Dropbox/Org/elfeed.org"))
                                    (emacs-lisp :variables emacs-lisp-hide-namespace-prefix
                                                t)
-                                   git
+                                   (git :variables
+                                        git-magit-status-fullscreen t
+                                        git-enable-github-support t
+                                        git-gutter-use-fringe t)
                                    github
                                    (gtags :variables gtags-enable-by-default
                                           t)
@@ -51,7 +53,6 @@
                                    (purescript :variables purescript-enable-rebuild-on-save
                                                t)
                                    ruby-on-rails
-                                   parinfer
                                    react
                                    restclient
                                    ;; (multiple-cursors :variables multiple-cursors-backend 'evil-mc)
@@ -68,14 +69,16 @@
                                                t)
                                    ;; rust
                                    ;; plantuml
-                                   (scala :variables
-                                          scala-use-unicode-arrows t)
+                                   (scala :variables scala-use-unicode-arrows
+                                          t)
                                    ;; go
-                                   version-control
+                                   (version-control :variables
+                                                    version-control-diff-tool 'diff-hl
+                                                    version-control-global-margin t)
                                    vimscript
                                    yaml)
                 dotspacemacs-additional-packages
-                '(nix-sandbox exec-path-from-shell)
+                '(exec-path-from-shell)
                 dotspacemacs-frozen-packages
                 '()
                 dotspacemacs-excluded-packages
@@ -210,11 +213,12 @@
                 dotspacemacs-pretty-docs
                 t))
 (defun dotspacemacs/user-init ()
-  (if (eq system-type 'gnu/linux)
-      (setq-default dotspacemacs-default-font '("Source Code Pro" :size 25
-                                                :weight normal
-                                                :width normal
-                                                :powerline-scale 2.2))))
+  ;; (if (eq system-type 'gnu/linux)
+  ;;     (setq-default dotspacemacs-default-font '("Source Code Pro" :size 25
+  ;;                                               :weight normal
+  ;;                                               :width normal
+  ;;                                               :powerline-scale 2.2)))
+  )
 (defun dotspacemacs/user-config ()
   (setq auto-insert-query nil)
   (exec-path-from-shell-initialize)
@@ -293,10 +297,9 @@
   (global-set-key "\C-h" 'delete-backward-char)
   (global-set-key (kbd "M-m x x")
                   'youdao-dictionary-search-at-point+)
-  (setq magit-repository-directories '("~/git" "~/workplace" "~/test"))
+  (setq magit-repository-directories '("~/personal" "~/workplace" "~/test"))
   ;;autocomplete
   (global-company-mode t)
-  (golden-ratio-mode t)
   (setq ensime-startup-notification nil)
   (setq ensime-startup-snapshot-notification
         nil)
@@ -414,17 +417,83 @@
 This is an auto-generated function, do not modify its content directly, use
 Emacs customize menu instead.
 This function is called at the very end of Spacemacs initialization."
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(package-selected-packages
-   '(robe helm zeal-at-point youdao-dictionary yatemplate yasnippet-snippets yapfify yaml-mode xterm-color ws-butler writeroom-mode winum which-key web-mode web-beautify volatile-highlights vmd-mode vimrc-mode vi-tilde-fringe uuidgen use-package treemacs-projectile treemacs-evil toc-org tide tagedit symon string-inflection stickyfunc-enhance srefactor spaceline-all-the-icons smeargle slim-mode shell-pop seeing-is-believing scss-mode sayid sass-mode rvm ruby-tools ruby-test-mode ruby-refactor ruby-hash-syntax rubocop rspec-mode rjsx-mode reveal-in-osx-finder restclient-helm restart-emacs rbenv rainbow-delimiters pyvenv pytest pyim pyenv-mode py-isort pug-mode psci psc-ide projectile-rails prettier-js pippel pipenv pip-requirements persp-mode pdf-tools password-generator parinfer paradox pangu-spacing ox-reveal overseer osx-trash osx-dictionary orgit org-projectile org-present org-pomodoro org-mime org-journal org-download org-bullets org-brain open-junk-file ob-restclient ob-http nov nix-sandbox nix-mode nameless mvn multi-term mu4e-maildirs-extension mu4e-alert move-text molokai-theme mmm-mode minitest meghanada maven-test-mode markdown-toc magithub magit-svn magit-gitflow macrostep lorem-ipsum livid-mode live-py-mode link-hint launchctl json-navigator js2-refactor js-doc intero indent-guide importmagic impatient-mode hungry-delete hlint-refactor hl-todo hindent highlight-parentheses highlight-numbers highlight-indentation helm-xref helm-themes helm-swoop helm-rtags helm-pydoc helm-purpose helm-projectile helm-org-rifle helm-nixos-options helm-mu helm-mode-manager helm-make helm-hoogle helm-gtags helm-gitignore helm-git-grep helm-flx helm-descbinds helm-dash helm-css-scss helm-company helm-c-yasnippet helm-ag haskell-snippets groovy-mode groovy-imports gradle-mode google-translate google-c-style golden-ratio gnuplot gmail-message-mode gitignore-templates github-search github-clone gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link git-gutter-fringe git-gutter-fringe+ gist gh-md ggtags fuzzy forge font-lock+ flyspell-popup flyspell-correct-helm flymd flycheck-rtags flycheck-pos-tip flycheck-haskell flx-ido find-by-pinyin-dired fill-column-indicator feature-mode fcitx fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-org evil-numbers evil-nerd-commenter evil-matchit evil-magit evil-lisp-state evil-lion evil-indent-plus evil-iedit-state evil-goggles evil-exchange evil-ediff evil-cleverparens evil-args evil-anzu eshell-z eshell-prompt-extras esh-help ensime emmet-mode elisp-slime-nav elfeed-web elfeed-org elfeed-goodies editorconfig edit-server dumb-jump dotenv-mode doom-modeline dockerfile-mode docker disaster diminish diff-hl dactyl-mode cython-mode counsel-projectile company-web company-tern company-statistics company-rtags company-restclient company-quickhelp company-nixos-options company-emacs-eclim company-cabal company-c-headers company-anaconda column-enforce-mode cmm-mode clojure-snippets clj-refactor clean-aindent-mode clang-format cider-eval-sexp-fu chruby chinese-conv centered-cursor-mode bundler browse-at-remote auto-yasnippet auto-highlight-symbol auto-dictionary auto-compile aggressive-indent ace-pinyin ace-link ace-jump-helm-line ac-ispell)))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
-)
+  (custom-set-variables
+   ;; custom-set-variables was added by Custom.
+   ;; If you edit it by hand, you could mess it up, so be careful.
+   ;; Your init file should contain only one such instance.
+   ;; If there is more than one, they won't work right.
+   '(package-selected-packages '(robe helm zeal-at-point youdao-dictionary
+                                      yatemplate yasnippet-snippets yapfify yaml-mode
+                                      xterm-color ws-butler writeroom-mode winum
+                                      which-key web-mode web-beautify volatile-highlights
+                                      vmd-mode vimrc-mode vi-tilde-fringe uuidgen
+                                      use-package treemacs-projectile treemacs-evil
+                                      toc-org tide tagedit symon string-inflection
+                                      stickyfunc-enhance srefactor spaceline-all-the-icons
+                                      smeargle slim-mode shell-pop seeing-is-believing
+                                      scss-mode sayid sass-mode rvm ruby-tools ruby-test-mode
+                                      ruby-refactor ruby-hash-syntax rubocop rspec-mode
+                                      rjsx-mode reveal-in-osx-finder restclient-helm
+                                      restart-emacs rbenv rainbow-delimiters pyvenv
+                                      pytest pyim pyenv-mode py-isort pug-mode psci
+                                      psc-ide projectile-rails prettier-js pippel
+                                      pipenv pip-requirements persp-mode pdf-tools
+                                      password-generator parinfer paradox pangu-spacing
+                                      ox-reveal overseer osx-trash osx-dictionary
+                                      orgit org-projectile org-present org-pomodoro
+                                      org-mime org-journal org-download org-bullets
+                                      org-brain open-junk-file ob-restclient ob-http
+                                      nov nix-sandbox nix-mode nameless mvn multi-term
+                                      mu4e-maildirs-extension mu4e-alert move-text
+                                      molokai-theme mmm-mode minitest meghanada
+                                      maven-test-mode markdown-toc magithub magit-svn
+                                      magit-gitflow macrostep lorem-ipsum livid-mode
+                                      live-py-mode link-hint launchctl json-navigator
+                                      js2-refactor js-doc intero indent-guide importmagic
+                                      impatient-mode hungry-delete hlint-refactor
+                                      hl-todo hindent highlight-parentheses highlight-numbers
+                                      highlight-indentation helm-xref helm-themes
+                                      helm-swoop helm-rtags helm-pydoc helm-purpose
+                                      helm-projectile helm-org-rifle helm-nixos-options
+                                      helm-mu helm-mode-manager helm-make helm-hoogle
+                                      helm-gtags helm-gitignore helm-git-grep helm-flx
+                                      helm-descbinds helm-dash helm-css-scss helm-company
+                                      helm-c-yasnippet helm-ag haskell-snippets
+                                      groovy-mode groovy-imports gradle-mode google-translate
+                                      google-c-style golden-ratio gnuplot gmail-message-mode
+                                      gitignore-templates github-search github-clone
+                                      gitconfig-mode gitattributes-mode git-timemachine
+                                      git-messenger git-link git-gutter-fringe git-gutter-fringe+
+                                      gist gh-md ggtags fuzzy forge font-lock+ flyspell-popup
+                                      flyspell-correct-helm flymd flycheck-rtags
+                                      flycheck-pos-tip flycheck-haskell flx-ido
+                                      find-by-pinyin-dired fill-column-indicator
+                                      feature-mode fcitx fancy-battery eyebrowse
+                                      expand-region exec-path-from-shell evil-visualstar
+                                      evil-visual-mark-mode evil-unimpaired evil-tutor
+                                      evil-surround evil-org evil-numbers evil-nerd-commenter
+                                      evil-matchit evil-magit evil-lisp-state evil-lion
+                                      evil-indent-plus evil-iedit-state evil-goggles
+                                      evil-exchange evil-ediff evil-cleverparens
+                                      evil-args evil-anzu eshell-z eshell-prompt-extras
+                                      esh-help ensime emmet-mode elisp-slime-nav
+                                      elfeed-web elfeed-org elfeed-goodies editorconfig
+                                      edit-server dumb-jump dotenv-mode doom-modeline
+                                      dockerfile-mode docker disaster diminish diff-hl
+                                      dactyl-mode cython-mode counsel-projectile
+                                      company-web company-tern company-statistics
+                                      company-rtags company-restclient company-quickhelp
+                                      company-nixos-options company-emacs-eclim
+                                      company-cabal company-c-headers company-anaconda
+                                      column-enforce-mode cmm-mode clojure-snippets
+                                      clj-refactor clean-aindent-mode clang-format
+                                      cider-eval-sexp-fu chruby chinese-conv centered-cursor-mode
+                                      bundler browse-at-remote auto-yasnippet auto-highlight-symbol
+                                      auto-dictionary auto-compile aggressive-indent
+                                      ace-pinyin ace-link ace-jump-helm-line ac-ispell)))
+  (custom-set-faces
+   ;; custom-set-faces was added by Custom.
+   ;; If you edit it by hand, you could mess it up, so be careful.
+   ;; Your init file should contain only one such instance.
+   ;; If there is more than one, they won't work right.
+   ))
