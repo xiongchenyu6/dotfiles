@@ -1,3 +1,4 @@
+eval $(/usr/bin/keychain --eval -Q -q --nogui --agents "ssh" bigo_rsa)
 if [[ "$OSTYPE" == "linux-gnu" ]]; then
     export ZSH=~/.oh-my-zsh
     ZSH_THEME="powerlevel9k/powerlevel9k"

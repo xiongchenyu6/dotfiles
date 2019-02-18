@@ -11,6 +11,7 @@ executable my-xmonad
                      , xmonad
                      , xmonad-contrib
                      , xmonad-extras
+                     , xmonad-wallpaper
                      , X11
   hs-source-dirs:      lib
   default-language:    Haskell2010

@@ -18,6 +18,7 @@ import           XMonad.Prompt.Ssh
 import           XMonad.Util.EZConfig         (additionalKeys)
 import           XMonad.Util.Run              (spawnPipe)
 import           XMonad.Util.SpawnOnce
+import           XMonad.Wallpaper
 
 myTerminal = "urxvt"
 
@@ -47,8 +48,9 @@ modm = mod4Mask
 main :: IO ()
 main = do
     xmproc <- spawnPipe "xmobar"
-    xmonad 
-       $ docks 
+    setRandomWallpaper ["$HOME/Dropbox/Screen/girls_with_guns_anime_girl_butterfly_101109_1920x1080.jpg", "$HOME/Dropbox/Screen/a1cdfcaa3fcc7b143197f71b363523beb4cdf236.jpg"]
+    xmonad
+       $ docks
        $ desktopConfig
         { workspaces = myWorkplace
         , manageHook = manageDocks <+> myManageHook <+> manageHook def
@@ -57,7 +59,7 @@ main = do
         , logHook    = do
             dynamicLogWithPP xmobarPP
               { ppOutput = hPutStrLn xmproc
-              , ppTitle  = xmobarColor "green" "" . shorten 70
+              , ppTitle  = xmobarColor "green" "" . shorten 60
               }
         , handleEventHook = ewmhDesktopsEventHook
         , startupHook     = myStartupHook
