@@ -1,11 +1,12 @@
 ! In built settings
 URxvt*termName:             rxvt-unicode-256color
-URxvt.perl-ext-common:      default,clipboard,matcher,font-size
+URxvt.perl-ext-common:      default,clipboard,matcher,font-size, selection-to-clipboard
+
 URxvt.scrollBar:            false
 URxvt.font:                 xft:Hack Nerd Font Mono
 URxvt.url-launcher:         chromium
 URxvt.underlineURLs:        true
-URxvt.clipboard.autocopy:   true
+URxvt.clipboard.autocopy:   false
 URxvt.saveLines:            16384
 URxvt.secondaryScroll:      true
 URxvt.iso14755: false
@@ -13,7 +14,6 @@ URxvt.iso14755_52: false
 URxvt.imLocale: zh_CN.UTF-8
 URxvt.inputMethod: ibus
 Urxvt.preeditType: OnTheSpot, None
-
 ! Extension Settings: Font-size
 URxvt.font-size.step: 4
 

@@ -47,8 +47,8 @@ modm = mod4Mask
 main :: IO ()
 main = do
     xmproc <- spawnPipe "xmobar"
-    xmonad 
-       $ docks 
+    xmonad
+       $ docks
        $ desktopConfig
         { workspaces = myWorkplace
         , manageHook = manageDocks <+> myManageHook <+> manageHook def
@@ -57,7 +57,7 @@ main = do
         , logHook    = do
             dynamicLogWithPP xmobarPP
               { ppOutput = hPutStrLn xmproc
-              , ppTitle  = xmobarColor "green" "" . shorten 70
+              , ppTitle  = xmobarColor "green" "" . shorten 60
               }
         , handleEventHook = ewmhDesktopsEventHook
         , startupHook     = myStartupHook
