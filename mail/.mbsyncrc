@@ -14,34 +14,42 @@ IMAPStore gmail-remote
 Account gmail
 
 MaildirStore gmail-local
-Path ~/maildir/gmail
-Inbox ~/maildir/gmail/INBOX
+Path ~/mail/gmail
+Inbox ~/mail/gmail/Inbox
 SubFolders Legacy
 
-Channel gmail-inbox
+Channel gmail
 Master :gmail-remote:
 Slave :gmail-local:
-Patterns "INBOX" "Arch*"
+Patterns "*" 
 Create Both
-Expunge Both
 SyncState *
+Sync All
 
-Channel gmail-trash
-Master :gmail-remote:"[Gmail]/Trash"
-Slave :gmail-local:trash
+########################################
+# Bigo
+########################################
+
+IMAPAccount bigo
+Host mail.bigo.sg
+User xiongchenyu@bigo.sg
+PassCmd "pass bigo/xiongchenyu6@bigo.sg"
+AuthMechs LOGIN
+SSLType IMAPS
+CertificateFile /etc/ssl/cert.pem
+
+IMAPStore bigo-remote
+Account bigo
+
+MaildirStore bigo-local
+Path ~/mail/bigo
+Inbox ~/mail/bigo/Inbox
+SubFolders Legacy
+
+Channel bigo
+Master :bigo-remote:
+Slave :bigo-local:
+Patterns "*"
 Create Both
-Expunge Both
 SyncState *
-
-Channel gmail-sent
-Master :gmail-remote:"[Gmail]/Sent Mail"
-Slave :gmail-local:sent
-Create Both
-Expunge Both
-SyncState *
-
-Group gmail
-Channel gmail-inbox
-Channel gmail-sent
-Channel gmail-trash
-
+Sync All

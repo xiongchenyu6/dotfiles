@@ -17,9 +17,6 @@ fi
 export PATH=$HOME/.local/bin/:$PATH
 export PATH=$HOME/.yarn/bin/:$PATH
 export PATH=$HOME/.nix-profile/bin/:$PATH
-# export PATH=$HOME/.gem/ruby/2.5.0/bin:$PATH
-
-export GTAGSLABEL=pygments
 
 # ssh
 export SSH_KEY_PATH="~/.ssh/rsa_id"
@@ -31,38 +28,6 @@ export HISTCONTROL=ignoreboth:erasedups
 
 export GHTOKEN="ad38f8a815e974c98db2abd6f5ff304eca53400f"
 
-# export https_proxy=http://127.0.0.1:64396
-# export http_proxy=$https_proxy
-# ftp_proxy = $https_proxy
-
-#android
-alias eml='/usr/local/share/android-sdk/emulator/emulator -avd Nexus_S_API_25'
-
-# Postgress Env
-export PGHOST=localhost
-export PGPORT=5432
-export PGDATA='/usr/local/var/postgres'
-
-# Leadiq env
-export DATABASE_URL="jdbc:postgresql://localhost/pg_dev"
-export LEAD_SEARCH_ENABLE=true
-export LEAD_SEARCH_HOST="localhost"
-export LEAD_SEARCH_PORT="9300"
-export LEAD_SEARCH_CLUSTER_NAME="elasticsearch_xiongchenyu"
-export DATA_SCRIPTS_ES_CLUSTER_NAME="elasticsearch_xiongchenyu"
-export DATA_SCRIPTS_ES_URI="localhost:9300"
-#export LEADIQ_DEV_DOCKER_VOLUMES="/Volumes/mongo/docker"
-
-# UniwebPay Env
-export Uniwebpay_Mysql_U="root"
-export Uniwebpay_Mysql_P=""
-export Uniwebpay_Url="http://localhost:9000"
-# Hashnest Env
-#
-export MYSQL_USER="root"
-export MYSQL_PASSWORD=""
-export TEST_ENV_NUMVER=1
-# amazon
 alias vim='nvim'
 alias git=hub
 alias yolo='git commit -m "$(curl -s whatthecommit.com/index.txt)"'
@@ -71,10 +36,31 @@ alias ensime="gtags & sbt clean ensimeConfig test:compile ensimeServerIndex"
 export NIX_PATH=$NIX_PATH:$HOME/.nix-defexpr/channels
 export SBT_OPTS="-Xmx8G"
 export EDITOR="emacsclient"
+export EMAIL="xiongchenyu@bigo.sg"
 
 export PKG_CONFIG_PATH="/usr/local/opt/libxml2/lib/pkgconfig"
 
 export NODE_PATH=$HOME/.config/yarn/global/node_modules
+
+export CONAN_USER_HOME=/home/chenyu/data  # 设置你的缓存地址，开发机上面请不要放到home
+export CONAN_USERNAME=brec
+export CONAN_CHANNEL=stable
+
+#CJK index
+export XAPIAN_CJK_NGRAM=1
+
+#export CC=gcc
+#export CXX=g++
+
+#export CC="/home/chenyu/cc.py gcc-5"
+#export CXX="/home/chenyu/cc.py g++-5"
+export CC=gcc-5
+export CXX=g++-5
+
+#GTAGS
+export GTAGSLABEL=pygments
+export GTAGSTHROUGH=true
+export GTAGSLIBPATH=$HOME/data/.conan/data
 
 setopt BANG_HIST                 # Treat the '!' character specially during expansion.
 setopt EXTENDED_HISTORY          # Write the history file in the ":start:elapsed;command" format.

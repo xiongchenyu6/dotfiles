@@ -20,28 +20,40 @@ import           XMonad.Util.Run              (spawnPipe)
 import           XMonad.Util.SpawnOnce
 import           XMonad.Wallpaper
 
-myTerminal = "urxvt"
+myTerminal = "kitty"
 
 myWorkplace = ["term","edit","web","chat","email","6:tmp"] ++ (show <$> [7..9])
 
 myManageHook = composeAll [
     className =? "Xterm"        --> doShift "term"
   , className =? "Urxvt"        --> doShift "term"
+  , className =? "St"        --> doShift "term"
+  , className =? "st"        --> doShift "term"
+  , className =? "Kitty"        --> doShift "term"
+  , className =? "kitty"        --> doShift "term"
   , className =? "Emacs"        --> doShift "edit"
   , className =? "Emacsclient"  --> doShift "edit"
   , className =? "Chromium"     --> doShift "web"
   , className =? "Thunderbird"  --> doShift "email"
+  , className =? "Wechat"  --> doShift "chat"
+  , className =? "Conky-manager"  --> doShift "chat"
+  , className =? "Conky"  --> doShift "chat"
+  , className =? "conky"  --> doShift "chat"
+  , className =? "Wechat"  --> doShift "chat"
+  , className =? "wechat"  --> doShift "chat"
   , className =? "stalonetray"  --> doIgnore
   ]
 
 myStartupHook = do
     setWMName "LG3D"
     spawnOnce "stalonetray"
-    spawnOnce "urxvt"
+    spawnOnce "kitty"
     spawnOnce "emacs"
     spawnOnce "chromium"
     spawnOnce "thunderbird"
-    spawnOnce "~/.screenlayout/default.sh"
+    spawnOnce "conky-manager"
+    spawnOnce "sh ~/.conky/conky-startup.sh"
+    spawnOnce "/opt/deepinwine/apps/Deepin-WeChat/run.sh"
 
 modm = mod4Mask
 
@@ -75,12 +87,12 @@ customerKeyMaps = [
         , ((0, xF86XK_AudioRaiseVolume), void $ raiseVolume 5  )
         , ((0, xF86XK_MonBrightnessUp), spawn "xbacklight -inc 10" )
         , ((0, xF86XK_MonBrightnessDown), spawn "xbacklight -dec 10" )
-        , ((mod4Mask .|. shiftMask, xK_a), spawn "sleep 0.2; scrot -s '/tmp/%F_%T_$wx$h.png' -e 'xclip -selection clipboard -target image/png -i $f'")
-        , ((mod4Mask .|. shiftMask, xK_p), spawn "passmenu")
-        , ((mod4Mask, xK_m), manPrompt popupConfig)
-        , ((mod4Mask .|. controlMask .|. shiftMask, xK_p), passGeneratePrompt popupConfig)
-        , ((mod4Mask, xK_s), sshPrompt popupConfig)
-        , ((mod4Mask .|. shiftMask, xK_z), spawn "xscreensaver-command -lock; xset dpms force off")
+        , ((modm .|. shiftMask, xK_a), spawn "sleep 0.2; scrot -s '/tmp/%F_%T_$wx$h.png' -e 'xclip -selection clipboard -target image/png -i $f'")
+        , ((modm .|. shiftMask, xK_p), spawn "passmenu")
+        , ((modm, xK_m), manPrompt popupConfig)
+        , ((modm .|. controlMask .|. shiftMask, xK_p), passGeneratePrompt popupConfig)
+        , ((modm, xK_s), sshPrompt popupConfig)
+        , ((modm .|. shiftMask, xK_z), spawn "xscreensaver-command -lock; xset dpms force off")
         , ((modm .|. controlMask, xK_h), launcherPrompt popupConfig $ defaultLauncherModes launcherConfig)
         , ((0, xK_Print), spawn "scrot '/tmp/%F_%T_$wx$h.png' -e 'xclip -selection clipboard -target image/png -i $f'")
         -- %F Equivalent to %Y-%m-%d (the ISO 8601 date format).

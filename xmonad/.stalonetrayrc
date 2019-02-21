@@ -1,12 +1,12 @@
 decorations none
 transparent false
 dockapp_mode none
-geometry 5x1-360+0
-max_geometry 5x1-360-0
+geometry 5x1-240+0
+max_geometry 5x1-240-0
 background "#000000"
 grow_gravity NE
 icon_gravity NE
-icon_size 20
+icon_size 24
 sticky true
 #window_strut none
 window_type dock

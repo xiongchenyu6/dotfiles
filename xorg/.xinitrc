@@ -1,12 +1,20 @@
 [[ -f ~/.Xresources ]] && xrdb -merge -I$HOME ~/.Xresources
 #eval "$(dbus-launch --sh-syntax --exit-with-session)"
+export LANG="en_US.UTF-8"
+export LC_ALL="en_US.UTF-8"
+export LC_CTYPE="zh_CN.utf8"
+export LC_COLLATE="en_US.UTF-8"
+
 export GTK_IM_MODULE=ibus
-export QT_IM_MODULE=ibus
 export XMODIFIERS=@im=ibus
+export XIM=ibus
+export QT_IM_MODULE=ibus
+export XIM_ARGS="ibus-daemon -d -x"
+
 #nm-applet &
 dropbox &
 xmodmap ~/.Xmodmap &
-ibus-daemon --xim &
+ibus-daemon -d -x &
 pasystray &
 clipit &
 xset -b
