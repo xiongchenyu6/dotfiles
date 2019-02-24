@@ -27,7 +27,7 @@ export TERM=xterm-256color
 export HISTCONTROL=ignoreboth:erasedups
 
 export GHTOKEN="ad38f8a815e974c98db2abd6f5ff304eca53400f"
-
+alias cat=ccat
 alias vim='nvim'
 alias git=hub
 alias yolo='git commit -m "$(curl -s whatthecommit.com/index.txt)"'
@@ -49,13 +49,13 @@ export CONAN_CHANNEL=stable
 #CJK index
 export XAPIAN_CJK_NGRAM=1
 
-#export CC=gcc
-#export CXX=g++
+export CC=gcc
+export CXX=g++
 
 #export CC="/home/chenyu/cc.py gcc-5"
 #export CXX="/home/chenyu/cc.py g++-5"
-export CC=gcc-5
-export CXX=g++-5
+#export CC=gcc-5
+#export CXX=g++-5
 
 #GTAGS
 export GTAGSLABEL=pygments

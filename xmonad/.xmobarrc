@@ -12,11 +12,10 @@ Config {
       , overrideRedirect = True    -- set the Override Redirect flag (Xlib)
       , pickBroadest =     False   -- choose widest display (multi-monitor)
       , persistent =       True    -- enable/disable hiding (True = disabled)
-      , template = "%StdinReader% | %multicpu% | %coretemp% | %memory% | %dynnetwork% | %bright% }{<fc=#ee9a00>%date%</fc>"
+      , template = "%StdinReader% |%coretemp%|%memory%|%dynnetwork%}{<fc=#ee9a00>%date%</fc>"
       , sepChar = "%"
       , alignSep = "}{"
       , commands = [ 
-
                       -- network activity monitor (dynamic interface resolution)
                         Run DynNetwork     [ "--template" , "<dev>: <tx>kB/s|<rx>kB/s"
                                             , "--Low"      , "1000"       -- units: kB/s
@@ -26,13 +25,14 @@ Config {
                                             , "--high"     , "red"
                                             ] 10
                       -- cpu activity monitor
-                      , Run MultiCpu       [ "--template" , "Cpu: <total0>%|<total1>%"
-                                            , "--Low"      , "50"         -- units: %
-                                            , "--High"     , "85"         -- units: %
-                                            , "--low"      , "green"
-                                            , "--normal"   , "orange"
-                                            , "--high"     , "red"
-                                            ] 10
+                      --, Run MultiCpu       [ "--template" , "Cpu: <total0>%|<total1>%"
+                      --                      , "--Low"      , "50"         -- units: %
+                      --                      , "--High"     , "85"         -- units: %
+                      --                      , "--low"      , "green"
+                      --                      , "--normal"   , "orange"
+                      --                      , "--high"     , "red"
+                      --                      ] 10
+                      --  %multicpu% |
                       -- cpu core temperature monitor
                       , Run CoreTemp       [ "--template" , "Temp: <core0>°C|<core1>°C"
                                             , "--Low"      , "70"        -- units: °C
@@ -45,6 +45,7 @@ Config {
                       , Run Com "uname" ["-s","-r"] "" 36000
                       , Run Date "%a %b %_d %Y %H:%M:%S" "date" 10
                       , Run Brightness ["--template", "bl: <percent>", "--", "-D", "intel_backlight"] 50
+                      --  | %bright% 
                       , Run StdinReader
                       ]
       }
