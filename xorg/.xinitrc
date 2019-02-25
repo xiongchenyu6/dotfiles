@@ -16,7 +16,6 @@ dropbox &
 xmodmap ~/.Xmodmap &
 ibus-daemon -d -x &
 pasystray &
-clipit &
 xset -b
 xset r rate 200 40
 feh --bg-scale ~/Dropbox/Screen/girls_with_guns_anime_girl_butterfly_101109_1920x1080.jpg &
