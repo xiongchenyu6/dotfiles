@@ -66,9 +66,9 @@ main = do
        $ desktopConfig
         { workspaces = myWorkplace
         , manageHook = manageDocks <+> myManageHook <+> manageHook def
-        , layoutHook = avoidStruts $  myLayout
+        , layoutHook = avoidStruts myLayout
         , terminal   = myTerminal
-        , logHook    = do
+        , logHook    =
             dynamicLogWithPP xmobarPP
               { ppOutput = hPutStrLn xmproc
               , ppTitle  = xmobarColor "green" "" . shorten 60
