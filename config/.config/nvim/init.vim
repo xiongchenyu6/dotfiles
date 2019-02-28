@@ -264,7 +264,7 @@ call denite#custom#option('default', 'prompt', '❯')
 call denite#custom#source(
 			\ 'file_rec', 'vars', {
 			\   'command': [
-			\      'pt', '--follow','--nogroup','--hidden', '-g', '', '--ignore', '.git', '--ignore', '*.png'
+			\      'pt', '--follow','--nogroup','--hidden'
 			\   ] })
 
 " Ag command on grep source
@@ -283,10 +283,9 @@ call denite#custom#option('default', 'highlight-matched-range', '')
 hi deniteMatched guibg=None
 hi deniteMatchedChar guibg=None
 
-nnoremap <silent> <c-p> :Denite file_rec<CR>
+nnoremap <silent> <c-p> :FZF<CR>
 nnoremap <silent> <leader>b :Denite buffer<CR>
 nnoremap <silent> <Leader>s : Denite line<CR>
-nnoremap <Leader>m :<C-u>Denite -auto-resize file_mru<CR>
 nnoremap <Leader>g :<C-u>Denite -auto-resize menu:git<CR>
 nnoremap <leader>f :<C-u>DeniteBufferDir file_rec<CR>
 nnoremap <leader>8 :<C-u>DeniteCursorWord grep:. -mode=normal<CR>
@@ -431,11 +430,6 @@ noremap <Leader>wv :<C-u>vsplit<CR>
 "nnoremap <leader>sd :DeleteSession<CR>
 "nnoremap <leader>sc :CloseSession<CR>
 
-"" Tabs
-nnoremap <Tab> gt
-nnoremap <S-Tab> gT
-nnoremap <silent> <S-t> :tabnew<CR>
-
 " Tagbar
 map <Leader>tt :TagbarToggle<CR>
 let g:tagbar_autofocus = 1
@@ -452,16 +446,10 @@ noremap [b :bp<CR>
 noremap ]b :bn<CR>
 
 "" Close buffer
-noremap <leader>wx :bd<CR>
+noremap <leader>bx :bd<CR>
 
 "" Clean search (highlight)
-nnoremap <silent> <leader><space> :noh<cr>
-
-"" Switching windows
-noremap <leader>wj <C-w>j
-noremap <leader>wk <C-w>k
-noremap <leader>wl <C-w>l
-noremap <leader>wh <C-w>h
+nnoremap <silent> <C-g> :noh<cr>
 
 " Search mappings: These will make it so that going to the next one in a
 " search will center on the line it's found in.
@@ -509,32 +497,40 @@ autocmd BufEnter * call ncm2#enable_for_buffer()
 set completeopt=noinsert,menuone,noselect
 
 let g:UltiSnipsExpandTrigger="<C-j>"
-inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
 
-if executable('ccls')
-   au User lsp_setup call lsp#register_server({
-      \ 'name': 'ccls',
-      \ 'cmd': {server_info->['ccls']},
-      \ 'root_uri': {server_info->lsp#utils#path_to_uri(lsp#utils#find_nearest_parent_file_directory(lsp#utils#get_buffer_path(), 'compile_commands.json'))},
-      \ 'initialization_options': {'cache': {'directory': '/tmp/ccls/cache' }},
-      \ 'whitelist': ['c', 'cpp', 'objc', 'objcpp', 'cc'],
-      \ })
-endif
+set shortmess+=c
 
-" Key bindings for vim-lsp.
-nn <silent> <M-d> :LspDefinition<cr>
-nn <silent> <M-r> :LspReferences<cr>
-nn <f2> :LspRename<cr>
-nn <silent> <M-a> :LspWorkspaceSymbol<cr>
-nn <silent> <M-l> :LspDocumentSymbol<cr>
+inoremap <expr> <CR> (pumvisible() ? "\<c-y>\<cr>" : "\<CR>")
 
+let g:LanguageClient_serverCommands = {
+      \ 'c': ['ccls'],
+      \ 'cpp': ['ccls'],
+      \ 'objc': ['ccls'],
+      \ 'haskell': ['hie-wrapper'],
+      \ }
+
+nnoremap <F5> :call LanguageClient_contextMenu()<CR>
+map <Leader>lk :call LanguageClient#textDocument_hover()<CR>
+map <Leader>lg :call LanguageClient#textDocument_definition()<CR>
+map <Leader>lr :call LanguageClient#textDocument_rename()<CR>
+map <Leader>lf :call LanguageClient#textDocument_formatting()<CR>
+map <Leader>lb :call LanguageClient#textDocument_references()<CR>
+map <Leader>la :call LanguageClient#textDocument_codeAction()<CR>
+map <Leader>ls :call LanguageClient#textDocument_documentSymbol()<CR>
+
+let g:ale_linters = { 
+          \ 'haskell': ['hie'],
+          \ 'cpp': ['ccls'],
+          \ }
+let g:ale_sign_column_always = 1
+let g:ale_completion_enabled = 1
 " close the preview window when you're not using it
 let g:SuperTabClosePreviewOnPopupClose = 1
 
 	"*****************************************************************************
 	"" Self Customise
 	"*****************************************************************************
-	let g:WebDevIconsOS = 'Darwin'
+let g:WebDevIconsOS = 'Darwin'
 
 set noimdisable
 autocmd! InsertLeave * set imdisable|set iminsert=0

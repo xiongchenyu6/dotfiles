@@ -8,5 +8,8 @@ node_modules/
 config/.config/*
 clojure/.clojure/.cpcache
 !config/.config/nvim
+!config/.config/kitty
+!config/.config/Code/User
+!config/.config/doom
 tmux/.tmux/*
 !tmux/.tmux/plugins/tmp

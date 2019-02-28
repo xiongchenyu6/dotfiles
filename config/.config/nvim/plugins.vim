@@ -8,7 +8,6 @@ Plug 'scrooloose/nerdtree' | Plug 'jistr/vim-nerdtree-tabs' | Plug 'Xuyuanp/nerd
 
 "" Fast search and Most Recently used
 Plug 'Shougo/denite.nvim', { 'do': ':UpdateRemotePlugins' }
-Plug 'Shougo/neomru.vim'
 
 "" github plugin
 Plug 'tpope/vim-fugitive' | Plug 'airblade/vim-gitgutter' | Plug 'tpope/vim-rhubarb'
@@ -25,7 +24,6 @@ Plug 'tpope/vim-surround'
 
 ""Syntactic check
 Plug 'w0rp/ale'
-Plug 'Raimondi/delimitMate'
 
 "" Vim-Session
 Plug 'xolox/vim-misc'
@@ -39,7 +37,6 @@ Plug 'ryanoasis/vim-devicons'
 Plug 'sheerun/vim-polyglot'
 
 "" Utils
-Plug 'Shougo/vimproc.vim', {'do' : 'make'}
 Plug 'Raimondi/delimitMate'
 Plug 'junegunn/vim-easy-align'
 Plug 'mhinz/vim-startify'
@@ -54,12 +51,8 @@ Plug 'roxma/vim-tmux-clipboard'
 Plug 'SirVer/ultisnips'
 Plug 'honza/vim-snippets'
 
-" assuming you're using vim-plug: https://github.com/junegunn/vim-plug
 Plug 'ncm2/ncm2'
 Plug 'roxma/nvim-yarp'
-
-" NOTE: you need to install completion sources to get completions. Check
-" our wiki page for a list of sources: https://github.com/ncm2/ncm2/wiki
 Plug 'ncm2/ncm2-bufword'
 Plug 'ncm2/ncm2-path'
 
@@ -67,18 +60,18 @@ Plug 'ncm2/ncm2-path'
 "" Custom bundles
 "*****************************************************************************
 
-"" WEB DEVELOPMENT
-""Auto-complete for Javascript
-Plug 'carlitux/deoplete-ternjs', { 'do': 'npm install -g tern' }
-
 "Emmet for zen coding
 Plug 'mattn/emmet-vim'
 
 "" Color Bundle for css3
 Plug 'gorodinskiy/vim-coloresque'
 
-Plug 'prabirshrestha/async.vim'
-Plug 'prabirshrestha/vim-lsp'
+Plug 'autozimu/LanguageClient-neovim', {
+    \ 'branch': 'next',
+    \ 'do': './install.sh'
+    \ }
+
+Plug 'junegunn/fzf'
 
 Plug 'wakatime/vim-wakatime'
 
