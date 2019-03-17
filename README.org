@@ -1,6 +1,6 @@
 * Freeman Settings
 
-  This is my settings use GNU stow to manage the dotfiles
+  This is mine settings use GNU stow to manage the dotfiles
   #+CAPTION: Terminal Previews
   #+NAME:   fig:1
   [[./previews/terminal.png]]

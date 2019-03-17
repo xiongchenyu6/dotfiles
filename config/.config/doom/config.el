@@ -129,10 +129,13 @@
       'delete message-kill-buffer-on-exit t mu4e-headers-auto-update
       t org-mu4e-link-query-in-headers-mode nil)
 
-(setq send-mail-function 'message-send-mail-with-sendmail)
-(setq sendmail-program "msmtp")
+
+(after! mu4e
+ (setq message-send-mail-function 'message-send-mail-with-sendmail
+       sendmail-program "/usr/bin/msmtp"))
+
 ;; (setq message-sendmail-extra-arguments '("--read-envelope-from"))
-(setq message-sendmail-f-is-evil 't)
+;; (setq message-sendmail-f-is-evil 't)
 
 ;; convert org mode to HTML automatically
 (setq org-mu4e-convert-to-html t)
@@ -177,7 +180,7 @@
 (setq org-latex-compiler "latexmk -pdf %f")
 (setq org-src-preserve-indentation t)
 
-(after! tabbar
+(with-eval-after-load 'tabbar
  ;; Tabbar settings
  (set-face-attribute
   'tabbar-unselected nil

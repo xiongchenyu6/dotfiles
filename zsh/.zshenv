@@ -56,11 +56,13 @@ export XAPIAN_CJK_NGRAM=1
 #export CC=gcc
 #export CXX=g++
 
-export CC=gcc-5
-export CXX=g++-5
+#export CC=gcc-5
+#export CXX=g++-5
 
-#export CC=clang
-#export CXX=clang++
+export CC=clang
+export CXX=clang++
+
+export INSECURE=1
 #
 #GTAGS
 export GTAGSLABEL=pygments

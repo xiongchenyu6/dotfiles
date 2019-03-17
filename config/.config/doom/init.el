@@ -5,7 +5,7 @@
 (doom! :feature
        debugger          ; FIXME stepping through code, to help you add bugs
        eval              ; run code, run (also, repls)
-       (evil +everywhere); come to the dark side, we have cookies
+       evil; come to the dark side, we have cookies
        file-templates    ; auto-snippets for empty files
        (lookup           ; helps you navigate your code and documentation
         +docsets)        ; ...or in Dash docsets locally
@@ -16,9 +16,9 @@
        (company          ; the ultimate code completion backend
         +auto            ; as-you-type code completion
         +childframe)     ; a nicer company UI (Emacs 26+ only)
-       helm              ; the *other* search engine for love and life
+       ;;helm              ; the *other* search engine for love and life
        ;; ido              ; the other *other* search engine...
-       ;; ivy
+       ivy
 
        :ui
        ;;deft              ; notational velocity for Emacs
@@ -38,7 +38,7 @@
         +all             ; catch all popups that start with an asterix
         +defaults)
                                         ; default popup rules
-       (pretty-code +iosevka)      ; replace bits of code with pretty symbols
+       pretty-code      ; replace bits of code with pretty symbols
        tabbar
                                         ; FIXME an (incomplete) tab bar for Emacs
        ;; unicode           ; extended unicode support for various languages
@@ -88,7 +88,7 @@
        ;; vterm             ; another terminals in Emacs
 
        :lang
-       ;;assembly          ; assembly for fun or debugging
+       assembly          ; assembly for fun or debugging
        (cc +lsp); C/C++/Obj-C madness
        ;;clojure           ; java with a lisp
        common-lisp       ; if you've seen one lisp, you've seen them all
@@ -147,9 +147,9 @@
        ;;irc               ; how neckbeards socialize
        (rss +org)        ; emacs as an RSS reader
        ;;twitter           ; twitter client https://twitter.com/vnought
-       ;;(write            ; emacs as a word processor (latex + org + markdown)
-       ;; +wordnut         ; wordnet (wn) search
-       ;; +langtool)       ; a proofreader (grammar/style check) for Emacs
+       (write            ; emacs as a word processor (latex + org + markdown)
+       +wordnut         ; wordnet (wn) search
+       +langtool)       ; a proofreader (grammar/style check) for Emacs
 
        :collab
        ;;floobits          ; peer programming for a price

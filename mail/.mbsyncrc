@@ -33,10 +33,10 @@ Sync All
 IMAPAccount bigo
 Host mail.bigo.sg
 User xiongchenyu@bigo.sg
-PassCmd "pass bigo/xiongchenyu6@bigo.sg"
+PassCmd "pass bigo/xiongchenyu@bigo.sg"
 AuthMechs LOGIN
 SSLType IMAPS
-CertificateFile /etc/ssl/cert.pem
+CertificateFile ~/.cert/bigo.pem
 
 IMAPStore bigo-remote
 Account bigo
