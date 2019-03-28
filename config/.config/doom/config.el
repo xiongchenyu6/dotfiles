@@ -5,7 +5,7 @@
 
 (setq user-full-name "XiongChenYu"
       user-mail-address "xiongchenyu@bigo.sg"
-      doom-font "Hack Nerd Font Mono:size=14:antialias=true"
+      doom-font "Hack:size=14:antialias=true"
       doom-modeline-github t
       doom-modeline-mu4e t
       )
