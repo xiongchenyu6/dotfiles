@@ -1,7 +1,6 @@
 if [[ "$OSTYPE" == "linux-gnu" ]]; then
     export JAVA_HOME='/usr/lib/jvm/java-8-openjdk'
     export ANDROID_HOME='/opt/android-sdk'
-    export PATH=$HOME/.emacs.d/bin/:$PATH
     # export PATH=/opt/ruby2.4/bin:$PATH
     # ...
 else [[ "$OSTYPE" == "darwin"* ]];
@@ -21,6 +20,7 @@ fi
 export GOPATH=$HOME/go
 export PATH=$HOME/.local/bin/:$PATH
 export PATH=$HOME/.yarn/bin/:$PATH
+export PATH=$HOME/.emacs.d/bin/:$PATH
 
 # ssh
 export SSH_KEY_PATH="~/.ssh/rsa_id"
@@ -56,11 +56,11 @@ export XAPIAN_CJK_NGRAM=1
 #export CC=gcc
 #export CXX=g++
 
-#export CC=gcc-5
-#export CXX=g++-5
+export CC=gcc-5
+export CXX=g++-5
 
-export CC=clang
-export CXX=clang++
+#export CC=clang
+#export CXX=clang++
 
 export INSECURE=1
 #

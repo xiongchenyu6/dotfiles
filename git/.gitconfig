@@ -3,7 +3,8 @@
 [color]
  ui = auto
 [user]
- email      = xiongchenyu6@gmail.com
+ email      = xiongchenyu@bigo.sg
+# email      = xiongchenyu6@gmail.com
  name       = xiongchenyu6
  signingkey = FEB33C147207641D
 [core]
