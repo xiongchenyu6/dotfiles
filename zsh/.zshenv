@@ -1,6 +1,7 @@
 if [[ "$OSTYPE" == "linux-gnu" ]]; then
     export JAVA_HOME='/usr/lib/jvm/java-8-openjdk'
     export ANDROID_HOME='/opt/android-sdk'
+    export XAUTHORITY=~/.Xauthority
     # export PATH=/opt/ruby2.4/bin:$PATH
     # ...
 else [[ "$OSTYPE" == "darwin"* ]];
@@ -31,7 +32,7 @@ export TERM=xterm-256color
 export HISTCONTROL=ignoreboth:erasedups
 
 export GHTOKEN="ad38f8a815e974c98db2abd6f5ff304eca53400f"
-alias cat=ccat
+# alias cat=ccat
 alias vim='nvim'
 alias git=hub
 alias yolo='git commit -m "$(curl -s whatthecommit.com/index.txt)"'
@@ -50,24 +51,25 @@ export CONAN_USERNAME=brec
 export CONAN_CHANNEL=stable
 
 export XMODIFIERS=@im=ibus
+
 #CJK index
 export XAPIAN_CJK_NGRAM=1
 
 #export CC=gcc
 #export CXX=g++
 
-export CC=gcc-5
-export CXX=g++-5
+#export CC=gcc-5
+#export CXX=g++-5
 
-#export CC=clang
-#export CXX=clang++
+export CC=clang
+export CXX=clang++
+export MAKEFLAGS="-j8"
 
 export INSECURE=1
 #
 #GTAGS
 export GTAGSLABEL=pygments
 export GTAGSTHROUGH=true
-export GTAGSLIBPATH=$HOME/data/.conan/data
 
 setopt BANG_HIST                 # Treat the '!' character specially during expansion.
 setopt EXTENDED_HISTORY          # Write the history file in the ":start:elapsed;command" format.

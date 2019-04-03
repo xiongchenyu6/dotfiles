@@ -14,6 +14,14 @@ target/
 .meteor/
 .vim/
 
+Debug/
+compile_commands.json
+tests/CMakeCache.txt
+.ccls-cache/*
+.ccls-cache/
+
+**/.ensime*
+
 dist
 dist-*
 cabal-dev
@@ -36,5 +44,3 @@ cabal.project.local
 cabal.project.local~
 .HTF/
 .ghc.environment.*
-.ccls-cache/*
-.ccls-cache/

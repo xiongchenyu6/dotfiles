@@ -7,19 +7,12 @@
       user-mail-address "xiongchenyu@bigo.sg"
       doom-font "Hack:size=14:antialias=true"
       doom-modeline-github t
-      doom-modeline-mu4e t
+      doom-modeline-major-mode-color-icon t
       )
+
 (setq projectile-git-submodule-command nil)
 
 (setq lsp-message-project-root-warning t)
-
-(after! company
-  (setq company-minimum-prefix-length 2
-        company-show-numbers t
-        company-idle-delay 0.2
-        company-global-modes '(not comint-mode erc-mode message-mode help-mode gud-mode)
-        )
-  )
 
 (set-lookup-handlers! 'emacs-lisp-mode :documentation #'helpful-at-point)
 
@@ -114,12 +107,6 @@
   (add-to-list 'projectile-globally-ignored-directories ".ccls-cache")
   )
 
-(set-popup-rules! '(
-                    ("^\\*helpful" :size 0.4)
-                    ("^\\*info.*" :size 80 :size right)
-                    ("^\\*Man.*" :size 80 :side right)
-                    ))
-
 ;;mu4e
 ;; give me ISO(ish) format date-time stamps in the header list
 (setq mu4e-attachment-dir "~/Downloads/" mu4e-maildir
@@ -201,3 +188,11 @@
 (setq
 gdb-many-windows t
 gdb-show-main t)
+
+(setq deft-directory "~/Dropbox/Org")
+
+(evil-define-key 'normal ensime-mode-map (kbd "gd") #'ensime-edit-definition)
+(evil-define-key 'normal ensime-mode-map (kbd "gD") #'ensime-edit-definition-other-window)
+(evil-define-key 'normal ensime-mode-map (kbd "C-o") #'ensime-pop-find-definition-stack)
+
+(global-auto-revert-mode)

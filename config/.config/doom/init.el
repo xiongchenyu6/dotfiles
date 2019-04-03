@@ -21,7 +21,7 @@
        ivy
 
        :ui
-       ;;deft              ; notational velocity for Emacs
+       deft              ; notational velocity for Emacs
        doom
        doom-dashboard
        doom-quit         ; DOOM quit-message prompts when you quit Emacs
@@ -30,6 +30,7 @@
        ;; fci               ; a `fill-column' indicator
        hl-todo ; highlight TODO/FIXME/NOTE tags
        modeline          ; snazzy, Atom-inspired modeline, plus API
+       indent-guides
        ;; nav-flash         ; blink the current line after jumping
        ;;neotree           ; a project drawer, like NERDTree for vim
        treemacs
@@ -38,10 +39,10 @@
         +all             ; catch all popups that start with an asterix
         +defaults)
                                         ; default popup rules
-       pretty-code      ; replace bits of code with pretty symbols
+       (pretty-code)      ; replace bits of code with pretty symbols
        tabbar
                                         ; FIXME an (incomplete) tab bar for Emacs
-       ;; unicode           ; extended unicode support for various languages
+       ; unicode           ; extended unicode support for various languages
        vc-gutter         ; vcs diff in the fringe
        vi-tilde-fringe   ; fringe tildes to mark beyond EOB
        window-select     ; visually switch windows
@@ -79,7 +80,7 @@
        make              ; run make tasks from Emacs
        password-store    ; password manager for nerds
        pdf               ; pdf enhancements
-       ;;prodigy           ; FIXME managing external services & code builders
+       prodigy           ; FIXME managing external services & code builders
        rgb               ; creating color strings
        ;;terraform         ; infrastructure as code
        ;; tmux              ; an API for interacting with tmux
@@ -91,7 +92,7 @@
        assembly          ; assembly for fun or debugging
        (cc +lsp); C/C++/Obj-C madness
        ;;clojure           ; java with a lisp
-       common-lisp       ; if you've seen one lisp, you've seen them all
+       ;;common-lisp       ; if you've seen one lisp, you've seen them all
        ;;coq               ; proofs-as-programs
        ;;crystal           ; ruby at the speed of c
        ;;csharp            ; unity, .NET, and mono shenanigans
