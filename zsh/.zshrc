@@ -9,7 +9,7 @@ if [[ "$OSTYPE" == "linux-gnu" ]]; then
     POWERLEVEL9K_SHOW_CHANGESET=true
     POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(root_indicator disk_usage dir dir_writable vcs)
     POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(status background_jobs command_execution_time)
-    plugins=(zsh-wakatime fzf fasd brew emacs tmux git git-flow git-hubflow github gitignore scala stack sbt aws docker docker-compose colored-man-pages colorize extract zsh-autosuggestions zsh-syntax-highlighting zsh-256color archlinux)
+    plugins=(fzf fasd brew emacs tmux git git-flow git-hubflow github gitignore scala stack sbt aws docker docker-compose colored-man-pages colorize extract zsh-autosuggestions zsh-syntax-highlighting zsh-wakatime colorize archlinux)
     eval "$(fasd --init posix-alias zsh-hook)"
     source $ZSH/oh-my-zsh.sh
     # If not running interactively, do not do anything

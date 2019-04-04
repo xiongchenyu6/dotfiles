@@ -58,14 +58,14 @@ export XAPIAN_CJK_NGRAM=1
 #export CC=gcc
 #export CXX=g++
 
-#export CC=gcc-5
-#export CXX=g++-5
 
 export CC=clang
 export CXX=clang++
 export MAKEFLAGS="-j8"
 
 export INSECURE=1
+
+export FZF_TMUX=0
 #
 #GTAGS
 export GTAGSLABEL=pygments
