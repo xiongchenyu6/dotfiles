@@ -196,3 +196,5 @@ gdb-show-main t)
 (evil-define-key 'normal ensime-mode-map (kbd "C-o") #'ensime-pop-find-definition-stack)
 
 (global-auto-revert-mode)
+
+(setq c-syntactic-indentation nil)
