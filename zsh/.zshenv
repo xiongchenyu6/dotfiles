@@ -2,7 +2,9 @@ if [[ "$OSTYPE" == "linux-gnu" ]]; then
     export JAVA_HOME='/usr/lib/jvm/java-8-openjdk'
     export ANDROID_HOME='/opt/android-sdk'
     export XAUTHORITY=~/.Xauthority
-    # export PATH=/opt/ruby2.4/bin:$PATH
+    export CONAN_USERNAME=brec
+    export CONAN_CHANNEL=stable
+    export CONAN_USER_HOME=/home/chenyu  # 设置你的缓存地址，开发机上面请不要放到home
     # ...
 else [[ "$OSTYPE" == "darwin"* ]];
     # Mac OSX
@@ -16,6 +18,7 @@ else [[ "$OSTYPE" == "darwin"* ]];
     export PATH=/usr/local/lib/ruby/gems/2.6.0/bin:$PATH
     export PATH=$HOME/.nix-profile/bin/:$PATH
     export PKG_CONFIG_PATH="/usr/local/opt/libxml2/lib/pkgconfig"
+    export CONAN_USER_HOME=/Users/xiongchenyu  # 设置你的缓存地址，开发机上面请不要放到home
 fi
 
 export GOPATH=$HOME/go
@@ -45,10 +48,6 @@ export EMAIL="xiongchenyu@bigo.sg"
 
 
 export NODE_PATH=$HOME/.config/yarn/global/node_modules
-
-export CONAN_USER_HOME=/home/chenyu  # 设置你的缓存地址，开发机上面请不要放到home
-export CONAN_USERNAME=brec
-export CONAN_CHANNEL=stable
 
 export XMODIFIERS=@im=ibus
 

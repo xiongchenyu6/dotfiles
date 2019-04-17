@@ -1,5 +1,6 @@
+export ZSH=~/.oh-my-zsh
+
 if [[ "$OSTYPE" == "linux-gnu" ]]; then
-    export ZSH=~/.oh-my-zsh
     ZSH_THEME="powerlevel9k/powerlevel9k"
     POWERLEVEL9K_MODE='nerdfont-complete'
     POWERLEVEL9K_VCS_SHOW_SUBMODULE_DIRTY=true
@@ -32,7 +33,7 @@ else [[ "$OSTYPE" == "darwin"* ]];
     POWERLEVEL9K_SHOW_CHANGESET=true
     POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(root_indicator disk_usage dir dir_writable vcs)
     POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(status background_jobs command_execution_time)
-    plugins=(zsh-wakatime osx fasd brew emacs tmux git git-flow git-hubflow github gitignore scala stack sbt aws docker docker-compose colored-man-pages colorize extract zsh-autosuggestions zsh-syntax-highlighting zsh-256color osx fzf)
+    plugins=(zsh-wakatime osx fasd brew emacs tmux git git-flow git-hubflow github gitignore scala stack sbt aws docker docker-compose colored-man-pages colorize extract zsh-autosuggestions zsh-syntax-highlighting osx fzf)
     eval "$(fasd --init posix-alias zsh-hook)"
     export PKG_CONFIG_PATH=/usr/local/Cellar/pkg-config/0.29.2/bin/pkg-config:/usr/local/lib/pkgconfig:/opt/X11/lib/pkgconfig
     test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
