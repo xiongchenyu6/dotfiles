@@ -1,5 +1,5 @@
 Config { 
-        font = "xft:Inconsolata Nerd Font Complete:size=12"
+        font = "xft:Hack:size=12"
       , borderColor = "black"
       , border = TopB
       , bgColor = "black"

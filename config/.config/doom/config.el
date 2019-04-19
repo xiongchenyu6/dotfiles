@@ -167,7 +167,7 @@
 (setq org-latex-compiler "latexmk -pdf %f")
 (setq org-src-preserve-indentation t)
 
-(with-eval-after-load 'tabbar
+(after! tabbar-mode
  ;; Tabbar settings
  (set-face-attribute
   'tabbar-unselected nil
@@ -180,6 +180,7 @@
   :foreground "black"
   :box '(:line-width 2 :color "gray75" :style nil))
  )
+
 
 (after! projectile
 (add-to-list 'projectile-globally-ignored-directories ".ccls-cache")
@@ -194,6 +195,10 @@ gdb-show-main t)
 (evil-define-key 'normal ensime-mode-map (kbd "gd") #'ensime-edit-definition)
 (evil-define-key 'normal ensime-mode-map (kbd "gD") #'ensime-edit-definition-other-window)
 (evil-define-key 'normal ensime-mode-map (kbd "C-o") #'ensime-pop-find-definition-stack)
+
+
+(evil-define-key 'normal cider-mode-map (kbd "gd") #'cider-find-var)
+(evil-define-key 'normal cider-mode-map (kbd "C-o") #'cider-pop-back)
 
 (global-auto-revert-mode)
 

@@ -1,13 +1,15 @@
 if [[ "$OSTYPE" == "linux-gnu" ]]; then
-    export JAVA_HOME='/usr/lib/jvm/java-8-openjdk'
-    export ANDROID_HOME='/opt/android-sdk'
+    export JAVA_HOME='/usr/lib/jvm/java-11-openjdk'
     export XAUTHORITY=~/.Xauthority
     export CONAN_USERNAME=brec
     export CONAN_CHANNEL=stable
     export CONAN_USER_HOME=/home/chenyu  # 设置你的缓存地址，开发机上面请不要放到home
-    # ...
+    #export HADOOP_CLASSPATH=`hadoop classpath`
+    export PATH=/opt/flink-1.8.0/bin:$PATH
+    export BUILD_DIR=/tmp/rrdbuild
+    export INSTALL_DIR=/opt/rrdtool-1.7.1
+
 else [[ "$OSTYPE" == "darwin"* ]];
-    # Mac OSX
     export ANDROID_HOME='/usr/local/share/android-sdk'
     export JAVA_HOME="$(/usr/libexec/java_home)"
     export SCALA_HOME=/usr/local/opt/scala/idea
@@ -18,8 +20,11 @@ else [[ "$OSTYPE" == "darwin"* ]];
     export PATH=/usr/local/lib/ruby/gems/2.6.0/bin:$PATH
     export PATH=$HOME/.nix-profile/bin/:$PATH
     export PKG_CONFIG_PATH="/usr/local/opt/libxml2/lib/pkgconfig"
-    export CONAN_USER_HOME=/Users/xiongchenyu  # 设置你的缓存地址，开发机上面请不要放到home
+    export CONAN_USER_HOME=/Users/xiongchenyu
 fi
+
+export PATH=$HOME/.node_modules/bin:$PATH
+export npm_config_prefix=~/.node_modules
 
 export GOPATH=$HOME/go
 export PATH=$HOME/.local/bin/:$PATH
@@ -54,12 +59,12 @@ export XMODIFIERS=@im=ibus
 #CJK index
 export XAPIAN_CJK_NGRAM=1
 
-#export CC=gcc
-#export CXX=g++
+export CC=gcc
+export CXX=g++
 
-
-export CC=clang
-export CXX=clang++
+#export CC=clang
+#export CXX=clang++
+#
 export MAKEFLAGS="-j8"
 
 export INSECURE=1
