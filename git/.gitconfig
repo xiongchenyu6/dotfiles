@@ -3,9 +3,9 @@
 [color]
  ui = auto
 [user]
- email      = xiongchenyu@bigo.sg
+	email = xiongchenyu@bigo.sg
 # email      = xiongchenyu6@gmail.com
- name       = xiongchenyu6
+	name = xiongchenyu
  signingkey = FEB33C147207641D
 [core]
  excludesfile = ~/.global_ignore

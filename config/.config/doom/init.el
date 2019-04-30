@@ -3,14 +3,6 @@
 (setq doom-localleader-key ",")
 
 (doom! :feature
-       debugger          ; FIXME stepping through code, to help you add bugs
-       eval              ; run code, run (also, repls)
-       evil; come to the dark side, we have cookies
-       file-templates    ; auto-snippets for empty files
-       (lookup           ; helps you navigate your code and documentation
-        +docsets)        ; ...or in Dash docsets locally
-       snippets          ; my elves. They type so I don't have to
-       workspaces        ; tab emulation, persistence & separate workspaces
 
        :completion
        (company          ; the ultimate code completion backend
@@ -25,13 +17,11 @@
        doom
        doom-dashboard
        doom-quit         ; DOOM quit-message prompts when you quit Emacs
-       evil-goggles
-                                      ; display visual hints when editing in evil
-       ;; fci               ; a `fill-column' indicator
+       fill-column               ; a `fill-column' indicator
        hl-todo ; highlight TODO/FIXME/NOTE tags
        modeline          ; snazzy, Atom-inspired modeline, plus API
        indent-guides
-       ;; nav-flash         ; blink the current line after jumping
+       nav-flash         ; blink the current line after jumping
        ;;neotree           ; a project drawer, like NERDTree for vim
        treemacs
                                         ; a project drawer, like neotree but cooler
@@ -45,15 +35,19 @@
        ; unicode           ; extended unicode support for various languages
        vc-gutter         ; vcs diff in the fringe
        vi-tilde-fringe   ; fringe tildes to mark beyond EOB
+       workspaces        ; tab emulation, persistence & separate workspaces
        window-select     ; visually switch windows
 
        :editor
+       evil; come to the dark side, we have cookies
+       file-templates    ; auto-snippets for empty files
        fold              ; (nigh) universal code folding
        (format +onsave)  ; automated prettiness
        lispy             ; vim for lisp, for people who dont like vim
        multiple-cursors  ; editing in many places at once
        ;;parinfer          ; turn lisp into python, sort of
        rotate-text       ; cycle region at point between text candidates
+       snippets          ; my elves. They type so I don't have to
 
        :emacs
        (dired            ; making dired pretty [functional]
@@ -69,7 +63,11 @@
        :tools
        ;;ansible
        docker
+       debugger          ; FIXME stepping through code, to help you add bugs
        editorconfig      ; let someone else argue about tabs vs spaces
+       eval              ; run code, run (also, repls)
+       (lookup           ; helps you navigate your code and documentation
+        +docsets)        ; ...or in Dash docsets locally
        ;;ein               ; tame Jupyter notebooks with emacs
        flycheck          ; tasing you for every semicolon you forget
        flyspell          ; tasing you for misspelling mispelling
@@ -104,14 +102,14 @@
        ;;ess               ; emacs speaks statistics
        ;;go                ; the hipster dialect
        (haskell +lsp) ; a language that's lazier than I am
-       ;;hy                ; readability of scheme w/ speed of python
+       ;; hy                ; readability of scheme w/ speed of python
        ;;idris             ;
        ;;(java +meghanada) ; the poster child for carpal tunnel syndrome
        ;;javascript        ; all(hope(abandon(ye(who(enter(here))))))
        ;;julia             ; a better, faster MATLAB
        ;;latex             ; writing papers in Emacs has never been so fun
        ;;ledger            ; an accounting system in Emacs
-       ;;lua               ; one-based indices? one-based indices
+       ;;lua      -Dconfig.resource=../conf/application.conf         ; one-based indices? one-based indices
        markdown          ; writing docs for people to ignore
        ;;nim               ; python + lisp at the speed of c
        ;;nix               ; I hereby declare "nix geht mehr!"
@@ -127,13 +125,13 @@
        ;;php               ; perl's insecure younger brother
        plantuml          ; diagrams for confusing people more
        ;;purescript        ; javascript, but functional
-       ;;python            ; beautiful is better than ugly
+       (python +lsp)           ; beautiful is better than ugly
        ;;qt                ; the 'cutest' gui framework ever
        ;;racket            ; a DSL for DSLs
        rest              ; Emacs as a REST client
        ;;ruby              ; 1.step do {|i| p "Ruby is #{i.even? ? 'love' : 'life'}"}
        ;;rust              ; Fe2O3.unwrap().unwrap().unwrap().unwrap()
-       scala             ; java, but good
+       scala            ; java, but good
        (sh +z)        ; she sells (ba|z|fi)sh shells on the C xor
        ;;solidity          ; do you need a blockchain? No.
        ;;swift             ; who asked for emoji variables?

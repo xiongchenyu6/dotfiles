@@ -3,6 +3,8 @@ resolver: lts-13.17
 packages:
 - .
 
+jobs: 8
+
 extra-deps:
   - xmonad-0.15@sha256:db671d78ecd66f39f23decf60974a3e078525ec9d2be68a3946b0cfb4d3954fa
   - xmonad-contrib-0.15@sha256:3400e314505eb9887944df064c8a200d278f4ce884745b7ac3bff4181ea4e0b2

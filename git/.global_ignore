@@ -21,6 +21,8 @@ tests/CMakeCache.txt
 .ccls-cache/
 
 **/.ensime*
+.metals/
+.bloop/
 
 dist
 dist-*

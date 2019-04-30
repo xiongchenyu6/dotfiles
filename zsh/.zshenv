@@ -1,5 +1,5 @@
 if [[ "$OSTYPE" == "linux-gnu" ]]; then
-    export JAVA_HOME='/usr/lib/jvm/java-11-openjdk'
+    export JAVA_HOME='/usr/lib/jvm/java-8-openjdk'
     export XAUTHORITY=~/.Xauthority
     export CONAN_USERNAME=brec
     export CONAN_CHANNEL=stable
@@ -25,6 +25,8 @@ fi
 
 export PATH=$HOME/.node_modules/bin:$PATH
 export npm_config_prefix=~/.node_modules
+
+export METALS_ENABLED=true
 
 export GOPATH=$HOME/go
 export PATH=$HOME/.local/bin/:$PATH
@@ -59,11 +61,11 @@ export XMODIFIERS=@im=ibus
 #CJK index
 export XAPIAN_CJK_NGRAM=1
 
-export CC=gcc
-export CXX=g++
+#export CC=gcc
+#export CXX=g++
 
-#export CC=clang
-#export CXX=clang++
+export CC=clang
+export CXX=clang++
 #
 export MAKEFLAGS="-j8"
 
