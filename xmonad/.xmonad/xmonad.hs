@@ -99,7 +99,7 @@ customerKeyMaps =
   , ((0, xF86XK_MonBrightnessDown), spawn "xbacklight -dec 10")
   , ( (modm .|. shiftMask, xK_a)
     , spawn
-      "sleep 0.2; scrot -s '/tmp/%F_%T_$wx$h.png' -e 'xclip -selection clipboard -target image/png -i $f'"
+      "sleep 0.2; scrot -s '/home/chenyu/screen/%F_$wx$h.png' -e 'xclip -selection clipboard -target image/png -i $f'"
     )
   , ((modm .|. shiftMask, xK_p)                , spawn "passmenu")
   , ((modm, xK_m)                              , manPrompt popupConfig)
@@ -113,7 +113,7 @@ customerKeyMaps =
     )
   , ( (0, xK_Print)
     , spawn
-      "scrot '/tmp/%F_%T_$wx$h.png' -e 'xclip -selection clipboard -target image/png -i $f'"
+      "scrot '/home/chenyu/screen/%F_$wx$h.png' -e 'xclip -selection clipboard -target image/png -i $f'"
     )
         -- %F Equivalent to %Y-%m-%d (the ISO 8601 date format).
         -- %T The time in 24-hour notation (%H:%M:%S).

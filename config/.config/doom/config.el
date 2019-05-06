@@ -10,7 +10,7 @@
       doom-modeline-major-mode-color-icon t
       )
 
-(setq projectile-git-submodule-command nil)
+;; (setq projectile-git-submodule-command nil)
 
 (setq lsp-message-project-root-warning t)
 
@@ -149,8 +149,7 @@
  )
 
 (with-eval-after-load 'company
-  (define-key company-active-map (kbd "<tab>") nil)
-  (define-key company-active-map (kbd "TAB") nil)
+  ;; (define-key company-active-map (kbd "TAB") nil)
   )
 
 
@@ -200,6 +199,30 @@ gdb-show-main t)
 (evil-define-key 'normal cider-mode-map (kbd "gd") #'cider-find-var)
 (evil-define-key 'normal cider-mode-map (kbd "C-o") #'cider-pop-back)
 
+
+(evil-define-key 'normal lsp-mode-map (kbd "<f2>") #'lsp-rename)
 (global-auto-revert-mode)
 
 (setq c-syntactic-indentation nil)
+
+(after! cc-mode
+  (map!
+   :map (c-mode-map c++-mode-map)
+   (:localleader
+     :n "p" #'ccls-preprocess-file
+     :n "r" #'ccls-reload
+     :n "h" #'ccls-member-hierarchy
+     :desc "breakpoint"
+     :n "db" (lambda ()
+               (interactive)
+               (evil-open-above 1)
+               (insert "volatile static int z=0;while(!z)asm(\"pause\");")
+               (evil-normal-state))
+     :n "dd" #'realgud:gdb
+     ))
+  )
+
+(after! lsp-mode
+  (setq lsp-ui-doc-include-signature nil)  ; don't include type signature in the child frame
+  (setq lsp-ui-sideline-show-symbol nil)  ; don't show symbol on the right of info
+  )
