@@ -1,4 +1,4 @@
-resolver: lts-13.17
+resolver: lts-13.20
 
 packages:
 - .
@@ -6,9 +6,5 @@ packages:
 jobs: 8
 
 extra-deps:
-  - xmonad-0.15@sha256:db671d78ecd66f39f23decf60974a3e078525ec9d2be68a3946b0cfb4d3954fa
-  - xmonad-contrib-0.15@sha256:3400e314505eb9887944df064c8a200d278f4ce884745b7ac3bff4181ea4e0b2
-  - xmonad-extras-0.15@sha256:4f944f2c4551faf2410f0cc4188913f5444a25c97064a591fccaa34456707f3f
-  - alsa-mixer-0.2.0.3@sha256:10d22ec6fd96b88cf3c090c3447439477c086aafade37d056594c231b8a12bb9
   - xmonad-wallpaper-0.0.1.4@sha256:485ca693e30b8994ad8b18ba4aae6a0587b03bda0298f62798203f2ec0d9afef
   - magic-1.1@sha256:3a31ca1c49fa5f6a857f647471739bd240a6020af6ae43e71fb72201fc482fa2

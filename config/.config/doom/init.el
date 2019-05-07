@@ -89,7 +89,7 @@
        :lang
        assembly                         ; assembly for fun or debugging
        (cc +lsp)                        ; C/C++/Obj-C madness
-       clojure                          ; java with a lisp
+       (clojure +lsp)                         ; java with a lisp
        ;;common-lisp       ; if you've seen one lisp, you've seen them all
        ;;coq               ; proofs-as-programs
        ;;crystal           ; ruby at the speed of c
@@ -131,7 +131,7 @@
        rest                             ; Emacs as a REST client
        ;;ruby              ; 1.step do {|i| p "Ruby is #{i.even? ? 'love' : 'life'}"}
        ;;rust              ; Fe2O3.unwrap().unwrap().unwrap().unwrap()
-       scala                ; java, but good
+       (scala +lsp)               ; java, but good
        (sh +z)              ; she sells (ba|z|fi)sh shells on the C xor
        ;;solidity          ; do you need a blockchain? No.
        ;;swift             ; who asked for emoji variables?

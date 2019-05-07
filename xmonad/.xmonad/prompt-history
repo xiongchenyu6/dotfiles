@@ -1,1 +1,1 @@
-fromList [("SSH to: ",["hkjump","hkjump"]),("hoogle %s> ",["haskell"])]
+fromList [("Manual page: ",["xmonad"]),("SSH to: ",["hkjump","hkjump"]),("hoogle %s> ",["haskell"])]

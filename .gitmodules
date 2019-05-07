@@ -13,3 +13,6 @@
 [submodule "config/.config/nvim/autoload"]
 	path = config/.config/nvim/autoload
 	url = https://github.com/junegunn/vim-plug
+[submodule "config/.config/taffybar/taffybar"]
+	path = config/.config/taffybar/taffybar
+	url = https://github.com/taffybar/taffybar.git

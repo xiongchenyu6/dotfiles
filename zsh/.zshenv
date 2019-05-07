@@ -43,7 +43,7 @@ export HISTCONTROL=ignoreboth:erasedups
 
 export GHTOKEN="ad38f8a815e974c98db2abd6f5ff304eca53400f"
 # alias cat=ccat
-alias vim='nvim'
+alias vi='nvim'
 alias git=hub
 alias yolo='git commit -m "$(curl -s whatthecommit.com/index.txt)"'
 alias ensime="gtags & sbt clean ensimeConfig test:compile ensimeServerIndex"
@@ -61,11 +61,12 @@ export XMODIFIERS=@im=ibus
 #CJK index
 export XAPIAN_CJK_NGRAM=1
 
-#export CC=gcc
-#export CXX=g++
-
 export CC=clang
 export CXX=clang++
+
+export CC=gcc
+export CXX=g++
+
 #
 export MAKEFLAGS="-j8"
 
@@ -76,6 +77,7 @@ export FZF_TMUX=0
 #GTAGS
 export GTAGSLABEL=pygments
 export GTAGSTHROUGH=true
+export SYSTEMD_DEBUGGER=gdb
 
 setopt BANG_HIST                 # Treat the '!' character specially during expansion.
 setopt EXTENDED_HISTORY          # Write the history file in the ":start:elapsed;command" format.

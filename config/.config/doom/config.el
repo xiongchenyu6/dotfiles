@@ -127,7 +127,8 @@
 ;; convert org mode to HTML automatically
 (setq org-mu4e-convert-to-html t)
 
-(menu-bar-mode 1)
+;; (menu-bar-mode 1)
+
 (setq indent-guide-global-mode t)
 
 ;; gpg
@@ -201,6 +202,9 @@ gdb-show-main t)
 
 
 (evil-define-key 'normal lsp-mode-map (kbd "<f2>") #'lsp-rename)
+
+(evil-define-key 'normal org-mode-map (kbd "<tab>") #'+org/toggle-fold)
+
 (global-auto-revert-mode)
 
 (setq c-syntactic-indentation nil)
@@ -222,7 +226,7 @@ gdb-show-main t)
      ))
   )
 
-(after! lsp-mode
-  (setq lsp-ui-doc-include-signature nil)  ; don't include type signature in the child frame
-  (setq lsp-ui-sideline-show-symbol nil)  ; don't show symbol on the right of info
-  )
+(map!
+   :map (org-mode-map)
+   (:localleader
+     :n "z" #'org-redisplay-inline-images))
