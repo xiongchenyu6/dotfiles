@@ -64,8 +64,8 @@ export XAPIAN_CJK_NGRAM=1
 export CC=clang
 export CXX=clang++
 
-export CC=gcc
-export CXX=g++
+#export CC=gcc
+#export CXX=g++
 
 #
 export MAKEFLAGS="-j8"

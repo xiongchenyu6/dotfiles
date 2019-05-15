@@ -228,5 +228,7 @@ gdb-show-main t)
 
 (map!
    :map (org-mode-map)
+   :i "<S-return>" #'org-insert-heading
+   :i "<C-return>" #'org-insert-subheading
    (:localleader
      :n "z" #'org-redisplay-inline-images))
