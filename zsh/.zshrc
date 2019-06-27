@@ -8,7 +8,7 @@ if [[ "$OSTYPE" == "linux-gnu" ]]; then
     POWERLEVEL9K_DIR_WRITABLE_FORBIDDEN_FOREGROUND="white"
     POWERLEVEL9K_COMMAND_EXECUTION_TIME_THRESHOLD=0
     POWERLEVEL9K_SHOW_CHANGESET=true
-    POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(root_indicator disk_usage dir dir_writable vcs)
+    POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(root_indicator disk_usage dir dir_writable virtualenv pyenv vcs)
     POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(status background_jobs command_execution_time)
     plugins=(fzf fasd brew emacs tmux git git-flow git-hubflow github gitignore scala stack sbt aws docker docker-compose colored-man-pages colorize extract zsh-autosuggestions zsh-syntax-highlighting zsh-wakatime colorize archlinux)
     eval "$(fasd --init posix-alias zsh-hook)"

@@ -13,3 +13,4 @@ clojure/.clojure/.cpcache
 !config/.config/doom
 tmux/.tmux/*
 !tmux/.tmux/plugins/tmp
+TAGS

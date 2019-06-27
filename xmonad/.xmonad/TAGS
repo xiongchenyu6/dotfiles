@@ -1,12 +1,0 @@
-
-./xmonad.hs,300
-myTerminal myTerminal23,24
-myWorkplace myWorkplace25,26
-myManageHook myManageHook28,29
-myStartupHook myStartupHook48,49
-modm modm59,60
-main main61,62
-customerKeyMaps customerKeyMaps85,86
-launcherConfig launcherConfig123,124
-popupConfig popupConfig128,129
-myLayout myLayout134,135

@@ -21,8 +21,10 @@ import           XMonad.Util.SpawnOnce
 import           XMonad.Wallpaper
 
 
+myTerminal :: String
 myTerminal = "kitty"
 
+myWorkplace :: [String]
 myWorkplace =
   ["term", "edit", "web", "chat", "email", "6:tmp"] ++ (show <$> [7 .. 9])
 
@@ -46,6 +48,7 @@ myManageHook = composeAll
   , className =? "stalonetray" --> doIgnore
   ]
 
+myStartupHook :: X ()
 myStartupHook = do
   setWMName "LG3D"
   spawnOnce "stalonetray"
@@ -57,6 +60,7 @@ myStartupHook = do
   spawnOnce "sh ~/.conky/conky-startup.sh"
   spawnOnce "/opt/deepinwine/apps/Deepin-WeChat/run.sh"
 
+modm :: KeyMask
 modm = mod4Mask
 
 main :: IO ()
@@ -121,6 +125,7 @@ customerKeyMaps =
         -- $h image height
   ]
 
+launcherConfig :: LauncherConfig
 launcherConfig = LauncherConfig
   { pathToHoogle = "/home/chenyu/.local/bin/hoogle"
   , browser      = "/usr/bin/chromium"
@@ -132,7 +137,7 @@ popupConfig = def { font = "xft:Inconsolata Nerd Font Complete:antialias=true"
                   , height = 48
                   }
 
-myLayout = avoidStruts $ Mirror tiled ||| tiled ||| Full
+myLayout = avoidStruts $ tiled ||| Mirror tiled ||| Full
  where
      -- default tiling algorithm partitions the screen into two panes
   tiled   = Tall nmaster delta ratio

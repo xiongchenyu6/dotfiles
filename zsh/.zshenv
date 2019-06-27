@@ -1,29 +1,51 @@
 if [[ "$OSTYPE" == "linux-gnu" ]]; then
+
     export JAVA_HOME='/usr/lib/jvm/java-8-openjdk'
+    export HADOOP_HOME=/usr/lib/hadoop
+    export FLINK_HOME=/opt/flink-1.8.0
+    export SPARK_HOME=/opt/spark-2.4.3
+    export HBASE_HOME=/opt/hbase-2.2.0
+    export HIVE_HOME=/opt/hive-3.1.1
+
     export XAUTHORITY=~/.Xauthority
     export CONAN_USERNAME=brec
     export CONAN_CHANNEL=stable
     export CONAN_USER_HOME=/home/chenyu  # 设置你的缓存地址，开发机上面请不要放到home
-    #export HADOOP_CLASSPATH=`hadoop classpath`
-    export PATH=/opt/flink-1.8.0/bin:$PATH
+    export HADOOP_CLASSPATH=`hadoop classpath`
+    export SPARK_DIST_CLASSPATH=`hadoop classpath`:$HBASE_HOME/lib/hbase-common-2.1.5.jar:$HBASE_HOME/lib/hbase-client-2.1.5.jar:$HBASE_HOME/lib/hbase-mapreduce-2.1.5.jar:$HBASE_HOME/lib/hbase-shaded-miscellaneous-2.1.0.jar:$HBASE_HOME/lib/hbase-shaded-protobuf-2.1.0.jar:$HBASE_HOME/lib/hbase-shaded-netty-2.1.0.jar
+
+
+
     export BUILD_DIR=/tmp/rrdbuild
-    export INSTALL_DIR=/opt/rrdtool-1.7.1
 
 else [[ "$OSTYPE" == "darwin"* ]];
-    export ANDROID_HOME='/usr/local/share/android-sdk'
+    export ANDROID_HOME=/usr/local/share/android-sdk
     export JAVA_HOME="$(/usr/libexec/java_home)"
     export SCALA_HOME=/usr/local/opt/scala/idea
     export JDK_HOME="$(/usr/libexec/java_home)"
+    export RUBY_HOME=/usr/local/opt/ruby
+    export GEM_HOME=/usr/local/lib/ruby/gems/2.6.0
+
     export PATH=/usr/local/sbin:$PATH
     export PATH=/usr/local/bin:$PATH
-    export PATH=/usr/local/opt/ruby/bin:$PATH
-    export PATH=/usr/local/lib/ruby/gems/2.6.0/bin:$PATH
-    export PATH=$HOME/.nix-profile/bin/:$PATH
     export PKG_CONFIG_PATH="/usr/local/opt/libxml2/lib/pkgconfig"
     export CONAN_USER_HOME=/Users/xiongchenyu
 fi
 
+export PATH=$HOME/.nix-profile/bin/:$PATH
+
 export PATH=$HOME/.node_modules/bin:$PATH
+
+#hadoop echo
+export PATH=$HADOOP_HOME/sbin:$HADOOP_HOME/bin:$PATH
+export PATH=$FLINK_HOME/bin:$PATH
+export PATH=$HBASE_HOME/bin:$PATH
+export PATH=$SPARK_HOME/bin:$PATH
+export PATH=$HIVE_HOME/bin:$PATH
+export PATH=$RUBY_HOME/bin:$PATH
+export PATH=$GEM_HOME/bin:$PATH
+
+
 export npm_config_prefix=~/.node_modules
 
 export METALS_ENABLED=true
@@ -32,8 +54,10 @@ export GOPATH=$HOME/go
 export PATH=$HOME/.local/bin/:$PATH
 export PATH=$HOME/.yarn/bin/:$PATH
 export PATH=$HOME/.emacs.d/bin/:$PATH
+export HADOOP_LOG_DIR=/data/logs
 
-# ssh
+ #ssh
+
 export SSH_KEY_PATH="~/.ssh/rsa_id"
 export LC_ALL=en_US.UTF-8
 export LANGUAGE=en_US.UTF-8
@@ -46,7 +70,6 @@ export GHTOKEN="ad38f8a815e974c98db2abd6f5ff304eca53400f"
 alias vi='nvim'
 alias git=hub
 alias yolo='git commit -m "$(curl -s whatthecommit.com/index.txt)"'
-alias ensime="gtags & sbt clean ensimeConfig test:compile ensimeServerIndex"
 
 export NIX_PATH=$NIX_PATH:$HOME/.nix-defexpr/channels
 export SBT_OPTS="-Xmx8G"

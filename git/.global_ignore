@@ -10,7 +10,8 @@ tmp/**/*
 workspace.xml
 .idea/
 node_modules/
-target/
+target
+!target/native/include/*
 .meteor/
 .vim/
 

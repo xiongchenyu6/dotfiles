@@ -5,7 +5,7 @@
 
 (setq user-full-name "XiongChenYu"
       user-mail-address "xiongchenyu@bigo.sg"
-      doom-font "Hack:size=14:antialias=true"
+      doom-font (font-spec :family "Hack" :size 14)
       doom-modeline-github t
       doom-modeline-major-mode-color-icon t
       )
@@ -17,7 +17,6 @@
 (set-lookup-handlers! 'emacs-lisp-mode :documentation #'helpful-at-point)
 
 ;; (setq evil-move-beyond-eol t)
-
 
 (after! lispy
   (setq lispy-outline "^;; \\(?:;[^#]\\|\\*+\\)"
@@ -87,7 +86,7 @@
   ;;   (minibuffer-with-setup-hook #'hydra-ivy/body
   ;;      (minibuffer-with-setup-hook #'ivy-toggle-calling
   ;;        (ivy-read "xref: " (ivy-xref-make-collection xrefs)
-  ;;                  :require-match t
+  ;;                  :require-match
   ;;                  :action #'(lambda (candidate)
   ;;                              (xref--show-location (cdr candidate) 'quit))))))
   ;; (push '(xref-find-references) ivy-display-functions-alist)
@@ -118,8 +117,8 @@
 
 
 (after! mu4e
- (setq message-send-mail-function 'message-send-mail-with-sendmail
-       sendmail-program "/usr/bin/msmtp"))
+  (setq message-send-mail-function 'message-send-mail-with-sendmail
+        sendmail-program "/usr/bin/msmtp"))
 
 ;; (setq message-sendmail-extra-arguments '("--read-envelope-from"))
 ;; (setq message-sendmail-f-is-evil 't)
@@ -167,28 +166,28 @@
 (setq org-latex-compiler "latexmk -pdf %f")
 (setq org-src-preserve-indentation t)
 
-(after! tabbar-mode
- ;; Tabbar settings
- (set-face-attribute
-  'tabbar-unselected nil
-  :background "black"
-  :foreground "white"
-  :box '(:line-width 2 :color "gray30" :style nil))
- (set-face-attribute
-  'tabbar-selected nil
-  :background "gray75"
-  :foreground "black"
-  :box '(:line-width 2 :color "gray75" :style nil))
- )
+;; (after! tabbar-mode
+;;  ;; Tabbar settings
+;;  (set-face-attribute
+;;   'tabbar-unselected nil
+;;   :background "black"
+;;   :foreground "white"
+;;   :box '(:line-width 2 :color "gray30" :style nil))
+;;  (set-face-attribute
+;;   'tabbar-selected nil
+;;   :background "gray75"
+;;   :foreground "black"
+;;   :box '(:line-width 2 :color "gray75" :style nil))
+;;  )
 
 
 (after! projectile
-(add-to-list 'projectile-globally-ignored-directories ".ccls-cache")
-)
+  (add-to-list 'projectile-globally-ignored-directories ".ccls-cache")
+  )
 
 (setq
-gdb-many-windows t
-gdb-show-main t)
+ gdb-many-windows t
+ gdb-show-main t)
 
 (setq deft-directory "~/Dropbox/Org")
 
@@ -227,8 +226,22 @@ gdb-show-main t)
   )
 
 (map!
-   :map (org-mode-map)
-   :i "<S-return>" #'org-insert-heading
-   :i "<C-return>" #'org-insert-subheading
-   (:localleader
-     :n "z" #'org-redisplay-inline-images))
+ :map (org-mode-map)
+ :i "<S-return>" #'org-insert-heading
+ :i "<C-return>" #'org-insert-subheading
+ (:localleader
+   :n "z" #'org-redisplay-inline-images))
+
+(after! lsp-mode (setq lsp-ui-doc-use-webkit t
+                       lsp-prefer-flymake t
+                       lsp-ui-doc-max-height 30
+                       lsp-ui-doc-max-width 85
+                       lsp-ui-sideline-ignore-duplicate t
+                       ;; lsp-ui-doc is redundant with and less invasive than
+                       ;; `+lookup/documentation'
+                       lsp-ui-doc-enable t
+                       )
+
+  )
+
+(advice-remove #'org-export-output-file-name #'+org*export-output-file-name)

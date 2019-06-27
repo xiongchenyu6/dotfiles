@@ -29,7 +29,7 @@
         +all                      ; catch all popups that start with an asterix
         +defaults)
                                         ; default popup rules
-       (pretty-code)                  ; replace bits of code with pretty symbols
+       (pretty-code +fira)                  ; replace bits of code with pretty symbols
        tabbar
                                         ; FIXME an (incomplete) tab bar for Emacs
                                         ; unicode           ; extended unicode support for various languages
@@ -55,10 +55,10 @@
         +icons                        ; colorful icons for dired-mode
         )
        electric                   ; smarter, keyword-based electric-indent
-       eshell                     ; a consistent, cross-platform shell (WIP)
-       imenu                      ; an imenu sidebar and searchable code index
-       ;;term              ; terminals in Emacs
        vc                         ; version-control and Emacs, sitting in a tree
+
+       :term              ; terminals in Emacs
+       eshell                     ; a consistent, cross-platform shell (WIP)
 
        :tools
        ;;ansible
@@ -76,7 +76,7 @@
        ;;macos             ; MacOS-specific commands
        magit             ; a git porcelain for Emacs
        make              ; run make tasks from Emacs
-       password-store    ; password manager for nerds
+       pass    ; password manager for nerds
        pdf               ; pdf enhancements
        prodigy           ; FIXME managing external services & code builders
        rgb               ; creating color strings
@@ -89,7 +89,7 @@
        :lang
        assembly                         ; assembly for fun or debugging
        (cc +lsp)                        ; C/C++/Obj-C madness
-       (clojure +lsp)                         ; java with a lisp
+       clojure                         ; java with a lisp
        ;;common-lisp       ; if you've seen one lisp, you've seen them all
        ;;coq               ; proofs-as-programs
        ;;crystal           ; ruby at the speed of c
@@ -101,7 +101,7 @@
        emacs-lisp                  ; drown in parentheses
        ;;ess               ; emacs speaks statistics
        ;;go                ; the hipster dialect
-       (haskell +lsp)                   ; a language that's lazier than I am
+       (haskell +lsp)      ; a language that's lazier than I am
        ;;hy                ; readability of scheme w/ speed of python
        ;;idris             ;
        ;;(java +meghanada) ; the poster child for carpal tunnel syndrome
@@ -118,7 +118,7 @@
         +attach                         ; custom attachment system
         +babel                          ; running code in org
         +capture                        ; org-capture in and outside of Emacs
-        +export                         ; Exporting org to whatever you want
+        +export
         +present)
                                         ; Emacs for presentations
        ;;perl              ; write code no one else can comprehend
@@ -165,3 +165,17 @@
        ;; config. Use it as a reference for your own modules.
        (default +bindings +snippets +smartparens)
        )
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(wakatime-api-key "06fb08d0-68a4-4b39-bbb0-d34d325dc046")
+ '(wakatime-cli-path "/usr/bin/wakatime")
+ '(wakatime-python-bin nil))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
