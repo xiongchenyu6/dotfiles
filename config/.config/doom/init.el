@@ -29,7 +29,7 @@
         +all                      ; catch all popups that start with an asterix
         +defaults)
                                         ; default popup rules
-       (pretty-code +fira)                  ; replace bits of code with pretty symbols
+       (pretty-code +fira)            ; replace bits of code with pretty symbols
        tabbar
                                         ; FIXME an (incomplete) tab bar for Emacs
                                         ; unicode           ; extended unicode support for various languages
@@ -57,8 +57,8 @@
        electric                   ; smarter, keyword-based electric-indent
        vc                         ; version-control and Emacs, sitting in a tree
 
-       :term              ; terminals in Emacs
-       eshell                     ; a consistent, cross-platform shell (WIP)
+       :term                          ; terminals in Emacs
+       eshell                         ; a consistent, cross-platform shell (WIP)
 
        :tools
        ;;ansible
@@ -76,7 +76,7 @@
        ;;macos             ; MacOS-specific commands
        magit             ; a git porcelain for Emacs
        make              ; run make tasks from Emacs
-       pass    ; password manager for nerds
+       pass              ; password manager for nerds
        pdf               ; pdf enhancements
        prodigy           ; FIXME managing external services & code builders
        rgb               ; creating color strings
@@ -89,7 +89,7 @@
        :lang
        assembly                         ; assembly for fun or debugging
        (cc +lsp)                        ; C/C++/Obj-C madness
-       clojure                         ; java with a lisp
+       clojure                          ; java with a lisp
        ;;common-lisp       ; if you've seen one lisp, you've seen them all
        ;;coq               ; proofs-as-programs
        ;;crystal           ; ruby at the speed of c
@@ -101,7 +101,7 @@
        emacs-lisp                  ; drown in parentheses
        ;;ess               ; emacs speaks statistics
        ;;go                ; the hipster dialect
-       (haskell +lsp)      ; a language that's lazier than I am
+       (haskell +lsp)                   ; a language that's lazier than I am
        ;;hy                ; readability of scheme w/ speed of python
        ;;idris             ;
        ;;(java +meghanada) ; the poster child for carpal tunnel syndrome
@@ -131,7 +131,7 @@
        rest                             ; Emacs as a REST client
        ;;ruby              ; 1.step do {|i| p "Ruby is #{i.even? ? 'love' : 'life'}"}
        ;;rust              ; Fe2O3.unwrap().unwrap().unwrap().unwrap()
-       (scala +lsp)               ; java, but good
+       (scala +lsp)         ; java, but good
        (sh +z)              ; she sells (ba|z|fi)sh shells on the C xor
        ;;solidity          ; do you need a blockchain? No.
        ;;swift             ; who asked for emoji variables?
@@ -142,7 +142,7 @@
        ;; toward a specific purpose. They may have additional dependencies and
        ;; should be loaded late.
        :email
-       (mu4e +gmail)                          ; emacs as an email client
+       (mu4e +gmail)                    ; emacs as an email client
        :app
        ;;irc               ; how neckbeards socialize
        (rss +org)                       ; emacs as an RSS reader
@@ -164,6 +164,8 @@
        ;; provides a Spacemacs-inspired keybinding scheme and a smartparens
        ;; config. Use it as a reference for your own modules.
        (default +bindings +snippets +smartparens)
+       :private
+        my-leet-code
        )
 (custom-set-variables
  ;; custom-set-variables was added by Custom.

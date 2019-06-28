@@ -14,3 +14,7 @@ clojure/.clojure/.cpcache
 tmux/.tmux/*
 !tmux/.tmux/plugins/tmp
 TAGS
+
+haskell/.stack/programs
+haskell/.stack/build-plan-cache
+haskell/.stack/build-plan

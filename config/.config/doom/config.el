@@ -245,3 +245,5 @@
   )
 
 (advice-remove #'org-export-output-file-name #'+org*export-output-file-name)
+
+;; (setq org-reveal-klipsify-src t)
