@@ -233,17 +233,24 @@
    :n "z" #'org-redisplay-inline-images))
 
 (after! lsp-mode (setq lsp-ui-doc-use-webkit t
-                       lsp-prefer-flymake t
                        lsp-ui-doc-max-height 30
                        lsp-ui-doc-max-width 85
-                       lsp-ui-sideline-ignore-duplicate t
-                       ;; lsp-ui-doc is redundant with and less invasive than
-                       ;; `+lookup/documentation'
-                       lsp-ui-doc-enable t
                        )
 
   )
 
 (advice-remove #'org-export-output-file-name #'+org*export-output-file-name)
 
+
+(defmacro ulss (cond &rest body)
+  "If COND yields nil, do BODY, else return nil.
+When COND yields nil, eval BODY forms sequentially and return
+value of last one, or nil if there are none.
+
+\(fn COND BODY...)"
+  (declare (indent 1) (debug t))
+  (cons 'if (cons cond (cons nil body))))
+
 ;; (setq org-reveal-klipsify-src t)
+
+(ulss (eq 2 2) 2)

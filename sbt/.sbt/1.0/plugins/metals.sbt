@@ -7,8 +7,8 @@ libraryDependencies := {
   import Defaults.sbtPluginExtra
   val oldDependencies = libraryDependencies.value
   if (System.getenv("METALS_ENABLED") == "true") {
-    val bloopModule = "ch.epfl.scala" % "sbt-bloop" % "1.2.5"
-    val metalsModule = "org.scalameta" % "sbt-metals" % "0.5.0"
+    val bloopModule = "ch.epfl.scala" % "sbt-bloop" % "latest.integration"
+    val metalsModule = "org.scalameta" % "sbt-metals" % "latest.integration"
     val sbtVersion = Keys.sbtBinaryVersion.in(TaskKey[Unit]("pluginCrossBuild")).value
     val scalaVersion = Keys.scalaBinaryVersion.in(update).value
     val bloopPlugin = sbtPluginExtra(bloopModule, sbtVersion, scalaVersion)

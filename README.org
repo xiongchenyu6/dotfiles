@@ -56,3 +56,8 @@
      #Inport gpg
      gpg --import-ownertrust chrisroos-ownertrust-gpg.txt
    #+END_SRC
+
+* Install
+   #+BEGIN_SRC shell
+    pacman -S --needed - < pkglist.txt
+   #+END_SRC

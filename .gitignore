@@ -18,3 +18,9 @@ TAGS
 haskell/.stack/programs
 haskell/.stack/build-plan-cache
 haskell/.stack/build-plan
+haskell/.stack/indices/
+haskell/.stack/loaded-snapshot-cache/
+haskell/.stack/precompiled/
+haskell/.stack/setup-exe-cache/
+haskell/.stack/setup-exe-src/
+haskell/.stack/snapshots/
