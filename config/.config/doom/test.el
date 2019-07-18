@@ -95,6 +95,18 @@
     (push elt result)))
 
 
+(defmacro ulss (cond &rest body)
+  "If COND yields nil, do BODY, else return nil.
+When COND yields nil, eval BODY forms sequentially and return
+value of last one, or nil if there are none.
+
+\(fn COND BODY...)"
+  (declare (indent 1) (debug t))
+  (cons 'if (cons cond (cons nil body))))
+
+;; (setq org-reveal-klipsify-src t)
+
+(ulss (eq 2 2) 2)
 
 '(1 21 ,@(2 3))
 

@@ -46,8 +46,8 @@
        lispy                ; vim for lisp, for people who dont like vim
        multiple-cursors     ; editing in many places at once
        ;;parinfer          ; turn lisp into python, sort of
-       rotate-text               ; cycle region at point between text candidates
        snippets                  ; my elves. They type so I don't have to
+       rotate-text               ; cycle region at point between text candidates
 
        :emacs
        (dired                         ; making dired pretty [functional]
@@ -105,9 +105,9 @@
        ;;hy                ; readability of scheme w/ speed of python
        ;;idris             ;
        ;;(java +meghanada) ; the poster child for carpal tunnel syndrome
-       javascript                  ; all(hope(abandon(ye(who(enter(here))))))
+       javascript     ; all(hope(abandon(ye(who(enter(here))))))
        ;;julia             ; a better, faster MATLAB
-       ;;latex             ; writing papers in Emacs has never been so fun
+       latex          ; writing papers in Emacs has never been so fun
        ;;ledger            ; an accounting system in Emacs
        ;;lua               ; one-based indices? one-based indices
        markdown          ; writing docs for people to ignore
@@ -163,9 +163,9 @@
        ;; The default module sets reasonable defaults for Emacs. It also
        ;; provides a Spacemacs-inspired keybinding scheme and a smartparens
        ;; config. Use it as a reference for your own modules.
-       (default +bindings +snippets +smartparens)
+       (default +bindings +smartparens)
        :private
-        my-leet-code
+       my-leet-code
        )
 (custom-set-variables
  '(wakatime-api-key "06fb08d0-68a4-4b39-bbb0-d34d325dc046")

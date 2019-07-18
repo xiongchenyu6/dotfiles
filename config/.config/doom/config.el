@@ -242,15 +242,20 @@
 (advice-remove #'org-export-output-file-name #'+org*export-output-file-name)
 
 
-(defmacro ulss (cond &rest body)
-  "If COND yields nil, do BODY, else return nil.
-When COND yields nil, eval BODY forms sequentially and return
-value of last one, or nil if there are none.
+(setq company-backends '(company-tabnine company-capf))
 
-\(fn COND BODY...)"
-  (declare (indent 1) (debug t))
-  (cons 'if (cons cond (cons nil body))))
+(defun add-company-tabnine ()
+  (add-to-list (make-local-variable 'company-backends) 'company-tabnine))
 
-;; (setq org-reveal-klipsify-src t)
-
-(ulss (eq 2 2) 2)
+(add-hook! (c-mode
+            c++-mode
+            swift-mode
+            lisp-mode
+            emacs-lisp-mode
+            sh-mode
+            lua-mode
+            haskell-mode
+            go-mode
+            java-mode
+            python-mode)
+  #'add-company-tabnine)

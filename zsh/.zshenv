@@ -2,16 +2,14 @@ if [[ "$OSTYPE" == "linux-gnu" ]]; then
 
     export JAVA_HOME='/usr/lib/jvm/java-8-openjdk'
     export HADOOP_HOME=/usr/lib/hadoop
-    export FLINK_HOME=/opt/flink-1.8.0
+    export FLINK_HOME=/opt/flink-1.8.1
     export SPARK_HOME=/opt/spark-2.4.3
     export HBASE_HOME=/opt/hbase-2.2.0
     export HIVE_HOME=/opt/hive-3.1.1
-
     export XAUTHORITY=~/.Xauthority
     export CONAN_USERNAME=brec
     export CONAN_CHANNEL=stable
-    export CONAN_USER_HOME=/home/chenyu  # 设置你的缓存地址，开发机上面请不要放到home
-    export HADOOP_CLASSPATH=`hadoop classpath`
+    export HADOOP_CLASSPATH=`hadoop classpath`:$HADOOP_HOME/lib/native/*
     export SPARK_DIST_CLASSPATH=`hadoop classpath`:$HBASE_HOME/lib/hbase-common-2.1.5.jar:$HBASE_HOME/lib/hbase-client-2.1.5.jar:$HBASE_HOME/lib/hbase-mapreduce-2.1.5.jar:$HBASE_HOME/lib/hbase-shaded-miscellaneous-2.1.0.jar:$HBASE_HOME/lib/hbase-shaded-protobuf-2.1.0.jar:$HBASE_HOME/lib/hbase-shaded-netty-2.1.0.jar
 
 
@@ -33,8 +31,19 @@ else [[ "$OSTYPE" == "darwin"* ]];
 fi
 
 export PATH=$HOME/.nix-profile/bin/:$PATH
-
 export PATH=$HOME/.node_modules/bin:$PATH
+
+export HADOOP_INSTALL=$HADOOP_HOME
+export HADOOP_MAPRED_HOME=$HADOOP_HOME 
+export HADOOP_COMMON_HOME=$HADOOP_HOME 
+export HADOOP_HDFS_HOME=$HADOOP_HOME 
+export YARN_HOME=$HADOOP_HOME 
+export HADOOP_COMMON_LIB_NATIVE_DIR=$HADOOP_HOME/lib/native 
+export HADOOP_OPTS="$HADOOP_OPTS -Djava.library.path=$HADOOP_HOME/lib"
+export JAVA_LIBRARY_PATH=$JAVA_LIBRARY_PATH:$HADOOP_HOME/lib/native
+export FLINK_CLASSPATH=$HADOOP_HOME/lib/native/*
+export CC_CLASSPATH=$HADOOP_HOME/lib/native/*
+
 
 #hadoop echo
 export PATH=$HADOOP_HOME/sbin:$HADOOP_HOME/bin:$PATH
@@ -84,11 +93,11 @@ export XMODIFIERS=@im=ibus
 #CJK index
 export XAPIAN_CJK_NGRAM=1
 
-#export CC=clang
-#export CXX=clang++
+export CC=clang
+export CXX=clang++
 
-export CC=gcc
-export CXX=g++
+#export CC=gcc
+#export CXX=g++
 
 #
 export MAKEFLAGS="-j8"
