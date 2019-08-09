@@ -3,6 +3,9 @@
 ;; Place your private configuration here
 ;;
 
+
+;; (setq company-backends '(company-tabnine company-lsp company-capf))
+
 (setq user-full-name "XiongChenYu"
       user-mail-address "xiongchenyu@bigo.sg"
       doom-font (font-spec :family "Hack" :size 14)
@@ -17,6 +20,7 @@
 (set-lookup-handlers! 'emacs-lisp-mode :documentation #'helpful-at-point)
 
 ;; (setq evil-move-beyond-eol t)
+(set-lookup-handlers! 'emacs-library-link :documentation )
 
 (after! lispy
   (setq lispy-outline "^;; \\(?:;[^#]\\|\\*+\\)"
@@ -149,7 +153,7 @@
  )
 
 (with-eval-after-load 'company
-  ;; (define-key company-active-map (kbd "TAB") nil)
+   (define-key company-active-map (kbd "TAB") nil)
   )
 
 
@@ -240,22 +244,3 @@
   )
 
 (advice-remove #'org-export-output-file-name #'+org*export-output-file-name)
-
-
-(setq company-backends '(company-tabnine company-capf))
-
-(defun add-company-tabnine ()
-  (add-to-list (make-local-variable 'company-backends) 'company-tabnine))
-
-(add-hook! (c-mode
-            c++-mode
-            swift-mode
-            lisp-mode
-            emacs-lisp-mode
-            sh-mode
-            lua-mode
-            haskell-mode
-            go-mode
-            java-mode
-            python-mode)
-  #'add-company-tabnine)

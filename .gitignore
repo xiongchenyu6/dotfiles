@@ -11,6 +11,7 @@ clojure/.clojure/.cpcache
 !config/.config/kitty
 !config/.config/Code/User
 !config/.config/doom
+!config/.config/TabNine
 tmux/.tmux/*
 !tmux/.tmux/plugins/tmp
 TAGS

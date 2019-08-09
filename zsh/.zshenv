@@ -81,7 +81,7 @@ alias git=hub
 alias yolo='git commit -m "$(curl -s whatthecommit.com/index.txt)"'
 
 export NIX_PATH=$NIX_PATH:$HOME/.nix-defexpr/channels
-export SBT_OPTS="-Xmx8G"
+export SBT_OPTS="-Xmx8G -Xss2M"
 export EDITOR="emacsclient"
 export EMAIL="xiongchenyu@bigo.sg"
 
