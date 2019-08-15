@@ -25,3 +25,4 @@ haskell/.stack/precompiled/
 haskell/.stack/setup-exe-cache/
 haskell/.stack/setup-exe-src/
 haskell/.stack/snapshots/
+haskell/.stack/pantry/
