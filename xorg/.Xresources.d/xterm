@@ -9,5 +9,5 @@ XTerm.VT100.translations: #override \
 Ctrl <Key> KP_Subtract: smaller-vt-font() \n\
 Ctrl <Key> KP_Add: larger-vt-font()
 XTerm*renderFont: true
-XTerm.vt100.faceName:Inconsolata Nerd Font:size=12:antialias=true
+XTerm.vt100.faceName:Hack Nerd Font Mono:size=12:antialias=true
 

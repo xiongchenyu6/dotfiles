@@ -12,6 +12,8 @@ clojure/.clojure/.cpcache
 !config/.config/Code/User
 !config/.config/doom
 !config/.config/TabNine
+!config/.config/fontconfig
+!config/.config/taffybar
 tmux/.tmux/*
 !tmux/.tmux/plugins/tmp
 TAGS
@@ -26,3 +28,5 @@ haskell/.stack/setup-exe-cache/
 haskell/.stack/setup-exe-src/
 haskell/.stack/snapshots/
 haskell/.stack/pantry/
+haskell/.stack/pantry/pantry.sqlite3
+haskell/.stack/stack.sqlite3

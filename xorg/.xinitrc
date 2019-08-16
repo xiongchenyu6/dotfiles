@@ -10,7 +10,8 @@ export XIM=ibus
 export QT_IM_MODULE=ibus
 export XIM_ARGS="ibus-daemon -d -x"
 
-#nm-applet &
+clipit &
+nm-applet &
 dropbox &
 xmodmap ~/.Xmodmap &
 ibus-daemon -d -x &

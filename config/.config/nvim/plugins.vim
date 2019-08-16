@@ -33,6 +33,7 @@ Plug 'xolox/vim-session'
 Plug 'rafi/awesome-vim-colorschemes'
 Plug 'itchyny/lightline.vim'
 Plug 'ryanoasis/vim-devicons'
+Plug 'mtdl9/vim-log-highlighting'
 ""better poly syntax
 Plug 'sheerun/vim-polyglot'
 
