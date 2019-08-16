@@ -1,5 +1,5 @@
-Config { 
-        font = "xft:Hack Nerd Font Mono:size=12"
+Config {
+        font = "xft:Hack:size=12"
       , borderColor = "black"
       , border = TopB
       , bgColor = "black"
@@ -12,7 +12,7 @@ Config {
       , overrideRedirect = True    -- set the Override Redirect flag (Xlib)
       , pickBroadest =     False   -- choose widest display (multi-monitor)
       , persistent =       True    -- enable/disable hiding (True = disabled)
-      , template = "%StdinReader% |%coretemp%|%memory%|%dynnetwork%}{<fc=#ee9a00>%date%</fc>"
+      , template = "%StdinReader%|%memory%|%dynnetwork%|%myvolume%|%bright%|%coretemp%}{<fc=#ee9a00>%date%</fc>"
       , sepChar = "%"
       , alignSep = "}{"
       , commands = [ 
@@ -44,8 +44,8 @@ Config {
                       , Run Memory ["-t","Mem: <usedratio>%"] 10
                       , Run Com "uname" ["-s","-r"] "" 36000
                       , Run Date "%a %b %_d %Y %H:%M:%S" "date" 10
-                      , Run Brightness ["--template", "bl: <percent>", "--", "-D", "intel_backlight"] 50
-                      --  | %bright% 
+	                    , Run Com "/bin/bash" ["-c", "~/.script/get-volume.sh"]  "myvolume" 1
+                      , Run Brightness ["--template", "Bl: <vbar>", "--", "-D", "intel_backlight"] 3
                       , Run StdinReader
                       ]
       }

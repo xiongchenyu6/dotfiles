@@ -18,15 +18,6 @@ tmux/.tmux/*
 !tmux/.tmux/plugins/tmp
 TAGS
 
-haskell/.stack/programs
-haskell/.stack/build-plan-cache
-haskell/.stack/build-plan
-haskell/.stack/indices/
-haskell/.stack/loaded-snapshot-cache/
-haskell/.stack/precompiled/
-haskell/.stack/setup-exe-cache/
-haskell/.stack/setup-exe-src/
-haskell/.stack/snapshots/
-haskell/.stack/pantry/
-haskell/.stack/pantry/pantry.sqlite3
-haskell/.stack/stack.sqlite3
+haskell/.stack
+!haskell/.stack/config.yaml
+!haskell/.stack/global-project
