@@ -7,7 +7,7 @@
        :completion
        (company                         ; the ultimate code completion backend
         +auto) ; as-you-type code completion                    ; a nicer company UI (Emacs 26+ only)
-       ;;helm            ; the *other* search engine for love and life
+       ;; helm            ; the *other* search engine for love and life
        ;; ido            ; the other *other* search engine...
        ivy
 
@@ -174,7 +174,7 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(custom-safe-themes
-   '("e3c87e869f94af65d358aa279945a3daf46f8185f1a5756ca1c90759024593dd" "868abc288f3afe212a70d24de2e156180e97c67ca2e86ba0f2bf9a18c9672f07" "155a5de9192c2f6d53efcc9c554892a0d87d87f99ad8cc14b330f4f4be204445" default))
+   '("b0fd04a1b4b614840073a82a53e88fe2abc3d731462d6fde4e541807825af342" "e3c87e869f94af65d358aa279945a3daf46f8185f1a5756ca1c90759024593dd" "868abc288f3afe212a70d24de2e156180e97c67ca2e86ba0f2bf9a18c9672f07" "155a5de9192c2f6d53efcc9c554892a0d87d87f99ad8cc14b330f4f4be204445" default))
  '(wakatime-api-key "06fb08d0-68a4-4b39-bbb0-d34d325dc046")
  '(wakatime-cli-path "/usr/bin/wakatime")
  '(wakatime-python-bin nil))

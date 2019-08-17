@@ -1,5 +1,5 @@
 Config {
-        font = "xft:Hack:size=12"
+        font = "xft:Consolas\-with\-Yahei:size=12"
       , borderColor = "black"
       , border = TopB
       , bgColor = "black"

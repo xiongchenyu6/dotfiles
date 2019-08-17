@@ -31,12 +31,8 @@ myWorkplace =
 myManageHook = composeAll
   [ className =? "Xterm" --> doShift "term"
   , className =? "Urxvt" --> doShift "term"
-  , className =? "St" --> doShift "term"
-  , className =? "st" --> doShift "term"
   , className =? "Kitty" --> doShift "term"
   , className =? "kitty" --> doShift "term"
-  , className =? "Emacs" --> doShift "edit"
-  , className =? "Emacsclient" --> doShift "edit"
   , className =? "Chromium" --> doShift "web"
   , className =? "Thunderbird" --> doShift "email"
   , className =? "Wechat" --> doShift "chat"
@@ -53,7 +49,6 @@ myStartupHook = do
   setWMName "LG3D"
   spawnOnce "stalonetray"
   spawnOnce "kitty"
-  spawnOnce "emacs"
   spawnOnce "chromium"
   spawnOnce "thunderbird"
   spawnOnce "conky-manager"
@@ -78,7 +73,7 @@ main = do
                        , layoutHook      = avoidStruts myLayout
                        , terminal        = myTerminal
                        , logHook         = dynamicLogWithPP xmobarPP
-                                             { ppOutput = hPutStrLn xmproc
+                                             { ppOutput =  hPutStrLn xmproc
                                              , ppTitle = xmobarColor "green" "" . shorten 60
                                              }
                        , handleEventHook = ewmhDesktopsEventHook
