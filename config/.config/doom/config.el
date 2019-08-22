@@ -1,10 +1,6 @@
 ;;; ~/.doom.d/config.el -*- lexical-binding: t; -*-
 
 ;; Place your private configuration here
-;;
-
-
-;; (setq company-backends '(company-tabnine company-lsp company-capf))
 
 (setq user-full-name "XiongChenYu"
       user-mail-address "xiongchenyu@bigo.sg"
@@ -47,58 +43,7 @@
         )
   )
 
-(setq magit-repository-directories '(("~/workplace" . 2)))
-
-(defun +advice/xref-set-jump (&rest args)
-  (require 'lsp-ui)
-  (lsp-ui-peek--with-evil-jumps (evil-set-jump)))
-
-(advice-add '+lookup/definition :before #'+advice/xref-set-jump)
-(advice-add '+lookup/references :before #'+advice/xref-set-jump)
-
-
-(defvar +my/xref-blacklist nil
-  "List of paths that should not enable xref-find-* or dumb-jump-go")
-
-;;; Override
-;; This function is transitively called by xref-find-{definitions,references,apropos}
-(after! xref
-  ;; This is required to make `xref-find-references' not give a prompt.
-  ;; `xref-find-references' asks the identifier (which has no text property)
-  ;; and then passes it to `lsp-mode', which requires the text property at
-  ;; point to locate the references.
-  ;; https://debbugs.gnu.org/cgi/bugreport.cgi?bug=29619
-  (setq xref-prompt-for-identifier '(not xref-find-definitions
-                                         xref-find-definitions-other-window
-                                         xref-find-definitions-other-frame
-                                         xref-find-references))
-
-  (defun xref--show-xrefs (xrefs display-action &optional always-show-list)
-    ;; PATCH
-    (lsp-ui-peek--with-evil-jumps (evil-set-jump))
-
-    ;; PATCH Jump to the first candidate
-    (if (not (cdr xrefs))
-        (xref--pop-to-location (car xrefs) display-action)
-      (funcall xref-show-xrefs-function xrefs
-               `((window . ,(selected-window))))
-      ))
-  )
-
-(after! ivy-xref
-  ;; (defun ivy-xref-show-xrefs (xrefs alist)
-  ;;   (minibuffer-with-setup-hook #'hydra-ivy/body
-  ;;      (minibuffer-with-setup-hook #'ivy-toggle-calling
-  ;;        (ivy-read "xref: " (ivy-xref-make-collection xrefs)
-  ;;                  :require-match
-  ;;                  :action #'(lambda (candidate)
-  ;;                              (xref--show-location (cdr candidate) 'quit))))))
-  ;; (push '(xref-find-references) ivy-display-functions-alist)
-  (push '(ivy-xref-show-xrefs . nil) ivy-sort-functions-alist)
-  )
-
-(def-package! symbol-overlay
-  :commands (symbol-overlay-put))
+(setq magit-repository-directories '(("~/workspace" . 2)))
 
 (after! projectile
   (setq compilation-read-command nil)  ; no prompt in projectile-compile-project
@@ -109,6 +54,10 @@
                                     :test "ctest")
   (add-to-list 'projectile-globally-ignored-directories ".ccls-cache")
   )
+
+;; (after! projectile
+;;   (add-to-list 'projectile-globally-ignored-directories ".ccls-cache")
+;;   )
 
 ;;mu4e
 ;; give me ISO(ish) format date-time stamps in the header list
@@ -184,11 +133,6 @@
 ;;   :box '(:line-width 2 :color "gray75" :style nil))
 ;;  )
 
-
-(after! projectile
-  (add-to-list 'projectile-globally-ignored-directories ".ccls-cache")
-  )
-
 (setq
  gdb-many-windows t
  gdb-show-main t)
@@ -239,8 +183,6 @@
 (after! lsp-mode (setq lsp-ui-doc-use-webkit t
                        lsp-ui-doc-max-height 30
                        lsp-ui-doc-max-width 85
-                       )
-
-  )
+                       ))
 
 (advice-remove #'org-export-output-file-name #'+org*export-output-file-name)
