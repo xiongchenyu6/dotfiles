@@ -2,29 +2,29 @@
 # Gmail
 ########################################
 
-IMAPAccount gmail
-Host imap.gmail.com
-User xiongchenyu6@gmail.com
-PassCmd "pass google.com/xiongchenyu6@gmail.com"
-AuthMechs LOGIN
-SSLType IMAPS
-CertificateFile /etc/ssl/cert.pem
-
-IMAPStore gmail-remote
-Account gmail
-
-MaildirStore gmail-local
-Path ~/mail/gmail
-Inbox ~/mail/gmail/Inbox
-SubFolders Legacy
-
-Channel gmail
-Master :gmail-remote:
-Slave :gmail-local:
-Patterns "*" 
-Create Both
-SyncState *
-Sync All
+#IMAPAccount gmail
+#Host imap.gmail.com
+#User xiongchenyu6@gmail.com
+#PassCmd "pass google.com/xiongchenyu6@gmail.com"
+#AuthMechs LOGIN
+#SSLType IMAPS
+#CertificateFile /etc/ssl/cert.pem
+#
+#IMAPStore gmail-remote
+#Account gmail
+#
+#MaildirStore gmail-local
+#Path ~/mail/gmail
+#Inbox ~/mail/gmail/Inbox
+#SubFolders Legacy
+#
+#Channel gmail
+#Master :gmail-remote:
+#Slave :gmail-local:
+#Patterns "*" 
+#Create Both
+#SyncState *
+#Sync All
 
 ########################################
 # Bigo

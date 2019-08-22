@@ -1,5 +1,3 @@
-# see base omz config: https://github.com/robbyrussell/oh-my-zsh/blob/master/templates/zshrc.zsh-template
-
 # where is antibody keeping its stuff?
 ANTIBODY_HOME="$(antibody home)"
 
@@ -15,7 +13,10 @@ export ZSH="$ANTIBODY_HOME"/https-COLON--SLASH--SLASH-github.com-SLASH-xiongchen
 # quit bugging me!
 DISABLE_AUTO_UPDATE="true"
 
+# antibody bundle < .zsh_plugins.txt > .zsh_plugins.sh
 source ~/.zsh_plugins.sh
+
+source "$ANTIBODY_HOME"/https-COLON--SLASH--SLASH-github.com-SLASH-b4b4r07-SLASH-enhancd/init.sh
 
 eval "$(fasd --init posix-alias zsh-hook)"
 # If not running interactively, do not do anything

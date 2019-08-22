@@ -1,5 +1,4 @@
 if [[ "$OSTYPE" == "linux-gnu" ]]; then
-
     export JAVA_HOME='/usr/lib/jvm/java-8-openjdk'
     export HADOOP_HOME=/usr/lib/hadoop
     export FLINK_HOME=/opt/flink-1.8.1
@@ -11,9 +10,6 @@ if [[ "$OSTYPE" == "linux-gnu" ]]; then
     export CONAN_CHANNEL=stable
     export HADOOP_CLASSPATH=`hadoop classpath`:$HADOOP_HOME/lib/native/*
     export SPARK_DIST_CLASSPATH=`hadoop classpath`:$HBASE_HOME/lib/hbase-common-2.1.5.jar:$HBASE_HOME/lib/hbase-client-2.1.5.jar:$HBASE_HOME/lib/hbase-mapreduce-2.1.5.jar:$HBASE_HOME/lib/hbase-shaded-miscellaneous-2.1.0.jar:$HBASE_HOME/lib/hbase-shaded-protobuf-2.1.0.jar:$HBASE_HOME/lib/hbase-shaded-netty-2.1.0.jar
-
-
-
     export BUILD_DIR=/tmp/rrdbuild
 
 else [[ "$OSTYPE" == "darwin"* ]];
@@ -23,7 +19,6 @@ else [[ "$OSTYPE" == "darwin"* ]];
     export JDK_HOME="$(/usr/libexec/java_home)"
     export RUBY_HOME=/usr/local/opt/ruby
     export GEM_HOME=/usr/local/lib/ruby/gems/2.6.0
-
     export PATH=/usr/local/sbin:$PATH
     export PATH=/usr/local/bin:$PATH
     export PKG_CONFIG_PATH="/usr/local/opt/libxml2/lib/pkgconfig"
@@ -66,7 +61,6 @@ export PATH=$HOME/.emacs.d/bin/:$PATH
 export HADOOP_LOG_DIR=/data/logs
 
  #ssh
-
 export SSH_KEY_PATH="~/.ssh/rsa_id"
 export LC_ALL=en_US.UTF-8
 export LANGUAGE=en_US.UTF-8
@@ -105,11 +99,25 @@ export MAKEFLAGS="-j8"
 export INSECURE=1
 
 export FZF_TMUX=0
-#
+
 #GTAGS
 export GTAGSLABEL=pygments
 export GTAGSTHROUGH=true
 export SYSTEMD_DEBUGGER=gdb
+
+#Theme
+export POWERLEVEL9K_MODE='nerdfont-complete'	
+export POWERLEVEL9K_VCS_SHOW_SUBMODULE_DIRTY=true	# set the theme to something, or blank if you use a non omz theme
+export POWERLEVEL9K_DIR_OMIT_FIRST_CHARACTER=true
+export POWERLEVEL9K_DIR_WRITABLE_FORBIDDEN_FOREGROUND="white"	
+export POWERLEVEL9K_COMMAND_EXECUTION_TIME_THRESHOLD=0	# you can do plugins the omz way if you want... or load with antibody later
+export POWERLEVEL9K_SHOW_CHANGESET=true	
+export POWERLEVEL9K_PROMPT_ON_NEWLINE=true
+export POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(context root_indicator disk_usage dir dir_writable dropbox virtualenv root_indicator pyenv vcs ssh)	
+export POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(status background_jobs command_execution_time history time newline)
+
+#enhancd
+export ENHANCD_DISABLE_HYPHEN=1
 
 setopt BANG_HIST                 # Treat the '!' character specially during expansion.
 setopt EXTENDED_HISTORY          # Write the history file in the ":start:elapsed;command" format.
