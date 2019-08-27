@@ -1,7 +1,7 @@
 if [[ "$OSTYPE" == "linux-gnu" ]]; then
     export JAVA_HOME='/usr/lib/jvm/java-8-openjdk'
     export HADOOP_HOME=/usr/lib/hadoop
-    export FLINK_HOME=/opt/flink-1.8.1
+    export FLINK_HOME=/opt/flink-1.9.0
     export SPARK_HOME=/opt/spark-2.4.3
     export HBASE_HOME=/opt/hbase-2.2.0
     export HIVE_HOME=/opt/hive-3.1.1
@@ -34,7 +34,7 @@ export HADOOP_COMMON_HOME=$HADOOP_HOME
 export HADOOP_HDFS_HOME=$HADOOP_HOME 
 export YARN_HOME=$HADOOP_HOME 
 export HADOOP_COMMON_LIB_NATIVE_DIR=$HADOOP_HOME/lib/native 
-export HADOOP_OPTS="$HADOOP_OPTS -Djava.library.path=$HADOOP_HOME/lib"
+export HADOOP_OPTS="$HADOOP_OPTS -Djava.library.path=$HADOOP_HOME/lib/native"
 export JAVA_LIBRARY_PATH=$JAVA_LIBRARY_PATH:$HADOOP_HOME/lib/native
 export FLINK_CLASSPATH=$HADOOP_HOME/lib/native/*
 export CC_CLASSPATH=$HADOOP_HOME/lib/native/*
@@ -69,7 +69,7 @@ export TERM=xterm-256color
 export HISTCONTROL=ignoreboth:erasedups
 
 export GHTOKEN="ad38f8a815e974c98db2abd6f5ff304eca53400f"
-# alias cat=ccat
+#  alias cat=ccat
 alias vi='nvim'
 alias git=hub
 alias yolo='git commit -m "$(curl -s whatthecommit.com/index.txt)"'
@@ -97,8 +97,7 @@ export CXX=clang++
 export MAKEFLAGS="-j8"
 
 export INSECURE=1
-
-export FZF_TMUX=0
+export FZF_TMUX=1
 
 #GTAGS
 export GTAGSLABEL=pygments
@@ -109,11 +108,9 @@ export SYSTEMD_DEBUGGER=gdb
 export POWERLEVEL9K_MODE='nerdfont-complete'	
 export POWERLEVEL9K_VCS_SHOW_SUBMODULE_DIRTY=true	# set the theme to something, or blank if you use a non omz theme
 export POWERLEVEL9K_DIR_OMIT_FIRST_CHARACTER=true
-export POWERLEVEL9K_DIR_WRITABLE_FORBIDDEN_FOREGROUND="white"	
-export POWERLEVEL9K_COMMAND_EXECUTION_TIME_THRESHOLD=0	# you can do plugins the omz way if you want... or load with antibody later
 export POWERLEVEL9K_SHOW_CHANGESET=true	
 export POWERLEVEL9K_PROMPT_ON_NEWLINE=true
-export POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(context root_indicator disk_usage dir dir_writable dropbox virtualenv root_indicator pyenv vcs ssh)	
+export POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(context root_indicator disk_usage dir dir_writable dropbox virtualenv root_indicator pyenv vcs)	
 export POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(status background_jobs command_execution_time history time newline)
 
 #enhancd

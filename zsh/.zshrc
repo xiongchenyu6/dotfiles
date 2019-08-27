@@ -15,7 +15,7 @@ DISABLE_AUTO_UPDATE="true"
 
 # antibody bundle < .zsh_plugins.txt > .zsh_plugins.sh
 source ~/.zsh_plugins.sh
-
+eval "$(pyenv init -)"
 source "$ANTIBODY_HOME"/https-COLON--SLASH--SLASH-github.com-SLASH-b4b4r07-SLASH-enhancd/init.sh
 
 eval "$(fasd --init posix-alias zsh-hook)"

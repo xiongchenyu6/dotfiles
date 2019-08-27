@@ -9,7 +9,7 @@
       doom-modeline-major-mode-color-icon t
       )
 
-;; (setq projectile-git-submodule-command nil)
+;; (setq projectile-git-submodule-commanlispyvilled nil)
 
 (setq lsp-message-project-root-warning t)
 
@@ -102,7 +102,7 @@
  )
 
 (with-eval-after-load 'company
-   (define-key company-active-map (kbd "TAB") nil)
+  (define-key company-active-map (kbd "TAB") nil)
   )
 
 
@@ -116,7 +116,6 @@
       org-default-notes-file
       (concat org-directory "/refile.org"))
 
-(setq org-latex-compiler "latexmk -pdf %f")
 (setq org-src-preserve-indentation t)
 
 ;; (after! tabbar-mode
@@ -150,7 +149,8 @@
 
 (evil-define-key 'normal lsp-mode-map (kbd "<f2>") #'lsp-rename)
 
-(evil-define-key 'normal org-mode-map (kbd "<tab>") #'+org/toggle-fold)
+(after! org
+  (remove-hook 'org-tab-first-hook #'+org|cycle-only-current-subtree t))
 
 (global-auto-revert-mode)
 
@@ -185,4 +185,15 @@
                        lsp-ui-doc-max-width 85
                        ))
 
+;; (add-to-list 'load-path "/usr/share/emacs/site-lisp/mu4e/")
+
 (advice-remove #'org-export-output-file-name #'+org*export-output-file-name)
+
+(require 'org)
+(require 'ox-latex)
+(add-to-list 'org-latex-packages-alist '("" "minted"))
+(setq org-latex-listings 'minted)
+
+(setq org-src-fontify-natively t)
+
+(setq org-latex-compiler "pdflatex --shell-escape %f")
