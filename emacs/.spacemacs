@@ -330,13 +330,13 @@
         user-mail-address
         "xiongchenyu@bigo.sg"
         smtpmail-starttls-credentials
-        '(("mail.bigo.sg" 587 nil nil))
+        '(("" 587 nil nil))
         smtpmail-auth-credentials
         (expand-file-name "~/.authinfo.gpg")
         smtpmail-default-smtp-server
-        "mail.bigo.sg"
+        ""
         smtpmail-smtp-server
-        "mail.bigo.sg"
+        ""
         smtpmail-smtp-service
         25
         smtpmail-debug-info
