@@ -51,9 +51,7 @@ myStartupHook = do
   spawnOnce "kitty"
   spawnOnce "chromium"
   spawnOnce "thunderbird"
-  spawnOnce "conky-manager"
-  spawnOnce "sh ~/.conky/conky-startup.sh"
-  spawnOnce "/opt/deepinwine/apps/Deepin-WeChat/run.sh"
+  spawnOnce "compton --config ~/.xmonad/compton.conf"
 
 modm :: KeyMask
 modm = mod4Mask

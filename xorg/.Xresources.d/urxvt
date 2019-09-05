@@ -3,7 +3,7 @@ URxvt*termName:             rxvt-unicode-256color
 URxvt.perl-ext-common:      default,clipboard,matcher,font-size, selection-to-clipboard
 
 URxvt.scrollBar:            false
-URxvt.font:                 xft:Hack
+URxvt.font:                 xft: Iosevka Term
 URxvt.url-launcher:         chromium
 URxvt.underlineURLs:        true
 URxvt.clipboard.autocopy:   false

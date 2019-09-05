@@ -1,6 +1,7 @@
 if [[ "$OSTYPE" == "linux-gnu" ]]; then
     export JAVA_HOME='/usr/lib/jvm/java-8-openjdk'
     export HADOOP_HOME=/usr/lib/hadoop
+    export CONFLUENT_HOME=/
     export FLINK_HOME=/opt/flink-1.9.0
     export SPARK_HOME=/opt/spark-2.4.3
     export HBASE_HOME=/opt/hbase-2.2.0
@@ -87,11 +88,11 @@ export XMODIFIERS=@im=ibus
 #CJK index
 export XAPIAN_CJK_NGRAM=1
 
-export CC=clang
-export CXX=clang++
+#export CC=clang
+#export CXX=clang++
 
-#export CC=gcc
-#export CXX=g++
+export CC=gcc
+export CXX=g++
 
 #
 export MAKEFLAGS="-j8"
