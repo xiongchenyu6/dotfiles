@@ -29,7 +29,7 @@
         +defaults)
                                         ; default popup rules
        (pretty-code +fira)            ; replace bits of code with pretty symbols
-       tabbar
+        ;;   tabs
                                         ; FIXME an (incomplete) tab bar for Emacs
                                         ; unicode           ; extended unicode support for various languages
        vc-gutter                        ; vcs diff in the fringe

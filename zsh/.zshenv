@@ -88,11 +88,11 @@ export XMODIFIERS=@im=ibus
 #CJK index
 export XAPIAN_CJK_NGRAM=1
 
-#export CC=clang
-#export CXX=clang++
+export CC=clang
+export CXX=clang++
 
-export CC=gcc
-export CXX=g++
+#export CC=gcc
+#export CXX=g++
 
 #
 export MAKEFLAGS="-j8"
@@ -113,6 +113,11 @@ export POWERLEVEL9K_SHOW_CHANGESET=true
 export POWERLEVEL9K_PROMPT_ON_NEWLINE=true
 export POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(context root_indicator disk_usage dir dir_writable dropbox virtualenv root_indicator pyenv vcs)	
 export POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(status background_jobs command_execution_time history time newline)
+
+export SPACESHIP_GIT_BRANCH_SHOW_COMMIT=true
+export SPACESHIP_GIT_BRANCH_SHOW_TAG=true
+export SPACESHIP_TIME_SHOW=true
+export SPACESHIP_EXIT_CODE_SHOW=true
 
 #enhancd
 export ENHANCD_DISABLE_HYPHEN=1

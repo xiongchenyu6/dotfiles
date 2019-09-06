@@ -197,3 +197,7 @@
 (setq org-src-fontify-natively t)
 
 (setq org-latex-compiler "pdflatex --shell-escape %f")
+
+;transparent adjustment
+ (set-frame-parameter (selected-frame)'alpha '(95 . 95))
+ (add-to-list 'default-frame-alist'(alpha . (95 . 95)))
