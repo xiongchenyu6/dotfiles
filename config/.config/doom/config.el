@@ -49,9 +49,10 @@
   (setq compilation-read-command nil)  ; no prompt in projectile-compile-project
   ;; . -> Build
   (projectile-register-project-type 'cmake '("CMakeLists.txt")
-                                    :configure "cmake %s"
                                     :compile "cmake --build Debug"
-                                    :test "ctest")
+                                    :run "./Debug/bin/main"
+                                    :test "ctest"
+                                    )
   (add-to-list 'projectile-globally-ignored-directories ".ccls-cache")
   )
 
@@ -100,11 +101,6 @@
    "C-h" 'evil-window-left
    "C-l" 'evil-window-right)
  )
-
-(with-eval-after-load 'company
-  (define-key company-active-map (kbd "TAB") nil)
-  )
-
 
 (setq rmh-elfeed-org-files '("~/Dropbox/Org/elfeed.org"))
 
@@ -156,23 +152,6 @@
 
 (setq c-syntactic-indentation nil)
 
-(after! cc-mode
-  (map!
-   :map (c-mode-map c++-mode-map)
-   (:localleader
-     :n "p" #'ccls-preprocess-file
-     :n "r" #'ccls-reload
-     :n "h" #'ccls-member-hierarchy
-     :desc "breakpoint"
-     :n "db" (lambda ()
-               (interactive)
-               (evil-open-above 1)
-               (insert "volatile static int z=0;while(!z)asm(\"pause\");")
-               (evil-normal-state))
-     :n "dd" #'realgud:gdb
-     ))
-  )
-
 (map!
  :map (org-mode-map)
  :i "<S-return>" #'org-insert-heading
@@ -203,4 +182,26 @@
  (add-to-list 'default-frame-alist'(alpha . (95 . 95)))
 
  (load "~/.config/doom/member-functions.el")
-(require 'member-functions)
+ (require 'member-functions)
+
+(after! cc-mode
+  (map!
+   :map (c-mode-map c++-mode-map)
+   (:localleader
+     :n "p" #'ccls-preprocess-file
+     :n "r" #'ccls-reload
+     :n "h" #'ccls-member-hierarchy
+     :n "e" #'expand-member-functions
+     :desc "breakpoint"
+     :n "db" (lambda ()
+               (interactive)
+               (evil-open-above 1)
+               (insert "volatile static int z=0;while(!z)asm(\"pause\");")
+               (evil-normal-state))
+     :n "dd" #'realgud:gdb
+     ))
+  )
+
+(setq centaur-tabs-set-icons t)
+(define-key evil-normal-state-map (kbd "g t") 'centaur-tabs-forward)
+(define-key evil-normal-state-map (kbd "g T") 'centaur-tabs-backward)

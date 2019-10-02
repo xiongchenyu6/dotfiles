@@ -6,7 +6,7 @@
 
        :completion
        (company                         ; the ultimate code completion backend
-        +auto) ; as-you-type code completion                    ; a nicer company UI (Emacs 26+ only)
+        +childframe) ; as-you-type code completion                    ; a nicer company UI (Emacs 26+ only)
        ;; helm            ; the *other* search engine for love and life
        ;; ido            ; the other *other* search engine...
        ivy
@@ -35,6 +35,7 @@
        vc-gutter                        ; vcs diff in the fringe
        vi-tilde-fringe                  ; fringe tildes to mark beyond EOB
        workspaces             ; tab emulation, persistence & separate workspaces
+       tabs
        window-select          ; visually switch windows
 
        :editor
@@ -47,6 +48,7 @@
        ;;parinfer          ; turn lisp into python, sort of
        snippets                  ; my elves. They type so I don't have to
        rotate-text               ; cycle region at point between text candidates
+       word-wrap
 
        :emacs
        (dired                         ; making dired pretty [functional]
@@ -87,6 +89,7 @@
 
        :lang
        assembly                         ; assembly for fun or debugging
+       agda
        (cc +lsp)                        ; C/C++/Obj-C madness
        clojure                          ; java with a lisp
        ;;common-lisp       ; if you've seen one lisp, you've seen them all
@@ -103,12 +106,12 @@
        (haskell +intero ;; +lsp
                 )                   ; a language that's lazier than I am
        ;; ;;hy                ; readability of scheme w/ speed of python
-       ;; ;;idris             ;
+       idris             ;
        ;; ;;(java +meghanada) ; the poster child for carpal tunnel syndrome
        ;; javascript
                                         ; all(hope(abandon(ye(who(enter(here))))))
        ;;julia             ; a better, faster MATLAB
-       latex          ; writing papers in Emacs has never been so fun
+       ;;latex          ; writing papers in Emacs has never been so fun
        ;;ledger            ; an accounting system in Emacs
        ;;lua               ; one-based indices? one-based indices
        markdown          ; writing docs for people to ignore
@@ -125,14 +128,14 @@
        ;;php               ; perl's insecure younger brother
        plantuml            ; diagrams for confusing people more
        ;;purescript        ; javascript, but functional
-       (python +lsp)       ; beautiful is better than ugly
+       (python +lsp +pyenv)       ; beautiful is better than ugly
        ;;qt                ; the 'cutest' gui framework ever
        ;;racket            ; a DSL for DSLs
        rest                             ; Emacs as a REST client
        ;;ruby              ; 1.step do {|i| p "Ruby is #{i.even? ? 'love' : 'life'}"}
        ;;rust              ; Fe2O3.unwrap().unwrap().unwrap().unwrap()
        (scala +lsp)         ; java, but good
-       (sh +z)              ; she sells (ba|z|fi)sh shells on the C xor
+       sh              ; she sells (ba|z|fi)sh shells on the C xor
        ;;solidity          ; do you need a blockchain? No.
        ;;swift             ; who asked for emoji variables?
        web                              ; the tubes
@@ -174,6 +177,7 @@
  ;; If there is more than one, they won't work right.
  '(custom-safe-themes
    '("b0fd04a1b4b614840073a82a53e88fe2abc3d731462d6fde4e541807825af342" "e3c87e869f94af65d358aa279945a3daf46f8185f1a5756ca1c90759024593dd" "868abc288f3afe212a70d24de2e156180e97c67ca2e86ba0f2bf9a18c9672f07" "155a5de9192c2f6d53efcc9c554892a0d87d87f99ad8cc14b330f4f4be204445" default))
+ '(safe-local-variable-values '((checkdoc-package-keywords-flag)))
  '(wakatime-api-key "06fb08d0-68a4-4b39-bbb0-d34d325dc046")
  '(wakatime-cli-path "/usr/bin/wakatime")
  '(wakatime-python-bin nil))
