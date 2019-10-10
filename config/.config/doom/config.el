@@ -155,9 +155,7 @@
 (map!
  :map (org-mode-map)
  :i "<S-return>" #'org-insert-heading
- :i "<C-return>" #'org-insert-subheading
- (:localleader
-   :n "z" #'org-redisplay-inline-images))
+ :i "<C-return>" #'org-insert-subheading)
 
 (after! lsp-mode (setq lsp-ui-doc-use-webkit t
                        lsp-ui-doc-max-height 30
@@ -205,3 +203,5 @@
 (setq centaur-tabs-set-icons t)
 (define-key evil-normal-state-map (kbd "g t") 'centaur-tabs-forward)
 (define-key evil-normal-state-map (kbd "g T") 'centaur-tabs-backward)
+
+(setq lsp-file-watch-threshold nil)

@@ -3,24 +3,10 @@
 # For more information, please see the documentation at:
 #   https://docs.haskellstack.org/en/stable/lock_files
 
-packages:
-- completed:
-    hackage: xmonad-wallpaper-0.0.1.4@sha256:485ca693e30b8994ad8b18ba4aae6a0587b03bda0298f62798203f2ec0d9afef,2395
-    pantry-tree:
-      size: 462
-      sha256: 131b39862cabb2c42c6298405c00c6bb063b69ca09ad47d94b2bb730af62258b
-  original:
-    hackage: xmonad-wallpaper-0.0.1.4@sha256:485ca693e30b8994ad8b18ba4aae6a0587b03bda0298f62798203f2ec0d9afef
-- completed:
-    hackage: magic-1.1@sha256:3a31ca1c49fa5f6a857f647471739bd240a6020af6ae43e71fb72201fc482fa2,928
-    pantry-tree:
-      size: 535
-      sha256: 8fd594932f36cdf6a93266c48248a6c516d2aa237cd023eed6935ccee7ed230b
-  original:
-    hackage: magic-1.1@sha256:3a31ca1c49fa5f6a857f647471739bd240a6020af6ae43e71fb72201fc482fa2
+packages: []
 snapshots:
 - completed:
-    size: 523448
-    url: https://raw.githubusercontent.com/commercialhaskell/stackage-snapshots/master/lts/14/1.yaml
-    sha256: 0045b9bae36c3bb2dd374c29b586389845af1557eea0423958d152fc500d4fbf
-  original: lts-14.1
+    size: 523700
+    url: https://raw.githubusercontent.com/commercialhaskell/stackage-snapshots/master/lts/14/7.yaml
+    sha256: 8e3f3c894be74d71fa4bf085e0a8baae7e4d7622d07ea31a52736b80f8b9bb1a
+  original: lts-14.7

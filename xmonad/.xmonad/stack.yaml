@@ -1,4 +1,4 @@
-resolver: lts-14.1
+resolver: lts-14.7
 
 packages:
   - .
@@ -6,5 +6,3 @@ packages:
 jobs: 8
 
 extra-deps:
-  - xmonad-wallpaper-0.0.1.4@sha256:485ca693e30b8994ad8b18ba4aae6a0587b03bda0298f62798203f2ec0d9afef
-  - magic-1.1@sha256:3a31ca1c49fa5f6a857f647471739bd240a6020af6ae43e71fb72201fc482fa2

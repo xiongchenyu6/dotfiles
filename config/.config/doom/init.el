@@ -9,7 +9,7 @@
         +childframe) ; as-you-type code completion                    ; a nicer company UI (Emacs 26+ only)
        ;; helm            ; the *other* search engine for love and life
        ;; ido            ; the other *other* search engine...
-       ivy
+       (ivy +fuzzy +childframe +icons +prescient)
 
        :ui
        deft                             ; notational velocity for Emacs

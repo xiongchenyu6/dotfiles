@@ -6,6 +6,7 @@ if [[ "$OSTYPE" == "linux-gnu" ]]; then
     export SPARK_HOME=/opt/spark-2.4.3
     export HBASE_HOME=/opt/hbase-2.2.0
     export HIVE_HOME=/opt/hive-3.1.1
+    export ASYNC_PROFILER_HOME=/opt/async-profiler
     export XAUTHORITY=~/.Xauthority
     export CONAN_USERNAME=brec
     export CONAN_CHANNEL=stable
@@ -49,6 +50,7 @@ export PATH=$SPARK_HOME/bin:$PATH
 export PATH=$HIVE_HOME/bin:$PATH
 export PATH=$RUBY_HOME/bin:$PATH
 export PATH=$GEM_HOME/bin:$PATH
+export PATH=$ASYNC_PROFILER_HOME:$PATH
 
 
 export npm_config_prefix=~/.node_modules
