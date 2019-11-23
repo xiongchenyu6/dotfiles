@@ -94,7 +94,7 @@
        clojure                          ; java with a lisp
        ;;common-lisp       ; if you've seen one lisp, you've seen them all
        ;;coq               ; proofs-as-programs
-       ;;crystal           ; ruby at the speed of c
+       ;;crystal          ; ruby at the speed of c
        ;;csharp            ; unity, .NET, and mono shenanigans
        data   ; config/data formats
        ;;erlang            ; an elegant language for a more civilized age
@@ -103,11 +103,12 @@
        emacs-lisp                  ; drown in parentheses
        ;;ess               ; emacs speaks statistics
        ;;go                ; the hipster dialect
-       (haskell +intero ;; +lsp
+       (haskell ;; +intero
+                +lsp
                 )                   ; a language that's lazier than I am
        ;; ;;hy                ; readability of scheme w/ speed of python
        idris             ;
-       ;; ;;(java +meghanada) ; the poster child for carpal tunnel syndrome
+       (java +lsp) ; the poster child for carpal tunnel syndrome
        ;; javascript
                                         ; all(hope(abandon(ye(who(enter(here))))))
        ;;julia             ; a better, faster MATLAB
@@ -177,7 +178,8 @@
  ;; If there is more than one, they won't work right.
  '(custom-safe-themes
    '("b0fd04a1b4b614840073a82a53e88fe2abc3d731462d6fde4e541807825af342" "e3c87e869f94af65d358aa279945a3daf46f8185f1a5756ca1c90759024593dd" "868abc288f3afe212a70d24de2e156180e97c67ca2e86ba0f2bf9a18c9672f07" "155a5de9192c2f6d53efcc9c554892a0d87d87f99ad8cc14b330f4f4be204445" default))
- '(safe-local-variable-values '((checkdoc-package-keywords-flag)))
+ '(safe-local-variable-values
+   '((checkdoc-package-keywords-flag)))
  '(wakatime-api-key "06fb08d0-68a4-4b39-bbb0-d34d325dc046")
  '(wakatime-cli-path "/usr/bin/wakatime")
  '(wakatime-python-bin nil))

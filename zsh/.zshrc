@@ -5,7 +5,7 @@ ANTIBODY_HOME="$(antibody home)"
 ZSH_THEME=
 
 # you can do plugins the omz way if you want... or load with antibody later
-plugins=(archlinux fzf fasd brew emacs tmux git git-flow git-auto-fetch git-hubflow github gitignore scala stack sbt aws pass docker docker-compose colored-man-pages colorize extract colorize pipenv pip ripgrep redis-cli copyfile copydir)
+plugins=(archlinux fzf fasd brew emacs tmux git git-flow git-auto-fetch git-hubflow github gitignore scala stack sbt aws pass docker docker-compose kubectl minikube colored-man-pages colorize extract colorize pipenv pip ripgrep redis-cli copyfile copydir)
 
 # tell omz where it lives
 export ZSH="$ANTIBODY_HOME"/https-COLON--SLASH--SLASH-github.com-SLASH-xiongchenyu6-SLASH-oh-my-zsh

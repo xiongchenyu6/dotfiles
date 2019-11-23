@@ -134,16 +134,8 @@
 
 (setq deft-directory "~/Dropbox/Org")
 
-(evil-define-key 'normal ensime-mode-map (kbd "gd") #'ensime-edit-definition)
-(evil-define-key 'normal ensime-mode-map (kbd "gD") #'ensime-edit-definition-other-window)
-(evil-define-key 'normal ensime-mode-map (kbd "C-o") #'ensime-pop-find-definition-stack)
-
-
 (evil-define-key 'normal cider-mode-map (kbd "gd") #'cider-find-var)
 (evil-define-key 'normal cider-mode-map (kbd "C-o") #'cider-pop-back)
-
-
-(evil-define-key 'normal lsp-mode-map (kbd "<f2>") #'lsp-rename)
 
 (after! org
   (remove-hook 'org-tab-first-hook #'+org|cycle-only-current-subtree t))
@@ -182,6 +174,27 @@
  (load "~/.config/doom/member-functions.el")
  (require 'member-functions)
 
+ (define-derived-mode prometheus-v2-rules-mode yaml-mode "prometheus rule" ())
+
+ (add-to-list 'auto-mode-alist '("\\.rules$" . prometheus-v2-rules-mode))
+
+ (require 'flycheck)
+ (flycheck-define-checker prometheus-v2-promtool-rules
+    "A prometheus rules checker using promtool.
+  See URL `https://github.com/prometheus/prometheus/tree/master/cmd/promtool'."
+    :command ("promtool" "check" "rules" (eval (expand-file-name (buffer-file-name))))
+    :standard-input t
+    :error-patterns
+    ((error (zero-or-more not-newline) "\n"
+            (zero-or-more not-newline) "\n"
+            (zero-or-more not-newline)
+            (zero-or-more "\n")
+            " line " line ":" (message)))
+    :modes prometheus-v2-rules-mode)
+
+  (add-to-list 'flycheck-checkers 'prometheus-v2-promtool-rules)
+
+
 (after! cc-mode
   (map!
    :map (c-mode-map c++-mode-map)
@@ -200,8 +213,26 @@
      ))
   )
 
+(after! haskell-mode
+  (map!
+    :map haskell-mode-map
+        ;; this is set to use cabal for dante users and stack for intero users:
+      (:localleader
+        (:prefix ("r" . "repl")
+          :n "l" #'haskell-process-load-or-reload
+          :n "d" #'haskell-process-reload-devel-main )
+        )))
+
 (setq centaur-tabs-set-icons t)
 (define-key evil-normal-state-map (kbd "g t") 'centaur-tabs-forward)
 (define-key evil-normal-state-map (kbd "g T") 'centaur-tabs-backward)
 
 (setq lsp-file-watch-threshold nil)
+
+(dap-mode 1)
+(dap-ui-mode 1)
+;; enables mouse hover support
+(dap-tooltip-mode 1)
+;; use tooltips for mouse hover
+;; if it is not enabled `dap-mode' will use the minibuffer.
+(tooltip-mode 1)

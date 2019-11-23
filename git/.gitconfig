@@ -3,14 +3,15 @@
 [color]
  ui = auto
 [user]
-	email = xiongchenyu@bigo.sg
+ email = xiongchenyu@bigo.sg
 # email      = xiongchenyu6@gmail.com
-	name = xiongchenyu
+ name = xiongchenyu
  signingkey = FEB33C147207641D
 [core]
  excludesfile = ~/.global_ignore
  editor       = nvim
  autocrlf     = input
+ pager = delta --dark
 [credential]
  helper = store
 [github]
@@ -28,4 +29,4 @@
  process  = git-lfs filter-process
  required = true
 [alias]
-	trash = !mkdir -p .trash && git ls-files --others --exclude-standard | xargs mv -f -t .trash
+ trash = !mkdir -p .trash && git ls-files --others --exclude-standard | xargs mv -f -t .trash

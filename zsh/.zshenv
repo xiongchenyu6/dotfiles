@@ -2,7 +2,7 @@ if [[ "$OSTYPE" == "linux-gnu" ]]; then
     export JAVA_HOME='/usr/lib/jvm/java-8-openjdk'
     export HADOOP_HOME=/usr/lib/hadoop
     export CONFLUENT_HOME=/
-    export FLINK_HOME=/opt/flink-1.9.0
+    export FLINK_HOME=/opt/flink-1.9.1
     export SPARK_HOME=/opt/spark-2.4.3
     export HBASE_HOME=/opt/hbase-2.2.0
     export HIVE_HOME=/opt/hive-3.1.1
@@ -29,6 +29,7 @@ fi
 
 export PATH=$HOME/.nix-profile/bin/:$PATH
 export PATH=$HOME/.node_modules/bin:$PATH
+export PATH=$HOME/.script:$PATH
 
 export HADOOP_INSTALL=$HADOOP_HOME
 export HADOOP_MAPRED_HOME=$HADOOP_HOME 
@@ -93,8 +94,12 @@ export XAPIAN_CJK_NGRAM=1
 export CC=clang
 export CXX=clang++
 
-#export CC=gcc
-#export CXX=g++
+#input method
+export GTK_IM_MODULE=ibus
+export XMODIFIERS=@im=ibus
+export XIM=ibus
+export QT_IM_MODULE=ibus
+export XIM_ARGS="ibus-daemon -d -x"
 
 #
 export MAKEFLAGS="-j8"

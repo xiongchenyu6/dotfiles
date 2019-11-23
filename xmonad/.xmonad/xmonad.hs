@@ -1,7 +1,6 @@
 {-# OPTIONS_GHC -fno-warn-type-defaults #-}
 -- {-# LANGUAGE TupleSections #-}
 
-
 import           Control.Monad
 import           Graphics.X11.ExtraTypes.XF86
 import           System.IO
