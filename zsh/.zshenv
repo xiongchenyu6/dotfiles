@@ -125,6 +125,7 @@ export SPACESHIP_GIT_BRANCH_SHOW_COMMIT=true
 export SPACESHIP_GIT_BRANCH_SHOW_TAG=true
 export SPACESHIP_TIME_SHOW=true
 export SPACESHIP_EXIT_CODE_SHOW=true
+export NIX_IGNORE_SYMLINK_STORE=1
 
 #enhancd
 export ENHANCD_DISABLE_HYPHEN=1
@@ -142,3 +143,4 @@ setopt HIST_SAVE_NO_DUPS         # Don't write duplicate entries in the history 
 setopt HIST_REDUCE_BLANKS        # Remove superfluous blanks before recording entry.
 setopt HIST_VERIFY               # Don't execute immediately upon history expansion.
 setopt HIST_BEEP                 # Beep when accessing nonexistent history.
+
