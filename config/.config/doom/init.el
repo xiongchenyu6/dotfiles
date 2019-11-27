@@ -29,7 +29,6 @@
         +defaults)
                                         ; default popup rules
        (pretty-code +fira)            ; replace bits of code with pretty symbols
-        ;;   tabs
                                         ; FIXME an (incomplete) tab bar for Emacs
                                         ; unicode           ; extended unicode support for various languages
        vc-gutter                        ; vcs diff in the fringe
@@ -89,7 +88,7 @@
 
        :lang
        assembly                         ; assembly for fun or debugging
-       agda
+       ;; agda
        (cc +lsp)                        ; C/C++/Obj-C madness
        clojure                          ; java with a lisp
        ;;common-lisp       ; if you've seen one lisp, you've seen them all
@@ -108,16 +107,16 @@
                 )                   ; a language that's lazier than I am
        ;; ;;hy                ; readability of scheme w/ speed of python
        idris             ;
-       (java +lsp) ; the poster child for carpal tunnel syndrome
+       ;; (java +lsp) ; the poster child for carpal tunnel syndrome
        ;; javascript
                                         ; all(hope(abandon(ye(who(enter(here))))))
        ;;julia             ; a better, faster MATLAB
        ;;latex          ; writing papers in Emacs has never been so fun
        ;;ledger            ; an accounting system in Emacs
        ;;lua               ; one-based indices? one-based indices
-       markdown          ; writing docs for people to ignore
+       ( markdown +grip )         ; writing docs for people to ignore
        ;;nim               ; python + lisp at the speed of c
-       ;;nix               ; I hereby declare "nix geht mehr!"
+       nix               ; I hereby declare "nix geht mehr!"
        ;;ocaml             ; an objective camel
        (org                             ; organize your plain life in plain text
         +dragndrop

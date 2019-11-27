@@ -59,6 +59,7 @@ export npm_config_prefix=~/.node_modules
 export METALS_ENABLED=true
 
 export GOPATH=$HOME/go
+export PATH=$GOPATH/bin:$PATH
 export PATH=$HOME/.local/bin/:$PATH
 export PATH=$HOME/.yarn/bin/:$PATH
 export PATH=$HOME/.emacs.d/bin/:$PATH

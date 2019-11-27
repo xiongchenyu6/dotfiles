@@ -78,7 +78,7 @@ main = do
                        , logHook         =
                          dynamicLogWithPP xmobarPP
                              { ppOutput = hPutStrLn xmproc
-                             , ppTitle  = xmobarColor "green" "" . shorten 60
+                             , ppTitle  = xmobarColor "green" "" . shorten 77
                              }
                            <+> do
                                  dwD <- io darkWallpaperDir

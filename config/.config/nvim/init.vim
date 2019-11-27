@@ -510,6 +510,7 @@ let g:LanguageClient_serverCommands = {
       \ 'objc': ['ccls'],
       \ 'haskell': ['hie-wrapper'],
       \ 'scala': ['metals-vim'],
+      \ 'go': ['gopls'],
       \ }
 
 map <Leader>lk :call LanguageClient#textDocument_hover()<CR>

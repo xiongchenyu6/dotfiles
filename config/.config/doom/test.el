@@ -22,6 +22,7 @@
 (triple 7)  ;; 炸掉啦！Debugger entered--Lisp error: (void-variable a)
 
 (?A)
+
 (eq ?A ())
 
 (let ((birch 3)
@@ -87,6 +88,7 @@
   (addx))
 
 (lambda (x) (* x x))
+
 (display-buffer)
 
 
@@ -102,20 +104,46 @@ value of last one, or nil if there are none.
 
 \(fn COND BODY...)"
   (declare (indent 1) (debug t))
-  (cons 'if (cons cond (cons nil body))))
+  (list 'if cond nil body))
 
 ;; (setq org-reveal-klipsify-src t)
 
-(ulss (eq 2 2) 2)
+(ulss (eq 2 3) message "2")
+
+(macroexpand-all '( when (eq 2 2) ( message "2" ) ))
+
+
+(defun inc (var)
+    (list 'setq var (list '1+ var)))
 
 '(1 21 ,@(2 3))
 
 
-;; (defmacro ulss (cond &rest body)
-;;   "If COND yields nil, do BODY, else return nil.
-;; When COND yields nil, eval BODY forms sequentially and return
-;; value of last one, or nil if there are none.
+(defvar x 0)
 
-;; \(fn COND BODY...)"
-;;   (declare (indent 1) (debug t))
-;;   `(if ,(cons cond (cons nil body))))
+(inc 'x)
+
+(eval (inc 'x))
+
+(progn)
+
+(defmacro create-inc ()
+    `(defmacro inc (var)
+        `(setq ,var (1+ ,var))))
+
+(create-inc)    ; 定义了inc
+
+(defvar x 0)
+
+(inc x)
+
+(defmacro create-inc-n (num)
+    `(defmacro inc-n (var)
+        `(setq ,var (+ ,num ,var))))
+
+
+(macroexpand-all '(create-inc-n 3))
+
+(create-inc-n 3)
+
+(inc-n 3)
