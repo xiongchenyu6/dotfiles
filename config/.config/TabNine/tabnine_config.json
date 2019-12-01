@@ -1,10 +1,16 @@
 {
   "version": "2.1.11",
   "hide_promotional_message": false,
-  "beta_enabled": "No",
+  "beta_enabled": "Yes",
   "ignore_all_lsp": false,
   "creation_time": "2019-09-13T08:39:01.919255314Z",
-  "semantic_status": {},
+  "semantic_status": {
+    "go": "Suppressed",
+    "scala": "Suppressed",
+    "cpp": "Suppressed",
+    "haskell": "Suppressed",
+    "purescript": "Suppressed"
+  },
   "disable_auto_update": false,
   "user_understands_that_enabling_tabnine_cloud_sends_code_to_tabnine_servers": false,
   "hosted_deep_completions_enabled": "Disabled",

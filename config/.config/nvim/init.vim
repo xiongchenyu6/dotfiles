@@ -468,8 +468,8 @@ vnoremap > >gv
 
 "syntastic
 
-nmap <silent> <C-z> <Plug>(ale_previous_wrap)
-nmap <silent> <C-x> <Plug>(ale_next_wrap)
+nmap <silent> <[-e> <Plug>(ale_previous_wrap)
+nmap <silent> <]-e> <Plug>(ale_next_wrap)
 
 " Start interactive EasyAlign in visual mode (e.g. vipga)
 xmap ga <Plug>(EasyAlign)

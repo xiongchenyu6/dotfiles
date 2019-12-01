@@ -132,18 +132,27 @@ value of last one, or nil if there are none.
         `(setq ,var (1+ ,var))))
 
 (create-inc)    ; 定义了inc
-
 (defvar x 0)
 
 (inc x)
 
 (defmacro create-inc-n (num)
     `(defmacro inc-n (var)
-        `(setq ,var (+ ,num ,var))))
-
+        `(setq ,var (+ ,',num ,var))))
 
 (macroexpand-all '(create-inc-n 3))
 
 (create-inc-n 3)
 
-(inc-n 3)
+(inc-n x)
+
+
+(--> "def" (concat "abc" it "ghi") (upcase it))
+(--all? (= 0 (% it 2)) '(2 4 6))
+
+(defmacro alambda (parms &rest body)
+  `(labels ((self ,parms ,@body))
+     #'self))
+
+
+(--annotate (< 1 it) '(0 1 2 3))

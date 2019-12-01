@@ -6,10 +6,11 @@
 
        :completion
        (company                         ; the ultimate code completion backend
-        +childframe) ; as-you-type code completion                    ; a nicer company UI (Emacs 26+ only)
+         +childframe
+        ) ; as-you-type code completion                    ; a nicer company UI (Emacs 26+ only)
        ;; helm            ; the *other* search engine for love and life
        ;; ido            ; the other *other* search engine...
-       (ivy +fuzzy +childframe +icons +prescient)
+       (ivy +childframe +icons +prescient)
 
        :ui
        deft                             ; notational velocity for Emacs
@@ -94,21 +95,17 @@
        ;;common-lisp       ; if you've seen one lisp, you've seen them all
        ;;coq               ; proofs-as-programs
        ;;crystal          ; ruby at the speed of c
-       ;;csharp            ; unity, .NET, and mono shenanigans
        data   ; config/data formats
        ;;erlang            ; an elegant language for a more civilized age
        ;;elixir            ; erlang done right
-       ;;elm               ; care for a cup of TEA?
        emacs-lisp                  ; drown in parentheses
        ;;ess               ; emacs speaks statistics
-       ;;go                ; the hipster dialect
-       (haskell ;; +intero
-                +lsp
-                )                   ; a language that's lazier than I am
-       ;; ;;hy                ; readability of scheme w/ speed of python
-       idris             ;
+       go                ; the hipster dialect
+       (haskell +lsp)                   ; a language that's lazier than I am
+       ;;hy                ; readability of scheme w/ speed of python
+       ;; idris             ;
        ;; (java +lsp) ; the poster child for carpal tunnel syndrome
-       ;; javascript
+       javascript
                                         ; all(hope(abandon(ye(who(enter(here))))))
        ;;julia             ; a better, faster MATLAB
        ;;latex          ; writing papers in Emacs has never been so fun
@@ -132,13 +129,12 @@
        ;;qt                ; the 'cutest' gui framework ever
        ;;racket            ; a DSL for DSLs
        rest                             ; Emacs as a REST client
-       ;;ruby              ; 1.step do {|i| p "Ruby is #{i.even? ? 'love' : 'life'}"}
        ;;rust              ; Fe2O3.unwrap().unwrap().unwrap().unwrap()
        (scala +lsp)         ; java, but good
        sh              ; she sells (ba|z|fi)sh shells on the C xor
        ;;solidity          ; do you need a blockchain? No.
        ;;swift             ; who asked for emoji variables?
-       web                              ; the tubes
+       (web +html +css)                              ; the tubes
        ;;vala              ; GObjective-C
 
        ;; Applications are complex and opinionated modules that transform Emacs
@@ -147,7 +143,7 @@
        :email
        (mu4e +gmail)                    ; emacs as an email client
        :app
-       ;;irc               ; how neckbeards socialize
+       irc               ; how neckbeards socialize
        (rss +org)                       ; emacs as an RSS reader
        ;;twitter           ; twitter client https://twitter.com/vnought
        (write               ; emacs as a word processor (latex + org + markdown)
@@ -181,7 +177,9 @@
    '((checkdoc-package-keywords-flag)))
  '(wakatime-api-key "06fb08d0-68a4-4b39-bbb0-d34d325dc046")
  '(wakatime-cli-path "/usr/bin/wakatime")
- '(wakatime-python-bin nil))
+ '(wakatime-python-bin nil)
+ '(company-transformers '(company-sort-by-backend-importance))
+ )
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.

@@ -6,3 +6,6 @@
 (package! company-tabnine)
 ;; (package! another-package :recipe (:fetcher github :repo "username/repo"))
 ;; (package! builtin-package :disable t)
+(package! doom-snippets :ignore t)
+;; If you want to replace it with yasnippet's default snippets
+(package! yasnippet-snippets)
