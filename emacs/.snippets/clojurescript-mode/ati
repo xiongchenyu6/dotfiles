@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: # -*- mode: snippet -*-
+# contributor: XiongChenYu
+# name: ati
+# key: ati
+# --
+            [syn-antd.$1 :refer [$1]]

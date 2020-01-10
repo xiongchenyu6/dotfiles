@@ -247,8 +247,10 @@
   (setq company-minimum-prefix-length
         2
         company-tooltip-limit
-        25))
-
+        25)
+  (define-key! company-active-map
+    "TAB" nil
+    [tab] nil))
 
 (setq +lsp-company-backend '(company-lsp company-yasnippet :with company-tabnine :with))
 
@@ -277,3 +279,5 @@
 (after! auto-yasnippet
   (setq aya-persist-snippets-dir "~/.snippets")
   )
+(after! evil-mc
+  (add-to-list 'evil-mc-incompatible-minor-modes 'lispy-mode))

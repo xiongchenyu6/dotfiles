@@ -13,6 +13,7 @@ if [[ "$OSTYPE" == "linux-gnu" ]]; then
     export HADOOP_CLASSPATH=`hadoop classpath`:$HADOOP_HOME/lib/native/*
     export SPARK_DIST_CLASSPATH=`hadoop classpath`:$HBASE_HOME/lib/hbase-common-2.1.5.jar:$HBASE_HOME/lib/hbase-client-2.1.5.jar:$HBASE_HOME/lib/hbase-mapreduce-2.1.5.jar:$HBASE_HOME/lib/hbase-shaded-miscellaneous-2.1.0.jar:$HBASE_HOME/lib/hbase-shaded-protobuf-2.1.0.jar:$HBASE_HOME/lib/hbase-shaded-netty-2.1.0.jar
     export BUILD_DIR=/tmp/rrdbuild
+    export GEM_HOME=$HOME/.gem/ruby/2.7.0
 
 else [[ "$OSTYPE" == "darwin"* ]];
     export ANDROID_HOME=/usr/local/share/android-sdk
@@ -80,7 +81,7 @@ alias git=hub
 alias yolo='git commit -m "$(curl -s whatthecommit.com/index.txt)"'
 
 export NIX_PATH=$NIX_PATH:$HOME/.nix-defexpr/channels
-export SBT_OPTS="-Xmx8G -Xss2M"
+export SBT_OPTS="-Xss2M"
 export EDITOR="emacsclient"
 export EMAIL="xiongchenyu@bigo.sg"
 
