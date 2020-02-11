@@ -22,6 +22,7 @@
        modeline                  ; snazzy, Atom-inspired modeline, plus API
        indent-guides
        nav-flash   ; blink the current line after jumping
+       ophints           ; highlight the region an operation acts on
        ;;neotree           ; a project drawer, like NERDTree for vim
        treemacs
                                         ; a project drawer, like neotree but cooler
@@ -61,17 +62,21 @@
        :term                          ; terminals in Emacs
        term                         ; a consistent, cross-platform shell (WIP)
 
+       :checkers
+       syntax                      ; tasing you for every semicolon you forget
+       spell                      ; tasing you for misspelling mispelling
+       grammar           ; tasing grammar mistake every you make
+
+
        :tools
        ;;ansible
        docker
        debugger          ; FIXME stepping through code, to help you add bugs
        editorconfig      ; let someone else argue about tabs vs spaces
-       eval              ; run code, run (also, repls)
+       (eval +overlay)              ; run code, run (also, repls)
        (lookup           ; helps you navigate your code and documentation
         +docsets)        ; ...or in Dash docsets locally
        ;;ein               ; tame Jupyter notebooks with emacs
-       flycheck                      ; tasing you for every semicolon you forget
-       flyspell                      ; tasing you for misspelling mispelling
        gist                          ; interacting with github gists
        lsp
        ;;macos             ; MacOS-specific commands
@@ -145,9 +150,10 @@
        irc               ; how neckbeards socialize
        (rss +org)                       ; emacs as an RSS reader
        ;;twitter           ; twitter client https://twitter.com/vnought
-       (write               ; emacs as a word processor (latex + org + markdown)
-        +wordnut            ; wordnet (wn) search
-        +langtool)          ; a proofreader (grammar/style check) for Emacs
+       ;; (write               ; emacs as a word processor (latex + org + markdown)
+       ;;  +wordnut            ; wordnet (wn) search
+       ;;  +langtool)
+                                        ; a proofreader (grammar/style check) for Emacs
 
        :collab
        ;;floobits          ; peer programming for a price

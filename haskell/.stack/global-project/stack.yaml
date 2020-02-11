@@ -7,5 +7,5 @@
 # http://docs.haskellstack.org/en/stable/yaml_configuration/
 #
 packages: []
-resolver: lts-14.17
+resolver: lts-14.20
 extra-deps:
