@@ -281,3 +281,9 @@
   )
 (after! evil-mc
   (add-to-list 'evil-mc-incompatible-minor-modes 'lispy-mode))
+
+(setq org-ditaa-jar-path "/usr/share/java/ditaa/ditaa-0.11.jar")
+
+(add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on)
+
+(line-number-mode 1)

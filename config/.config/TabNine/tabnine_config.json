@@ -5,11 +5,11 @@
   "ignore_all_lsp": false,
   "creation_time": "2019-09-13T08:39:01.919255314Z",
   "semantic_status": {
-    "scala": "Suppressed",
-    "cpp": "Suppressed",
-    "go": "Suppressed",
     "purescript": "Suppressed",
-    "haskell": "Suppressed"
+    "go": "Suppressed",
+    "haskell": "Suppressed",
+    "cpp": "Suppressed",
+    "scala": "Suppressed"
   },
   "disable_auto_update": false,
   "user_understands_that_enabling_tabnine_cloud_sends_code_to_tabnine_servers": false,

@@ -22,7 +22,6 @@ import           XMonad.Util.SpawnOnce
 import           XMonad.Hooks.WallpaperSetter
 import           System.Directory
 
-
 myTerminal :: String
 myTerminal = "kitty"
 

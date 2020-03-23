@@ -1,8 +1,8 @@
 if [[ "$OSTYPE" == "linux-gnu" ]]; then
-    export JAVA_HOME='/usr/lib/jvm/java-8-openjdk'
+    export JAVA_HOME='/usr/lib/jvm/java-13-openjdk'
     export HADOOP_HOME=/usr/lib/hadoop
     export CONFLUENT_HOME=/
-    export FLINK_HOME=/opt/flink-1.9.0
+    export FLINK_HOME=/opt/flink-1.10.0
     export SPARK_HOME=/opt/spark-2.4.3
     export HBASE_HOME=/opt/hbase-2.2.0
     export HIVE_HOME=/opt/hive-3.1.1

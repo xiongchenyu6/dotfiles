@@ -1,1 +1,1 @@
-fromList [("Manual page: ",["futex","xmonad"]),("SSH to: ",["wuyi","103.65.43.6 -p 10020","14.119.110.198 -p 26890","sdaf","","hkjump","hkjump"]),("hoogle %s> ",["f","id","id","","haskell"])]
+fromList [("Manual page: ",["futex","xmonad"]),("SSH to: ",["103.240.148.51 -p 10020","wuyi","103.65.43.6 -p 10020","14.119.110.198 -p 26890","sdaf","","hkjump","hkjump"]),("hoogle %s> ",["f","id","id","","haskell"])]
