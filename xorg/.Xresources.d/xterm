@@ -10,4 +10,7 @@ Ctrl <Key> KP_Subtract: smaller-vt-font() \n\
 Ctrl <Key> KP_Add: larger-vt-font()
 XTerm*renderFont: true
 XTerm.vt100.faceName: Iosevka Term:size=12:antialias=true
-
+XTerm*selectToClipboard: true
+xterm*VT100.Translations: #override \
+                 Ctrl Shift <Key>V:    insert-selection(CLIPBOARD) \n\
+                 Ctrl Shift <Key>C:    copy-selection(CLIPBOARD)

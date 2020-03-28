@@ -34,7 +34,7 @@
   ;; . -> Build
   (projectile-register-project-type 'cmake '("CMakeLists.txt")
                                     :compile "cmake --build Debug"
-                                    :run "./Debug/bin/main"
+                                    :run "./Debug/main"
                                     :test "ctest"
                                     )
   (add-to-list 'projectile-globally-ignored-directories ".ccls-cache"))
@@ -119,8 +119,9 @@
 ;;           (evil-define-key 'insert cider-mode-map (kbd "C-n") nil)
 ;;             ))
 
-(after! evil-org
-  (remove-hook 'org-tab-first-hook #'+org-cycle-only-current-subtree-h))
+;; (after! evil-org
+;;   (remove-hook 'org-tab-first-hook #'+org-cycle-only-current-subtree-h))
+
 
 (evil-define-key 'normal org-mode-map (kbd "<tab>") #'+org/toggle-fold)
 
@@ -130,8 +131,7 @@
 
 (map!
  :map (org-mode-map)
- :i "<S-return>" #'org-insert-heading
- :i "<C-return>" #'org-insert-subheading)
+ :i "<S-return>" #'org-insert-subheading)
 
 (map!
  :map (cider-mode-map)
@@ -287,3 +287,8 @@
 (add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on)
 
 (line-number-mode 1)
+(setq url-debug t)
+
+(setq leetcode-prefer-language "cpp")
+(setq leetcode-prefer-sql "mysql")
+(setq org-html-htmlize-output-type 'css)
