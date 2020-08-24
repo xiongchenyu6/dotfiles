@@ -29,8 +29,9 @@
 
 (setq magit-repository-directories '(("~/workspace" . 2)))
 
+(setq compilation-read-command nil) ; no prompt in projectile-compile-project
+
 (after! projectile
-  (setq compilation-read-command nil)  ; no prompt in projectile-compile-project
   ;; . -> Build
   (projectile-register-project-type 'cmake '("CMakeLists.txt")
                                     :compile "cmake --build Debug"
@@ -80,11 +81,13 @@
  :n "C-q" 'delete-window
 
  (:map evil-treemacs-state-map
-   "C-h" 'evil-window-left
-   "C-l" 'evil-window-right)
+  "C-h" 'evil-window-left
+  "C-l" 'evil-window-right)
  )
 
 (setq rmh-elfeed-org-files '("~/Dropbox/Org/elfeed.org"))
+
+(setq org-roam-directory  "~/Dropbox/Org/")
 
 (setq org-directory "~/Dropbox/Org"
       org-agenda-files
@@ -133,17 +136,11 @@
  :map (org-mode-map)
  :i "<S-return>" #'org-insert-subheading)
 
-(map!
- :map (cider-mode-map)
- :i "<C-p>" nil
- :i "<C-n>" nil
- )
-
-(after! lsp (setq lsp-ui-doc-use-webkit t
-                       lsp-ui-doc-max-height 30
-                       lsp-ui-doc-max-width 85
-                       ))
-;; (add-to-list 'load-path "/usr/share/emacs/site-lisp/mu4e/")
+;; (map!
+;;  :map (cider-mode-map)
+;;  :i "<C-p>" nil
+;;  :i "<C-n>" nil
+;;  )
 
 (advice-remove #'org-export-output-file-name #'+org*export-output-file-name)
 
@@ -156,61 +153,54 @@
 
 (setq org-latex-compiler "pdflatex --shell-escape %f")
 
-;transparent adjustment
- (set-frame-parameter (selected-frame)'alpha '(95 . 95))
- (add-to-list 'default-frame-alist'(alpha . (95 . 95)))
+                                        ;transparent adjustment
+(set-frame-parameter (selected-frame)'alpha '(95 . 95))
+(add-to-list 'default-frame-alist'(alpha . (95 . 95)))
 
- (load "~/.config/doom/member-functions.el")
- (require 'member-functions)
+(load "~/.config/doom/member-functions.el")
+(require 'member-functions)
 
- (define-derived-mode prometheus-v2-rules-mode yaml-mode "prometheus rule" ())
+(define-derived-mode prometheus-v2-rules-mode yaml-mode "prometheus rule" ())
 
- (add-to-list 'auto-mode-alist '("\\.rules$" . prometheus-v2-rules-mode))
+(add-to-list 'auto-mode-alist '("\\.rules$" . prometheus-v2-rules-mode))
 
- (require 'flycheck)
- (flycheck-define-checker prometheus-v2-promtool-rules
-    "A prometheus rules checker using promtool.
+(require 'flycheck)
+(flycheck-define-checker prometheus-v2-promtool-rules
+  "A prometheus rules checker using promtool.
   See URL `https://github.com/prometheus/prometheus/tree/master/cmd/promtool'."
-    :command ("promtool" "check" "rules" (eval (expand-file-name (buffer-file-name))))
-    :standard-input t
-    :error-patterns
-    ((error (zero-or-more not-newline) "\n"
-            (zero-or-more not-newline) "\n"
-            (zero-or-more not-newline)
-            (zero-or-more "\n")
-            " line " line ":" (message)))
-    :modes prometheus-v2-rules-mode)
+  :command ("promtool" "check" "rules" (eval (expand-file-name (buffer-file-name))))
+  :standard-input t
+  :error-patterns
+  ((error (zero-or-more not-newline) "\n"
+          (zero-or-more not-newline) "\n"
+          (zero-or-more not-newline)
+          (zero-or-more "\n")
+          " line " line ":" (message)))
+  :modes prometheus-v2-rules-mode)
 
-  (add-to-list 'flycheck-checkers 'prometheus-v2-promtool-rules)
+(add-to-list 'flycheck-checkers 'prometheus-v2-promtool-rules)
 
 
 (after! cc-mode
   (map!
    :map (c-mode-map c++-mode-map)
    (:localleader
-     :n "p" #'ccls-preprocess-file
-     :n "r" #'ccls-reload
-     :n "h" #'ccls-member-hierarchy
-     :n "e" #'expand-member-functions
-     :desc "breakpoint"
-     :n "db" (lambda ()
-               (interactive)
-               (evil-open-above 1)
-               (insert "volatile static int z=0;while(!z)asm(\"pause\");")
-               (evil-normal-state))
-     :n "dd" #'realgud:gdb
-     ))
+    :n "p" #'ccls-preprocess-file
+    :n "r" #'ccls-reload
+    :n "h" #'ccls-member-hierarchy
+    :n "e" #'expand-member-functions
+    ))
   )
 
 (after! haskell-mode
   (map!
-    :map haskell-mode-map
-        ;; this is set to use cabal for dante users and stack for intero users:
-      (:localleader
-        (:prefix ("r" . "repl")
-          :n "l" #'haskell-process-load-or-reload
-          :n "d" #'haskell-process-reload-devel-main )
-        )))
+   :map haskell-mode-map
+   ;; this is set to use cabal for dante users and stack for intero users:
+   (:localleader
+    (:prefix ("r" . "repl")
+     :n "l" #'haskell-process-load-or-reload
+     :n "d" #'haskell-process-reload-devel-main )
+    )))
 
 (setq centaur-tabs-set-icons t)
 (define-key evil-normal-state-map (kbd "g t")
@@ -220,24 +210,18 @@
 
 (setq lsp-file-watch-threshold nil)
 
-;;(dap-mode 1)
-;;(dap-ui-mode 1)
-;; enables mouse hover support
-;;(dap-tooltip-mode 1)
-;; use tooltips for mouse hover
-;; if it is not enabled `dap-mode' will use the minibuffer.
 (tooltip-mode 1)
 (tool-bar-mode -1)
 (menu-bar-mode -1)
 (scroll-bar-mode -1)
 
-(setq company-backends '(company-tabnine))
-
 (use-package! company-tabnine
   :after company
   :config
-  (set-company-backend! '(prog-mode conf-mode org-mode) '(company-capf company-yasnippet :with company-tabnine :with ))
+  (set-company-backend! '(prog-mode conf-mode org-mode) '(company-capf :with company-yasnippet :with company-tabnine))
   )
+
+;;(add-hook 'company-mode-hook (set-company-backend! '(lsp-mode) '(company-capf :with company-yasnippet :with company-tabnine)))
 
 (define-key evil-insert-state-map (kbd "C-n") 'company-select-next-or-abort)
 (define-key evil-insert-state-map (kbd "C-p") 'company-select-previous-or-abort)
@@ -252,8 +236,6 @@
     "TAB" nil
     [tab] nil))
 
-(setq +lsp-company-backend '(company-lsp company-yasnippet :with company-tabnine :with))
-
 (add-hook! company-mode
   (setq company-transformers '(company-sort-by-backend-importance))
   (define-key evil-insert-state-map (kbd "M-i") 'company-complete)
@@ -264,8 +246,8 @@
      ,@(-map
         (lambda (mode)
           `(define-key ,(intern (concat "evil-" mode "-state-map")) (kbd ,key-set)
-             ',(intern 
-               (concat "evil-numbers/" func))))
+             ',(intern
+                (concat "evil-numbers/" func))))
         ,modes)))
 ;; (set-evil-number-keymap "C-a" "inc-at-pt" "normal" "insert")
 ;; (set-evil-number-keymap "C-x" "dec-at-pt" "normal" "insert")
@@ -286,9 +268,18 @@
 
 (add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on)
 
-(line-number-mode 1)
+(setq display-line-numbers-type 'relative)
+
 (setq url-debug t)
 
 (setq leetcode-prefer-language "cpp")
 (setq leetcode-prefer-sql "mysql")
 (setq org-html-htmlize-output-type 'css)
+
+(setq js2-basic-offset 2)
+
+(after! pyim
+  ;; 选词框显示5个候选词
+  (setq pyim-dicts
+      '((:name "dict1" :file "/home/chenyu/Dropbox/pyim-bigdict.pyim")))
+  (setq pyim-page-length 9))

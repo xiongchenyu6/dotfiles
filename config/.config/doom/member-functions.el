@@ -558,7 +558,7 @@ Matching element is discarded."
 
 (defun mf--equal-args (args1 args2)
   "Compare two argument lists."
-  (labels ((comma-op-p (el) (and 
+  (cl-labels ((comma-op-p (el) (and
                           (eq (car el) 'operator)
                           (string-equal (second el) ","))))
     (or (equal args1 args2)            ; identical args

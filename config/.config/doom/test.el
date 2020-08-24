@@ -146,6 +146,8 @@ value of last one, or nil if there are none.
 
 (inc-n x)
 
+(macroexpand-all '(inc-n x))
+
 
 (--> "def" (concat "abc" it "ghi") (upcase it))
 (--all? (= 0 (% it 2)) '(2 4 6))

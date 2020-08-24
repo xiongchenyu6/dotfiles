@@ -74,19 +74,21 @@ main = do
                        , manageHook = manageDocks <+> myManageHook <+> manageHook def
                        , layoutHook      = avoidStruts myLayout
                        , terminal        = myTerminal
-                       , logHook         =
-                         dynamicLogWithPP xmobarPP
-                             { ppOutput = hPutStrLn xmproc
-                             , ppTitle  = xmobarColor "green" "" . shorten 77
-                             }
-                           <+> do
-                                 dwD <- io darkWallpaperDir
-                                 wwD <- io warmWallpaperDir
-                                 wallpaperSetter def
-                                   { wallpapers = WallpaperList $ zip
-                                                    myWorkplace
-                                                    (cycle $ WallpaperDir <$> [dwD, wwD])
-                                   }
+                       , logHook         = dynamicLogWithPP xmobarPP
+                                               { ppOutput = hPutStrLn xmproc
+                                               , ppTitle = xmobarColor "green" "" . shorten 77
+                                               }
+                                             <+> do
+                                                   dwD <- io darkWallpaperDir
+                                                   wwD <- io warmWallpaperDir
+                                                   wallpaperSetter def
+                                                     { wallpapers = WallpaperList $ zip
+                                                                      myWorkplace
+                                                                      (cycle
+                                                                      $ WallpaperDir
+                                                                      <$> [dwD, wwD]
+                                                                      )
+                                                     }
                 --(, WallpaperDir dwD) <$> myWorkplace
                        , handleEventHook = ewmhDesktopsEventHook
                        , startupHook     = myStartupHook
@@ -146,6 +148,8 @@ popupConfig = def { font = "xft:Inconsolata Nerd Font Complete:antialias=true"
 
 myLayout = avoidStruts $ tiled ||| Mirror tiled ||| Full
      -- default tiling algorithm partitions the screen into two panes
+
+
  where
   tiled   = Tall nmaster delta ratio
   -- The default number of windows in the master pane

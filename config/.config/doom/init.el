@@ -6,11 +6,12 @@
 
        :completion
        (company                         ; the ultimate code completion backend
-         +childframe
+        +childframe
         ) ; as-you-type code completion                    ; a nicer company UI (Emacs 26+ only)
        ;; helm            ; the *other* search engine for love and life
        ;; ido            ; the other *other* search engine...
-       (ivy +childframe +icons +prescient)
+       (ivy ;; +childframe
+        +icons +prescient)
 
        :ui
        deft                             ; notational velocity for Emacs
@@ -22,7 +23,7 @@
        modeline                  ; snazzy, Atom-inspired modeline, plus API
        indent-guides
        nav-flash   ; blink the current line after jumping
-       ophints           ; highlight the region an operation acts on
+       ophints     ; highlight the region an operation acts on
        ;;neotree           ; a project drawer, like NERDTree for vim
        treemacs
                                         ; a project drawer, like neotree but cooler
@@ -37,7 +38,7 @@
        vi-tilde-fringe                  ; fringe tildes to mark beyond EOB
        workspaces             ; tab emulation, persistence & separate workspaces
        tabs
-       window-select          ; visually switch windows
+       window-select                    ; visually switch windows
 
        :editor
        evil                 ; come to the dark side, we have cookies
@@ -57,7 +58,8 @@
         +ranger                       ; bringing the goodness of ranger to dired
         +icons                        ; colorful icons for dired-mode
         )
-       electric                   ; smarter, keyword-based electric-indent
+       electric                         ; smarter, keyword-based electric-indent
+       ibuffer
        vc                         ; version-control and Emacs, sitting in a tree
 
        :term                          ; terminals in Emacs
@@ -65,22 +67,26 @@
                                         ; a consistent, cross-platform shell (WIP)
 
        :checkers
-       syntax                      ; tasing you for every semicolon you forget
-       spell                      ; tasing you for misspelling mispelling
-       grammar           ; tasing grammar mistake every you make
-
+       syntax                        ; tasing you for every semicolon you forget
+       spell                         ; tasing you for misspelling mispelling
+       grammar                       ; tasing grammar mistake every you make
+       :input
+       chinese
 
        :tools
        ;; ;;ansible
        docker
-       debugger          ; FIXME stepping through code, to help you add bugs
-       editorconfig      ; let someone else argue about tabs vs spaces
-       (eval +overlay)              ; run code, run (also, repls)
-       (lookup           ; helps you navigate your code and documentation
-        +docsets)        ; ...or in Dash docsets locally
+       (debugger +lsp)       ; FIXME stepping through code, to help you add bugs
+       editorconfig          ; let someone else argue about tabs vs spaces
+       (eval +overlay)       ; run code, run (also, repls)
+       (lookup               ; helps you navigate your code and documentation
+        +xwidget
+        +dictionary
+        +offline
+        +docsets)
        ;;ein               ; tame Jupyter notebooks with emacs
-       gist                          ; interacting with github gists
-       lsp
+       gist                             ; interacting with github gists
+       (lsp +peek)
        ;;macos             ; MacOS-specific commands
        magit             ; a git porcelain for Emacs
        make              ; run make tasks from Emacs
@@ -91,36 +97,35 @@
        ;;terraform         ; infrastructure as code
        ;; tmux              ; an API for interacting with tmux
        upload                         ; map local to remote projects via ssh/ftp
-       ;; vterm             ; another terminals in Emacs
 
        :lang
-       assembly                         ; assembly for fun or debugging
        ;; agda
        (cc +lsp)                        ; C/C++/Obj-C madness
        clojure                          ; java with a lisp
        ;;common-lisp       ; if you've seen one lisp, you've seen them all
-       coq               ; proofs-as-programs
+       coq    ; proofs-as-programs
        ;;crystal          ; ruby at the speed of c
        data   ; config/data formats
        ;;erlang            ; an elegant language for a more civilized age
        ;;elixir            ; erlang done right
        emacs-lisp                  ; drown in parentheses
        ;;ess               ; emacs speaks statistics
-       (go +lsp)                ; the hipster dialect
+       (go +lsp)                        ; the hipster dialect
        (haskell +lsp)                   ; a language that's lazier than I am
        ;;hy                ; readability of scheme w/ speed of python
        ;; idris             ;
        ;; (java +lsp) ; the poster child for carpal tunnel syndrome
+       json
        (javascript ;; +lsp
-                   )
+        )
                                         ; all(hope(abandon(ye(who(enter(here))))))
        ;;julia             ; a better, faster MATLAB
        ;;latex          ; writing papers in Emacs has never been so fun
        ;;ledger            ; an accounting system in Emacs
        ;;lua               ; one-based indices? one-based indices
-       ( markdown +grip )         ; writing docs for people to ignore
+       (markdown +grip)    ; writing docs for people to ignore
        ;;nim               ; python + lisp at the speed of c
-       nix               ; I hereby declare "nix geht mehr!"
+       nix                              ; I hereby declare "nix geht mehr!"
        ;;ocaml             ; an objective camel
        (org                             ; organize your plain life in plain text
         +dragndrop
@@ -131,19 +136,20 @@
                                         ; Emacs for presentations
        ;;perl              ; write code no one else can comprehend
        ;;php               ; perl's insecure younger brother
-       plantuml            ; diagrams for confusing people more
+       plantuml                 ; diagrams for confusing people more
        ;;purescript        ; javascript, but functional
-       (python +lsp +pyenv)       ; beautiful is better than ugly
+       (python +lsp +pyenv)             ; beautiful is better than ugly
        ;;qt                ; the 'cutest' gui framework ever
        ;;racket            ; a DSL for DSLs
-       rest                             ; Emacs as a REST client
+       rest      ; Emacs as a REST client
        ;;rust              ; Fe2O3.unwrap().unwrap().unwrap().unwrap()
        (scala +lsp)         ; java, but good
-       sh              ; she sells (ba|z|fi)sh shells on the C xor
+       (sh +lsp)            ; she sells (ba|z|fi)sh shells on the C xor
        ;;solidity          ; do you need a blockchain? No.
        ;;swift             ; who asked for emoji variables?
-       (web +html +css)                              ; the tubes
+       (web +html +css)                 ; the tubes
        ;;vala              ; GObjective-C
+       yaml
 
        ;; Applications are complex and opinionated modules that transform Emacs
        ;; toward a specific purpose. They may have additional dependencies and
@@ -151,7 +157,8 @@
        :email
        (mu4e +gmail)                    ; emacs as an email client
        :app
-       irc               ; how neckbeards socialize
+       calendar
+       irc                              ; how neckbeards socialize
        (rss +org)                       ; emacs as an RSS reader
        ;;twitter           ; twitter client https://twitter.com/vnought
        ;; (write               ; emacs as a word processor (latex + org + markdown)

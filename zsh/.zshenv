@@ -1,5 +1,5 @@
 if [[ "$OSTYPE" == "linux-gnu" ]]; then
-    export JAVA_HOME='/usr/lib/jvm/java-13-openjdk'
+    export JAVA_HOME='/usr/lib/jvm/java-14-openjdk'
     export HADOOP_HOME=/usr/lib/hadoop
     export CONFLUENT_HOME=/
     export FLINK_HOME=/opt/flink-1.10.0
@@ -58,8 +58,9 @@ export PATH=$ASYNC_PROFILER_HOME:$PATH
 export npm_config_prefix=~/.node_modules
 
 export METALS_ENABLED=true
-
+export METALS_JDK_PATH=/usr/lib/jvm/java-14-openjdk/bin
 export GOPATH=$HOME/go
+export GO111MODULE=on 
 export PATH=$GOPATH/bin:$PATH
 export PATH=$HOME/.local/bin/:$PATH
 export PATH=$HOME/.yarn/bin/:$PATH
@@ -81,7 +82,7 @@ alias git=hub
 alias yolo='git commit -m "$(curl -s whatthecommit.com/index.txt)"'
 
 export NIX_PATH=$NIX_PATH:$HOME/.nix-defexpr/channels
-export SBT_OPTS="-Xss2M"
+export SBT_OPTS="-Xss4M"
 export EDITOR="emacsclient"
 export EMAIL="xiongchenyu@bigo.sg"
 
