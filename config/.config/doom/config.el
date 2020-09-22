@@ -276,7 +276,8 @@
 (setq leetcode-prefer-sql "mysql")
 (setq org-html-htmlize-output-type 'css)
 
-(setq js2-basic-offset 2)
+;; (setq js2-basic-offset 2)
+(setq js-indent-level 2)
 
 (after! pyim
   ;; 选词框显示5个候选词

@@ -16,6 +16,7 @@ dropbox &
 xmodmap ~/.Xmodmap &
 ibus-daemon -d -x &
 pasystray &
+/usr/lib/gsd-xsettings &
 xset -b
 xset r rate 180 60
 #xrandr --output VIRTUAL1 --off --output eDP1 --primary --mode 1920x1080 --dpi 500 --pos 0x0 --scale 1.5x1.5

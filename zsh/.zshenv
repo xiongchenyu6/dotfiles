@@ -2,7 +2,7 @@ if [[ "$OSTYPE" == "linux-gnu" ]]; then
     export JAVA_HOME='/usr/lib/jvm/java-14-openjdk'
     export HADOOP_HOME=/usr/lib/hadoop
     export CONFLUENT_HOME=/
-    export FLINK_HOME=/opt/flink-1.10.0
+    export FLINK_HOME=/opt/flink-1.11.1
     export SPARK_HOME=/opt/spark-2.4.3
     export HBASE_HOME=/opt/hbase-2.2.0
     export HIVE_HOME=/opt/hive-3.1.1
@@ -78,7 +78,6 @@ export HISTCONTROL=ignoreboth:erasedups
 export GHTOKEN="ad38f8a815e974c98db2abd6f5ff304eca53400f"
 #  alias cat=ccat
 alias vi='nvim'
-alias git=hub
 alias yolo='git commit -m "$(curl -s whatthecommit.com/index.txt)"'
 
 export NIX_PATH=$NIX_PATH:$HOME/.nix-defexpr/channels

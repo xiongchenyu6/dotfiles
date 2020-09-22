@@ -150,6 +150,8 @@ myLayout = avoidStruts $ tiled ||| Mirror tiled ||| Full
      -- default tiling algorithm partitions the screen into two panes
 
 
+
+
  where
   tiled   = Tall nmaster delta ratio
   -- The default number of windows in the master pane
