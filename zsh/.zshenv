@@ -1,11 +1,11 @@
+source /etc/profile
 if [[ "$OSTYPE" == "linux-gnu" ]]; then
-    export JAVA_HOME='/usr/lib/jvm/java-14-openjdk'
+    export JAVA_HOME='/usr/lib/jvm/default'
     export HADOOP_HOME=/usr/lib/hadoop
     export CONFLUENT_HOME=/
-    export FLINK_HOME=/opt/flink-1.11.1
-    export SPARK_HOME=/opt/spark-2.4.3
-    export HBASE_HOME=/opt/hbase-2.2.0
-    export HIVE_HOME=/opt/hive-3.1.1
+    export FLINK_HOME=/opt/flink
+    export HBASE_HOME=/opt/hbase
+    export HIVE_HOME=/opt/hive
     export ASYNC_PROFILER_HOME=/opt/async-profiler
     export XAUTHORITY=~/.Xauthority
     export CONAN_USERNAME=brec
@@ -43,17 +43,14 @@ export JAVA_LIBRARY_PATH=$JAVA_LIBRARY_PATH:$HADOOP_HOME/lib/native
 export FLINK_CLASSPATH=$HADOOP_HOME/lib/native/*
 export CC_CLASSPATH=$HADOOP_HOME/lib/native/*
 
-
 #hadoop echo
 export PATH=$HADOOP_HOME/sbin:$HADOOP_HOME/bin:$PATH
 export PATH=$FLINK_HOME/bin:$PATH
 export PATH=$HBASE_HOME/bin:$PATH
-export PATH=$SPARK_HOME/bin:$PATH
 export PATH=$HIVE_HOME/bin:$PATH
 export PATH=$RUBY_HOME/bin:$PATH
 export PATH=$GEM_HOME/bin:$PATH
 export PATH=$ASYNC_PROFILER_HOME:$PATH
-
 
 export npm_config_prefix=~/.node_modules
 
@@ -62,6 +59,7 @@ export METALS_JDK_PATH=/usr/lib/jvm/java-14-openjdk/bin
 export GOPATH=$HOME/go
 export GO111MODULE=on 
 export PATH=$GOPATH/bin:$PATH
+export PATH=$GOPATH/src/k8s.io/kubernetes/_output/bin:$PATH
 export PATH=$HOME/.local/bin/:$PATH
 export PATH=$HOME/.yarn/bin/:$PATH
 export PATH=$HOME/.emacs.d/bin/:$PATH
@@ -72,6 +70,7 @@ export SSH_KEY_PATH="~/.ssh/rsa_id"
 export LC_ALL=en_US.UTF-8
 export LANGUAGE=en_US.UTF-8
 export LANG=en_US.UTF-8
+export LC_CTYPE=zh_CN.UTF-8
 export TERM=xterm-256color
 export HISTCONTROL=ignoreboth:erasedups
 
@@ -79,16 +78,16 @@ export GHTOKEN="ad38f8a815e974c98db2abd6f5ff304eca53400f"
 #  alias cat=ccat
 alias vi='nvim'
 alias yolo='git commit -m "$(curl -s whatthecommit.com/index.txt)"'
+alias op='xdg-open'
 
 export NIX_PATH=$NIX_PATH:$HOME/.nix-defexpr/channels
 export SBT_OPTS="-Xss4M"
 export EDITOR="emacsclient"
 export EMAIL="xiongchenyu@bigo.sg"
 
-
 export NODE_PATH=$HOME/.config/yarn/global/node_modules
 
-export XMODIFIERS=@im=ibus
+export XMODIFIERS=@im=fcitx5
 
 #CJK index
 export XAPIAN_CJK_NGRAM=1
@@ -97,12 +96,11 @@ export CC=clang
 export CXX=clang++
 
 #input method
-export GTK_IM_MODULE=ibus
-export XMODIFIERS=@im=ibus
-export XIM=ibus
-export QT_IM_MODULE=ibus
-export XIM_ARGS="ibus-daemon -d -x"
-
+export GTK_IM_MODULE=fcitx5
+export XMODIFIERS=@im=fcitx5
+export XIM=fcitx5
+export QT_IM_MODULE=fcitx5
+# export XIM_ARGS="fcitx5-daemon -d -x"
 #
 export MAKEFLAGS="-j8"
 
@@ -114,23 +112,12 @@ export GTAGSLABEL=pygments
 export GTAGSTHROUGH=true
 export SYSTEMD_DEBUGGER=gdb
 
-#Theme
-export POWERLEVEL9K_MODE='nerdfont-complete'	
-export POWERLEVEL9K_VCS_SHOW_SUBMODULE_DIRTY=true	# set the theme to something, or blank if you use a non omz theme
-export POWERLEVEL9K_DIR_OMIT_FIRST_CHARACTER=true
-export POWERLEVEL9K_SHOW_CHANGESET=true	
-export POWERLEVEL9K_PROMPT_ON_NEWLINE=true
-export POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(context root_indicator disk_usage dir dir_writable dropbox virtualenv root_indicator pyenv vcs)	
-export POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(status background_jobs command_execution_time history time newline)
-
-export SPACESHIP_GIT_BRANCH_SHOW_COMMIT=true
-export SPACESHIP_GIT_BRANCH_SHOW_TAG=true
-export SPACESHIP_TIME_SHOW=true
-export SPACESHIP_EXIT_CODE_SHOW=true
 export NIX_IGNORE_SYMLINK_STORE=1
 
 #enhancd
 export ENHANCD_DISABLE_HYPHEN=1
+
+export DOCKER_BUILDKIT=1
 
 setopt BANG_HIST                 # Treat the '!' character specially during expansion.
 setopt EXTENDED_HISTORY          # Write the history file in the ":start:elapsed;command" format.
@@ -146,3 +133,5 @@ setopt HIST_REDUCE_BLANKS        # Remove superfluous blanks before recording en
 setopt HIST_VERIFY               # Don't execute immediately upon history expansion.
 setopt HIST_BEEP                 # Beep when accessing nonexistent history.
 
+zstyle ':completion:*:*:docker:*' option-stacking yes
+zstyle ':completion:*:*:docker-*:*' option-stacking yes

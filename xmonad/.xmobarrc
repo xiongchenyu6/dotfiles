@@ -42,6 +42,7 @@ Config {
                                             , "--high"     , "red"
                                             ] 50
                       , Run Memory ["-t","Mem: <usedratio>%"] 10
+
                       , Run Com "uname" ["-s","-r"] "" 36000
                       , Run Date "%a %b %_d %Y %H:%M:%S" "date" 10
 	                    , Run Com "/bin/bash" ["-c", "~/.script/get-volume.sh"]  "myvolume" 1

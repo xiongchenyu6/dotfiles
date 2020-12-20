@@ -5,13 +5,14 @@
   "ignore_all_lsp": false,
   "creation_time": "2019-09-13T08:39:01.919255314Z",
   "semantic_status": {
-    "go": "Suppressed",
-    "purescript": "Suppressed",
     "scala": "Suppressed",
+    "go": "Suppressed",
     "haskell": "Suppressed",
+    "purescript": "Suppressed",
     "cpp": "Suppressed"
   },
   "disable_auto_update": false,
+  "enable_telemetry": false,
   "user_understands_that_enabling_tabnine_cloud_sends_code_to_tabnine_servers": false,
   "hosted_deep_completions_enabled": "Disabled",
   "tabnine_cloud_host": null,
@@ -28,5 +29,7 @@
   "enable_power_saving_mode": false,
   "rate_limit_interval_seconds": null,
   "rate_limit_amount": null,
-  "generation": 0
+  "generation": 0,
+  "local_model_size": null,
+  "local_indexing": null
 }

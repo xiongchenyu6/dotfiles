@@ -1,8 +1,6 @@
 # annotations are also allowed:
 xiongchenyu6/oh-my-zsh
 
-
-caarlos0/jvm
 djui/alias-tips
 
 # comments are supported like this
@@ -22,5 +20,6 @@ b4b4r07/enhancd
 wfxr/forgit
 robertzk/send.zsh
 sei40kr/zsh-tmux-rename
+
 # powerlevel9k/powerlevel9k
-miguelfito/spaceship-prompt
+# miguelfito/spaceship-prompt

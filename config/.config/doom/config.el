@@ -4,7 +4,11 @@
 
 (setq user-full-name "XiongChenYu"
       user-mail-address "xiongchenyu@bigo.sg"
-      doom-font (font-spec :family "Hack" :size 14)
+      doom-font (font-spec :family
+                           "JetBrains Mono" :size 15
+                           ;; "Hasklig" :size 14
+                            ;; "Fira Code" :size 14
+                           )
       doom-modeline-github t
       doom-modeline-major-mode-color-icon t
       )
@@ -37,8 +41,7 @@
                                     :compile "cmake --build Debug"
                                     :run "./Debug/main"
                                     :test "ctest"
-                                    )
-  (add-to-list 'projectile-globally-ignored-directories ".ccls-cache"))
+                                    ))
 
 ;; (after! projectile
 ;;   (add-to-list 'projectile-globally-ignored-directories ".ccls-cache")
@@ -85,7 +88,7 @@
   "C-l" 'evil-window-right)
  )
 
-(setq rmh-elfeed-org-files '("~/Dropbox/Org/elfeed.org"))
+(setq rmh-elfeed-org-files '("~/Dropbox/Org/fun/elfeed.org"))
 
 (setq org-roam-directory  "~/Dropbox/Org/")
 
@@ -126,7 +129,7 @@
 ;;   (remove-hook 'org-tab-first-hook #'+org-cycle-only-current-subtree-h))
 
 
-(evil-define-key 'normal org-mode-map (kbd "<tab>") #'+org/toggle-fold)
+(evil-define-key 'normal org-mode-map (kbd "<tab>") #'org-cycle)
 
 (global-auto-revert-mode)
 
@@ -185,9 +188,6 @@
   (map!
    :map (c-mode-map c++-mode-map)
    (:localleader
-    :n "p" #'ccls-preprocess-file
-    :n "r" #'ccls-reload
-    :n "h" #'ccls-member-hierarchy
     :n "e" #'expand-member-functions
     ))
   )
@@ -218,10 +218,12 @@
 (use-package! company-tabnine
   :after company
   :config
-  (set-company-backend! '(prog-mode conf-mode org-mode) '(company-capf :with company-yasnippet :with company-tabnine))
+  (set-company-backend! '(prog-mode conf-mode org-mode elisp-mode) '(company-yasnippet :with company-capf :with company-tabnine))
+  (setq company-backends '((company-yasnippet :with company-capf)))
   )
 
-;;(add-hook 'company-mode-hook (set-company-backend! '(lsp-mode) '(company-capf :with company-yasnippet :with company-tabnine)))
+;; (setq +lsp-company-backends '(company-capf :with company-yasnippet :with company-tabnine))
+(setq +lsp-company-backends '(company-yasnippet :with company-capf))
 
 (define-key evil-insert-state-map (kbd "C-n") 'company-select-next-or-abort)
 (define-key evil-insert-state-map (kbd "C-p") 'company-select-previous-or-abort)
@@ -264,7 +266,7 @@
 (after! evil-mc
   (add-to-list 'evil-mc-incompatible-minor-modes 'lispy-mode))
 
-(setq org-ditaa-jar-path "/usr/share/java/ditaa/ditaa-0.11.jar")
+;; (setq org-ditaa-jar-path "/usr/share/java/ditaa/ditaa-0.11.jar")
 
 (add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on)
 
@@ -274,13 +276,62 @@
 
 (setq leetcode-prefer-language "cpp")
 (setq leetcode-prefer-sql "mysql")
+
 (setq org-html-htmlize-output-type 'css)
 
 ;; (setq js2-basic-offset 2)
 (setq js-indent-level 2)
+(setq css-indent-offset 2)
 
 (after! pyim
   ;; 选词框显示5个候选词
   (setq pyim-dicts
       '((:name "dict1" :file "/home/chenyu/Dropbox/pyim-bigdict.pyim")))
   (setq pyim-page-length 9))
+
+(setq org-re-reveal-revealjs-version "4.0")
+
+(require 'ox-confluence-en)
+
+(require 'systemd)
+
+(setq x-enable-primary t)
+
+;; (use-package wakatime-mode :ensure t)
+(global-wakatime-mode)
+
+
+(add-hook! wakatime-mode
+ (setq wakatime-cli-path "wakatime")
+  )
+
+;; (require 'org-tempo)
+;; (after! 'org (add-to-list  'org-structure-template-alist
+;;                      '("b" "#+BEGIN_SRC shell\n?\n#+END_SRC")
+;;                            ))
+(after! lsp-clients
+  (set-lsp-priority! 'clangd 1))
+
+(setq haskell-process-type 'cabal-new-repl)
+
+
+(setq-default fill-column 120)
+
+
+(setq +lookup-open-url-fn #'+lookup-xwidget-webkit-open-url-fn)
+
+(setq lsp-ui-doc-use-webkit t)
+
+(setq lsp-ui-doc-max-height 99)
+(setq lsp-ui-doc-max-width 9999)
+
+
+;; (add-hook 'emacs-startup-hook (lambda () (normal-erase-is-backspace-mode +1)))
+
+(if (not (display-graphic-p)) (setq normal-erase-is-backspace t))
+
+
+;;  python
+;;
+(setq lsp-pyls-plugins-autopep8-enabled nil)
+(setq lsp-pyls-plugins-yapf-enabled t)

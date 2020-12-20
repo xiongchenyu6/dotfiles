@@ -10,4 +10,8 @@
 ;; If you want to replace it with yasnippet's default snippets
 (package! yasnippet-snippets)
 
-(package! evil-mc :disable t)
+(package! ox-confluence-en :recipe (:host github :repo "correl/ox-confluence-en"))
+(package! ccls :disable t)
+(package! systemd)
+
+(package! wakatime-mode)

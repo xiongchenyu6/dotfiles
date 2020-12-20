@@ -1,24 +1,24 @@
 {
   "signatures": [
     {
-      "keyid": "fe331502606802feac15e514d9b9ea83fee8b6ffef71335479a2e68d84adc6b0",
+      "keyid": "51f0161b906011b52c6613376b1ae937670da69322113a246a09f807c62f6921",
       "method": "ed25519",
-      "sig": "SmAxDgEMLLKJl0sJnHh/uLwZx8CMP0zdrMqpS/19eDpeH/MHt6a4ydDBeuRtEOn3xH52bfqhRGXVaKi7aWSfBw=="
+      "sig": "AqRKpnmVj7VC04bxYun9G12EqzlOuLR4ugxD2fuo4kCN94+ps+gSU3f0Geiy8BvI7jWEKJlxzx2kR7tGeEcZCQ=="
     },
     {
-      "keyid": "1ea9ba32c526d1cc91ab5e5bd364ec5e9e8cb67179a471872f6e26f0ae773d42",
+      "keyid": "fe331502606802feac15e514d9b9ea83fee8b6ffef71335479a2e68d84adc6b0",
       "method": "ed25519",
-      "sig": "pnNy1gw/Fo1bXDpYP8SaJfLyLt+TLV8IKwREW1np9UBSmIiKR2O7kVNobhI8EvTYBSFAGM6F6223G2obiNWnDQ=="
+      "sig": "Xo/6i0MTGMmuh7w1BZtiluTN6lXyUSwx0L2QqO61dH/MsX9CstJt9g2sgwONtn0qgINlVuE3SUzPv4G1jzRSBA=="
     },
     {
       "keyid": "0a5c7ea47cd1b15f01f5f51a33adda7e655bc0f0b0615baa8e271f4c3351e21d",
       "method": "ed25519",
-      "sig": "FygwhjSQyHjlduEbhvM4jPtFpiqPt87zpYUsbWTI8zR/IZ7j/0jrpVHlNtXpDsXOuqwMeNW5W6Bxn9K4s27QBQ=="
+      "sig": "No8d1pubIqrZTWzWb9gj/kAKp8qjvhEcKd7FWE8yUUxr46+CGyBJ/7VjhPvaA2sWCxNnvl+62li5HpPmFvwqDQ=="
     }
   ],
   "signed": {
     "_type": "Root",
-    "expires": "2019-07-21T18:34:14Z",
+    "expires": "2022-07-31T23:59:59Z",
     "keys": {
       "0a5c7ea47cd1b15f01f5f51a33adda7e655bc0f0b0615baa8e271f4c3351e21d": {
         "keytype": "ed25519",
@@ -110,6 +110,6 @@
         "threshold": 1
       }
     },
-    "version": 1
+    "version": 3
   }
 }
