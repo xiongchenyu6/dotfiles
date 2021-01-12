@@ -158,3 +158,13 @@ value of last one, or nil if there are none.
 
 
 (--annotate (< 1 it) '(0 1 2 3))
+
+(getenv "LANG")
+
+(getenv "LC_CTYPE")
+
+(getenv "XMODIFIERS")
+
+(getenv "GTK_IM_MODULE")
+
+(getenv "JAVA_HOME")

@@ -55,7 +55,7 @@ export PATH=$ASYNC_PROFILER_HOME:$PATH
 export npm_config_prefix=~/.node_modules
 
 export METALS_ENABLED=true
-export METALS_JDK_PATH=/usr/lib/jvm/java-14-openjdk/bin
+export METALS_JDK_PATH=/usr/lib/jvm/default/bin
 export GOPATH=$HOME/go
 export GO111MODULE=on 
 export PATH=$GOPATH/bin:$PATH
@@ -67,10 +67,7 @@ export HADOOP_LOG_DIR=/data/logs
 
  #ssh
 export SSH_KEY_PATH="~/.ssh/rsa_id"
-export LC_ALL=en_US.UTF-8
-export LANGUAGE=en_US.UTF-8
-export LANG=en_US.UTF-8
-export LC_CTYPE=zh_CN.UTF-8
+
 export TERM=xterm-256color
 export HISTCONTROL=ignoreboth:erasedups
 
@@ -87,7 +84,6 @@ export EMAIL="xiongchenyu@bigo.sg"
 
 export NODE_PATH=$HOME/.config/yarn/global/node_modules
 
-export XMODIFIERS=@im=fcitx5
 
 #CJK index
 export XAPIAN_CJK_NGRAM=1
@@ -95,12 +91,6 @@ export XAPIAN_CJK_NGRAM=1
 export CC=clang
 export CXX=clang++
 
-#input method
-export GTK_IM_MODULE=fcitx5
-export XMODIFIERS=@im=fcitx5
-export XIM=fcitx5
-export QT_IM_MODULE=fcitx5
-# export XIM_ARGS="fcitx5-daemon -d -x"
 #
 export MAKEFLAGS="-j8"
 

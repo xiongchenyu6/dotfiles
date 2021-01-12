@@ -130,7 +130,7 @@
        (org                             ; organize your plain life in plain text
         +dragndrop
         +gnuplot
-        +pandoc
+        ;; +pandoc
         +pomodoro
         +gnuplot
         +pretty

@@ -15,3 +15,7 @@
 (package! systemd)
 
 (package! wakatime-mode)
+
+(package! liberime-config
+  :recipe (:host github :repo "merrickluo/liberime"
+           :files ("CMakeLists.txt" "Makefile" "src" "liberime.el")))

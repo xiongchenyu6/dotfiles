@@ -2,6 +2,8 @@
 
 ;; Place your private configuration here
 
+(global-set-key (kbd "<escape>") 'keyboard-escape-quit)
+
 (setq user-full-name "XiongChenYu"
       user-mail-address "xiongchenyu@bigo.sg"
       doom-font (font-spec :family
@@ -30,6 +32,9 @@
         :i "_" #'special-lispy-different
         :i [remap delete-backward-char] #'lispy-delete-backward)
   )
+
+
+
 
 (setq magit-repository-directories '(("~/workspace" . 2)))
 
@@ -240,7 +245,6 @@
 
 (add-hook! company-mode
   (setq company-transformers '(company-sort-by-backend-importance))
-  (define-key evil-insert-state-map (kbd "M-i") 'company-complete)
   )
 
 (defmacro set-evil-number-keymap (key-set func &rest modes)
@@ -283,11 +287,44 @@
 (setq js-indent-level 2)
 (setq css-indent-offset 2)
 
-(after! pyim
-  ;; 选词框显示5个候选词
-  (setq pyim-dicts
-      '((:name "dict1" :file "/home/chenyu/Dropbox/pyim-bigdict.pyim")))
-  (setq pyim-page-length 9))
+(let ((liberime-auto-build t))
+  (require 'liberime nil t))
+
+(use-package! liberime)
+(use-package! pyim
+  ;; :quelpa (pyim :fetcher github :repo "merrickluo/pyim")
+  :init
+  (setq pyim-title "R")
+  :config
+  ;; (use-package pyim-basedict
+  ;;   :config
+  ;;   (pyim-basedict-enable))
+  (define-key evil-insert-state-map (kbd "M-i") 'pyim-convert-string-at-point)
+  (setq pyim-dcache-auto-update t)
+  (setq default-input-method "pyim")
+
+  (setq pyim-page-length 9)
+
+  ;; 我使用全拼
+  (setq pyim-page-tooltip 'child-frame)
+
+  (setq pyim-default-scheme 'rime)
+  (liberime-try-select-schema "luna_pinyin_simp")
+  ;; 设置 pyim 探针设置，这是 pyim 高级功能设置，可以实现 *无痛* 中英文切换 :-)
+  ;; 我自己使用的中英文动态切换规则是：
+  ;; 1. 光标只有在注释里面时，才可以输入中文。
+  ;; 2. 光标前是汉字字符时，才能输入中文。
+  ;; 3. 使用 M-j 快捷键，强制将光标前的拼音字符串转换为中文。
+  (setq-default pyim-english-input-switch-functions
+		'(pyim-probe-dynamic-english
+		  pyim-probe-isearch-mode
+		  pyim-probe-program-mode
+                  pyim-probe-evil-normal-mode
+		  pyim-probe-org-structure-template))
+
+  (setq-default pyim-punctuation-half-width-functions
+		'(pyim-probe-punctuation-line-beginning
+		  pyim-probe-punctuation-after-punctuation)))
 
 (setq org-re-reveal-revealjs-version "4.0")
 

@@ -1,18 +1,13 @@
-
 [[ -f ~/.Xresources ]] && xrdb -merge -I$HOME ~/.Xresources
-export LANG="en_US.UTF-8"
-export LC_ALL="en_US.UTF-8"
-export LC_CTYPE="zh_CN.utf8"
-export LC_COLLATE="en_US.UTF-8"
 
-export INPUT_METHOD=fcitx5
-export GTK_IM_MODULE=fcitx5
-export GTK3_IM_MODULE=fcitx5
-export QT_IM_MODULE=fcitx5
-export XMODIFIERS=@im=fcitx5
-export XIM=fcitx5
+export INPUT_METHOD=fcitx
+export GTK_IM_MODULE=fcitx
+export GTK3_IM_MODULE=fcitx
+export QT_IM_MODULE=fcitx
+export XMODIFIERS=@im=fcitx
+export XIM=fcitx
 
-#clipit &
+clipit &
 nm-applet &
 dropbox &
 xmodmap ~/.Xmodmap &

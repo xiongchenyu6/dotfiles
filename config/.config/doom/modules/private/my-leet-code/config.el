@@ -5,3 +5,10 @@
       leetcode-prefer-sql "mysql"
       leetcode--filter-difficulty "easy"
       )
+
+(map!
+ :map (leetcode--problems-mode)
+   (:localleader
+    :n "d" #'leetcode--filter-difficulty
+    )
+ )
