@@ -1,0 +1,11 @@
+[kubernetes]
+disabled = false
+[directory]
+truncation_length = 8
+truncation_symbol = "…/"
+[status]
+disabled = false
+[time]
+disabled = false
+[git_commit]
+tag_disabled = false

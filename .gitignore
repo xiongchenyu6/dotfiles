@@ -14,6 +14,7 @@ clojure/.clojure/.cpcache
 !config/.config/TabNine
 !config/.config/fontconfig
 !config/.config/taffybar
+!config/.config/starship.toml
 tmux/.tmux/*
 !tmux/.tmux/plugins/tmp
 TAGS
