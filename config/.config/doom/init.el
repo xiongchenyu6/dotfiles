@@ -101,7 +101,7 @@
        :lang
        ;; agda
        (cc +lsp)                        ; C/C++/Obj-C madness
-       clojure                          ; java with a lisp
+       (clojure +lsp)                          ; java with a lisp
        ;;common-lisp       ; if you've seen one lisp, you've seen them all
        ;; coq    ; proofs-as-programs
        ;;crystal          ; ruby at the speed of c
@@ -144,7 +144,7 @@
        ;;qt                ; the 'cutest' gui framework ever
        ;;racket            ; a DSL for DSLs
        rest      ; Emacs as a REST client
-       ;;rust              ; Fe2O3.unwrap().unwrap().unwrap().unwrap()
+       (rust +lsp)              ; Fe2O3.unwrap().unwrap().unwrap().unwrap()
        (scala +lsp)         ; java, but good
        (sh +lsp)            ; she sells (ba|z|fi)sh shells on the C xor
        ;;solidity          ; do you need a blockchain? No.

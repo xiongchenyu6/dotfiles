@@ -223,11 +223,9 @@
 (use-package! company-tabnine
   :after company
   :config
-  (set-company-backend! '(prog-mode conf-mode org-mode elisp-mode) '(company-yasnippet :with company-capf :with company-tabnine))
-  (setq company-backends '((company-yasnippet :with company-capf)))
+  (set-company-backend! '(prog-mode conf-mode) '(company-yasnippet :with company-capf :with company-tabnine))
   )
 
-;; (setq +lsp-company-backends '(company-capf :with company-yasnippet :with company-tabnine))
 (setq +lsp-company-backends '(company-yasnippet :with company-capf))
 
 (define-key evil-insert-state-map (kbd "C-n") 'company-select-next-or-abort)
@@ -372,3 +370,5 @@
 ;;
 (setq lsp-pyls-plugins-autopep8-enabled nil)
 (setq lsp-pyls-plugins-yapf-enabled t)
+
+(setq plantuml-default-exec-mode 'jar)

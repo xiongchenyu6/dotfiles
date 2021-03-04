@@ -1,0 +1,9 @@
+# -*- mode: snippet -*-
+# name: cpt
+# key: cpt
+# --
+typedef long long ll;     // comments that are mixed in with code
+typedef pair<int, int> ii;// are aligned to the right like this
+typedef vector<ii> vii;
+typedef vector<int> vi;
+#define INF 1000000000// 1 billion, safer than 2B for Floyd Warshall’s
