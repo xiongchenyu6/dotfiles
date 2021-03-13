@@ -1,0 +1,10 @@
+# -*- mode: snippet -*-
+# name: debug_list
+# key: debug_list
+# --
+template <typename T> void debug_list(vector<T> v) {
+for (auto item : v) {
+cout << item << ",";
+}
+cout << "\\n";
+}
