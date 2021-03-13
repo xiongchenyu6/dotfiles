@@ -9,3 +9,5 @@ disabled = false
 disabled = false
 [git_commit]
 tag_disabled = false
+[python]
+disabled = false

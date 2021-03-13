@@ -14,7 +14,6 @@
       doom-modeline-github t
       doom-modeline-major-mode-color-icon t
       )
-(setq lsp-message-project-root-warning t)
 
 (set-lookup-handlers! 'emacs-lisp-mode :documentation #'helpful-at-point)
 
@@ -225,8 +224,6 @@
   :config
   (set-company-backend! '(prog-mode conf-mode) '(company-yasnippet :with company-capf :with company-tabnine))
   )
-
-(setq +lsp-company-backends '(company-yasnippet :with company-capf))
 
 (define-key evil-insert-state-map (kbd "C-n") 'company-select-next-or-abort)
 (define-key evil-insert-state-map (kbd "C-p") 'company-select-previous-or-abort)
