@@ -1,5 +1,4 @@
 ;;; ~/.doom.d/config.el -*- lexical-binding: t; -*-
-
 ;; Place your private configuration here
 
 (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
@@ -13,6 +12,9 @@
                            )
       doom-modeline-github t
       doom-modeline-major-mode-color-icon t
+      doom-modeline-enable-word-count t
+      ;; doom-modeline-minor-modes t
+      doom-modeline-indent-info t
       )
 
 (set-lookup-handlers! 'emacs-lisp-mode :documentation #'helpful-at-point)
@@ -32,24 +34,8 @@
         :i [remap delete-backward-char] #'lispy-delete-backward)
   )
 
-
-
-
 (setq magit-repository-directories '(("~/workspace" . 2)))
-
 (setq compilation-read-command nil) ; no prompt in projectile-compile-project
-
-(after! projectile
-  ;; . -> Build
-  (projectile-register-project-type 'cmake '("CMakeLists.txt")
-                                    :compile "cmake --build Debug"
-                                    :run "./Debug/main"
-                                    :test "ctest"
-                                    ))
-
-;; (after! projectile
-;;   (add-to-list 'projectile-globally-ignored-directories ".ccls-cache")
-;;   )
 
 ;;mu4e
 ;; give me ISO(ish) format date-time stamps in the header list
@@ -137,17 +123,11 @@
 
 (global-auto-revert-mode)
 
-(setq c-syntactic-indentation nil)
+;; (setq c-syntactic-indentation nil)
 
 (map!
  :map (org-mode-map)
  :i "<S-return>" #'org-insert-subheading)
-
-;; (map!
-;;  :map (cider-mode-map)
-;;  :i "<C-p>" nil
-;;  :i "<C-n>" nil
-;;  )
 
 (advice-remove #'org-export-output-file-name #'+org*export-output-file-name)
 
@@ -159,13 +139,9 @@
 (setq org-src-fontify-natively t)
 
 (setq org-latex-compiler "pdflatex --shell-escape %f")
-
                                         ;transparent adjustment
 (set-frame-parameter (selected-frame)'alpha '(95 . 95))
 (add-to-list 'default-frame-alist'(alpha . (95 . 95)))
-
-(load "~/.config/doom/member-functions.el")
-(require 'member-functions)
 
 (define-derived-mode prometheus-v2-rules-mode yaml-mode "prometheus rule" ())
 
@@ -187,12 +163,12 @@
 
 (add-to-list 'flycheck-checkers 'prometheus-v2-promtool-rules)
 
-
 (after! cc-mode
+  (setq semantic-mode 1)
   (map!
    :map (c-mode-map c++-mode-map)
    (:localleader
-    :n "e" #'expand-member-functions
+    :n "r" #'srefactor-refactor-at-point
     ))
   )
 
@@ -332,7 +308,6 @@
 ;; (use-package wakatime-mode :ensure t)
 (global-wakatime-mode)
 
-
 (add-hook! wakatime-mode
  (setq wakatime-cli-path "wakatime")
   )
@@ -346,9 +321,7 @@
 
 (setq haskell-process-type 'cabal-new-repl)
 
-
 (setq-default fill-column 120)
-
 
 (setq +lookup-open-url-fn #'+lookup-xwidget-webkit-open-url-fn)
 
@@ -357,15 +330,14 @@
 (setq lsp-ui-doc-max-height 99)
 (setq lsp-ui-doc-max-width 9999)
 
-
 ;; (add-hook 'emacs-startup-hook (lambda () (normal-erase-is-backspace-mode +1)))
 
 (if (not (display-graphic-p)) (setq normal-erase-is-backspace t))
-
-
 ;;  python
 ;;
 (setq lsp-pyls-plugins-autopep8-enabled nil)
 (setq lsp-pyls-plugins-yapf-enabled t)
 
 (setq plantuml-default-exec-mode 'jar)
+
+(setq mouse-avoidance-mode 'banish)

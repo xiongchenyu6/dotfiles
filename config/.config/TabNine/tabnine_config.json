@@ -4,14 +4,14 @@
   "beta_enabled": "Yes",
   "ignore_all_lsp": false,
   "creation_time": "2019-09-13T08:39:01.919255314Z",
+  "guuid": "d1f2efb13357a6e2f174df6a8515a01f7e92a90073cf0df2f420eca6e37d82b8",
   "semantic_status": {
+    "cpp": "Suppressed",
     "scala": "Suppressed",
-    "go": "Suppressed",
     "haskell": "Suppressed",
-    "purescript": "Suppressed",
-    "cpp": "Suppressed"
+    "go": "Suppressed",
+    "purescript": "Suppressed"
   },
-  "disable_auto_update": false,
   "enable_telemetry": false,
   "user_understands_that_enabling_tabnine_cloud_sends_code_to_tabnine_servers": false,
   "hosted_deep_completions_enabled": "Disabled",
@@ -19,8 +19,9 @@
   "tabnine_cloud_certificate_domain": null,
   "tabnine_cloud_port": null,
   "cloud_whitelist": [],
+  "num_of_suggestions": null,
+  "multiline_suggestions": null,
   "api_key": null,
-  "api_key_service_level": null,
   "api_base_url": null,
   "binary_update_interval_seconds": null,
   "local_enabled": "Unset",
@@ -31,5 +32,10 @@
   "rate_limit_amount": null,
   "generation": 0,
   "local_model_size": null,
-  "local_indexing": null
+  "model_hash_override": null,
+  "local_indexing": null,
+  "heartbeat_interval_seconds": null,
+  "last_service_level": null,
+  "override_beams": null,
+  "override_context_length": null
 }

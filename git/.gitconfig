@@ -30,3 +30,5 @@
  required = true
 [alias]
  trash = !mkdir -p .trash && git ls-files --others --exclude-standard | xargs mv -f -t .trash
+[pull]
+	rebase = false
