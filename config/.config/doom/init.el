@@ -42,14 +42,14 @@
        window-select                    ; visually switch windows
 
        :editor
-       evil                 ; come to the dark side, we have cookies
-       file-templates       ; auto-snippets for empty files
-       fold                 ; (nigh) universal code folding
-       (format +onsave)     ; automated prettiness
-       lispy                ; vim for lisp, for people who dont like vim
+       evil                         ; come to the dark side, we have cookies
+       file-templates               ; auto-snippets for empty files
+       fold                         ; (nigh) universal code folding
+       (format +onsave)             ; automated prettiness
+       lispy                        ; vim for lisp, for people who dont like vim
        multiple-cursors
                                         ; editing in many places at once
-       snippets                  ; my elves. They type so I don't have to
+       snippets                         ; my elves. They type so I don't have to
        rotate-text               ; cycle region at point between text candidates
        word-wrap
 
@@ -67,7 +67,7 @@
                                         ; a consistent, cross-platform shell (WIP)
        :checkers
        syntax                        ; tasing you for every semicolon you forget
-       (spell +flyspell)                         ; tasing you for misspelling mispelling
+       (spell +flyspell)             ; tasing you for misspelling mispelling
        grammar                       ; tasing grammar mistake every you make
        :input
        chinese
@@ -77,9 +77,9 @@
        docker
        (debugger +lsp)       ; FIXME stepping through code, to help you add bugs
        direnv
-       editorconfig          ; let someone else argue about tabs vs spaces
-       (eval +overlay)       ; run code, run (also, repls)
-       (lookup               ; helps you navigate your code and documentation
+       editorconfig             ; let someone else argue about tabs vs spaces
+       (eval +overlay)          ; run code, run (also, repls)
+       (lookup                  ; helps you navigate your code and documentation
         +xwidget
         +dictionary
         +offline
@@ -101,7 +101,7 @@
        :lang
        ;; agda
        (cc +lsp)                        ; C/C++/Obj-C madness
-       (clojure +lsp)                          ; java with a lisp
+       (clojure) ;; +lsp ;;  ; java with a lisp
        ;;common-lisp       ; if you've seen one lisp, you've seen them all
        ;; coq    ; proofs-as-programs
        ;;crystal          ; ruby at the speed of c
@@ -114,9 +114,9 @@
        (haskell +lsp)                   ; a language that's lazier than I am
        ;;hy                ; readability of scheme w/ speed of python
        ;; idris             ;
-       ; (java +lsp) ; the poster child for carpal tunnel syndrome
+                                        ; (java +lsp) ; the poster child for carpal tunnel syndrome
        json
-       javascript ;; +lsp
+       (javascript +lsp) ;; +lsp
 
                                         ; all(hope(abandon(ye(who(enter(here))))))
        ;;julia             ; a better, faster MATLAB
@@ -143,8 +143,8 @@
        (python +lsp +pyenv)             ; beautiful is better than ugly
        ;;qt                ; the 'cutest' gui framework ever
        ;;racket            ; a DSL for DSLs
-       rest      ; Emacs as a REST client
-       (rust +lsp)              ; Fe2O3.unwrap().unwrap().unwrap().unwrap()
+       rest                 ; Emacs as a REST client
+       (rust +lsp)          ; Fe2O3.unwrap().unwrap().unwrap().unwrap()
        (scala +lsp)         ; java, but good
        (sh +lsp)            ; she sells (ba|z|fi)sh shells on the C xor
        ;;solidity          ; do you need a blockchain? No.

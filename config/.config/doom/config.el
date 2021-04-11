@@ -297,7 +297,7 @@
 		'(pyim-probe-punctuation-line-beginning
 		  pyim-probe-punctuation-after-punctuation)))
 
-(setq org-re-reveal-revealjs-version "4.0")
+;; (setq org-re-reveal-revealjs-version "4.0")
 
 (require 'ox-confluence-en)
 
@@ -341,3 +341,5 @@
 (setq plantuml-default-exec-mode 'jar)
 
 (setq mouse-avoidance-mode 'banish)
+
+(+global-word-wrap-mode)
