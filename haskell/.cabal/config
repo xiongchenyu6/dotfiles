@@ -26,10 +26,10 @@ repository hackage.haskell.org
 -- http-transport:
 -- nix: False
 -- local-no-index-repo:
-remote-repo-cache: /home/chenyu/.cabal/packages
+remote-repo-cache: /Users/chenyu/.cabal/packages
 -- local-repo:
--- logs-dir: /home/chenyu/.cabal/logs
-world-file: /home/chenyu/.cabal/world
+-- logs-dir: /Users/chenyu/.cabal/logs
+world-file: /Users/chenyu/.cabal/world
 -- store-dir:
 -- verbose: 1
 -- compiler: ghc
@@ -64,7 +64,7 @@ executable-dynamic: True
 -- cid:
 -- extra-lib-dirs:
 -- extra-framework-dirs:
-extra-prog-path: /home/chenyu/.cabal/bin
+extra-prog-path: /Users/chenyu/.cabal/bin
 -- instantiate-with:
 -- tests: False
 -- coverage: False
@@ -100,8 +100,8 @@ extra-prog-path: /home/chenyu/.cabal/bin
 -- upgrade-dependencies: False
 -- index-state:
 -- root-cmd:
-symlink-bindir: /home/chenyu/.cabal/bin
-build-summary: /home/chenyu/.cabal/logs/build.log
+symlink-bindir: /Users/chenyu/.cabal/bin
+build-summary: /Users/chenyu/.cabal/logs/build.log
 -- build-log:
 remote-build-reporting: anonymous
 -- report-planning-failure: False
@@ -117,7 +117,7 @@ jobs: $ncpus
 -- package-env:
 -- overwrite-policy:
 -- install-method:
-installdir: /home/chenyu/.local/bin
+installdir: /Users/chenyu/.local/bin
 -- username:
 -- password:
 -- password-command:
@@ -151,7 +151,7 @@ init
   -- source-dir:
 
 install-dirs user
-  prefix: /home/chenyu/.cabal
+  prefix: /Users/chenyu/.cabal
   -- bindir: $prefix/bin
   -- libdir: $prefix/lib
   -- libsubdir: $abi/$libname

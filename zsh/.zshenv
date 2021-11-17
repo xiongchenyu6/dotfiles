@@ -16,16 +16,24 @@ if [[ "$OSTYPE" == "linux-gnu" ]]; then
     export GEM_HOME=$HOME/.gem/ruby/2.7.0
 
 else [[ "$OSTYPE" == "darwin"* ]];
+    export PYENV_ROOT="$HOME/.pyenv"
+    export PATH="$PYENV_ROOT/bin:$PATH"
     export ANDROID_HOME=/usr/local/share/android-sdk
     export JAVA_HOME="$(/usr/libexec/java_home)"
-    export SCALA_HOME=/usr/local/opt/scala/idea
     export JDK_HOME="$(/usr/libexec/java_home)"
+    export SCALA_HOME=/usr/local/opt/scala/idea
     export RUBY_HOME=/usr/local/opt/ruby
     export GEM_HOME=/usr/local/lib/ruby/gems/2.6.0
     export PATH=/usr/local/sbin:$PATH
+    export GOROOT="/usr/local/Cellar/go/1.17.2/libexec"
     export PATH=/usr/local/bin:$PATH
+    export PATH=/usr/local/opt/llvm/bin:$PATH
+    export PATH=~/.jenv/shims:$PATH
+    alias openssl=/usr/local/opt/openssl@3/bin/openssl
+    export PATH=/usr/local/opt/openssl@3/bin:$PATH
     export PKG_CONFIG_PATH="/usr/local/opt/libxml2/lib/pkgconfig"
     export CONAN_USER_HOME=/Users/xiongchenyu
+    eval "$(jenv init -)"
 fi
 
 export PATH=$HOME/.nix-profile/bin/:$PATH

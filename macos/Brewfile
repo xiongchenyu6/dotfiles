@@ -64,7 +64,7 @@ brew "trash"
 brew "w3m"
 brew "wakatime-cli"
 brew "watchman"
-brew "d12frosted/emacs-plus/emacs-plus", args: ["HEAD", "with-modern-icon"]
+brew "d12frosted/emacs-plus/emacs-plus@28", args: ["HEAD", "with-modern-icon"]
 brew "hyperledger/fabric/fabric-tools"
 brew "olafurpg/scalafmt/scalafmt", args: ["HEAD"]
 cask "adobe-acrobat-reader"

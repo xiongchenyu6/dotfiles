@@ -46,6 +46,8 @@
 
 (record 'foo 23 [bar baz] "rats")
 
+(aref (record 'foo 23 [bar baz] "rats") 1 )
+
 (defvar *var* 1)
 
 (boundp '*var*) ; 返回真
@@ -59,7 +61,6 @@
 (*var* *var*)
 
 (symbol-value *var*) ; wrong
-
 
 (symbol-value '*var*) ; right
 
@@ -118,7 +119,6 @@ value of last one, or nil if there are none.
 
 '(1 21 ,@(2 3))
 
-
 (defvar x 0)
 
 (inc 'x)
@@ -138,9 +138,9 @@ value of last one, or nil if there are none.
 
 (defmacro create-inc-n (num)
     `(defmacro inc-n (var)
-        `(setq ,var (+ ,',num ,var))))
+        `(setq ,var (+ ,,num ,var))))
 
-(macroexpand-all '(create-inc-n 3))
+(macroexpand-1 '(create-inc-n 3))
 
 (create-inc-n 3)
 
@@ -150,6 +150,7 @@ value of last one, or nil if there are none.
 
 
 (--> "def" (concat "abc" it "ghi") (upcase it))
+
 (--all? (= 0 (% it 2)) '(2 4 6))
 
 (defmacro alambda (parms &rest body)

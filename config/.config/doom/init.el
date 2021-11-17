@@ -31,8 +31,8 @@
        (popup                     ; tame sudden yet inevitable temporary windows
         +all                      ; catch all popups that start with an asterix
         +defaults)
-
-       (ligatures +extra)
+       (ligatures +extra
+                  )
                                         ; FIXME an (incomplete) tab bar for Emacs
                                         ; unicode           ; extended unicode support for various languages
        vc-gutter                        ; vcs diff in the fringe
@@ -61,7 +61,8 @@
        electric                         ; smarter, keyword-based electric-indent
        (ibuffer +icons)
        vc                         ; version-control and Emacs, sitting in a tree
-
+       :os
+       macos             ; MacOS-specific commands
        :term                          ; terminals in Emacs
        ;; (term)
                                         ; a consistent, cross-platform shell (WIP)
@@ -87,7 +88,6 @@
        ;;ein               ; tame Jupyter notebooks with emacs
        gist                             ; interacting with github gists
        (lsp +peek)
-       ;;macos             ; MacOS-specific commands
        magit             ; a git porcelain for Emacs
        make              ; run make tasks from Emacs
        pass              ; password manager for nerds
@@ -101,7 +101,7 @@
        :lang
        ;; agda
        (cc +lsp)                        ; C/C++/Obj-C madness
-       (clojure) ;; +lsp ;;  ; java with a lisp
+       (clojure +lsp) ;;  ; java with a lisp
        ;;common-lisp       ; if you've seen one lisp, you've seen them all
        ;; coq    ; proofs-as-programs
        ;;crystal          ; ruby at the speed of c
@@ -114,7 +114,7 @@
        (haskell +lsp)                   ; a language that's lazier than I am
        ;;hy                ; readability of scheme w/ speed of python
        ;; idris             ;
-                                        ; (java +lsp) ; the poster child for carpal tunnel syndrome
+       (java +lsp) ; the poster child for carpal tunnel syndrome
        json
        (javascript +lsp) ;; +lsp
 
@@ -140,7 +140,7 @@
        ;;php               ; perl's insecure younger brother
        plantuml                 ; diagrams for confusing people more
        ;;purescript        ; javascript, but functional
-       (python +lsp +pyenv)             ; beautiful is better than ugly
+       (python +lsp +peotry +pyright)             ; beautiful is better than ugly
        ;;qt                ; the 'cutest' gui framework ever
        ;;racket            ; a DSL for DSLs
        rest                 ; Emacs as a REST client
@@ -151,7 +151,7 @@
        ;;swift             ; who asked for emoji variables?
        (web +html +css)                 ; the tubes
        ;;vala              ; GObjective-C
-       yaml
+       (yaml +lsp)
 
        ;; Applications are complex and opinionated modules that transform Emacs
        ;; toward a specific purpose. They may have additional dependencies and
