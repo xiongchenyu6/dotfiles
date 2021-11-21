@@ -19,6 +19,9 @@ source "$ANTIBODY_HOME"/https-COLON--SLASH--SLASH-github.com-SLASH-b4b4r07-SLASH
 
 eval "$(fasd --init posix-alias zsh-hook)"
 
+export PATH=$HOME/.jenv/shims:$PATH
+eval "$(jenv init -)"
+
 eval "$(starship init zsh)"
 
 # If not running interactively, do not do anything
@@ -31,6 +34,10 @@ if [[ -z "$TMUX" ]] ;then
     fi
 fi
 export PATH=/home/chenyu/.tiup/bin:$PATH
+
+if [[ "$OSTYPE" == "darwin"* ]]; then
+    alias grep='ggrep'
+fi
 #compdef _kubebuilder kubebuilder
 
 # zsh completion for kubebuilder                          -*- shell-script -*-

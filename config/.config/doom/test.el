@@ -169,3 +169,5 @@ value of last one, or nil if there are none.
 (getenv "JAVA_HOME")
 
 (message system-configuration-options)
+
+(defun x () (let ((x (+ 1 1))) (message "%s" x)))

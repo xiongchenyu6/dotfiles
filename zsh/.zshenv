@@ -1,3 +1,4 @@
+
 source /etc/profile
 if [[ "$OSTYPE" == "linux-gnu" ]]; then
     export JAVA_HOME='/usr/lib/jvm/default'
@@ -18,8 +19,8 @@ if [[ "$OSTYPE" == "linux-gnu" ]]; then
 else [[ "$OSTYPE" == "darwin"* ]];
     export PYENV_ROOT="$HOME/.pyenv"
     export PATH="$PYENV_ROOT/bin:$PATH"
-    export ANDROID_HOME=/usr/local/share/android-sdk
     export JAVA_HOME="$(/usr/libexec/java_home)"
+    export ANDROID_HOME=/usr/local/share/android-sdk
     export JDK_HOME="$(/usr/libexec/java_home)"
     export SCALA_HOME=/usr/local/opt/scala/idea
     export RUBY_HOME=/usr/local/opt/ruby
@@ -33,12 +34,13 @@ else [[ "$OSTYPE" == "darwin"* ]];
     export PATH=/usr/local/opt/openssl@3/bin:$PATH
     export PKG_CONFIG_PATH="/usr/local/opt/libxml2/lib/pkgconfig"
     export CONAN_USER_HOME=/Users/chenyu
-    eval "$(jenv init -)"
 fi
 
 export PATH=$HOME/.nix-profile/bin/:$PATH
 export PATH=$HOME/.node_modules/bin:$PATH
 export PATH=$HOME/.script:$PATH
+export PATH=$HOME/.jenv/shims:$PATH
+eval "$(jenv init -)"
 
 export HADOOP_INSTALL=$HADOOP_HOME
 export HADOOP_MAPRED_HOME=$HADOOP_HOME 
@@ -84,6 +86,7 @@ export GHTOKEN="ad38f8a815e974c98db2abd6f5ff304eca53400f"
 alias vi='nvim'
 alias yolo='git commit -m "$(curl -s whatthecommit.com/index.txt)"'
 alias op='xdg-open'
+alias grep='ggrep'
 
 export NIX_PATH=$NIX_PATH:$HOME/.nix-defexpr/channels
 export SBT_OPTS="-Xss4M"
@@ -133,3 +136,4 @@ setopt HIST_BEEP                 # Beep when accessing nonexistent history.
 
 zstyle ':completion:*:*:docker:*' option-stacking yes
 zstyle ':completion:*:*:docker-*:*' option-stacking yes
+

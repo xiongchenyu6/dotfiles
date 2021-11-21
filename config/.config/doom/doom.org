@@ -881,7 +881,7 @@ Tangle-on-save has revolutionized my literate programming workflow. It automatic
 #+begin_src emacs-lisp :tangle config.el
 (map! :leader "h" nil
       :desc "Follow thing"  "RET" 'org-open-at-point
-      :desc "xxxxx" "w" #'treemacs-delete-other-windows
+      :desc "delete-other-windows" "w" #'treemacs-delete-other-windows
       (:when (featurep! :lang org +roam2)
         (:prefix ("m" . "roam")
          :desc "Open random node"           "a" #'org-roam-node-random

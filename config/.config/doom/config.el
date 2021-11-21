@@ -419,7 +419,7 @@ org-hugo-export-creator-string "Emacs 28.05 (Org mode 9.4 + ox-hugo + XiongChenY
 
 (map! :leader "h" nil
       :desc "Follow thing"  "RET" 'org-open-at-point
-      :desc "xxxxx" "w" #'treemacs-delete-other-windows
+      :desc "delete-other-windows" "w" #'treemacs-delete-other-windows
       (:when (featurep! :lang org +roam2)
         (:prefix ("m" . "roam")
          :desc "Open random node"           "a" #'org-roam-node-random
