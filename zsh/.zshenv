@@ -32,7 +32,7 @@ else [[ "$OSTYPE" == "darwin"* ]];
     alias openssl=/usr/local/opt/openssl@3/bin/openssl
     export PATH=/usr/local/opt/openssl@3/bin:$PATH
     export PKG_CONFIG_PATH="/usr/local/opt/libxml2/lib/pkgconfig"
-    export CONAN_USER_HOME=/Users/xiongchenyu
+    export CONAN_USER_HOME=/Users/chenyu
     eval "$(jenv init -)"
 fi
 

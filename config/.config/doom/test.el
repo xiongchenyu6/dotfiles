@@ -164,8 +164,8 @@ value of last one, or nil if there are none.
 
 (getenv "LC_CTYPE")
 
-(getenv "XMODIFIERS")
-
 (getenv "GTK_IM_MODULE")
 
 (getenv "JAVA_HOME")
+
+(message system-configuration-options)

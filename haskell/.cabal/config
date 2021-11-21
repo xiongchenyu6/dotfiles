@@ -38,7 +38,7 @@ world-file: /Users/chenyu/.cabal/world
 -- with-hc-pkg:
 -- program-prefix: 
 -- program-suffix: 
-library-vanilla: False
+library-vanilla: True
 -- library-profiling:
 shared: True
 -- static:
