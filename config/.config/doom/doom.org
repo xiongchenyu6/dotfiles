@@ -198,9 +198,10 @@ This code is written to the =init.el= to select which modules to load. Written h
         ) ; as-you-type code completion                    ; a nicer company UI (Emacs 26+ only)
        ;; helm            ; the *other* search engine for love and life
        ;; ido            ; the other *other* search engine...
-       (ivy
-        +childframe
-        +icons +prescient)
+       ;;(ivy
+       ;; +childframe
+       ;; +icons +prescient)
+       (vertico +icons)
 
        :ui
        doom
@@ -215,20 +216,18 @@ This code is written to the =init.el= to select which modules to load. Written h
        ophints     ; highlight the region an operation acts on
        ;;neotree           ; a project drawer, like NERDTree for vim
        treemacs
-       (emoji +ascii +unicode +github)
-                                        ; a project drawer, like neotree but cooler
+       (emoji +ascii +unicode +github) ; a project drawer, like neotree but cooler
        (popup                     ; tame sudden yet inevitable temporary windows
         +all                      ; catch all popups that start with an asterix
         +defaults)
-       (ligatures +extra
-                  )
+       (ligatures +extra)
                                         ; FIXME an (incomplete) tab bar for Emacs
                                         ; unicode           ; extended unicode support for various languages
        vc-gutter                        ; vcs diff in the fringe
        vi-tilde-fringe                  ; fringe tildes to mark beyond EOB
        workspaces             ; tab emulation, persistence & separate workspaces
        tabs
-       (window-select +numbers)      ; visually switch windows
+       window-select      ; visually switch windows
        zen
 
        :editor
@@ -237,8 +236,7 @@ This code is written to the =init.el= to select which modules to load. Written h
        fold                         ; (nigh) universal code folding
        (format +onsave)             ; automated prettiness
        lispy                        ; vim for lisp, for people who dont like vim
-       multiple-cursors
-                                        ; editing in many places at once
+       multiple-cursors                 ; editing in many places at once
        snippets                         ; my elves. They type so I don't have to
        rotate-text               ; cycle region at point between text candidates
        word-wrap
@@ -254,7 +252,7 @@ This code is written to the =init.el= to select which modules to load. Written h
        :os
        (:if IS-MAC macos)    ; improve compatibility with macOS
        :term                          ; terminals in Emacs
-       ;; (term)
+       ;;(term)
                                         ; a consistent, cross-platform shell (WIP)
        :checkers
        syntax                        ; tasing you for every semicolon you forget
@@ -285,7 +283,7 @@ This code is written to the =init.el= to select which modules to load. Written h
        prodigy           ; FIXME managing external services & code builders
        rgb               ; creating color strings
        ;;terraform         ; infrastructure as code
-       ;; tmux              ; an API for interacting with tmux
+       ;;tmux              ; an API for interacting with tmux
        upload                         ; map local to remote projects via ssh/ftp
 
        :lang
@@ -293,7 +291,7 @@ This code is written to the =init.el= to select which modules to load. Written h
        (cc +lsp)                        ; C/C++/Obj-C madness
        (clojure +lsp) ;;  ; java with a lisp
        ;;common-lisp       ; if you've seen one lisp, you've seen them all
-       ;; coq    ; proofs-as-programs
+       ;;coq    ; proofs-as-programs
        ;;crystal          ; ruby at the speed of c
        data   ; config/data formats
        ;;erlang            ; an elegant language for a more civilized age
@@ -303,7 +301,7 @@ This code is written to the =init.el= to select which modules to load. Written h
        (go +lsp)                        ; the hipster dialect
        (haskell +lsp)                   ; a language that's lazier than I am
        ;;hy                ; readability of scheme w/ speed of python
-       ;; idris             ;
+       ;;idris             ;
        (java +lsp) ; the poster child for carpal tunnel syndrome
        json
        (javascript +lsp) ;; +lsp
@@ -315,7 +313,7 @@ This code is written to the =init.el= to select which modules to load. Written h
        ;;lua               ; one-based indices? one-based indices
        (markdown +grip)    ; writing docs for people to ignore
        ;;nim               ; python + lisp at the speed of c
-       ;; nix                              ; I hereby declare "nix geht mehr!"
+       ;;nix                              ; I hereby declare "nix geht mehr!"
        ;;ocaml             ; an objective camel
        (org                             ; organize your plain life in plain text
         +dragndrop
@@ -348,12 +346,12 @@ This code is written to the =init.el= to select which modules to load. Written h
        ;; toward a specific purpose. They may have additional dependencies and
        ;; should be loaded late.
        :email
-       (mu4e +gmail)                    ; emacs as an email client
+       (mu4e +gmail +org)                    ; emacs as an email client
        :app
        calendar
        irc                              ; how neckbeards socialize
        (rss +org)                       ; emacs as an RSS reader
-       ;;twitter           ; twitter client https://twitter.com/vnought
+       twitter           ; twitter client https://twitter.com/vnought
 
                                         ; a proofreader (grammar/style check) for Emacs
 
@@ -379,6 +377,9 @@ My profile setup:
 #+begin_src emacs-lisp :tangle config.el
 (setq user-full-name "XiongChenYu"
       user-mail-address "xiongchenyu6@gmail.com")
+
+(setq auth-sources '("~/.authinfo.gpg")
+      auth-source-cache-expiry nil)
 #+end_src
 ** Emacs & Doom emacs ui setup:
 #+begin_src emacs-lisp :tangle config.el
@@ -504,30 +505,70 @@ Used to use this key binding to increase number in vim a lot.
 
 * Mail
 I use mu4e to view emails and use org mode to compose email
+
+Firstly set up send email through gmail smtp server through build in smtp server, and use authinfo auth method
 #+begin_src emacs-lisp :tangle config.el
-;;mu4e
-;; give me ISO(ish) format date-time stamps in the header list
-(setq mu4e-attachment-dir "~/Downloads/" mu4e-maildir
-      "~/mail/" mu4e-get-mail-command "mbsync -a -q"
-      mu4e-update-interval 100 mu4e-view-show-images
-      t mu4e-view-prefer-html t mu4e-sent-messages-behavior
-      'delete message-kill-buffer-on-exit t mu4e-headers-auto-update
-      t org-mu4e-link-query-in-headers-mode nil)
+(setq message-send-mail-function 'smtpmail-send-it
+  smtpmail-stream-type 'starttls
+  smtpmail-default-smtp-server "smtp.gmail.com"
+  smtpmail-smtp-server "smtp.gmail.com"
+  smtpmail-smtp-service 587)
 
-(after! mu4e
-  (setq message-send-mail-function 'message-send-mail-with-sendmail
-        sendmail-program "/usr/bin/msmtp"))
+(setq org-msg-options "html-postamble:nil H:5 num:nil ^:{} toc:nil author:nil email:nil \\n:t"
+      org-msg-startup "hidestars indent inlineimages"
+      org-msg-greeting-fmt "\nHi%s,\n"
+      org-msg-convert-citation t
+      org-msg-signature "
+Regards,
 
-;; (setq message-sendmail-extra-arguments '("--read-envelope-from"))
-;; (setq message-sendmail-f-is-evil 't)
+,#+begin_signature
+,*Xiong ChenYu*
+/One Emacs to rule them all/
+,#+end_signature")
+#+end_src
 
-;; convert org mode to HTML automatically
-(setq org-mu4e-convert-to-html t)
-;; gpg
-;; (with-eval-after-load 'mu4e-utils
-;; (add-hook 'mu4e-compose-mode-hook 'org-mu4e-compose-org-mode)
-;; )
+Then setup use external software mbsync (*isync* on /Mac/) to download the mail
+#+begin_src emacs-lisp :tangle config.el
+(setq mu4e-attachment-dir "~/Downloads/"
+      mu4e-get-mail-command "mbsync -a -q"
+      mu4e-update-interval 100
+      mu4e-view-show-images t
+      mu4e-view-prefer-html t
+      message-kill-buffer-on-exit t
+      mu4e-headers-auto-update t)
 
+#+end_src
+
+Need some optimization for Gmail because gmail uses labels as folders we can use lazy check since messages don't really "move"
+#+begin_src emacs-lisp :tangle config.el
+(setq +mu4e-gmail-accounts '("xiongchenyu6@gmail.com" . "/xiongchenyu6"))
+;; don't need to run cleanup after indexing for gmail
+(setq mu4e-index-cleanup nil
+      mu4e-index-lazy-check t)
+#+end_src
+* IRC
+#+begin_src emacs-lisp :tangle config.el
+(defun my-fetch-password (&rest params)
+  (require 'auth-source)
+  (let ((match (car (apply #'auth-source-search params))))
+    (if match
+        (let ((secret (plist-get match :secret)))
+          (if (functionp secret)
+              (funcall secret)
+            secret))
+      (error "Password not found for %S" params))))
+
+(defun my-nickserv-password (server)
+  (my-fetch-password :user "freemanX" :host "irc.libera.chat")
+  )
+
+(set-irc-server! "irc.libera.chat"
+  '(:tls t
+    :port 6697
+    :nick "freemanX"
+    :sasl-username "freemanX"
+    :sasl-password my-nickserv-password
+    :channels ("#emacs")))
 #+end_src
 
 * Coding
@@ -828,7 +869,7 @@ Tangle-on-save has revolutionized my literate programming workflow. It automatic
 (package! wakatime-mode)
 #+end_src
 #+begin_src emacs-lisp :tangle config.el
-(use-package wakatime-mode :ensure t)
+(use-package wakatime-mode)
 (global-wakatime-mode)
 
 (add-hook! wakatime-mode

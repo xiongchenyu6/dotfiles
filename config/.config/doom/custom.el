@@ -16,7 +16,9 @@
       (magit-section-case . 0)
       (->> . 1)
       (org-roam-with-file . 2))
-     (elisp-lint-ignored-validators "byte-compile" "package-lint"))))
+     (elisp-lint-ignored-validators "byte-compile" "package-lint")))
+ '(smtpmail-smtp-server "smtp.gmail.com")
+ '(smtpmail-smtp-service 25))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.

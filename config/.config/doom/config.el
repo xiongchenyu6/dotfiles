@@ -60,6 +60,9 @@
 (setq user-full-name "XiongChenYu"
       user-mail-address "xiongchenyu6@gmail.com")
 
+(setq auth-sources '("~/.authinfo.gpg")
+      auth-source-cache-expiry nil)
+
 (setq
       doom-font (font-spec :family "JetBrains Mono" :size 14)
       doom-unicode-font (font-spec :family "DejaVu Sans" :size 14)
@@ -143,28 +146,58 @@
 ;;  (macroexpand
 ;;   '(set-evil-number-keymap "C-x" "dec-at-pt" "normal" "insert")))
 
-;;mu4e
-;; give me ISO(ish) format date-time stamps in the header list
-(setq mu4e-attachment-dir "~/Downloads/" mu4e-maildir
-      "~/mail/" mu4e-get-mail-command "mbsync -a -q"
-      mu4e-update-interval 100 mu4e-view-show-images
-      t mu4e-view-prefer-html t mu4e-sent-messages-behavior
-      'delete message-kill-buffer-on-exit t mu4e-headers-auto-update
-      t org-mu4e-link-query-in-headers-mode nil)
+(setq message-send-mail-function 'smtpmail-send-it
+  smtpmail-stream-type 'starttls
+  smtpmail-default-smtp-server "smtp.gmail.com"
+  smtpmail-smtp-server "smtp.gmail.com"
+  smtpmail-smtp-service 587)
 
-(after! mu4e
-  (setq message-send-mail-function 'message-send-mail-with-sendmail
-        sendmail-program "/usr/bin/msmtp"))
+(setq org-msg-options "html-postamble:nil H:5 num:nil ^:{} toc:nil author:nil email:nil \\n:t"
+      org-msg-startup "hidestars indent inlineimages"
+      org-msg-greeting-fmt "\nHi%s,\n"
+      org-msg-convert-citation t
+      org-msg-signature "
+Regards,
 
-;; (setq message-sendmail-extra-arguments '("--read-envelope-from"))
-;; (setq message-sendmail-f-is-evil 't)
+#+begin_signature
+*Xiong ChenYu*
+/One Emacs to rule them all/
+#+end_signature")
 
-;; convert org mode to HTML automatically
-(setq org-mu4e-convert-to-html t)
-;; gpg
-;; (with-eval-after-load 'mu4e-utils
-;; (add-hook 'mu4e-compose-mode-hook 'org-mu4e-compose-org-mode)
-;; )
+(setq mu4e-attachment-dir "~/Downloads/"
+      mu4e-get-mail-command "mbsync -a -q"
+      mu4e-update-interval 100
+      mu4e-view-show-images t
+      mu4e-view-prefer-html t
+      message-kill-buffer-on-exit t
+      mu4e-headers-auto-update t)
+
+(setq +mu4e-gmail-accounts '("xiongchenyu6@gmail.com" . "/xiongchenyu6"))
+;; don't need to run cleanup after indexing for gmail
+(setq mu4e-index-cleanup nil
+      mu4e-index-lazy-check t)
+
+(defun my-fetch-password (&rest params)
+  (require 'auth-source)
+  (let ((match (car (apply #'auth-source-search params))))
+    (if match
+        (let ((secret (plist-get match :secret)))
+          (if (functionp secret)
+              (funcall secret)
+            secret))
+      (error "Password not found for %S" params))))
+
+(defun my-nickserv-password (server)
+  (my-fetch-password :user "freemanX" :host "irc.libera.chat")
+  )
+
+(set-irc-server! "irc.libera.chat"
+  '(:tls t
+    :port 6697
+    :nick "freemanX"
+    :sasl-username "freemanX"
+    :sasl-password my-nickserv-password
+    :channels ("#emacs")))
 
 (define-key evil-insert-state-map (kbd "C-n") 'company-select-next-or-abort)
 (define-key evil-insert-state-map (kbd "C-p") 'company-select-previous-or-abort)
@@ -377,7 +410,7 @@ org-hugo-export-creator-string "Emacs 28.05 (Org mode 9.4 + ox-hugo + XiongChenY
 (setq leetcode-prefer-language "cpp")
 (setq leetcode-prefer-sql "mysql")
 
-(use-package wakatime-mode :ensure t)
+(use-package wakatime-mode)
 (global-wakatime-mode)
 
 (add-hook! wakatime-mode

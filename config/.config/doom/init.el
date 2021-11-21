@@ -31,9 +31,10 @@
         ) ; as-you-type code completion                    ; a nicer company UI (Emacs 26+ only)
        ;; helm            ; the *other* search engine for love and life
        ;; ido            ; the other *other* search engine...
-       (ivy
-        +childframe
-        +icons +prescient)
+       ;;(ivy
+       ;; +childframe
+       ;; +icons +prescient)
+       (vertico +icons)
 
        :ui
        doom
@@ -48,20 +49,18 @@
        ophints     ; highlight the region an operation acts on
        ;;neotree           ; a project drawer, like NERDTree for vim
        treemacs
-       (emoji +ascii +unicode +github)
-                                        ; a project drawer, like neotree but cooler
+       (emoji +ascii +unicode +github) ; a project drawer, like neotree but cooler
        (popup                     ; tame sudden yet inevitable temporary windows
         +all                      ; catch all popups that start with an asterix
         +defaults)
-       (ligatures +extra
-                  )
+       (ligatures +extra)
                                         ; FIXME an (incomplete) tab bar for Emacs
                                         ; unicode           ; extended unicode support for various languages
        vc-gutter                        ; vcs diff in the fringe
        vi-tilde-fringe                  ; fringe tildes to mark beyond EOB
        workspaces             ; tab emulation, persistence & separate workspaces
        tabs
-       (window-select +numbers)      ; visually switch windows
+       window-select      ; visually switch windows
        zen
 
        :editor
@@ -70,8 +69,7 @@
        fold                         ; (nigh) universal code folding
        (format +onsave)             ; automated prettiness
        lispy                        ; vim for lisp, for people who dont like vim
-       multiple-cursors
-                                        ; editing in many places at once
+       multiple-cursors                 ; editing in many places at once
        snippets                         ; my elves. They type so I don't have to
        rotate-text               ; cycle region at point between text candidates
        word-wrap
@@ -87,7 +85,7 @@
        :os
        (:if IS-MAC macos)    ; improve compatibility with macOS
        :term                          ; terminals in Emacs
-       ;; (term)
+       ;;(term)
                                         ; a consistent, cross-platform shell (WIP)
        :checkers
        syntax                        ; tasing you for every semicolon you forget
@@ -118,7 +116,7 @@
        prodigy           ; FIXME managing external services & code builders
        rgb               ; creating color strings
        ;;terraform         ; infrastructure as code
-       ;; tmux              ; an API for interacting with tmux
+       ;;tmux              ; an API for interacting with tmux
        upload                         ; map local to remote projects via ssh/ftp
 
        :lang
@@ -126,7 +124,7 @@
        (cc +lsp)                        ; C/C++/Obj-C madness
        (clojure +lsp) ;;  ; java with a lisp
        ;;common-lisp       ; if you've seen one lisp, you've seen them all
-       ;; coq    ; proofs-as-programs
+       ;;coq    ; proofs-as-programs
        ;;crystal          ; ruby at the speed of c
        data   ; config/data formats
        ;;erlang            ; an elegant language for a more civilized age
@@ -136,7 +134,7 @@
        (go +lsp)                        ; the hipster dialect
        (haskell +lsp)                   ; a language that's lazier than I am
        ;;hy                ; readability of scheme w/ speed of python
-       ;; idris             ;
+       ;;idris             ;
        (java +lsp) ; the poster child for carpal tunnel syndrome
        json
        (javascript +lsp) ;; +lsp
@@ -148,7 +146,7 @@
        ;;lua               ; one-based indices? one-based indices
        (markdown +grip)    ; writing docs for people to ignore
        ;;nim               ; python + lisp at the speed of c
-       ;; nix                              ; I hereby declare "nix geht mehr!"
+       ;;nix                              ; I hereby declare "nix geht mehr!"
        ;;ocaml             ; an objective camel
        (org                             ; organize your plain life in plain text
         +dragndrop
@@ -181,12 +179,12 @@
        ;; toward a specific purpose. They may have additional dependencies and
        ;; should be loaded late.
        :email
-       (mu4e +gmail)                    ; emacs as an email client
+       (mu4e +gmail +org)                    ; emacs as an email client
        :app
        calendar
        irc                              ; how neckbeards socialize
        (rss +org)                       ; emacs as an RSS reader
-       ;;twitter           ; twitter client https://twitter.com/vnought
+       twitter           ; twitter client https://twitter.com/vnought
 
                                         ; a proofreader (grammar/style check) for Emacs
 
