@@ -22,7 +22,8 @@ haskell/.cabal/*
 TAGS
 
 sbt/.sbt/**
-!sbt/.sbt/1.0
+!sbt/.sbt/1.0/
+!sbt/.sbt/1.0/plugins/
 !sbt/.sbt/1.0/plugins/plugins.sbt
 
 haskell/.stack/*

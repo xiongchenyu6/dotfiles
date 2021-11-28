@@ -6,3 +6,4 @@
 *.yaml filter=git-crypt diff=git-crypt
 *.yml filter=git-crypt diff=git-crypt
 netrc filter=git-crypt diff=git-crypt
+*.gpg filter=lfs diff=lfs merge=lfs -text

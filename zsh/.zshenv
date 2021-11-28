@@ -84,7 +84,7 @@ export GHTOKEN="ad38f8a815e974c98db2abd6f5ff304eca53400f"
 alias vi='nvim'
 alias yolo='git commit -m "$(curl -s whatthecommit.com/index.txt)"'
 alias op='xdg-open'
-alias grep='ggrep'
+# alias grep='ggrep'
 
 export SBT_OPTS="-Xss4M"
 export EDITOR="emacsclient"
