@@ -1,0 +1,30 @@
+########################################
+# Gmail
+########################################
+
+IMAPAccount gmail
+Host imap.gmail.com
+User xiongchenyu6@gmail.com
+PassCmd "gpg -q --for-your-eyes-only --no-tty -d ~/.authinfo.gpg | awk '/machine imap.gmail.com login xiongchenyu6@gmail.com/ {print $NF}'"
+AuthMechs LOGIN
+SSLType IMAPS
+CertificateFile /etc/ssl/cert.pem
+
+IMAPStore gmail-remote
+Account gmail
+
+MaildirStore gmail-local
+Path ~/Maildir
+Inbox ~/Maildir/Inbox
+SubFolders Verbatim
+
+
+Channel gmail
+Far :gmail-remote:
+Near :gmail-local:
+Patterns "*" 
+# Expunge None
+CopyArrivalDate yes
+Sync All
+Create Near
+SyncState *

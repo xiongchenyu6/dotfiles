@@ -57,25 +57,29 @@
 ;; (package! another-package :recipe (:fetcher github :repo "username/repo"))
 ;; (package! builtin-package :disable t)
 ;; (package! ox-confluence-en :recipe (:host github :repo "correl/ox-confluence-en"))
-(package! systemd)
 (package! j-mode)
 
 (package! doom-snippets) ;;:ignore t)
 ;; (package! yasnippet-snippets)
 ;(package! company-tabnine)
 
-(package! ccls :disable t)
 (package! semantic-refactor)
+(package! ccls :disable t)
 
-(package! ox-gfm)
 (package! ob-mermaid)
 (package! mermaid-mode)
+(package! ox-gfm)
 
 (package! org-auto-tangle)
+
+(package! ox-moderncv
+:recipe (:host gitlab :repo "Titan-C/org-cv"))
 
 (package! protobuf-mode)
 
 (package! wakatime-mode)
+
+(package! systemd)
 
 (package! liberime-config
   :recipe (:host github :repo "merrickluo/liberime"

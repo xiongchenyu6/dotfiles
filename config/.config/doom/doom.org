@@ -189,7 +189,7 @@ All necessary settings are therefore set by hand as part of this configuration f
 This code is written to the =init.el= to select which modules to load. Written here as-is for now, as it is quite well structured and clear.
 #+begin_src emacs-lisp :tangle init.el
 (setq doom-localleader-key ",")
-
+(setq evil-respect-visual-line-mode t)
 (doom! :feature
 
        :completion
@@ -273,6 +273,7 @@ This code is written to the =init.el= to select which modules to load. Written h
         +dictionary
         +offline
         +docsets)
+       biblio
        ;;ein               ; tame Jupyter notebooks with emacs
        gist                             ; interacting with github gists
        (lsp +peek)
@@ -313,7 +314,7 @@ This code is written to the =init.el= to select which modules to load. Written h
        ;;lua               ; one-based indices? one-based indices
        (markdown +grip)    ; writing docs for people to ignore
        ;;nim               ; python + lisp at the speed of c
-       ;;nix                              ; I hereby declare "nix geht mehr!"
+       nix                              ; I hereby declare "nix geht mehr!"
        ;;ocaml             ; an objective camel
        (org                             ; organize your plain life in plain text
         +dragndrop
@@ -329,7 +330,7 @@ This code is written to the =init.el= to select which modules to load. Written h
        ;;php               ; perl's insecure younger brother
        plantuml                 ; diagrams for confusing people more
        ;;purescript        ; javascript, but functional
-       (python +lsp +peotry +pyright)             ; beautiful is better than ugly
+       (python +lsp +poetry +pyright)             ; beautiful is better than ugly
        ;;qt                ; the 'cutest' gui framework ever
        ;;racket            ; a DSL for DSLs
        rest                 ; Emacs as a REST client
@@ -377,9 +378,6 @@ My profile setup:
 #+begin_src emacs-lisp :tangle config.el
 (setq user-full-name "XiongChenYu"
       user-mail-address "xiongchenyu6@gmail.com")
-
-(setq auth-sources '("~/.authinfo.gpg")
-      auth-source-cache-expiry nil)
 #+end_src
 ** Emacs & Doom emacs ui setup:
 #+begin_src emacs-lisp :tangle config.el
@@ -399,7 +397,6 @@ My profile setup:
 
 ;; Set up the visible bell
 (setq visible-bell t)
-(setq indent-guide-global-mode t)
 
 (global-auto-revert-mode)
 ;; (setq org-ditaa-jar-path "/usr/share/java/ditaa/ditaa-0.11.jar")
@@ -414,11 +411,19 @@ My profile setup:
 
 (setq +lookup-open-url-fn #'+lookup-xwidget-webkit-open-url-fn)
 
+(after! dash-docs
+  (setq dash-docs-browser-func #'+lookup-xwidget-webkit-open-url-fn))
+
 ;; (add-hook 'emacs-startup-hook (lambda () (normal-erase-is-backspace-mode +1)))
 
 (if (not (display-graphic-p)) (setq normal-erase-is-backspace t))
 ;;
 (setq mouse-avoidance-mode 'banish)
+
+(after! lsp (setq lsp-ui-doc-use-webkit t
+                       lsp-ui-doc-max-height 999
+                       lsp-ui-doc-max-width 999
+                       ))
 
 (+global-word-wrap-mode)
 #+end_src
@@ -434,7 +439,6 @@ Set frame transparency and maximize windows by default.
 
 I don't like confirmations or any other type of prompt
 #+begin_src emacs-lisp :tangle config.el
-
 (setq compilation-read-command nil)
 (setq confirm-kill-emacs nil)
 #+end_src
@@ -444,13 +448,20 @@ I don't like confirmations or any other type of prompt
 ;; (package! another-package :recipe (:fetcher github :repo "username/repo"))
 ;; (package! builtin-package :disable t)
 ;; (package! ox-confluence-en :recipe (:host github :repo "correl/ox-confluence-en"))
-(package! systemd)
 (package! j-mode)
 #+end_src
+[cite:@BaiDuYiXiaNiJiuZhiDao]
 ** encrypt
 #+begin_src emacs-lisp
 (setq epg-gpg-program "gpg")
 
+#+end_src
+
+** work around
+29.5
+#+begin_src emacs-lisp :tangle config.el
+(general-auto-unbind-keys :off)
+(remove-hook 'doom-after-init-modules-hook #'general-auto-unbind-keys)
 #+end_src
 
 * Vim
@@ -507,6 +518,11 @@ Used to use this key binding to increase number in vim a lot.
 I use mu4e to view emails and use org mode to compose email
 
 Firstly set up send email through gmail smtp server through build in smtp server, and use authinfo auth method
+
+#+begin_src emacs-lisp :tangle config.el
+(setq auth-sources '("~/.authinfo.gpg")
+      auth-source-cache-expiry nil)
+#+end_src
 #+begin_src emacs-lisp :tangle config.el
 (setq message-send-mail-function 'smtpmail-send-it
   smtpmail-stream-type 'starttls
@@ -539,12 +555,12 @@ Then setup use external software mbsync (*isync* on /Mac/) to download the mail
 
 #+end_src
 
-Need some optimization for Gmail because gmail uses labels as folders we can use lazy check since messages don't really "move"
+Need some optimization for gmail because gmail uses labels as folders we can use lazy check since messages don't really "move"
 #+begin_src emacs-lisp :tangle config.el
 (setq +mu4e-gmail-accounts '("xiongchenyu6@gmail.com" . "/xiongchenyu6"))
 ;; don't need to run cleanup after indexing for gmail
-(setq mu4e-index-cleanup nil
-      mu4e-index-lazy-check t)
+;(setq mu4e-index-cleanup nil
+      ;mu4e-index-lazy-check t)
 #+end_src
 * IRC
 #+begin_src emacs-lisp :tangle config.el
@@ -637,11 +653,12 @@ Set magit directory to $HOME/workspace and set max search depth to 2
 #+end_src
 * Programming Language
 ** Cpp
-
+I use semantic to generate cpp skeleton from header file
 #+begin_src emacs-lisp :tangle packages.el
-(package! ccls :disable t)
 (package! semantic-refactor)
+(package! ccls :disable t)
 #+end_src
+Prefer clangd as primary lsp server.
 #+begin_src emacs-lisp :tangle config.el
 (after! lsp-clients
   (set-lsp-priority! 'clangd 1))
@@ -654,7 +671,10 @@ Set magit directory to $HOME/workspace and set max search depth to 2
     :n "r" #'srefactor-refactor-at-point
     ))
   )
+#+end_src
 
+I prefer to use conan + ctest + cmake to write cpp code
+#+begin_src emacs-lisp :tangle config.el
 (after! projectile
   (projectile-register-project-type 'cmake '("CMakeLists.txt")
                                     :project-file "CMakeLists.txt"
@@ -666,6 +686,7 @@ Set magit directory to $HOME/workspace and set max search depth to 2
                                     :package "cmake --build build --target package"))
 #+end_src
 ** Clojure
+Use sourcemap to debug clojurescript on chrome
 #+begin_src emacs-lisp :tangle config.el
 (add-to-list '+debugger--dap-alist '((:lang clojure +lsp) :after clojure-mode :require dap-chrome))
 #+end_src
@@ -686,11 +707,11 @@ Set magit directory to $HOME/workspace and set max search depth to 2
      :n "d" #'haskell-process-reload-devel-main )
     )))
 #+end_src
-** lisp
+** Lisp
 #+begin_src emacs-lisp :tangle config.el
-(set-lookup-handlers! 'emacs-lisp-mode :documentation #'helpful-at-point)
+;(set-lookup-handlers! 'emacs-lisp-mode :documentation #'helpful-at-point)
 
-(set-lookup-handlers! 'emacs-library-link :documentation )
+;(set-lookup-handlers! 'emacs-library-link :documentation )
 
 (after! lispy
   (setq lispy-outline "^;; \\(?:;[^#]\\|\\*+\\)"
@@ -709,10 +730,11 @@ Set magit directory to $HOME/workspace and set max search depth to 2
 
 #+end_src
 ** Org
+I like org mode a lot use to write paper and do presnetations blah blah blah
 #+begin_src emacs-lisp :tangle packages.el
-(package! ox-gfm)
 (package! ob-mermaid)
 (package! mermaid-mode)
+(package! ox-gfm)
 #+end_src
 
 #+begin_src emacs-lisp :tangle config.el
@@ -721,12 +743,11 @@ Set magit directory to $HOME/workspace and set max search depth to 2
 (setq org-catch-invisible-edits 'show-and-error)
 (setq org-cycle-separator-lines 0)
 
-
 (setq org-hugo-auto-set-lastmod 't
-org-hugo-section "posts"
-org-hugo-suppress-lastmod-period 43200.0
-org-hugo-export-creator-string "Emacs 28.05 (Org mode 9.4 + ox-hugo + XiongChenYu)"
-)
+      org-hugo-section "posts"
+      org-hugo-suppress-lastmod-period 43200.0
+      org-hugo-export-creator-string "Emacs 28.05 (Org mode 9.4 + ox-hugo + XiongChenYu)"
+      )
 (setq rmh-elfeed-org-files '("~/Dropbox/Org/fun/elfeed.org"))
 
 (setq deft-directory "~/Dropbox/Org")
@@ -748,17 +769,22 @@ org-hugo-export-creator-string "Emacs 28.05 (Org mode 9.4 + ox-hugo + XiongChenY
 
 (advice-remove #'org-export-output-file-name #'+org*export-output-file-name)
 
-(require 'org)
-(require 'ox-latex)
-(add-to-list 'org-latex-packages-alist '("" "minted"))
-(setq org-latex-listings 'minted)
+(after! ox-latex
+  (add-to-list 'org-latex-packages-alist '("" "minted"))
+  (setq org-latex-listings 'minted)
+  (add-to-list 'org-latex-packages-alist '("" "geometry"))
+)
 
 (setq org-src-fontify-natively t)
 
-(setq org-latex-compiler "pdflatex --shell-escape %f")
+(setq org-latex-pdf-process
+      '("pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
+    "bibtex %b"
+    "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
+    "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"))
 (setq org-html-htmlize-output-type 'css)
-(eval-after-load "org"
-  '(require 'ox-gfm nil t))
+
+(after! org (require 'ox-gfm nil t))
 
 (require 'org-tempo)
 (add-to-list 'org-structure-template-alist '("sh" . "src sh"))
@@ -774,7 +800,6 @@ org-hugo-export-creator-string "Emacs 28.05 (Org mode 9.4 + ox-hugo + XiongChenY
 
 Use roam to manage the notes and journal
 #+begin_src emacs-lisp :tangle config.el
-
 (setq org-roam-directory "~/Dropbox/Notes/"
       org-roam-capture-templates
       '(("d" "default" plain "%?"
@@ -782,7 +807,13 @@ Use roam to manage the notes and journal
           :unnarrowed t
           :immediate-finish t)))
 #+end_src
-[[id:5ebde5d6-d732-481f-b625-0e83a396319e][Haskell]]
+
+Use citar to manage bibliography
+#+begin_src emacs-lisp :tangle config.el
+(setq! citar-bibliography '("~/Dropbox/references.bib"))
+(setq! citar-library-paths '("~/Dropbox/bibiography/")
+       citar-notes-paths '("~/Dropbox/Notes/"))
+#+end_src
 *** literate programming
 Tangle-on-save has revolutionized my literate programming workflow. It automatically runs =org-babel-tangle= upon saving any org-mode buffer, which means the resulting files will be automatically kept up to date. For a while I did this by manually adding =org-babel-tangle= to the =after-save= hook in Org mode, but now I use the [[https://github.com/yilkalargaw/org-auto-tangle][org-auto-tangle]] package, which does this asynchronously and selectively for each Org file where it is desired.
 
@@ -796,6 +827,34 @@ Tangle-on-save has revolutionized my literate programming workflow. It automatic
   :config
   (setq org-auto-tangle-default t))
 #+end_src
+*** Resume
+#+begin_src emacs-lisp :tangle packages.el
+(package! ox-moderncv
+:recipe (:host gitlab :repo "Titan-C/org-cv"))
+#+end_src
+
+#+begin_src emacs-lisp :tangle config.el
+(after! org
+  (require 'ox-moderncv nil t)
+  (require 'ox-hugocv nil t)
+  )
+(defun resume-export ()
+  "Export the resume with moderncv latex module to pdf"
+  (interactive)
+  (let ((name (file-name-sans-extension (buffer-name))))
+    (progn
+      (org-export-to-file 'moderncv (concat name ".tex"))
+      (org-latex-compile (concat name ".tex"))))
+  )
+
+(defun resume-hugo-export ()
+  "Export the resume with moderncv to hugo md"
+  (interactive)
+  (let ((name (file-name-sans-extension (buffer-name)))
+        (org-export-exclude-tags '("noexport" "latexonly")))
+      (org-export-to-file 'hugocv (concat name ".md")))
+  )
+#+end_src
 ** Protobuf
 #+begin_src emacs-lisp :tangle packages.el
 (package! protobuf-mode)
@@ -805,11 +864,13 @@ Tangle-on-save has revolutionized my literate programming workflow. It automatic
 (setq lsp-pyls-plugins-autopep8-enabled nil)
 (setq lsp-pyls-plugins-yapf-enabled t)
 #+end_src
-- Plantuml
+** Plantuml
+Default remote compile to quite slow, prefer to use local jar.
 #+begin_src emacs-lisp :tangle config.el
 (setq plantuml-default-exec-mode 'jar)
 #+end_src
 ** Prometheus
+Could not find prometheus v2 layer, I write a simple layer to help me find out common bugs I write.
 #+begin_src emacs-lisp :tangle config.el
 (define-derived-mode prometheus-v2-rules-mode yaml-mode "prometheus rule" ())
 
@@ -830,7 +891,6 @@ Tangle-on-save has revolutionized my literate programming workflow. It automatic
   :modes prometheus-v2-rules-mode)
 
 (add-to-list 'flycheck-checkers 'prometheus-v2-promtool-rules)
-
 #+end_src
 
 ** Sql
@@ -838,16 +898,17 @@ Tangle-on-save has revolutionized my literate programming workflow. It automatic
 (add-hook! 'sql-mode-hook #'lsp-deferred)
 #+end_src
 ** Yaml
+Load k8s scheme when file name match *-k8s.yaml pattern
 #+begin_src emacs-lisp :tangle config.el
 (setq lsp-yaml-schemas '(:kubernetes "/*-k8s.yaml"))
 #+end_src
 ** Web
+Don't write frontend for several years
 #+begin_src emacs-lisp :tangle config.el
-
 ;; (setq js-indent-level 2)
 ;; (setq css-indent-offset 2)
 #+end_src
-* Utils
+* Utilise
 ** remove windows carrage returns
 #+begin_src emacs-lisp :tangle config.el
 (defun delete-carrage-returns ()
@@ -858,13 +919,12 @@ Tangle-on-save has revolutionized my literate programming workflow. It automatic
       (replace-match ""))))
 #+end_src
 * Tools
-** Leetcode
+** [[https://leetcode.com/][Leetcode]]
 #+begin_src emacs-lisp :tangle config.el
 (setq leetcode-prefer-language "cpp")
 (setq leetcode-prefer-sql "mysql")
 #+end_src
-** wakatime
-
+** [[https://wakatime.com/dashboard][Wakatime]]
 #+begin_src emacs-lisp :tangle packages.el
 (package! wakatime-mode)
 #+end_src
@@ -907,7 +967,16 @@ Tangle-on-save has revolutionized my literate programming workflow. It automatic
           :desc "Capture yesterday"         "Y" #'org-roam-dailies-capture-yesterday
           :desc "Find directory"            "-" #'org-roam-dailies-find-directory))))
 #+end_src
-* Input method setup for Linux
+* Chinese Charactor display
+#+begin_src emacs-lisp :tangle config.el
+(setq word-wrap-by-category t)
+#+end_src
+* Linux support
+** Systemd
+#+begin_src emacs-lisp :tangle packages.el
+(package! systemd)
+#+end_src
+** Input method (rime) setup
 
 I prefer to use customized rime as my input method, here is the configuration
 
@@ -915,11 +984,9 @@ I prefer to use customized rime as my input method, here is the configuration
 (package! liberime-config
   :recipe (:host github :repo "merrickluo/liberime"
            :files ("CMakeLists.txt" "Makefile" "src" "liberime.el")))
-
 #+end_src
 
 #+begin_src emacs-lisp :tangle config.el
-
 (if IS-LINUX
     ((let ((liberime-auto-build t))
        (require 'liberime nil t))
@@ -950,18 +1017,17 @@ I prefer to use customized rime as my input method, here is the configuration
        ;; 2. 光标前是汉字字符时，才能输入中文。
        ;; 3. 使用 M-j 快捷键，强制将光标前的拼音字符串转换为中文。
        (setq-default pyim-english-input-switch-functions
-		     '(pyim-probe-dynamic-english
-		       pyim-probe-isearch-mode
-		       pyim-probe-program-mode
+                     '(pyim-probe-dynamic-english
+                       pyim-probe-isearch-mode
+                       pyim-probe-program-mode
                        pyim-probe-evil-normal-mode
-		       pyim-probe-org-structure-template))
+                       pyim-probe-org-structure-template))
 
        (setq-default pyim-punctuation-half-width-functions
-		     '(pyim-probe-punctuation-line-beginning
-		       pyim-probe-punctuation-after-punctuation)))
-
-     ;; (setq org-re-reveal-revealjs-version "4.0")
-
+                     '(pyim-probe-punctuation-line-beginning
+                       pyim-probe-punctuation-after-punctuation)))
      (require 'ox-confluence-en)
      (require 'systemd)))
 #+end_src
+
+* Footnotes

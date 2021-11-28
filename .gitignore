@@ -17,12 +17,20 @@ clojure/.clojure/.cpcache
 !config/.config/starship.toml
 tmux/.tmux/*
 !tmux/.tmux/plugins/tmp
+haskell/.cabal/*
+!haskell/.cabal/config
 TAGS
 
-sbt/.sbt
-!sbt/.sbt/1.0/plugins
-haskell/.stack
-!haskell/.stack/config.yaml
+sbt/.sbt/**
+!sbt/.sbt/1.0
+!sbt/.sbt/1.0/plugins/plugins.sbt
+
+haskell/.stack/*
 !haskell/.stack/global-project
-haskell/.cabal
+haskell/.stack/global-project/*
+!haskell/.stack/global-project/stack.yaml
+!haskell/.stack/config.yaml
+!haskell/.stack/global-project/stack.yaml
+
 *.elc
+dist-newstyle/

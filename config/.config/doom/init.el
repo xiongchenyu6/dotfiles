@@ -22,7 +22,7 @@
 ;; Copy me to ~/.doom.d/init.el or ~/.config/doom/init.el, then edit me!
 
 (setq doom-localleader-key ",")
-
+(setq evil-respect-visual-line-mode t)
 (doom! :feature
 
        :completion
@@ -106,6 +106,7 @@
         +dictionary
         +offline
         +docsets)
+       biblio
        ;;ein               ; tame Jupyter notebooks with emacs
        gist                             ; interacting with github gists
        (lsp +peek)
@@ -146,7 +147,7 @@
        ;;lua               ; one-based indices? one-based indices
        (markdown +grip)    ; writing docs for people to ignore
        ;;nim               ; python + lisp at the speed of c
-       ;;nix                              ; I hereby declare "nix geht mehr!"
+       nix                              ; I hereby declare "nix geht mehr!"
        ;;ocaml             ; an objective camel
        (org                             ; organize your plain life in plain text
         +dragndrop
@@ -162,7 +163,7 @@
        ;;php               ; perl's insecure younger brother
        plantuml                 ; diagrams for confusing people more
        ;;purescript        ; javascript, but functional
-       (python +lsp +peotry +pyright)             ; beautiful is better than ugly
+       (python +lsp +poetry +pyright)             ; beautiful is better than ugly
        ;;qt                ; the 'cutest' gui framework ever
        ;;racket            ; a DSL for DSLs
        rest                 ; Emacs as a REST client

@@ -60,9 +60,6 @@
 (setq user-full-name "XiongChenYu"
       user-mail-address "xiongchenyu6@gmail.com")
 
-(setq auth-sources '("~/.authinfo.gpg")
-      auth-source-cache-expiry nil)
-
 (setq
       doom-font (font-spec :family "JetBrains Mono" :size 14)
       doom-unicode-font (font-spec :family "DejaVu Sans" :size 14)
@@ -79,7 +76,6 @@
 
 ;; Set up the visible bell
 (setq visible-bell t)
-(setq indent-guide-global-mode t)
 
 (global-auto-revert-mode)
 ;; (setq org-ditaa-jar-path "/usr/share/java/ditaa/ditaa-0.11.jar")
@@ -94,11 +90,19 @@
 
 (setq +lookup-open-url-fn #'+lookup-xwidget-webkit-open-url-fn)
 
+(after! dash-docs
+  (setq dash-docs-browser-func #'+lookup-xwidget-webkit-open-url-fn))
+
 ;; (add-hook 'emacs-startup-hook (lambda () (normal-erase-is-backspace-mode +1)))
 
 (if (not (display-graphic-p)) (setq normal-erase-is-backspace t))
 ;;
 (setq mouse-avoidance-mode 'banish)
+
+(after! lsp (setq lsp-ui-doc-use-webkit t
+                       lsp-ui-doc-max-height 999
+                       lsp-ui-doc-max-width 999
+                       ))
 
 (+global-word-wrap-mode)
 
@@ -109,6 +113,9 @@
 
 (setq compilation-read-command nil)
 (setq confirm-kill-emacs nil)
+
+(general-auto-unbind-keys :off)
+(remove-hook 'doom-after-init-modules-hook #'general-auto-unbind-keys)
 
 ;; (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
 (global-set-key (kbd "C-[") 'keyboard-escape-quit)
@@ -146,6 +153,9 @@
 ;;  (macroexpand
 ;;   '(set-evil-number-keymap "C-x" "dec-at-pt" "normal" "insert")))
 
+(setq auth-sources '("~/.authinfo.gpg")
+      auth-source-cache-expiry nil)
+
 (setq message-send-mail-function 'smtpmail-send-it
   smtpmail-stream-type 'starttls
   smtpmail-default-smtp-server "smtp.gmail.com"
@@ -174,8 +184,8 @@ Regards,
 
 (setq +mu4e-gmail-accounts '("xiongchenyu6@gmail.com" . "/xiongchenyu6"))
 ;; don't need to run cleanup after indexing for gmail
-(setq mu4e-index-cleanup nil
-      mu4e-index-lazy-check t)
+;(setq mu4e-index-cleanup nil
+      ;mu4e-index-lazy-check t)
 
 (defun my-fetch-password (&rest params)
   (require 'auth-source)
@@ -282,9 +292,9 @@ Regards,
      :n "d" #'haskell-process-reload-devel-main )
     )))
 
-(set-lookup-handlers! 'emacs-lisp-mode :documentation #'helpful-at-point)
+;(set-lookup-handlers! 'emacs-lisp-mode :documentation #'helpful-at-point)
 
-(set-lookup-handlers! 'emacs-library-link :documentation )
+;(set-lookup-handlers! 'emacs-library-link :documentation )
 
 (after! lispy
   (setq lispy-outline "^;; \\(?:;[^#]\\|\\*+\\)"
@@ -306,12 +316,11 @@ Regards,
 (setq org-catch-invisible-edits 'show-and-error)
 (setq org-cycle-separator-lines 0)
 
-
 (setq org-hugo-auto-set-lastmod 't
-org-hugo-section "posts"
-org-hugo-suppress-lastmod-period 43200.0
-org-hugo-export-creator-string "Emacs 28.05 (Org mode 9.4 + ox-hugo + XiongChenYu)"
-)
+      org-hugo-section "posts"
+      org-hugo-suppress-lastmod-period 43200.0
+      org-hugo-export-creator-string "Emacs 28.05 (Org mode 9.4 + ox-hugo + XiongChenYu)"
+      )
 (setq rmh-elfeed-org-files '("~/Dropbox/Org/fun/elfeed.org"))
 
 (setq deft-directory "~/Dropbox/Org")
@@ -333,17 +342,22 @@ org-hugo-export-creator-string "Emacs 28.05 (Org mode 9.4 + ox-hugo + XiongChenY
 
 (advice-remove #'org-export-output-file-name #'+org*export-output-file-name)
 
-(require 'org)
-(require 'ox-latex)
-(add-to-list 'org-latex-packages-alist '("" "minted"))
-(setq org-latex-listings 'minted)
+(after! ox-latex
+  (add-to-list 'org-latex-packages-alist '("" "minted"))
+  (setq org-latex-listings 'minted)
+  (add-to-list 'org-latex-packages-alist '("" "geometry"))
+)
 
 (setq org-src-fontify-natively t)
 
-(setq org-latex-compiler "pdflatex --shell-escape %f")
+(setq org-latex-pdf-process
+      '("pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
+    "bibtex %b"
+    "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
+    "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"))
 (setq org-html-htmlize-output-type 'css)
-(eval-after-load "org"
-  '(require 'ox-gfm nil t))
+
+(after! org (require 'ox-gfm nil t))
 
 (require 'org-tempo)
 (add-to-list 'org-structure-template-alist '("sh" . "src sh"))
@@ -362,11 +376,36 @@ org-hugo-export-creator-string "Emacs 28.05 (Org mode 9.4 + ox-hugo + XiongChenY
           :unnarrowed t
           :immediate-finish t)))
 
+(setq! citar-bibliography '("~/Dropbox/references.bib"))
+(setq! citar-library-paths '("~/Dropbox/bibiography/")
+       citar-notes-paths '("~/Dropbox/Notes/"))
+
 (use-package! org-auto-tangle
  ; :defer t
   :hook (org-mode . org-auto-tangle-mode)
   :config
   (setq org-auto-tangle-default t))
+
+(after! org
+  (require 'ox-moderncv nil t)
+  (require 'ox-hugocv nil t)
+  )
+(defun resume-export ()
+  "Export the resume with moderncv latex module to pdf"
+  (interactive)
+  (let ((name (file-name-sans-extension (buffer-name))))
+    (progn
+      (org-export-to-file 'moderncv (concat name ".tex"))
+      (org-latex-compile (concat name ".tex"))))
+  )
+
+(defun resume-hugo-export ()
+  "Export the resume with moderncv to hugo md"
+  (interactive)
+  (let ((name (file-name-sans-extension (buffer-name)))
+        (org-export-exclude-tags '("noexport" "latexonly")))
+      (org-export-to-file 'hugocv (concat name ".md")))
+  )
 
 (setq lsp-pyls-plugins-autopep8-enabled nil)
 (setq lsp-pyls-plugins-yapf-enabled t)
@@ -445,6 +484,8 @@ org-hugo-export-creator-string "Emacs 28.05 (Org mode 9.4 + ox-hugo + XiongChenY
           :desc "Capture yesterday"         "Y" #'org-roam-dailies-capture-yesterday
           :desc "Find directory"            "-" #'org-roam-dailies-find-directory))))
 
+(setq word-wrap-by-category t)
+
 (if IS-LINUX
     ((let ((liberime-auto-build t))
        (require 'liberime nil t))
@@ -475,17 +516,14 @@ org-hugo-export-creator-string "Emacs 28.05 (Org mode 9.4 + ox-hugo + XiongChenY
        ;; 2. 光标前是汉字字符时，才能输入中文。
        ;; 3. 使用 M-j 快捷键，强制将光标前的拼音字符串转换为中文。
        (setq-default pyim-english-input-switch-functions
-		     '(pyim-probe-dynamic-english
-		       pyim-probe-isearch-mode
-		       pyim-probe-program-mode
+                     '(pyim-probe-dynamic-english
+                       pyim-probe-isearch-mode
+                       pyim-probe-program-mode
                        pyim-probe-evil-normal-mode
-		       pyim-probe-org-structure-template))
+                       pyim-probe-org-structure-template))
 
        (setq-default pyim-punctuation-half-width-functions
-		     '(pyim-probe-punctuation-line-beginning
-		       pyim-probe-punctuation-after-punctuation)))
-
-     ;; (setq org-re-reveal-revealjs-version "4.0")
-
+                     '(pyim-probe-punctuation-line-beginning
+                       pyim-probe-punctuation-after-punctuation)))
      (require 'ox-confluence-en)
      (require 'systemd)))

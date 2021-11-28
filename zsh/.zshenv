@@ -36,11 +36,9 @@ else [[ "$OSTYPE" == "darwin"* ]];
     export CONAN_USER_HOME=/Users/chenyu
 fi
 
-export PATH=$HOME/.nix-profile/bin/:$PATH
+# export PATH=$HOME/.nix-profile/bin/:$PATH
 export PATH=$HOME/.node_modules/bin:$PATH
 export PATH=$HOME/.script:$PATH
-export PATH=$HOME/.jenv/shims:$PATH
-eval "$(jenv init -)"
 
 export HADOOP_INSTALL=$HADOOP_HOME
 export HADOOP_MAPRED_HOME=$HADOOP_HOME 
@@ -88,7 +86,6 @@ alias yolo='git commit -m "$(curl -s whatthecommit.com/index.txt)"'
 alias op='xdg-open'
 alias grep='ggrep'
 
-export NIX_PATH=$NIX_PATH:$HOME/.nix-defexpr/channels
 export SBT_OPTS="-Xss4M"
 export EDITOR="emacsclient"
 export EMAIL="xiongchenyu@bigo.sg"
@@ -112,8 +109,8 @@ export FZF_TMUX=1
 export GTAGSLABEL=pygments
 export GTAGSTHROUGH=true
 export SYSTEMD_DEBUGGER=gdb
-
-export NIX_IGNORE_SYMLINK_STORE=1
+#NIX
+#export NIX_IGNORE_SYMLINK_STORE=1
 
 #enhancd
 export ENHANCD_DISABLE_HYPHEN=1
