@@ -1,6 +1,5 @@
 # annotations are also allowed:
-xiongchenyu6/oh-my-zsh
-
+ohmyzsh/ohmyzsh
 djui/alias-tips
 
 # comments are supported like this
@@ -15,11 +14,8 @@ zsh-users/zsh-syntax-highlighting
 zsh-users/zsh-history-substring-search
 
 wbingli/zsh-wakatime
-gretzky/auto-color-ls
+# gretzky/auto-color-ls
 b4b4r07/enhancd
 wfxr/forgit
 robertzk/send.zsh
 sei40kr/zsh-tmux-rename
-
-# powerlevel9k/powerlevel9k
-# miguelfito/spaceship-prompt

@@ -71,7 +71,7 @@
 
 (scroll-bar-mode -1)        ; Disable visible scrollbar
 (tool-bar-mode -1)          ; Disable the toolbar
-(tooltip-mode -1)                      ; Disable tooltips
+(fringe-mode '8)
 (menu-bar-mode -1)
 
 ;; Set up the visible bell
@@ -113,6 +113,8 @@
 
 (setq compilation-read-command nil)
 (setq confirm-kill-emacs nil)
+
+(setq pixel-scroll-precision-mode t)
 
 (general-auto-unbind-keys :off)
 (remove-hook 'doom-after-init-modules-hook #'general-auto-unbind-keys)
@@ -174,13 +176,13 @@ Regards,
 /One Emacs to rule them all/
 #+end_signature")
 
-(setq mu4e-attachment-dir "~/Downloads/"
-      mu4e-get-mail-command "mbsync -a -q"
-      mu4e-update-interval 100
-      mu4e-view-show-images t
-      mu4e-view-prefer-html t
-      message-kill-buffer-on-exit t
-      mu4e-headers-auto-update t)
+(after! mu4e
+  (setq mu4e-attachment-dir "~/Downloads/"
+        mu4e-update-interval 100
+        mu4e-view-show-images t
+        mu4e-view-prefer-html t
+        mu4e-display-update-status-in-modeline t
+        ))
 
 (setq +mu4e-gmail-accounts '("xiongchenyu6@gmail.com" . "/xiongchenyu6"))
 ;; don't need to run cleanup after indexing for gmail
@@ -249,9 +251,19 @@ Regards,
 (setq-default lsp-semantic-tokens-enable t)
 (setq-default lsp-semantic-tokens-mode t)
 
+(add-to-list '+debugger--dap-alist '((:lang clojure +lsp) :after clojure-mode :require dap-chrome))
+
+(add-to-list '+debugger--dap-alist '((:lang python +lsp) :after python-mode :require dap-python))
+
+(add-to-list '+debugger--dap-alist '((:lang go +lsp) :after go-mode :require dap-go))
+
+(add-to-list '+debugger--dap-alist '((:lang cc +lsp) :after cc-mode :require dap-cpptools))
 (setq
  gdb-many-windows t
  gdb-show-main t)
+
+(after! rustic-mode
+  (require 'dap-gdb-lldb))
 
 (setq magit-repository-directories '(("~/workspace" . 2)))
 
@@ -275,9 +287,10 @@ Regards,
                                     :test #'projectile--cmake-test-command
                                     :run "./build/main"
                                     :install "cmake --build build --target install"
-                                    :package "cmake --build build --target package"))
+                                    :package "cmake --build build --target package")
 
-(add-to-list '+debugger--dap-alist '((:lang clojure +lsp) :after clojure-mode :require dap-chrome))
+  (setq projectile-project-search-path '(("~/workspace/" . 1) ("~/git/". 1) ("~/private/".  1) ("~/go/src/" . 2)))
+  )
 
 (add-hook! 'cmake-mode-hook #'lsp-deferred)
 
@@ -291,6 +304,10 @@ Regards,
      :n "l" #'haskell-process-load-or-reload
      :n "d" #'haskell-process-reload-devel-main )
     )))
+
+(after! ob-ammonite
+(setq ob-ammonite-prompt-str "scala>")
+)
 
 ;(set-lookup-handlers! 'emacs-lisp-mode :documentation #'helpful-at-point)
 
@@ -353,7 +370,6 @@ Regards,
 (setq org-latex-pdf-process
       '("pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
     "bibtex %b"
-    "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
     "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"))
 (setq org-html-htmlize-output-type 'css)
 
@@ -362,10 +378,13 @@ Regards,
 (require 'org-tempo)
 (add-to-list 'org-structure-template-alist '("sh" . "src sh"))
 (add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
-(add-to-list 'org-structure-template-alist '("sc" . "src scheme"))
+(add-to-list 'org-structure-template-alist '("cpp" . "src cpp :namespaces std :flags  -std=c++20 :includes <iostream>"))
+(add-to-list 'org-structure-template-alist '("cl" . "src C :includes <stdlib.h> <stdio.h>"))
 (add-to-list 'org-structure-template-alist '("ts" . "src typescript"))
+(add-to-list 'org-structure-template-alist '("js" . "src javascript"))
 (add-to-list 'org-structure-template-alist '("py" . "src python"))
 (add-to-list 'org-structure-template-alist '("go" . "src go"))
+(add-to-list 'org-structure-template-alist '("rust" . "src rust"))
 (add-to-list 'org-structure-template-alist '("yaml" . "src yaml"))
 (add-to-list 'org-structure-template-alist '("json" . "src json"))
 
@@ -375,6 +394,10 @@ Regards,
           :target (file+head "${slug}.org" "#+title: ${title}\n#+date: %U\n")
           :unnarrowed t
           :immediate-finish t)))
+
+(after! org-roam
+  (setq +org-roam-open-buffer-on-find-file nil)
+  )
 
 (setq! citar-bibliography '("~/Dropbox/references.bib"))
 (setq! citar-library-paths '("~/Dropbox/bibiography/")
@@ -409,6 +432,7 @@ Regards,
 
 (setq lsp-pyls-plugins-autopep8-enabled nil)
 (setq lsp-pyls-plugins-yapf-enabled t)
+(after! dap-mode (setq dap-python-executable "python3"))
 
 (setq plantuml-default-exec-mode 'jar)
 

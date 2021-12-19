@@ -85,6 +85,7 @@
        :os
        (:if IS-MAC macos)    ; improve compatibility with macOS
        :term                          ; terminals in Emacs
+       eshell
        ;;(term)
                                         ; a consistent, cross-platform shell (WIP)
        :checkers
@@ -163,7 +164,8 @@
        ;;php               ; perl's insecure younger brother
        plantuml                 ; diagrams for confusing people more
        ;;purescript        ; javascript, but functional
-       (python +lsp +poetry +pyright)             ; beautiful is better than ugly
+       (python +lsp +pyright)             ; beautiful is better than ugly
+       ;+poetry
        ;;qt                ; the 'cutest' gui framework ever
        ;;racket            ; a DSL for DSLs
        rest                 ; Emacs as a REST client
@@ -175,7 +177,6 @@
        (web +html +css)                 ; the tubes
        ;;vala              ; GObjective-C
        (yaml +lsp)
-
        ;; Applications are complex and opinionated modules that transform Emacs
        ;; toward a specific purpose. They may have additional dependencies and
        ;; should be loaded late.
@@ -204,4 +205,4 @@
        (default +bindings +smartparens)
        :private
        my-leet-code
-       )
+        )

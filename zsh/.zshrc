@@ -17,12 +17,11 @@ DISABLE_AUTO_UPDATE="true"
 source ~/.zsh_plugins.sh
 source "$ANTIBODY_HOME"/https-COLON--SLASH--SLASH-github.com-SLASH-b4b4r07-SLASH-enhancd/init.sh
 
+eval "$(starship init zsh)"
+
 eval "$(fasd --init posix-alias zsh-hook)"
 
-export PATH=$HOME/.jenv/shims:$PATH
-eval "$(jenv init -)"
-
-eval "$(starship init zsh)"
+# eval "$(jenv init -)"
 
 # If not running interactively, do not do anything
 if [[ -z "$TMUX" ]] ;then
@@ -33,7 +32,6 @@ if [[ -z "$TMUX" ]] ;then
         tmux attach-session -t "$ID" # if available attach to it
     fi
 fi
-export PATH=/home/chenyu/.tiup/bin:$PATH
 
 if [[ "$OSTYPE" == "darwin"* ]]; then
     #alias grep='ggrep'

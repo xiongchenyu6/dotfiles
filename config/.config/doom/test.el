@@ -171,3 +171,5 @@ value of last one, or nil if there are none.
 (message system-configuration-options)
 
 (defun x () (let ((x (+ 1 1))) (message "%s" x)))
+
+(require 'dap-gdb-lldb)

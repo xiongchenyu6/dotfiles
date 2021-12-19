@@ -1,5 +1,5 @@
-
 source /etc/profile
+
 if [[ "$OSTYPE" == "linux-gnu" ]]; then
     export JAVA_HOME='/usr/lib/jvm/default'
     export HADOOP_HOME=/usr/lib/hadoop
@@ -22,18 +22,18 @@ else [[ "$OSTYPE" == "darwin"* ]];
     export JAVA_HOME="$(/usr/libexec/java_home)"
     export ANDROID_HOME=/usr/local/share/android-sdk
     export JDK_HOME="$(/usr/libexec/java_home)"
-    export SCALA_HOME=/usr/local/opt/scala/idea
+#    export SCALA_HOME=/usr/local/opt/scala/idea
     export RUBY_HOME=/usr/local/opt/ruby
     export GEM_HOME=/usr/local/lib/ruby/gems/2.6.0
     export PATH=/usr/local/sbin:$PATH
-    export GOROOT="/usr/local/Cellar/go/1.17.2/libexec"
-    export PATH=/usr/local/bin:$PATH
+    export GOROOT="/usr/local/Cellar/go/1.17.3/libexec"
+#    export PATH=/usr/local/bin:$PATH
     export PATH=/usr/local/opt/llvm/bin:$PATH
-    export PATH=~/.jenv/shims:$PATH
     alias openssl=/usr/local/opt/openssl@3/bin/openssl
     export PATH=/usr/local/opt/openssl@3/bin:$PATH
     export PKG_CONFIG_PATH="/usr/local/opt/libxml2/lib/pkgconfig"
     export CONAN_USER_HOME=/Users/chenyu
+    export PATH="/Users/chenyu/Library/Application Support/Coursier/bin":$PATH:
 fi
 
 # export PATH=$HOME/.nix-profile/bin/:$PATH
@@ -84,9 +84,10 @@ export GHTOKEN="ad38f8a815e974c98db2abd6f5ff304eca53400f"
 alias vi='nvim'
 alias yolo='git commit -m "$(curl -s whatthecommit.com/index.txt)"'
 alias op='xdg-open'
+alias python=/usr/local/bin/python3
 # alias grep='ggrep'
 
-export SBT_OPTS="-Xss4M"
+export SBT_OPTS="-Xss8M"
 export EDITOR="emacsclient"
 export EMAIL="xiongchenyu@bigo.sg"
 
@@ -111,6 +112,9 @@ export GTAGSTHROUGH=true
 export SYSTEMD_DEBUGGER=gdb
 #NIX
 #export NIX_IGNORE_SYMLINK_STORE=1
+#
+#
+export PATH=/home/chenyu/.tiup/bin:$PATH
 
 #enhancd
 export ENHANCD_DISABLE_HYPHEN=1

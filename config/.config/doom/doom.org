@@ -252,6 +252,7 @@ This code is written to the =init.el= to select which modules to load. Written h
        :os
        (:if IS-MAC macos)    ; improve compatibility with macOS
        :term                          ; terminals in Emacs
+       eshell
        ;;(term)
                                         ; a consistent, cross-platform shell (WIP)
        :checkers
@@ -330,7 +331,8 @@ This code is written to the =init.el= to select which modules to load. Written h
        ;;php               ; perl's insecure younger brother
        plantuml                 ; diagrams for confusing people more
        ;;purescript        ; javascript, but functional
-       (python +lsp +poetry +pyright)             ; beautiful is better than ugly
+       (python +lsp +pyright)             ; beautiful is better than ugly
+       ;+poetry
        ;;qt                ; the 'cutest' gui framework ever
        ;;racket            ; a DSL for DSLs
        rest                 ; Emacs as a REST client
@@ -342,7 +344,6 @@ This code is written to the =init.el= to select which modules to load. Written h
        (web +html +css)                 ; the tubes
        ;;vala              ; GObjective-C
        (yaml +lsp)
-
        ;; Applications are complex and opinionated modules that transform Emacs
        ;; toward a specific purpose. They may have additional dependencies and
        ;; should be loaded late.
@@ -371,7 +372,7 @@ This code is written to the =init.el= to select which modules to load. Written h
        (default +bindings +smartparens)
        :private
        my-leet-code
-       )
+        )
 #+end_src
 * General configuration
 My profile setup:
@@ -392,7 +393,7 @@ My profile setup:
 
 (scroll-bar-mode -1)        ; Disable visible scrollbar
 (tool-bar-mode -1)          ; Disable the toolbar
-(tooltip-mode -1)                      ; Disable tooltips
+(fringe-mode '8)
 (menu-bar-mode -1)
 
 ;; Set up the visible bell
@@ -450,7 +451,10 @@ I don't like confirmations or any other type of prompt
 ;; (package! ox-confluence-en :recipe (:host github :repo "correl/ox-confluence-en"))
 (package! j-mode)
 #+end_src
-[cite:@BaiDuYiXiaNiJiuZhiDao]
+*** Track pad
+#+begin_src emacs-lisp :tangle config.el
+(setq pixel-scroll-precision-mode t)
+#+end_src
 ** encrypt
 #+begin_src emacs-lisp
 (setq epg-gpg-program "gpg")
@@ -545,14 +549,13 @@ Regards,
 
 Then setup use external software mbsync (*isync* on /Mac/) to download the mail
 #+begin_src emacs-lisp :tangle config.el
-(setq mu4e-attachment-dir "~/Downloads/"
-      mu4e-get-mail-command "mbsync -a -q"
-      mu4e-update-interval 100
-      mu4e-view-show-images t
-      mu4e-view-prefer-html t
-      message-kill-buffer-on-exit t
-      mu4e-headers-auto-update t)
-
+(after! mu4e
+  (setq mu4e-attachment-dir "~/Downloads/"
+        mu4e-update-interval 100
+        mu4e-view-show-images t
+        mu4e-view-prefer-html t
+        mu4e-display-update-status-in-modeline t
+        ))
 #+end_src
 
 Need some optimization for gmail because gmail uses labels as folders we can use lazy check since messages don't really "move"
@@ -641,10 +644,30 @@ If you want to replace it with yasnippet's default snippets uncomment the code a
 #+end_src
 
 ** Debugger
+*** Clojure
+Use sourcemap to debug clojurescript on chrome
 #+begin_src emacs-lisp :tangle config.el
+(add-to-list '+debugger--dap-alist '((:lang clojure +lsp) :after clojure-mode :require dap-chrome))
+#+end_src
+*** python
+#+begin_src emacs-lisp :tangle config.el
+(add-to-list '+debugger--dap-alist '((:lang python +lsp) :after python-mode :require dap-python))
+#+end_src
+*** go
+#+begin_src emacs-lisp :tangle config.el
+(add-to-list '+debugger--dap-alist '((:lang go +lsp) :after go-mode :require dap-go))
+#+end_src
+*** cpp
+#+begin_src emacs-lisp :tangle config.el
+(add-to-list '+debugger--dap-alist '((:lang cc +lsp) :after cc-mode :require dap-cpptools))
 (setq
  gdb-many-windows t
  gdb-show-main t)
+#+end_src
+*** rust
+#+begin_src emacs-lisp :tangle config.el
+(after! rustic-mode
+  (require 'dap-gdb-lldb))
 #+end_src
 ** Git
 Set magit directory to $HOME/workspace and set max search depth to 2
@@ -683,12 +706,10 @@ I prefer to use conan + ctest + cmake to write cpp code
                                     :test #'projectile--cmake-test-command
                                     :run "./build/main"
                                     :install "cmake --build build --target install"
-                                    :package "cmake --build build --target package"))
-#+end_src
-** Clojure
-Use sourcemap to debug clojurescript on chrome
-#+begin_src emacs-lisp :tangle config.el
-(add-to-list '+debugger--dap-alist '((:lang clojure +lsp) :after clojure-mode :require dap-chrome))
+                                    :package "cmake --build build --target package")
+
+  (setq projectile-project-search-path '(("~/workspace/" . 1) ("~/git/". 1) ("~/private/".  1) ("~/go/src/" . 2)))
+  )
 #+end_src
 ** Cmake
 #+begin_src emacs-lisp :tangle config.el
@@ -706,6 +727,12 @@ Use sourcemap to debug clojurescript on chrome
      :n "l" #'haskell-process-load-or-reload
      :n "d" #'haskell-process-reload-devel-main )
     )))
+#+end_src
+** Scala
+#+begin_src emacs-lisp :tangle config.el
+(after! ob-ammonite
+(setq ob-ammonite-prompt-str "scala>")
+)
 #+end_src
 ** Lisp
 #+begin_src emacs-lisp :tangle config.el
@@ -780,7 +807,6 @@ I like org mode a lot use to write paper and do presnetations blah blah blah
 (setq org-latex-pdf-process
       '("pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
     "bibtex %b"
-    "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
     "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"))
 (setq org-html-htmlize-output-type 'css)
 
@@ -789,10 +815,13 @@ I like org mode a lot use to write paper and do presnetations blah blah blah
 (require 'org-tempo)
 (add-to-list 'org-structure-template-alist '("sh" . "src sh"))
 (add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
-(add-to-list 'org-structure-template-alist '("sc" . "src scheme"))
+(add-to-list 'org-structure-template-alist '("cpp" . "src cpp :namespaces std :flags  -std=c++20 :includes <iostream>"))
+(add-to-list 'org-structure-template-alist '("cl" . "src C :includes <stdlib.h> <stdio.h>"))
 (add-to-list 'org-structure-template-alist '("ts" . "src typescript"))
+(add-to-list 'org-structure-template-alist '("js" . "src javascript"))
 (add-to-list 'org-structure-template-alist '("py" . "src python"))
 (add-to-list 'org-structure-template-alist '("go" . "src go"))
+(add-to-list 'org-structure-template-alist '("rust" . "src rust"))
 (add-to-list 'org-structure-template-alist '("yaml" . "src yaml"))
 (add-to-list 'org-structure-template-alist '("json" . "src json"))
 #+end_src
@@ -806,6 +835,10 @@ Use roam to manage the notes and journal
           :target (file+head "${slug}.org" "#+title: ${title}\n#+date: %U\n")
           :unnarrowed t
           :immediate-finish t)))
+
+(after! org-roam
+  (setq +org-roam-open-buffer-on-find-file nil)
+  )
 #+end_src
 
 Use citar to manage bibliography
@@ -863,6 +896,7 @@ Tangle-on-save has revolutionized my literate programming workflow. It automatic
 #+begin_src emacs-lisp :tangle config.el
 (setq lsp-pyls-plugins-autopep8-enabled nil)
 (setq lsp-pyls-plugins-yapf-enabled t)
+(after! dap-mode (setq dap-python-executable "python3"))
 #+end_src
 ** Plantuml
 Default remote compile to quite slow, prefer to use local jar.
@@ -908,7 +942,7 @@ Don't write frontend for several years
 ;; (setq js-indent-level 2)
 ;; (setq css-indent-offset 2)
 #+end_src
-* Utilise
+* Utils
 ** remove windows carrage returns
 #+begin_src emacs-lisp :tangle config.el
 (defun delete-carrage-returns ()
