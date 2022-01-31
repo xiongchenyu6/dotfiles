@@ -74,6 +74,8 @@
 (fringe-mode '8)
 (menu-bar-mode -1)
 
+(setq highlight-indent-guides-mode t)
+
 ;; Set up the visible bell
 (setq visible-bell t)
 
@@ -116,8 +118,12 @@
 
 (setq pixel-scroll-precision-mode t)
 
+(require 'eieio-compat)
 (general-auto-unbind-keys :off)
 (remove-hook 'doom-after-init-modules-hook #'general-auto-unbind-keys)
+(evil-set-initial-state 'grep-mode 'normal)
+
+;; (setq font-lock-maximum-decoration '((c++-mode . 2) (c-mode . 2) (rustic-mode . 2) (t . t)))
 
 ;; (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
 (global-set-key (kbd "C-[") 'keyboard-escape-quit)
@@ -139,6 +145,10 @@
   'centaur-tabs-forward)
 (define-key evil-normal-state-map (kbd "g T")
   'centaur-tabs-backward)
+(define-key evil-normal-state-map (kbd "C-M-f")
+  'scroll-other-window)
+(define-key evil-normal-state-map (kbd "C-M-b")
+  'scroll-other-window-down)
 
 ;; , ', ,@ must be used inside `() directly otherwise you should use apply func
 (defmacro set-evil-number-keymap (key-set func &rest modes)
@@ -149,7 +159,7 @@
                ',(intern (concat "evil-numbers/" func)))) `(,@modes))))
 
 (eval
- (macroexpand
+ (macroexpand-1
   '(set-evil-number-keymap "C-a" "inc-at-pt" "normal" "insert")))
 ;; (eval
 ;;  (macroexpand
@@ -211,17 +221,20 @@ Regards,
     :sasl-password my-nickserv-password
     :channels ("#emacs")))
 
+(require 'eacl)
+(define-key evil-insert-state-map (kbd "C-x C-g") 'eacl-complete-multiline)
+
 (define-key evil-insert-state-map (kbd "C-n") 'company-select-next-or-abort)
 (define-key evil-insert-state-map (kbd "C-p") 'company-select-previous-or-abort)
 
 (after!
   company
-  (setq company-minimum-prefix-length
-        2
-        company-tooltip-limit
-        20
-        company-transformers '(company-sort-by-backend-importance)
-        )
+  ;; (setq company-minimum-prefix-length
+  ;;       2
+  ;;       company-tooltip-limit
+  ;;       20
+  ;;       company-transformers '(company-sort-by-backend-importance)
+  ;;       )
   (define-key! company-active-map
     "TAB" nil
     [tab] nil))
@@ -230,6 +243,7 @@ Regards,
 (after! yasnippet
   (add-to-list 'yas-snippet-dirs (expand-file-name "~/.snippets"))
   (yas-reload-all)
+  (setq yas-wrap-around-region t)
   )
 
 (after! auto-yasnippet
@@ -263,7 +277,13 @@ Regards,
  gdb-show-main t)
 
 (after! rustic-mode
-  (require 'dap-gdb-lldb))
+  (require 'dap-gdb-lldb)
+  )
+
+(set-rotate-patterns! 'rustic-mode
+    :symbols '(("Ok" "Err")))
+;; (after! rotate-text
+;;   (pushnew! rotate-text-symbols '("Ok" "Err")))
 
 (setq magit-repository-directories '(("~/workspace" . 2)))
 
@@ -378,7 +398,7 @@ Regards,
 (require 'org-tempo)
 (add-to-list 'org-structure-template-alist '("sh" . "src sh"))
 (add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
-(add-to-list 'org-structure-template-alist '("cpp" . "src cpp :namespaces std :flags  -std=c++20 :includes <iostream>"))
+(add-to-list 'org-structure-template-alist '("cpp" . "src cpp :namespaces std :flags  -std=c++20 :includes <iostream> <vector>"))
 (add-to-list 'org-structure-template-alist '("cl" . "src C :includes <stdlib.h> <stdio.h>"))
 (add-to-list 'org-structure-template-alist '("ts" . "src typescript"))
 (add-to-list 'org-structure-template-alist '("js" . "src javascript"))
@@ -484,29 +504,35 @@ Regards,
       :desc "Follow thing"  "RET" 'org-open-at-point
       :desc "delete-other-windows" "w" #'treemacs-delete-other-windows
       (:when (featurep! :lang org +roam2)
-        (:prefix ("m" . "roam")
-         :desc "Open random node"           "a" #'org-roam-node-random
-         :desc "Find node"                  "f" #'org-roam-node-find
-         :desc "Find ref"                   "F" #'org-roam-ref-find
-         :desc "Show graph"                 "g" #'org-roam-graph
-         :desc "Insert node"                "i" #'org-roam-node-insert
-         :desc "Capture to node"            "n" #'org-roam-capture
-         :desc "Toggle roam buffer"         "r" #'org-roam-buffer-toggle
-         :desc "Launch roam buffer"         "R" #'org-roam-buffer-display-dedicated
-         :desc "Sync database"              "s" #'org-roam-db-sync
-         (:prefix ("d" . "by date")
-          :desc "Goto previous note"        "b" #'org-roam-dailies-goto-previous-note
-          :desc "Goto date"                 "d" #'org-roam-dailies-goto-date
-          :desc "Capture date"              "D" #'org-roam-dailies-capture-date
-          :desc "Goto next note"            "f" #'org-roam-dailies-goto-next-note
-          :desc "Goto tomorrow"             "m" #'org-roam-dailies-goto-tomorrow
-          :desc "Capture tomorrow"          "M" #'org-roam-dailies-capture-tomorrow
-          :desc "Capture today"             "n" #'org-roam-dailies-capture-today
-          :desc "Goto today"                "t" #'org-roam-dailies-goto-today
-          :desc "Capture today"             "T" #'org-roam-dailies-capture-today
-          :desc "Goto yesterday"            "y" #'org-roam-dailies-goto-yesterday
-          :desc "Capture yesterday"         "Y" #'org-roam-dailies-capture-yesterday
-          :desc "Find directory"            "-" #'org-roam-dailies-find-directory))))
+       (:prefix ("m" . "roam")
+        :desc "Open random node"           "a" #'org-roam-node-random
+        :desc "Find node"                  "f" #'org-roam-node-find
+        :desc "Find ref"                   "F" #'org-roam-ref-find
+        :desc "Show graph"                 "g" #'org-roam-graph
+        :desc "Insert node"                "i" #'org-roam-node-insert
+        :desc "Capture to node"            "n" #'org-roam-capture
+        :desc "Toggle roam buffer"         "r" #'org-roam-buffer-toggle
+        :desc "Launch roam buffer"         "R" #'org-roam-buffer-display-dedicated
+        :desc "Sync database"              "s" #'org-roam-db-sync
+        (:prefix ("d" . "by date")
+         :desc "Goto previous note"        "b" #'org-roam-dailies-goto-previous-note
+         :desc "Goto date"                 "d" #'org-roam-dailies-goto-date
+         :desc "Capture date"              "D" #'org-roam-dailies-capture-date
+         :desc "Goto next note"            "f" #'org-roam-dailies-goto-next-note
+         :desc "Goto tomorrow"             "m" #'org-roam-dailies-goto-tomorrow
+         :desc "Capture tomorrow"          "M" #'org-roam-dailies-capture-tomorrow
+         :desc "Capture today"             "n" #'org-roam-dailies-capture-today
+         :desc "Goto today"                "t" #'org-roam-dailies-goto-today
+         :desc "Capture today"             "T" #'org-roam-dailies-capture-today
+         :desc "Goto yesterday"            "y" #'org-roam-dailies-goto-yesterday
+         :desc "Capture yesterday"         "Y" #'org-roam-dailies-capture-yesterday
+         :desc "Find directory"            "-" #'org-roam-dailies-find-directory)))
+      (:when (featurep! :os macos)
+       (:prefix-map  ("o" . "open")
+        :desc "Open in mac default program" "s" #'+macos/open-in-default-program
+        :desc "Open in mac term" "t" #'+macos/open-in-iterm
+        ))
+      )
 
 (setq word-wrap-by-category t)
 

@@ -29,6 +29,7 @@ else [[ "$OSTYPE" == "darwin"* ]];
     export GOROOT="/usr/local/Cellar/go/1.17.3/libexec"
 #    export PATH=/usr/local/bin:$PATH
     export PATH=/usr/local/opt/llvm/bin:$PATH
+    export PATH=/Applications/Dyalog-18.0.app/Contents/Resources/Dyalog:$PATH
     alias openssl=/usr/local/opt/openssl@3/bin/openssl
     export PATH=/usr/local/opt/openssl@3/bin:$PATH
     export PKG_CONFIG_PATH="/usr/local/opt/libxml2/lib/pkgconfig"
@@ -138,3 +139,7 @@ setopt HIST_BEEP                 # Beep when accessing nonexistent history.
 zstyle ':completion:*:*:docker:*' option-stacking yes
 zstyle ':completion:*:*:docker-*:*' option-stacking yes
 
+. "$HOME/.cargo/env"
+
+alias tnpm="npm --registry https://mirrors.tencent.com/npm/"
+# alias rust-analyzer="rustup run nightly rust-analyzer"

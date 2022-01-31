@@ -1,3 +1,4 @@
+#!/bin/zsh -f
 confirmMessage() {
         read -p "$1 ([y]es or [N]o): " REPLY
     case $(echo $REPLY | tr '[A-Z]' '[a-z]') in

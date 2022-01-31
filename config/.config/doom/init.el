@@ -27,7 +27,7 @@
 
        :completion
        (company                         ; the ultimate code completion backend
-        +childframe
+        ;; +childframe
         ) ; as-you-type code completion                    ; a nicer company UI (Emacs 26+ only)
        ;; helm            ; the *other* search engine for love and life
        ;; ido            ; the other *other* search engine...
@@ -85,7 +85,7 @@
        :os
        (:if IS-MAC macos)    ; improve compatibility with macOS
        :term                          ; terminals in Emacs
-       eshell
+       ;eshell
        ;;(term)
                                         ; a consistent, cross-platform shell (WIP)
        :checkers
@@ -96,7 +96,7 @@
        chinese
 
        :tools
-       ansible
+       ;ansible
        (docker +lsp)
        (debugger +lsp)       ; FIXME stepping through code, to help you add bugs
        direnv
@@ -137,7 +137,7 @@
        (haskell +lsp)                   ; a language that's lazier than I am
        ;;hy                ; readability of scheme w/ speed of python
        ;;idris             ;
-       (java +lsp) ; the poster child for carpal tunnel syndrome
+       ;; (java +lsp) ; the poster child for carpal tunnel syndrome
        json
        (javascript +lsp) ;; +lsp
 
@@ -148,7 +148,7 @@
        ;;lua               ; one-based indices? one-based indices
        (markdown +grip)    ; writing docs for people to ignore
        ;;nim               ; python + lisp at the speed of c
-       nix                              ; I hereby declare "nix geht mehr!"
+       ;; nix                              ; I hereby declare "nix geht mehr!"
        ;;ocaml             ; an objective camel
        (org                             ; organize your plain life in plain text
         +dragndrop
@@ -171,6 +171,7 @@
        rest                 ; Emacs as a REST client
        (rust +lsp)          ; Fe2O3.unwrap().unwrap().unwrap().unwrap()
        (scala +lsp)         ; java, but good
+       (scheme +chez)
        (sh +lsp)            ; she sells (ba|z|fi)sh shells on the C xor
        ;;solidity          ; do you need a blockchain? No.
        ;;swift             ; who asked for emoji variables?
@@ -186,7 +187,7 @@
        calendar
        irc                              ; how neckbeards socialize
        (rss +org)                       ; emacs as an RSS reader
-       twitter           ; twitter client https://twitter.com/vnought
+       ;twitter           ; twitter client https://twitter.com/vnought
 
                                         ; a proofreader (grammar/style check) for Emacs
 

@@ -505,12 +505,13 @@ set shortmess+=c
 inoremap <expr> <CR> (pumvisible() ? "\<c-y>\<cr>" : "\<CR>")
 
 let g:LanguageClient_serverCommands = {
-      \ 'c': ['ccls'],
-      \ 'cpp': ['ccls'],
-      \ 'objc': ['ccls'],
-      \ 'haskell': ['hie-wrapper'],
+      \ 'c': ['clangd'],
+      \ 'cpp': ['clangd'],
+      \ 'objc': ['clangd'],
+      \ 'haskell': ['haskell-language-server-wrapper'],
       \ 'scala': ['metals-vim'],
       \ 'go': ['gopls'],
+      \ 'rust': ['rust-analyzer'],
       \ }
 
 map <Leader>lk :call LanguageClient#textDocument_hover()<CR>
@@ -526,8 +527,8 @@ nnoremap <silent> gd :call LanguageClient#textDocument_definition()<CR>
 nnoremap <silent> <F2> :call LanguageClient#textDocument_rename()<CR>
 
 let g:ale_linters = { 
-          \ 'haskell': ['hie'],
-          \ 'cpp': ['ccls'],
+      \ 'haskell': ['haskell-language-server-wrapper'],
+      \ 'cpp': ['clangd'],
           \ }
 let g:ale_sign_column_always = 1
 let g:ale_completion_enabled = 1

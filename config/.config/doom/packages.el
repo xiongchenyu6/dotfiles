@@ -57,11 +57,12 @@
 ;; (package! another-package :recipe (:fetcher github :repo "username/repo"))
 ;; (package! builtin-package :disable t)
 ;; (package! ox-confluence-en :recipe (:host github :repo "correl/ox-confluence-en"))
-(package! j-mode)
+(package! dyalog-mode)
 
 (package! doom-snippets) ;;:ignore t)
 ;; (package! yasnippet-snippets)
 ;(package! company-tabnine)
+(package! eacl)
 
 (package! semantic-refactor)
 (package! ccls :disable t)
