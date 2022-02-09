@@ -1,0 +1,715 @@
+#+TITLE: LiteratEmacs
+#+AUTHOR: XIONGCHENYU
+#+EMAIL: xiongchenyu6 at gmail.com
+#+DATE: <2022-01-31 Mon>
+#+CREATED: <2022-01-31 Mon>
+#+STARTUP: showall hidestars indent
+#+PROPERTY: header-args :results silent :tangle "init.el"
+
+* My Configuration
+** Package
+#+begin_src emacs-lisp
+(defvar straight-keymap
+  (let ((keymap (make-keymap)))
+    (define-key keymap "c" 'straight-check-package)
+    (define-key keymap "C" 'straight-check-all)
+    (define-key keymap "p" 'straight-pull-package)
+    (define-key keymap "P" 'straight-pull-all)
+    (define-key keymap "b" 'straight-rebuild-package)
+    (define-key keymap "B" 'straight-rebuild-all)
+    keymap))
+
+
+#+end_src
+** UI
+#+begin_src emacs-lisp
+(add-to-list 'default-frame-alist
+             '(font . "JetBrains Mono-15"))
+
+#+end_src
+** General
+#+begin_src emacs-lisp
+;; ** 启动时默认打开的 buffer.
+(setq inhibit-startup-screen t)
+(setq initial-buffer-choice nil)
+(setq initial-major-mode 'emacs-lisp-mode)
+(setq initial-scratch-message "")
+
+;; ** yes-or-no-p
+(defalias 'yes-or-no-p 'y-or-n-p)
+
+;; ** 使用空格缩进
+(setq-default indent-tabs-mode nil)
+
+;; ** 关闭 beep
+(setq visible-bell t)
+
+;; ** 不使用 dialog
+(setq use-dialog-box nil)
+
+(blink-cursor-mode 0)
+
+(tool-bar-mode -1)
+(menu-bar-mode 0)
+
+;; ** 关闭 scroll-bar
+(scroll-bar-mode -1)
+
+;; ** 处理长行
+(global-so-long-mode 1)
+
+;; ** 处理折行
+(toggle-word-wrap 1)
+(setq word-wrap-by-category t)
+
+;; ** save history
+(require 'savehist)
+(savehist-mode 1)
+
+(add-hook 'prog-mode-hook 'electric-pair-local-mode)
+(add-hook 'conf-mode-hook 'electric-pair-local-mode)
+
+(straight-use-package 'rainbow-delimiters)
+
+(require 'rainbow-delimiters)
+
+(add-hook 'prog-mode-hook #'rainbow-delimiters-mode)
+
+(add-hook 'conf-mode-hook #'rainbow-delimiters-mode)
+
+(defalias 'straight-keymap straight-keymap)
+(global-set-key (kbd "C-x p") 'straight-keymap)
+
+(define-key global-map (kbd "C-c p") project-prefix-map)
+(with-eval-after-load "project"
+  (define-key project-prefix-map "s" 'shell)
+  (define-key project-prefix-map "m" 'magit))
+
+(setq compilation-read-command nil)
+
+(setq-default
+
+ browse-url-secondary-browser-function 'xwidget-webkit-browse-url
+
+ browse-url-browser-function 'xwidget-webkit-browse-url
+ ;; Don't create lockfiles
+ create-lockfiles nil
+
+ ;; prefer UTF8
+ buffer-file-coding-system 'utf-8-unix
+ default-file-name-coding-system 'utf-8-unix
+ default-keyboard-coding-system 'utf-8-unix
+
+ default-process-coding-system '(utf-8-unix . utf-8-unix)
+ default-sendmail-coding-system 'utf-8-unix
+ default-terminal-coding-system 'utf-8-unix
+
+; ;; Add newline at bottom of file
+ require-final-newline t
+
+
+ ;; Backup setups
+ ;; We use temporary directory /tmp for backup files
+ ;; More versions should be saved
+ backup-directory-alist `((".*" . ,temporary-file-directory))
+ auto-save-file-name-transforms `((".*" ,temporary-file-directory t))
+ backup-by-copying t
+ delete-old-versions t
+ kept-new-versions 6
+ kept-old-versions 2
+ version-control t
+ ;; Skip prompt for xref find definition
+ xref-prompt-for-identifier nil
+
+ ;; Don't wait for keystrokes display
+ echo-keystrokes 0.01
+
+ ;; Disable margin for overline and underline
+ overline-margin 0
+ underline-minimum-offset 0
+
+ ;; Allow resizing frame by pixels
+ frame-resize-pixelwise t
+
+ ;; Better scroll behavior
+ mouse-wheel-scroll-amount '(1 ((shift) . 1) ((control) . nil))
+ mouse-wheel-progressive-speed nil
+
+ ;; Disable copy region blink
+ copy-region-blink-delay 0
+
+ ;; Use short answer when asking yes or no
+ read-answer-short t
+
+ ;; Always follow link
+ vc-follow-symlinks t
+
+ ;; Disable ring bell
+ ring-bell-function 'ignore
+
+ ;; Mouse yank at current point
+ mouse-yank-at-point t
+
+ ;; DWIM target for dired
+ ;; Automatically use another dired buffer as target for copy/rename
+ dired-dwim-target t)
+
+(global-hl-line-mode t)
+
+(straight-use-package 'which-key)
+
+(require 'which-key)
+
+(which-key-mode)
+
+#+end_src
+** Meow
+#+begin_src emacs-lisp
+(straight-use-package 'meow)
+(require 'meow)
+(setq meow-esc-delay 0.001)
+(defun meow-setup ()
+  (setq meow-cheatsheet-layout meow-cheatsheet-layout-qwerty)
+  (meow-motion-overwrite-define-key
+   '("j" . meow-next)
+   '("k" . meow-prev)
+   '("<escape>" . ignore))
+  (meow-leader-define-key
+   ;; SPC j/k will run the original command in MOTION state.
+   '("j" . "H-j")
+   '("k" . "H-k")
+   ;; Use SPC (0-9) for digit arguments.
+   '("1" . meow-digit-argument)
+   '("2" . meow-digit-argument)
+   '("3" . meow-digit-argument)
+   '("4" . meow-digit-argument)
+   '("5" . meow-digit-argument)
+   '("6" . meow-digit-argument)
+   '("7" . meow-digit-argument)
+   '("8" . meow-digit-argument)
+   '("9" . meow-digit-argument)
+   '("0" . meow-digit-argument)
+   '("/" . meow-keypad-describe-key)
+   '("?" . meow-cheatsheet))
+  (meow-normal-define-key
+   '("0" . meow-expand-0)
+   '("9" . meow-expand-9)
+   '("8" . meow-expand-8)
+   '("7" . meow-expand-7)
+   '("6" . meow-expand-6)
+   '("5" . meow-expand-5)
+   '("4" . meow-expand-4)
+   '("3" . meow-expand-3)
+   '("2" . meow-expand-2)
+   '("1" . meow-expand-1)
+   '("-" . negative-argument)
+   '(";" . meow-reverse)
+   '("," . meow-inner-of-thing)
+   '("." . meow-bounds-of-thing)
+   '("[" . meow-beginning-of-thing)
+   '("]" . meow-end-of-thing)
+   '("a" . meow-append)
+   '("o" . meow-open-below)
+   '("b" . meow-back-word)
+   '("B" . meow-back-symbol)
+   '("c" . meow-change)
+   '("x" . meow-delete)
+   '("D" . meow-backward-delete)
+   '("e" . meow-next-word)
+   '("E" . meow-next-symbol)
+   '("f" . meow-find)
+   '("g" . meow-cancel-selection)
+   '("G" . meow-grab)
+   '("h" . meow-left)
+   '("H" . meow-left-expand)
+   '("i" . meow-insert)
+   '("O" . meow-open-above)
+   '("j" . meow-next)
+   '("J" . meow-next-expand)
+   '("k" . meow-prev)
+   '("K" . meow-prev-expand)
+   '("l" . meow-right)
+   '("L" . meow-right-expand)
+   '("m" . meow-join)
+   '("n" . meow-search)
+   '("I" . meow-block)
+   '("A" . meow-to-block)
+   '("p" . meow-yank)
+   '("q" . meow-quit)
+   '("Q" . meow-goto-line)
+   '("r" . meow-replace)
+   '("R" . meow-swap-grab)
+   '("s" . meow-kill)
+   '("t" . meow-till)
+   '("u" . meow-undo)
+   '("U" . meow-undo-in-selection)
+   '("/" . meow-visit)
+   '("w" . meow-mark-word)
+   '("W" . meow-mark-symbol)
+   '("d" . meow-line)
+   '("X" . meow-goto-line)
+   '("y" . meow-save)
+   '("Y" . meow-sync-grab)
+   '("z" . meow-pop-selection)
+   '("'" . repeat)
+   '("<escape>" . ignore)))
+
+(meow-setup)
+
+(unless (bound-and-true-p meow-global-mode)
+  (meow-setup-indicator)
+  (meow-global-mode 1))
+#+end_src
+** Irc
+#+begin_src emacs-lisp
+(defun my-fetch-password (&rest params)
+  (require 'auth-source)
+  (let ((match (car (apply #'auth-source-search params))))
+    (if match
+        (let ((secret (plist-get match :secret)))
+          (if (functionp secret)
+              (funcall secret)
+            secret))
+      (error "Password not found for %S" params))))
+
+(defun my-nickserv-password ()
+  (my-fetch-password :user "freemanX" :host "irc.libera.chat")
+  )
+
+(require 'erc-join)
+(erc-autojoin-mode 1)
+
+(defun erc-myself ()
+  (interactive)
+  (setq erc-autojoin-channels-alist '((".*" "#emacs" "#haskell" "#clojure" "#scala")))
+  (erc-tls :server "irc.libera.chat" :port 6697 :nick  "freemanX" :password (my-nickserv-password))
+  )
+
+#+end_src
+** Coding
+*** auto save
+#+begin_src emacs-lisp
+(straight-use-package
+ '(auto-save :type git :host github :repo "manateelazycat/auto-save"))
+
+(require 'auto-save)
+(auto-save-enable)
+
+(setq auto-save-silent t)   ; quietly save
+(setq auto-save-delete-trailing-whitespace t)  ; automatically delete spaces at the end of the line when saving
+
+(straight-use-package 'wakatime-mode)
+(require 'wakatime-mode)
+(global-wakatime-mode)
+
+(setq custom-file "~/.config/emacs/custom.el")
+
+(straight-use-package 'vterm)
+(require 'vterm)
+(setq vterm-kill-buffer-on-exit t)
+
+;(straight-use-package 'wgrep)
+;(require 'wgrep)
+
+(straight-use-package 'rg)
+
+(autoload 'rg-project "wgrep" nil t)
+(autoload 'rg-project "rg" nil t)
+
+(with-eval-after-load "wgrep"
+  (define-key wgrep-mode-map (kbd "C-c C-c") #'wgrep-finish-edit))
+
+(define-key project-prefix-map "r" 'rg-project)
+
+(setq kill-buffer-query-functions nil)
+
+(global-tab-line-mode)
+
+(global-prettify-symbols-mode)
+
+(straight-use-package 'parinfer-rust-mode)
+
+(require 'parinfer-rust-mode)
+
+(setq parinfer-rust-troublesome-modes '())
+
+(add-hook 'emacs-lisp-mode-hook
+          (lambda ()
+           (electric-pair-mode -1)))
+
+(add-hook 'emacs-lisp-mode-hook (lambda () (parinfer-rust-mode 1)))
+#+end_src
+*** Auto complete
+#+begin_src emacs-lisp
+
+(straight-use-package 'company)
+
+(add-hook 'prog-mode-hook 'company-mode)
+(add-hook 'conf-mode-hook 'company-mode)
+(autoload 'company-mode "company" nil t)
+
+(with-eval-after-load "company"
+  (require 'company-tng)
+
+  (add-hook 'company-mode-hook 'company-tng-mode)
+
+  ;; (define-key company-mode-map (kbd "M-n") 'company-complete-common)
+
+  ;; (define-key company-active-map (kbd "TAB") nil)
+  ;; (define-key company-active-map [tab] nil)
+  ;; (define-key company-active-map (kbd "C-n") nil)
+  ;; (define-key company-active-map (kbd "C-p") nil)
+  ;; (define-key company-active-map (kbd "M-n") 'company-select-next)
+  ;; (define-key company-active-map (kbd "M-p") 'company-select-previous)
+
+ ;; Free SPC and RET, popup will no longer interrupt typing.
+  ;; (define-key company-active-map [escape] nil)
+  ;; (define-key company-active-map [return] nil)
+  ;; (define-key company-active-map (kbd "RET") nil)
+  ;; (define-key company-active-map (kbd "SPC") nil)
+  )
+(straight-use-package 'yasnippet)
+
+(yas-global-mode 1)
+#+end_src
+*** Navigation
+#+begin_src emacs-lisp
+
+#+end_src
+*** git
+#+begin_src emacs-lisp
+(straight-use-package 'magit)
+(autoload 'magit "magit" nil t)
+
+
+#+end_src
+*** better minibuffer
+#+begin_src emacs-lisp
+(fido-mode)
+(fido-vertical-mode)
+(straight-use-package 'marginalia)
+
+(straight-use-package
+ '(marginalia :type git :host github :repo "minad/marginalia"))
+
+(require 'marginalia)
+
+(marginalia-mode)
+(straight-use-package 'orderless)
+
+(require 'orderless)
+
+;; 在设置completion-styles之前，保存Emacs默认的completion-styles
+(defvar osfva/default-completion-styles completion-styles)
+(setq completion-styles '(orderless))
+
+;; 此处配置省略...
+
+(with-eval-after-load 'company
+  (defun osfva/company-disable-orderless (orig-fun &rest args)
+    "Diable orderless completion style when company is doing the completion."
+    (let ((completion-styles osfva/default-completion-styles))
+      (apply orig-fun args)))
+  (advice-add #'company--perform :around #'osfva/company-disable-orderless))
+
+;; 此处配置省略...
+#+end_src
+*** better recent file
+#+begin_src emacs-lisp
+(recentf-mode 1)
+(setq recentf-auto-cleanup 'never)
+(setq recentf-max-saved-items 99)
+(setq recentf-max-menu-items 99)
+(setq recentf-show-file-shortcuts-flag nil)
+(setq recentf-exclude
+      '("COMMIT" "autoloads" "archive-contents" "eld" ".newsrc"
+        ".recentf" "emacs-font-size.conf" "eh-scratch"
+        "pyim-dcache-.*"))
+;; 自动保存recentf文件。
+(add-hook 'find-file-hook #'recentf-save-list)
+
+(defun recentf-filtered-list (arg)
+  "Return a filtered list of ARG recentf items."
+    (recentf-apply-menu-filter
+     recentf-menu-filter
+     (mapcar 'recentf-make-default-menu-element
+	     (butlast recentf-list (- (length recentf-list) arg)))))
+
+(defun recentf-list-submenus (arg)
+  "Return a list of the recentf submenu names."
+  (if (listp (cdar (recentf-filtered-list arg))) ; submenues exist
+      (delq nil (mapcar 'car (recentf-filtered-list arg)))))
+
+(defmacro recentf-list-entries (fn arg)
+  "Return a list of ARG recentf menu entries as determined by FN.
+When FN is `'car' return the menu entry names, when FN is `'cdr'
+return the absolute file names."
+  `(mapcar (lambda (x) (mapcar ,fn x))
+	   (if (recentf-list-submenus ,arg)
+	       (mapcar 'cdr (recentf-filtered-list ,arg))
+	     (list (recentf-filtered-list ,arg)))))
+
+;; This function is not specific to recentf mode but is needed by
+;; `recentf-minibuffer-dialog'.  I've also made enough use of it in
+;; other contexts that I'm surprised it's not part of Emacs, and the
+;; fact that it isn't makes me wonder if there's a preferred way of
+;; doing what I use this function for.
+(defun recentf-memindex (mem l)
+  "Return the index of MEM in list L."
+  (let ((mempos -1) ret)
+    (while (eq ret nil)
+      (setq mempos (1+ mempos))
+      (when (equal (car l) mem) (setq ret mempos))
+      (setq l (cdr l)))
+    ret))
+
+(defun recentf-minibuffer-dialog (arg)
+  "Open the recentf menu via the minubuffer, with completion.
+With positive prefix ARG, show the ARG most recent items.
+Otherwise, show the default maximum number of recent items."
+  (interactive "P")
+  (let* ((num (prog1 (if (and (not (null arg))
+			      (> arg 0))
+			 (min arg (length recentf-list))
+		       recentf-max-menu-items)
+		(and (not (null arg))
+		     (> arg (length recentf-list))
+		     (message "There are only %d recent items."
+			      (length recentf-list))
+		     (sit-for 2))))
+	 (menu (if (recentf-list-submenus num)
+		   (completing-read "Open recent: "
+				    (recentf-list-submenus num))))
+	 (i (recentf-memindex menu (recentf-list-submenus num)))
+	 (items (nth i (recentf-list-entries 'car num)))
+	 (files (nth i (recentf-list-entries 'cdr num)))
+	 (item (completing-read "Open recent: " items))
+	 (j (recentf-memindex item items))
+	 (file (nth j files)))
+    (funcall recentf-menu-action file))) ; find-file by default
+#+end_src
+** Lang
+*** lsp & dap
+#+begin_src emacs-lisp
+(straight-use-package 'lsp-mode)
+(setq lsp-keymap-prefix "C-c l"
+      lsp-enable-dap-auto-configure nil
+      )
+
+(autoload 'lsp "lsp-mode" nil t)
+
+;; (straight-use-package 'lsp-ui)
+
+;; (autoload 'lsp "lsp-ui" nil t)
+
+;; (require 'lsp-ui)
+
+;; (define-key lsp-ui-mode-map [remap xref-find-definitions] #'lsp-ui-peek-find-definitions)
+
+;; (define-key lsp-ui-mode-map [remap xref-find-references] #'lsp-ui-peek-find-references)
+
+(straight-use-package 'dap-mode)
+
+(require 'dap-mode)
+
+(require 'dap-cpptools)
+
+#+end_src
+*** apl
+#+begin_src emacs-lisp
+
+(straight-use-package 'gnu-apl-mode)
+
+(require 'gnu-apl-mode)
+
+(defun em-gnu-apl-init ()
+  (setq buffer-face-mode-face 'gnu-apl-default)
+  (buffer-face-mode))
+
+(add-hook 'gnu-apl-interactive-mode-hook 'em-gnu-apl-init)
+(add-hook 'gnu-apl-mode-hook 'em-gnu-apl-init)
+
+#+end_src
+*** javascript
+#+begin_src emacs-lisp
+(with-eval-after-load 'js
+  (define-key js-mode-map (kbd "M-.") nil)
+)
+#+end_src
+*** C++/C
+*** Haskell
+*** Clojure
+*** Rust
+#+begin_src emacs-lisp
+(straight-use-package 'rust-mode)
+(require 'rust-mode)
+
+(add-hook 'rust-mode-hook 'lsp)
+#+end_src
+*** Scheme
+#+begin_src emacs-lisp
+(straight-use-package 'racket-mode)
+
+(require 'racket-mode)
+#+end_src
+*** SML
+#+begin_src emacs-lisp
+;; (straight-use-package 'sml-mode)
+
+;; (require 'sml-mode)
+
+;; (autoload 'sml-mode  "sml-mode" "Major mode for editing SML." t)
+
+;; (setq auto-mode-alist
+;;       (cons '("\.sml$" . sml-mode)
+;;             (cons '("\.sig$" . sml-mode)
+;;                   auto-mode-alist)))
+#+end_src
+** safe variable
+#+begin_src emacs-lisp
+(add-to-list 'safe-local-variable-values
+             '(LaTeX-command . "lualatex -shell-escape"))
+
+(add-to-list 'safe-local-variable-values
+             '(company-clang-arguments . "-I src"))
+
+(add-to-list 'safe-local-variable-values
+             '(compile-command . "cmake --build build"))
+             
+(add-to-list 'safe-local-variable-values '(lsp-rust-analyzer-proc-macro-enable . t))
+
+(add-to-list 'safe-local-variable-values '(lsp-rust-analyzer-experimental-proc-attr-macros . t))
+#+end_src
+
+** Org
+*** Org Roam
+#+begin_src emacs-lisp
+(straight-use-package 'org-roam)
+
+(setq org-roam-directory (expand-file-name "~/Dropbox/Notes")
+      org-roam-capture-templates
+      '(("d" "default" plain "%?"
+          :target (file+head "${slug}.org" "#+title: ${title}\n#+date: %U\n")
+          :unnarrowed t
+          :immediate-finish t)))
+
+(defvar org-roam-keymap
+  (let ((keymap (make-keymap)))
+    (define-key keymap "l" 'org-roam-buffer-toggle)
+    (define-key keymap "f" 'org-roam-node-find)
+    (define-key keymap "g" 'org-roam-graph)
+    (define-key keymap "i" 'org-roam-node-insert)
+    (define-key keymap "c" 'org-roam-capture)
+    (define-key keymap "s" 'org-roam-db-sync)
+    keymap))
+
+(defalias 'org-roam-keymap org-roam-keymap)
+
+(global-set-key (kbd "C-c n") 'org-roam-keymap)
+
+(with-eval-after-load "org-roam"
+  (org-roam-setup)
+  (setq +org-roam-open-buffer-on-find-file nil))
+
+
+(defun meomacs--org-prettify-symbols ()
+  (setq-local prettify-symbols-alist
+              '(("#+begin_src" . "»")
+                ("#+end_src" . "«")
+                ("#+begin_example" . "❯")
+                ("#+end_example" . "❮")
+                ("#+begin_quote" . "‟")
+                ("#+end_quote" . "‟")
+                ("[X]" . "☑")
+                ("[ ]" . "☐")))
+  (prettify-symbols-mode 1))
+
+(add-hook 'org-mode-hook 'meomacs--org-prettify-symbols)
+
+(setq org-hide-emphasis-markers t)
+(setq org-hide-leading-stars t)
+
+
+(setq org-confirm-babel-evaluate nil)
+
+(with-eval-after-load "org"
+  (require 'org)
+  (require 'ob)
+  (org-babel-do-load-languages
+   'org-babel-load-languages
+   '((dot . t)
+     (C . t)
+     (js . t)
+     (emacs-lisp . t)
+     (plantuml . t)
+     (python . t)
+     (shell . t)
+     (gnuplot . t)
+     (haskell . t)))
+
+  (require 'org-tempo)
+  (add-to-list 'org-structure-template-alist '("sh" . "src sh"))
+  (add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
+  (add-to-list 'org-structure-template-alist '("cpp" . "src cpp :namespaces std :flags  -std=c++20 :includes <iostream> <vector>"))
+  (add-to-list 'org-structure-template-alist '("cl" . "src C :includes <stdlib.h> <stdio.h>"))
+  (add-to-list 'org-structure-template-alist '("ts" . "src typescript"))
+  (add-to-list 'org-structure-template-alist '("js" . "src javascript"))
+  (add-to-list 'org-structure-template-alist '("py" . "src python"))
+  (add-to-list 'org-structure-template-alist '("go" . "src go"))
+  (add-to-list 'org-structure-template-alist '("rust" . "src rust"))
+  (add-to-list 'org-structure-template-alist '("yaml" . "src yaml"))
+  (add-to-list 'org-structure-template-alist '("json" . "src json"))
+  (add-to-list 'org-emphasis-alist '("=" (:box (:line-width -2 :color "gray50" :style released-button) :inherit org-verbatim))))
+
+(setq org-directory "~/Dropbox/Org"
+      org-agenda-files
+      (list org-directory)
+      org-agenda-diary-file
+      (concat org-directory "/todo.org")
+      org-default-notes-file
+      (concat org-directory "/notes.org"))
+
+(setq org-src-preserve-indentation t
+      org-src-fontify-natively t
+      org-return-follows-link t)
+
+;(with-eval-after-load ox-latex)
+#+end_src
+** Key bindings
+#+begin_src emacs-lisp
+(defvar toggle-map (make-keymap))
+(defalias 'toggle-map toggle-map)
+
+(defvar addon-map (make-keymap))
+(defalias 'addon-map addon-map)
+
+(define-key mode-specific-map "t" toggle-map)
+(define-key mode-specific-map "a" addon-map)
+
+(meow-leader-define-key
+ '("i" . imenu)
+ '("b" . switch-to-buffer)
+ '("s" . split-window-right)
+ '("v" . split-window-below)
+ '("w" . other-window)
+ '("o" . delete-other-windows)
+ '("r" . recentf-minibuffer-dialog)
+ '("f" . flymake-show-buffer-diagnostics)
+; '("*" . rg)
+ )
+
+(global-set-key (kbd "<C-[>") 'keyboard-escape-quit)
+#+end_src
+** leetcode
+#+begin_src emacs-lisp
+(straight-use-package 'leetcode)
+
+(autoload 'leetcode "leetcode" nil t)
+
+#+end_src
+
+* Conclusion
+** Tangle on save
+;; Local Variables:
+;; eval: (add-hook 'after-save-hook (lambda () (org-babel-tangle)) nil t)
+;; End:

@@ -8,6 +8,10 @@ node_modules/
 config/.config/*
 clojure/.clojure/.cpcache
 !config/.config/nvim
+!config/.config/emacs/
+config/.config/emacs/*
+!config/.config/emacs/early-init.el 
+!config/.config/emacs/init.org 
 !config/.config/kitty
 !config/.config/Code/User
 !config/.config/doom
