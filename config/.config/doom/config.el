@@ -199,17 +199,6 @@ Regards,
 ;(setq mu4e-index-cleanup nil
       ;mu4e-index-lazy-check t)
 
-(defun my-fetch-password (&rest params)
-  (require 'auth-source)
-  (let ((match (car (apply #'auth-source-search params))))
-    (if match
-        (let ((secret (plist-get match :secret)))
-          (if (functionp secret)
-              (funcall secret)
-            secret))
-      (error "Password not found for %S" params))))
-
-(defun my-nickserv-password (server)
   (my-fetch-password :user "freemanX" :host "irc.libera.chat")
   )
 
@@ -351,7 +340,10 @@ Regards,
 (setq org-log-done "time"
       org-log-done-with-time 't)
 (setq org-catch-invisible-edits 'show-and-error)
+
 (setq org-cycle-separator-lines 0)
+
+(setq org-startup-with-inline-images t)
 
 (setq org-hugo-auto-set-lastmod 't
       org-hugo-section "posts"

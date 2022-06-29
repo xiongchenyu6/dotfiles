@@ -1,5 +1,22 @@
 source /etc/profile
 
+# If there's already a kubeconfig file in ~/.kube/config it will import that too and all the contexts
+DEFAULT_KUBECONFIG_FILE="$HOME/.kube/config"
+if test -f "${DEFAULT_KUBECONFIG_FILE}"
+then
+  export KUBECONFIG="$DEFAULT_KUBECONFIG_FILE"
+fi
+# Your additional kubeconfig files should be inside ~/.kube/config-files
+ADD_KUBECONFIG_FILES="$HOME/.kube/clusters"
+mkdir -p "${ADD_KUBECONFIG_FILES}"
+OIFS="$IFS"
+IFS=$'\n'
+for kubeconfigFile in `find "${ADD_KUBECONFIG_FILES}" -type f -o -name "*.yaml"`
+do
+    export KUBECONFIG="$kubeconfigFile:$KUBECONFIG"
+done
+IFS="$OIFS"
+
 if [[ "$OSTYPE" == "linux-gnu" ]]; then
     export JAVA_HOME='/usr/lib/jvm/default'
     export HADOOP_HOME=/usr/lib/hadoop
@@ -17,6 +34,7 @@ if [[ "$OSTYPE" == "linux-gnu" ]]; then
     export GEM_HOME=$HOME/.gem/ruby/2.7.0
 
 else [[ "$OSTYPE" == "darwin"* ]];
+    export HADOOP_HOME=/usr/local/Cellar/hadoop/3.3.2/libexec
     export PYENV_ROOT="$HOME/.pyenv"
     export PATH="$PYENV_ROOT/bin:$PATH"
     export JAVA_HOME="$(/usr/libexec/java_home)"
@@ -26,16 +44,18 @@ else [[ "$OSTYPE" == "darwin"* ]];
     export RUBY_HOME=/usr/local/opt/ruby
     export GEM_HOME=/usr/local/lib/ruby/gems/2.6.0
     export PATH=/usr/local/sbin:$PATH
-    export GOROOT="/usr/local/Cellar/go/1.17.3/libexec"
+    export GOROOT="/usr/local/Cellar/go/1.18.1/libexec"
 #    export PATH=/usr/local/bin:$PATH
     export PATH=/usr/local/opt/llvm/bin:$PATH
     export PATH=/Applications/Dyalog-18.0.app/Contents/Resources/Dyalog:$PATH
-    alias openssl=/usr/local/opt/openssl@3/bin/openssl
     export PATH=/usr/local/opt/openssl@3/bin:$PATH
     export PKG_CONFIG_PATH="/usr/local/opt/libxml2/lib/pkgconfig"
     export CONAN_USER_HOME=/Users/chenyu
     export PATH="/Users/chenyu/Library/Application Support/Coursier/bin":$PATH:
+    alias openssl=/usr/local/opt/openssl@3/bin/openssl
 fi
+
+export LSP_USE_PLISTS=true
 
 # export PATH=$HOME/.nix-profile/bin/:$PATH
 export PATH=$HOME/.node_modules/bin:$PATH

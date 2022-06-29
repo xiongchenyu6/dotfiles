@@ -461,7 +461,6 @@ I don't like confirmations or any other type of prompt
 ** encrypt
 #+begin_src emacs-lisp
 (setq epg-gpg-program "gpg")
-
 #+end_src
 
 ** work around
@@ -782,7 +781,10 @@ I like org mode a lot use to write paper and do presnetations blah blah blah
 (setq org-log-done "time"
       org-log-done-with-time 't)
 (setq org-catch-invisible-edits 'show-and-error)
+
 (setq org-cycle-separator-lines 0)
+
+(setq org-startup-with-inline-images t)
 
 (setq org-hugo-auto-set-lastmod 't
       org-hugo-section "posts"

@@ -102,7 +102,7 @@ main = do
             modMask = modm -- Rebind Mod to the Windows key
           }
           `additionalKeys` customerKeyMaps
-
+          
 --  setRandomWallpaper ["$HOME/Dropbox/WallPaper"] -- should install feh for the functionality
 customerKeyMaps =
   [ ( (0, xF86XK_AudioMute),
