@@ -17,6 +17,8 @@ do
 done
 IFS="$OIFS"
 
+export NVM_DIR="$HOME/.nvm"
+
 if [[ "$OSTYPE" == "linux-gnu" ]]; then
     export JAVA_HOME='/usr/lib/jvm/default'
     export HADOOP_HOME=/usr/lib/hadoop
@@ -53,6 +55,9 @@ else [[ "$OSTYPE" == "darwin"* ]];
     export CONAN_USER_HOME=/Users/chenyu
     export PATH="/Users/chenyu/Library/Application Support/Coursier/bin":$PATH:
     alias openssl=/usr/local/opt/openssl@3/bin/openssl
+    [ -s "/usr/local/opt/nvm/nvm.sh" ] && \. "/usr/local/opt/nvm/nvm.sh"  # This loads nvm
+    [ -s "/usr/local/opt/nvm/etc/bash_completion.d/nvm" ] && \. "/usr/local/opt/nvm/etc/bash_completion.d/nvm"  # This loads nvm bash_completion
+
 fi
 
 export LSP_USE_PLISTS=true
@@ -81,7 +86,7 @@ export PATH=$RUBY_HOME/bin:$PATH
 export PATH=$GEM_HOME/bin:$PATH
 export PATH=$ASYNC_PROFILER_HOME:$PATH
 
-export npm_config_prefix=~/.node_modules
+# export npm_config_prefix=~/.node_modules
 
 export METALS_ENABLED=true
 export METALS_JDK_PATH=/usr/lib/jvm/default/bin

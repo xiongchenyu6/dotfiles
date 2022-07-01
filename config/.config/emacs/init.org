@@ -8,6 +8,8 @@
 
 * My Configuration
 ** Package
+Straight is a very good package manager for me to easily get emacs third party pkgs from elpm and github.
+
 #+begin_src emacs-lisp
 (defvar straight-keymap
   (let ((keymap (make-keymap)))
@@ -20,15 +22,18 @@
     keymap))
 #+end_src
 ** UI
+*** Font
+
 #+begin_src emacs-lisp
 (add-to-list 'default-frame-alist
              '(font . "JetBrains Mono-15"))
 
-(global-visual-line-mode 1)
-
 (straight-use-package
  '(ligature :type git :host github :repo "mickeynp/ligature.el"))
 
+#+end_src
+*** Ligature
+#+begin_src emacs-lisp
 (require 'ligature)
 
 (ligature-set-ligatures 't '("www"))
@@ -50,16 +55,43 @@
                                      "?=" "?." "??" ";;" "/*" "/=" "/>" "//" "__" "~~" "(*" "*)"
                                      "\\\\" "://" "=?"))
 (global-ligature-mode t)
+(add-hook 'prog-mode-hook
+          (lambda ()
+            (setq-local prettify-symbols-alist
+                        '(
+                          ;; Functional
+                          ("def" . "ƒ")
+                          ("composition" . "∘")
+                          ("map" . "↦")
+                          ("lambda" . "λ")
+                          ;; Types
+                          ("null" . "∅")
+                          ("true" . "𝕋")
+                          ("false" . "𝔽")
+                          ("int" . "ℤ")
+                          ("float" . "ℝ")
+                          ("str" . "𝕊")
+                          ("bool" . "𝔹")
+                          ("list" . "𝕃")
+                          ;; Flow
+                          ))
+            ))
+#+end_src
+*** Transparent
+#+begin_src emacs-lisp
+(set-frame-parameter (selected-frame) 'alpha '(85 100))
+
+(add-to-list 'default-frame-alist '(alpha 85 100))
 #+end_src
 
 ** General
-
+*** Native Setup
 #+begin_src emacs-lisp
 ;; ** 启动时默认打开的 buffer.
 (setq inhibit-startup-screen t)
 (setq initial-buffer-choice nil)
 (setq initial-major-mode 'emacs-lisp-mode)
-(setq initial-scratch-message "xxxxx")
+(setq initial-scratch-message "")
 
 ;; ** yes-or-no-p
 (defalias 'yes-or-no-p 'y-or-n-p)
@@ -95,6 +127,13 @@
 (add-hook 'prog-mode-hook 'electric-pair-local-mode)
 (add-hook 'conf-mode-hook 'electric-pair-local-mode)
 
+(setq custom-file "~/.config/emacs/custom.el")
+
+(setq electric-pair-pairs '((8216 . 8217) (8220 . 8221)))
+
+;; (with-eval-after-load 'elec-pair
+;;   (setq electric-pair-inhibit-predicate (lambda (c) (message c) (char-equal c ?\")))
+;;   )
 (straight-use-package 'rainbow-delimiters)
 
 (require 'rainbow-delimiters)
@@ -184,7 +223,37 @@
 
 (windmove-default-keybindings)
 #+end_src
-** Meow
+*** Native Global Mode
+#+begin_src emacs-lisp
+(auto-save-visited-mode +1)
+
+(global-auto-composition-mode +1)
+(global-auto-revert-mode +1)
+(global-eldoc-mode +1)
+(global-linum-mode +1)
+(global-visual-line-mode +1)
+(global-word-wrap-whitespace-mode +1)
+(auto-fill-mode +1)
+(save-place-mode +1)
+
+(setq-default abbrev-mode t)
+(winner-mode +1)
+(global-tab-line-mode)
+(global-prettify-symbols-mode)
+
+(pixel-scroll-precision-mode t)
+#+end_src
+*** Buffer
+#+begin_src emacs-lisp
+(setq kill-buffer-query-functions nil)
+#+end_src
+*** Auto Save
+#+begin_src emacs-lisp
+(setq auto-save-visited-interval 1)
+#+end_src
+
+** Structure Editing
+*** Meow
 #+begin_src emacs-lisp
 (straight-use-package 'meow)
 (require 'meow)
@@ -289,6 +358,18 @@
 (with-eval-after-load "meow"
   (add-to-list 'meow-expand-exclude-mode-list 'wdired-mode))
 #+end_src
+*** Lispy
+#+begin_src emacs-lisp
+
+(straight-use-package 'lispy)
+
+(require 'lispy)
+
+(add-hook 'emacs-lisp-mode-hook (lambda () (lispy-mode 1)))
+(add-hook 'clojure-mode-hook (lambda () (lispy-mode 1)))
+(add-hook 'racket-mode-hook (lambda () (lispy-mode 1)))
+
+#+end_src
 ** Irc
 #+begin_src emacs-lisp
 (defun my-fetch-password (&rest params)
@@ -316,35 +397,15 @@
 
 #+end_src
 ** Coding
-
-*** auto save
+*** Better terminal
 #+begin_src emacs-lisp
-(auto-save-visited-mode +1)
-(setq auto-save-visited-interval 1)
-
-(global-auto-composition-mode +1)
-(global-auto-revert-mode +1)
-(global-eldoc-mode +1)
-(global-linum-mode +1)
-(global-visual-line-mode +1)
-(global-word-wrap-whitespace-mode +1)
-(auto-fill-mode +1)
-(save-place-mode +1)
-
-(setq-default abbrev-mode t)
-
-(winner-mode +1)
-                                        ;(c-toggle-auto-hungry-state)
-(straight-use-package 'wakatime-mode)
-(require 'wakatime-mode)
-(global-wakatime-mode +1)
-
-(setq custom-file "~/.config/emacs/custom.el")
-
 (straight-use-package 'vterm)
 (require 'vterm)
 (setq vterm-kill-buffer-on-exit t)
 
+#+end_src
+*** Better Search
+#+begin_src emacs-lisp
 (straight-use-package 'rg)
 
 (autoload 'rg-project "wgrep" nil t)
@@ -355,62 +416,47 @@
 
 (define-key project-prefix-map "r" 'rg-project)
 
-(setq kill-buffer-query-functions nil)
-
-(global-tab-line-mode)
-
-;; (setq prettify-symbols-alist `(("def" . "ƒ") ("composition" . "∘") ("map" . "↦")))
-
-;; (global-prettify-symbols-mode)
-
-(straight-use-package 'lispy)
-
-(require 'lispy)
-
-(add-hook 'emacs-lisp-mode-hook (lambda () (lispy-mode 1)))
-(add-hook 'clojure-mode-hook (lambda () (lispy-mode 1)))
-(add-hook 'racket-mode-hook (lambda () (lispy-mode 1)))
 #+end_src
 *** Auto complete
 #+begin_src emacs-lisp
 
 (straight-use-package 'company)
-
 (add-hook 'prog-mode-hook 'company-mode)
 (add-hook 'conf-mode-hook 'company-mode)
 (autoload 'company-mode "company" nil t)
-
 (add-hook 'prog-mode-hook 'hs-minor-mode)
-
 (add-hook 'hs-minor-mode-hook (lambda () (hs-hide-initial-comment-block)))
-
 (setq company-tooltip-align-annotations t)
-
-(with-eval-after-load 'company
-  (require 'company-tng)
-  (add-hook 'company-mode-hook 'company-tng-mode))
-
-  ;; (define-key company-mode-map (kbd "TAB") #'company-complete-selection)
-  ;; (define-key company-mode-map [tab] #'company-complete-selection)
-  ;; (define-key company-active-map (kbd "tab") #'company-complete-selection))
-
-
-  ;; (define-key company-active-map (kbd "TAB") nil)
-  ;; (define-key company-active-map [tab] nil)
-  ;; (define-key company-active-map (kbd "C-n") nil)
-  ;; (define-key company-active-map (kbd "C-p") nil)
-  ;; (define-key company-active-map (kbd "M-n") 'company-select-next)
-  ;; (define-key company-active-map (kbd "M-p") 'company-select-previous)
-
- ;; Free SPC and RET, popup will no longer interrupt typing.
-  ;; (define-key company-active-map [escape] nil)
-  ;; (define-key company-active-map [return] nil)
-  ;; (define-key company-active-map (kbd "RET") nil))
-  ;; (define-key company-active-map (kbd "SPC") nil)
-
 (straight-use-package 'yasnippet)
 
 (yas-global-mode 1)
+
+(straight-use-package
+ '(copilot :type git :host github :repo "zerolfx/copilot.el"))
+
+(require 'copilot)
+
+(setq copilot-node-executable "/Users/chenyu/.nvm/versions/node/v17.9.1/bin/node")
+
+(defun my-tab ()
+  (interactive)
+  (or (copilot-accept-completion)
+      (company-indent-or-complete-common nil)))
+
+; modify company-mode behaviors
+(with-eval-after-load 'company
+  ;; disable inline previews
+  (delq 'company-preview-if-just-one-frontend company-frontends)
+  (define-key company-mode-map (kbd "<tab>") 'my-tab)
+  (define-key company-mode-map (kbd "TAB") 'my-tab)
+  (define-key company-active-map (kbd "<tab>") 'my-tab)
+  (define-key company-active-map (kbd "TAB") 'my-tab))
+#+end_src
+*** Motivation
+#+begin_src emacs-lisp
+(straight-use-package 'wakatime-mode)
+(require 'wakatime-mode)
+(global-wakatime-mode +1)
 #+end_src
 *** Navigation
 #+begin_src emacs-lisp
@@ -438,12 +484,12 @@
  
     (setq hs-set-up-overlay 'display-code-line-counts)
 #+end_src
-*** git
+*** Git
 #+begin_src emacs-lisp
 (straight-use-package 'magit)
 (autoload 'magit "magit" nil t)
 #+end_src
-*** better minibuffer
+*** Better minibuffer
 #+begin_src emacs-lisp
 (fido-mode)
 (fido-vertical-mode)
@@ -474,7 +520,7 @@
 
 ;; 此处配置省略...
 #+end_src
-*** better recent file
+*** Better recent file
 #+begin_src emacs-lisp
 (recentf-mode 1)
 (setq recentf-auto-cleanup 'never)
@@ -551,44 +597,75 @@ Otherwise, show the default maximum number of recent items."
 ** Lang
 *** lsp & dap
 #+begin_src emacs-lisp
-  (straight-use-package 'lsp-mode)
-  (setq lsp-keymap-prefix "C-c l"
-        lsp-enable-dap-auto-configure nil)
+(straight-use-package 'lsp-mode)
+(setq lsp-enable-dap-auto-configure nil)
 
-  (require 'lsp)
+(global-set-key (kbd "C-c l") 'lsp-command-map)
 
-  (autoload 'lsp "lsp-mode" nil t)
+(require 'lsp)
 
-  (straight-use-package 'lsp-ui)
+(autoload 'lsp "lsp-mode" nil t)
 
-  (autoload 'lsp "lsp-ui" nil t)
+(with-eval-after-load 'lsp-mode
+  (add-hook 'lsp-mode-hook #'lsp-enable-which-key-integration))
 
-  (add-hook 'after-init-hook #'global-flycheck-mode)
+(straight-use-package 'lsp-ui)
+
+(autoload 'lsp "lsp-ui" nil t)
+
+(add-hook 'after-init-hook #'global-flycheck-mode)
 
 (add-to-list 'display-buffer-alist
              `(,(rx bos "*Flycheck errors*" eos)
-              (display-buffer-reuse-window
-               display-buffer-in-side-window)
-              (side            . bottom)
-              (reusable-frames . visible)
-              (window-height   . 0.33)))
+               (display-buffer-reuse-window
+                display-buffer-in-side-window)
+               (side            . bottom)
+               (reusable-frames . visible)
+               (window-height   . 0.23)))
+
+(add-to-list 'display-buffer-alist
+             `(,(rx bos "*compilation*" eos)
+               (display-buffer-reuse-window
+                display-buffer-in-side-window)
+               (side            . bottom)
+               (reusable-frames . visible)
+               (window-height   . 0.23)))
+
+(add-to-list 'display-buffer-alist
+             `(,(rx bos "*vterm*" eos)
+               (display-buffer-reuse-window
+                display-buffer-in-side-window)
+               (side            . bottom)
+               (reusable-frames . visible)
+               (window-height   . 0.23)))
+
+(add-to-list 'display-buffer-alist
+             `(,(rx bos "*Async Shell Command*" eos)
+               (display-buffer-reuse-window
+                display-buffer-in-side-window)
+               (side            . bottom)
+               (reusable-frames . visible)
+               (window-height   . 0.23)))
 
 (require 'lsp-ui)
 
-  (define-key lsp-ui-mode-map [remap xref-find-definitions] #'lsp-ui-peek-find-definitions)
+(define-key lsp-ui-mode-map [remap xref-find-definitions] #'lsp-ui-peek-find-definitions)
 
-  (define-key lsp-ui-mode-map [remap xref-find-references] #'lsp-ui-peek-find-references)
+(define-key lsp-ui-mode-map [remap xref-find-references] #'lsp-ui-peek-find-references)
 
-  (setq lsp-ui-doc-include-signature t)
-  (setq lsp-ui-doc-use-webkit t)
+(setq lsp-ui-doc-include-signature t)
+(setq lsp-ui-doc-use-webkit t)
 
-  (straight-use-package 'dap-mode)
+(straight-use-package 'dap-mode)
 
-  (require 'dap-mode)
+(require 'dap-mode)
 
-  ;; (require 'dap-cpptools)
+(add-hook 'dap-stopped-hook
+          (lambda (arg) (call-interactively #'dap-hydra)))
 
-  (setq dap-auto-configure-features '(sessions locals controls tooltip))
+(require 'dap-cpptools)
+
+(setq dap-auto-configure-features '(sessions locals controls tooltip))
 #+end_src
 *** apl
 #+begin_src emacs-lisp
@@ -630,9 +707,9 @@ Otherwise, show the default maximum number of recent items."
 (add-hook 'sgml-mode-hook 'emmet-mode) ;; Auto-start on any markup modes
 (add-hook 'css-mode-hook  'emmet-mode) ;; enable Emmet's css abbreviation.
 
-  (add-hook 'html-mode-hook #'lsp)
+(add-hook 'html-mode-hook #'lsp)
 
-  (add-hook 'css-mode-hook #'lsp)
+(add-hook 'css-mode-hook #'lsp)
 
 
 ;; (add-hook 'html-mode 'lsp)
@@ -640,7 +717,7 @@ Otherwise, show the default maximum number of recent items."
 *** C++/C
 #+begin_src emacs-lisp
 (add-hook 'c++-mode-hook #'lsp)
-(add-hook 'c++-mode-hook (lambda () (c-toggle-hungry-state)))
+(add-hook 'c++-mode-hook (lambda () (c-toggle-hungry-state) (c-toggle-auto-newline)))
 #+end_src
 *** typescript
 #+begin_src emacs-lisp
@@ -747,7 +824,6 @@ Otherwise, show the default maximum number of recent items."
 ;; (add-hook 'python-mode-hook (lambda () (whitespace-mode +1)))
 #+end_src
 *** SML
-
 #+begin_src emacs-lisp
 ;; (straight-use-package 'sml-mode)
 
@@ -761,13 +837,24 @@ Otherwise, show the default maximum number of recent items."
 *** Scala
 #+begin_src emacs-lisp
 (straight-use-package 'scala-mode)
-
 (straight-use-package 'sbt-mode)
 (straight-use-package 'lsp-metals)
 
 (with-eval-after-load 'scala-mode
   (require 'lsp-metals)
   (add-hook 'scala-mode-hook 'lsp))
+
+#+end_src
+*** Java
+#+begin_src emacs-lisp
+(straight-use-package 'lsp-java)
+
+(require 'lsp-java)
+
+(add-hook 'java-mode-hook #'lsp)
+
+(setq lsp-java-content-provider-preferred "fernflower")
+
 #+end_src
 *** SQL
 #+begin_src emacs-lisp
@@ -809,11 +896,20 @@ Otherwise, show the default maximum number of recent items."
 (add-to-list 'safe-local-variable-values '(lsp-rust-analyzer-proc-macro-enable . t))
 
 (add-to-list 'safe-local-variable-values '(lsp-rust-analyzer-experimental-proc-attr-macros . t))
+
+(add-to-list 'safe-local-variable-values '(eval add-hook 'after-save-hook
+                                                (lambda nil
+                                                  (org-babel-tangle))
+                                                nil t))
 #+end_src
 
 ** Org
+*** Org contrib
 *** Org attach
 #+begin_src emacs-lisp
+(straight-use-package 'org-contrib)
+(require 'org-contrib)
+
 (setq org-attach-id-dir "~/Dropbox/Org/.attach")
 (setq org-startup-with-inline-images t)
 
@@ -835,8 +931,6 @@ Otherwise, show the default maximum number of recent items."
 (straight-use-package 'org-re-reveal)
 
 (require 'org-re-reveal)
-
-
 #+end_src
 *** Org Roam
 #+begin_src emacs-lisp
@@ -867,7 +961,6 @@ Otherwise, show the default maximum number of recent items."
   (org-roam-setup)
   (setq +org-roam-open-buffer-on-find-file nil))
 
-
 (defun meomacs--org-prettify-symbols ()
   (setq-local prettify-symbols-alist
               '(("#+begin_src" . "»")
@@ -877,16 +970,12 @@ Otherwise, show the default maximum number of recent items."
                 ("#+begin_quote" . "‟")
                 ("#+end_quote" . "‟")
                 ("[X]" . "☑")
-                ("[ ]" . "☐")))
-  (prettify-symbols-mode +1))
-
+                ("[ ]" . "☐"))))
 
 (add-hook 'org-mode-hook 'meomacs--org-prettify-symbols)
 
-
 (setq org-hide-emphasis-markers t)
 (setq org-hide-leading-stars t)
-
 
 (setq org-confirm-babel-evaluate nil)
 
@@ -927,6 +1016,8 @@ Otherwise, show the default maximum number of recent items."
 ;;         (org-export-exclude-tags '("noexport" "latexonly")))
 ;;       (org-export-to-file 'hugocv (concat name ".md")))
 ;;   )
+
+(setq org-export-backends '(ascii html icalendar latex man md odt))
 
 (with-eval-after-load "org"
   (require 'org)
@@ -973,11 +1064,18 @@ Otherwise, show the default maximum number of recent items."
 (setq org-src-preserve-indentation t
       org-src-fontify-natively t
       org-return-follows-link t)
+;; (with-eval-after-load ox-latex)
+#+end_src
+*** Org Hugo
+#+begin_src emacs-lisp
+(straight-use-package 'ox-hugo)
 
-                                        ;(with-eval-after-load ox-latex)
+(require 'ox-hugo)
+
 
 #+end_src
 ** Key bindings
+*** open app
 #+begin_src emacs-lisp
 (defalias 'straight-keymap straight-keymap)
 (global-set-key (kbd "C-x p") 'straight-keymap)
@@ -991,8 +1089,10 @@ Otherwise, show the default maximum number of recent items."
                                     (sql-send-paragraph)))))
 
 (with-eval-after-load "project"
-  (define-key project-prefix-map "s" 'shell)
+  (define-key project-prefix-map "s" 'vterm)
   (define-key project-prefix-map "m" 'magit))
+
+(setq project-switch-commands 'project-find-file)
 
 (defvar toggle-map (make-keymap))
 (defalias 'toggle-map toggle-map)
@@ -1011,20 +1111,38 @@ Otherwise, show the default maximum number of recent items."
  '("s" . swiper)
  '("w" . ace-window)
  '("r" . recentf-minibuffer-dialog)
- '("t" . treemacs)
+ '("t" . treemacs-select-window)
  '("f" . project-find-file)
  '("b" . toggle-hiding)
  '("z" . toggle-selective-display)
+ '("d" . dap-hydra)
  ;; '("h" . window-left)
  ;; '("l" . window-right)
+ ; '("*" . rg)
+ 
  '(":" . replace-regexp))
 
-; '("*" . rg)
 
 (require 'treemacs-project-follow-mode)
 (treemacs-project-follow-mode t)
+(require 'treemacs-tag-follow-mode)
+(treemacs-tag-follow-mode t)
+(setq treemacs-tag-follow-delay 0.2)
+; one beautiful work around to make c+[ works
+(define-key meow-insert-state-keymap 
+            (kbd "C-g") [escape]
+            )
+#+end_src
+*** Ace
+#+begin_src emacs-lisp
+(straight-use-package 'ace-link)
 
-(global-set-key (kbd "<C-[>") 'keyboard-escape-quit)
+(require 'ace-link)
+
+
+(ace-link-setup-default)
+
+
 #+end_src
 ** Leetcode
 #+begin_src emacs-lisp
@@ -1041,3 +1159,4 @@ Otherwise, show the default maximum number of recent items."
 ;; Local Variables:
 ;; eval: (add-hook 'after-save-hook (lambda () (org-babel-tangle)) nil t)
 ;; End:
+(sa)(sa)(sa)

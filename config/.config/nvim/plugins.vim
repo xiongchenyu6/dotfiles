@@ -76,4 +76,6 @@ Plug 'junegunn/fzf'
 
 Plug 'wakatime/vim-wakatime'
 
+Plug 'github/copilot.vim'
+
 call plug#end()
