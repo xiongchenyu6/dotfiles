@@ -21,7 +21,7 @@ eval "$(starship init zsh)"
 
 eval "$(fasd --init posix-alias zsh-hook)"
 
-# eval "$(jenv init -)"
+eval "$(jenv init -)"
 
 # If not running interactively, do not do anything
 if [[ -z "$TMUX" ]] ;then

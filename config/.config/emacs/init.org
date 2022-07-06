@@ -7,9 +7,8 @@
 #+PROPERTY: header-args :results silent :tangle "init.el"
 
 * My Configuration
-** Package
+** Package Mangager
 Straight is a very good package manager for me to easily get emacs third party pkgs from elpm and github.
-
 #+begin_src emacs-lisp
 (defvar straight-keymap
   (let ((keymap (make-keymap)))
@@ -223,6 +222,10 @@ Straight is a very good package manager for me to easily get emacs third party p
 
 (windmove-default-keybindings)
 #+end_src
+*** Native comp
+#+begin_src emacs-lisp
+(setq native-comp-always-compile t)
+#+end_src
 *** Native Global Mode
 #+begin_src emacs-lisp
 (auto-save-visited-mode +1)
@@ -230,9 +233,9 @@ Straight is a very good package manager for me to easily get emacs third party p
 (global-auto-composition-mode +1)
 (global-auto-revert-mode +1)
 (global-eldoc-mode +1)
-(global-linum-mode +1)
+;; (global-linum-mode +1)
 (global-visual-line-mode +1)
-(global-word-wrap-whitespace-mode +1)
+;; (global-word-wrap-whitespace-mode +1)
 (auto-fill-mode +1)
 (save-place-mode +1)
 
@@ -241,6 +244,7 @@ Straight is a very good package manager for me to easily get emacs third party p
 (global-tab-line-mode)
 (global-prettify-symbols-mode)
 
+(next-error-follow-minor-mode 1)
 (pixel-scroll-precision-mode t)
 #+end_src
 *** Buffer
@@ -423,16 +427,22 @@ Straight is a very good package manager for me to easily get emacs third party p
 (straight-use-package 'company)
 (add-hook 'prog-mode-hook 'company-mode)
 (add-hook 'conf-mode-hook 'company-mode)
+
 (autoload 'company-mode "company" nil t)
-(add-hook 'prog-mode-hook 'hs-minor-mode)
-(add-hook 'hs-minor-mode-hook (lambda () (hs-hide-initial-comment-block)))
+
+(straight-use-package 'company-box)
+
+(require 'company-box)
+
+(add-hook 'company-mode-hook 'company-box-mode)
+
 (setq company-tooltip-align-annotations t)
 (straight-use-package 'yasnippet)
 
 (yas-global-mode 1)
 
 (straight-use-package
- '(copilot :type git :host github :repo "zerolfx/copilot.el"))
+ '(copilot :type git :host github :repo "zerolfx/copilot.el" :files ("dist" "*.el")))
 
 (require 'copilot)
 
@@ -441,9 +451,10 @@ Straight is a very good package manager for me to easily get emacs third party p
 (defun my-tab ()
   (interactive)
   (or (copilot-accept-completion)
+      (yas-expand)
       (company-indent-or-complete-common nil)))
-
-; modify company-mode behaviors
+;; (setq copilot--completion-timer 0.5)
+                                        ; modify company-mode behaviors
 (with-eval-after-load 'company
   ;; disable inline previews
   (delq 'company-preview-if-just-one-frontend company-frontends)
@@ -451,6 +462,14 @@ Straight is a very good package manager for me to easily get emacs third party p
   (define-key company-mode-map (kbd "TAB") 'my-tab)
   (define-key company-active-map (kbd "<tab>") 'my-tab)
   (define-key company-active-map (kbd "TAB") 'my-tab))
+
+(add-hook 'prog-mode-hook 'copilot-mode)
+#+end_src
+*** Fold
+#+begin_src emacs-lisp
+(add-hook 'prog-mode-hook 'hs-minor-mode)
+(add-hook 'hs-minor-mode-hook (lambda () (hs-hide-initial-comment-block)))
+
 #+end_src
 *** Motivation
 #+begin_src emacs-lisp
@@ -613,7 +632,6 @@ Otherwise, show the default maximum number of recent items."
 
 (autoload 'lsp "lsp-ui" nil t)
 
-(add-hook 'after-init-hook #'global-flycheck-mode)
 
 (add-to-list 'display-buffer-alist
              `(,(rx bos "*Flycheck errors*" eos)
@@ -646,6 +664,18 @@ Otherwise, show the default maximum number of recent items."
                (side            . bottom)
                (reusable-frames . visible)
                (window-height   . 0.23)))
+
+(add-to-list 'display-buffer-alist
+             `(,(rx bos "*Occur*" eos)
+               (display-buffer-reuse-window
+                display-buffer-in-side-window)
+               (side            . bottom)
+               (reusable-frames . visible)
+               (window-height   . 0.33)))
+
+(add-hook 'occur-hook
+          '(lambda ()
+             (switch-to-buffer-other-window "*Occur*")))
 
 (require 'lsp-ui)
 
@@ -817,6 +847,13 @@ Otherwise, show the default maximum number of recent items."
 	    (set (make-local-variable 'company-backends)
 		 (append '((company-solidity company-capf company-dabbrev-code))
 			 company-backends))))
+
+;; (add-to-list 'load-path (expand-file-name "~/.config/emacs/custom"))
+
+;; (require 'lsp-solidity)
+
+;; (eval-after-load 'solidity
+;;   (add-to-list 'lsp-language-id-configuration '(solidity-mode . "solidity")))
 #+end_src
 *** python
 #+begin_src emacs-lisp
@@ -882,6 +919,45 @@ Otherwise, show the default maximum number of recent items."
 
 (add-to-list 'auto-mode-alist '("\\.http\\'" . restclient-mode))
 #+end_src
+** Error check
+*** flycheck
+#+begin_src emacs-lisp
+(add-hook 'after-init-hook #'global-flycheck-mode)
+
+#+end_src
+*** flyspell
+#+begin_src emacs-lisp
+  (defun flyspell-on-for-buffer-type ()
+      "Enable Flyspell appropriately for the major mode of the current buffer.  Uses `flyspell-prog-mode' for modes derived from `prog-mode', so only strings and comments get checked.  All other buffers get `flyspell-mode' to check all text.  If flyspell is already enabled, does nothing."
+      (interactive)
+      (if (not (symbol-value flyspell-mode)) ; if not already on
+	(progn
+	  (if (derived-mode-p 'prog-mode)
+	    (progn
+	      (message "Flyspell on (code)")
+	      (flyspell-prog-mode))
+	    ;; else
+	    (progn
+	      (message "Flyspell on (text)")
+	      (flyspell-mode 1)))
+	  ;; I tried putting (flyspell-buffer) here but it didn't seem to work
+	  )))
+    
+    (defun flyspell-toggle ()
+      "Turn Flyspell on if it is off, or off if it is on.  When turning on, it uses `flyspell-on-for-buffer-type' so code-vs-text is handled appropriately."
+      (interactive)
+      (if (symbol-value flyspell-mode)
+	  (progn ; flyspell is on, turn it off
+	    (message "Flyspell off")
+	    (flyspell-mode -1))
+	  ; else - flyspell is off, turn it on
+	  (flyspell-on-for-buffer-type)))
+
+    (add-hook 'find-file-hook 'flyspell-on-for-buffer-type)
+    ;; (add-hook 'after-change-major-mode-hook 'flyspell-on-for-buffer-type)
+
+
+#+end_src
 ** Safe Variable
 #+begin_src emacs-lisp
 (add-to-list 'safe-local-variable-values
@@ -890,8 +966,7 @@ Otherwise, show the default maximum number of recent items."
 (add-to-list 'safe-local-variable-values
              '(company-clang-arguments . "-I src"))
 
-(add-to-list 'safe-local-variable-values
-             '(compile-command . "cmake --build build"))
+(add-to-list 'safe-local-variable-values             '(compile-command . "cmake --build build"))
 
 (add-to-list 'safe-local-variable-values '(lsp-rust-analyzer-proc-macro-enable . t))
 
@@ -900,6 +975,7 @@ Otherwise, show the default maximum number of recent items."
 (add-to-list 'safe-local-variable-values '(eval add-hook 'after-save-hook
                                                 (lambda nil
                                                   (org-babel-tangle))
+
                                                 nil t))
 #+end_src
 
@@ -1108,10 +1184,10 @@ Otherwise, show the default maximum number of recent items."
  '("<SPC>" . switch-to-buffer)
  '("\\" . split-window-right)
  '("-" . split-window-below)
- '("s" . swiper)
+ '("s" . mode-line-other-buffer)
  '("w" . ace-window)
  '("r" . recentf-minibuffer-dialog)
- '("t" . treemacs-select-window)
+ '("q" . treemacs-select-window)
  '("f" . project-find-file)
  '("b" . toggle-hiding)
  '("z" . toggle-selective-display)
@@ -1139,10 +1215,7 @@ Otherwise, show the default maximum number of recent items."
 
 (require 'ace-link)
 
-
 (ace-link-setup-default)
-
-
 #+end_src
 ** Leetcode
 #+begin_src emacs-lisp
@@ -1159,4 +1232,3 @@ Otherwise, show the default maximum number of recent items."
 ;; Local Variables:
 ;; eval: (add-hook 'after-save-hook (lambda () (org-babel-tangle)) nil t)
 ;; End:
-(sa)(sa)(sa)

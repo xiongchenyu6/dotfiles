@@ -512,6 +512,7 @@ let g:LanguageClient_serverCommands = {
       \ 'scala': ['metals-vim'],
       \ 'go': ['gopls'],
       \ 'rust': ['rust-analyzer'],
+			\ 'solidity': ['solc', '--lsp'],
       \ }
 
 map <Leader>lk :call LanguageClient#textDocument_hover()<CR>

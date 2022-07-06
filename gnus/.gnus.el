@@ -31,7 +31,6 @@
              (summary 0.25 point)
              (article 1.0))))
 
-
 ;; 设置图片显示方式
 
 (setq mm-inline-large-images t)

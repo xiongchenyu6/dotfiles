@@ -63,8 +63,9 @@ fi
 export LSP_USE_PLISTS=true
 
 # export PATH=$HOME/.nix-profile/bin/:$PATH
-export PATH=$HOME/.node_modules/bin:$PATH
+# export PATH=$HOME/.node_modules/bin:$PATH
 export PATH=$HOME/.script:$PATH
+export PATH="$HOME/.jenv/bin:$PATH"
 
 export HADOOP_INSTALL=$HADOOP_HOME
 export HADOOP_MAPRED_HOME=$HADOOP_HOME 
