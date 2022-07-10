@@ -5,9 +5,10 @@ undo/
 *undo-tree*
 node_modules/
 .DS_Store
-config/.config/*
 clojure/.clojure/.cpcache
+config/.config/**
 !config/.config/nvim
+!config/.config/nvim/*
 !config/.config/emacs/
 config/.config/emacs/*
 !config/.config/emacs/early-init.el 
@@ -19,8 +20,10 @@ config/.config/emacs/*
 !config/.config/fontconfig
 !config/.config/taffybar
 !config/.config/starship.toml
-tmux/.tmux/*
+
+ tmux/.tmux/**
 !tmux/.tmux/plugins/tmp
+
 haskell/.cabal/*
 !haskell/.cabal/config
 TAGS
