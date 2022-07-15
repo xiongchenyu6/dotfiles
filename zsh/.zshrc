@@ -5,10 +5,10 @@ ANTIBODY_HOME="$(antibody home)"
 ZSH_THEME=
 
 # you can do plugins the omz way if you want... or load with antibody later
-plugins=(archlinux aws brew cabal catimg colored-man-pages colorize command-not-found copyfile copydir docker docker-compose direnv extract encode64 emacs fzf fasd fancy-ctrl-z git git-flow git-auto-fetch git-hubflow github gitignore gpg-agent golang httpie heroku jsontools kubectl npm node osx pass pipenv pip ripgrep redis-cli sbt scala stack systemd tmux)
+plugins=(archlinux aws brew cabal catimg colored-man-pages colorize command-not-found copyfile docker docker-compose direnv extract encode64 emacs fzf fasd fancy-ctrl-z git git-flow git-auto-fetch git-hubflow github gitignore gpg-agent golang httpie heroku jsontools kubectl npm node pass pipenv pip ripgrep redis-cli sbt scala stack systemd tmux)
 
 # tell omz where it lives
-export ZSH="$ANTIBODY_HOME"/https-COLON--SLASH--SLASH-github.com-SLASH-xiongchenyu6-SLASH-oh-my-zsh
+#export ZSH="$ANTIBODY_HOME"/https-COLON--SLASH--SLASH-github.com-SLASH-xiongchenyu6-SLASH-oh-my-zsh
 
 # quit bugging me!
 DISABLE_AUTO_UPDATE="true"
@@ -195,3 +195,6 @@ _kubebuilder()
 if [ "$funcstack[1]" = "_kubebuilder" ]; then
 	_kubebuilder
 fi
+
+test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh" || true
+

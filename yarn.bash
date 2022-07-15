@@ -1,4 +1,4 @@
-list=(vmd tern)
+list=(ethlint)
 for package in "${list[@]}"; do
-               yarn global add $package
+               npm -g i $package
 done

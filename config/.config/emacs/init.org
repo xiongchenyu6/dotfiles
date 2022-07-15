@@ -145,9 +145,9 @@ Straight is a very good package manager for me to easily get emacs third party p
 
 (setq-default
 
- browse-url-secondary-browser-function 'xwidget-webkit-browse-url
+ ;; browse-url-secondary-browser-function 'xwidget-webkit-browse-url
 
- browse-url-browser-function 'xwidget-webkit-browse-url
+ ;; browse-url-browser-function 'xwidget-webkit-browse-url
  ;; Don't create lockfiles
  create-lockfiles nil
 
@@ -253,7 +253,7 @@ Straight is a very good package manager for me to easily get emacs third party p
 #+end_src
 *** Auto Save
 #+begin_src emacs-lisp
-(setq auto-save-visited-interval 1)
+(setq auto-save-visited-interval 0.1)
 #+end_src
 
 ** Structure Editing
@@ -446,7 +446,7 @@ Straight is a very good package manager for me to easily get emacs third party p
 
 (require 'copilot)
 
-(setq copilot-node-executable "/Users/chenyu/.nvm/versions/node/v17.9.1/bin/node")
+(setq copilot-node-executable "/Users/xiongchenyu/.nvm/versions/node/v17.9.1/bin/node")
 
 (defun my-tab ()
   (interactive)
@@ -831,29 +831,28 @@ Otherwise, show the default maximum number of recent items."
 *** Solidity
 #+begin_src emacs-lisp
 (straight-use-package 'solidity-mode)
-(straight-use-package 'company-solidity)
-(straight-use-package 'solidity-flycheck)
+;; (straight-use-package 'company-solidity)
+;; (straight-use-package 'solidity-flycheck)
 
+;; (setq solidity-flycheck-solc-checker-active t)
+;; (setq solidity-flycheck-solium-checker-active t)
+;; (setq flycheck-solidity-solc-addstd-contracts t)
+;; (setq solidity-flycheck-use-project t)
 
-(setq solidity-flycheck-solc-checker-active t)
-(setq solidity-flycheck-solium-checker-active t)
-(setq flycheck-solidity-solc-addstd-contracts t)
-(setq solidity-flycheck-use-project t)
+;; (require 'solidity-flycheck)
 
-(require 'solidity-flycheck)
+;; (add-hook 'solidity-mode-hook
+;; 	  (lambda ()
+;; 	    (set (make-local-variable 'company-backends)
+;; 		 (append '((company-solidity company-capf company-dabbrev-code))
+;; 			 company-backends))))
 
-(add-hook 'solidity-mode-hook
-	  (lambda ()
-	    (set (make-local-variable 'company-backends)
-		 (append '((company-solidity company-capf company-dabbrev-code))
-			 company-backends))))
+(add-to-list 'load-path (expand-file-name "~/.config/emacs/custom"))
 
-;; (add-to-list 'load-path (expand-file-name "~/.config/emacs/custom"))
+(require 'lsp-solidity)
 
-;; (require 'lsp-solidity)
-
-;; (eval-after-load 'solidity
-;;   (add-to-list 'lsp-language-id-configuration '(solidity-mode . "solidity")))
+(eval-after-load 'solidity
+  (add-to-list 'lsp-language-id-configuration '(solidity-mode . "solidity")))
 #+end_src
 *** python
 #+begin_src emacs-lisp
@@ -891,6 +890,25 @@ Otherwise, show the default maximum number of recent items."
 (add-hook 'java-mode-hook #'lsp)
 
 (setq lsp-java-content-provider-preferred "fernflower")
+;; 
+(setq lsp-java-java-path "/Library/Java/JavaVirtualMachines/openjdk.jdk/Contents/Home/bin/java")
+
+(setq lsp-java-configuration-runtimes '[
+                                        (:name "JavaSE-1.8"
+					       :path "/Library/Java/JavaVirtualMachines/zulu-8.jdk/Contents/Home"
+                                               )
+                                        (:name "JavaSE-18"
+					       :path "/Library/Java/JavaVirtualMachines/openjdk.jdk/Contents/Home"
+                                         :default t 
+                                               )
+                                        ])
+
+(setq lsp-java-imports-gradle-wrapper-checksums [(:sha256 "66406bdca09802f8d7e09a344a8474bbb19abd7f7ac1a4d6682910520a11d08d" :allowed t)])
+
+;; (setq 
+;;  lsp-java-trace-server t)
+;; (setq
+;;  lsp-java-progress-report t)
 
 #+end_src
 *** SQL

@@ -18,6 +18,7 @@ done
 IFS="$OIFS"
 
 export NVM_DIR="$HOME/.nvm"
+export ARCH=`uname -m`
 
 if [[ "$OSTYPE" == "linux-gnu" ]]; then
     export JAVA_HOME='/usr/lib/jvm/default'
@@ -34,33 +35,31 @@ if [[ "$OSTYPE" == "linux-gnu" ]]; then
     export SPARK_DIST_CLASSPATH=`hadoop classpath`:$HBASE_HOME/lib/hbase-common-2.1.5.jar:$HBASE_HOME/lib/hbase-client-2.1.5.jar:$HBASE_HOME/lib/hbase-mapreduce-2.1.5.jar:$HBASE_HOME/lib/hbase-shaded-miscellaneous-2.1.0.jar:$HBASE_HOME/lib/hbase-shaded-protobuf-2.1.0.jar:$HBASE_HOME/lib/hbase-shaded-netty-2.1.0.jar
     export BUILD_DIR=/tmp/rrdbuild
     export GEM_HOME=$HOME/.gem/ruby/2.7.0
-
-else [[ "$OSTYPE" == "darwin"* ]];
-    export HADOOP_HOME=/usr/local/Cellar/hadoop/3.3.2/libexec
+elif [[ "$OSTYPE" == "darwin"* ]]; then
     export PYENV_ROOT="$HOME/.pyenv"
     export PATH="$PYENV_ROOT/bin:$PATH"
-    export JAVA_HOME="$(/usr/libexec/java_home)"
-    export ANDROID_HOME=/usr/local/share/android-sdk
-    export JDK_HOME="$(/usr/libexec/java_home)"
-#    export SCALA_HOME=/usr/local/opt/scala/idea
-    export RUBY_HOME=/usr/local/opt/ruby
-    export GEM_HOME=/usr/local/lib/ruby/gems/2.6.0
-    export PATH=/usr/local/sbin:$PATH
-    export GOROOT="/usr/local/Cellar/go/1.18.1/libexec"
-#    export PATH=/usr/local/bin:$PATH
-    export PATH=/usr/local/opt/llvm/bin:$PATH
-    export PATH=/Applications/Dyalog-18.0.app/Contents/Resources/Dyalog:$PATH
-    export PATH=/usr/local/opt/openssl@3/bin:$PATH
-    export PKG_CONFIG_PATH="/usr/local/opt/libxml2/lib/pkgconfig"
     export CONAN_USER_HOME=/Users/chenyu
-    export PATH="/Users/chenyu/Library/Application Support/Coursier/bin":$PATH:
-    alias openssl=/usr/local/opt/openssl@3/bin/openssl
-    [ -s "/usr/local/opt/nvm/nvm.sh" ] && \. "/usr/local/opt/nvm/nvm.sh"  # This loads nvm
-    [ -s "/usr/local/opt/nvm/etc/bash_completion.d/nvm" ] && \. "/usr/local/opt/nvm/etc/bash_completion.d/nvm"  # This loads nvm bash_completion
-
+    if [[ $ARCH == "arm64" ]]; then
+        [ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && \. "/opt/homebrew/opt/nvm/nvm.sh"
+    else
+        export JAVA_HOME="$(/usr/libexec/java_home)"
+        export ANDROID_HOME=/usr/local/share/android-sdk
+        export JDK_HOME="$(/usr/libexec/java_home)"
+#    export SCALA_HOME=/usr/local/opt/scala/idea
+        export RUBY_HOME=/usr/local/opt/ruby
+        export GEM_HOME=/usr/local/lib/ruby/gems/2.6.0
+        export PATH=/usr/local/sbin:$PATH
+        export GOROOT="/usr/local/Cellar/go/1.18.1/libexec"
+        export PATH=/usr/local/opt/llvm/bin:$PATH
+        export PATH=/usr/local/opt/openssl@3/bin:$PATH
+        export HADOOP_HOME=/usr/local/Cellar/hadoop/3.3.2/libexec
+        export PKG_CONFIG_PATH="/usr/local/opt/libxml2/lib/pkgconfig"
+        export PATH="/Users/chenyu/Library/Application Support/Coursier/bin":$PATH:
+        export LSP_USE_PLISTS=true
+        alias openssl=/usr/local/opt/openssl@3/bin/openssl
+        [ -s "/usr/local/opt/nvm/nvm.sh" ] && \. "/usr/local/opt/nvm/nvm.sh"    
+    fi
 fi
-
-export LSP_USE_PLISTS=true
 
 # export PATH=$HOME/.nix-profile/bin/:$PATH
 # export PATH=$HOME/.node_modules/bin:$PATH
@@ -133,10 +132,6 @@ export MAKEFLAGS="-j8"
 export INSECURE=1
 export FZF_TMUX=1
 
-#GTAGS
-export GTAGSLABEL=pygments
-export GTAGSTHROUGH=true
-export SYSTEMD_DEBUGGER=gdb
 #NIX
 #export NIX_IGNORE_SYMLINK_STORE=1
 #
