@@ -41,15 +41,16 @@ elif [[ "$OSTYPE" == "darwin"* ]]; then
     export CONAN_USER_HOME=/Users/chenyu
     if [[ $ARCH == "arm64" ]]; then
         [ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && \. "/opt/homebrew/opt/nvm/nvm.sh"
+        export ANDROID_SDK_ROOT=/opt/homebrew/Caskroom/android-sdk/4333796/
+        export ANDROID_AVD_HOME=~/.android/avd
+
     else
         export JAVA_HOME="$(/usr/libexec/java_home)"
-        export ANDROID_HOME=/usr/local/share/android-sdk
         export JDK_HOME="$(/usr/libexec/java_home)"
 #    export SCALA_HOME=/usr/local/opt/scala/idea
         export RUBY_HOME=/usr/local/opt/ruby
         export GEM_HOME=/usr/local/lib/ruby/gems/2.6.0
         export PATH=/usr/local/sbin:$PATH
-        export GOROOT="/usr/local/Cellar/go/1.18.1/libexec"
         export PATH=/usr/local/opt/llvm/bin:$PATH
         export PATH=/usr/local/opt/openssl@3/bin:$PATH
         export HADOOP_HOME=/usr/local/Cellar/hadoop/3.3.2/libexec

@@ -255,6 +255,10 @@ Straight is a very good package manager for me to easily get emacs third party p
 #+begin_src emacs-lisp
 (setq auto-save-visited-interval 0.1)
 #+end_src
+*** Indentation
+#+begin_src emacs-lisp
+(setq editorconfig-mode t)
+#+end_src
 
 ** Structure Editing
 *** Meow
@@ -817,6 +821,10 @@ Otherwise, show the default maximum number of recent items."
 (setq org-plantuml-exec-mode 'plantuml
       )
 #+end_src
+*** graphviz
+#+begin_src emacs-lisp
+ (straight-use-package 'graphviz-dot-mode)
+#+end_src
 *** Rust
 #+begin_src emacs-lisp
 (straight-use-package 'rust-mode)
@@ -889,6 +897,8 @@ Otherwise, show the default maximum number of recent items."
 
 (add-hook 'java-mode-hook #'lsp)
 
+(add-hook 'jave-mode-hook (lambda () (c-toggle-hungry-state) (c-toggle-auto-newline)))
+
 (setq lsp-java-content-provider-preferred "fernflower")
 ;; 
 (setq lsp-java-java-path "/Library/Java/JavaVirtualMachines/openjdk.jdk/Contents/Home/bin/java")
@@ -902,8 +912,17 @@ Otherwise, show the default maximum number of recent items."
                                          :default t 
                                                )
                                         ])
+(advice-add 'lsp :before (lambda (&rest _args) (eval '(setf (lsp-session-server-id->folders (lsp-session)) (ht)))))
 
 (setq lsp-java-imports-gradle-wrapper-checksums [(:sha256 "66406bdca09802f8d7e09a344a8474bbb19abd7f7ac1a4d6682910520a11d08d" :allowed t)])
+
+(setq lsp-java-import-gradle-java-home "/Library/Java/JavaVirtualMachines/zulu-8.jdk/Contents/Home")
+
+(require 'lsp-java-boot)
+
+;; to enable the lenses
+(add-hook 'lsp-mode-hook #'lsp-lens-mode)
+(add-hook 'java-mode-hook #'lsp-java-boot-lens-mode)
 
 ;; (setq 
 ;;  lsp-java-trace-server t)
@@ -1014,7 +1033,7 @@ Otherwise, show the default maximum number of recent items."
 #+begin_src emacs-lisp
 (straight-use-package 'org-download)
 
-(require 'org-download)
+;;(require 'org-download)
 
 (setq org-download-image-dir "~/Pictures")
 (setq org-download-method 'attach)
