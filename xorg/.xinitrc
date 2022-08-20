@@ -1,18 +1,18 @@
-[[ -f ~/.Xresources ]] && xrdb -merge -I$HOME ~/.Xresources
+# [[ -f ~/.Xresources ]] && xrdb -merge -I$HOME ~/.Xresources
 
-export INPUT_METHOD=fcitx
-export GTK_IM_MODULE=fcitx
-export GTK3_IM_MODULE=fcitx
-export QT_IM_MODULE=fcitx
-export XMODIFIERS=@im=fcitx
-export XIM=fcitx
+#export INPUT_METHOD=fcitx
+#export GTK_IM_MODULE=fcitx
+#export GTK3_IM_MODULE=fcitx
+#export QT_IM_MODULE=fcitx
+#export XMODIFIERS=@im=fcitx
+#export XIM=fcitx
 
-clipit &
-nm-applet &
+#clipit &
+#nm-applet &
 dropbox &
-xmodmap ~/.Xmodmap &
-fcitx5 -d &
-pasystray &
+#xmodmap ~/.Xmodmap &
+#fcitx5 -d &
+#pasystray &
 /usr/lib/gsd-xsettings &
 xset -b
 xset r rate 180 60

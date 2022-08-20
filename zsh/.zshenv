@@ -22,7 +22,7 @@ export ARCH=`uname -m`
 
 if [[ "$OSTYPE" == "linux-gnu" ]]; then
     export JAVA_HOME='/usr/lib/jvm/default'
-    export HADOOP_HOME=/usr/lib/hadoop
+   # export HADOOP_HOME=/usr/lib/hadoop
     export CONFLUENT_HOME=/
     export FLINK_HOME=/opt/flink
     export HBASE_HOME=/opt/hbase
@@ -31,8 +31,8 @@ if [[ "$OSTYPE" == "linux-gnu" ]]; then
     export XAUTHORITY=~/.Xauthority
     export CONAN_USERNAME=brec
     export CONAN_CHANNEL=stable
-    export HADOOP_CLASSPATH=`hadoop classpath`:$HADOOP_HOME/lib/native/*
-    export SPARK_DIST_CLASSPATH=`hadoop classpath`:$HBASE_HOME/lib/hbase-common-2.1.5.jar:$HBASE_HOME/lib/hbase-client-2.1.5.jar:$HBASE_HOME/lib/hbase-mapreduce-2.1.5.jar:$HBASE_HOME/lib/hbase-shaded-miscellaneous-2.1.0.jar:$HBASE_HOME/lib/hbase-shaded-protobuf-2.1.0.jar:$HBASE_HOME/lib/hbase-shaded-netty-2.1.0.jar
+    #export HADOOP_CLASSPATH=`hadoop classpath`:$HADOOP_HOME/lib/native/*
+    #export SPARK_DIST_CLASSPATH=`hadoop classpath`:$HBASE_HOME/lib/hbase-common-2.1.5.jar:$HBASE_HOME/lib/hbase-client-2.1.5.jar:$HBASE_HOME/lib/hbase-mapreduce-2.1.5.jar:$HBASE_HOME/lib/hbase-shaded-miscellaneous-2.1.0.jar:$HBASE_HOME/lib/hbase-shaded-protobuf-2.1.0.jar:$HBASE_HOME/lib/hbase-shaded-netty-2.1.0.jar
     export BUILD_DIR=/tmp/rrdbuild
     export GEM_HOME=$HOME/.gem/ruby/2.7.0
 elif [[ "$OSTYPE" == "darwin"* ]]; then
@@ -107,12 +107,6 @@ export TERM=xterm-256color
 export HISTCONTROL=ignoreboth:erasedups
 
 export GHTOKEN="ad38f8a815e974c98db2abd6f5ff304eca53400f"
-#  alias cat=ccat
-alias vi='nvim'
-alias yolo='git commit -m "$(curl -s whatthecommit.com/index.txt)"'
-alias op='xdg-open'
-alias python=/usr/local/bin/python3
-# alias grep='ggrep'
 
 export SBT_OPTS="-Xss8M"
 export EDITOR="emacsclient"
@@ -161,7 +155,5 @@ setopt HIST_BEEP                 # Beep when accessing nonexistent history.
 zstyle ':completion:*:*:docker:*' option-stacking yes
 zstyle ':completion:*:*:docker-*:*' option-stacking yes
 
-. "$HOME/.cargo/env"
+# . "$HOME/.cargo/env"
 
-alias tnpm="npm --registry https://mirrors.tencent.com/npm/"
-# alias rust-analyzer="rustup run nightly rust-analyzer"

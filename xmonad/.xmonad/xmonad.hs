@@ -33,6 +33,7 @@ myManageHook =
       className =? "Kitty" --> doShift "term",
       className =? "kitty" --> doShift "term",
       className =? "Chromium" --> doShift "web",
+      className =? "brave" --> doShift "web",
       className =? "Thunderbird" --> doShift "email",
       className =? "Wechat" --> doShift "chat",
       className =? "Conky-manager" --> doShift "chat",
@@ -47,8 +48,8 @@ myStartupHook :: X ()
 myStartupHook = do
   setWMName "LG3D"
   spawnOnce "stalonetray"
-  spawnOnce "chromium"
-  spawnOnce "thunderbird"
+  spawnOnce "brave"
+  -- spawnOnce "thunderbird"
   spawnOnce "compton --config ~/.xmonad/compton.conf"
   spawnOnce "xterm"
 

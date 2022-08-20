@@ -21,7 +21,7 @@ eval "$(starship init zsh)"
 
 eval "$(fasd --init posix-alias zsh-hook)"
 
-eval "$(jenv init -)"
+# eval "$(jenv init -)"
 
 # If not running interactively, do not do anything
 if [[ -z "$TMUX" ]] ;then
@@ -36,6 +36,18 @@ fi
 if [[ "$OSTYPE" == "darwin"* ]]; then
     #alias grep='ggrep'
 fi
+
+alias vi='nvim'
+alias yolo='git commit -m "$(curl -s whatthecommit.com/index.txt)"'
+alias op='xdg-open'
+# alias python=/usr/local/bin/python3
+alias ls="exa --icons"
+
+#  alias cat=ccat
+alias tnpm="npm --registry https://mirrors.tencent.com/npm/"
+# alias rust-analyzer="rustup run nightly rust-analyzer"
+#
+#
 #compdef _kubebuilder kubebuilder
 
 # zsh completion for kubebuilder                          -*- shell-script -*-

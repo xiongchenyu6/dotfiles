@@ -857,7 +857,7 @@ Otherwise, show the default maximum number of recent items."
 
 (add-to-list 'load-path (expand-file-name "~/.config/emacs/custom"))
 
-(require 'lsp-solidity)
+;(require 'lsp-solidity)
 
 (eval-after-load 'solidity
   (add-to-list 'lsp-language-id-configuration '(solidity-mode . "solidity")))
