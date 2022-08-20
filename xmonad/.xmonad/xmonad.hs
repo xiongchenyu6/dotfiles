@@ -1,3 +1,4 @@
+
 {-# OPTIONS_GHC -fno-warn-type-defaults #-}
 
 -- {-# LANGUAGE TupleSections #-}
@@ -22,6 +23,7 @@ import XMonad.Prompt.Ssh
 import XMonad.Util.EZConfig (additionalKeys)
 import XMonad.Util.Run (spawnPipe)
 import XMonad.Util.SpawnOnce
+import XMonad.Util.Brightness
 
 myTerminal :: String
 myTerminal = "xterm"
@@ -41,6 +43,7 @@ myManageHook =
       className =? "conky" --> doShift "chat",
       className =? "Wechat" --> doShift "chat",
       className =? "wechat" --> doShift "chat",
+      className =? "Slack" --> doShift "chat",
       className =? "stalonetray" --> doIgnore
     ]
 
@@ -51,7 +54,7 @@ myStartupHook = do
   spawnOnce "brave"
   -- spawnOnce "thunderbird"
   spawnOnce "compton --config ~/.xmonad/compton.conf"
-  spawnOnce "xterm"
+  spawnOnce myTerminal
 
 modm :: KeyMask
 modm = mod4Mask
@@ -115,11 +118,11 @@ customerKeyMaps =
     ),
     -- Increase volume.
     ((0, xF86XK_AudioRaiseVolume), void $ raiseVolume 5),
-    ((0, xF86XK_MonBrightnessUp), spawn "xbacklight -inc 10"),
-    ((0, xF86XK_MonBrightnessDown), spawn "xbacklight -dec 10"),
+    ((0, xF86XK_MonBrightnessUp), void $ increase),
+    ((0, xF86XK_MonBrightnessDown), void $ decrease),
     ( (modm .|. shiftMask, xK_a),
       spawn
-        "sleep 0.2; scrot -s '/home/chenyu/screen/%F--%H_%M_%S_$wx$h.png' -e 'xclip -selection clipboard -target image/png -i $f'"
+        "sleep 0.2; scrot -s '/home/freeman/screen/%F--%H_%M_%S_$wx$h.png' -e 'xclip -selection clipboard -target image/png -i $f'"
     ),
     ((modm .|. shiftMask, xK_p), spawn "passmenu"),
     ((modm, xK_m), manPrompt popupConfig),
@@ -133,7 +136,7 @@ customerKeyMaps =
     ),
     ( (0, xK_Print),
       spawn
-        "scrot '/home/chenyu/screen/%F_$wx$h.png' -e 'xclip -selection clipboard -target image/png -i $f'"
+        "scrot '/home/freeman/screen/%F_$wx$h.png' -e 'xclip -selection clipboard -target image/png -i $f'"
     )
     -- %F Equivalent to %Y-%m-%d (the ISO 8601 date format).
     -- %T The time in 24-hour notation (%H:%M:%S). $wimagewidth $h image height
@@ -144,7 +147,7 @@ customerKeyMaps =
 launcherConfig :: LauncherConfig
 launcherConfig =
   LauncherConfig
-    { pathToHoogle = "/home/chenyu/.local/bin/hoogle",
+    { pathToHoogle = "/home/freeman/.local/bin/hoogle",
       browser = "/usr/bin/chromium"
     }
 

@@ -1020,7 +1020,6 @@ Otherwise, show the default maximum number of recent items."
 *** Org contrib
 *** Org attach
 #+begin_src emacs-lisp
-(straight-use-package 'org-contrib)
 (require 'org-contrib)
 
 (setq org-attach-id-dir "~/Dropbox/Org/.attach")
@@ -1041,13 +1040,13 @@ Otherwise, show the default maximum number of recent items."
 #+end_src
 *** Org Reveal
 #+begin_src emacs-lisp
-(straight-use-package 'org-re-reveal)
+;(straight-use-package 'org-re-reveal)
 
 (require 'org-re-reveal)
 #+end_src
 *** Org Roam
 #+begin_src emacs-lisp
-(straight-use-package 'org-roam)
+;(straight-use-package 'org-roam)
 
 (setq org-roam-directory (expand-file-name "~/Dropbox/Notes")
       org-roam-capture-templates

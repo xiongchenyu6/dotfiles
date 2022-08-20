@@ -186,7 +186,6 @@
       dropbox
       ((emacsPackagesFor emacsGit).emacsWithPackages (epkgs: [
         epkgs.vterm
-        epkgs.org
         epkgs.org-contrib
         epkgs.org-roam
         epkgs.org-re-reveal
