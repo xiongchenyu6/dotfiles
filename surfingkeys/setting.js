@@ -36,14 +36,14 @@ const {
 	RUNTIME
 } = api;
 
-imap('<Ctrl-[>', "<Esc>");
+//imap('<Ctrl-[>', "<Esc>");
 
 //添加按键Hints配置。一定程度上规避，因逻辑上无脑组合按键的生成，导致违背手掌舒适度的问题。
 //分析过程 https://github.com/brookhong/Surfingkeys/commit/ebd4aad2f0fd6946538cced005470366f2170ae4
 Hints.setCharacters('asfqwertvb');
 
 //历史记录搜索，不使用默认的MU排序。MU排序太鸡肋。
-settings.historyMUOrder = false;
+//settings.historyMUOrder = false;
 
 //关于光标定位到地址栏无法定位回页面的问题。
 //可以在浏览器设置里面添加特殊的搜索引擎来实现。搜索引擎的地址为javascript:  关键字设置为";" 最好关键字的中英文个添加一个搜索引擎。这样就很ok了。
@@ -53,12 +53,12 @@ settings.historyMUOrder = false;
 // 1.冲突修改
 //与浏览器冲突部分,个人认为它更好
 // 移除与浏览器的冲突 查看下载历史，历史记录
-unmap('<Ctrl-j>');
-iunmap('<Ctrl-j>');
-vunmap('<Ctrl-j>');
-unmap('<Ctrl-h>');
-iunmap('<Ctrl-h>');
-vunmap('<Ctrl-h>');
+//unmap('<Ctrl-j>');
+//iunmap('<Ctrl-j>');
+//vunmap('<Ctrl-j>');
+//unmap('<Ctrl-h>');
+//iunmap('<Ctrl-h>');
+//vunmap('<Ctrl-h>');
 
 
 // 2.vimium兼容。个人认为vimium逻辑更好
@@ -86,45 +86,47 @@ map('h', 'oh'); // 最直接的理念。
 //cmap('H','<Ctrl-,>');
 //又发现新问题。搜索结果还是不应该用<Shift-[jkhl]>。因为牵扯到大写jkhl的输入问题。
 //还是改回来吧。<alt-[jkhl]>
-cmap('<Alt-j>', '<Ctrl-n>');
-cmap('<Alt-k>', '<Ctrl-p>');
-cmap('<Alt-l>', '<Ctrl-.>');
-cmap('<Alt-h>', '<Ctrl-,>');
-cmap('<Ctrl-n>', '<Tab>');
-cmap('<Ctrl-p>', '<Shift-Tab>');
+//cmap('<Alt-j>', '<Ctrl-n>');
+//cmap('<Alt-k>', '<Ctrl-p>');
+//cmap('<Alt-l>', '<Ctrl-.>');
+//cmap('<Alt-h>', '<Ctrl-,>');
+//cmap('<Ctrl-n>', '<Tab>');
+//cmap('<Ctrl-p>', '<Shift-Tab>');
+
 //4 扩展js，交互其他
 
-//和toby插件进行交互
-function openTobyHtml() {
-	tabOpenLink("chrome-extension://hddnkoipeenegfoeaoibdmnaalmgkpip/toby.html");
-}
-mapkey('ot', '打开toby页面', openTobyHtml);
+// //和toby插件进行交互
+// function openTobyHtml() {
+// 	tabOpenLink("chrome-extension://hddnkoipeenegfoeaoibdmnaalmgkpip/toby.html");
+// }
+// mapkey('ot', '打开toby页面', openTobyHtml);
 
-// os 打开简悦稍后读
-function openSimpReadHtml() {
-	tabOpenLink("chrome-extension://ijllcpnolfcooahcekpamkbidhejabll/unreader/main.html");
-}
+// // os 打开简悦稍后读
+// function openSimpReadHtml() {
+// 	tabOpenLink("chrome-extension://ijllcpnolfcooahcekpamkbidhejabll/unreader/main.html");
+// }
 
-mapkey('os', '打开简悦稍后读', openSimpReadHtml);
+// mapkey('os', '打开简悦稍后读', openSimpReadHtml);
 
-// 打开pocket
-function openPocket() {
-	tabOpenLink("https://getpocket.com/my-list");
-}
+// // 打开pocket
+// function openPocket() {
+// 	tabOpenLink("https://getpocket.com/my-list");
+// }
 
-mapkey('op', '打开Pocket', openPocket);
+// mapkey('op', '打开Pocket', openPocket);
 
-// 注意：默认ge，打开扩展管理。但是一般不用。不如直接打开，应用商店
-function openChromeExtentonStore() {
-	tabOpenLink("https://chrome.google.com/webstore/category/extensions?hl=zh-CN");
-}
+// // 注意：默认ge，打开扩展管理。但是一般不用。不如直接打开，应用商店
+// function openChromeExtentonStore() {
+// 	tabOpenLink("https://chrome.google.com/webstore/category/extensions?hl=zh-CN");
+// }
 
-mapkey('ge', '打开应用商店', openChromeExtentonStore);
+// mapkey('ge', '打开应用商店', openChromeExtentonStore);
 
 // 6 添加一个自己写的逻辑。实现一键切换插件的逻辑，甚至还有增强
 //=====================faster search engine swither====================start
 
 //{mapkey,siteName,keywordRegex,searchUrl}   commonUseMapkey:(s,search)(v,videa)(c,code)(g,shop)
+
 var switchSearchConfigs = [{
 		commonUseMapKey: 's',
 		mapkey: ';gg',
@@ -498,6 +500,7 @@ function bindMapKeyForWebIndex() {
 bindMapKeyForWebIndex();
 //=====================faster web index ================== end
 
+//Use q to search at virsual mode
 Front.registerInlineQuery({
 	url: function (q) {
 		return `http://dict.youdao.com/w/eng/${q}/#keyfrom=dict2.index`;
