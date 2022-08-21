@@ -1,5 +1,5 @@
 Config {
-        font = "xft:Consolas\-with\-Yahei:size=12"
+        font = "xft:Hack Nerd Font:size=11"
       , borderColor = "black"
       , border = TopB
       , bgColor = "black"
@@ -12,7 +12,7 @@ Config {
       , overrideRedirect = True    -- set the Override Redirect flag (Xlib)
       , pickBroadest =     True   -- choose widest display (multi-monitor)
       , persistent =       True    -- enable/disable hiding (True = disabled)
-      , template = "%StdinReader%|%mpd%|%multicpu%|%cpufreq%|%memory%|%dynnetwork%|%disku%|%diskio%|%default:Master%|%bright%|%coretemp%}{<fc=#ee9a00>%date%</fc>"
+      , template = "%StdinReader%|%multicpu%|%cpufreq%|%memory%|%dynnetwork%|%disku%|%diskio%|%default:Master%|%bright%|%coretemp%}{<fc=#ee9a00>%date%</fc>"
       , sepChar = "%"
       , alignSep = "}{"
       , commands = [ 
@@ -53,7 +53,8 @@ Config {
                         ] 10
                       , Run Com "uname" ["-s","-r"] "" 36000
                       , Run Date "%a %b %_d %Y %H:%M:%S" "date" 10
-                      , Run MPD ["-t","<composer> <title> (<album>) <track>/<plength> <statei> [<flags>]", "--", "-P", ">>", "-Z", "|", "-S", "><"] 10
+                     -- mpd
+                     -- , Run MPD ["-t","<composer> <title> (<album>) <track>/<plength> <statei> [<flags>]", "--", "-P", ">>", "-Z", "|", "-S", "><"] 10
 	                   -- , Run Com "/bin/bash" ["-c", "~/.script/get-volume.sh"]  "myvolume" 1
                       , Run Volume "default" "Master" [] 10
                       , Run DiskU [("/", "<used>/<size>"), ("sdb1", "<usedbar>")]       ["-L", "20", "-H", "50", "-m", "1", "-p", "3"]   20

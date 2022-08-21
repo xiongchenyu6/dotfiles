@@ -56,12 +56,12 @@ elif [[ "$OSTYPE" == "darwin"* ]]; then
         export HADOOP_HOME=/usr/local/Cellar/hadoop/3.3.2/libexec
         export PKG_CONFIG_PATH="/usr/local/opt/libxml2/lib/pkgconfig"
         export PATH="/Users/chenyu/Library/Application Support/Coursier/bin":$PATH:
-        export LSP_USE_PLISTS=true
         alias openssl=/usr/local/opt/openssl@3/bin/openssl
         [ -s "/usr/local/opt/nvm/nvm.sh" ] && \. "/usr/local/opt/nvm/nvm.sh"    
     fi
 fi
 
+export LSP_USE_PLISTS=true
 # export PATH=$HOME/.nix-profile/bin/:$PATH
 # export PATH=$HOME/.node_modules/bin:$PATH
 export PATH=$HOME/.script:$PATH

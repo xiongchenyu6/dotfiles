@@ -51,6 +51,9 @@ myManageHook =
 myStartupHook :: X ()
 myStartupHook = do
   setWMName "LG3D"
+  spawnOnce "xset r rate 180 60"
+  spawnOnce "dropbox"
+  spawnOnce "blueman-applet"
   spawnOnce "stalonetray"
   spawnOnce "brave"
   -- spawnOnce "thunderbird"

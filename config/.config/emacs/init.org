@@ -365,6 +365,8 @@ Straight is a very good package manager for me to easily get emacs third party p
 
 (with-eval-after-load "meow"
   (add-to-list 'meow-expand-exclude-mode-list 'wdired-mode))
+
+(setq meow-use-clipboard t)
 #+end_src
 *** Lispy
 #+begin_src emacs-lisp
@@ -450,8 +452,6 @@ Straight is a very good package manager for me to easily get emacs third party p
 
 (require 'copilot)
 
-(setq copilot-node-executable "/Users/xiongchenyu/.nvm/versions/node/v17.9.1/bin/node")
-
 (defun my-tab ()
   (interactive)
   (or (copilot-accept-completion)
@@ -475,7 +475,7 @@ Straight is a very good package manager for me to easily get emacs third party p
 (add-hook 'hs-minor-mode-hook (lambda () (hs-hide-initial-comment-block)))
 
 #+end_src
-*** Motivation
+*** COMMENT Motivation
 #+begin_src emacs-lisp
 (straight-use-package 'wakatime-mode)
 (require 'wakatime-mode)
@@ -618,69 +618,35 @@ Otherwise, show the default maximum number of recent items."
     (funcall recentf-menu-action file))) ; find-file by default
 #+end_src
 ** Lang
-*** lsp & dap
+*** lsp & lsp-ui
+
 #+begin_src emacs-lisp
-(straight-use-package 'lsp-mode)
-(setq lsp-enable-dap-auto-configure nil)
+  (straight-use-package 'lsp-mode)
+  (setq lsp-enable-dap-auto-configure nil)
 
-(global-set-key (kbd "C-c l") 'lsp-command-map)
+  (global-set-key (kbd "C-c l") 'lsp-command-map)
 
-(require 'lsp)
+  (require 'lsp)
 
-(autoload 'lsp "lsp-mode" nil t)
+  (autoload 'lsp "lsp-mode" nil t)
 
-(with-eval-after-load 'lsp-mode
-  (add-hook 'lsp-mode-hook #'lsp-enable-which-key-integration))
+  (with-eval-after-load 'lsp-mode
+    (add-hook 'lsp-mode-hook #'lsp-enable-which-key-integration))
+
+  (advice-add 'lsp :before 'direnv-update-environment)
+#+end_src
+**** lsp ui
+#+begin_src emacs-lisp
+;; plist only work in mac
+;; (setq lsp-use-plists t)
+(setq lsp-enable-snippet t)
+(setq lsp-enable-dap-auto-configure t)
+(setq lsp-enable-relative-indentation t)
+(setq lsp-semantic-tokens-enable t)
 
 (straight-use-package 'lsp-ui)
 
 (autoload 'lsp "lsp-ui" nil t)
-
-
-(add-to-list 'display-buffer-alist
-             `(,(rx bos "*Flycheck errors*" eos)
-               (display-buffer-reuse-window
-                display-buffer-in-side-window)
-               (side            . bottom)
-               (reusable-frames . visible)
-               (window-height   . 0.23)))
-
-(add-to-list 'display-buffer-alist
-             `(,(rx bos "*compilation*" eos)
-               (display-buffer-reuse-window
-                display-buffer-in-side-window)
-               (side            . bottom)
-               (reusable-frames . visible)
-               (window-height   . 0.23)))
-
-(add-to-list 'display-buffer-alist
-             `(,(rx bos "*vterm*" eos)
-               (display-buffer-reuse-window
-                display-buffer-in-side-window)
-               (side            . bottom)
-               (reusable-frames . visible)
-               (window-height   . 0.23)))
-
-(add-to-list 'display-buffer-alist
-             `(,(rx bos "*Async Shell Command*" eos)
-               (display-buffer-reuse-window
-                display-buffer-in-side-window)
-               (side            . bottom)
-               (reusable-frames . visible)
-               (window-height   . 0.23)))
-
-(add-to-list 'display-buffer-alist
-             `(,(rx bos "*Occur*" eos)
-               (display-buffer-reuse-window
-                display-buffer-in-side-window)
-               (side            . bottom)
-               (reusable-frames . visible)
-               (window-height   . 0.33)))
-
-(add-hook 'occur-hook
-          '(lambda ()
-             (switch-to-buffer-other-window "*Occur*")))
-
 (require 'lsp-ui)
 
 (define-key lsp-ui-mode-map [remap xref-find-definitions] #'lsp-ui-peek-find-definitions)
@@ -690,17 +656,72 @@ Otherwise, show the default maximum number of recent items."
 (setq lsp-ui-doc-include-signature t)
 (setq lsp-ui-doc-use-webkit t)
 
-(straight-use-package 'dap-mode)
-
-(require 'dap-mode)
-
-(add-hook 'dap-stopped-hook
-          (lambda (arg) (call-interactively #'dap-hydra)))
-
-(require 'dap-cpptools)
-
-(setq dap-auto-configure-features '(sessions locals controls tooltip))
+(advice-add 'lsp :before 'direnv-update-environment)
 #+end_src
+
+*** dap
+#+begin_src emacs-lisp
+  (straight-use-package 'dap-mode)
+
+  (require 'dap-mode)
+
+  (add-hook 'dap-stopped-hook
+            (lambda (arg) (call-interactively #'dap-hydra)))
+
+  (require 'dap-cpptools)
+
+  (setq dap-auto-configure-features '(sessions locals controls tooltip))
+#+end_src
+
+*** window
+#+begin_src emacs-lisp
+  (add-to-list 'display-buffer-alist
+               `(,(rx bos "*Flycheck errors*" eos)
+                 (display-buffer-reuse-window
+                  display-buffer-in-side-window)
+                 (side            . bottom)
+                 (reusable-frames . visible)
+                 (window-height   . 0.23)))
+
+  (add-to-list 'display-buffer-alist
+               `(,(rx bos "*compilation*" eos)
+                 (display-buffer-reuse-window
+                  display-buffer-in-side-window)
+                 (side            . bottom)
+                 (reusable-frames . visible)
+                 (window-height   . 0.23)))
+
+  (add-to-list 'display-buffer-alist
+               `(,(rx bos "*vterm*" eos)
+                 (display-buffer-reuse-window
+                  display-buffer-in-side-window)
+                 (side            . bottom)
+                 (reusable-frames . visible)
+                 (window-height   . 0.23)))
+
+  (add-to-list 'display-buffer-alist
+               `(,(rx bos "*Async Shell Command*" eos)
+                 (display-buffer-reuse-window
+                  display-buffer-in-side-window)
+                 (side            . bottom)
+                 (reusable-frames . visible)
+                 (window-height   . 0.23)))
+
+  (add-to-list 'display-buffer-alist
+               `(,(rx bos "*Occur*" eos)
+                 (display-buffer-reuse-window
+                  display-buffer-in-side-window)
+                 (side            . bottom)
+                 (reusable-frames . visible)
+                 (window-height   . 0.33)))
+
+  (add-hook 'occur-hook
+            '(lambda ()
+               (switch-to-buffer-other-window "*Occur*")))
+
+
+#+end_src
+
 *** apl
 #+begin_src emacs-lisp
 (straight-use-package 'gnu-apl-mode)
@@ -724,34 +745,23 @@ Otherwise, show the default maximum number of recent items."
 
 (add-hook 'js-mode-hook #'lsp)
 #+end_src
-*** web
+*** Clojure
 #+begin_src emacs-lisp
-
-;; (straight-use-package 'web-mode)
-
-;; (require 'web-mode)
-
-;; (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
-
-(straight-use-package 'emmet-mode)
-
-(require 'emmet-mode)
-(setq sgml-basic-offset 4)
-
-(add-hook 'sgml-mode-hook 'emmet-mode) ;; Auto-start on any markup modes
-(add-hook 'css-mode-hook  'emmet-mode) ;; enable Emmet's css abbreviation.
-
-(add-hook 'html-mode-hook #'lsp)
-
-(add-hook 'css-mode-hook #'lsp)
-
-
-;; (add-hook 'html-mode 'lsp)
+(straight-use-package 'clojure-mode)
+(straight-use-package 'cider)
+(with-eval-after-load 'dap-mode
+  (require 'dap-chrome))
 #+end_src
 *** C++/C
 #+begin_src emacs-lisp
 (add-hook 'c++-mode-hook #'lsp)
 (add-hook 'c++-mode-hook (lambda () (c-toggle-hungry-state) (c-toggle-auto-newline)))
+#+end_src
+*** Cmake
+#+begin_src emacs-lisp
+(straight-use-package 'cmake-mode)
+
+(add-hook 'cmake-mode-hook 'lsp)
 #+end_src
 *** typescript
 #+begin_src emacs-lisp
@@ -775,12 +785,6 @@ Otherwise, show the default maximum number of recent items."
 (add-hook 'go-mode-hook 'lsp-deferred)
 (add-hook 'go-mode-hook #'yas-minor-mode)
 #+end_src
-*** docker
-#+begin_src elisp
-(straight-use-package 'dockerfile-mode)
-
-(add-hook 'dockerfile-mode-hook 'lsp)
-#+end_src
 *** Haskell
 #+begin_src emacs-lisp
 (straight-use-package 'haskell-mode)
@@ -796,25 +800,13 @@ Otherwise, show the default maximum number of recent items."
 (add-hook 'haskell-mode-hook #'lsp)
 (add-hook 'haskell-literate-mode-hook #'lsp)
 
-(setq lsp-use-plists t)
-(setq lsp-enable-snippet t)
-(setq lsp-enable-dap-auto-configure t)
-(setq lsp-enable-relative-indentation t)
-(setq lsp-semantic-tokens-enable t)
 #+end_src
 
-*** Clojure
-#+begin_src emacs-lisp
-(straight-use-package 'clojure-mode)
-(straight-use-package 'cider)
-(with-eval-after-load 'dap-mode
-  (require 'dap-chrome))
-#+end_src
-*** Cmake
-#+begin_src emacs-lisp
-(straight-use-package 'cmake-mode)
+*** docker
+#+begin_src elisp
+(straight-use-package 'dockerfile-mode)
 
-(add-hook 'cmake-mode-hook 'lsp)
+(add-hook 'dockerfile-mode-hook 'lsp)
 #+end_src
 *** Plantuml
 #+begin_src emacs-lisp
@@ -825,6 +817,12 @@ Otherwise, show the default maximum number of recent items."
 #+begin_src emacs-lisp
  (straight-use-package 'graphviz-dot-mode)
 #+end_src
+*** Nix
+#+begin_src emacs-lisp
+  (straight-use-package 'nix-mode)
+  (straight-use-package 'direnv)
+#+end_src
+
 *** Rust
 #+begin_src emacs-lisp
 (straight-use-package 'rust-mode)
@@ -955,6 +953,30 @@ Otherwise, show the default maximum number of recent items."
 (add-to-list 'company-backends 'company-restclient)
 
 (add-to-list 'auto-mode-alist '("\\.http\\'" . restclient-mode))
+#+end_src
+*** web
+#+begin_src emacs-lisp
+
+;; (straight-use-package 'web-mode)
+
+;; (require 'web-mode)
+
+;; (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
+
+(straight-use-package 'emmet-mode)
+
+(require 'emmet-mode)
+(setq sgml-basic-offset 4)
+
+(add-hook 'sgml-mode-hook 'emmet-mode) ;; Auto-start on any markup modes
+(add-hook 'css-mode-hook  'emmet-mode) ;; enable Emmet's css abbreviation.
+
+(add-hook 'html-mode-hook #'lsp)
+
+(add-hook 'css-mode-hook #'lsp)
+
+
+;; (add-hook 'html-mode 'lsp)
 #+end_src
 ** Error check
 *** flycheck

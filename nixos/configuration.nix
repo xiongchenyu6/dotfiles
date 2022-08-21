@@ -81,8 +81,8 @@
         autoLogin.enable = true;
         autoLogin.user = "freeman";
         defaultSession = "none+xmonad";
-        sessionCommands = ''${pkgs.xorg.xset}/bin/xset r rate 180 60'';
-     };
+        sessionCommands = "${pkgs.xorg.xset}/bin/xset -b";
+      };
 
       # Configure keymap in X11
       xkbOptions = "caps:ctrl_modifier";
@@ -131,17 +131,13 @@
       };
     };
 
-     udev.extraRules = ''
+    udev.extraRules = ''
       ACTION=="add", SUBSYSTEM=="backlight", KERNEL=="intel_backlight", MODE="0666", RUN+="${pkgs.coreutils}/bin/chmod a+w /sys/class/backlight/%k/brightness"
-        '';
+    '';
 
-        udisks2 = {
-         enable = true;
-         };
+    udisks2 = { enable = true; };
 
-         picom = {
-         enable =true;
-         };
+    picom = { enable = true; };
   };
   hardware = {
     pulseaudio.enable = false;
@@ -184,6 +180,7 @@
       arandr
       automake
       antibody
+      awscli2
       brave
       #google-chrome
       clang
@@ -258,9 +255,9 @@
       pkgconfig
       protobuf
       snappy
-      rxvt_unicode
       rsync
       ripgrep
+      rnix-lsp
       tmux
       tree
       tdesktop
@@ -273,7 +270,7 @@
       starship
       wget
       which
-      wpa_supplicant_gui
+      #wpa_supplicant_gui
       wakatime
       xclip
       xscreensaver
