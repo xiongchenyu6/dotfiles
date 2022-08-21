@@ -121,7 +121,7 @@
     blueman.enable = true;
 
     emacs = {
-      package = pkgs.emacsGit;
+      package = pkgs.emacsGitNativeComp;
       enable = true;
       defaultEditor = true;
     };
@@ -131,6 +131,17 @@
       };
     };
 
+     udev.extraRules = ''
+      ACTION=="add", SUBSYSTEM=="backlight", KERNEL=="intel_backlight", MODE="0666", RUN+="${pkgs.coreutils}/bin/chmod a+w /sys/class/backlight/%k/brightness"
+        '';
+
+        udisk2 = {
+         enable = true;
+         };
+
+         picom = {
+         enable =true;
+         };
   };
   hardware = {
     pulseaudio.enable = false;
@@ -169,27 +180,26 @@
   environment = {
 
     systemPackages = with pkgs; [
-      #xorg.xf86videointel
       aria2
       arandr
       automake
       antibody
       brave
-      # google-chrome
+      #google-chrome
       clang
       cachix
-      compton
+      conky
       cabal2nix
       direnv
+      dunst
       nix-direnv
       dmenu
       dropbox
-      ((emacsPackagesFor emacsGit).emacsWithPackages (epkgs: [
+      ((emacsPackagesFor emacsGitNativeComp).emacsWithPackages (epkgs: [
         epkgs.vterm
         epkgs.org-contrib
         epkgs.org-roam
         epkgs.org-re-reveal
-        epkgs.nix-mode
       ]))
       exa
       fasd
@@ -204,6 +214,7 @@
       gh
       go
       haskell-language-server
+      htop
       imagemagick
       ispell
       (haskellPackages.ghcWithPackages (self:
@@ -234,12 +245,14 @@
       libxml2
       libtool
       libsodium
-      nodejs
       python3
+      polybar
       wakatime
       neovim
       nixfmt
       node2nix
+      nodejs
+      nodePackages."typescript-language-server"
       openssl
       openjdk
       pkgconfig
@@ -279,9 +292,7 @@
   programs = {
     zsh.enable = true;
     ssh.startAgent = true;
-
     gnupg.agent = { enable = true; };
-
     tmux.enable = true;
     nm-applet.enable = true;
 

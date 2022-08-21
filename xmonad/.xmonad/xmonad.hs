@@ -53,7 +53,7 @@ myStartupHook = do
   spawnOnce "stalonetray"
   spawnOnce "brave"
   -- spawnOnce "thunderbird"
-  spawnOnce "compton --config ~/.xmonad/compton.conf"
+  -- spawnOnce "compton --config ~/.xmonad/compton.conf"
   spawnOnce myTerminal
 
 modm :: KeyMask
@@ -101,7 +101,7 @@ main = do
                               )
                       },
             --(, WallpaperDir dwD) <$> myWorkplace
-            handleEventHook = ewmhDesktopsEventHook,
+            --handleEventHook = ewmhDesktopsEventHook,
             startupHook = myStartupHook,
             modMask = modm -- Rebind Mod to the Windows key
           }

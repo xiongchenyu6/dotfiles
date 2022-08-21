@@ -12,7 +12,7 @@ Config {
       , overrideRedirect = True    -- set the Override Redirect flag (Xlib)
       , pickBroadest =     True   -- choose widest display (multi-monitor)
       , persistent =       True    -- enable/disable hiding (True = disabled)
-      , template = "%StdinReader%|%memory%|%dynnetwork%|%myvolume%|%bright%|%coretemp%}{<fc=#ee9a00>%date%</fc>"
+      , template = "%StdinReader%|%mpd%|%multicpu%|%cpufreq%|%memory%|%dynnetwork%|%disku%|%diskio%|%default:Master%|%bright%|%coretemp%}{<fc=#ee9a00>%date%</fc>"
       , sepChar = "%"
       , alignSep = "}{"
       , commands = [ 
@@ -25,14 +25,14 @@ Config {
                                             , "--high"     , "red"
                                             ] 10
                       -- cpu activity monitor
-                      --, Run MultiCpu       [ "--template" , "Cpu: <total0>%|<total1>%"
-                      --                      , "--Low"      , "50"         -- units: %
-                      --                      , "--High"     , "85"         -- units: %
-                      --                      , "--low"      , "green"
-                      --                      , "--normal"   , "orange"
-                      --                      , "--high"     , "red"
-                      --                      ] 10
-                      --  %multicpu% |
+                      , Run MultiCpu       [ "--template" , "Cpu: <total0>%|<total1>%"
+                                            , "--Low"      , "50"         -- units: %
+                                            , "--High"     , "85"         -- units: %
+                                            , "--low"      , "green"
+                                            , "--normal"   , "orange"
+                                            , "--high"     , "red"
+                                            ] 10
+                      , Run CpuFreq ["-t", "Freq:<cpu0>|<cpu1>GHz", "-L", "0", "-H", "2", "-l", "lightblue", "-n","white", "-h", "red"] 50
                       -- cpu core temperature monitor
                       , Run CoreTemp       [ "--template" , "Temp: <core0>°C|<core1>°C"
                                             , "--Low"      , "70"        -- units: °C
@@ -42,11 +42,23 @@ Config {
                                             , "--high"     , "red"
                                             ] 50
                       , Run Memory ["-t","Mem: <usedratio>%"] 10
-
+                      , Run Battery [
+                        "-t", "<acstatus>: <left>% - <timeleft>",
+                        "--",
+                        --"-c", "charge_full",
+                        "-O", "AC",
+                        "-o", "Bat",
+                        "-h", "green",
+                        "-l", "red"
+                        ] 10
                       , Run Com "uname" ["-s","-r"] "" 36000
                       , Run Date "%a %b %_d %Y %H:%M:%S" "date" 10
-	                    , Run Com "/bin/bash" ["-c", "~/.script/get-volume.sh"]  "myvolume" 1
-                      , Run Brightness ["--template", "Bl: <vbar>", "--", "-D", "intel_backlight"] 3
+                      , Run MPD ["-t","<composer> <title> (<album>) <track>/<plength> <statei> [<flags>]", "--", "-P", ">>", "-Z", "|", "-S", "><"] 10
+	                   -- , Run Com "/bin/bash" ["-c", "~/.script/get-volume.sh"]  "myvolume" 1
+                      , Run Volume "default" "Master" [] 10
+                      , Run DiskU [("/", "<used>/<size>"), ("sdb1", "<usedbar>")]       ["-L", "20", "-H", "50", "-m", "1", "-p", "3"]   20
+                      , Run DiskIO [("/", "<read> <write>"), ("sdb1", "<total>")] [] 10
+                      , Run Brightness ["--template", "Bl: <percent>%", "--", "-D", "intel_backlight"] 3
                       , Run StdinReader
                       ]
       }
