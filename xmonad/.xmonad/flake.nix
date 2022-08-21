@@ -24,7 +24,7 @@
         packageName = "my-xmonad";
       in {
         packages.${packageName} =
-          haskellPackages.callCabal2nix packageName self rec {
+          haskellPackages.callCabal2nix (nixpkgs.lib.debug.traceVal packageName) (builtins.toString ./.) rec {
             # Dependency overrides go here
           };
 
@@ -35,7 +35,16 @@
             haskellPackages.haskell-language-server # you must build it with your ghc to work
             ghcid
             cabal-install
+            xlibsWrapper
+            alsaLib.dev
+
+    xorg.libXrandr
+
+    xorg.libXScrnSaver
           ];
+              nativeBuildInputs = with pkgs; [
+        pkg-config
+    ];
           inputsFrom = builtins.attrValues self.packages.${system};
         };
       });

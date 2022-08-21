@@ -1,4 +1,4 @@
-#+TITLE: LiteratEmacs
+t#+TITLE: LiteratEmacs
 #+AUTHOR: XIONGCHENYU
 #+EMAIL: xiongchenyu6 at gmail.com
 #+DATE: <2022-01-31 Mon>
