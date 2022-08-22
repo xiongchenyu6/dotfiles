@@ -190,6 +190,7 @@
       direnv
       dunst
       nix-direnv
+      nixopsUnstable
       dmenu
       dropbox
       ((emacsPackagesFor emacsGitNativeComp).emacsWithPackages (epkgs: [

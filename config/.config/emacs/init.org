@@ -649,9 +649,8 @@ Otherwise, show the default maximum number of recent items."
 (autoload 'lsp "lsp-ui" nil t)
 (require 'lsp-ui)
 
-(define-key lsp-ui-mode-map [remap xref-find-definitions] #'lsp-ui-peek-find-definitions)
-
-(define-key lsp-ui-mode-map [remap xref-find-references] #'lsp-ui-peek-find-references)
+;; (define-key lsp-ui-mode-map [remap xref-find-definitions] #'lsp-ui-peek-find-definitions)
+;; (define-key lsp-ui-mode-map [remap xref-find-references] #'lsp-ui-peek-find-references)
 
 (setq lsp-ui-doc-include-signature t)
 (setq lsp-ui-doc-use-webkit t)
@@ -735,7 +734,7 @@ Otherwise, show the default maximum number of recent items."
 #+end_src
 *** bash
 #+begin_src emacs-lisp
-(add-hook 'sh-mode-hook 'lsp)
+(add-hook 'sh-mode-hook 'lsp-deferred)
 #+end_src
 *** javascript
 #+begin_src emacs-lisp
@@ -743,7 +742,7 @@ Otherwise, show the default maximum number of recent items."
   (define-key js-mode-map (kbd "M-.") nil)
 )
 
-(add-hook 'js-mode-hook #'lsp)
+(add-hook 'js-mode-hook #'lsp-deferred)
 #+end_src
 *** Clojure
 #+begin_src emacs-lisp
@@ -754,14 +753,14 @@ Otherwise, show the default maximum number of recent items."
 #+end_src
 *** C++/C
 #+begin_src emacs-lisp
-(add-hook 'c++-mode-hook #'lsp)
+(add-hook 'c++-mode-hook #'lsp-deferred)
 (add-hook 'c++-mode-hook (lambda () (c-toggle-hungry-state) (c-toggle-auto-newline)))
 #+end_src
 *** Cmake
 #+begin_src emacs-lisp
 (straight-use-package 'cmake-mode)
 
-(add-hook 'cmake-mode-hook 'lsp)
+(add-hook 'cmake-mode-hook 'lsp-deferred)
 #+end_src
 *** typescript
 #+begin_src emacs-lisp
@@ -788,17 +787,18 @@ Otherwise, show the default maximum number of recent items."
 *** Haskell
 #+begin_src emacs-lisp
 (straight-use-package 'haskell-mode)
-(straight-use-package 'lsp-haskell)
-
-(require 'lsp-haskell)
 
 (require 'haskell-interactive-mode)
 (require 'haskell-process)
 (add-hook 'haskell-mode-hook 'interactive-haskell-mode)
 
 ;; Hooks so haskell and literate haskell major modes trigger LSP setup
-(add-hook 'haskell-mode-hook #'lsp)
-(add-hook 'haskell-literate-mode-hook #'lsp)
+(straight-use-package 'eglot)
+(straight-use-package 'lsp-haskell)
+(require 'lsp-haskell)
+
+(add-hook 'haskell-mode-hook #'eglot-ensure)
+(add-hook 'haskell-literate-mode-hook #'eglot-ensure)
 
 #+end_src
 
@@ -806,7 +806,7 @@ Otherwise, show the default maximum number of recent items."
 #+begin_src elisp
 (straight-use-package 'dockerfile-mode)
 
-(add-hook 'dockerfile-mode-hook 'lsp)
+(add-hook 'dockerfile-mode-hook 'lsp-deferred)
 #+end_src
 *** Plantuml
 #+begin_src emacs-lisp
@@ -826,7 +826,7 @@ Otherwise, show the default maximum number of recent items."
 *** Rust
 #+begin_src emacs-lisp
 (straight-use-package 'rust-mode)
-(add-hook 'rust-mode-hook 'lsp)
+(add-hook 'rust-mode-hook 'lsp-deferred)
 #+end_src
 
 *** Scheme
@@ -980,8 +980,9 @@ Otherwise, show the default maximum number of recent items."
 #+end_src
 ** Error check
 *** flycheck
+Bind to lsp mode
 #+begin_src emacs-lisp
-(add-hook 'after-init-hook #'global-flycheck-mode)
+(add-hook 'lsp-mode-hook #'flycheck-mode)
 
 #+end_src
 *** flyspell
