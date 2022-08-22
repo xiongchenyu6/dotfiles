@@ -51,14 +51,14 @@ myManageHook =
 myStartupHook :: X ()
 myStartupHook = do
   setWMName "LG3D"
-  spawnOnce "xset r rate 180 60"
+  spawnOnce "brave"
   spawnOnce "dropbox"
   spawnOnce "blueman-applet"
-  spawnOnce "stalonetray"
-  spawnOnce "brave"
   -- spawnOnce "thunderbird"
   -- spawnOnce "compton --config ~/.xmonad/compton.conf"
   spawnOnce myTerminal
+  spawnOnce "xset r rate 180 60"
+  spawnOnce "polybar -r"
 
 modm :: KeyMask
 modm = mod4Mask

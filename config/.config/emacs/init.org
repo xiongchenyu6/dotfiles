@@ -25,7 +25,7 @@ Straight is a very good package manager for me to easily get emacs third party p
 
 #+begin_src emacs-lisp
 (add-to-list 'default-frame-alist
-             '(font . "JetBrains Mono-15"))
+             '(font . "JetBrains Mono-16"))
 
 (straight-use-package
  '(ligature :type git :host github :repo "mickeynp/ligature.el"))
@@ -475,11 +475,12 @@ Straight is a very good package manager for me to easily get emacs third party p
 (add-hook 'hs-minor-mode-hook (lambda () (hs-hide-initial-comment-block)))
 
 #+end_src
-*** COMMENT Motivation
+*** Motivation
 #+begin_src emacs-lisp
 (straight-use-package 'wakatime-mode)
 (require 'wakatime-mode)
 (global-wakatime-mode +1)
+(setq wakatime-api-key "06fb08d0-68a4-4b39-bbb0-d34d325dc046")
 #+end_src
 *** Navigation
 #+begin_src emacs-lisp
@@ -1291,3 +1292,4 @@ Bind to lsp mode
 ;; Local Variables:
 ;; eval: (add-hook 'after-save-hook (lambda () (org-babel-tangle)) nil t)
 ;; End:
+

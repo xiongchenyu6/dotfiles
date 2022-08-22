@@ -86,9 +86,50 @@
 
       # Configure keymap in X11
       xkbOptions = "caps:ctrl_modifier";
+      autoRepeatDelay = 180;
+      autoRepeatInterval = 60;
       # Enable touchpad support (enabled default in most desktopManager).
       libinput.enable = true;
       # Enable automatic login for the user.
+    };
+    autorandr = {
+      enable = true;
+      profiles = {
+        office = {
+          fingerprint = {
+            "eDP-1" =
+              "00ffffffffffff0009e54c0900000000121e0104a51e1378036980a7544c9825115356000000010101010101010101010101010101019c3e80c870b03c40302036002ebc1000001a000000fd001e3c4a4a10010a202020202020000000fe00424f452043510a202020202020000000fe004e4531343057554d2d4e36320a000a";
+            "HDMI-1" =
+              "00ffffffffffff001e6dc15bb37c030004200103803c2278ea40b5ae5142ad260f5054210800d1c061404540010101010101010101014dd000a0f0703e803020350058542100001a000000fd00283c1e873c000a202020202020000000fc004c4720554c54524146494e450a000000ff003230344e54464136513533310a01800203427223090707830100004d01030410121f202261605f5e5d6d030c001000b83c20006001020367d85dc401788003e30f0003e2006ae305c000e6060581606050a36600a0f0701f803020350058542100001a565e00a0a0a029503020350058542100001a023a801871382d40582c450058542100001a00000000000000e2";
+          };
+          config = {
+            "eDP-1" = {
+              enable = true;
+              crtc = 0;
+              primary = true;
+              position = "0x0";
+              mode = "1920x1200";
+              rate = "60.00";
+            };
+
+            "HDMI-1" = {
+              enable = true;
+              crtc = 1;
+              primary = true;
+              position = "1920x0";
+              mode = "3840x2160";
+              rate = "60.00";
+              rotate = "left";
+            };
+
+          };
+          hooks.postswitch = {
+            "polybar-restart" = ''
+              polybar-msg cmd restart
+            '';
+          };
+        };
+      };
     };
 
     # Enable CUPS to print documents.
@@ -177,7 +218,7 @@
 
     systemPackages = with pkgs; [
       aria2
-      arandr
+      autorandr
       automake
       antibody
       awscli2
@@ -213,8 +254,6 @@
       go
       haskell-language-server
       htop
-      imagemagick
-      ispell
       (haskellPackages.ghcWithPackages (self:
         with haskellPackages;
         with pkgs.haskell.lib; [
@@ -237,7 +276,10 @@
           pandoc
           #hails
         ]))
+      imagemagick
+      ispell
       jq
+      killall
       lsof
       light
       libxml2
@@ -259,7 +301,6 @@
       rsync
       ripgrep
       rnix-lsp
-      tmux
       tree
       tdesktop
       unzip
@@ -291,7 +332,17 @@
     zsh.enable = true;
     ssh.startAgent = true;
     gnupg.agent = { enable = true; };
-    tmux.enable = true;
+    tmux = {
+      enable = true;
+      terminal = "screen-256color";
+      shortcut = "space";
+      plugins = with tmuxPlugins; [
+        tmux-yank
+      ];
+
+      secureSocket = false;
+      
+    };
     nm-applet.enable = true;
 
   };
