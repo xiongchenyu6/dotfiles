@@ -92,9 +92,7 @@
       libinput.enable = true;
       # Enable automatic login for the user.
     };
-    aria2 = {
-      enable = true;
-    };
+    aria2 = { enable = true; };
 
     autorandr = {
       enable = true;
@@ -312,7 +310,6 @@
       scrot
       stow
       slack
-      starship
       wget
       which
       #wpa_supplicant_gui
@@ -332,24 +329,94 @@
   # programs.mtr.enable = true;
 
   programs = {
-    zsh.enable = true;
+    zsh = {
+      enable = true;
+      ohMyZsh = {
+        enable = true;
+        plugins = [
+          "aws"
+          "cabal"
+          "catimg"
+          "colored-man-pages"
+          "colorize"
+          "command-not-found"
+          "copyfile"
+          "docker"
+          "docker-compose"
+          "direnv"
+          "extract"
+          "encode64"
+          "emacs"
+          "fzf"
+          "fasd"
+          "fancy-ctrl-z"
+          "git"
+          "git-flow"
+          "git-auto-fetch"
+          "git-hubflow"
+          "github"
+          "gitignore"
+          "gpg-agent"
+          "golang"
+          "httpie"
+          "heroku"
+          "jsontools"
+          "kubectl"
+          "npm"
+          "node"
+          "pass"
+          "pipenv"
+          "pip"
+          "ripgrep"
+          "redis-cli"
+          "sbt"
+          "scala"
+          "systemd"
+          "tmux"
+        ];
+      };
+      setOptions = [
+        "BANG_HIST"
+        "EXTENDED_HISTORY"
+        "INC_APPEND_HISTORY"
+        "SHARE_HISTORY"
+        "HIST_EXPIRE_DUPS_FIRST"
+        "HIST_IGNORE_DUPS"
+        "HIST_IGNORE_ALL_DUPS"
+        "HIST_FIND_NO_DUPS"
+        "HIST_IGNORE_SPACE"
+        "HIST_SAVE_NO_DUPS"
+        "HIST_REDUCE_BLANKS"
+        "HIST_VERIFY"
+        "HIST_BEEP"
+
+      ];
+      enableCompletion = true;
+      autosuggestions = {
+      enable = true;
+        
+      };
+      syntaxHighlighting = {
+              enable = true;
+
+      };
+      enableBashCompletion = true;
+    };
     ssh.startAgent = true;
     gnupg.agent = { enable = true; };
     tmux = {
       enable = true;
       terminal = "screen-256color";
       shortcut = "space";
-      plugins = with pkgs.tmuxPlugins; [
-        yank
-      ];
+      plugins = with pkgs.tmuxPlugins; [ yank ];
       secureSocket = false;
       keyMode = "vi";
-      
+
     };
-    htop = {
-      enable = true;
-    };   
+    htop = { enable = true; };
     nm-applet.enable = true;
+    starship = {enable = true;};
+
   };
 
   # List services that you want to enable:

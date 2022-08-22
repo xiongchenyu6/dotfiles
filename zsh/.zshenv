@@ -1,5 +1,4 @@
-source /etc/profile
-
+#source /etc/profile
 # If there's already a kubeconfig file in ~/.kube/config it will import that too and all the contexts
 DEFAULT_KUBECONFIG_FILE="$HOME/.kube/config"
 if test -f "${DEFAULT_KUBECONFIG_FILE}"
@@ -16,9 +15,6 @@ do
     export KUBECONFIG="$kubeconfigFile:$KUBECONFIG"
 done
 IFS="$OIFS"
-
-export NVM_DIR="$HOME/.nvm"
-export ARCH=`uname -m`
 
 if [[ "$OSTYPE" == "linux-gnu" ]]; then
     export JAVA_HOME='/usr/lib/jvm/default'
@@ -61,11 +57,14 @@ elif [[ "$OSTYPE" == "darwin"* ]]; then
     fi
 fi
 
+export NVM_DIR="$HOME/.nvm"
+export ARCH=`uname -m`
+
 export LSP_USE_PLISTS=true
 # export PATH=$HOME/.nix-profile/bin/:$PATH
 # export PATH=$HOME/.node_modules/bin:$PATH
 export PATH=$HOME/.script:$PATH
-export PATH="$HOME/.jenv/bin:$PATH"
+#export PATH="$HOME/.jenv/bin:$PATH"
 
 export HADOOP_INSTALL=$HADOOP_HOME
 export HADOOP_MAPRED_HOME=$HADOOP_HOME 
@@ -112,7 +111,7 @@ export SBT_OPTS="-Xss8M"
 export EDITOR="emacsclient"
 export EMAIL="xiongchenyu@bigo.sg"
 
-export NODE_PATH=$HOME/.config/yarn/global/node_modules
+#export NODE_PATH=$HOME/.config/yarn/global/node_modules
 
 
 #CJK index
@@ -131,29 +130,23 @@ export FZF_TMUX=1
 #export NIX_IGNORE_SYMLINK_STORE=1
 #
 #
-export PATH=/home/chenyu/.tiup/bin:$PATH
+#export PATH=/home/chenyu/.tiup/bin:$PATH
 
 #enhancd
 export ENHANCD_DISABLE_HYPHEN=1
 
 export DOCKER_BUILDKIT=1
 
-setopt BANG_HIST                 # Treat the '!' character specially during expansion.
-setopt EXTENDED_HISTORY          # Write the history file in the ":start:elapsed;command" format.
-setopt INC_APPEND_HISTORY        # Write to the history file immediately, not when the shell exits.
-setopt SHARE_HISTORY             # Share history between all sessions.
-setopt HIST_EXPIRE_DUPS_FIRST    # Expire duplicate entries first when trimming history.
-setopt HIST_IGNORE_DUPS          # Don't record an entry that was just recorded again.
-setopt HIST_IGNORE_ALL_DUPS      # Delete old recorded entry if new entry is a duplicate.
-setopt HIST_FIND_NO_DUPS         # Do not display a line previously found.
-setopt HIST_IGNORE_SPACE         # Don't record an entry starting with a space.
-setopt HIST_SAVE_NO_DUPS         # Don't write duplicate entries in the history file.
-setopt HIST_REDUCE_BLANKS        # Remove superfluous blanks before recording entry.
-setopt HIST_VERIFY               # Don't execute immediately upon history expansion.
-setopt HIST_BEEP                 # Beep when accessing nonexistent history.
-
-zstyle ':completion:*:*:docker:*' option-stacking yes
-zstyle ':completion:*:*:docker-*:*' option-stacking yes
-
-# . "$HOME/.cargo/env"
-
+#setopt BANG_HIST                 # Treat the '!' character specially during expansion.
+#setopt EXTENDED_HISTORY          # Write the history file in the ":start:elapsed;command" format.
+#setopt INC_APPEND_HISTORY        # Write to the history file immediately, not when the shell exits.
+#setopt SHARE_HISTORY             # Share history between all sessions.
+#setopt HIST_EXPIRE_DUPS_FIRST    # Expire duplicate entries first when trimming history.
+#setopt HIST_IGNORE_DUPS          # Don't record an entry that was just recorded again.
+#setopt HIST_IGNORE_ALL_DUPS      # Delete old recorded entry if new entry is a duplicate.
+#setopt HIST_FIND_NO_DUPS         # Do not display a line previously found.
+#setopt HIST_IGNORE_SPACE         # Don't record an entry starting with a space.
+#setopt HIST_SAVE_NO_DUPS         # Don't write duplicate entries in the history file.
+#setopt HIST_REDUCE_BLANKS        # Remove superfluous blanks before recording entry.
+#setopt HIST_VERIFY               # Don't execute immediately upon history expansion.
+#setopt HIST_BEEP                 # Beep when accessing nonexistent history.

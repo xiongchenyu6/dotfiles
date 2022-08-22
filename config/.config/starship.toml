@@ -1,3 +1,11 @@
+
+format = """$directory$character"""
+
+# move the rest of the prompt to the right
+right_format = """$all"""
+# A continuation prompt that displays two filled in arrows
+continuation_prompt = "▶▶"
+
 [kubernetes]
 disabled = false
 [directory]
@@ -12,4 +20,6 @@ tag_disabled = false
 [git_metrics]
 disabled = false
 [python]
+disabled = false
+[sudo]
 disabled = false
