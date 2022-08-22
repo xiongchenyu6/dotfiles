@@ -3,8 +3,7 @@
 [color]
  ui = auto
 [user]
- email = xiongchenyu@bigo.sg
-# email      = xiongchenyu6@gmail.com
+ email      = xiongchenyu6@gmail.com
  name = xiongchenyu
  signingkey = FEB33C147207641D
 [core]
@@ -14,15 +13,6 @@
  pager = delta --dark
 [credential]
  helper = store
-[github]
- user        = xiongchenyu6@gmail.com
- oauth-token = 0cc28d1690379ee6de60de07f6b0719ccda7ab64
-[magithub]
- online = true
-[magithub "status"]
- includeStatusHeader = true
- includePullRequestsSection = true
- includeIssuesSection = true
 [filter "lfs"]
  clean    = git-lfs clean -- %f
  smudge   = git-lfs smudge -- %f
@@ -32,3 +22,9 @@
  trash = !mkdir -p .trash && git ls-files --others --exclude-standard | xargs mv -f -t .trash
 [pull]
 	rebase = false
+[credential "https://github.com"]
+	helper = 
+	helper = !/run/current-system/sw/bin/gh auth git-credential
+[credential "https://gist.github.com"]
+	helper = 
+	helper = !/run/current-system/sw/bin/gh auth git-credential

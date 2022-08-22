@@ -92,6 +92,10 @@
       libinput.enable = true;
       # Enable automatic login for the user.
     };
+    aria2 = {
+      enable = true;
+    };
+
     autorandr = {
       enable = true;
       profiles = {
@@ -179,6 +183,7 @@
     udisks2 = { enable = true; };
 
     picom = { enable = true; };
+
   };
   hardware = {
     pulseaudio.enable = false;
@@ -217,7 +222,6 @@
   environment = {
 
     systemPackages = with pkgs; [
-      aria2
       autorandr
       automake
       antibody
@@ -253,7 +257,6 @@
       gh
       go
       haskell-language-server
-      htop
       (haskellPackages.ghcWithPackages (self:
         with haskellPackages;
         with pkgs.haskell.lib; [
@@ -336,15 +339,17 @@
       enable = true;
       terminal = "screen-256color";
       shortcut = "space";
-      plugins = with tmuxPlugins; [
-        tmux-yank
+      plugins = with pkgs.tmuxPlugins; [
+        yank
       ];
-
       secureSocket = false;
+      keyMode = "vi";
       
     };
+    htop = {
+      enable = true;
+    };   
     nm-applet.enable = true;
-
   };
 
   # List services that you want to enable:
