@@ -1,4 +1,4 @@
-#source /etc/profile
+source /etc/profile
 # If there's already a kubeconfig file in ~/.kube/config it will import that too and all the contexts
 DEFAULT_KUBECONFIG_FILE="$HOME/.kube/config"
 if test -f "${DEFAULT_KUBECONFIG_FILE}"
@@ -136,6 +136,8 @@ export FZF_TMUX=1
 export ENHANCD_DISABLE_HYPHEN=1
 
 export DOCKER_BUILDKIT=1
+
+export ZSH_WAKATIME_BIN="wakatime-cli"
 
 #setopt BANG_HIST                 # Treat the '!' character specially during expansion.
 #setopt EXTENDED_HISTORY          # Write the history file in the ":start:elapsed;command" format.

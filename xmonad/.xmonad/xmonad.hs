@@ -1,4 +1,3 @@
-
 {-# OPTIONS_GHC -fno-warn-type-defaults #-}
 
 -- {-# LANGUAGE TupleSections #-}
@@ -6,24 +5,23 @@
 import Control.Monad
 import Graphics.X11.ExtraTypes.XF86
 import System.Directory
-import System.IO
 import XMonad
 import XMonad.Actions.Launcher
 import XMonad.Actions.Volume
 import XMonad.Config.Desktop
-import XMonad.Hooks.DynamicLog
 import XMonad.Hooks.EwmhDesktops
 import XMonad.Hooks.ManageDocks
 import XMonad.Hooks.SetWMName
+import XMonad.Hooks.StatusBar
+import XMonad.Hooks.StatusBar.PP
 import XMonad.Hooks.WallpaperSetter
 import XMonad.Prompt
 import XMonad.Prompt.Man
 import XMonad.Prompt.Pass
 import XMonad.Prompt.Ssh
-import XMonad.Util.EZConfig (additionalKeys)
-import XMonad.Util.Run (spawnPipe)
-import XMonad.Util.SpawnOnce
 import XMonad.Util.Brightness
+import XMonad.Util.EZConfig (additionalKeys)
+import XMonad.Util.SpawnOnce
 
 myTerminal :: String
 myTerminal = "xterm"
@@ -51,14 +49,18 @@ myManageHook =
 myStartupHook :: X ()
 myStartupHook = do
   setWMName "LG3D"
+  spawn "xset r rate 180 60"
   spawnOnce "brave"
   spawnOnce "dropbox"
+  spawnOnce "fcitx5"
   spawnOnce "blueman-applet"
   -- spawnOnce "thunderbird"
   -- spawnOnce "compton --config ~/.xmonad/compton.conf"
   spawnOnce myTerminal
-  spawnOnce "xset r rate 180 60"
-  spawnOnce "polybar -r"
+  spawnOnce "polybar"
+  spawn "polybar-msg cmd restart"
+  -- spawnOnce "polybar -r"
+  -- spawnOnce "xmobar -x 1"
 
 modm :: KeyMask
 modm = mod4Mask
@@ -73,45 +75,40 @@ myWorkplace :: [String]
 myWorkplace =
   ["term", "edit", "web", "chat", "email", "tmp"] ++ (show <$> [7 .. 9])
 
+mySB = statusBarProp "xmobar -x 0" (pure xmobarPP)
+
 main :: IO ()
 main = do
-  xmproc <- spawnPipe "xmobar"
-  xmonad $
-    docks $
-      ewmh $
-        desktopConfig
-          { workspaces = myWorkplace,
-            manageHook = manageDocks <+> myManageHook <+> manageHook def,
-            layoutHook = avoidStruts myLayout,
-            terminal = myTerminal,
-            logHook =
-              dynamicLogWithPP
-                xmobarPP
-                  { ppOutput = hPutStrLn xmproc,
-                    ppTitle = xmobarColor "green" "" . shorten 77
-                  }
-                <+> do
-                  dwD <- io darkWallpaperDir
-                  wwD <- io warmWallpaperDir
-                  wallpaperSetter
-                    def
-                      { wallpapers =
-                          WallpaperList $
-                            zip
-                              myWorkplace
-                              ( cycle $
-                                  WallpaperDir
-                                    <$> [dwD, wwD]
-                              )
-                      },
-            --(, WallpaperDir dwD) <$> myWorkplace
-            --handleEventHook = ewmhDesktopsEventHook,
-            startupHook = myStartupHook,
-            modMask = modm -- Rebind Mod to the Windows key
-          }
-          `additionalKeys` customerKeyMaps
-          
+  xmonad . withSB mySB . ewmh
+    . docks
+    $ desktopConfig
+      { workspaces = myWorkplace,
+        manageHook = manageDocks <+> myManageHook <+> manageHook def,
+        layoutHook = avoidStruts myLayout,
+        terminal = myTerminal,
+        logHook = setRandomWallpaper,
+        startupHook = myStartupHook,
+        modMask = modm -- Rebind Mod to the Windows key
+      }
+      `additionalKeys` customerKeyMaps
+
 --  setRandomWallpaper ["$HOME/Dropbox/WallPaper"] -- should install feh for the functionality
+setRandomWallpaper :: X ()
+setRandomWallpaper = do
+  dwD <- io darkWallpaperDir
+  wwD <- io warmWallpaperDir
+  wallpaperSetter
+    def
+      { wallpapers =
+          WallpaperList $
+            zip
+              myWorkplace
+              ( cycle $
+                  WallpaperDir
+                    <$> [dwD, wwD]
+              )
+      }
+
 customerKeyMaps =
   [ ( (0, xF86XK_AudioMute),
       void toggleMute
@@ -122,8 +119,8 @@ customerKeyMaps =
     ),
     -- Increase volume.
     ((0, xF86XK_AudioRaiseVolume), void $ raiseVolume 5),
-    ((0, xF86XK_MonBrightnessUp), void $ increase),
-    ((0, xF86XK_MonBrightnessDown), void $ decrease),
+    ((0, xF86XK_MonBrightnessUp), void increase),
+    ((0, xF86XK_MonBrightnessDown), void decrease),
     ( (modm .|. shiftMask, xK_a),
       spawn
         "sleep 0.2; scrot -s '/home/freeman/screen/%F--%H_%M_%S_$wx$h.png' -e 'xclip -selection clipboard -target image/png -i $f'"

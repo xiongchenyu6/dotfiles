@@ -38,11 +38,23 @@
   time.timeZone = "Asia/Singapore";
 
   i18n = {
-    defaultLocale = "en_SG.utf8";
+    defaultLocale = "en_US.UTF-8";
+    supportedLocales = [ "zh_CN.UTF-8/UTF-8" "en_US.UTF-8/UTF-8" ];
     # Select internationalisation properties.
     inputMethod = {
-      enabled = "fcitx";
-      fcitx.engines = with pkgs.fcitx-engines; [ rime ];
+      enabled = "fcitx5";
+      #fcitx.engines = with pkgs.fcitx-engines; [ rime ];
+      fcitx5 = {
+        #enableRimeData = true;
+        addons = with pkgs; [
+          fcitx5-chinese-addons
+          fcitx5-gtk
+          fcitx5-lua
+          fcitx5-rime
+          fcitx5-with-addons
+          fcitx5-configtool
+        ];
+      };
     };
 
   };
@@ -64,6 +76,10 @@
   #
 
   services = {
+    # go-bttc = {
+    #   enable = true;
+    # };
+    
     xserver = {
       enable = true;
       layout = "us";
@@ -74,6 +90,7 @@
           haskellPackages.xmonad
           haskellPackages.xmonad-contrib
           haskellPackages.xmonad-extras
+          
         ];
       };
       displayManager = {
@@ -180,7 +197,61 @@
 
     udisks2 = { enable = true; };
 
-    picom = { enable = true; };
+    picom = {
+      enable = true;
+      shadow = true;
+      fade = true;
+      backend = "glx";
+      shadowExclude = [
+        "! name~=''"
+        "name = 'Notification'"
+        "name = 'Plank'"
+        "name = 'Docky'"
+        "name = 'Kupfer'"
+        "name = 'xfce4-notifyd'"
+        "name *= 'VLC'"
+        "name *= 'compton'"
+        "name *= 'Chromium'"
+        "name *= 'Chrome'"
+        "name *= 'Firefox'"
+        "class_g = 'Conky'"
+        "class_g = 'Kupfer'"
+        "class_g = 'Synapse'"
+        "class_g ?= 'Notify-osd'"
+        "class_g ?= 'Cairo-dock'"
+        "class_g ?= 'Xfce4-notifyd'"
+        "class_g ?= 'Xfce4-power-manager'"
+
+      ];
+
+      shadowOpacity = 0.5;
+      vSync = true;
+      opacityRules = [
+        "85:class_g = 'kitty'"
+        "85:class_g = 'XTerm'"
+        "15:class_g = 'emacs'"
+        "90:class_g = 'Wine'"
+        "90:class_g = 'Thunderbird'"
+
+      ];
+      fadeDelta = 2;
+      fadeSteps = [ 1.8e-2 1.8e-2 ];
+
+      wintypes = {
+        tooltip = {
+          # fade: Fade the particular type of windows.
+          fade = true;
+          # shadow: Give those windows shadow
+          shadow = false;
+          # opacity: Default opacity for the type of windows.
+          opacity = 0.85;
+          # focus: Whether to always consider windows of this type focused.
+          focus = true;
+        };
+
+      };
+
+    };
 
   };
   hardware = {
@@ -188,7 +259,19 @@
     bluetooth.enable = true;
 
   };
-  systemd.services.upower.enable = true;
+  systemd = {
+    services.upower.enable = true;
+    user.services.fcitx5-daemon = {
+      enable = false;
+      description = "fcitx5";
+      unitConfig = { Type = "Simple"; };
+      serviceConfig = {
+        ExecStart = "fcitx5";
+       # Restart = "always";
+      };
+      wantedBy = [ "graphical-session.target" ];
+    };
+  };
 
   # Enable sound with pipewire.
   sound.enable = true;
@@ -224,16 +307,20 @@
       automake
       antibody
       awscli2
+      b.go-bttc
       brave
       #google-chrome
       clang
       cachix
       conky
       cabal2nix
+      consul
       direnv
       dunst
+      lua
       nix-direnv
       nixopsUnstable
+      neofetch
       dmenu
       dropbox
       ((emacsPackagesFor emacsGitNativeComp).emacsWithPackages (epkgs: [
@@ -243,7 +330,7 @@
         epkgs.org-re-reveal
       ]))
       exa
-      fasd
+      #  fasd
       feh
       fzf
       gitAndTools.gitflow
@@ -289,11 +376,14 @@
       python3
       polybar
       wakatime
-      neovim
+      #myRepo.example-package
+      #neovim
       nixfmt
       node2nix
       nodejs
+      nodejs-16_x
       nodePackages."typescript-language-server"
+      nodePackages."bash-language-server"
       openssl
       openjdk
       pkgconfig
@@ -306,6 +396,7 @@
       tdesktop
       unzip
       vlc
+      vim
       stalonetray
       scrot
       stow
@@ -314,8 +405,10 @@
       which
       #wpa_supplicant_gui
       wakatime
+      whatsapp-for-linux
       xclip
       xscreensaver
+      zoom
     ];
     pathsToLink = [ "/share/nix-direnv" ];
   };
@@ -331,6 +424,12 @@
   programs = {
     zsh = {
       enable = true;
+      shellAliases = {
+        vi = "vim";
+        yolo = ''git commit -m "$(curl -s whatthecommit.com/index.txt)"'';
+        op = "xdg-open";
+        ls = "exa --icons";
+      };
       ohMyZsh = {
         enable = true;
         plugins = [
@@ -348,7 +447,6 @@
           "encode64"
           "emacs"
           "fzf"
-          "fasd"
           "fancy-ctrl-z"
           "git"
           "git-flow"
@@ -378,6 +476,7 @@
       setOptions = [
         "BANG_HIST"
         "EXTENDED_HISTORY"
+
         "INC_APPEND_HISTORY"
         "SHARE_HISTORY"
         "HIST_EXPIRE_DUPS_FIRST"
@@ -393,17 +492,24 @@
       ];
       enableCompletion = true;
       autosuggestions = {
-      enable = true;
-        
+        enable = true;
+
       };
       syntaxHighlighting = {
-              enable = true;
+        enable = true;
 
       };
       enableBashCompletion = true;
     };
     ssh.startAgent = true;
     gnupg.agent = { enable = true; };
+    git = {
+      enable = true;
+      lfs = {
+        enable = true;
+
+      };
+    };
     tmux = {
       enable = true;
       terminal = "screen-256color";
@@ -415,8 +521,25 @@
     };
     htop = { enable = true; };
     nm-applet.enable = true;
-    starship = {enable = true;};
-
+    starship = {
+      enable = true;
+      settings = {
+        format = "$directory$character";
+        # move the rest of the prompt to the right
+        right_format = "$all";
+        # A continuation prompt that displays two filled in arrows
+        continuation_prompt = "▶▶";
+        kubernetes.disabled = false;
+        directory = {
+          truncation_length = 20;
+          truncation_symbol = "…/";
+        };
+        status.disabled = false;
+        time.disabled = false;
+        git_metrics.disabled = false;
+        sudo.disabled = false;
+      };
+    };
   };
 
   # List services that you want to enable:

@@ -1,16 +1,33 @@
 {
   "nodes": {
+    "bttc": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1661313448,
+        "narHash": "sha256-kCuqeMz2L27OyLLPWT/Say+qnvE9cn1rx+qbU3eQmu4=",
+        "type": "git",
+        "url": "file:///home/freeman/private/bttc"
+      },
+      "original": {
+        "type": "git",
+        "url": "file:///home/freeman/private/bttc"
+      }
+    },
     "emacs": {
       "inputs": {
         "flake-utils": "flake-utils",
         "nixpkgs": "nixpkgs"
       },
       "locked": {
-        "lastModified": 1661080786,
-        "narHash": "sha256-MbiPU0icYLCNOzjQbdo4kjybLDl+soorRvNhPvrFopI=",
+        "lastModified": 1661511740,
+        "narHash": "sha256-+CIEu/LmxovaiKnVfzLFdW2mXc+bSm8DtH9iiXSmgEo=",
         "owner": "nix-community",
         "repo": "emacs-overlay",
-        "rev": "b0d961b43472d9c95a55fd106a1c0e43944ad10a",
+        "rev": "9f50a8d3be2291db155cb751448eb2e34d12b5e4",
         "type": "github"
       },
       "original": {
@@ -49,6 +66,26 @@
         "type": "github"
       }
     },
+    "myRepo": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1661434406,
+        "narHash": "sha256-Y6GbA27szmV9/rMOkizhRx6Ho16tX7tvccJx9bHwzbU=",
+        "owner": "xiongchenyu6",
+        "repo": "nur-packages",
+        "rev": "be54ed5d5a469bd4641fe62f4f5774d3baf3e425",
+        "type": "github"
+      },
+      "original": {
+        "owner": "xiongchenyu6",
+        "repo": "nur-packages",
+        "type": "github"
+      }
+    },
     "nixos-hardware": {
       "locked": {
         "lastModified": 1660407119,
@@ -67,11 +104,11 @@
     },
     "nixpkgs": {
       "locked": {
-        "lastModified": 1661067879,
-        "narHash": "sha256-REC3ipNl6oMnEPYeP1LI2B8XK3h9z48esjdEukLKpZM=",
+        "lastModified": 1661336769,
+        "narHash": "sha256-5Sf9tMd1Jdm+lTBGspbQ4kEoYCDKpUhEVAZHRcm6mGU=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "796a2677849fd7329543d9da4e13b77aa48956a8",
+        "rev": "03428dbaaa23d6bf458770907b0927b377c873a8",
         "type": "github"
       },
       "original": {
@@ -81,11 +118,11 @@
     },
     "nixpkgs_2": {
       "locked": {
-        "lastModified": 1660998696,
-        "narHash": "sha256-N5eDv9THZz5pFn7NR1swaFrAJYByfrA5gU5L7JONItA=",
+        "lastModified": 1661361016,
+        "narHash": "sha256-Bjf6ZDnDc6glTwIIItvwfcaeJ5zWFM6GYfPajSArdUY=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "13711c9ab9f5a160a44affb7a6221be53318a873",
+        "rev": "b784c5ae63dd288375af1b4d37b8a27dd8061887",
         "type": "github"
       },
       "original": {
@@ -97,8 +134,10 @@
     },
     "root": {
       "inputs": {
+        "bttc": "bttc",
         "emacs": "emacs",
         "flake-utils": "flake-utils_2",
+        "myRepo": "myRepo",
         "nixos-hardware": "nixos-hardware",
         "nixpkgs": "nixpkgs_2"
       }
