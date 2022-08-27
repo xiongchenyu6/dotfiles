@@ -5,12 +5,14 @@
 [user]
  email      = xiongchenyu6@gmail.com
  name = xiongchenyu
- signingkey = FEB33C147207641D
+ signingkey = 5AF7AFBF695E8A5D
+[commit]
+ gpgsign = true
 [core]
  excludesfile = ~/.global_ignore
- editor       = nvim
+ editor       = emacs
  autocrlf     = input
- pager = delta --dark
+ #pager = delta --dark
 [credential]
  helper = store
 [filter "lfs"]

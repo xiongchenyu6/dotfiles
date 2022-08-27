@@ -19,7 +19,7 @@ config/.config/emacs/*
 !config/.config/doom
 !config/.config/TabNine
 !config/.config/fontconfig
-!config/.config/taffybar
+!config/.config/taffybar/
 !config/.config/starship.toml
 
  tmux/.tmux/**
@@ -43,3 +43,6 @@ haskell/.stack/global-project/*
 
 *.elc
 dist-newstyle/
+
+.log/
+.direnv/

@@ -1,21 +1,13 @@
 # annotations are also allowed:
-ohmyzsh/ohmyzsh
 djui/alias-tips
 
 # comments are supported like this
-caarlos0/zsh-mkc
-zsh-users/zsh-completions
-caarlos0/zsh-open-github-pr
-zsh-users/zsh-autosuggestions
-
+# zsh-users/zsh-completions
+# zsh-users/zsh-autosuggestions
+# zsh-users/zsh-syntax-highlighting
+# zsh-users/zsh-history-substring-search
+#
 # empty lines are skipped
-
-zsh-users/zsh-syntax-highlighting
-zsh-users/zsh-history-substring-search
-
-wbingli/zsh-wakatime
-# gretzky/auto-color-ls
+sobolevn/wakatime-zsh-plugin
 b4b4r07/enhancd
 wfxr/forgit
-robertzk/send.zsh
-sei40kr/zsh-tmux-rename

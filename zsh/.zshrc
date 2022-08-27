@@ -1,5 +1,5 @@
 # where is antibody keeping its stuff?
-#ANTIBODY_HOME="$(antibody home)"
+ANTIBODY_HOME="$(antibody home)"
 
 # set the theme to something, or blank if you use a non omz theme
 #ZSH_THEME=
@@ -14,9 +14,9 @@
 #DISABLE_AUTO_UPDATE="true"
 
 # antibody bundle < .zsh_plugins.txt > .zsh_plugins.sh
-#source ~/.zsh_plugins.sh
+source ~/.zsh_plugins.sh
 
-eval "$(starship init zsh)"
+#eval "$(starship init zsh)"
 
 # eval "$(jenv init -)"
 
@@ -34,10 +34,10 @@ eval "$(starship init zsh)"
 #    #alias grep='ggrep'
 #fi
 
-alias vi='nvim'
-alias yolo='git commit -m "$(curl -s whatthecommit.com/index.txt)"'
-alias op='xdg-open'
-alias ls="exa --icons"
+#alias vi='nvim'
+#alias yolo='git commit -m "$(curl -s whatthecommit.com/index.txt)"'
+#alias op='xdg-open'
+#alias ls="exa --icons"
 # alias tnpm="npm --registry https://mirrors.tencent.com/npm/"
 # alias python=/usr/local/bin/python3
 # alias cat=ccat
@@ -202,5 +202,5 @@ if [ "$funcstack[1]" = "_kubebuilder" ]; then
 	_kubebuilder
 fi
 
-test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh" || true
+#test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh" || true
 

@@ -1,5 +1,5 @@
 Config {
-        font = "xft:Hack Nerd Font:size=11"
+        font = "xft:WenQuanYi Zen Hei:size=11"
       , borderColor = "black"
       , border = TopB
       , bgColor = "black"
@@ -12,12 +12,14 @@ Config {
       , overrideRedirect = True    -- set the Override Redirect flag (Xlib)
       , pickBroadest =     True   -- choose widest display (multi-monitor)
       , persistent =       True    -- enable/disable hiding (True = disabled)
-      , template = "%StdinReader%|%multicpu%|%cpufreq%|%memory%|%dynnetwork%|%disku%|%diskio%|%default:Master%|%bright%|%coretemp%}{<fc=#ee9a00>%date%</fc>"
+            -- <fc=#ee9a00>%date%</fc>
+      , template = "%XMonadLog%|%multicpu%|%cpufreq%|%memory%|%dynnetwork%|%disku%|%diskio%|%default:Master%|%bright%|%battery%|%coretemp%}{<fc=#ee9a00>%WSSS%</fc>"
       , sepChar = "%"
       , alignSep = "}{"
       , commands = [ 
+                        Run Weather "WSSS" ["-t","<station>: <tempC>C","-L","18","-H","25","--normal","green","--high","red","--low","lightblue"] 36000
                       -- network activity monitor (dynamic interface resolution)
-                        Run DynNetwork     [ "--template" , "<dev>: <tx>kB/s|<rx>kB/s"
+                      , Run DynNetwork     [ "--template" , "<dev>: <tx>kB/s|<rx>kB/s"
                                             , "--Low"      , "1000"       -- units: kB/s
                                             , "--High"     , "5000"       -- units: kB/s
                                             , "--low"      , "green"
@@ -60,6 +62,6 @@ Config {
                       , Run DiskU [("/", "<used>/<size>"), ("sdb1", "<usedbar>")]       ["-L", "20", "-H", "50", "-m", "1", "-p", "3"]   20
                       , Run DiskIO [("/", "<read> <write>"), ("sdb1", "<total>")] [] 10
                       , Run Brightness ["--template", "Bl: <percent>%", "--", "-D", "intel_backlight"] 3
-                      , Run StdinReader
+                      , Run XMonadLog
                       ]
       }
