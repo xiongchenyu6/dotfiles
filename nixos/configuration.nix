@@ -11,14 +11,17 @@
   ];
 
   # Bootloader.
-  boot.loader = {
-    systemd-boot.enable = true;
-    efi = {
-      canTouchEfiVariables = true;
-      efiSysMountPoint = "/boot/efi";
+  boot = {
+    loader = {
+      systemd-boot.enable = true;
+      efi = {
+        canTouchEfiVariables = true;
+        efiSysMountPoint = "/boot/efi";
 
+      };
     };
   };
+
   networking = {
     networkmanager.enable = true;
 
@@ -32,10 +35,13 @@
 
   };
 
-  virtualisation.docker.enable = true;
+  virtualisation = { docker.enable = true; };
 
   # Set your time zone.
-  time.timeZone = "Asia/Singapore";
+  time = {
+    timeZone = "Asia/Singapore";
+
+  };
 
   i18n = {
     defaultLocale = "en_US.UTF-8";
@@ -79,7 +85,7 @@
     # go-bttc = {
     #   enable = true;
     # };
-    
+
     xserver = {
       enable = true;
       layout = "us";
@@ -90,7 +96,7 @@
           haskellPackages.xmonad
           haskellPackages.xmonad-contrib
           haskellPackages.xmonad-extras
-          
+
         ];
       };
       displayManager = {
@@ -262,15 +268,14 @@
           path = "/home/freeman/office";
         };
       };
-      };
-      
     };
+  };
 
   hardware = {
     pulseaudio.enable = false;
     bluetooth.enable = true;
-
   };
+
   systemd = {
     services.upower.enable = true;
     user.services.fcitx5-daemon = {
@@ -279,36 +284,41 @@
       unitConfig = { Type = "Simple"; };
       serviceConfig = {
         ExecStart = "fcitx5";
-       # Restart = "always";
+        # Restart = "always";
       };
       wantedBy = [ "graphical-session.target" ];
     };
   };
 
   # Enable sound with pipewire.
-  sound.enable = true;
+  sound = { enable = true; };
+
   security = {
     rtkit.enable = true;
     sudo.enable = true;
-
   };
   # 
 
-  users.defaultUserShell = pkgs.zsh;
-
-  # Define a user account. Don't forget to set a password with ‘passwd’.
-  users.users.freeman = {
-    isNormalUser = true;
-    description = "freeman";
-    extraGroups = [ "networkmanager" "wheel" "video" "audio" ];
-    packages = with pkgs;
-      [
-        #  thunderbird
-      ];
+  users = {
+    defaultUserShell = pkgs.zsh;
+    users.freeman = {
+      isNormalUser = true;
+      description = "freeman";
+      extraGroups = [ "networkmanager" "wheel" "video" "audio" ];
+      packages = with pkgs;
+        [
+          #  thunderbird
+        ];
+    };
   };
 
+  # Define a user account. Don't forget to set a password with ‘passwd’.
+
   # Allow unfree packages
-  nixpkgs.config.allowUnfree = true;
+  nixpkgs = {
+    config.allowUnfree = true;
+
+  };
 
   # List packages installed in system profile. To search, run:
   # $ nix search wget
@@ -426,10 +436,13 @@
     pathsToLink = [ "/share/nix-direnv" ];
   };
 
-  nix.extraOptions = ''
-    keep-outputs = true
-    keep-derivations = true
-  '';
+  nix = {
+    extraOptions = ''
+      keep-outputs = true
+      keep-derivations = true
+    '';
+    settings.experimental-features = [ "nix-command" "flakes" ];
+  };
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
   # programs.mtr.enable = true;
@@ -504,24 +517,15 @@
 
       ];
       enableCompletion = true;
-      autosuggestions = {
-        enable = true;
-
-      };
-      syntaxHighlighting = {
-        enable = true;
-
-      };
+      autosuggestions = { enable = true; };
+      syntaxHighlighting = { enable = true; };
       enableBashCompletion = true;
     };
     ssh.startAgent = true;
     gnupg.agent = { enable = true; };
     git = {
       enable = true;
-      lfs = {
-        enable = true;
-
-      };
+      lfs = { enable = true; };
     };
     tmux = {
       enable = true;
@@ -542,7 +546,10 @@
         right_format = "$all";
         # A continuation prompt that displays two filled in arrows
         continuation_prompt = "▶▶";
-        kubernetes.disabled = false;
+        kubernetes = {
+          disabled = false;
+
+        };
         directory = {
           truncation_length = 20;
           truncation_symbol = "…/";
@@ -581,8 +588,6 @@
   # this value at the release version of the first install of this system.
   # Before changing this value read the documentation for this option
   # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
-  system.stateVersion = "22.05"; # Did you read the comment?
-
-  nix.settings.experimental-features = [ "nix-command" "flakes" ];
+  system = { stateVersion = "22.05"; }; # Did you read the comment?
 
 }
