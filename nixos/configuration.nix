@@ -252,8 +252,20 @@
       };
 
     };
+    syncthing = {
+      enable = true;
+      user = "freeman";
+      dataDir = "/home/freeman";
+      folders = {
+        "Office" = {
+          enable = true;
+          path = "/home/freeman/office";
+        };
+      };
+      };
+      
+    };
 
-  };
   hardware = {
     pulseaudio.enable = false;
     bluetooth.enable = true;
@@ -364,6 +376,7 @@
           pandoc
           #hails
         ]))
+      hydra_unstable
       imagemagick
       ispell
       jq
