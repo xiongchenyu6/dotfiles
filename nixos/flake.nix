@@ -6,12 +6,15 @@
 
     nixos-hardware.url = "github:NixOS/nixos-hardware/master";
 
-    flake-utils.url = "github:numtide/flake-utils";
-
     emacs.url = "github:nix-community/emacs-overlay";
 
     myRepo = {
       url = "github:xiongchenyu6/nur-packages";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    xddxdd = {
+      url = "github:xddxdd/nur-packages";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
@@ -22,7 +25,7 @@
     };
   };
 
-  outputs = { self, nixpkgs, nixos-hardware, flake-utils, emacs, myRepo,bttc }: {
+  outputs = { self, nixpkgs, nixos-hardware, emacs, myRepo, xddxdd,bttc }: {
     # replace 'joes-desktop' with your hostname here.
     nixosConfigurations.nixos = nixpkgs.lib.nixosSystem {
       system = "x86_64-linux";
@@ -34,18 +37,18 @@
         ({ pkgs, ... }: {
           nixpkgs.overlays = [
             emacs.overlay
-            (self: super: {
-              nix-direnv = super.nix-direnv.override { enableFlakes = true; };
-            })
             (final: prev: {
               myRepo = myRepo.packages."${prev.system}";
-            })
-            (final: prev: {
+              xddxdd = xddxdd.packages."${prev.system}";
               b = bttc.packages."${prev.system}";
+              nix-direnv = prev.nix-direnv.override { enableFlakes = true; };
             })
           ];
         })
       ];
+    };
+    nixopsConfigurations.sgServer =nixpkgs.lib.nixosSystem {
+      system = "x86_64-linux";
     };
   };
 }

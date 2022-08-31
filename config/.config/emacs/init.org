@@ -1,4 +1,4 @@
-t#+TITLE: LiteratEmacs
+#+TITLE: LiteratEmacs
 #+AUTHOR: XIONGCHENYU
 #+EMAIL: xiongchenyu6 at gmail.com
 #+DATE: <2022-01-31 Mon>
@@ -452,7 +452,7 @@ Straight is a very good package manager for me to easily get emacs third party p
 
 (require 'copilot)
 
-(setq copilot-node-executable "/nix/store/ixys078c1l57d0w48yb7flw2rvnn9ri2-nodejs-14.20.0/bin/node")
+(setq copilot-node-executable "/nix/store/6cdccplrjwga5rd3b2s7xb8zd25hnsix-nodejs-16.17.0/bin/node")
 
 (defun my-tab ()
   (interactive)
@@ -1287,6 +1287,10 @@ Bind to lsp mode
 (setq leetcode-prefer-language "cpp"
       leetcode-prefer-sql "mysql"
       )
+#+end_src
+** Pdf
+#+begin_src emacs-lisp
+(require 'pdf-tools)
 #+end_src
 
 * Conclusion

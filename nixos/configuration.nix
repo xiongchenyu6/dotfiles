@@ -269,6 +269,33 @@
         };
       };
     };
+
+    # postgresql = {
+    #   enable = true;
+    #   # ensureDatabases = [ "postgres" "hydra" ];
+    #   ensureUsers = [
+    #     {
+    #       name = "freeman";
+    #       ensurePermissions = {
+    #         "ALL TABLES IN SCHEMA public" = "ALL PRIVILEGES";
+    #       };
+    #     }
+    #     # {
+    #     #   name = "hydra";
+    #     #   ensurePermissions = { "DATABASE hydra" = "ALL PRIVILEGES"; };
+    #     # }
+    #   ];
+    # };
+
+    hydra = {
+      enable = true;
+      hydraURL = "http://localhost:3000"; # externally visible URL
+      notificationSender = "hydra@localhost"; # e-mail of hydra service
+      # a standalone hydra will require you to unset the buildMachinesFiles list to avoid using a nonexistant /etc/nix/machines
+      buildMachinesFiles = [ ];
+      # you will probably also want, otherwise *everything* will be built from scratch
+      useSubstitutes = true;
+    };
   };
 
   hardware = {
@@ -329,7 +356,6 @@
       automake
       antibody
       awscli2
-      b.go-bttc
       brave
       #google-chrome
       clang
@@ -350,6 +376,7 @@
         epkgs.org-contrib
         epkgs.org-roam
         epkgs.org-re-reveal
+        epkgs.pdf-tools
       ]))
       exa
       #  fasd
@@ -386,6 +413,7 @@
           pandoc
           #hails
         ]))
+      heroku
       hydra_unstable
       imagemagick
       ispell
@@ -430,6 +458,8 @@
       wakatime
       whatsapp-for-linux
       xclip
+      xddxdd.qq
+      xddxdd.wechat-uos
       xscreensaver
       zoom
     ];
