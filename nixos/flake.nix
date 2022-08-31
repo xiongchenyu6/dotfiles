@@ -2,6 +2,7 @@
   description = "NixOS configuration with flakes";
 
   inputs = {
+    # Core Dependencies
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
 
     nixos-hardware.url = "github:NixOS/nixos-hardware/master";
