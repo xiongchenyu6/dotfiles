@@ -1,4 +1,4 @@
-                
+
 //=========================enjoy ！！！=============================================
 // 1. 输入流畅理念。修改F键的导航功能，按键生成策略。采用左边前两排+v，b的字符。保证不会生成rx，一些让手指弯曲过度的组合按键。使得输入更加流畅
 // 2. 高频快速直达理念。搜索，使用独立的s关键字，使用最少的按键，来处理最高频的功能。同理，最直达的逻辑优化。h，直达历史，以及内置的b书签。通过原始的o前缀虽然也挺快，但是，还是处在一种没有优先级的状态。
@@ -14,26 +14,26 @@
 //================================================================================
 
 const {
-	unmap,
-	iunmap,
-	vunmap,
-	aceVimMap,
-	mapkey,
-	imap,
-	imapkey,
-	getClickableElements,
-	vmapkey,
-	map,
-	cmap,
-	addSearchAlias,
-	removeSearchAlias,
-	tabOpenLink,
-	readText,
-	Clipboard,
-	Front,
-	Hints,
-	Visual,
-	RUNTIME
+    unmap,
+    iunmap,
+    vunmap,
+    aceVimMap,
+    mapkey,
+    imap,
+    imapkey,
+    getClickableElements,
+    vmapkey,
+    map,
+    cmap,
+    addSearchAlias,
+    removeSearchAlias,
+    tabOpenLink,
+    readText,
+    Clipboard,
+    Front,
+    Hints,
+    Visual,
+    RUNTIME
 } = api;
 
 //imap('<Ctrl-[>', "<Esc>");
@@ -128,141 +128,165 @@ map('h', 'oh'); // 最直接的理念。
 //{mapkey,siteName,keywordRegex,searchUrl}   commonUseMapkey:(s,search)(v,videa)(c,code)(g,shop)
 
 var switchSearchConfigs = [{
-		commonUseMapKey: 's',
-		mapkey: ';gg',
-		siteName: 'google',
-		keywordRegex: getRegExp('www.google.com/search', 'q'),
-		searchUrl: 'https://www.google.com/search?q=%s'
-	},
-	{
-		commonUseMapKey: 's',
-		mapkey: ';bd',
-		siteName: 'baidu',
-		keywordRegex: getRegExp('www.baidu.com/s', 'wd'),
-		searchUrl: 'https://www.baidu.com/s?wd=%s'
-	},
-	{
-		commonUseMapKey: 'v',
-		mapkey: ';yt',
-		siteName: 'youtube',
-		keywordRegex: getRegExp('www.youtube.com/results', 'search_query'),
-		searchUrl: 'https://www.youtube.com/results?search_query=%s'
-	},
-	{
-		commonUseMapKey: 'c',
-		mapkey: ';gh',
-		siteName: 'github',
-		keywordRegex: getRegExp('github.com/search', 'q'),
-		searchUrl: 'https://github.com/search?o:desc&q=%s&s:stars&type:Repositories'
-	},
-	{
-		commonUseMapKey: 'v',
-		mapkey: ';bb',
-		siteName: 'bilibili',
-		keywordRegex: getRegExp('search.bilibili.com/all', 'keyword'),
-		searchUrl: 'https://search.bilibili.com/all?keyword=%s'
-	},
-	{
-		commonUseMapKey: 'g',
-		mapkey: ';jd',
-		siteName: 'jd',
-		keywordRegex: getRegExp('search.jd.com/[Ss]earch', 'keyword'),
-		searchUrl: 'https://search.jd.com/Search?keyword=%s'
-	},
-	{
-		commonUseMapKey: 'g',
-		mapkey: ';tb',
-		siteName: 'taobao',
-		keywordRegex: getRegExp('s.taobao.com/search', 'q'),
-		searchUrl: 'https://s.taobao.com/search?q=%s'
-	},
-	{
-		commonUseMapKey: 'v',
-		mapkey: ';xg',
-		siteName: '西瓜',
-		keywordRegex: getRegExp('www.ixigua.com/search', 'keyword'),
-		searchUrl: 'https://www.ixigua.com/search?keyword=%s'
-	},
-	{
-		commonUseMapKey: 's',
-		mapkey: ';sm',
-		siteName: '神马',
-		keywordRegex: getRegExp('so.m.sm.cn/s', 'q'),
-		searchUrl: 'https://so.m.sm.cn/s?q=%s'
-	}
+    commonUseMapKey: 's',
+    mapkey: ';gg',
+    siteName: 'google',
+    keywordRegex: getRegExp('www.google.com/search', 'q'),
+    searchUrl: 'https://www.google.com/search?q=%s',
+    listSuggestions: 'https://www.google.com/complete/search?client=chrome-omni&gs_ri=chrome-ext&oit=1&cp=1&pgcl=7&q=',
+    listSuggestionsCallback: (response) => {
+        var res = JSON.parse(response.text);
+        return res[1];
+    }
+},
+{
+    commonUseMapKey: 's',
+    mapkey: ';bd',
+    siteName: 'baidu',
+    keywordRegex: getRegExp('www.baidu.com/s', 'wd'),
+    searchUrl: 'https://www.baidu.com/s?wd=%s',
+    listSuggestions: 'https://duckduckgo.com/ac/?q=',
+    listSuggestionsCallback: (response) => {
+        var res = response.text.match(/,s:\[("[^\]]+")]}/);
+        return res ? res[1].replace(/"/g, '').split(",") : [];
+    }
+},
+{
+    commonUseMapKey: 'v',
+    mapkey: ';yt',
+    siteName: 'youtube',
+    keywordRegex: getRegExp('www.youtube.com/results', 'search_query'),
+    searchUrl: 'https://www.youtube.com/results?search_query=%s',
+    listSuggestions: 'https://clients1.google.com/complete/search?client=youtube&ds=yt&callback=cb&q=',
+    listSuggestionsCallback: (response) => {
+        var res = JSON.parse(response.text.substr(9, response.text.length - 10));
+        return res[1].map(function (d) {
+            return d[0];
+        });
+    }
+},
+{
+    commonUseMapKey: 'c',
+    mapkey: ';gh',
+    siteName: 'github',
+    keywordRegex: getRegExp('github.com/search', 'q'),
+    searchUrl: 'https://github.com/search?o:desc&q=%s&s:stars&type:Repositories'
+},
+{
+    commonUseMapKey: 'c',
+    mapkey: ';nx',
+    siteName: 'nixos',
+    keywordRegex: getRegExp('https://search.nixos.org/', 'query'),
+    searchUrl: 'https://search.nixos.org/options?channel=unstable&from=0&size=50&sort=relevance&type=packages&query=%s'
+},
+{
+    commonUseMapKey: 'v',
+    mapkey: ';bb',
+    siteName: 'bilibili',
+    keywordRegex: getRegExp('search.bilibili.com/all', 'keyword'),
+    searchUrl: 'https://search.bilibili.com/all?keyword=%s'
+},
+{
+    commonUseMapKey: 'g',
+    mapkey: ';jd',
+    siteName: 'jd',
+    keywordRegex: getRegExp('search.jd.com/[Ss]earch', 'keyword'),
+    searchUrl: 'https://search.jd.com/Search?keyword=%s'
+},
+{
+    commonUseMapKey: 'g',
+    mapkey: ';tb',
+    siteName: 'taobao',
+    keywordRegex: getRegExp('s.taobao.com/search', 'q'),
+    searchUrl: 'https://s.taobao.com/search?q=%s'
+},
+{
+    commonUseMapKey: 'v',
+    mapkey: ';xg',
+    siteName: '西瓜',
+    keywordRegex: getRegExp('www.ixigua.com/search', 'keyword'),
+    searchUrl: 'https://www.ixigua.com/search?keyword=%s'
+},
+{
+    commonUseMapKey: 's',
+    mapkey: ';sm',
+    siteName: '神马',
+    keywordRegex: getRegExp('so.m.sm.cn/s', 'q'),
+    searchUrl: 'https://so.m.sm.cn/s?q=%s'
+}
 ];
 
 function getRegExp(urlBeforeParam, searchParamKey) {
-	//ep. ^http[s]{0,1}://www.google.com/search\?.*?[&]{0,1}q=([^&]*)?.*$
-	var regStr = '^http[s]{0,1}://' + urlBeforeParam + '\?.*?[&]{0,1}' + searchParamKey + '=([^&]*)?.*$';
-	return new RegExp(regStr);
+    //ep. ^http[s]{0,1}://www.google.com/search\?.*?[&]{0,1}q=([^&]*)?.*$
+    var regStr = '^http[s]{0,1}://' + urlBeforeParam + '\?.*?[&]{0,1}' + searchParamKey + '=([^&]*)?.*$';
+    return new RegExp(regStr);
 }
 
 function getCurrentKeywordAndMapkey() {
-	var currentURL = window.location.href;
-	for (var i = 0, len = switchSearchConfigs.length; i < len; i++) {
-		var searchConfig = switchSearchConfigs[i];
-		if (searchConfig.keywordRegex.test(currentURL)) {
-			var currentKeywordAndMapkey = {
-				keyword: RegExp.$1,
-				mapkey: searchConfig.mapkey
-			};
-			return currentKeywordAndMapkey;
-		}
-	}
+    var currentURL = window.location.href;
+    for (var i = 0, len = switchSearchConfigs.length; i < len; i++) {
+        var searchConfig = switchSearchConfigs[i];
+        if (searchConfig.keywordRegex.test(currentURL)) {
+            var currentKeywordAndMapkey = {
+                keyword: RegExp.$1,
+                mapkey: searchConfig.mapkey
+            };
+            return currentKeywordAndMapkey;
+        }
+    }
 }
 
 function getTargetSearchSiteConfig(mapkey) {
-	for (var i = 0, len = switchSearchConfigs.length; i < len; i++) {
-		var searchConfig = switchSearchConfigs[i];
-		if (searchConfig.mapkey == mapkey) {
-			return searchConfig;
-		}
-	}
+    for (var i = 0, len = switchSearchConfigs.length; i < len; i++) {
+        var searchConfig = switchSearchConfigs[i];
+        if (searchConfig.mapkey == mapkey) {
+            return searchConfig;
+        }
+    }
 }
 
 function switchSearchEngineWithKeywordByMapKey(mapkey) {
-	var currentKeywordAndMapkey = getCurrentKeywordAndMapkey();
-	if (!currentKeywordAndMapkey || currentKeywordAndMapkey.length < 1 || !currentKeywordAndMapkey.keyword || currentKeywordAndMapkey.keyword < 1) {
-		return;
-	}
+    var currentKeywordAndMapkey = getCurrentKeywordAndMapkey();
+    if (!currentKeywordAndMapkey || currentKeywordAndMapkey.length < 1 || !currentKeywordAndMapkey.keyword || currentKeywordAndMapkey.keyword < 1) {
+        return;
+    }
 
-	switchSearchEngin(currentKeywordAndMapkey, mapkey);
+    switchSearchEngin(currentKeywordAndMapkey, mapkey);
 }
 
 function switchSearchEngin(currentKeywordAndMapkey, mapkey) {
-	var targetSearchSiteConfig = getTargetSearchSiteConfig(mapkey);
-	if (!targetSearchSiteConfig || targetSearchSiteConfig.searchUrl.length < 1) {
-		return;
-	}
-	var targetURLHref = targetSearchSiteConfig.searchUrl.replace('%s', currentKeywordAndMapkey.keyword);
-	window.location.href = encodeURI(decodeURI(targetURLHref));
+    var targetSearchSiteConfig = getTargetSearchSiteConfig(mapkey);
+    if (!targetSearchSiteConfig || targetSearchSiteConfig.searchUrl.length < 1) {
+        return;
+    }
+    var targetURLHref = targetSearchSiteConfig.searchUrl.replace('%s', currentKeywordAndMapkey.keyword);
+    window.location.href = encodeURI(decodeURI(targetURLHref));
 }
 
 function searchWithCopyWordsByMapKey(mapkey) {
-	var targetSearchSiteConfig = getTargetSearchSiteConfig(mapkey);
-	if (!targetSearchSiteConfig || targetSearchSiteConfig.searchUrl.length < 1) {
-		return;
-	}
-	Clipboard.read(function (response) {
-		var query = window.getSelection().toString() || response.data;
-		if (!query || query.length < 1) {
-			return;
-		}
-		var targetURLHref;
-		if (isUrl(query)) {
-			//如果复制的内容本身就是一个url，那么直接跳转。代替了常规的ctrl+t，ctlr+l，ctrl+v ,enter操作
-			targetURLHref = query;
-		} else {
-			targetURLHref = targetSearchSiteConfig.searchUrl.replace('%s', encodeURIComponent(query));
-		}
+    var targetSearchSiteConfig = getTargetSearchSiteConfig(mapkey);
+    if (!targetSearchSiteConfig || targetSearchSiteConfig.searchUrl.length < 1) {
+        return;
+    }
+    Clipboard.read(function (response) {
+        var query = window.getSelection().toString() || response.data;
+        if (!query || query.length < 1) {
+            return;
+        }
+        var targetURLHref;
+        if (isUrl(query)) {
+            //如果复制的内容本身就是一个url，那么直接跳转。代替了常规的ctrl+t，ctlr+l，ctrl+v ,enter操作
+            targetURLHref = query;
+        } else {
+            targetURLHref = targetSearchSiteConfig.searchUrl.replace('%s', encodeURIComponent(query));
+        }
 
-		tabOpenLink(targetURLHref);
-	});
+        tabOpenLink(targetURLHref);
+    });
 }
 
 function isUrl(context) {
-	return /http(s)?:\/\/([\w-]+\.)+[\w-]+(\/[\w- .\/?%&=]*)?/.test(context);
+    return /http(s)?:\/\/([\w-]+\.)+[\w-]+(\/[\w- .\/?%&=]*)?/.test(context);
 }
 
 //unmap all key with ';' prefix of default settings
@@ -285,117 +309,118 @@ function isUrl(context) {
 // '<Alt-s>' 禁用启动插件，不要，基本没用。下面自动切换搜索引擎使用。
 // 取消，占用`;`的快捷键。以及取消占用`s`的快捷键。
 const unmaps = [
-	';fs', ';m', ';w', ';pj', ';pf', ';pp', ';cp', ';ap', ';s', ';dh', ';db', '<Alt-s>', ';t', ';j', 'sg', 'sd', 'sb', 'se', 'sw', 'ss', 'sh', 'sy', 'sjd', 'stb', 'sxg'
+    ';fs', ';m', ';w', ';pj', ';pf', ';pp', ';cp', ';ap', ';s', ';dh', ';db', '<Alt-s>', ';t', ';j', 'sg', 'sd', 'sb', 'se', 'sw', 'ss', 'sh', 'sy', 'sjd', 'stb', 'sxg', 'on'
 ];
 unmaps.forEach((u) => {
-	unmap(u);
+    unmap(u);
 });
 
 // 最高频的搜索，最简单的按键。
 mapkey('s', "快速网络搜索s", function () {
-	Front.openOmnibar({
-		type: "SearchEngine",
-		extra: "gg"
-	});
+    Front.openOmnibar({
+        type: "SearchEngine",
+        extra: "gg"
+    });
 });
 
 
 //remap ';' as search engine switch prefix
 function bindMapKeyForSwitchSearchEngine() {
-	for (var i = 0, len = switchSearchConfigs.length; i < len; i++) {
-		var searchConfig = switchSearchConfigs[i];
-		if (!searchConfig.mapkey || searchConfig.mapkey.length < 1) {
-			continue;
-		}
-		//notice: use let instead of var
-		let mk = searchConfig.mapkey;
-		// 1. 使用当前的搜索关键字，换新的搜索引擎 。绑定 （';'+ 两个字母）的快捷键
-		mapkey(mk, '搜索<当前搜索关键字>内容 - ' + searchConfig.siteName, function () {
-			switchSearchEngineWithKeywordByMapKey(mk);
-		});
-		// 2. 使用当前选中的内容，换新的搜索引擎。 绑定 （';;'+ 两个字母）的快捷键
-		var mkForCopyWord = ';' + mk;
-		mapkey(mkForCopyWord, '搜索<选中>内容 - ' + searchConfig.siteName, function () {
-			searchWithCopyWordsByMapKey(mk);
-		});
-		// 3. 在当前页面打开搜索框，输入关键字，换新的搜索引擎。 绑定（';;;'+ 两个字母）的快捷键
-		var mkForInput = ';;' + mk;
-		//addSearchAlias(alias, prompt, url, suggestionURL, listSuggestion)
-		let searchAlias = mk.replace(';', '');
-		var url = searchConfig.searchUrl.replace('%s', '{0}');
-		var listSuggestion = url;
-		addSearchAlias(searchAlias, searchConfig.siteName, url, 's', listSuggestion);
-		mapkey(mkForInput, '搜索<输入>内容 - ' + searchConfig.siteName, function () {
-			Front.openOmnibar({
-				type: "SearchEngine",
-				extra: searchAlias
-			});
-		});
-	}
+    for (var i = 0, len = switchSearchConfigs.length; i < len; i++) {
+        var searchConfig = switchSearchConfigs[i];
+        if (!searchConfig.mapkey || searchConfig.mapkey.length < 1) {
+            continue;
+        }
+        //notice: use let instead of var
+        let mk = searchConfig.mapkey;
+        // 1. 使用当前的搜索关键字，换新的搜索引擎 。绑定 （';'+ 两个字母）的快捷键
+        mapkey(mk, '搜索<当前搜索关键字>内容 - ' + searchConfig.siteName, function () {
+            switchSearchEngineWithKeywordByMapKey(mk);
+        });
+        // 2. 使用当前选中的内容，换新的搜索引擎。 绑定 （';;'+ 两个字母）的快捷键
+        var mkForCopyWord = ';' + mk;
+        mapkey(mkForCopyWord, '搜索<选中>内容 - ' + searchConfig.siteName, function () {
+            searchWithCopyWordsByMapKey(mk);
+        });
+        // 3. 在当前页面打开搜索框，输入关键字，换新的搜索引擎。 绑定（';;;'+ 两个字母）的快捷键
+        var mkForInput = ';;' + mk;
+        //addSearchAlias(alias, prompt, url, suggestionURL, listSuggestion)
+        let searchAlias = mk.replace(';', '');
+        var url = searchConfig.searchUrl.replace('%s', '{0}');
+        var listSuggestion = typeof searchConfig.listSuggestions === 'undefined' ? url : searchConfig.listSuggestions;
+        var listSuggestionCallback = typeof searchConfig.listSuggestionsCallback === 'undefined' ? (x) =>x : searchConfig.listSuggestionsCallback;
+        addSearchAlias(searchAlias, searchConfig.siteName, url, 's', listSuggestion, listSuggestionCallback);
+        mapkey(mkForInput, '搜索<输入>内容 - ' + searchConfig.siteName, function () {
+            Front.openOmnibar({
+                type: "SearchEngine",
+                extra: searchAlias
+            });
+        });
+    }
 }
 // 约定，所有的新增的关键字搜索切换，使用';'前缀 。 ep.   百度= ;bd YouTube= ; yt
 bindMapKeyForSwitchSearchEngine();
 
 //auto switch by default order 
 function switchSearchEngineWithKeywordByOrder() {
-	var searchOrder = [';gg', ';bd', ';sm'];
-	var currentKeywordAndMapkey = getCurrentKeywordAndMapkey();
-	if (!currentKeywordAndMapkey && !currentKeywordAndMapkey.mapkey) {
-		return;
-	}
-	for (var i = 0, len = searchOrder.length; i < len; i++) {
-		if (currentKeywordAndMapkey.mapkey == searchOrder[i]) {
-			var loopIndex = (i + 1) % searchOrder.length;
-			var targetMapkey = searchOrder[loopIndex];
-			switchSearchEngin(currentKeywordAndMapkey, targetMapkey);
-			return;
-		}
-	}
+    var searchOrder = [';gg', ';bd', ';sm'];
+    var currentKeywordAndMapkey = getCurrentKeywordAndMapkey();
+    if (!currentKeywordAndMapkey && !currentKeywordAndMapkey.mapkey) {
+        return;
+    }
+    for (var i = 0, len = searchOrder.length; i < len; i++) {
+        if (currentKeywordAndMapkey.mapkey == searchOrder[i]) {
+            var loopIndex = (i + 1) % searchOrder.length;
+            var targetMapkey = searchOrder[loopIndex];
+            switchSearchEngin(currentKeywordAndMapkey, targetMapkey);
+            return;
+        }
+    }
 }
 
 mapkey('<Alt-s>', '循环切换搜索引擎', switchSearchEngineWithKeywordByOrder);
 
 //open muti search engine
 function openMutiSearchEngine(commonUseMapKey) {
-	if (!commonUseMapKey) {
-		return;
-	}
-	var currentKeywordAndMapkey = getCurrentKeywordAndMapkey();
-	if (!currentKeywordAndMapkey && !currentKeywordAndMapkey.mapkey) {
-		return;
-	}
-	var encodeKeyWord = encodeURIComponent(decodeURIComponent(currentKeywordAndMapkey.keyword));
-	for (var i = 0, len = switchSearchConfigs.length; i < len; i++) {
-		var switchSearchConfig = switchSearchConfigs[i];
-		if (commonUseMapKey == switchSearchConfig.commonUseMapKey && currentKeywordAndMapkey.mapkey != switchSearchConfig.mapkey) {
-			var targetURLHref = switchSearchConfig.searchUrl.replace('%s', encodeKeyWord);
-			tabOpenLink(targetURLHref);
-		}
-	}
+    if (!commonUseMapKey) {
+        return;
+    }
+    var currentKeywordAndMapkey = getCurrentKeywordAndMapkey();
+    if (!currentKeywordAndMapkey && !currentKeywordAndMapkey.mapkey) {
+        return;
+    }
+    var encodeKeyWord = encodeURIComponent(decodeURIComponent(currentKeywordAndMapkey.keyword));
+    for (var i = 0, len = switchSearchConfigs.length; i < len; i++) {
+        var switchSearchConfig = switchSearchConfigs[i];
+        if (commonUseMapKey == switchSearchConfig.commonUseMapKey && currentKeywordAndMapkey.mapkey != switchSearchConfig.mapkey) {
+            var targetURLHref = switchSearchConfig.searchUrl.replace('%s', encodeKeyWord);
+            tabOpenLink(targetURLHref);
+        }
+    }
 }
 
 function bindMapKeyForOpenMutiCommonUse() {
-	var commonUse = new Map();
-	for (var i = switchSearchConfigs.length - 1; i >= 0; i--) {
-		var switchSearchConfig = switchSearchConfigs[i];
-		if (!switchSearchConfig.commonUseMapKey || switchSearchConfig.commonUseMapKey == '') {
-			continue;
-		}
-		if (commonUse.has(switchSearchConfig.commonUseMapKey)) {
-			var str = commonUse.get(switchSearchConfig.commonUseMapKey) + "#" + switchSearchConfig.siteName;
-			commonUse.set(switchSearchConfig.commonUseMapKey, str);
-		} else {
-			commonUse.set(switchSearchConfig.commonUseMapKey, switchSearchConfig.siteName);
-		}
-	}
-	for (var [key, value] of commonUse) {
-		let bindkey = 'oa' + key;
-		let desc = '同时打开:' + value;
-		let k = key;
-		mapkey(bindkey, desc, function () {
-			openMutiSearchEngine(k);
-		});
-	}
+    var commonUse = new Map();
+    for (var i = switchSearchConfigs.length - 1; i >= 0; i--) {
+        var switchSearchConfig = switchSearchConfigs[i];
+        if (!switchSearchConfig.commonUseMapKey || switchSearchConfig.commonUseMapKey == '') {
+            continue;
+        }
+        if (commonUse.has(switchSearchConfig.commonUseMapKey)) {
+            var str = commonUse.get(switchSearchConfig.commonUseMapKey) + "#" + switchSearchConfig.siteName;
+            commonUse.set(switchSearchConfig.commonUseMapKey, str);
+        } else {
+            commonUse.set(switchSearchConfig.commonUseMapKey, switchSearchConfig.siteName);
+        }
+    }
+    for (var [key, value] of commonUse) {
+        let bindkey = 'oa' + key;
+        let desc = '同时打开:' + value;
+        let k = key;
+        mapkey(bindkey, desc, function () {
+            openMutiSearchEngine(k);
+        });
+    }
 }
 bindMapKeyForOpenMutiCommonUse();
 
@@ -403,85 +428,85 @@ bindMapKeyForOpenMutiCommonUse();
 
 //=====================faster web index 充当网页导航的功能================== start
 var webShortNameConfig = [{
-		shortName: 'gh',
-		siteName: 'github',
-		url: 'https://github.com/'
-	},
-	{
-		shortName: 'my',
-		siteName: '码云',
-		url: 'https://gitee.com/explore/all'
-	},
-	{
-		shortName: 'jd',
-		siteName: 'jd',
-		url: 'https://www.jd.com/'
-	},
-	{
-		shortName: 'tb',
-		siteName: 'taobao',
-		url: 'https://www.taobao.com/'
-	},
-	{
-		shortName: 'jj',
-		siteName: '掘金',
-		url: 'https://juejin.im/backend/%E5%85%A8%E9%83%A8'
-	},
-	{
-		shortName: 'ct',
-		siteName: '抽屉',
-		url: 'https://dig.chouti.com/'
-	},
-	{
-		shortName: 'yt',
-		siteName: 'youtube',
-		url: 'https://www.youtube.com/'
-	},
-	{
-		shortName: 'bb',
-		siteName: 'bilibili',
-		url: 'https://www.bilibili.com/'
-	},
-	{
-		shortName: 'ks',
-		siteName: '快手',
-		url: 'https://live.kuaishou.com/cate/my-follow/living'
-	},
-	{
-		shortName: 'hy',
-		siteName: '虎牙',
-		url: 'https://www.huya.com/g/seeTogether'
-	},
-	{
-		shortName: 've',
-		siteName: 'v2ex',
-		url: 'https://www.v2ex.com'
-	},
-	{
-		shortName: 'gi',
-		siteName: 'my-gist',
-		url: 'https://gist.github.com/fanlushuai/'
-	},
-	{
-		shortName: 'so',
-		siteName: 'stackOverflow',
-		url: 'https://stackoverflow.com/'
-	},
-	{
-		shortName: 'nf',
-		siteName: 'netflix',
-		url: 'https://www.netflix.com/'
-	},
-	{
-		shortName: 'wr',
-		siteName: '微信阅读',
-		url: 'https://weread.qq.com/web/shelf'
-	},
-	{
-		shortName: 'xg',
-		siteName: '西瓜视频',
-		url: 'https://www.ixigua.com'
-	}
+    shortName: 'gh',
+    siteName: 'github',
+    url: 'https://github.com/'
+},
+{
+    shortName: 'my',
+    siteName: '码云',
+    url: 'https://gitee.com/explore/all'
+},
+{
+    shortName: 'jd',
+    siteName: 'jd',
+    url: 'https://www.jd.com/'
+},
+{
+    shortName: 'tb',
+    siteName: 'taobao',
+    url: 'https://www.taobao.com/'
+},
+{
+    shortName: 'jj',
+    siteName: '掘金',
+    url: 'https://juejin.im/backend/%E5%85%A8%E9%83%A8'
+},
+{
+    shortName: 'ct',
+    siteName: '抽屉',
+    url: 'https://dig.chouti.com/'
+},
+{
+    shortName: 'yt',
+    siteName: 'youtube',
+    url: 'https://www.youtube.com/'
+},
+{
+    shortName: 'bb',
+    siteName: 'bilibili',
+    url: 'https://www.bilibili.com/'
+},
+{
+    shortName: 'ks',
+    siteName: '快手',
+    url: 'https://live.kuaishou.com/cate/my-follow/living'
+},
+{
+    shortName: 'hy',
+    siteName: '虎牙',
+    url: 'https://www.huya.com/g/seeTogether'
+},
+{
+    shortName: 've',
+    siteName: 'v2ex',
+    url: 'https://www.v2ex.com'
+},
+{
+    shortName: 'gi',
+    siteName: 'my-gist',
+    url: 'https://gist.github.com/fanlushuai/'
+},
+{
+    shortName: 'so',
+    siteName: 'stackOverflow',
+    url: 'https://stackoverflow.com/'
+},
+{
+    shortName: 'nf',
+    siteName: 'netflix',
+    url: 'https://www.netflix.com/'
+},
+{
+    shortName: 'wr',
+    siteName: '微信阅读',
+    url: 'https://weread.qq.com/web/shelf'
+},
+{
+    shortName: 'xg',
+    siteName: '西瓜视频',
+    url: 'https://www.ixigua.com'
+}
 ]
 
 
@@ -489,12 +514,12 @@ var webIndexPrefix = 'm';
 unmap(webIndexPrefix);
 
 function bindMapKeyForWebIndex() {
-	for (var i = webShortNameConfig.length - 1; i >= 0; i--) {
-		let webIndexConfig = webShortNameConfig[i];
-		mapkey(webIndexPrefix + webIndexConfig.shortName, '跳转到--->>>> ' + webIndexConfig.siteName, function () {
-			tabOpenLink(webIndexConfig.url);
-		});
-	}
+    for (var i = webShortNameConfig.length - 1; i >= 0; i--) {
+        let webIndexConfig = webShortNameConfig[i];
+        mapkey(webIndexPrefix + webIndexConfig.shortName, '跳转到--->>>> ' + webIndexConfig.siteName, function () {
+            tabOpenLink(webIndexConfig.url);
+        });
+    }
 }
 
 bindMapKeyForWebIndex();
@@ -502,29 +527,29 @@ bindMapKeyForWebIndex();
 
 //Use q to search at virsual mode
 Front.registerInlineQuery({
-	url: function (q) {
-		return `http://dict.youdao.com/w/eng/${q}/#keyfrom=dict2.index`;
-	},
-	parseResult: function (res) {
-		var parser = new DOMParser();
-		var doc = parser.parseFromString(res.text, "text/html");
-		var collinsResult = doc.querySelector("#collinsResult");
-		var authTransToggle = doc.querySelector("#authTransToggle");
-		var examplesToggle = doc.querySelector("#examplesToggle");
-		if (collinsResult) {
-			collinsResult.querySelectorAll("div>span.collinsOrder").forEach(function (span) {
-				span.nextElementSibling.prepend(span);
-			});
-			collinsResult.querySelectorAll("div.examples").forEach(function (div) {
-				div.innerHTML = div.innerHTML.replace(/<p/gi, "<span").replace(/<\/p>/gi, "</span>");
-			});
-			var exp = collinsResult.innerHTML;
-			return exp;
-		} else if (authTransToggle) {
-			authTransToggle.querySelector("div.via.ar").remove();
-			return authTransToggle.innerHTML;
-		} else if (examplesToggle) {
-			return examplesToggle.innerHTML;
-		}
-	}
+    url: function (q) {
+        return `http://dict.youdao.com/w/eng/${q}/#keyfrom=dict2.index`;
+    },
+    parseResult: function (res) {
+        var parser = new DOMParser();
+        var doc = parser.parseFromString(res.text, "text/html");
+        var collinsResult = doc.querySelector("#collinsResult");
+        var authTransToggle = doc.querySelector("#authTransToggle");
+        var examplesToggle = doc.querySelector("#examplesToggle");
+        if (collinsResult) {
+            collinsResult.querySelectorAll("div>span.collinsOrder").forEach(function (span) {
+                span.nextElementSibling.prepend(span);
+            });
+            collinsResult.querySelectorAll("div.examples").forEach(function (div) {
+                div.innerHTML = div.innerHTML.replace(/<p/gi, "<span").replace(/<\/p>/gi, "</span>");
+            });
+            var exp = collinsResult.innerHTML;
+            return exp;
+        } else if (authTransToggle) {
+            authTransToggle.querySelector("div.via.ar").remove();
+            return authTransToggle.innerHTML;
+        } else if (examplesToggle) {
+            return examplesToggle.innerHTML;
+        }
+    }
 });
