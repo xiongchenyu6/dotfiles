@@ -315,23 +315,15 @@
       };
     };
 
-    # postgresql = {
-    #   enable = true;
-    #   # ensureDatabases = [ "postgres" "hydra" ];
-    #   ensureUsers = [
-    #     {
-    #       name = "freeman";
-    #       ensurePermissions = {
-    #         "ALL TABLES IN SCHEMA public" = "ALL PRIVILEGES";
-    #       };
-    #     }
-    #     # {
-    #     #   name = "hydra";
-    #     #   ensurePermissions = { "DATABASE hydra" = "ALL PRIVILEGES"; };
-    #     # }
-    #   ];
-    # };
-
+    postgresql = {
+      enable = true;
+      ensureUsers = [
+        {
+          name = "freeman";
+        }
+      ];
+    };
+ 
     hydra = {
       enable = true;
       hydraURL = "http://localhost:3000"; # externally visible URL
@@ -401,6 +393,7 @@
       autorandr
       automake
       antibody
+      asciinema
       awscli2
       brave
       #google-chrome
@@ -411,6 +404,7 @@
       consul
       direnv
       discord
+      dig
       dunst
       lua
       nix-direnv
@@ -424,6 +418,7 @@
         epkgs.org-roam
         epkgs.org-re-reveal
         epkgs.pdf-tools
+        epkgs.leetcode
       ]))
       exa
       #  fasd
@@ -471,7 +466,7 @@
       libxml2
       libtool
       libsodium
-      python3
+      (python3.withPackages(ps : [myRepo.my_cookies]))
       pinentry
       linuxPackages.ply
       polybar
@@ -512,7 +507,7 @@
       xddxdd.qq
       xddxdd.wechat-uos
       xscreensaver
-      zoom
+      zoom-us
     ];
     pathsToLink = [ "/share/nix-direnv" ];
   };

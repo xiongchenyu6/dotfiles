@@ -13,6 +13,7 @@ XTerm*renderFont: true
 XTerm.vt100.faceName: Hack Nerd Font:size=12:antialias=true
 XTerm*selectToClipboard: true
 xterm.*backarrowKey: false
+*VT100*translations: #override Shift <Btn1Up>: exec-formatted("brave '%t'", PRIMARY)
 xterm*VT100.Translations: #override \
                  Ctrl Shift <Key>V:    insert-selection(CLIPBOARD) \n\
                  Ctrl Shift <Key>C:    copy-selection(CLIPBOARD)
