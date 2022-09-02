@@ -1281,7 +1281,7 @@ Bind to lsp mode
 #+end_src
 ** Leetcode
 #+begin_src emacs-lisp
-(straight-use-package 'leetcode)
+;(straight-use-package 'leetcode)
 (autoload 'leetcode "leetcode" nil t)
 
 (setq leetcode-prefer-language "cpp"
