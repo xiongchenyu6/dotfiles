@@ -18,6 +18,7 @@
     enable = true;
     initExtra = ''
       ${pkgs.xorg.xset}/bin/xset -b
+      ${pkgs.xorg.xset}/bin/xset r rate 180 60
     '';
     windowManager.xmonad = {
       enable = true;
@@ -30,6 +31,17 @@
       ];
     };
   };
+  # gtk = {
+  #   enable = true;
+  #   iconTheme = {
+  #     name = "Adwaita-dark";
+  #     package = pkgs.gnome3.adwaita-icon-theme;
+  #   };
+  #   theme = {
+  #     name = "Adwaita-dark";
+  #     package = pkgs.gnome3.adwaita-icon-theme;
+  #   };
+  # };
   i18n = {
     inputMethod = {
       enabled = "fcitx5";
@@ -39,12 +51,35 @@
   };
   home = {
     stateVersion = "22.11";
-    file.".curlrc".text = builtins.readFile ../downloader/.curlrc;
+    file.".curlrc".text = builtins.readFile ../old-files/downloader/.curlrc;
+    file.".editorconfig".text =
+      builtins.readFile ../old-files/editor/.editorconfig;
 
   };
   programs = {
     # Let Home Manager install and manage itself.
+
+    ssh = {
+      enable = true;
+      hashKnownHosts = true;
+      compression = true;
+      matchBlocks = (import ./secret.nix).hosts;
+    };
+    
+    exa = {
+      enable = true;
+    };
     home-manager.enable = true;
+    rofi = {
+      enable = true;
+      theme = "gruvbox-dark";
+      extraConfig = {
+        modi = "drun,ssh,keys,filebrowser";
+        kb-primary-paste = "Control+V,Shift+Insert";
+        kb-secondary-paste = "Control+v,Insert";
+      };
+
+    };
     autorandr = {
       enable = true;
       profiles = {
@@ -68,7 +103,7 @@
             "HDMI-1" = {
               enable = true;
               crtc = 1;
-              primary = true;
+              primary = false;
               position = "1920x0";
               mode = "3840x2160";
               rate = "60.00";
@@ -76,9 +111,9 @@
             };
 
           };
-          hooks.postswitch = ''
-            polybar-msg cmd restart
-          '';
+          # hooks.postswitch = ''
+          #   polybar-msg cmd restart
+          # '';
         };
       };
     };
@@ -131,6 +166,7 @@
       enableZshIntegration = true;
       nix-direnv = { enable = true; };
     };
+
     gh = {
       enable = true;
       settings = { git_protocal = "ssh"; };
@@ -172,6 +208,10 @@
           editor = "emacs";
         };
         pull = { rebase = false; };
+        user = {
+          name = "freeman";
+          email = "xiongchenyu6@gmail.com";
+        };
       };
       ignores = [
         "tags"
@@ -231,7 +271,7 @@
         vi = "vim";
         yolo = ''git commit -m "$(curl -s whatthecommit.com/index.txt)"'';
         op = "xdg-open";
-        ls = "exa --icons";
+       # ls = "exa --icons";
       };
       initExtra = ''
         function gre {
@@ -329,28 +369,40 @@
           };
         }
         {
-          name = "enhancd";
-          src = pkgs.fetchFromGitHub {
-            owner = "b4b4r07";
-            repo = "enhancd";
-            rev = "v2.2.4";
-            sha256 = "sha256-9/JGJgfAjXLIioCo3gtzCXJdcmECy6s59Oj0uVOfuuo=";
-          };
-        }
-        {
           name = "forgit";
           src = pkgs.fetchFromGitHub {
             owner = "wfxr";
             repo = "forgit";
             rev = "3f50933f047510020428114551da0ee5cdfb32a3";
             sha256 = "sha256-TSF4Vr5uf/+MVU4yCdIHNnwB7kkp4mF+hkhKtLqQvmk=";
-            
+
           };
         }
       ];
       enableCompletion = true;
       enableAutosuggestions = true;
       enableSyntaxHighlighting = true;
+    };
+    fzf = {
+      enable = true;
+    };
+    jq = {
+      enable = true;
+    };
+    man = {
+      enable = true;
+    };
+    qutebrowser = {
+      enable = true;
+    };
+    vim = {
+      enable = true;
+    };
+    zathura = {
+      enable = true;
+    };
+    zoxide = {
+      enable = true;
     };
     tmux = {
       enable = true;
@@ -383,6 +435,78 @@
         sudo.disabled = false;
       };
     };
+    xmobar = {
+      enable = true;
+      extraConfig = ''
+        Config {
+                font = "xft:WenQuanYi Zen Hei:size=11"
+              , borderColor = "black"
+              , border = TopB
+              , bgColor = "black"
+              , fgColor = "grey"
+              , position = TopW L 100
+              -- general behavior
+              , lowerOnStart =     False    -- send to bottom of window stack on start
+              , hideOnStart =      False   -- start with window unmapped (hidden)
+              , allDesktops =      True    -- show on all desktops
+              , overrideRedirect = True    -- set the Override Redirect flag (Xlib)
+              , pickBroadest =     True   -- choose widest display (multi-monitor)
+              , persistent =       True    -- enable/disable hiding (True = disabled)
+                    -- <fc=#ee9a00>%date%</fc>
+              , template = "%XMonadLog%|%multicpu%|%cpufreq%|%memory%|%dynnetwork%|%disku%|%diskio%|%default:Master%|%bright%|%battery%|%coretemp%}{<fc=#ee9a00>%WSSS%</fc>"
+              , sepChar = "%"
+              , alignSep = "}{"
+              , commands = [ 
+                                Run Weather "WSSS" ["-t","<station>: <tempC>C","-L","18","-H","25","--normal","green","--high","red","--low","lightblue"] 36000
+                              -- network activity monitor (dynamic interface resolution)
+                              , Run DynNetwork     [ "--template" , "<dev>: <tx>kB/s|<rx>kB/s"
+                                                    , "--Low"      , "1000"       -- units: kB/s
+                                                    , "--High"     , "5000"       -- units: kB/s
+                                                    , "--low"      , "green"
+                                                    , "--normal"   , "orange"
+                                                    , "--high"     , "red"
+                                                    ] 10
+                              -- cpu activity monitor
+                              , Run MultiCpu       [ "--template" , "Cpu: <total0>%|<total1>%"
+                                                    , "--Low"      , "50"         -- units: %
+                                                    , "--High"     , "85"         -- units: %
+                                                    , "--low"      , "green"
+                                                    , "--normal"   , "orange"
+                                                    , "--high"     , "red"
+                                                    ] 10
+                              , Run CpuFreq ["-t", "Freq:<cpu0>|<cpu1>GHz", "-L", "0", "-H", "2", "-l", "lightblue", "-n","white", "-h", "red"] 50
+                              -- cpu core temperature monitor
+                              , Run CoreTemp       [ "--template" , "Temp: <core0>°C|<core1>°C"
+                                                    , "--Low"      , "70"        -- units: °C
+                                                    , "--High"     , "80"        -- units: °C
+                                                    , "--low"      , "green"
+                                                    , "--normal"   , "orange"
+                                                    , "--high"     , "red"
+                                                    ] 50
+                              , Run Memory ["-t","Mem: <usedratio>%"] 10
+                              , Run Battery [
+                                "-t", "<acstatus>: <left>% - <timeleft>",
+                                "--",
+                                --"-c", "charge_full",
+                                "-O", "AC",
+                                "-o", "Bat",
+                                "-h", "green",
+                                "-l", "red"
+                                ] 10
+                              , Run Com "uname" ["-s","-r"] "" 36000
+                              , Run Date "%a %b %_d %Y %H:%M:%S" "date" 10
+                             -- mpd
+                             -- , Run MPD ["-t","<composer> <title> (<album>) <track>/<plength> <statei> [<flags>]", "--", "-P", ">>", "-Z", "|", "-S", "><"] 10
+        	                   -- , Run Com "/bin/bash" ["-c", "~/.script/get-volume.sh"]  "myvolume" 1
+                              , Run Volume "default" "Master" [] 10
+                              , Run DiskU [("/", "<used>/<size>"), ("sdb1", "<usedbar>")]       ["-L", "20", "-H", "50", "-m", "1", "-p", "3"]   20
+                              , Run DiskIO [("/", "<read> <write>"), ("sdb1", "<total>")] [] 10
+                              , Run Brightness ["--template", "Bl: <percent>%", "--", "-D", "intel_backlight"] 3
+                              , Run XMonadLog
+                              ]
+              }
+      '';
+    };
 
     sbt = {
       enable = true;
@@ -401,9 +525,74 @@
     };
   };
   services = {
+    xscreensaver = {
+      enable = true;
+      # settings = {
+      #   mode = "blank";
+      #   lock = false;
+      #   fadeTicks = 20;
+      # };
+    };
+    dunst = {
+      enable = true;
+      iconTheme = {
+        name = "Adwaita";
+        package = pkgs.gnome3.adwaita-icon-theme;
+        size = "16x16";
+      };
+      settings = {
+        global = {
+          monitor = 0;
+          geometry = "600x50-50+65";
+          shrink = "yes";
+          transparency = 10;
+          padding = 16;
+          horizontal_padding = 16;
+          font = "JetBrainsMono Nerd Font 10";
+          line_height = 4;
+          format = "<b>%s</b>\\n%b";
+        };
+      };
+    };
+
+    blueman-applet.enable = true;
+    dropbox = { enable = true; };
+    polybar = {
+      enable = true;
+      config = {
+        colors = {
+          background = "#282c34";
+          foreground = "#abb2bf";
+          tray-background = "#282c34";
+        };
+        "bar/bottom" = {
+          width = "100%";
+          height = "30";
+          bottom = true;
+          background = "\${colors.background}";
+          foreground = "\${colors.foreground}";
+          modules-left = "date";
+          font-0 = "Hack Nerd Font:size=10";
+          tray-position = "right";
+          tray-padding = "2";
+          tray-background = "\${colors.background}";
+          enable-ipc = true;
+        };
+        "module/date" = {
+          type = "internal/date";
+          interval = 5;
+          date = "%a %b %d %H:%M";
+          format-prefix = " ";
+          format-prefix-foreground = "#61afef";
+          format-underline = "#61afef";
+        };
+      };
+      script = "polybar bottom &";
+    };
     gpg-agent = {
       enable = true;
       enableSshSupport = true;
+      sshKeys = [ "6E215C61D97608ED447E9D8BAE448986D75FD8F6" ];
     };
     picom = {
       enable = true;

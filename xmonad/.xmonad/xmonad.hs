@@ -51,13 +51,12 @@ myStartupHook = do
   setWMName "LG3D"
   spawn "xset r rate 180 60"
   spawnOnce "brave"
-  spawnOnce "dropbox"
   -- spawnOnce "fcitx5"
-  spawnOnce "blueman-applet"
+  spawnOnce "dropbox start"
   -- spawnOnce "thunderbird"
   -- spawnOnce "compton --config ~/.xmonad/compton.conf"
   spawnOnce myTerminal
-  spawnOnce "polybar"
+  -- spawnOnce "polybar"
   spawn "polybar-msg cmd restart"
   -- spawnOnce "polybar -r"
   -- spawnOnce "xmobar -x 1"
@@ -126,9 +125,11 @@ customerKeyMaps =
         "sleep 0.2; scrot -s '/home/freeman/screen/%F--%H_%M_%S_$wx$h.png' -e 'xclip -selection clipboard -target image/png -i $f'"
     ),
     ((modm .|. shiftMask, xK_p), spawn "passmenu"),
+    ((modm, xK_p), spawn "rofi -i -show drun -show-icons"),
+    ((modm, xK_f), spawn "rofi -i -show filebrowser -show-icons"),
+    ((modm, xK_s), spawn "rofi -i -show ssh -show-icons"),
     ((modm, xK_m), manPrompt popupConfig),
     ((modm .|. controlMask .|. shiftMask, xK_p), passGeneratePrompt popupConfig),
-    ((modm, xK_s), sshPrompt popupConfig),
     ( (modm .|. shiftMask, xK_z),
       spawn "xscreensaver-command -lock; xset dpms force off"
     ),

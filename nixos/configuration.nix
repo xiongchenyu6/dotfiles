@@ -149,7 +149,6 @@
 
     dbus = {
       enable = true;
-      packages = [ pkgs.dconf ];
     };
     # Enable the OpenSSH daemon.
     openssh.enable = true;
@@ -250,7 +249,12 @@
       freeman = {
         isNormalUser = true;
         description = "freeman";
-        extraGroups = [ "networkmanager" "wheel" "video" "audio" ];
+        extraGroups = [
+          "networkmanager" "wheel" "video" "audio"
+          "cdrom" "disk" "floppy" "scanner" "storage"
+          "power" "dialout" "plugdev" "lp" "input"
+          "socket" "spi" "bus" "dropbox"
+        ];
         packages = with pkgs;
           [
             #  thunderbird
@@ -282,13 +286,12 @@
       consul
       discord
       dig
-      dunst
       lua
       nix-direnv
       nixopsUnstable
       neofetch
       dmenu
-      dropbox
+      #dropbox
       ((emacsPackagesFor emacsGitNativeComp).emacsWithPackages (epkgs: [
         epkgs.vterm
         epkgs.org-contrib
@@ -300,10 +303,9 @@
       exa
       #  fasd
       feh
-      fzf
       gitAndTools.gitflow
-      gitAndTools.gitFull
       gitAndTools.hub
+      git-crypt
       #      gnupg
       geoip
       gnumake
@@ -321,7 +323,6 @@
           hasktags
           hoogle
           #wreq
-          xmobar
           #hnix
           #hnix_loc
           #hGelf
@@ -336,7 +337,6 @@
       hydra_unstable
       imagemagick
       ispell
-      jq
       killall
       lsof
       light
@@ -369,7 +369,6 @@
       tcpdump
       unzip
       vlc
-      vim
       stalonetray
       scrot
       stow
