@@ -180,6 +180,13 @@ var switchSearchConfigs = [{
     searchUrl: 'https://search.nixos.org/options?channel=unstable&from=0&size=50&sort=relevance&type=packages&query=%s'
 },
 {
+    commonUseMapKey: 'c',
+    mapkey: ';hm',
+    siteName: 'homemanager',
+    keywordRegex: getRegExp('https://mipmip.github.io/home-manager-option-search/', ''),
+    searchUrl: 'https://mipmip.github.io/home-manager-option-search/?%s'
+},
+{
     commonUseMapKey: 'v',
     mapkey: ';bb',
     siteName: 'bilibili',
@@ -309,7 +316,7 @@ function isUrl(context) {
 // '<Alt-s>' 禁用启动插件，不要，基本没用。下面自动切换搜索引擎使用。
 // 取消，占用`;`的快捷键。以及取消占用`s`的快捷键。
 const unmaps = [
-    ';fs', ';m', ';w', ';pj', ';pf', ';pp', ';cp', ';ap', ';s', ';dh', ';db', '<Alt-s>', ';t', ';j', 'sg', 'sd', 'sb', 'se', 'sw', 'ss', 'sh', 'sy', 'sjd', 'stb', 'sxg', 'on'
+    ';fs', ';m', ';w', ';pj', ';pf', ';pp', ';cp', ';ap', ';s', ';dh', ';db', '<Alt-s>', ';t', ';j', 'sg', 'sd', 'sb', 'se', 'sw', 'ss', 'sh', 'sy', 'sjd', 'stb', 'sxg', 'on', 'oh'
 ];
 unmaps.forEach((u) => {
     unmap(u);

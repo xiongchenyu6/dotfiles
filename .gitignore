@@ -46,3 +46,6 @@ dist-newstyle/
 
 .log/
 .direnv/
+
+result/
+result

@@ -65,10 +65,8 @@
       compression = true;
       matchBlocks = (import ./secret.nix).hosts;
     };
-    
-    exa = {
-      enable = true;
-    };
+
+    exa = { enable = true; };
     home-manager.enable = true;
     rofi = {
       enable = true;
@@ -197,7 +195,7 @@
         options = {
           navigate = true;
           line-numbers = true;
-          syntax-theme = "GitHub";
+       #   syntax-theme = "GitHub";
         };
       };
       extraConfig = {
@@ -271,7 +269,7 @@
         vi = "vim";
         yolo = ''git commit -m "$(curl -s whatthecommit.com/index.txt)"'';
         op = "xdg-open";
-       # ls = "exa --icons";
+        # ls = "exa --icons";
       };
       initExtra = ''
         function gre {
@@ -383,27 +381,13 @@
       enableAutosuggestions = true;
       enableSyntaxHighlighting = true;
     };
-    fzf = {
-      enable = true;
-    };
-    jq = {
-      enable = true;
-    };
-    man = {
-      enable = true;
-    };
-    qutebrowser = {
-      enable = true;
-    };
-    vim = {
-      enable = true;
-    };
-    zathura = {
-      enable = true;
-    };
-    zoxide = {
-      enable = true;
-    };
+    fzf = { enable = true; };
+    jq = { enable = true; };
+    man = { enable = true; };
+    qutebrowser = { enable = true; };
+    vim = { enable = true; };
+    zathura = { enable = true; };
+    zoxide = { enable = true; };
     tmux = {
       enable = true;
       terminal = "screen-256color";
@@ -572,6 +556,7 @@
           background = "\${colors.background}";
           foreground = "\${colors.foreground}";
           modules-left = "date";
+          modules-center = "crypto";
           font-0 = "Hack Nerd Font:size=10";
           tray-position = "right";
           tray-padding = "2";
@@ -585,6 +570,15 @@
           format-prefix = " ";
           format-prefix-foreground = "#61afef";
           format-underline = "#61afef";
+        };
+        "module/crypto" = {
+          type = "custom/script";
+          exec =
+            "${pkgs.curl}/bin/curl https://blockchain.info/ticker --silent | ${pkgs.jq}/bin/jq .USD.last";
+          interval = 60;
+          format-prefix = " ";
+          format-prefix-foreground = "#e06c75";
+          format-underline = "#e06c75";
         };
       };
       script = "polybar bottom &";

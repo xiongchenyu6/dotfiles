@@ -1,10 +1,6 @@
 ﻿*.key filter=git-crypt diff=git-crypt
 *.password filter=git-crypt diff=git-crypt
 *.secret filter=git-crypt diff=git-crypt
-*.env filter=git-crypt diff=git-crypt
-*.env.json filter=git-crypt diff=git-crypt
-*.yaml filter=git-crypt diff=git-crypt
-*.yml filter=git-crypt diff=git-crypt
 netrc filter=git-crypt diff=git-crypt
 *.gpg filter=lfs diff=lfs merge=lfs -text
 secret.nix filter=git-crypt diff=git-crypt

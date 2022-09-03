@@ -11,7 +11,7 @@ in buildGoModule rec {
   });
   enableParallelBuilding = true;
   proxyVendor = true;
-  vendorSha256 = "sha256-GsnUb3D5JTZnNhUssLDDJaLGkD6z9qjSDQz9ahcKGmo=";
+  vendorSha256 = "sha256-ZIBsUN9AT/15410t1ypA8CqhGcFExxalsOyv8zQ06qQ=";
   subPackages = [ "cmd/geth" ];
   doCheck = false;
   postInstall = "mv $out/bin/geth $out/bin/${bin}";

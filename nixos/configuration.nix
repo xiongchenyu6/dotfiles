@@ -114,6 +114,11 @@
     # go-bttc = {
     #   enable = true;
     # };
+    cachix-agent = {
+      enable = true;
+      credentialsFile = ./cachix.secret;
+      # cachix = [ "nixos" ];
+    };
 
     xserver = {
       enable = true;
@@ -140,16 +145,13 @@
 
     aria2 = { enable = true; };
 
-
     # Enable CUPS to print documents.
     printing.enable = true;
 
     gnome.gnome-keyring.enable = true;
     upower.enable = true;
 
-    dbus = {
-      enable = true;
-    };
+    dbus = { enable = true; };
     # Enable the OpenSSH daemon.
     openssh.enable = true;
     pipewire = {
@@ -250,10 +252,24 @@
         isNormalUser = true;
         description = "freeman";
         extraGroups = [
-          "networkmanager" "wheel" "video" "audio"
-          "cdrom" "disk" "floppy" "scanner" "storage"
-          "power" "dialout" "plugdev" "lp" "input"
-          "socket" "spi" "bus" "dropbox"
+          "networkmanager"
+          "wheel"
+          "video"
+          "audio"
+          "cdrom"
+          "disk"
+          "floppy"
+          "scanner"
+          "storage"
+          "power"
+          "dialout"
+          "plugdev"
+          "lp"
+          "input"
+          "socket"
+          "spi"
+          "bus"
+          "dropbox"
         ];
         packages = with pkgs;
           [
@@ -280,7 +296,6 @@
       brave
       #google-chrome
       clang
-      cachix
       conky
       cabal2nix
       consul
@@ -393,6 +408,9 @@
       keep-derivations = true
     '';
     settings.experimental-features = [ "nix-command" "flakes" ];
+    settings = {
+      trusted-users = [ "root" "freeman" ];
+    };
   };
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
@@ -435,6 +453,6 @@
   # this value at the release version of the first install of this system.
   # Before changing this value read the documentation for this option
   # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
-  #  system = { stateVersion = "22.05"; }; # Did you read the comment?
+  system = { stateVersion = "22.11"; }; # Did you read the comment?
 
 }
