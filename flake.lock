@@ -1,22 +1,5 @@
 {
   "nodes": {
-    "bttc": {
-      "inputs": {
-        "nixpkgs": [
-          "nixpkgs"
-        ]
-      },
-      "locked": {
-        "lastModified": 1661313448,
-        "narHash": "sha256-kCuqeMz2L27OyLLPWT/Say+qnvE9cn1rx+qbU3eQmu4=",
-        "type": "git",
-        "url": "file:///home/freeman/private/bttc"
-      },
-      "original": {
-        "type": "git",
-        "url": "file:///home/freeman/private/bttc"
-      }
-    },
     "emacs": {
       "inputs": {
         "flake-utils": "flake-utils",
@@ -146,7 +129,6 @@
     },
     "root": {
       "inputs": {
-        "bttc": "bttc",
         "emacs": "emacs",
         "flake-utils": "flake-utils_2",
         "home-manager": "home-manager",
