@@ -52,7 +52,7 @@ myStartupHook = do
   spawn "xset r rate 180 60"
   spawnOnce "brave"
   spawnOnce "dropbox"
-  spawnOnce "fcitx5"
+  -- spawnOnce "fcitx5"
   spawnOnce "blueman-applet"
   -- spawnOnce "thunderbird"
   -- spawnOnce "compton --config ~/.xmonad/compton.conf"

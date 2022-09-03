@@ -61,7 +61,6 @@
                 myRepo = myRepo.packages."${prev.system}";
                 xddxdd = xddxdd.packages."${prev.system}";
                 b = bttc.packages."${prev.system}";
-                nix-direnv = prev.nix-direnv.override { enableFlakes = true; };
               })
             ];
           })
