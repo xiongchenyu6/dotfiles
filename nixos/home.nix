@@ -233,6 +233,39 @@
         op = "xdg-open";
         ls = "exa --icons";
       };
+      initExtra = ''
+        function gre {
+           VERSION=$(git describe --abbrev=0 --tags)
+           
+           #replace . with space so can split into an array
+           
+           read -r -a VERSION_BITS <<< "''${VERSION//./ }"
+           
+           #get number parts and increase last one by 1
+           VNUM1=''${VERSION_BITS[0]}
+           VNUM2=''${VERSION_BITS[1]}
+           VNUM3=''${VERSION_BITS[2]}
+           VNUM3=$((VNUM3+1))
+           
+           #create new tag
+           NEW_TAG="$VNUM1.$VNUM2.$VNUM3"
+           
+           echo "Updating $VERSION to $NEW_TAG"
+           
+           #get current hash and see if it already has a tag
+           GIT_COMMIT=$(git rev-parse HEAD)
+           NEEDS_TAG=$(git describe --contains "$GIT_COMMIT")
+           
+           #only tag if no tag already
+           if [ -z "$NEEDS_TAG" ]; then
+               git tag "$NEW_TAG"
+               echo "Tagged with $NEW_TAG"
+               git push --tags
+           else
+               echo "Already a tag on this commit"
+           fi
+        }
+      '';
       oh-my-zsh = {
         enable = true;
         plugins = [
@@ -276,6 +309,45 @@
           "tmux"
         ];
       };
+      plugins = [
+        {
+          name = "alias-tips";
+          src = pkgs.fetchFromGitHub {
+            owner = "djui";
+            repo = "alias-tips";
+            rev = "8fc0d2f9b480991f78ce67c49621731d0336b22f";
+            sha256 = "sha256-b6b5/m0oinrB2jIPLFohWjZBhDbNJmi537u5pgzaefc=";
+          };
+        }
+        {
+          name = "wakatime-zsh-plugin";
+          src = pkgs.fetchFromGitHub {
+            owner = "sobolevn";
+            repo = "wakatime-zsh-plugin";
+            rev = "0.1.1";
+            sha256 = "sha256-9/JGJgfAjXLIioCo3gtzCXJdcmECy6s59Oj0uVOfuuo=";
+          };
+        }
+        {
+          name = "enhancd";
+          src = pkgs.fetchFromGitHub {
+            owner = "b4b4r07";
+            repo = "enhancd";
+            rev = "v2.2.4";
+            sha256 = "sha256-9/JGJgfAjXLIioCo3gtzCXJdcmECy6s59Oj0uVOfuuo=";
+          };
+        }
+        {
+          name = "forgit";
+          src = pkgs.fetchFromGitHub {
+            owner = "wfxr";
+            repo = "forgit";
+            rev = "3f50933f047510020428114551da0ee5cdfb32a3";
+            sha256 = "sha256-TSF4Vr5uf/+MVU4yCdIHNnwB7kkp4mF+hkhKtLqQvmk=";
+            
+          };
+        }
+      ];
       enableCompletion = true;
       enableAutosuggestions = true;
       enableSyntaxHighlighting = true;
