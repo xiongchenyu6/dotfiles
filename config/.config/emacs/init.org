@@ -30,6 +30,7 @@ Straight is a very good package manager for me to easily get emacs third party p
 (straight-use-package
  '(ligature :type git :host github :repo "mickeynp/ligature.el"))
 
+(set-mouse-color "white")
 #+end_src
 *** Ligature
 #+begin_src emacs-lisp
@@ -1291,6 +1292,7 @@ Bind to lsp mode
 ** Pdf
 #+begin_src emacs-lisp
 (require 'pdf-tools)
+
 #+end_src
 
 * Conclusion
