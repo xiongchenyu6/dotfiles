@@ -92,22 +92,6 @@
     defaultLocale = "en_US.UTF-8";
     supportedLocales = [ "zh_CN.UTF-8/UTF-8" "en_US.UTF-8/UTF-8" ];
     # Select internationalisation properties.
-    inputMethod = {
-      enabled = "fcitx5";
-      #fcitx.engines = with pkgs.fcitx-engines; [ rime ];
-      fcitx5 = {
-        #enableRimeData = true;
-        addons = with pkgs; [
-          fcitx5-chinese-addons
-          fcitx5-gtk
-          fcitx5-lua
-          fcitx5-rime
-          fcitx5-with-addons
-          fcitx5-configtool
-        ];
-      };
-    };
-
   };
 
   # services.xserver.videoDrivers = [ "modsetting" ];
@@ -134,24 +118,17 @@
     xserver = {
       enable = true;
       layout = "us";
-      windowManager.xmonad = {
-        enable = true;
-        enableContribAndExtras = true;
-        extraPackages = haskellPackages: [
-          haskellPackages.xmonad
-          haskellPackages.xmonad-contrib
-          haskellPackages.xmonad-extras
-
-        ];
-      };
       displayManager = {
         lightdm = { enable = true; };
         autoLogin.enable = true;
         autoLogin.user = "freeman";
-        defaultSession = "none+xmonad";
-        sessionCommands = "${pkgs.xorg.xset}/bin/xset -b";
+        session = [{
+          manage = "desktop";
+          name = "xsession";
+          start = "exec $HOME/.xsession";
+        }];
+        defaultSession = "xsession";
       };
-
       # Configure keymap in X11
       xkbOptions = "caps:ctrl_modifier";
       autoRepeatDelay = 180;
@@ -160,47 +137,9 @@
       libinput.enable = true;
       # Enable automatic login for the user.
     };
+
     aria2 = { enable = true; };
 
-    autorandr = {
-      enable = true;
-      profiles = {
-        office = {
-          fingerprint = {
-            "eDP-1" =
-              "00ffffffffffff0009e54c0900000000121e0104a51e1378036980a7544c9825115356000000010101010101010101010101010101019c3e80c870b03c40302036002ebc1000001a000000fd001e3c4a4a10010a202020202020000000fe00424f452043510a202020202020000000fe004e4531343057554d2d4e36320a000a";
-            "HDMI-1" =
-              "00ffffffffffff001e6dc15bb37c030004200103803c2278ea40b5ae5142ad260f5054210800d1c061404540010101010101010101014dd000a0f0703e803020350058542100001a000000fd00283c1e873c000a202020202020000000fc004c4720554c54524146494e450a000000ff003230344e54464136513533310a01800203427223090707830100004d01030410121f202261605f5e5d6d030c001000b83c20006001020367d85dc401788003e30f0003e2006ae305c000e6060581606050a36600a0f0701f803020350058542100001a565e00a0a0a029503020350058542100001a023a801871382d40582c450058542100001a00000000000000e2";
-          };
-          config = {
-            "eDP-1" = {
-              enable = true;
-              crtc = 0;
-              primary = true;
-              position = "0x0";
-              mode = "1920x1200";
-              rate = "60.00";
-            };
-
-            "HDMI-1" = {
-              enable = true;
-              crtc = 1;
-              primary = true;
-              position = "1920x0";
-              mode = "3840x2160";
-              rate = "60.00";
-              rotate = "left";
-            };
-
-          };
-          hooks.postswitch = {
-            "polybar-restart" = ''
-              polybar-msg cmd restart
-            '';
-          };
-        };
-      };
-    };
 
     # Enable CUPS to print documents.
     printing.enable = true;
@@ -248,61 +187,6 @@
 
     udisks2 = { enable = true; };
 
-    picom = {
-      enable = true;
-      shadow = true;
-      fade = true;
-      backend = "glx";
-      shadowExclude = [
-        "! name~=''"
-        "name = 'Notification'"
-        "name = 'Plank'"
-        "name = 'Docky'"
-        "name = 'Kupfer'"
-        "name = 'xfce4-notifyd'"
-        "name *= 'VLC'"
-        "name *= 'compton'"
-        "name *= 'Chromium'"
-        "name *= 'Chrome'"
-        "name *= 'Firefox'"
-        "class_g = 'Conky'"
-        "class_g = 'Kupfer'"
-        "class_g = 'Synapse'"
-        "class_g ?= 'Notify-osd'"
-        "class_g ?= 'Cairo-dock'"
-        "class_g ?= 'Xfce4-notifyd'"
-        "class_g ?= 'Xfce4-power-manager'"
-
-      ];
-
-      shadowOpacity = 0.5;
-      vSync = true;
-      opacityRules = [
-        "85:class_g = 'kitty'"
-        "85:class_g = 'XTerm'"
-        "15:class_g = 'emacs'"
-        "90:class_g = 'Wine'"
-        "90:class_g = 'Thunderbird'"
-
-      ];
-      fadeDelta = 2;
-      fadeSteps = [ 1.8e-2 1.8e-2 ];
-
-      wintypes = {
-        tooltip = {
-          # fade: Fade the particular type of windows.
-          fade = true;
-          # shadow: Give those windows shadow
-          shadow = false;
-          # opacity: Default opacity for the type of windows.
-          opacity = 0.85;
-          # focus: Whether to always consider windows of this type focused.
-          focus = true;
-        };
-
-      };
-
-    };
     syncthing = {
       enable = true;
       user = "freeman";
@@ -378,16 +262,13 @@
   # Define a user account. Don't forget to set a password with ‘passwd’.
 
   # Allow unfree packages
-  nixpkgs = {
-    config.allowUnfree = true;
-  };
+  nixpkgs = { config.allowUnfree = true; };
 
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment = {
 
     systemPackages = with pkgs; [
-      autorandr
       automake
       antibody
       asciinema
@@ -399,7 +280,6 @@
       conky
       cabal2nix
       consul
-      direnv
       discord
       dig
       dunst
@@ -424,7 +304,7 @@
       gitAndTools.gitflow
       gitAndTools.gitFull
       gitAndTools.hub
-#      gnupg
+      #      gnupg
       geoip
       gnumake
       gh
@@ -506,7 +386,6 @@
       xscreensaver
       zoom-us
     ];
-    pathsToLink = [ "/share/nix-direnv" ];
   };
 
   nix = {
@@ -521,128 +400,14 @@
   # programs.mtr.enable = true;
 
   programs = {
-    zsh = {
-      enable = true;
-      shellAliases = {
-        vi = "vim";
-        yolo = ''git commit -m "$(curl -s whatthecommit.com/index.txt)"'';
-        op = "xdg-open";
-        ls = "exa --icons";
-      };
-      ohMyZsh = {
-        enable = true;
-        plugins = [
-          "aws"
-          "cabal"
-          "catimg"
-          "colored-man-pages"
-          "colorize"
-          "command-not-found"
-          "copyfile"
-          "docker"
-          "docker-compose"
-          "direnv"
-          "extract"
-          "encode64"
-          "emacs"
-          "fzf"
-          "fancy-ctrl-z"
-          "git"
-          "git-flow"
-          "git-auto-fetch"
-          "git-hubflow"
-          "github"
-          "gitignore"
-          "gpg-agent"
-          "golang"
-          "httpie"
-          "heroku"
-          "jsontools"
-          "kubectl"
-          "npm"
-          "node"
-          "pass"
-          "pipenv"
-          "pip"
-          "ripgrep"
-          "redis-cli"
-          "sbt"
-          "scala"
-          "systemd"
-          "tmux"
-        ];
-      };
-      setOptions = [
-        "BANG_HIST"
-        "EXTENDED_HISTORY"
-
-        "INC_APPEND_HISTORY"
-        "SHARE_HISTORY"
-        "HIST_EXPIRE_DUPS_FIRST"
-        "HIST_IGNORE_DUPS"
-        "HIST_IGNORE_ALL_DUPS"
-        "HIST_FIND_NO_DUPS"
-        "HIST_IGNORE_SPACE"
-        "HIST_SAVE_NO_DUPS"
-        "HIST_REDUCE_BLANKS"
-        "HIST_VERIFY"
-        "HIST_BEEP"
-
-      ];
-      enableCompletion = true;
-      autosuggestions = { enable = true; };
-      syntaxHighlighting = { enable = true; };
-      enableBashCompletion = true;
-    };
     #ssh.startAgent = true;
     #gnupg = { agent = { enable = true; }; };
-    git = {
-      enable = true;
-      lfs = { enable = true; };
-    };
-    tmux = {
-      enable = true;
-      terminal = "screen-256color";
-      shortcut = "space";
-      plugins = with pkgs.tmuxPlugins; [ yank ];
-      secureSocket = false;
-      keyMode = "vi";
-
-    };
     atop = {
       enable = true;
-      netatop = {
-        enable = true;
-
-      };
-      atopgpu = {
-        enable = true;
-
-      };
+      netatop = { enable = true; };
+      atopgpu = { enable = true; };
     };
     nm-applet.enable = true;
-    starship = {
-      enable = true;
-      settings = {
-        format = "$directory$character";
-        # move the rest of the prompt to the right
-        right_format = "$all";
-        # A continuation prompt that displays two filled in arrows
-        continuation_prompt = "▶▶";
-        kubernetes = {
-          disabled = false;
-
-        };
-        directory = {
-          truncation_length = 20;
-          truncation_symbol = "…/";
-        };
-        status.disabled = false;
-        time.disabled = false;
-        git_metrics.disabled = false;
-        sudo.disabled = false;
-      };
-    };
   };
 
   # List services that you want to enable:
@@ -671,6 +436,6 @@
   # this value at the release version of the first install of this system.
   # Before changing this value read the documentation for this option
   # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
-#  system = { stateVersion = "22.05"; }; # Did you read the comment?
+  #  system = { stateVersion = "22.05"; }; # Did you read the comment?
 
 }
