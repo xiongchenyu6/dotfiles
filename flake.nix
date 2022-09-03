@@ -21,12 +21,6 @@
       inputs.nixpkgs.follows = "nixpkgs";      
     };
 
-    myRepo = {
-      url = "/home/freeman/private/nur-packages";
-      inputs.nixpkgs.follows = "nixpkgs";
-    #  inputs.flake-utils.follows = "flake-utils";
-    };
-
     xddxdd = {
       url = "github:xddxdd/nur-packages";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -41,11 +35,11 @@
     };
   };
 
-  outputs = { self, nixpkgs, nixos-hardware, emacs, myRepo, xddxdd, bttc, flake-utils
+  outputs = { self, nixpkgs, nixos-hardware, emacs, xddxdd, bttc, flake-utils
     , home-manager, ... }:
     let pkgsFor = system: import nixpkgs { inherit system; };
     in with nixpkgs;
-    {
+    rec {
       # replace 'joes-desktop' with your hostname here.
       nixosConfigurations.nixos = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
@@ -53,12 +47,12 @@
           nixos-hardware.nixosModules.lenovo-thinkpad-x1-9th-gen
           nixos-hardware.nixosModules.common-gpu-intel
           bttc.nixosModules.bttc
-          ./configuration.nix
+          ./nixos/configuration.nix
           ({ pkgs, ... }: {
             nixpkgs.overlays = [
               emacs.overlay
               (final: prev: {
-                myRepo = myRepo.packages."${prev.system}";
+                myRepo = self.packages."${prev.system}";
                 xddxdd = xddxdd.packages."${prev.system}";
                 b = bttc.packages."${prev.system}";
               })
@@ -68,7 +62,7 @@
           {
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = false;
-            home-manager.users.freeman = import ./home.nix;
+            home-manager.users.freeman = import ./nixos/home.nix;
 
             # Optionally, use home-manager.extraSpecialArgs to pass
             # arguments to home.nix
@@ -95,19 +89,10 @@
 
     } // flake-utils.lib.eachDefaultSystem (system:
       let pkgs = pkgsFor system;
-      in {
-        packages = rec {
-          default = with pkgs;
-            stdenv.mkDerivation {
-              pname = "dotfiles";
-              version = "0.1.0";
-              src = ./.;
-              installPhase = ''
-                mkdir -p $out/etc;
-                cp -r . $out/etc;
-              '';
-            };
-        };
+      in rec {
+        packages = import ./default.nix { inherit pkgs; };
+        libs = import ./lib/default.nix { inherit pkgs; };
+        overlays = import ./overlays/default.nix { inherit pkgs; };
 
         # used by nix develop and nix shell
         devShell = pkgs.mkShell {

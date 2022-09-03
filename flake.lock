@@ -112,26 +112,6 @@
         "url": "https://git.lantian.pub/lantian/keycloak-lantian.git"
       }
     },
-    "myRepo": {
-      "inputs": {
-        "nixpkgs": [
-          "nixpkgs"
-        ]
-      },
-      "locked": {
-        "lastModified": 1662132221,
-        "narHash": "sha256-0JeepKkr3kwGyvv7YZoKoweYUF2P2BfjAV+Gtz/MezU=",
-        "ref": "refs/heads/master",
-        "rev": "fda4c1c70b8ab1e4a00e3d160bcf8c52c4fffb71",
-        "revCount": 2,
-        "type": "git",
-        "url": "file:///home/freeman/private/nur-packages"
-      },
-      "original": {
-        "type": "git",
-        "url": "file:///home/freeman/private/nur-packages"
-      }
-    },
     "nixos-hardware": {
       "locked": {
         "lastModified": 1662092548,
@@ -170,7 +150,6 @@
         "emacs": "emacs",
         "flake-utils": "flake-utils_2",
         "home-manager": "home-manager",
-        "myRepo": "myRepo",
         "nixos-hardware": "nixos-hardware",
         "nixpkgs": "nixpkgs",
         "xddxdd": "xddxdd"
