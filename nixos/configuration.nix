@@ -30,7 +30,7 @@
       # system console of a Linux kernel to perform some low-level commands.
       # Disable it, since we don't need it, and is a potential security concern.
       "kernel.sysrq" = 511;
-      
+
       ## TCP hardening
       # Prevent bogus ICMP errors from filling up logs.
       "net.ipv4.icmp_ignore_bogus_error_responses" = 1;
@@ -317,13 +317,9 @@
 
     postgresql = {
       enable = true;
-      ensureUsers = [
-        {
-          name = "freeman";
-        }
-      ];
+      ensureUsers = [{ name = "freeman"; }];
     };
- 
+
     hydra = {
       enable = true;
       hydraURL = "http://localhost:3000"; # externally visible URL
@@ -366,14 +362,16 @@
 
   users = {
     defaultUserShell = pkgs.zsh;
-    users.freeman = {
-      isNormalUser = true;
-      description = "freeman";
-      extraGroups = [ "networkmanager" "wheel" "video" "audio" ];
-      packages = with pkgs;
-        [
-          #  thunderbird
-        ];
+    users = {
+      freeman = {
+        isNormalUser = true;
+        description = "freeman";
+        extraGroups = [ "networkmanager" "wheel" "video" "audio" ];
+        packages = with pkgs;
+          [
+            #  thunderbird
+          ];
+      };
     };
   };
 
@@ -382,7 +380,6 @@
   # Allow unfree packages
   nixpkgs = {
     config.allowUnfree = true;
-
   };
 
   # List packages installed in system profile. To search, run:
@@ -427,7 +424,7 @@
       gitAndTools.gitflow
       gitAndTools.gitFull
       gitAndTools.hub
-      gnupg
+#      gnupg
       geoip
       gnumake
       gh
@@ -466,7 +463,7 @@
       libxml2
       libtool
       libsodium
-      (python3.withPackages(ps : [myRepo.my_cookies]))
+      (python3.withPackages (ps: [ myRepo.my_cookies ]))
       pinentry
       linuxPackages.ply
       polybar
@@ -597,8 +594,8 @@
       syntaxHighlighting = { enable = true; };
       enableBashCompletion = true;
     };
-    ssh.startAgent = true;
-    gnupg.agent = { enable = true; };
+    #ssh.startAgent = true;
+    #gnupg = { agent = { enable = true; }; };
     git = {
       enable = true;
       lfs = { enable = true; };
@@ -615,11 +612,11 @@
     atop = {
       enable = true;
       netatop = {
-              enable = true;
+        enable = true;
 
       };
       atopgpu = {
-              enable = true;
+        enable = true;
 
       };
     };
@@ -674,6 +671,6 @@
   # this value at the release version of the first install of this system.
   # Before changing this value read the documentation for this option
   # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
-  system = { stateVersion = "22.05"; }; # Did you read the comment?
+#  system = { stateVersion = "22.05"; }; # Did you read the comment?
 
 }

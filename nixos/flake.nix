@@ -1,5 +1,6 @@
 {
-  description = "Flake to manage my laptop and my hosts on Tencent Cloud";
+  description =
+    "Flake to manage my laptop, my nur and my hosts on Tencent Cloud";
 
   inputs = {
     # Core Dependencies
@@ -7,29 +8,41 @@
 
     nixos-hardware.url = "github:NixOS/nixos-hardware/master";
 
-    utils.url = "github:numtide/flake-utils";
+    flake-utils.url = "github:numtide/flake-utils";
 
-    emacs.url = "github:nix-community/emacs-overlay";
+    home-manager = {
+      url = "github:nix-community/home-manager";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.utils.follows = "flake-utils";
+    };
+
+    emacs = {
+      url = "github:nix-community/emacs-overlay";
+      inputs.nixpkgs.follows = "nixpkgs";      
+    };
 
     myRepo = {
       url = "/home/freeman/private/nur-packages";
       inputs.nixpkgs.follows = "nixpkgs";
+    #  inputs.flake-utils.follows = "flake-utils";
     };
 
     xddxdd = {
       url = "github:xddxdd/nur-packages";
       inputs.nixpkgs.follows = "nixpkgs";
+      inputs.flake-utils.follows = "flake-utils";
     };
 
     bttc = {
       #url = "github:xiongchenyu6/bttc";
       url = "/home/freeman/private/bttc";
       inputs.nixpkgs.follows = "nixpkgs";
+     # inputs.flake-utils.follows = "flake-utils";
     };
   };
 
-  outputs =
-    { self, nixpkgs, nixos-hardware, emacs, myRepo, xddxdd, bttc, utils, ... }:
+  outputs = { self, nixpkgs, nixos-hardware, emacs, myRepo, xddxdd, bttc, flake-utils
+    , home-manager, ... }:
     let pkgsFor = system: import nixpkgs { inherit system; };
     in with nixpkgs;
     {
@@ -52,6 +65,16 @@
               })
             ];
           })
+          home-manager.nixosModules.home-manager
+          {
+            home-manager.useGlobalPkgs = true;
+            home-manager.useUserPackages = false;
+            home-manager.users.freeman = import ./home.nix;
+
+            # Optionally, use home-manager.extraSpecialArgs to pass
+            # arguments to home.nix
+          }
+
         ];
       };
 
@@ -70,10 +93,22 @@
           };
         };
       };
-    } // utils.lib.eachDefaultSystem (system:
+
+    } // flake-utils.lib.eachDefaultSystem (system:
       let pkgs = pkgsFor system;
       in {
-        defaultPackage = pkgs.hello;
+        packages = rec {
+          default = with pkgs;
+            stdenv.mkDerivation {
+              pname = "dotfiles";
+              version = "0.1.0";
+              src = ./.;
+              installPhase = ''
+                mkdir -p $out/etc;
+                cp -r . $out/etc;
+              '';
+            };
+        };
 
         # used by nix develop and nix shell
         devShell = pkgs.mkShell {
