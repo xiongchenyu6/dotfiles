@@ -338,7 +338,7 @@ Straight is a very good package manager for me to easily get emacs third party p
    '("A" . meow-to-block)
    '("p" . meow-yank)
    '("q" . meow-quit)
-   '("Q" . meow-goto-line)
+   '("Q" . kill-current-buffer)
    '("r" . meow-replace)
    '("R" . meow-swap-grab)
    '("s" . meow-kill)

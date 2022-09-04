@@ -53,21 +53,23 @@
     file.".curlrc".text = builtins.readFile ../old-files/downloader/.curlrc;
     file.".editorconfig".text =
       builtins.readFile ../old-files/editor/.editorconfig;
-    file.".ssh/id_rsa.pub".text = (import ./secret.nix {inherit lib;}).my.public-key;
+    file.".ssh/id_rsa.pub".text =
+      (import ./secret.nix { inherit lib; }).freeman.public-key;
     file.".ssh/id_rsa" = {
-      text = (import ./secret.nix {inherit lib;}).my.private-key;
+      text = (import ./secret.nix { inherit lib; }).freeman.private-key;
       executable = false;
     };
-
+    pointerCursor = {
+      name = "Vanilla-DMZ";
+      package = pkgs.vanilla-dmz;
+      x11 = { enable = true; };
+      size = 32;
+    };
   };
   programs = {
-    # Let Home Manager install and manage itself.
-
     alacritty = {
       enable = true;
-      settings = {
-        font = { size = 9; };
-      };
+      settings = { font = { size = 9; }; };
 
     };
     urxvt = {
@@ -119,7 +121,12 @@
       matchBlocks = (pkgs.callPackage ./secret.nix { inherit lib; }).hosts;
     };
 
+    bat = { enable = true; };
     exa = { enable = true; };
+    command-not-found.enable = true;
+
+    # Let Home Manager install and manage itself.
+
     home-manager.enable = true;
     rofi = {
       enable = true;
@@ -129,7 +136,7 @@
         kb-primary-paste = "Control+V,Shift+Insert";
         kb-secondary-paste = "Control+v,Insert";
       };
-
+      terminal = "alacritty";
     };
     autorandr = {
       enable = true;
@@ -489,7 +496,7 @@
               , pickBroadest =     True   -- choose widest display (multi-monitor)
               , persistent =       True    -- enable/disable hiding (True = disabled)
                     -- <fc=#ee9a00>%date%</fc>
-              , template = "%XMonadLog%|%multicpu%|%cpufreq%|%memory%|%dynnetwork%|%disku%|%diskio%|%default:Master%|%bright%|%battery%|%coretemp%}{<fc=#ee9a00>%WSSS%</fc>"
+              , template = "%XMonadLog%|%multicpu%|%memory%|%dynnetwork%|%disku%|%diskio%|%coretemp%|%cpufreq%|%WSSS%}{<fc=#ee9a00>%default:Master%|%bright%|%battery%</fc>"
               , sepChar = "%"
               , alignSep = "}{"
               , commands = [ 
@@ -607,9 +614,9 @@
           bottom = true;
           background = "\${colors.background}";
           foreground = "\${colors.foreground}";
-          modules-left = "date";
+          modules-left = "date ip pip vpn";
           modules-center = "crypto";
-          font-0 = "Hack Nerd Font:size=12";
+          font-0 = "Hack Nerd Font:size=14";
           tray-position = "right";
           tray-padding = "2";
           tray-background = "\${colors.background}";
@@ -632,6 +639,33 @@
           format-prefix-foreground = "#e06c75";
           format-underline = "#e06c75";
         };
+        "module/pip" = {
+          type = "custom/script";
+          exec =
+            "${pkgs.curl}/bin/curl icanhazip.com --silent";
+          interval = 60;
+          format-prefix = "  ";
+          format-prefix-foreground = "#e06c75";
+          format-underline = "#e06c75";
+        };
+        "module/ip" = {
+          type = "custom/script";
+          exec =
+            "${pkgs.iproute}/bin/ip a show wlp0s20f3 | ${pkgs.gnugrep}/bin/grep inet | ${pkgs.gawk}/bin/awk '{print $2}' | ${pkgs.coreutils}/bin/head -n 1";
+          interval = 60;
+          format-prefix = " אַ ";
+          format-prefix-foreground = "#e06c75";
+          format-underline = "#e06c75";
+        };
+        "module/vpn" = {
+          type = "custom/script";
+          exec =
+            "${pkgs.iproute}/bin/ip a show tun0 | ${pkgs.gnugrep}/bin/grep inet | ${pkgs.gawk}/bin/awk '{print $2}' | ${pkgs.coreutils}/bin/head -n 1";
+          interval = 60;
+          format-prefix = "  ";
+          format-prefix-foreground = "#e06c75";
+          format-underline = "#e06c75";
+        };
       };
       script = "polybar bottom &";
     };
@@ -644,8 +678,8 @@
       enable = true;
       shadow = true;
       fade = true;
-      experimentalBackends= true;
-      backend = "glx";
+      #experimentalBackends= true;
+      #backend = "glx";
       shadowExclude = [
         "! name~=''"
         "name = 'Notification'"
@@ -670,7 +704,7 @@
       vSync = true;
       opacityRules = [
         "85:class_g = 'kitty'"
-        "85:class_g = 'Alacritty'"
+        "95:class_g = 'Alacritty'"
         "5:class_g = 'emacs'"
         "90:class_g = 'Wine'"
         "90:class_g = 'Thunderbird'"
@@ -686,7 +720,7 @@
           background-frame = false;
           background-fixed = false;
         };
-        inactive-dim = 0.1;
+        #inactive-dim = 0.1;
         inactive-opacity = 1;
         inactive-opacity-override = true;
       };
