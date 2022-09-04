@@ -24,12 +24,12 @@ import XMonad.Util.EZConfig (additionalKeys)
 import XMonad.Util.SpawnOnce
 
 myTerminal :: String
-myTerminal = "xterm"
+myTerminal = "alacritty"
 
 myManageHook =
   composeAll
-    [ className =? "XTerm" --> doShift "term",
-      className =? "Urxvt" --> doShift "term",
+    [ className =? "Alacritty" --> doShift "term",
+      className =? "URxvt" --> doShift "term",
       className =? "Kitty" --> doShift "term",
       className =? "kitty" --> doShift "term",
       className =? "Chromium" --> doShift "web",

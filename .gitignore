@@ -41,6 +41,7 @@ haskell/.stack/global-project/*
 !haskell/.stack/config.yaml
 !haskell/.stack/global-project/stack.yaml
 
+*.pem
 *.elc
 dist-newstyle/
 

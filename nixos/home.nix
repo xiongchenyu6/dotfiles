@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+{ config, pkgs, lib, ... }:
 
 {
   # Home Manager needs a bit of information about you and the
@@ -27,7 +27,6 @@
         haskellPackages.xmonad
         haskellPackages.xmonad-contrib
         haskellPackages.xmonad-extras
-
       ];
     };
   };
@@ -54,16 +53,70 @@
     file.".curlrc".text = builtins.readFile ../old-files/downloader/.curlrc;
     file.".editorconfig".text =
       builtins.readFile ../old-files/editor/.editorconfig;
+    file.".ssh/id_rsa.pub".text = (import ./secret.nix {inherit lib;}).my.public-key;
+    file.".ssh/id_rsa" = {
+      text = (import ./secret.nix {inherit lib;}).my.private-key;
+      executable = false;
+    };
 
   };
   programs = {
     # Let Home Manager install and manage itself.
 
+    alacritty = {
+      enable = true;
+      settings = {
+        font = { size = 9; };
+      };
+
+    };
+    urxvt = {
+      enable = true;
+      extraConfig = {
+        depth = 32;
+        perl-ext-common = "default,matcher,selection-to-clipboard";
+        url-launcher = "${pkgs.brave}/bin/brave";
+        underlineURLs = "true";
+        "matcher.button" = "1";
+        "clipboard.autocopy" = true;
+        preeditType = "OverTheSpot";
+        secondaryScroll = true;
+        saveLines = 32767;
+        foreground = "#CCCCCC";
+        background = "#1B1D1E";
+        color0 = "#1B1D1E";
+        color8 = "#808080";
+        color1 = "#FF0044";
+        color9 = "#F92672";
+        color2 = "#82B414";
+        color10 = "#A6E22E";
+        color3 = "#FD971F";
+        color11 = "#E6DB74";
+        color4 = "#266C98";
+        color12 = "#7070F0";
+        color5 = "#AC0CB1";
+        color13 = "#D63AE1";
+        color6 = "#AE81FF";
+        color14 = "#66D9EF";
+        color7 = "#CCCCCC";
+        color15 = "#F8F8F2";
+        skipBuiltinGlyphs = false;
+      };
+      fonts = [ "xft:Hack Nerd Font:size=13" ];
+      iso14755 = false;
+      keybindings = {
+        "Shift-Control-c" = "eval:selection_to_clipboard";
+        "Shift-Control-v" = "eval:paste_clipboard";
+      };
+      shading = 20;
+      transparent = true;
+      scroll = { bar = { enable = false; }; };
+    };
     ssh = {
       enable = true;
       hashKnownHosts = true;
       compression = true;
-      matchBlocks = (import ./secret.nix).hosts;
+      matchBlocks = (pkgs.callPackage ./secret.nix { inherit lib; }).hosts;
     };
 
     exa = { enable = true; };
@@ -195,7 +248,7 @@
         options = {
           navigate = true;
           line-numbers = true;
-       #   syntax-theme = "GitHub";
+          #   syntax-theme = "GitHub";
         };
       };
       extraConfig = {
@@ -269,7 +322,7 @@
         vi = "vim";
         yolo = ''git commit -m "$(curl -s whatthecommit.com/index.txt)"'';
         op = "xdg-open";
-        # ls = "exa --icons";
+        ls = "exa --icons";
       };
       initExtra = ''
         function gre {
@@ -311,7 +364,6 @@
           "cabal"
           "catimg"
           "colored-man-pages"
-          "colorize"
           "command-not-found"
           "copyfile"
           "docker"
@@ -386,7 +438,7 @@
     man = { enable = true; };
     qutebrowser = { enable = true; };
     vim = { enable = true; };
-    zathura = { enable = true; };
+    #  zathura = { enable = true; };
     zoxide = { enable = true; };
     tmux = {
       enable = true;
@@ -423,7 +475,7 @@
       enable = true;
       extraConfig = ''
         Config {
-                font = "xft:WenQuanYi Zen Hei:size=11"
+                font = "xft:WenQuanYi Zen Hei:size=12"
               , borderColor = "black"
               , border = TopB
               , bgColor = "black"
@@ -557,7 +609,7 @@
           foreground = "\${colors.foreground}";
           modules-left = "date";
           modules-center = "crypto";
-          font-0 = "Hack Nerd Font:size=10";
+          font-0 = "Hack Nerd Font:size=12";
           tray-position = "right";
           tray-padding = "2";
           tray-background = "\${colors.background}";
@@ -592,6 +644,7 @@
       enable = true;
       shadow = true;
       fade = true;
+      experimentalBackends= true;
       backend = "glx";
       shadowExclude = [
         "! name~=''"
@@ -612,22 +665,31 @@
         "class_g ?= 'Cairo-dock'"
         "class_g ?= 'Xfce4-notifyd'"
         "class_g ?= 'Xfce4-power-manager'"
-
       ];
-
       shadowOpacity = 0.5;
       vSync = true;
       opacityRules = [
         "85:class_g = 'kitty'"
-        "85:class_g = 'XTerm'"
-        "15:class_g = 'emacs'"
+        "85:class_g = 'Alacritty'"
+        "5:class_g = 'emacs'"
         "90:class_g = 'Wine'"
         "90:class_g = 'Thunderbird'"
-
       ];
       fadeDelta = 2;
       fadeSteps = [ 1.8e-2 1.8e-2 ];
 
+      settings = {
+        blur = {
+          method = "kawase";
+          strength = 5;
+          background = false;
+          background-frame = false;
+          background-fixed = false;
+        };
+        inactive-dim = 0.1;
+        inactive-opacity = 1;
+        inactive-opacity-override = true;
+      };
       wintypes = {
         tooltip = {
           # fade: Fade the particular type of windows.

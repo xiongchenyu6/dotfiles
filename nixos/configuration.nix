@@ -117,6 +117,7 @@
     cachix-agent = {
       enable = true;
       credentialsFile = ./cachix.secret;
+      verbose = true;
       # cachix = [ "nixos" ];
     };
 
@@ -249,6 +250,7 @@
     defaultUserShell = pkgs.zsh;
     users = {
       freeman = {
+        shell = pkgs.zsh;
         isNormalUser = true;
         description = "freeman";
         extraGroups = [
@@ -298,6 +300,7 @@
       clang
       conky
       cabal2nix
+      cachix
       consul
       discord
       dig
