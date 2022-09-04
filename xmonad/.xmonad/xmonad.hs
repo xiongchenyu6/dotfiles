@@ -19,7 +19,7 @@ import XMonad.Prompt
 import XMonad.Prompt.Man
 import XMonad.Prompt.Pass
 import XMonad.Prompt.Ssh
-import XMonad.Util.Brightness
+import XMonad.Util.Brightness (change)
 import XMonad.Util.EZConfig (additionalKeys)
 import XMonad.Util.SpawnOnce
 
@@ -144,6 +144,14 @@ customerKeyMaps =
     -- %T The time in 24-hour notation (%H:%M:%S). $wimagewidth $h image height
   ]
 
+-- | Update brightness by +100
+increase :: X ()
+increase = liftIO $ change (+1024) *> (pure ())
+
+-- | Update brightness by -100
+decrease :: X ()
+decrease = liftIO $ change (+ (-1024)) *> (pure ())
+
 -- Mute volume.
 
 launcherConfig :: LauncherConfig
@@ -156,12 +164,12 @@ launcherConfig =
 popupConfig :: XPConfig
 popupConfig =
   def
-    { font = "xft:Inconsolata Nerd Font Complete:antialias=true",
+    { font = "xft:Hack Nerd Font:size=15:antialias=true",
       position = Top,
       height = 48
     }
 
-myLayout = avoidStruts $ tiled ||| Mirror tiled ||| Full
+myLayout = avoidStruts $ Mirror tiled ||| tiled ||| Full
   where
     -- default tiling algorithm partitions the screen into two panes
     tiled = Tall nmaster delta ratio

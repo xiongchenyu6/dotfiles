@@ -34,6 +34,7 @@
     let
       pkgsFor = system: import nixpkgs { inherit system; };
       system = "x86_64-linux";
+
     in with nixpkgs;
     rec {
       # replace 'joes-desktop' with your hostname here.
@@ -49,7 +50,7 @@
               (final: prev: {
                 myRepo = self.packages."${prev.system}";
                 xddxdd = xddxdd.packages."${prev.system}";
-           #     b = bttc.packages."${prev.system}";
+                #     b = bttc.packages."${prev.system}";
               })
             ];
           })
@@ -67,16 +68,22 @@
       };
 
       nixopsConfigurations = with lib; {
-        default = rec {
+        default = let
+          secret = (import ./nixos/secret.nix { inherit lib; });
+        in rec {
           inherit nixpkgs;
           network.storage.legacy.databasefile = "~/.nixops/deployments.nixops";
           network.description = "tron sg";
           network.enableRollback = true;
           tc = rec {
             imports = [ ./tc/configuration.nix ];
-            deployment.targetHost = "43.156.66.157";
+            deployment.targetHost = secret.hosts.my.hostname;
             environment = {
-              systemPackages = [ self.packages."${system}".bttc ];
+              systemPackages = with (import nixpkgs {}).pkgs; [
+                self.packages."${system}".bttc
+                git
+                wireguard-tools
+              ];
             };
           };
         };

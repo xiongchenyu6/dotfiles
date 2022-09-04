@@ -321,6 +321,11 @@
       exa
       #  fasd
       feh
+      fd
+      procs
+      tealdeer
+      socat
+      rustscan
       gitAndTools.gitflow
       gitAndTools.hub
       git-crypt
@@ -364,7 +369,6 @@
       (python3.withPackages (ps: [ myRepo.my_cookies ]))
       pinentry
       linuxPackages.ply
-      polybar
       wakatime
       #myRepo.example-package
       nixfmt
@@ -394,6 +398,7 @@
       wget
       which
       wineWowPackages.staging
+      wireguard-tools
       #wpa_supplicant_gui
       wakatime
       whatsapp-for-linux
