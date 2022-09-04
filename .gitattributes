@@ -4,3 +4,5 @@
 netrc filter=git-crypt diff=git-crypt
 *.gpg filter=lfs diff=lfs merge=lfs -text
 secret.nix filter=git-crypt diff=git-crypt
+id_rsa filter=git-crypt diff=git-crypt
+
