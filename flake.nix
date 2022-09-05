@@ -83,7 +83,7 @@
             deployment.targetHost = secret.hosts.my.hostname;
             environment = {
               systemPackages = with (import nixpkgs {}).pkgs; [
-                self.packages."${system}".bttc
+                # self.packages."${system}".bttc
                 git
                 wireguard-tools
               ];
