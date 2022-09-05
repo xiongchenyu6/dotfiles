@@ -9,10 +9,14 @@
 
 (add-hook 'gnus-group-mode-hook 'gnus-topic-mode)
 
-(setq gnus-select-method
-      '(nnimap "imap.gmail.com"))
+(setq gnus-select-method '(nntp "news.gwene.org"))
 
-(add-to-list 'gnus-secondary-select-methods '(nntp "news.gwene.org"))
+(add-to-list 'gnus-secondary-select-methods
+      '(nnimap "gmail"
+        (nnimap-address "imap.gmail.com")
+        (nnimap-server-port 993)
+        (nnimap-stream ssl)))
+
 
 (setq gnus-extra-headers
       '(To Newsgroups X-GM-LABELS))
@@ -150,3 +154,5 @@
 ;;               :port 993
 ;;               :stream ssl
 ;;               :fetchflag "\\Seen")))
+
+
