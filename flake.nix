@@ -76,6 +76,9 @@
           network.description = "tron sg";
           network.enableRollback = true;
           tc = rec {
+            _module.args = {
+              inherit secret;
+            };
             imports = [ ./tc/configuration.nix ];
             deployment.targetHost = secret.hosts.my.hostname;
             environment = {

@@ -172,11 +172,6 @@
     };
     blueman.enable = true;
 
-    emacs = {
-      package = pkgs.emacsGitNativeComp;
-      enable = true;
-      defaultEditor = true;
-    };
     openvpn.servers = {
       officeVPN = {
         config = "config /home/freeman/Downloads/vpn/vpn/client.ovpn ";
@@ -310,14 +305,6 @@
       neofetch
       dmenu
       #dropbox
-      ((emacsPackagesFor emacsGitNativeComp).emacsWithPackages (epkgs: [
-        epkgs.vterm
-        epkgs.org-contrib
-        epkgs.org-roam
-        epkgs.org-re-reveal
-        epkgs.pdf-tools
-        epkgs.leetcode
-      ]))
       exa
       #  fasd
       feh
@@ -333,7 +320,6 @@
       geoip
       gnumake
       gh
-      go
       haskell-language-server
       (haskellPackages.ghcWithPackages (self:
         with haskellPackages;

@@ -1,4 +1,4 @@
-{ ... }: {
+{ pkgs, secret, ... }: {
   imports = [ ./hardware-configuration.nix ];
 
   boot.cleanTmpDir = true;
@@ -17,57 +17,58 @@
   networking.useDHCP = false;
   networking.firewall.enable = false;
   systemd.network = {
-        enable = true;
-        config = {
-          routeTables.custom = 23;
+    enable = true;
+    # config = {
+    #   routeTables.custom = 23;
+    # };
+    netdevs = {
+      "peer" = {
+        netdevConfig = {
+          Kind = "wireguard";
+          Name = "wg0";
         };
-        netdevs = {
-          "90-wg0" = {
-            netdevConfig = { Kind = "wireguard"; Name = "wg0"; };
-            wireguardConfig = {
-              # NOTE: we're storing the wireguard private key in the
-              #       store for this test. Do not do this in the real
-              #       world. Keep in mind the nix store is
-              #       world-readable.
-              PrivateKeyFile = pkgs.writeText "wg0-priv" privk;
-              ListenPort = 51820;
-              FirewallMark = 42;
+        wireguardConfig = {
+          # NOTE: we're storing the wireguard private key in the
+          #       store for this test. Do not do this in the real
+          #       world. Keep in mind the nix store is
+          #       world-readable.
+          PrivateKeyFile = pkgs.writeText "wg0-priv" secret.my.wg.private-key;
+          ListenPort = 22616;
+          # FirewallMark = 42;
+        };
+        wireguardPeers = [{
+          wireguardPeerConfig = {
+            Endpoint = "us1.dn42.potat0.cc:22616";
+            PublicKey = "LUwqKS6QrCPv510Pwt1eAIiHACYDsbMjrkrbGTJfviU=";
+            AllowedIPs = [ "0.0.0.0/0" "fd00::/8" "fe80::/64" ];
+          };
+        }];
+      };
+    };
+    networks = {
+      "peer" = {
+        matchConfig = { Name = "wg0"; };
+        networkConfig = {
+          DHCP = "no";
+          IPv6AcceptRA = false;
+          IPForward = "yes";
+        };
+        addresses = [
+          {
+            addressConfig = {
+              Address = "172.22.240.97/32";
+              Peer = "172.23.246.1/32";
             };
-            wireguardPeers = [ {wireguardPeerConfig={
-              Endpoint = "192.168.1.${peerId}:51820";
-              PublicKey = pubk;
-              PresharedKeyFile = pkgs.writeText "psk.key" "yTL3sCOL33Wzi6yCnf9uZQl/Z8laSE+zwpqOHC4HhFU=";
-              AllowedIPs = [ "10.0.0.${peerId}/32" ];
-              PersistentKeepalive = 15;
-            };}];
-          };
-        };
-        networks = {
-          "99-nope" = {
-            matchConfig.Name = "eth*";
-            linkConfig.Unmanaged = true;
-          };
-          "90-wg0" = {
-            matchConfig = { Name = "wg0"; };
-            address = [ "10.0.0.${nodeId}/32" ];
-            routes = [
-              { routeConfig = { Gateway = "10.0.0.${nodeId}"; Destination = "10.0.0.0/24"; }; }
-              { routeConfig = { Gateway = "10.0.0.${nodeId}"; Destination = "10.0.0.0/24"; Table = "custom"; }; }
-            ];
-          };
-          "30-eth1" = {
-            matchConfig = { Name = "eth1"; };
-            address = [
-              "192.168.1.${nodeId}/24"
-              "fe80::${nodeId}/64"
-            ];
-            routingPolicyRules = [
-              { routingPolicyRuleConfig = { Table = 10; IncomingInterface = "eth1"; Family = "both"; };}
-              { routingPolicyRuleConfig = { Table = 20; OutgoingInterface = "eth1"; };}
-              { routingPolicyRuleConfig = { Table = 30; From = "192.168.1.1"; To = "192.168.1.2"; SourcePort = 666 ; DestinationPort = 667; };}
-              { routingPolicyRuleConfig = { Table = 40; IPProtocol = "tcp"; InvertRule = true; };}
-              { routingPolicyRuleConfig = { Table = 50; IncomingInterface = "eth1"; Family = "ipv4"; };}
-            ];
-          };
-        };
+          }
+          {
+            addressConfig = {
+              Address = "fe80::100/64";
+              Peer = "fe80::1816/64";
+            };
+          }
+        ];
+
+      };
+    };
+  };
 }

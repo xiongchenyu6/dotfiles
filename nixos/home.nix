@@ -50,6 +50,7 @@
   };
   home = {
     stateVersion = "22.11";
+    file.".wakatime.cfg".source = ../old-files/wakatime/.wakatime.cfg;
     file.".curlrc".text = builtins.readFile ../old-files/downloader/.curlrc;
     file.".editorconfig".text =
       builtins.readFile ../old-files/editor/.editorconfig;
@@ -131,6 +132,7 @@
     rofi = {
       enable = true;
       theme = "gruvbox-dark";
+      font = "Hack Nerd Font 20";
       extraConfig = {
         modi = "drun,ssh,keys,filebrowser";
         kb-primary-paste = "Control+V,Shift+Insert";
@@ -371,14 +373,11 @@
           "cabal"
           "catimg"
           "colored-man-pages"
-          "command-not-found"
           "copyfile"
           "docker"
           "docker-compose"
-          "direnv"
           "extract"
           "encode64"
-          "emacs"
           "fzf"
           "fancy-ctrl-z"
           "git"
@@ -387,7 +386,6 @@
           "git-hubflow"
           "github"
           "gitignore"
-          "gpg-agent"
           "golang"
           "httpie"
           "heroku"
@@ -566,8 +564,32 @@
         }
       ];
     };
+    emacs = {
+      enable = true;
+      package = pkgs.emacsGitNativeComp;
+      extraPackages = epkgs: with epkgs; [
+        epkgs.vterm
+        epkgs.org-contrib
+        epkgs.org-roam
+        epkgs.org-re-reveal
+        epkgs.pdf-tools
+        epkgs.leetcode
+      ];
+    };
+    go = {
+      enable = true;
+      
+    };
   };
   services = {
+    emacs = {
+      enable = true;
+      defaultEditor = true;
+      client = {
+        enable = true;
+      };
+    };
+
     xscreensaver = {
       enable = true;
       # settings = {
