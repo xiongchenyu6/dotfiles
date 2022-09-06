@@ -31,12 +31,12 @@
 
   outputs = { self, nixpkgs, nixos-hardware, emacs, xddxdd, flake-utils
     , home-manager, ... }:
+    with nixpkgs;
     let
       pkgsFor = system: import nixpkgs { inherit system; };
       system = "x86_64-linux";
-
-    in with nixpkgs;
-    rec {
+      secret = (import ./nixos/secret.nix { inherit lib; });
+    in rec {
       # replace 'joes-desktop' with your hostname here.
       nixosConfigurations.nixos = nixpkgs.lib.nixosSystem {
         modules = [
@@ -68,9 +68,7 @@
       };
 
       nixopsConfigurations = with lib; {
-        default = let
-          secret = (import ./nixos/secret.nix { inherit lib; });
-        in rec {
+        default = rec {
           inherit nixpkgs;
           network.storage.legacy.databasefile = "~/.nixops/deployments.nixops";
           network.description = "tron sg";
@@ -78,14 +76,18 @@
           tc = rec {
             _module.args = {
               inherit secret;
+              xddxdd = xddxdd.packages."${system}";
             };
+
             imports = [ ./tc/configuration.nix ];
             deployment.targetHost = secret.hosts.my.hostname;
             environment = {
-              systemPackages = with (import nixpkgs {}).pkgs; [
+              systemPackages = with (import nixpkgs { }).pkgs; [
                 # self.packages."${system}".bttc
                 git
                 wireguard-tools
+                traceroute
+                python3
               ];
             };
           };

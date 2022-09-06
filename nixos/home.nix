@@ -384,6 +384,7 @@
           "ripgrep"
           "rsync"
           "sudo"
+          "systemd"
           "scala"
           "tmux"
         ];

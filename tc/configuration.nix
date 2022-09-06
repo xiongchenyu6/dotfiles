@@ -1,4 +1,4 @@
-{ pkgs, lib, secret, ... }:
+{ pkgs, lib, secret, symlinkJoin, xddxdd, ... }:
 let
   script = pkgs.writeShellScriptBin "update-roa" ''
     mkdir -p /etc/bird/
@@ -20,7 +20,23 @@ in {
     "net.ipv4.conf.all.rp_filter" = 0;
   };
   zramSwap.enable = true;
-  networking.hostName = "VM-8-10-ubuntu";
+  networking = {
+    hostName = "VM-8-10-ubuntu";
+    firewall = {
+      enable = true;
+      allowedTCPPorts = [
+        8000
+        80 # ui
+      ];
+      allowedUDPPorts = [ 22616 23396 21816 ];
+      extraCommands = ''
+        iptables -A FORWARD -i wg_freeman -j ACCEPT
+        iptables -t nat -A POSTROUTING -o ens5 -j MASQUERADE 
+        iptables -I INPUT 1 -p udp --dport 22616 -j ACCEPT
+      '';
+    };
+  };
+
   users.users.root.openssh.authorizedKeys.keys = [
     "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCzzKV5IF7ekz9oJQ37nbaUNhXKkQ4KzJiDOYVRVroFq+LEJZHqNxe/Lt1Z1cKvFjRruu6f3clzqRargKlmqbO1d8mJZy0R9TbKQxleEZZq2cZJemX99xrkiu9keBF2qhohwn28v0JUuUyjNo188/YyS1tocoWFNZtp7qPiK8HRF7LQQ99nOa3zGmZJQL5Rvs2RFTFMGhiehsq8aXFuTZNejjivl5BFJjzxoVqZSbB8//lwsGZWpU5Ue54KV51UTv+9wDh2myuyenP/ZbdK9UZo9abCIeI52F9QbGJtjz6cOKG6oz67x06EYxvD/HKJ/uPuisy/cu+rPInmaF5AZTnd skey-p1r300u3"
     "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQC3LHhrdC+Mor6lM9U0fxyJ2WCn4CzNUZPyOP8ACQpAl5bADYY8ici2SbRD6y0dZnwNvSUJKw090HXiPOgKCYrfPQPX4IOgiPLqPBJq0JCI7w7/pewRmg1bd/5k5BC8C5x0P2H63DovDXEnyIJxqZnVWZDjfhysGEVGueoYBxeDAHHBZLwGGxW36oX8OmfiTGDmMrHWqQxKpluR6KIbe4aFML+ZIol0Vy6+244gREZZXn6xTAoCxRGghaEnOf5X3SivKOJHLTDpAXI7JYesepHHyCPd+OXH2VzSVj0qqOtzb5t6mNHkM4wC9HhTqPT/KWuxjv9HcpXjag9ZGuby/LxOo+6knb5a7VtRm0GxvbBptNS5Frlrl9HNwARiqSmiaSvOWydrZYKV0/ClIYdA7f4DMUc46KIP+wHqLXO2oBe5I4sK4TesmOxCYezi2ti/T4sC/e4Hlvgc/luvS6p0GdTtZ0wQLMmqz2u79LVRpjQMFygLa0IQXFo7c+0FqB7Et8M= skey-21jfw3n7"
@@ -30,6 +46,22 @@ in {
     network = {
       enable = true;
       netdevs = {
+        "freeman" = {
+          netdevConfig = {
+            Kind = "wireguard";
+            Name = "wg_freeman";
+          };
+          wireguardConfig = {
+            PrivateKeyFile = pkgs.writeText "wg0-priv" secret.my.wg.private-key;
+            ListenPort = 22616;
+          };
+          wireguardPeers = [{
+            wireguardPeerConfig = {
+              PublicKey = secret.freeman.wg.public-key;
+              AllowedIPs = [ "172.22.240.98/32" ];
+            };
+          }];
+        };
         "theresa" = {
           netdevConfig = {
             Kind = "wireguard";
@@ -37,23 +69,21 @@ in {
           };
           wireguardConfig = {
             PrivateKeyFile = pkgs.writeText "wg0-priv" secret.my.wg.private-key;
-            ListenPort = 22616;
+            ListenPort = 23396;
           };
-          wireguardPeers = [
-            {
-              wireguardPeerConfig = {
-                Endpoint = "cn2.dn42.theresa.cafe:22616";
-                PublicKey = "MqKkzCwYfOg8Fc/pRRctLW3jS72ACBDQr8ZF10sZ614=";
-                AllowedIPs = [
-                  "10.0.0.0/8"
-                  "172.20.0.0/14"
-                  "172.31.0.0/16"
-                  "fd00::/8"
-                  "fe80::/64"
-                ];
-              };
-            }
-          ];
+          wireguardPeers = [{
+            wireguardPeerConfig = {
+              Endpoint = "cn2.dn42.theresa.cafe:22616";
+              PublicKey = "MqKkzCwYfOg8Fc/pRRctLW3jS72ACBDQr8ZF10sZ614=";
+              AllowedIPs = [
+                "10.0.0.0/8"
+                "172.20.0.0/14"
+                "172.31.0.0/16"
+                "fd00::/8"
+                "fe80::/64"
+              ];
+            };
+          }];
         };
         "potat0" = {
           netdevConfig = {
@@ -64,23 +94,20 @@ in {
             PrivateKeyFile = pkgs.writeText "wg0-priv" secret.my.wg.private-key;
             ListenPort = 21816;
           };
-          wireguardPeers = [
-            {
-              wireguardPeerConfig = {
-                Endpoint = "us1.dn42.potat0.cc:22616";
-                PublicKey = "LUwqKS6QrCPv510Pwt1eAIiHACYDsbMjrkrbGTJfviU=";
-                AllowedIPs = [
-                  "10.0.0.0/8"
-                  "172.20.0.0/14"
-                  "172.31.0.0/16"
-                  "fd00::/8"
-                  "fe80::/64"
-                ];
-              };
-            }
-          ];
+          wireguardPeers = [{
+            wireguardPeerConfig = {
+              Endpoint = "us1.dn42.potat0.cc:22616";
+              PublicKey = "LUwqKS6QrCPv510Pwt1eAIiHACYDsbMjrkrbGTJfviU=";
+              AllowedIPs = [
+                "10.0.0.0/8"
+                "172.20.0.0/14"
+                "172.31.0.0/16"
+                "fd00::/8"
+                "fe80::/64"
+              ];
+            };
+          }];
         };
-
       };
       networks = {
         "theresa" = {
@@ -117,6 +144,62 @@ in {
               };
             }
             { addressConfig = { Address = "fe80::100/64"; }; }
+          ];
+        };
+        "freeman" = {
+          matchConfig = { Name = "wg_freeman"; };
+          networkConfig = {
+            DHCP = "no";
+            IPv6AcceptRA = false;
+            IPForward = "yes";
+            KeepConfiguration = "yes";
+          };
+          addresses = [
+            {
+              addressConfig = {
+                Address = "172.22.240.97/32";
+                Peer = "172.22.240.98/32";
+              };
+            }
+            { addressConfig = { Address = "fe80::100/64"; }; }
+          ];
+          routingPolicyRules = [
+            {
+              routingPolicyRuleConfig = {
+                Table = 10;
+                IncomingInterface = "eth1";
+                Family = "both";
+              };
+            }
+            {
+              routingPolicyRuleConfig = {
+                Table = 20;
+                OutgoingInterface = "eth1";
+              };
+            }
+            {
+              routingPolicyRuleConfig = {
+                Table = 30;
+                From = "192.168.1.1";
+                To = "192.168.1.2";
+                SourcePort = 666;
+                DestinationPort = 667;
+              };
+            }
+            {
+              routingPolicyRuleConfig = {
+                Table = 40;
+                IPProtocol = "tcp";
+                InvertRule = true;
+              };
+            }
+            {
+              routingPolicyRuleConfig = {
+                Table = 50;
+                IncomingInterface = "eth1";
+                Family = "ipv4";
+              };
+            }
           ];
         };
       };
@@ -310,6 +393,37 @@ in {
         }
       '';
     };
+    bird-lg = {
+      user = "root";
+      group = "root";
+      package = pkgs.symlinkJoin {
+        name = "bird-lg";
+        paths = with xddxdd; [ bird-lg-go bird-lgproxy-go ];
+      };
+      proxy = {
+        enable = true;
+        birdSocket = "/var/run/bird/bird.ctl";
+        listenAddress = "0.0.0.0:8000";
+      };
+      frontend = {
+        enable = true;
+        netSpecificMode = "dn42";
+        servers = [ "sg1" ];
+        domain = "freeman.engineer";
+      };
+    };
+    nginx = {
+      enable = true;
+      virtualHosts."default" = {
+        addSSL = false;
+        # enableACME = true;
+        locations."/" = {
+          proxyPass = "http://127.0.0.1:5000";
+          proxyWebsockets = true;
+        };
+      };
+    };
+
   };
 
 }
