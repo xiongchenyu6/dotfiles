@@ -3,8 +3,8 @@
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
 { config, pkgs, options, lib, ... }:
-
-{
+let secret = (import ./secret.nix { inherit lib; });
+in rec {
   imports = [ # Include the results of the hardware scan.
     ./hardware-configuration.nix
     ./cachix.nix
@@ -30,40 +30,46 @@
       # system console of a Linux kernel to perform some low-level commands.
       # Disable it, since we don't need it, and is a potential security concern.
       "kernel.sysrq" = 511;
+      "net.ipv4.ip_forward" = 1;
+      "net.ipv6.conf.all.forwarding" = 1;
+      "net.ipv6.conf.default.forwarding" = 1;
 
-      ## TCP hardening
-      # Prevent bogus ICMP errors from filling up logs.
-      "net.ipv4.icmp_ignore_bogus_error_responses" = 1;
-      # Reverse path filtering causes the kernel to do source validation of
-      # packets received from all interfaces. This can mitigate IP spoofing.
-      "net.ipv4.conf.default.rp_filter" = 1;
-      "net.ipv4.conf.all.rp_filter" = 1;
-      # Do not accept IP source route packets (we're not a router)
-      "net.ipv4.conf.all.accept_source_route" = 0;
-      "net.ipv6.conf.all.accept_source_route" = 0;
-      # Don't send ICMP redirects (again, we're on a router)
-      "net.ipv4.conf.all.send_redirects" = 0;
-      "net.ipv4.conf.default.send_redirects" = 0;
-      # Refuse ICMP redirects (MITM mitigations)
-      "net.ipv4.conf.all.accept_redirects" = 0;
-      "net.ipv4.conf.default.accept_redirects" = 0;
-      "net.ipv4.conf.all.secure_redirects" = 0;
-      "net.ipv4.conf.default.secure_redirects" = 0;
-      "net.ipv6.conf.all.accept_redirects" = 0;
-      "net.ipv6.conf.default.accept_redirects" = 0;
-      # Protects against SYN flood attacks
-      "net.ipv4.tcp_syncookies" = 1;
-      # Incomplete protection again TIME-WAIT assassination
-      "net.ipv4.tcp_rfc1337" = 1;
+      "net.ipv4.conf.default.rp_filter" = 0;
+      "net.ipv4.conf.all.rp_filter" = 0;
 
-      ## TCP optimization
-      # TCP Fast Open is a TCP extension that reduces network latency by packing
-      # data in the sender’s initial TCP SYN. Setting 3 = enable TCP Fast Open for
-      # both incoming and outgoing connections:
-      "net.ipv4.tcp_fastopen" = 3;
-      # Bufferbloat mitigations + slight improvement in throughput & latency
-      "net.ipv4.tcp_congestion_control" = "bbr";
-      "net.core.default_qdisc" = "cake";
+      # ## TCP hardening
+      # # Prevent bogus ICMP errors from filling up logs.
+      # "net.ipv4.icmp_ignore_bogus_error_responses" = 1;
+      # # Reverse path filtering causes the kernel to do source validation of
+      # # packets received from all interfaces. This can mitigate IP spoofing.
+      # "net.ipv4.conf.default.rp_filter" = 1;
+      # "net.ipv4.conf.all.rp_filter" = 1;
+      # # Do not accept IP source route packets (we're not a router)
+      # "net.ipv4.conf.all.accept_source_route" = 0;
+      # "net.ipv6.conf.all.accept_source_route" = 0;
+      # # Don't send ICMP redirects (again, we're on a router)
+      # "net.ipv4.conf.all.send_redirects" = 0;
+      # "net.ipv4.conf.default.send_redirects" = 0;
+      # # Refuse ICMP redirects (MITM mitigations)
+      # "net.ipv4.conf.all.accept_redirects" = 0;
+      # "net.ipv4.conf.default.accept_redirects" = 0;
+      # "net.ipv4.conf.all.secure_redirects" = 0;
+      # "net.ipv4.conf.default.secure_redirects" = 0;
+      # "net.ipv6.conf.all.accept_redirects" = 0;
+      # "net.ipv6.conf.default.accept_redirects" = 0;
+      # # Protects against SYN flood attacks
+      # "net.ipv4.tcp_syncookies" = 1;
+      # # Incomplete protection again TIME-WAIT assassination
+      # "net.ipv4.tcp_rfc1337" = 1;
+
+      # ## TCP optimization
+      # # TCP Fast Open is a TCP extension that reduces network latency by packing
+      # # data in the sender’s initial TCP SYN. Setting 3 = enable TCP Fast Open for
+      # # both incoming and outgoing connections:
+      # "net.ipv4.tcp_fastopen" = 3;
+      # # Bufferbloat mitigations + slight improvement in throughput & latency
+      # "net.ipv4.tcp_congestion_control" = "bbr";
+      # "net.core.default_qdisc" = "cake";
     };
   };
 
@@ -80,7 +86,7 @@
 
   };
 
-  virtualisation = { docker.enable = true; };
+  virtualisation = { docker.enable = false; };
 
   # Set your time zone.
   time = {
@@ -160,7 +166,6 @@
       alsa = {
         enable = true;
         support32Bit = true;
-
       };
       pulse.enable = true;
       # If you want to use JACK applications, uncomment this
@@ -177,7 +182,6 @@
         config = "config /home/freeman/Downloads/vpn/vpn/client.ovpn ";
       };
     };
-
     udev.extraRules = ''
       ACTION=="add", SUBSYSTEM=="backlight", KERNEL=="intel_backlight", MODE="0666", RUN+="${pkgs.coreutils}/bin/chmod a+w /sys/class/backlight/%k/brightness"
     '';
@@ -210,6 +214,7 @@
       # you will probably also want, otherwise *everything* will be built from scratch
       useSubstitutes = true;
     };
+
   };
 
   hardware = {
@@ -218,6 +223,63 @@
   };
 
   systemd = {
+    network = {
+      enable = true;
+      netdevs = {
+        "freeman" = {
+          netdevConfig = {
+            Name = "wg_freeman";
+            Kind = "wireguard";
+          };
+          wireguardConfig = {
+            PrivateKeyFile =
+              pkgs.writeText "wg0-priv" secret.freeman.wg.private-key;
+          };
+          wireguardPeers = [{
+            wireguardPeerConfig = {
+              Endpoint = "sg1.freeman.engineer:22616";
+              PublicKey = "9TXI2YQ0cdhW3xBhxzuHpPuISR7k2NwTjZ2Sq/lwoE0=";
+              PersistentKeepalive = 25;
+              AllowedIPs = [ "0.0.0.0/1" "128.0.0.0/1" "::/0" ];
+            };
+          }];
+        };
+      };
+      networks = {
+        "freeman" = {
+          matchConfig = { Name = "wg_freeman"; };
+          networkConfig = {
+            DHCP = "no";
+            IPv6AcceptRA = false;
+            IPForward = "yes";
+            KeepConfiguration = "yes";
+          };
+          routes = [
+            # {
+            #   routeConfig = {
+            #     Gateway = "172.22.240.97";
+            #     Destination = "0.0.0.1/1";
+            #   };
+            # }
+            # {
+            #   routeConfig = {
+            #     Gateway = "172.22.240.97";
+            #     Destination = "128.0.0.0/1";
+            #   };
+            # }
+          ];
+          addresses = [
+            {
+              addressConfig = {
+                Address = "172.22.240.98/27";
+                Peer = "172.22.240.97/32";
+              };
+            }
+            { addressConfig = { Address = "fe80::101/64"; }; }
+          ];
+        };
+      };
+    };
     services.upower.enable = true;
     user.services.fcitx5-daemon = {
       enable = false;
@@ -268,10 +330,7 @@
           "bus"
           "dropbox"
         ];
-        packages = with pkgs;
-          [
-            #  thunderbird
-          ];
+        packages = with pkgs; [ tdesktop ];
       };
     };
   };
@@ -331,9 +390,10 @@
           pandoc
         ]))
       heroku
-#      hydra_unstable
+      #      hydra_unstable
       imagemagick
       ispell
+      inetutils
       killall
       lsof
       light
@@ -360,7 +420,6 @@
       ripgrep
       rnix-lsp
       tree
-      tdesktop
       tomb
       tcpdump
       unzip
@@ -390,9 +449,7 @@
       keep-derivations = true
     '';
     settings.experimental-features = [ "nix-command" "flakes" ];
-    settings = {
-      trusted-users = [ "root" "freeman" ];
-    };
+    settings = { trusted-users = [ "root" "freeman" ]; };
   };
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
@@ -436,5 +493,4 @@
   # Before changing this value read the documentation for this option
   # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
   system = { stateVersion = "22.11"; }; # Did you read the comment?
-
 }
