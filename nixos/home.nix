@@ -329,7 +329,6 @@
       autocd = true;
       shellAliases = {
         vi = "vim";
-        yolo = ''git commit -m "$(curl -s whatthecommit.com/index.txt)"'';
         op = "xdg-open";
         ls = "exa --icons";
       };
@@ -369,38 +368,23 @@
       oh-my-zsh = {
         enable = true;
         plugins = [
-          "aws"
-          "cabal"
           "catimg"
           "colored-man-pages"
           "copyfile"
-          "docker"
-          "docker-compose"
+          "copypath"
+          "emacs"
           "extract"
           "encode64"
-          "fzf"
           "fancy-ctrl-z"
           "git"
           "git-flow"
-          "git-auto-fetch"
           "git-hubflow"
-          "github"
           "gitignore"
-          "golang"
-          "httpie"
-          "heroku"
-          "jsontools"
-          "kubectl"
-          "npm"
-          "node"
           "pass"
-          "pipenv"
-          "pip"
           "ripgrep"
-          "redis-cli"
-          "sbt"
+          "rsync"
+          "sudo"
           "scala"
-          "systemd"
           "tmux"
         ];
       };
@@ -438,7 +422,10 @@
       enableAutosuggestions = true;
       enableSyntaxHighlighting = true;
     };
-    fzf = { enable = true; };
+    fzf = {
+      enable = true;
+      enableZshIntegration = true;
+    };
     jq = { enable = true; };
     man = { enable = true; };
     qutebrowser = { enable = true; };
