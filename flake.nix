@@ -74,7 +74,7 @@
           inherit nixpkgs;
           network.storage.legacy.databasefile = "~/.nixops/deployments.nixops";
           network.description = "tron sg";
-          network.enableRollback = true;
+          network.enableRollback = false;
           tc = rec {
             _module.args = {
               inherit secret;

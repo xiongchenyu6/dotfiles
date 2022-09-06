@@ -303,7 +303,6 @@
       nix-direnv
       nixopsUnstable
       neofetch
-      dmenu
       #dropbox
       exa
       #  fasd
@@ -314,7 +313,6 @@
       socat
       rustscan
       gitAndTools.gitflow
-      gitAndTools.hub
       git-crypt
       #      gnupg
       geoip
@@ -324,26 +322,16 @@
       (haskellPackages.ghcWithPackages (self:
         with haskellPackages;
         with pkgs.haskell.lib; [
-          #alex
           apply-refact
           cabal-install
           hlint
           stylish-haskell
           hasktags
           hoogle
-          #wreq
-          #hnix
-          #hnix_loc
-          #hGelf
-          #gender
-          hakyll
-          #hakyll-sass
-          #aeson-pretty
           pandoc
-          #hails
         ]))
       heroku
-      hydra_unstable
+#      hydra_unstable
       imagemagick
       ispell
       killall

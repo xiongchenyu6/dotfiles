@@ -30,53 +30,90 @@ in {
     network = {
       enable = true;
       netdevs = {
-        "wg0" = {
+        "theresa" = {
           netdevConfig = {
             Kind = "wireguard";
-            Name = "wg0";
+            Name = "wg_theresa";
           };
           wireguardConfig = {
             PrivateKeyFile = pkgs.writeText "wg0-priv" secret.my.wg.private-key;
             ListenPort = 22616;
           };
           wireguardPeers = [
-            # {
-            #   wireguardPeerConfig = {
-            #     Endpoint = "us1.dn42.potat0.cc:22616";
-            #     PublicKey = "LUwqKS6QrCPv510Pwt1eAIiHACYDsbMjrkrbGTJfviU=";
-            #     AllowedIPs = [ "0.0.0.0/0" "::/0" ];
-            #   };
-            # }
             {
               wireguardPeerConfig = {
                 Endpoint = "cn2.dn42.theresa.cafe:22616";
                 PublicKey = "MqKkzCwYfOg8Fc/pRRctLW3jS72ACBDQr8ZF10sZ614=";
-                AllowedIPs = [ "0.0.0.0/0" "::/0" ];
+                AllowedIPs = [
+                  "10.0.0.0/8"
+                  "172.20.0.0/14"
+                  "172.31.0.0/16"
+                  "fd00::/8"
+                  "fe80::/64"
+                ];
               };
             }
           ];
         };
+        "potat0" = {
+          netdevConfig = {
+            Kind = "wireguard";
+            Name = "wg_potat0";
+          };
+          wireguardConfig = {
+            PrivateKeyFile = pkgs.writeText "wg0-priv" secret.my.wg.private-key;
+            ListenPort = 21816;
+          };
+          wireguardPeers = [
+            {
+              wireguardPeerConfig = {
+                Endpoint = "us1.dn42.potat0.cc:22616";
+                PublicKey = "LUwqKS6QrCPv510Pwt1eAIiHACYDsbMjrkrbGTJfviU=";
+                AllowedIPs = [
+                  "10.0.0.0/8"
+                  "172.20.0.0/14"
+                  "172.31.0.0/16"
+                  "fd00::/8"
+                  "fe80::/64"
+                ];
+              };
+            }
+          ];
+        };
+
       };
       networks = {
-        "wg0" = {
-          matchConfig = { Name = "wg0"; };
+        "theresa" = {
+          matchConfig = { Name = "wg_theresa"; };
           networkConfig = {
             DHCP = "no";
-            # IPv6AcceptRA = false;
+            IPv6AcceptRA = false;
             IPForward = "yes";
             KeepConfiguration = "yes";
           };
           addresses = [
-            # {
-            #   addressConfig = {
-            #     Address = "172.22.240.97/32";
-            #     Peer = "172.23.246.1/32";
-            #   };
-            # }
             {
               addressConfig = {
                 Address = "172.22.240.97/32";
                 Peer = "172.22.162.98/32";
+              };
+            }
+            { addressConfig = { Address = "fe80::100/64"; }; }
+          ];
+        };
+        "potat0" = {
+          matchConfig = { Name = "wg_potat0"; };
+          networkConfig = {
+            DHCP = "no";
+            IPv6AcceptRA = false;
+            IPForward = "yes";
+            KeepConfiguration = "yes";
+          };
+          addresses = [
+            {
+              addressConfig = {
+                Address = "172.22.240.97/32";
+                Peer = "172.23.246.1/32";
               };
             }
             { addressConfig = { Address = "fe80::100/64"; }; }
@@ -256,7 +293,7 @@ in {
         };                              
 
         protocol bgp dn42_theresa_v6 from dnpeers {
-          neighbor fe80::3396%wg0 as 4242423396;
+          neighbor fe80::3396%wg_theresa as 4242423396;
 
           ipv4 {
             extended next hop on;
@@ -269,7 +306,7 @@ in {
         }
 
         protocol bgp potat0_v6 from dnpeers {
-             neighbor fe80::1816%wg0 as 4242421816;
+             neighbor fe80::1816%wg_potat0 as 4242421816;
         }
       '';
     };
