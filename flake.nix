@@ -71,7 +71,7 @@
         default = rec {
           inherit nixpkgs;
           network.storage.legacy.databasefile = "~/.nixops/deployments.nixops";
-          network.description = "tron sg";
+          network.description = "Tencent cloud";
           network.enableRollback = false;
           tc = rec {
             _module.args = {

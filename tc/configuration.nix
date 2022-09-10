@@ -7,6 +7,7 @@ let
     ${pkgs.bird2}/bin/birdc c 
     ${pkgs.bird2}/bin/birdc reload in all
   '';
+  domain = "freeman.engineer";
 in {
   imports = [ ./hardware-configuration.nix ];
 
@@ -21,18 +22,18 @@ in {
   };
   zramSwap.enable = true;
   networking = {
-    hostName = "VM-8-10-ubuntu";
+    hostName = "mail";
     firewall = {
       enable = true;
       allowedTCPPorts = [
-        8000
         80 # ui
+        443
+        8000
       ];
       allowedUDPPorts = [ 22616 23396 21816 ];
       extraCommands = ''
         iptables -A FORWARD -i wg_freeman -j ACCEPT
         iptables -t nat -A POSTROUTING -o ens5 -j MASQUERADE 
-        iptables -I INPUT 1 -p udp --dport 22616 -j ACCEPT
       '';
     };
   };
@@ -227,6 +228,12 @@ in {
     };
   };
   services = {
+
+    postfix = {
+      inherit domain;
+      enable = true;
+    };
+
     openssh.enable = true;
 
     bird2 = {
@@ -406,16 +413,18 @@ in {
         listenAddress = "0.0.0.0:8000";
       };
       frontend = {
+        inherit domain;
         enable = true;
         netSpecificMode = "dn42";
         servers = [ "sg1" ];
-        domain = "freeman.engineer";
       };
     };
     nginx = {
       enable = true;
       virtualHosts."default" = {
-        addSSL = false;
+        addSSL = true;
+        sslCertificateKey = ../ssl/PRIVATEKEYNOPASS.key;
+        sslCertificate = ../ssl/SERVER.cert;
         # enableACME = true;
         locations."/" = {
           proxyPass = "http://127.0.0.1:5000";
@@ -423,8 +432,5 @@ in {
         };
       };
     };
-
   };
-
 }
-

@@ -1,4 +1,6 @@
 ﻿*.key filter=git-crypt diff=git-crypt
+*.csr filter=git-crypt diff=git-crypt
+*.pem filter=git-crypt diff=git-crypt
 *.password filter=git-crypt diff=git-crypt
 *.secret filter=git-crypt diff=git-crypt
 netrc filter=git-crypt diff=git-crypt

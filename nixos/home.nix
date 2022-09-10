@@ -1,8 +1,30 @@
-{ config, pkgs, lib, ... }:
-
-{
+{ config, pkgs, lib, ... }: {
   # Home Manager needs a bit of information about you and the
   # paths it should manage.
+  home = {
+    stateVersion = "22.11";
+    keyboard = { options = [ "caps:ctrl_modifier" ]; };
+    file = {
+      ".wakatime.cfg" = { source = ../old-files/wakatime/.wakatime.cfg; };
+      ".curlrc" = { source = ../old-files/downloader/.curlrc; };
+      ".editorconfig" = { source = ../old-files/editor/.editorconfig; };
+      ".ssh/id_rsa.pub" = {
+        text = (import ./secret.nix { inherit lib; }).freeman.public-key;
+        executable = false;
+      };
+      ".ssh/id_rsa" = {
+        text = (import ./secret.nix { inherit lib; }).freeman.private-key;
+        executable = false;
+      };
+
+    };
+    pointerCursor = {
+      name = "Vanilla-DMZ";
+      package = pkgs.vanilla-dmz;
+      x11 = { enable = true; };
+      size = 32;
+    };
+  };
 
   # Packages that should be installed to the user profile.
 
@@ -20,14 +42,16 @@
       ${pkgs.xorg.xset}/bin/xset -b
       ${pkgs.xorg.xset}/bin/xset r rate 180 60
     '';
-    windowManager.xmonad = {
-      enable = true;
-      enableContribAndExtras = true;
-      extraPackages = haskellPackages: [
-        haskellPackages.xmonad
-        haskellPackages.xmonad-contrib
-        haskellPackages.xmonad-extras
-      ];
+    windowManager = {
+      xmonad = {
+        enable = true;
+        enableContribAndExtras = true;
+        extraPackages = haskellPackages: [
+          haskellPackages.xmonad
+          haskellPackages.xmonad-contrib
+          haskellPackages.xmonad-extras
+        ];
+      };
     };
   };
   # gtk = {
@@ -46,32 +70,12 @@
       enabled = "fcitx5";
       fcitx5 = { addons = with pkgs; [ fcitx5-chinese-addons ]; };
     };
+  };
 
-  };
-  home = {
-    stateVersion = "22.11";
-    file.".wakatime.cfg".source = ../old-files/wakatime/.wakatime.cfg;
-    file.".curlrc".text = builtins.readFile ../old-files/downloader/.curlrc;
-    file.".editorconfig".text =
-      builtins.readFile ../old-files/editor/.editorconfig;
-    file.".ssh/id_rsa.pub".text =
-      (import ./secret.nix { inherit lib; }).freeman.public-key;
-    file.".ssh/id_rsa" = {
-      text = (import ./secret.nix { inherit lib; }).freeman.private-key;
-      executable = false;
-    };
-    pointerCursor = {
-      name = "Vanilla-DMZ";
-      package = pkgs.vanilla-dmz;
-      x11 = { enable = true; };
-      size = 32;
-    };
-  };
   programs = {
     alacritty = {
       enable = true;
       settings = { font = { size = 9; }; };
-
     };
     urxvt = {
       enable = true;
@@ -128,7 +132,7 @@
 
     # Let Home Manager install and manage itself.
 
-    home-manager.enable = true;
+    home-manager = { enable = true; };
     rofi = {
       enable = true;
       theme = "gruvbox-dark";
@@ -450,18 +454,15 @@
         right_format = "$all";
         # A continuation prompt that displays two filled in arrows
         continuation_prompt = "▶▶";
-        kubernetes = {
-          disabled = false;
-
-        };
+        kubernetes = { disabled = false; };
         directory = {
           truncation_length = 20;
           truncation_symbol = "…/";
         };
-        status.disabled = false;
-        time.disabled = false;
-        git_metrics.disabled = false;
-        sudo.disabled = false;
+        status = { disabled = false; };
+        time = { disabled = false; };
+        git_metrics = { disabled = false; };
+        sudo = { disabled = false; };
       };
     };
     xmobar = {
@@ -555,36 +556,32 @@
     emacs = {
       enable = true;
       package = pkgs.emacsGitNativeComp;
-      extraPackages = epkgs: with epkgs; [
-        epkgs.vterm
-        epkgs.org-contrib
-        epkgs.org-roam
-        epkgs.org-re-reveal
-        epkgs.pdf-tools
-        epkgs.leetcode
-      ];
+      extraPackages = epkgs:
+        with epkgs; [
+          epkgs.vterm
+          epkgs.org-contrib
+          epkgs.org-roam
+          epkgs.org-re-reveal
+          epkgs.pdf-tools
+          epkgs.leetcode
+        ];
     };
-    go = {
-      enable = true;
-      
-    };
+    go = { enable = true; };
   };
   services = {
     emacs = {
       enable = true;
       defaultEditor = true;
-      client = {
-        enable = true;
-      };
+      client = { enable = true; };
     };
 
     xscreensaver = {
       enable = true;
-      # settings = {
-      #   mode = "blank";
-      #   lock = false;
-      #   fadeTicks = 20;
-      # };
+      settings = {
+        mode = "blank";
+        lock = false;
+        fadeTicks = 20;
+      };
     };
     dunst = {
       enable = true;
@@ -608,7 +605,7 @@
       };
     };
 
-    blueman-applet.enable = true;
+    blueman-applet = { enable = true; };
     dropbox = { enable = true; };
     polybar = {
       enable = true;
@@ -651,8 +648,7 @@
         };
         "module/pip" = {
           type = "custom/script";
-          exec =
-            "${pkgs.curl}/bin/curl icanhazip.com --silent";
+          exec = "${pkgs.curl}/bin/curl icanhazip.com --silent";
           interval = 60;
           format-prefix = "  ";
           format-prefix-foreground = "#e06c75";
@@ -745,9 +741,7 @@
           # focus: Whether to always consider windows of this type focused.
           focus = true;
         };
-
       };
-
     };
     udiskie = {
       enable = true;
