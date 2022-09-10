@@ -25,57 +25,59 @@ in rec {
       };
     };
     kernelModules = [ "tcp_bbr" ];
-    kernel.sysctl = {
-      # The Magic SysRq key is a key combo that allows users connected to the
-      # system console of a Linux kernel to perform some low-level commands.
-      # Disable it, since we don't need it, and is a potential security concern.
-      "kernel.sysrq" = 511;
-      "net.ipv4.ip_forward" = 1;
-      "net.ipv6.conf.all.forwarding" = 1;
-      "net.ipv6.conf.default.forwarding" = 1;
+    kernel = {
+      sysctl = {
+        # The Magic SysRq key is a key combo that allows users connected to the
+        # system console of a Linux kernel to perform some low-level commands.
+        # Disable it, since we don't need it, and is a potential security concern.
+        "kernel.sysrq" = 511;
+        "net.ipv4.ip_forward" = 1;
+        "net.ipv6.conf.all.forwarding" = 1;
+        "net.ipv6.conf.default.forwarding" = 1;
 
-      "net.ipv4.conf.default.rp_filter" = 0;
-      "net.ipv4.conf.all.rp_filter" = 0;
+        "net.ipv4.conf.default.rp_filter" = 0;
+        "net.ipv4.conf.all.rp_filter" = 0;
 
-      # ## TCP hardening
-      # # Prevent bogus ICMP errors from filling up logs.
-      # "net.ipv4.icmp_ignore_bogus_error_responses" = 1;
-      # # Reverse path filtering causes the kernel to do source validation of
-      # # packets received from all interfaces. This can mitigate IP spoofing.
-      # "net.ipv4.conf.default.rp_filter" = 1;
-      # "net.ipv4.conf.all.rp_filter" = 1;
-      # # Do not accept IP source route packets (we're not a router)
-      # "net.ipv4.conf.all.accept_source_route" = 0;
-      # "net.ipv6.conf.all.accept_source_route" = 0;
-      # # Don't send ICMP redirects (again, we're on a router)
-      # "net.ipv4.conf.all.send_redirects" = 0;
-      # "net.ipv4.conf.default.send_redirects" = 0;
-      # # Refuse ICMP redirects (MITM mitigations)
-      # "net.ipv4.conf.all.accept_redirects" = 0;
-      # "net.ipv4.conf.default.accept_redirects" = 0;
-      # "net.ipv4.conf.all.secure_redirects" = 0;
-      # "net.ipv4.conf.default.secure_redirects" = 0;
-      # "net.ipv6.conf.all.accept_redirects" = 0;
-      # "net.ipv6.conf.default.accept_redirects" = 0;
-      # # Protects against SYN flood attacks
-      # "net.ipv4.tcp_syncookies" = 1;
-      # # Incomplete protection again TIME-WAIT assassination
-      # "net.ipv4.tcp_rfc1337" = 1;
+        # ## TCP hardening
+        # # Prevent bogus ICMP errors from filling up logs.
+        # "net.ipv4.icmp_ignore_bogus_error_responses" = 1;
+        # # Reverse path filtering causes the kernel to do source validation of
+        # # packets received from all interfaces. This can mitigate IP spoofing.
+        # "net.ipv4.conf.default.rp_filter" = 1;
+        # "net.ipv4.conf.all.rp_filter" = 1;
+        # # Do not accept IP source route packets (we're not a router)
+        # "net.ipv4.conf.all.accept_source_route" = 0;
+        # "net.ipv6.conf.all.accept_source_route" = 0;
+        # # Don't send ICMP redirects (again, we're on a router)
+        # "net.ipv4.conf.all.send_redirects" = 0;
+        # "net.ipv4.conf.default.send_redirects" = 0;
+        # # Refuse ICMP redirects (MITM mitigations)
+        # "net.ipv4.conf.all.accept_redirects" = 0;
+        # "net.ipv4.conf.default.accept_redirects" = 0;
+        # "net.ipv4.conf.all.secure_redirects" = 0;
+        # "net.ipv4.conf.default.secure_redirects" = 0;
+        # "net.ipv6.conf.all.accept_redirects" = 0;
+        # "net.ipv6.conf.default.accept_redirects" = 0;
+        # # Protects against SYN flood attacks
+        # "net.ipv4.tcp_syncookies" = 1;
+        # # Incomplete protection again TIME-WAIT assassination
+        # "net.ipv4.tcp_rfc1337" = 1;
 
-      # ## TCP optimization
-      # # TCP Fast Open is a TCP extension that reduces network latency by packing
-      # # data in the sender’s initial TCP SYN. Setting 3 = enable TCP Fast Open for
-      # # both incoming and outgoing connections:
-      # "net.ipv4.tcp_fastopen" = 3;
-      # # Bufferbloat mitigations + slight improvement in throughput & latency
-      # "net.ipv4.tcp_congestion_control" = "bbr";
-      # "net.core.default_qdisc" = "cake";
+        # ## TCP optimization
+        # # TCP Fast Open is a TCP extension that reduces network latency by packing
+        # # data in the sender’s initial TCP SYN. Setting 3 = enable TCP Fast Open for
+        # # both incoming and outgoing connections:
+        # "net.ipv4.tcp_fastopen" = 3;
+        # # Bufferbloat mitigations + slight improvement in throughput & latency
+        # "net.ipv4.tcp_congestion_control" = "bbr";
+        # "net.core.default_qdisc" = "cake";
+      };
     };
   };
 
   networking = {
-    networkmanager.enable = true;
-
+    networkmanager = { enable = true; };
+    enableIPv6 = true;
     hostName = "nixos"; # Define your hostname.
     # Configure network proxy if necessary
     # networking.proxy.default = "http://user:password@proxy:port/";
@@ -86,13 +88,10 @@ in rec {
 
   };
 
-  virtualisation = { docker.enable = false; };
+  virtualisation = { docker = { enable = true; }; };
 
   # Set your time zone.
-  time = {
-    timeZone = "Asia/Singapore";
-
-  };
+  time = { timeZone = "Asia/Singapore"; };
 
   i18n = {
     defaultLocale = "en_US.UTF-8";
@@ -124,7 +123,6 @@ in rec {
       enable = true;
       credentialsFile = ./cachix.secret;
       verbose = true;
-      # cachix = [ "nixos" ];
     };
 
     xserver = {
@@ -132,8 +130,10 @@ in rec {
       layout = "us";
       displayManager = {
         lightdm = { enable = true; };
-        autoLogin.enable = true;
-        autoLogin.user = "freeman";
+        autoLogin = {
+          enable = true;
+          user = "freeman";
+        };
         session = [{
           manage = "desktop";
           name = "xsession";
@@ -146,28 +146,38 @@ in rec {
       autoRepeatDelay = 180;
       autoRepeatInterval = 60;
       # Enable touchpad support (enabled default in most desktopManager).
-      libinput.enable = true;
+      libinput = { enable = true; };
       # Enable automatic login for the user.
     };
 
     aria2 = { enable = true; };
 
     # Enable CUPS to print documents.
-    printing.enable = true;
+    printing = {
+      enable = true;
 
-    gnome.gnome-keyring.enable = true;
-    upower.enable = true;
+    };
+
+    gnome = {
+      gnome-keyring = {
+        enable = true;
+      };
+    };
+    
+    upower = {
+      enable = true;
+    };
 
     dbus = { enable = true; };
     # Enable the OpenSSH daemon.
-    openssh.enable = true;
+    openssh = { enable = true; };
     pipewire = {
       enable = true;
       alsa = {
         enable = true;
         support32Bit = true;
       };
-      pulse.enable = true;
+      pulse = { enable = true; };
       # If you want to use JACK applications, uncomment this
       #jack.enable = true;
 
@@ -175,16 +185,22 @@ in rec {
       # no need to redefine it in your config for now)
       #media-session.enable = true;
     };
-    blueman.enable = true;
 
-    openvpn.servers = {
-      officeVPN = {
-        config = "config /home/freeman/Downloads/vpn/vpn/client.ovpn ";
+    blueman = { enable = true; };
+
+    openvpn = {
+      servers = {
+        officeVPN = {
+          config = "config /home/freeman/Downloads/vpn/vpn/client.ovpn ";
+        };
       };
     };
-    udev.extraRules = ''
-      ACTION=="add", SUBSYSTEM=="backlight", KERNEL=="intel_backlight", MODE="0666", RUN+="${pkgs.coreutils}/bin/chmod a+w /sys/class/backlight/%k/brightness"
-    '';
+
+    udev = {
+      extraRules = ''
+        ACTION=="add", SUBSYSTEM=="backlight", KERNEL=="intel_backlight", MODE="0666", RUN+="${pkgs.coreutils}/bin/chmod a+w /sys/class/backlight/%k/brightness"
+      '';
+    };
 
     udisks2 = { enable = true; };
 
@@ -218,8 +234,8 @@ in rec {
   };
 
   hardware = {
-    pulseaudio.enable = false;
-    bluetooth.enable = true;
+    pulseaudio = { enable = false; };
+    bluetooth = { enable = true; };
   };
 
   systemd = {
@@ -280,16 +296,20 @@ in rec {
         };
       };
     };
-    services.upower.enable = true;
-    user.services.fcitx5-daemon = {
-      enable = false;
-      description = "fcitx5";
-      unitConfig = { Type = "Simple"; };
-      serviceConfig = {
-        ExecStart = "fcitx5";
-        # Restart = "always";
+    services = { upower = { enable = true; }; };
+    user = {
+      services = {
+        fcitx5-daemon = {
+          enable = false;
+          description = "fcitx5";
+          unitConfig = { Type = "Simple"; };
+          serviceConfig = {
+            ExecStart = "fcitx5";
+            # Restart = "always";
+          };
+          wantedBy = [ "graphical-session.target" ];
+        };
       };
-      wantedBy = [ "graphical-session.target" ];
     };
   };
 
@@ -297,9 +317,14 @@ in rec {
   sound = { enable = true; };
 
   security = {
-    rtkit.enable = true;
-    sudo.enable = true;
-    acme.acceptTerms = true;
+    rtkit = {
+      enable = true;
+
+    };
+    sudo = {
+      enable = true;
+    };
+    acme = { acceptTerms = true; };
   };
   # 
 
@@ -338,12 +363,16 @@ in rec {
   # Define a user account. Don't forget to set a password with ‘passwd’.
 
   # Allow unfree packages
-  nixpkgs = { config.allowUnfree = true; };
+  nixpkgs = {
+    config = {
+      allowUnfree = true;
+      allowBroken = true;
+    };
+  };
 
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment = {
-
     systemPackages = with pkgs; [
       automake
       antibody
@@ -443,14 +472,6 @@ in rec {
     ];
   };
 
-  nix = {
-    extraOptions = ''
-      keep-outputs = true
-      keep-derivations = true
-    '';
-    settings.experimental-features = [ "nix-command" "flakes" ];
-    settings = { trusted-users = [ "root" "freeman" ]; };
-  };
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
   # programs.mtr.enable = true;
@@ -463,14 +484,16 @@ in rec {
       netatop = { enable = true; };
       atopgpu = { enable = true; };
     };
-    nm-applet.enable = true;
+    nm-applet = { enable = true; };
   };
 
   # List services that you want to enable:
 
   fonts = {
-    fontconfig.enable = true;
-    fontDir.enable = true;
+    fontconfig = {
+      enable = true;
+    };
+    fontDir = { enable = true; };
     enableGhostscriptFonts = true;
     fonts = with pkgs; [
       wqy_microhei
@@ -478,6 +501,16 @@ in rec {
       (nerdfonts.override { fonts = [ "Hack" ]; })
       jetbrains-mono
     ];
+  };
+  nix = {
+    extraOptions = ''
+      keep-outputs = true
+      keep-derivations = true
+    '';
+    settings = {
+      experimental-features = [ "nix-command" "flakes" ];
+      trusted-users = [ "root" "freeman" ];
+    };
   };
 
   # Open ports in the firewall.
