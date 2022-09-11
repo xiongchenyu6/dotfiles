@@ -1,13 +1,7 @@
 { pkgs, lib, secret, symlinkJoin, xddxdd, ... }:
 let
-  script = pkgs.writeShellScriptBin "update-roa" ''
-    mkdir -p /etc/bird/
-    ${pkgs.curl}/bin/curl -sfSLR {-o,-z}/etc/bird/roa_dn42_v6.conf https://dn42.burble.com/roa/dn42_roa_bird2_6.conf
-    ${pkgs.curl}/bin/curl -sfSLR {-o,-z}/etc/bird/roa_dn42.conf https://dn42.burble.com/roa/dn42_roa_bird2_4.conf
-    ${pkgs.bird2}/bin/birdc c 
-    ${pkgs.bird2}/bin/birdc reload in all
-  '';
   domain = "freeman.engineer";
+  script = (import ../dn42/update-roa.nix { inherit pkgs; });
 in {
   imports = [ ./hardware-configuration.nix ];
 
@@ -30,23 +24,14 @@ in {
       enableIPv6 = true;
       externalInterface = "ens5";
       internalInterfaces = [ "wg_freeman" ];
-      # internalIPs = [ "172.22.240.96/27" ];
-      # extraCommands = ''
-      #   iptables -t nat -A POSTROUTING -s 172.22.240.96/27 -o ens5 -j MASQUERADE 
-      # '';
-      # extraStopCommands = ''
-      #   iptables -t nat -D POSTROUTING -s 172.22.240.96/27 -o ens5 -j MASQUERADE 
-      # '';
-
     };
 
-    # this is for systemd resolver dns
-    # nameservers = [ "172.20.0.53" "172.23.0.53" "fd42:d42:d42:54::1" ];
     firewall = {
       enable = true;
       allowedTCPPorts = [
         53
         80 # ui
+        179
         443
         8000
       ];
@@ -98,7 +83,11 @@ in {
           wireguardPeers = [{
             wireguardPeerConfig = {
               PublicKey = secret.freeman.wg.public-key;
-              AllowedIPs = [ "172.22.240.98/32" ];
+              AllowedIPs = [
+                "172.22.240.98/32"
+                "fe80::101/128"
+                "fd48:4b4:f3::/48"
+              ];
             };
           }];
         };
@@ -201,24 +190,31 @@ in {
                 Peer = "172.22.240.98/32";
               };
             }
+            {
+              addressConfig = {
+                Address = "fd48:4b4:f3::1/48";
+                Peer = "fd48:4b4:f3::2/48";
+              };
+            }
             { addressConfig = { Address = "fe80::100/64"; }; }
           ];
         };
       };
     };
-    timers.dn42-roa = {
-      description = "Trigger a ROA table update";
+    timers = {
+      dn42-roa = {
+        description = "Trigger a ROA table update";
 
-      timerConfig = {
-        OnBootSec = "5m";
-        OnUnitInactiveSec = "1h";
-        Unit = "dn42-roa.service";
+        timerConfig = {
+          OnBootSec = "5m";
+          OnUnitInactiveSec = "1h";
+          Unit = "dn42-roa.service";
+        };
+
+        wantedBy = [ "timers.target" ];
+        before = [ "bird2.service" ];
       };
-
-      wantedBy = [ "timers.target" ];
-      before = [ "bird2.service" ];
     };
-
     services = {
       dn42-roa = {
         after = [ "network.target" ];
@@ -249,9 +245,9 @@ in {
         "/d.f.ip6.arpa/fd42:d42:d42:54::1"
         "/d.f.ip6.arpa/fd42:d42:d42:53::1"
       ];
-       extraConfig = ''
-         interface=wg_freeman
-       '';
+      extraConfig = ''
+        interface=wg_freeman
+      '';
     };
     postfix = {
       inherit domain;
@@ -423,6 +419,31 @@ in {
         protocol bgp potat0_v6 from dnpeers {
              neighbor fe80::1816%wg_potat0 as 4242421816;
         }
+
+        protocol bgp ibgp_freeman  {
+
+          local as OWNAS;
+          neighbor fd48:4b4:f3::2 as OWNAS;
+          direct;
+
+          ipv4 {
+              next hop self;
+              # Optional cost, e.g. based off latency
+              cost 50;
+
+              import all;
+              export all;
+          };
+
+          ipv6 {
+              next hop self;
+              cost 50;
+
+              import all;
+              export all;
+          };
+        }
+
       '';
     };
     bird-lg = {
