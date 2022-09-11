@@ -3,7 +3,9 @@
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
 { config, pkgs, options, lib, ... }:
-let secret = (import ./secret.nix { inherit lib; });
+let
+  secret = (import ./secret.nix { inherit lib; });
+  script = (import ../dn42/update-roa.nix { inherit pkgs; });
 in rec {
   imports = [ # Include the results of the hardware scan.
     ./hardware-configuration.nix
@@ -79,6 +81,7 @@ in rec {
     #  networking.firewall.enable = false;
     # networking.firewall.allowedTCPPorts = [ ... ];
     firewall = {
+      allowedTCPPorts = [ 51820 179 ];
       allowedUDPPorts = [ 51820 ];
       enable = true;
     };
@@ -96,24 +99,21 @@ in rec {
       interfaces = {
         wg_freeman = {
           privateKey = secret.freeman.wg.private-key;
-          address = [ "172.22.240.98/27" "fe80::101/64" ];
+          address = [ "172.22.240.98/27" "fe80::101/64" "fd48:4b4:f3::2/48"];
           dns = [ "172.22.240.97" "fe80::100" ];
           listenPort = 51820;
-          #table = "auto";
-          # postUp = [
-          #   "${pkgs.iproute2}/bin/ip addr add 172.22.240.98 peer 172.22.240.97 dev wg_freeman"
-          #   "sysctl -w net.ipv6.conf.wg_freeman.autoconf=0"
-          # ];
+          #table = "off";
           peers = [{
             endpoint = "freeman.engineer:22616";
-            publicKey = "9TXI2YQ0cdhW3xBhxzuHpPuISR7k2NwTjZ2Sq/lwoE0=";
-            persistentKeepalive = 25;
+            publicKey = secret.my.wg.public-key;
+            persistentKeepalive = 30;
             allowedIPs = [
               "10.0.0.0/8"
               "172.20.0.0/14"
               "172.31.0.0/16"
               "fd00::/8"
-              "fe80::/64"
+              "fe80::/10"
+              "fd48:4b4:f3::/48"
             ];
           }];
         };
@@ -152,6 +152,179 @@ in rec {
     # go-bttc = {
     #   enable = true;
     # };
+    bird2 = {
+      enable = true;
+      checkConfig = false;
+      config = ''
+        ################################################
+        #               Variable header                #
+        ################################################
+
+        define OWNAS =  4242422616;
+        define OWNIP =  172.22.240.98;
+        define OWNIPv6 = fd48:4b4:f3::2;
+        define OWNNET = 172.22.240.96/27;
+        define OWNNETv6 = fd48:4b4:f3::/48;
+        define OWNNETSET = [172.22.240.96/27+];
+        define OWNNETSETv6 = [fd48:4b4:f3::/48+];
+
+        ################################################
+        #                 Header end                   #
+        ################################################
+
+        router id OWNIP;
+
+        protocol device {
+            scan time 10;
+        }
+
+        /*
+         *  Utility functions
+         */
+
+        function is_self_net() {
+          return net ~ OWNNETSET;
+        }
+
+        function is_self_net_v6() {
+          return net ~ OWNNETSETv6;
+        }
+
+        function is_valid_network() {
+          return net ~ [
+            172.20.0.0/14{21,29}, # dn42
+            172.20.0.0/24{28,32}, # dn42 Anycast
+            172.21.0.0/24{28,32}, # dn42 Anycast
+            172.22.0.0/24{28,32}, # dn42 Anycast
+            172.23.0.0/24{28,32}, # dn42 Anycast
+            172.31.0.0/16+,       # ChaosVPN
+            10.100.0.0/14+,       # ChaosVPN
+            10.127.0.0/16{16,32}, # neonetwork
+            10.0.0.0/8{15,24}     # Freifunk.net
+          ];
+        }
+
+        roa4 table dn42_roa;
+        roa6 table dn42_roa_v6;
+
+        function is_valid_network_v6() {
+          return net ~ [
+            fd00::/8{44,64} # ULA address space as per RFC 4193
+          ];
+        }
+
+        protocol kernel {
+            scan time 20;
+
+            ipv6 {
+                import none;
+                export filter {
+                    if source = RTS_STATIC then reject;
+                    krt_prefsrc = OWNIPv6;
+                    accept;
+                };
+            };
+        };
+
+        protocol kernel {
+            scan time 20;
+
+            ipv4 {
+                import none;
+                export filter {
+                    if source = RTS_STATIC then reject;
+                    krt_prefsrc = OWNIP;
+                    accept;
+                };
+            };
+        }
+
+        protocol static {
+            route OWNNET reject;
+
+            ipv4 {
+                import all;
+                export none;
+            };
+        }
+
+        protocol static {
+            route OWNNETv6 reject;
+
+            ipv6 {
+                import all;
+                export none;
+            };
+        }
+
+        template bgp dnpeers {
+            local as OWNAS;
+            path metric 1;
+
+            ipv4 {
+                import filter {
+                  if is_valid_network() && !is_self_net() then {
+                    if (roa_check(dn42_roa, net, bgp_path.last) != ROA_VALID) then {
+                      print "[dn42] ROA check failed for ", net, " ASN ", bgp_path.last;
+                      reject;
+                    } else accept;
+                  } else reject;
+                };
+
+                export filter { if is_valid_network() && source ~ [RTS_STATIC, RTS_BGP] then accept; else reject; };
+                import limit 1000 action block;
+            };
+
+            ipv6 {   
+                import filter {
+                  if is_valid_network_v6() && !is_self_net_v6() then {
+                    if (roa_check(dn42_roa_v6, net, bgp_path.last) != ROA_VALID) then {
+                      print "[dn42] ROA check failed for ", net, " ASN ", bgp_path.last;
+                      reject;
+                    } else accept;
+                  } else reject;
+                };
+                export filter { if is_valid_network_v6() && source ~ [RTS_STATIC, RTS_BGP] then accept; else reject; };
+                import limit 1000 action block; 
+            };
+        }
+        protocol static {
+            roa4 { table dn42_roa; };
+            include "/etc/bird/roa_dn42.conf";
+        };
+
+        protocol static {
+            roa6 { table dn42_roa_v6; };
+            include "/etc/bird/roa_dn42_v6.conf";
+        };
+
+        protocol bgp ibgp_my  {
+
+          local as OWNAS;
+          neighbor fd48:4b4:f3::1 as OWNAS;
+          direct;
+
+          ipv4 {
+              next hop self;
+              # Optional cost, e.g. based off latency
+              cost 50;
+
+              import all;
+              export all;
+          };
+
+          ipv6 {
+              next hop self;
+              cost 50;
+
+              import all;
+              export all;
+          };
+        }
+
+      '';
+    };
+
     cachix-agent = {
       enable = true;
       credentialsFile = ./cachix.secret;
@@ -215,14 +388,6 @@ in rec {
 
     blueman = { enable = true; };
 
-    # openvpn = {
-    #   servers = {
-    #     officeVPN = {
-    #       config = "config /home/freeman/Downloads/vpn/vpn/client.oven ";
-    #     };
-    #   };
-    # };
-
     udev = {
       extraRules = ''
         ACTION=="add", SUBSYSTEM=="backlight", KERNEL=="intel_backlight", MODE="0666", RUN+="${pkgs.coreutils}/bin/chmod a+w /sys/class/backlight/%k/brightness"
@@ -266,78 +431,30 @@ in rec {
   };
 
   systemd = {
-    network = {
-      enable = false;
-      netdevs = {
-        "freeman" = {
-          netdevConfig = {
-            Name = "wg_freeman";
-            Kind = "wireguard";
-          };
-          wireguardConfig = {
-            PrivateKeyFile =
-              pkgs.writeText "wg0-priv" secret.freeman.wg.private-key;
-          };
-          wireguardPeers = [{
-            wireguardPeerConfig = {
-              Endpoint = "sg1.freeman.engineer:22616";
-              PublicKey = "9TXI2YQ0cdhW3xBhxzuHpPuISR7k2NwTjZ2Sq/lwoE0=";
-              PersistentKeepalive = 25;
-              AllowedIPs = [ "0.0.0.0/1" "128.0.0.0/1" "::/0" ];
-            };
-          }];
+    timers = {
+      dn42-roa = {
+        description = "Trigger a ROA table update";
+
+        timerConfig = {
+          OnBootSec = "5m";
+          OnUnitInactiveSec = "1h";
+          Unit = "dn42-roa.service";
         };
-      };
-      networks = {
-        "freeman" = {
-          matchConfig = { Name = "wg_freeman"; };
-          networkConfig = {
-            DHCP = "no";
-            IPv6AcceptRA = false;
-            IPForward = "yes";
-            KeepConfiguration = "yes";
-          };
-          routes = [
-            # {
-            #   routeConfig = {
-            #     Gateway = "172.22.240.97";
-            #     Destination = "0.0.0.1/1";
-            #   };
-            # }
-            # {
-            #   routeConfig = {
-            #     Gateway = "172.22.240.97";
-            #     Destination = "128.0.0.0/1";
-            #   };
-            # }
-          ];
-          addresses = [
-            {
-              addressConfig = {
-                Address = "172.22.240.98/27";
-                Peer = "172.22.240.97/32";
-              };
-            }
-            { addressConfig = { Address = "fe80::101/64"; }; }
-          ];
-        };
+
+        wantedBy = [ "timers.target" ];
+        before = [ "bird2.service" ];
       };
     };
-    services = { upower = { enable = true; }; };
-    user = {
-      services = {
-        fcitx5-daemon = {
-          enable = false;
-          description = "fcitx5";
-          unitConfig = { Type = "Simple"; };
-          serviceConfig = {
-            ExecStart = "fcitx5";
-            # Restart = "always";
-          };
-          wantedBy = [ "graphical-session.target" ];
-        };
+    services = {
+      dn42-roa = {
+        after = [ "network.target" ];
+        description = "DN42 ROA Updated";
+        unitConfig = { Type = "one-shot"; };
+        serviceConfig = { ExecStart = "${script}/bin/update-roa"; };
       };
+      upower = { enable = true; };
     };
+
   };
 
   # Enable sound with pipewire.
