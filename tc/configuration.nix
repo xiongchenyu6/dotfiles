@@ -11,35 +11,73 @@ let
 in {
   imports = [ ./hardware-configuration.nix ];
 
-  boot.cleanTmpDir = true;
-  boot.kernel.sysctl = {
-    "net.ipv4.ip_forward" = 1;
-    "net.ipv6.conf.all.forwarding" = 1;
-    "net.ipv6.conf.default.forwarding" = 1;
+  boot = {
+    cleanTmpDir = true;
+    kernel.sysctl = {
+      "net.ipv4.ip_forward" = 1;
+      "net.ipv6.conf.all.forwarding" = 1;
+      "net.ipv6.conf.default.forwarding" = 1;
 
-    "net.ipv4.conf.default.rp_filter" = 0;
-    "net.ipv4.conf.all.rp_filter" = 0;
+      "net.ipv4.conf.default.rp_filter" = 0;
+      "net.ipv4.conf.all.rp_filter" = 0;
+    };
   };
-  zramSwap.enable = true;
+  zramSwap = { enable = true; };
   networking = {
     hostName = "mail";
+    nat = {
+      enable = true;
+      externalInterface = "ens5";
+      internalInterfaces = [ "wg_freeman" ];
+      # internalIPs = [ "172.22.240.96/27" ];
+      # extraCommands = ''
+      #   iptables -t nat -A POSTROUTING -s 172.22.240.96/27 -o ens5 -j MASQUERADE 
+      # '';
+      # extraStopCommands = ''
+      #   iptables -t nat -D POSTROUTING -s 172.22.240.96/27 -o ens5 -j MASQUERADE 
+      # '';
+
+    };
+
+    # this is for systemd resolver dns
+    # nameservers = [ "172.20.0.53" "172.23.0.53" "fd42:d42:d42:54::1" ];
     firewall = {
       enable = true;
       allowedTCPPorts = [
+        53
         80 # ui
         443
         8000
       ];
-      allowedUDPPorts = [ 22616 23396 21816 ];
-      extraCommands = ''
-        iptables -A FORWARD -i wg_freeman -j ACCEPT
-        iptables -t nat -A POSTROUTING -o ens5 -j MASQUERADE 
-      '';
+      allowedUDPPorts = [ 53 22616 23396 21816 ];
     };
+    sits = {
+      he-ipv6 = {
+        local = "10.0.8.10";
+        remote = "216.218.221.42";
+        ttl = 255;
+        dev = "ens5";
+      };
+    };
+    interfaces = {
+      he-ipv6 = {
+        ipv6 = {
+          routes = [{
+            address = "::";
+            prefixLength = 0;
+          }];
+          addresses = [{
+            address = "2001:470:35:606::2";
+            prefixLength = 64;
+          }];
+        };
+      };
+    };
+
   };
 
   users.users.root.openssh.authorizedKeys.keys = [
-    "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCzzKV5IF7ekz9oJQ37nbaUNhXKkQ4KzJiDOYVRVroFq+LEJZHqNxe/Lt1Z1cKvFjRruu6f3clzqRargKlmqbO1d8mJZy0R9TbKQxleEZZq2cZJemX99xrkiu9keBF2qhohwn28v0JUuUyjNo188/YyS1tocoWFNZtp7qPiK8HRF7LQQ99nOa3zGmZJQL5Rvs2RFTFMGhiehsq8aXFuTZNejjivl5BFJjzxoVqZSbB8//lwsGZWpU5Ue54KV51UTv+9wDh2myuyenP/ZbdK9UZo9abCIeI52F9QbGJtjz6cOKG6oz67x06EYxvD/HKJ/uPuisy/cu+rPInmaF5AZTnd skey-p1r300u3"
+    "ssh-rsaAAAAB3NzaC1yc2EAAAADAQABAAABAQCzzKV5IF7ekz9oJQ37nbaUNhXKkQ4KzJiDOYVRVroFq+LEJZHqNxe/Lt1Z1cKvFjRruu6f3clzqRargKlmqbO1d8mJZy0R9TbKQxleEZZq2cZJemX99xrkiu9keBF2qhohwn28v0JUuUyjNo188/YyS1tocoWFNZtp7qPiK8HRF7LQQ99nOa3zGmZJQL5Rvs2RFTFMGhiehsq8aXFuTZNejjivl5BFJjzxoVqZSbB8//lwsGZWpU5Ue54KV51UTv+9wDh2myuyenP/ZbdK9UZo9abCIeI52F9QbGJtjz6cOKG6oz67x06EYxvD/HKJ/uPuisy/cu+rPInmaF5AZTnd skey-p1r300u3"
     "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQC3LHhrdC+Mor6lM9U0fxyJ2WCn4CzNUZPyOP8ACQpAl5bADYY8ici2SbRD6y0dZnwNvSUJKw090HXiPOgKCYrfPQPX4IOgiPLqPBJq0JCI7w7/pewRmg1bd/5k5BC8C5x0P2H63DovDXEnyIJxqZnVWZDjfhysGEVGueoYBxeDAHHBZLwGGxW36oX8OmfiTGDmMrHWqQxKpluR6KIbe4aFML+ZIol0Vy6+244gREZZXn6xTAoCxRGghaEnOf5X3SivKOJHLTDpAXI7JYesepHHyCPd+OXH2VzSVj0qqOtzb5t6mNHkM4wC9HhTqPT/KWuxjv9HcpXjag9ZGuby/LxOo+6knb5a7VtRm0GxvbBptNS5Frlrl9HNwARiqSmiaSvOWydrZYKV0/ClIYdA7f4DMUc46KIP+wHqLXO2oBe5I4sK4TesmOxCYezi2ti/T4sC/e4Hlvgc/luvS6p0GdTtZ0wQLMmqz2u79LVRpjQMFygLa0IQXFo7c+0FqB7Et8M= skey-21jfw3n7"
   ];
 
@@ -164,44 +202,6 @@ in {
             }
             { addressConfig = { Address = "fe80::100/64"; }; }
           ];
-          routingPolicyRules = [
-            {
-              routingPolicyRuleConfig = {
-                Table = 10;
-                IncomingInterface = "eth1";
-                Family = "both";
-              };
-            }
-            {
-              routingPolicyRuleConfig = {
-                Table = 20;
-                OutgoingInterface = "eth1";
-              };
-            }
-            {
-              routingPolicyRuleConfig = {
-                Table = 30;
-                From = "192.168.1.1";
-                To = "192.168.1.2";
-                SourcePort = 666;
-                DestinationPort = 667;
-              };
-            }
-            {
-              routingPolicyRuleConfig = {
-                Table = 40;
-                IPProtocol = "tcp";
-                InvertRule = true;
-              };
-            }
-            {
-              routingPolicyRuleConfig = {
-                Table = 50;
-                IncomingInterface = "eth1";
-                Family = "ipv4";
-              };
-            }
-          ];
         };
       };
     };
@@ -228,13 +228,36 @@ in {
     };
   };
   services = {
-
+    resolved = { enable = false; };
+    dnsmasq = {
+      enable = true;
+      alwaysKeepRunning = true;
+      servers = [
+        "/dn42/172.20.0.53"
+        "/20.172.in-addr.arpa/172.20.0.53"
+        "/21.172.in-addr.arpa/172.20.0.53"
+        "/22.172.in-addr.arpa/172.20.0.53"
+        "/23.172.in-addr.arpa/172.20.0.53"
+        "/10.in-addr.arpa/172.20.0.53"
+        "/dn42/172.23.0.53"
+        "/20.172.in-addr.arpa/172.23.0.53"
+        "/21.172.in-addr.arpa/172.23.0.53"
+        "/22.172.in-addr.arpa/172.23.0.53"
+        "/23.172.in-addr.arpa/172.23.0.53"
+        "/10.in-addr.arpa/172.23.0.53"
+        "/d.f.ip6.arpa/fd42:d42:d42:54::1"
+        "/d.f.ip6.arpa/fd42:d42:d42:53::1"
+      ];
+      # extraConfig = ''
+      #   interface=wg_freeman
+      # '';
+    };
     postfix = {
       inherit domain;
       enable = true;
     };
 
-    openssh.enable = true;
+    openssh = { enable = true; };
 
     bird2 = {
       enable = true;
@@ -380,7 +403,8 @@ in {
         protocol static {
             roa6 { table dn42_roa_v6; };
             include "/etc/bird/roa_dn42_v6.conf";
-        };                              
+        };
+
 
         protocol bgp dn42_theresa_v6 from dnpeers {
           neighbor fe80::3396%wg_theresa as 4242423396;
