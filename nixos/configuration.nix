@@ -76,6 +76,13 @@ in rec {
   };
 
   networking = {
+    #  networking.firewall.enable = false;
+    # networking.firewall.allowedTCPPorts = [ ... ];
+    firewall = {
+      allowedUDPPorts = [ 51820 ];
+      enable = true;
+    };
+
     networkmanager = { enable = true; };
     enableIPv6 = true;
     hostName = "nixos"; # Define your hostname.
@@ -85,7 +92,33 @@ in rec {
 
     # Enable networking
     #networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
-
+    wg-quick = {
+      interfaces = {
+        wg_freeman = {
+          privateKey = secret.freeman.wg.private-key;
+          address = [ "172.22.240.98/27" "fe80::101/64" ];
+          dns = [ "172.22.240.97" "fe80::100" ];
+          listenPort = 51820;
+          #table = "auto";
+          # postUp = [
+          #   "${pkgs.iproute2}/bin/ip addr add 172.22.240.98 peer 172.22.240.97 dev wg_freeman"
+          #   "sysctl -w net.ipv6.conf.wg_freeman.autoconf=0"
+          # ];
+          peers = [{
+            endpoint = "freeman.engineer:22616";
+            publicKey = "9TXI2YQ0cdhW3xBhxzuHpPuISR7k2NwTjZ2Sq/lwoE0=";
+            persistentKeepalive = 25;
+            allowedIPs = [
+              "10.0.0.0/8"
+              "172.20.0.0/14"
+              "172.31.0.0/16"
+              "fd00::/8"
+              "fe80::/64"
+            ];
+          }];
+        };
+      };
+    };
   };
 
   virtualisation = { docker = { enable = true; }; };
@@ -158,15 +191,9 @@ in rec {
 
     };
 
-    gnome = {
-      gnome-keyring = {
-        enable = true;
-      };
-    };
-    
-    upower = {
-      enable = true;
-    };
+    gnome = { gnome-keyring = { enable = true; }; };
+
+    upower = { enable = true; };
 
     dbus = { enable = true; };
     # Enable the OpenSSH daemon.
@@ -188,13 +215,13 @@ in rec {
 
     blueman = { enable = true; };
 
-    openvpn = {
-      servers = {
-        officeVPN = {
-          config = "config /home/freeman/Downloads/vpn/vpn/client.ovpn ";
-        };
-      };
-    };
+    # openvpn = {
+    #   servers = {
+    #     officeVPN = {
+    #       config = "config /home/freeman/Downloads/vpn/vpn/client.oven ";
+    #     };
+    #   };
+    # };
 
     udev = {
       extraRules = ''
@@ -240,7 +267,7 @@ in rec {
 
   systemd = {
     network = {
-      enable = true;
+      enable = false;
       netdevs = {
         "freeman" = {
           netdevConfig = {
@@ -317,14 +344,35 @@ in rec {
   sound = { enable = true; };
 
   security = {
-    rtkit = {
-      enable = true;
-
-    };
-    sudo = {
-      enable = true;
-    };
+    rtkit = { enable = true; };
+    sudo = { enable = true; };
     acme = { acceptTerms = true; };
+    pki.certificates = [''
+      -----BEGIN CERTIFICATE-----
+      MIID8DCCAtigAwIBAgIFIBYBAAAwDQYJKoZIhvcNAQELBQAwYjELMAkGA1UEBhMC
+      WEQxDTALBgNVBAoMBGRuNDIxIzAhBgNVBAsMGmRuNDIgQ2VydGlmaWNhdGUgQXV0
+      aG9yaXR5MR8wHQYDVQQDDBZkbjQyIFJvb3QgQXV0aG9yaXR5IENBMCAXDTE2MDEx
+      NjAwMTIwNFoYDzIwMzAxMjMxMjM1OTU5WjBiMQswCQYDVQQGEwJYRDENMAsGA1UE
+      CgwEZG40MjEjMCEGA1UECwwaZG40MiBDZXJ0aWZpY2F0ZSBBdXRob3JpdHkxHzAd
+      BgNVBAMMFmRuNDIgUm9vdCBBdXRob3JpdHkgQ0EwggEiMA0GCSqGSIb3DQEBAQUA
+      A4IBDwAwggEKAoIBAQDBGRDeAYYR8YIMsNTl/5rI46r0AAiCwM9/BXohl8G1i6PR
+      VO76BA931VyYS9mIGMEXEJLlJPrvYetdexHlvrqJ8mDJO4IFOnRUYCNmGtjNKHvx
+      6lUlmowEoP+dSFRMnbwtoN9xrmRHDed1BfTFAirSDL6jY1RiK60p62oIpF6o6/FS
+      FE7RXUEv0xm65II2etGj8oT2B7L2DDDb23bu6RQFx491tz/V1TVW0JJE3yYeAPqu
+      y3rJUGddafj5/SWnHdtAsUK8RVfhyRxCummAHuolmRKfbyOj0i5KzRXkfEn50cDw
+      GQwVUM6mUbuqFrKC7PRhRIwc3WVgBHewTZlnF/sJAgMBAAGjgaowgacwDgYDVR0P
+      AQH/BAQDAgEGMA8GA1UdEwEB/wQFMAMBAf8wHQYDVR0OBBYEFFR2iLLAtTDQ/E/J
+      bTv5jFURrBUVMB8GA1UdIwQYMBaAFFR2iLLAtTDQ/E/JbTv5jFURrBUVMEQGA1Ud
+      HgQ9MDugOTAHggUuZG40MjAKhwisFAAA//wAADAihyD9QgAAAAAAAAAAAAAAAAAA
+      //8AAAAAAAAAAAAAAAAAADANBgkqhkiG9w0BAQsFAAOCAQEAXKQ7QaCBaeJxmU11
+      S1ogDSrZ7Oq8jU+wbPMuQRqgdfPefjrgp7nbzfUW5GrL58wqj+5/FAqltflmSIHl
+      aB4MpqM8pyvjlc/jYxUNFglj2WYxO0IufBrlKI5ePZ4omUjpR4YR4gQpYCuWlZmu
+      P6v/P0WrfgdFTk0LGEA9OwKcTqkPpcI/SjB3rmZcs42yQWvimAF94GtScE09uKlI
+      9QLS2UBmtl5EJRFVrDEC12dyamq8dDRfddyaT4MoQOAq3D9BQ1pHByu3pz/QFaJC
+      1zAi8vbktPY7OMprTOc8pHDL3q8KFP8jJcoEzZ5Jw0vkCrULhLXvtFtjB0djzVxQ
+      C0IKqQ==
+      -----END CERTIFICATE-----
+    ''];
   };
   # 
 
@@ -444,6 +492,7 @@ in rec {
       openjdk
       pkgconfig
       protobuf
+      plantuml
       snappy
       rsync
       ripgrep
@@ -461,6 +510,7 @@ in rec {
       which
       wineWowPackages.staging
       wireguard-tools
+      wireshark
       #wpa_supplicant_gui
       wakatime
       whatsapp-for-linux
@@ -490,9 +540,7 @@ in rec {
   # List services that you want to enable:
 
   fonts = {
-    fontconfig = {
-      enable = true;
-    };
+    fontconfig = { enable = true; };
     fontDir = { enable = true; };
     enableGhostscriptFonts = true;
     fonts = with pkgs; [
@@ -514,10 +562,7 @@ in rec {
   };
 
   # Open ports in the firewall.
-  # networking.firewall.allowedTCPPorts = [ ... ];
-  # networking.firewall.allowedUDPPorts = [ ... ];
   # Or disable the firewall altogether.
-  # networking.firewall.enable = false;
 
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions

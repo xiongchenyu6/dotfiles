@@ -84,10 +84,13 @@
             environment = {
               systemPackages = with (import nixpkgs { }).pkgs; [
                 # self.packages."${system}".bttc
+                dig
                 git
                 wireguard-tools
                 traceroute
                 python3
+                tmux
+                tcpdump
               ];
             };
           };

@@ -16,7 +16,6 @@
         text = (import ./secret.nix { inherit lib; }).freeman.private-key;
         executable = false;
       };
-
     };
     pointerCursor = {
       name = "Vanilla-DMZ";
