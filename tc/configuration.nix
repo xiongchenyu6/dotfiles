@@ -27,6 +27,7 @@ in {
     hostName = "mail";
     nat = {
       enable = true;
+      enableIPv6 = true;
       externalInterface = "ens5";
       internalInterfaces = [ "wg_freeman" ];
       # internalIPs = [ "172.22.240.96/27" ];
@@ -248,9 +249,9 @@ in {
         "/d.f.ip6.arpa/fd42:d42:d42:54::1"
         "/d.f.ip6.arpa/fd42:d42:d42:53::1"
       ];
-      # extraConfig = ''
-      #   interface=wg_freeman
-      # '';
+       extraConfig = ''
+         interface=wg_freeman
+       '';
     };
     postfix = {
       inherit domain;
