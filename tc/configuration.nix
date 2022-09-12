@@ -35,7 +35,7 @@ in {
         443
         8000
       ];
-      allowedUDPPorts = [ 53 22616 23396 21816 ];
+      allowedUDPPorts = [ 53 179 22616 23396 21816 33434 ];
     };
     sits = {
       he-ipv6 = {
@@ -59,7 +59,55 @@ in {
         };
       };
     };
-
+    wg-quick = {
+      interfaces = {
+        wg_freeman = {
+          privateKey = secret.my.wg.private-key;
+          address = [ "172.22.240.97/27" "fe80::100/64" "fd48:4b4:f3::1/48" ];
+          listenPort = 22616;
+          table = "off";
+          peers = [{
+            publicKey = secret.freeman.wg.public-key;
+            allowedIPs =
+              [ "172.22.240.98/32" "fe80::101/128" "fd48:4b4:f3::2/128" ];
+          }];
+        };
+        wg_theresa = {
+          privateKey = secret.my.wg.private-key;
+          address = [ "172.22.240.97/27" "fe80::100/64" ];
+          listenPort = 23396;
+          table = "off";
+          peers = [{
+            endpoint = "cn2.dn42.theresa.cafe:22616";
+            publicKey = "MqKkzCwYfOg8Fc/pRRctLW3jS72ACBDQr8ZF10sZ614=";
+            allowedIPs = [
+              "10.0.0.0/8"
+              "172.20.0.0/14"
+              "172.31.0.0/16"
+              "fd00::/8"
+              "fe80::/64"
+            ];
+          }];
+        };
+        wg_potat0 = {
+          privateKey = secret.my.wg.private-key;
+          address = [ "172.22.240.97/27" "fe80::100/64" ];
+          listenPort = 21816;
+          table = "off";
+          peers = [{
+            endpoint = "us1.dn42.potat0.cc:22616";
+            publicKey = "LUwqKS6QrCPv510Pwt1eAIiHACYDsbMjrkrbGTJfviU=";
+            allowedIPs = [
+              "10.0.0.0/8"
+              "172.20.0.0/14"
+              "172.31.0.0/16"
+              "fd00::/8"
+              "fe80::/64"
+            ];
+          }];
+        };
+      };
+    };
   };
 
   users.users.root.openssh.authorizedKeys.keys = [
@@ -68,139 +116,6 @@ in {
   ];
 
   systemd = {
-    network = {
-      enable = true;
-      netdevs = {
-        "freeman" = {
-          netdevConfig = {
-            Kind = "wireguard";
-            Name = "wg_freeman";
-          };
-          wireguardConfig = {
-            PrivateKeyFile = pkgs.writeText "wg0-priv" secret.my.wg.private-key;
-            ListenPort = 22616;
-          };
-          wireguardPeers = [{
-            wireguardPeerConfig = {
-              PublicKey = secret.freeman.wg.public-key;
-              AllowedIPs = [
-                "172.22.240.98/32"
-                "fe80::101/128"
-                "fd48:4b4:f3::/48"
-              ];
-            };
-          }];
-        };
-        "theresa" = {
-          netdevConfig = {
-            Kind = "wireguard";
-            Name = "wg_theresa";
-          };
-          wireguardConfig = {
-            PrivateKeyFile = pkgs.writeText "wg0-priv" secret.my.wg.private-key;
-            ListenPort = 23396;
-          };
-          wireguardPeers = [{
-            wireguardPeerConfig = {
-              Endpoint = "cn2.dn42.theresa.cafe:22616";
-              PublicKey = "MqKkzCwYfOg8Fc/pRRctLW3jS72ACBDQr8ZF10sZ614=";
-              AllowedIPs = [
-                "10.0.0.0/8"
-                "172.20.0.0/14"
-                "172.31.0.0/16"
-                "fd00::/8"
-                "fe80::/64"
-              ];
-            };
-          }];
-        };
-        "potat0" = {
-          netdevConfig = {
-            Kind = "wireguard";
-            Name = "wg_potat0";
-          };
-          wireguardConfig = {
-            PrivateKeyFile = pkgs.writeText "wg0-priv" secret.my.wg.private-key;
-            ListenPort = 21816;
-          };
-          wireguardPeers = [{
-            wireguardPeerConfig = {
-              Endpoint = "us1.dn42.potat0.cc:22616";
-              PublicKey = "LUwqKS6QrCPv510Pwt1eAIiHACYDsbMjrkrbGTJfviU=";
-              AllowedIPs = [
-                "10.0.0.0/8"
-                "172.20.0.0/14"
-                "172.31.0.0/16"
-                "fd00::/8"
-                "fe80::/64"
-              ];
-            };
-          }];
-        };
-      };
-      networks = {
-        "theresa" = {
-          matchConfig = { Name = "wg_theresa"; };
-          networkConfig = {
-            DHCP = "no";
-            IPv6AcceptRA = false;
-            IPForward = "yes";
-            KeepConfiguration = "yes";
-          };
-          addresses = [
-            {
-              addressConfig = {
-                Address = "172.22.240.97/32";
-                Peer = "172.22.162.98/32";
-              };
-            }
-            { addressConfig = { Address = "fe80::100/64"; }; }
-          ];
-        };
-        "potat0" = {
-          matchConfig = { Name = "wg_potat0"; };
-          networkConfig = {
-            DHCP = "no";
-            IPv6AcceptRA = false;
-            IPForward = "yes";
-            KeepConfiguration = "yes";
-          };
-          addresses = [
-            {
-              addressConfig = {
-                Address = "172.22.240.97/32";
-                Peer = "172.23.246.1/32";
-              };
-            }
-            { addressConfig = { Address = "fe80::100/64"; }; }
-          ];
-        };
-        "freeman" = {
-          matchConfig = { Name = "wg_freeman"; };
-          networkConfig = {
-            DHCP = "no";
-            IPv6AcceptRA = false;
-            IPForward = "yes";
-            KeepConfiguration = "yes";
-          };
-          addresses = [
-            {
-              addressConfig = {
-                Address = "172.22.240.97/32";
-                Peer = "172.22.240.98/32";
-              };
-            }
-            {
-              addressConfig = {
-                Address = "fd48:4b4:f3::1/48";
-                Peer = "fd48:4b4:f3::2/48";
-              };
-            }
-            { addressConfig = { Address = "fe80::100/64"; }; }
-          ];
-        };
-      };
-    };
     timers = {
       dn42-roa = {
         description = "Trigger a ROA table update";
@@ -225,7 +140,6 @@ in {
     };
   };
   services = {
-    resolved = { enable = false; };
     dnsmasq = {
       enable = true;
       alwaysKeepRunning = true;
@@ -247,6 +161,7 @@ in {
       ];
       extraConfig = ''
         interface=wg_freeman
+        address=/tecmint.dn42/172.22.240.97
       '';
     };
     postfix = {
@@ -412,12 +327,14 @@ in {
 
           direct;
         }
-        protocol bgp potat0 from dnpeers {
-              neighbor 172.23.246.1 as 4242421816;
-        }
 
         protocol bgp potat0_v6 from dnpeers {
-             neighbor fe80::1816%wg_potat0 as 4242421816;
+          neighbor fe80::1816%wg_potat0 as 4242421816;
+          ipv4 {
+            extended next hop on;
+          };
+
+          direct;
         }
 
         protocol bgp ibgp_freeman  {
@@ -447,8 +364,6 @@ in {
       '';
     };
     bird-lg = {
-      user = "root";
-      group = "root";
       package = pkgs.symlinkJoin {
         name = "bird-lg";
         paths = with xddxdd; [ bird-lg-go bird-lgproxy-go ];
@@ -457,12 +372,15 @@ in {
         enable = true;
         birdSocket = "/var/run/bird/bird.ctl";
         listenAddress = "0.0.0.0:8000";
+        allowedIPs = [ "127.0.0.1" "43.156.66.157" "14.100.28.225" ];
       };
       frontend = {
         inherit domain;
         enable = true;
         netSpecificMode = "dn42";
         servers = [ "sg1" ];
+        nameFilter = "^ospf";
+        protocolFilter = [ "bgp" "ospf" "static" ];
       };
     };
     nginx = {

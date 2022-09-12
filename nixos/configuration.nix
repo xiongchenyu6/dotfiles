@@ -81,13 +81,13 @@ in rec {
     #  networking.firewall.enable = false;
     # networking.firewall.allowedTCPPorts = [ ... ];
     firewall = {
-      allowedTCPPorts = [ 51820 179 ];
-      allowedUDPPorts = [ 51820 ];
+      allowedTCPPorts = [ 179 51820 ];
+      allowedUDPPorts = [ 179 33434 51820 ];
       enable = true;
     };
 
     networkmanager = { enable = true; };
-    enableIPv6 = true;
+    # enableIPv6 = true;
     hostName = "nixos"; # Define your hostname.
     # Configure network proxy if necessary
     # networking.proxy.default = "http://user:password@proxy:port/";
@@ -100,9 +100,8 @@ in rec {
         wg_freeman = {
           privateKey = secret.freeman.wg.private-key;
           address = [ "172.22.240.98/27" "fe80::101/64" "fd48:4b4:f3::2/48"];
-          dns = [ "172.22.240.97" "fe80::100" ];
+          #dns = [ "172.22.240.97" "fe80::100" ];
           listenPort = 51820;
-          #table = "off";
           peers = [{
             endpoint = "freeman.engineer:22616";
             publicKey = secret.my.wg.public-key;
