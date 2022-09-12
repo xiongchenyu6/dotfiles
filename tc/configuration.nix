@@ -2,7 +2,8 @@
 let
   domain = "freeman.engineer";
   script = (import ../dn42/update-roa.nix { inherit pkgs; });
-in {
+in
+{
   imports = [ ./hardware-configuration.nix ];
 
   boot = {
@@ -97,6 +98,23 @@ in {
           peers = [{
             endpoint = "us1.dn42.potat0.cc:22616";
             publicKey = "LUwqKS6QrCPv510Pwt1eAIiHACYDsbMjrkrbGTJfviU=";
+            allowedIPs = [
+              "10.0.0.0/8"
+              "172.20.0.0/14"
+              "172.31.0.0/16"
+              "fd00::/8"
+              "fe80::/64"
+            ];
+          }];
+        };
+        wg_tech9 = {
+          privateKey = secret.my.wg.private-key;
+          address = [ "172.22.240.97/27" "fe80::100/64" ];
+          listenPort = 21588;
+          table = "off";
+          peers = [{
+            endpoint = "sg-sin01.dn42.tech9.io:52507";
+            publicKey = "4qLIJ9zpc/Xgvy+uo90rGso75cSrT2F5tBEv+6aqDkY=";
             allowedIPs = [
               "10.0.0.0/8"
               "172.20.0.0/14"
@@ -337,6 +355,15 @@ in {
           direct;
         }
 
+        protocol bgp tech9_v6 from dnpeers {
+          neighbor fe80::1588%wg_tech9 as 4242421588;
+          ipv4 {
+            extended next hop on;
+          };
+
+          direct;
+        }
+
         protocol bgp ibgp_freeman  {
 
           local as OWNAS;
@@ -381,6 +408,12 @@ in {
         servers = [ "sg1" ];
         nameFilter = "^ospf";
         protocolFilter = [ "bgp" "ospf" "static" ];
+        whois = "whois.burble.dn42";
+        # titleBrand = "Freeman dn42 bird-lg";
+        dnsInterface = "asn.lantian.dn42";
+        navbar = {
+          # brand = "Freeman dn42 bird-lg";
+        };
       };
     };
     nginx = {

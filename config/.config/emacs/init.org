@@ -628,9 +628,9 @@ Otherwise, show the default maximum number of recent items."
   (straight-use-package 'lsp-mode)
   (setq lsp-enable-dap-auto-configure nil)
 
-  (global-set-key (kbd "C-c l") 'lsp-command-map)
+(setq lsp-keymap-prefix "C-c l")
 
-  (require 'lsp)
+(require 'lsp)
 
   (autoload 'lsp "lsp-mode" nil t)
 
@@ -780,7 +780,7 @@ Otherwise, show the default maximum number of recent items."
   (add-hook 'before-save-hook #'lsp-format-buffer t t)
   ;(add-hook 'before-save-hook #'lsp-organize-imports t t)
   )
-;; (add-hook 'go-mode-hook #'lsp-go-install-save-hooks)
+(add-hook 'go-mode-hook #'lsp-go-install-save-hooks)
 
 (add-hook 'before-save-hook #'lsp-format-buffer t t)
 
@@ -823,10 +823,17 @@ Otherwise, show the default maximum number of recent items."
 #+end_src
 *** Nix
 #+begin_src emacs-lisp
-  (straight-use-package 'nix-mode)
+(straight-use-package 'nix-mode)
 (straight-use-package 'direnv)
-(straight-use-package 'company-nixos-options)
-(add-to-list 'company-backends 'company-nixos-options)
+(add-hook 'nix-mode-hook 'lsp-deferred)
+(defun lsp-nix-install-save-hooks ()
+  (add-hook 'before-save-hook #'lsp-format-buffer t t)
+  ;(add-hook 'before-save-hook #'lsp-organize-imports t t)
+  )
+(add-hook 'nix-mode-hook #'lsp-nix-install-save-hooks)
+
+;; (straight-use-package 'company-nixos-options)
+;; (add-to-list 'company-backends 'company-nixos-options)
 #+end_src
 
 *** Rust

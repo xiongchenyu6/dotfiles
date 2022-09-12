@@ -76,6 +76,38 @@
       enable = true;
       settings = { font = { size = 9; }; };
     };
+    chromium = {
+      enable = true;
+      package = pkgs.brave;
+      #google-chrome
+    };
+    java = { enable = true; };
+    topgrade = {
+      enable = true;
+      settings =
+        {
+          assume_yes = true;
+          disable = [
+            "emacs"
+          ];
+          set_title = false;
+          cleanup = true;
+          git = {
+            max_concurrency = 10;
+            repos = [
+              "~/workspace/*/"
+              "~/git/*/"
+              "~/private/*/"
+            ];
+            arguments = "--rebase --autostash";
+          };
+          commands = {
+            "emacs straight" =
+              "emacs --batch -l ~/.config/emacs/early-init.el -f straight-pull-all";
+          };
+        };
+    };
+    yt-dlp = { enable = true; };
     urxvt = {
       enable = true;
       extraConfig = {
@@ -367,6 +399,7 @@
                echo "Already a tag on this commit"
            fi
         }
+
       '';
       oh-my-zsh = {
         enable = true;

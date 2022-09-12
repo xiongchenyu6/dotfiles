@@ -6,8 +6,10 @@
 let
   secret = (import ./secret.nix { inherit lib; });
   script = (import ../dn42/update-roa.nix { inherit pkgs; });
-in rec {
-  imports = [ # Include the results of the hardware scan.
+in
+rec {
+  imports = [
+    # Include the results of the hardware scan.
     ./hardware-configuration.nix
     ./cachix.nix
   ];
@@ -81,8 +83,8 @@ in rec {
     #  networking.firewall.enable = false;
     # networking.firewall.allowedTCPPorts = [ ... ];
     firewall = {
-      allowedTCPPorts = [ 179 51820 ];
-      allowedUDPPorts = [ 179 33434 51820 ];
+      allowedTCPPorts = [ 179 ];
+      allowedUDPPorts = [ 179 33434 ];
       enable = true;
     };
 
@@ -99,9 +101,8 @@ in rec {
       interfaces = {
         wg_freeman = {
           privateKey = secret.freeman.wg.private-key;
-          address = [ "172.22.240.98/27" "fe80::101/64" "fd48:4b4:f3::2/48"];
-          #dns = [ "172.22.240.97" "fe80::100" ];
-          listenPort = 51820;
+          address = [ "172.22.240.98/27" "fe80::101/64" "fd48:4b4:f3::2/48" ];
+          dns = [ "fe80::100%wg_freeman" "172.22.240.97" "1.1.1.1" ];
           peers = [{
             endpoint = "freeman.engineer:22616";
             publicKey = secret.my.wg.public-key;
@@ -120,7 +121,14 @@ in rec {
     };
   };
 
-  virtualisation = { docker = { enable = true; }; };
+  virtualisation = {
+    docker = {
+      enable = true;
+      rootless = {
+        enable = true;
+      };
+    };
+  };
 
   # Set your time zone.
   time = { timeZone = "Asia/Singapore"; };
@@ -463,32 +471,34 @@ in rec {
     rtkit = { enable = true; };
     sudo = { enable = true; };
     acme = { acceptTerms = true; };
-    pki.certificates = [''
-      -----BEGIN CERTIFICATE-----
-      MIID8DCCAtigAwIBAgIFIBYBAAAwDQYJKoZIhvcNAQELBQAwYjELMAkGA1UEBhMC
-      WEQxDTALBgNVBAoMBGRuNDIxIzAhBgNVBAsMGmRuNDIgQ2VydGlmaWNhdGUgQXV0
-      aG9yaXR5MR8wHQYDVQQDDBZkbjQyIFJvb3QgQXV0aG9yaXR5IENBMCAXDTE2MDEx
-      NjAwMTIwNFoYDzIwMzAxMjMxMjM1OTU5WjBiMQswCQYDVQQGEwJYRDENMAsGA1UE
-      CgwEZG40MjEjMCEGA1UECwwaZG40MiBDZXJ0aWZpY2F0ZSBBdXRob3JpdHkxHzAd
-      BgNVBAMMFmRuNDIgUm9vdCBBdXRob3JpdHkgQ0EwggEiMA0GCSqGSIb3DQEBAQUA
-      A4IBDwAwggEKAoIBAQDBGRDeAYYR8YIMsNTl/5rI46r0AAiCwM9/BXohl8G1i6PR
-      VO76BA931VyYS9mIGMEXEJLlJPrvYetdexHlvrqJ8mDJO4IFOnRUYCNmGtjNKHvx
-      6lUlmowEoP+dSFRMnbwtoN9xrmRHDed1BfTFAirSDL6jY1RiK60p62oIpF6o6/FS
-      FE7RXUEv0xm65II2etGj8oT2B7L2DDDb23bu6RQFx491tz/V1TVW0JJE3yYeAPqu
-      y3rJUGddafj5/SWnHdtAsUK8RVfhyRxCummAHuolmRKfbyOj0i5KzRXkfEn50cDw
-      GQwVUM6mUbuqFrKC7PRhRIwc3WVgBHewTZlnF/sJAgMBAAGjgaowgacwDgYDVR0P
-      AQH/BAQDAgEGMA8GA1UdEwEB/wQFMAMBAf8wHQYDVR0OBBYEFFR2iLLAtTDQ/E/J
-      bTv5jFURrBUVMB8GA1UdIwQYMBaAFFR2iLLAtTDQ/E/JbTv5jFURrBUVMEQGA1Ud
-      HgQ9MDugOTAHggUuZG40MjAKhwisFAAA//wAADAihyD9QgAAAAAAAAAAAAAAAAAA
-      //8AAAAAAAAAAAAAAAAAADANBgkqhkiG9w0BAQsFAAOCAQEAXKQ7QaCBaeJxmU11
-      S1ogDSrZ7Oq8jU+wbPMuQRqgdfPefjrgp7nbzfUW5GrL58wqj+5/FAqltflmSIHl
-      aB4MpqM8pyvjlc/jYxUNFglj2WYxO0IufBrlKI5ePZ4omUjpR4YR4gQpYCuWlZmu
-      P6v/P0WrfgdFTk0LGEA9OwKcTqkPpcI/SjB3rmZcs42yQWvimAF94GtScE09uKlI
-      9QLS2UBmtl5EJRFVrDEC12dyamq8dDRfddyaT4MoQOAq3D9BQ1pHByu3pz/QFaJC
-      1zAi8vbktPY7OMprTOc8pHDL3q8KFP8jJcoEzZ5Jw0vkCrULhLXvtFtjB0djzVxQ
-      C0IKqQ==
-      -----END CERTIFICATE-----
-    ''];
+    pki.certificates = [
+      ''
+        -----BEGIN CERTIFICATE-----
+        MIID8DCCAtigAwIBAgIFIBYBAAAwDQYJKoZIhvcNAQELBQAwYjELMAkGA1UEBhMC
+        WEQxDTALBgNVBAoMBGRuNDIxIzAhBgNVBAsMGmRuNDIgQ2VydGlmaWNhdGUgQXV0
+        aG9yaXR5MR8wHQYDVQQDDBZkbjQyIFJvb3QgQXV0aG9yaXR5IENBMCAXDTE2MDEx
+        NjAwMTIwNFoYDzIwMzAxMjMxMjM1OTU5WjBiMQswCQYDVQQGEwJYRDENMAsGA1UE
+        CgwEZG40MjEjMCEGA1UECwwaZG40MiBDZXJ0aWZpY2F0ZSBBdXRob3JpdHkxHzAd
+        BgNVBAMMFmRuNDIgUm9vdCBBdXRob3JpdHkgQ0EwggEiMA0GCSqGSIb3DQEBAQUA
+        A4IBDwAwggEKAoIBAQDBGRDeAYYR8YIMsNTl/5rI46r0AAiCwM9/BXohl8G1i6PR
+        VO76BA931VyYS9mIGMEXEJLlJPrvYetdexHlvrqJ8mDJO4IFOnRUYCNmGtjNKHvx
+        6lUlmowEoP+dSFRMnbwtoN9xrmRHDed1BfTFAirSDL6jY1RiK60p62oIpF6o6/FS
+        FE7RXUEv0xm65II2etGj8oT2B7L2DDDb23bu6RQFx491tz/V1TVW0JJE3yYeAPqu
+        y3rJUGddafj5/SWnHdtAsUK8RVfhyRxCummAHuolmRKfbyOj0i5KzRXkfEn50cDw
+        GQwVUM6mUbuqFrKC7PRhRIwc3WVgBHewTZlnF/sJAgMBAAGjgaowgacwDgYDVR0P
+        AQH/BAQDAgEGMA8GA1UdEwEB/wQFMAMBAf8wHQYDVR0OBBYEFFR2iLLAtTDQ/E/J
+        bTv5jFURrBUVMB8GA1UdIwQYMBaAFFR2iLLAtTDQ/E/JbTv5jFURrBUVMEQGA1Ud
+        HgQ9MDugOTAHggUuZG40MjAKhwisFAAA//wAADAihyD9QgAAAAAAAAAAAAAAAAAA
+        //8AAAAAAAAAAAAAAAAAADANBgkqhkiG9w0BAQsFAAOCAQEAXKQ7QaCBaeJxmU11
+        S1ogDSrZ7Oq8jU+wbPMuQRqgdfPefjrgp7nbzfUW5GrL58wqj+5/FAqltflmSIHl
+        aB4MpqM8pyvjlc/jYxUNFglj2WYxO0IufBrlKI5ePZ4omUjpR4YR4gQpYCuWlZmu
+        P6v/P0WrfgdFTk0LGEA9OwKcTqkPpcI/SjB3rmZcs42yQWvimAF94GtScE09uKlI
+        9QLS2UBmtl5EJRFVrDEC12dyamq8dDRfddyaT4MoQOAq3D9BQ1pHByu3pz/QFaJC
+        1zAi8vbktPY7OMprTOc8pHDL3q8KFP8jJcoEzZ5Jw0vkCrULhLXvtFtjB0djzVxQ
+        C0IKqQ==
+        -----END CERTIFICATE-----
+      ''
+    ];
   };
   # 
 
@@ -514,6 +524,7 @@ in rec {
           "plugdev"
           "lp"
           "input"
+          "docker"
           "socket"
           "spi"
           "bus"
@@ -539,11 +550,8 @@ in rec {
   environment = {
     systemPackages = with pkgs; [
       automake
-      antibody
       asciinema
       awscli2
-      brave
-      #google-chrome
       clang
       conky
       cabal2nix
@@ -552,12 +560,9 @@ in rec {
       discord
       dig
       lua
-      nix-direnv
       nixopsUnstable
       neofetch
-      #dropbox
       exa
-      #  fasd
       feh
       fd
       procs
@@ -566,7 +571,6 @@ in rec {
       rustscan
       gitAndTools.gitflow
       git-crypt
-      #      gnupg
       geoip
       gnumake
       gh
@@ -583,13 +587,11 @@ in rec {
           pandoc
         ]))
       heroku
-      #      hydra_unstable
       imagemagick
       ispell
       inetutils
       killall
       lsof
-      light
       libxml2
       libtool
       libsodium
@@ -598,19 +600,16 @@ in rec {
       linuxPackages.ply
       wakatime
       #myRepo.example-package
-      nixfmt
       node2nix
       nodejs
       nodejs-16_x
       nodePackages."typescript-language-server"
       nodePackages."bash-language-server"
       openssl
-      openjdk
+      # openjdk
       pkgconfig
       protobuf
       plantuml
-      snappy
-      rsync
       ripgrep
       rnix-lsp
       tree
@@ -618,12 +617,9 @@ in rec {
       tcpdump
       unzip
       vlc
-      stalonetray
       scrot
       stow
       slack
-      wget
-      which
       wineWowPackages.staging
       wireguard-tools
       wireshark
@@ -636,6 +632,7 @@ in rec {
       xscreensaver
       zoom-us
     ];
+    pathsToLink = [ "/share/zsh" ];
   };
 
   # Some programs need SUID wrappers, can be configured further or are
