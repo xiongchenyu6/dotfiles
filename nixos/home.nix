@@ -74,7 +74,12 @@
   programs = {
     alacritty = {
       enable = true;
-      settings = { font = { size = 9; }; };
+      settings = {
+        font = { size = 9; };
+        key_bindings = [
+          { key = "Space"; mods = "Control"; mode = "~Search"; action = "ToggleViMode"; }
+        ];
+      };
     };
     chromium = {
       enable = true;
@@ -466,8 +471,11 @@
     jq = { enable = true; };
     man = { enable = true; };
     qutebrowser = { enable = true; };
-    vim = { enable = true; };
-    #  zathura = { enable = true; };
+    vim = {
+      enable = true;
+      plugins = with pkgs.vimPlugins; [ nerdtree denite tagbar ale lightline-vim ];
+      settings = { };
+    };
     zoxide = { enable = true; };
     tmux = {
       enable = true;
