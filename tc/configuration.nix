@@ -1,10 +1,11 @@
-{ pkgs, lib, secret, symlinkJoin, xddxdd, ... }:
+{ config, pkgs, lib, symlinkJoin, domain, ... }:
 let
-  domain = "freeman.engineer";
   script = (import ../dn42/update-roa.nix { inherit pkgs; });
+  share = (import ../share.nix);
 in
 {
   imports = [ ./hardware-configuration.nix ];
+  age.secrets.tc_wg_pk.file = ../secrets/tc_wg_pk.age;
 
   boot = {
     cleanTmpDir = true;
@@ -18,6 +19,19 @@ in
     };
   };
   zramSwap = { enable = true; };
+  environment = {
+    systemPackages = with pkgs; [
+      # self.packages."${system}".bttc
+      dig
+      git
+      wireguard-tools
+      traceroute
+      python3
+      tmux
+      tcpdump
+    ];
+  };
+
   networking = {
     hostName = "mail";
     nat = {
@@ -63,18 +77,18 @@ in
     wg-quick = {
       interfaces = {
         wg_freeman = {
-          privateKey = secret.my.wg.private-key;
+          privateKeyFile = config.age.secrets.tc_wg_pk.path;
           address = [ "172.22.240.97/27" "fe80::100/64" "fd48:4b4:f3::1/48" ];
           listenPort = 22616;
           table = "off";
           peers = [{
-            publicKey = secret.freeman.wg.public-key;
+            publicKey = share.freeman.wg.public-key;
             allowedIPs =
               [ "172.22.240.98/32" "fe80::101/128" "fd48:4b4:f3::2/128" ];
           }];
         };
         wg_theresa = {
-          privateKey = secret.my.wg.private-key;
+          privateKeyFile = config.age.secrets.tc_wg_pk.path;
           address = [ "172.22.240.97/27" "fe80::100/64" ];
           listenPort = 23396;
           table = "off";
@@ -91,7 +105,7 @@ in
           }];
         };
         wg_potat0 = {
-          privateKey = secret.my.wg.private-key;
+          privateKeyFile = config.age.secrets.tc_wg_pk.path;
           address = [ "172.22.240.97/27" "fe80::100/64" ];
           listenPort = 21816;
           table = "off";
@@ -108,7 +122,7 @@ in
           }];
         };
         wg_tech9 = {
-          privateKey = secret.my.wg.private-key;
+          privateKeyFile = config.age.secrets.tc_wg_pk.path;
           address = [ "172.22.240.97/27" "fe80::100/64" ];
           listenPort = 21588;
           table = "off";
@@ -129,8 +143,7 @@ in
   };
 
   users.users.root.openssh.authorizedKeys.keys = [
-    "ssh-rsaAAAAB3NzaC1yc2EAAAADAQABAAABAQCzzKV5IF7ekz9oJQ37nbaUNhXKkQ4KzJiDOYVRVroFq+LEJZHqNxe/Lt1Z1cKvFjRruu6f3clzqRargKlmqbO1d8mJZy0R9TbKQxleEZZq2cZJemX99xrkiu9keBF2qhohwn28v0JUuUyjNo188/YyS1tocoWFNZtp7qPiK8HRF7LQQ99nOa3zGmZJQL5Rvs2RFTFMGhiehsq8aXFuTZNejjivl5BFJjzxoVqZSbB8//lwsGZWpU5Ue54KV51UTv+9wDh2myuyenP/ZbdK9UZo9abCIeI52F9QbGJtjz6cOKG6oz67x06EYxvD/HKJ/uPuisy/cu+rPInmaF5AZTnd skey-p1r300u3"
-    "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQC3LHhrdC+Mor6lM9U0fxyJ2WCn4CzNUZPyOP8ACQpAl5bADYY8ici2SbRD6y0dZnwNvSUJKw090HXiPOgKCYrfPQPX4IOgiPLqPBJq0JCI7w7/pewRmg1bd/5k5BC8C5x0P2H63DovDXEnyIJxqZnVWZDjfhysGEVGueoYBxeDAHHBZLwGGxW36oX8OmfiTGDmMrHWqQxKpluR6KIbe4aFML+ZIol0Vy6+244gREZZXn6xTAoCxRGghaEnOf5X3SivKOJHLTDpAXI7JYesepHHyCPd+OXH2VzSVj0qqOtzb5t6mNHkM4wC9HhTqPT/KWuxjv9HcpXjag9ZGuby/LxOo+6knb5a7VtRm0GxvbBptNS5Frlrl9HNwARiqSmiaSvOWydrZYKV0/ClIYdA7f4DMUc46KIP+wHqLXO2oBe5I4sK4TesmOxCYezi2ti/T4sC/e4Hlvgc/luvS6p0GdTtZ0wQLMmqz2u79LVRpjQMFygLa0IQXFo7c+0FqB7Et8M= skey-21jfw3n7"
+    "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIABVd0cIdwKzf4yLoRXQwjaaVYPFv8ZfYvTUMOMTFJ/p freeman@nixos"
   ];
 
   systemd = {
@@ -393,7 +406,7 @@ in
     bird-lg = {
       package = pkgs.symlinkJoin {
         name = "bird-lg";
-        paths = with xddxdd; [ bird-lg-go bird-lgproxy-go ];
+        paths = with pkgs.xddxdd; [ bird-lg-go bird-lgproxy-go ];
       };
       proxy = {
         enable = true;

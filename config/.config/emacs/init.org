@@ -991,6 +991,9 @@ Otherwise, show the default maximum number of recent items."
 
 ;; (add-hook 'html-mode 'lsp)
 #+end_src
+*** pdf
+#+begin_src emacs-lisp
+#+end_src
 ** Error check
 *** flycheck
 Bind to lsp mode
