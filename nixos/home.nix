@@ -1,6 +1,7 @@
 { config, pkgs, lib, ... }: {
   # Home Manager needs a bit of information about you and the
   # paths it should manage.
+
   home = {
     stateVersion = "22.11";
     keyboard = { options = [ "caps:ctrl_modifier" ]; };
@@ -8,12 +9,12 @@
       ".wakatime.cfg" = { source = ../old-files/wakatime/.wakatime.cfg; };
       ".curlrc" = { source = ../old-files/downloader/.curlrc; };
       ".editorconfig" = { source = ../old-files/editor/.editorconfig; };
-      ".ssh/id_rsa.pub" = {
-        text = (import ./secret.nix { inherit lib; }).freeman.public-key;
+      ".ssh/id_ed25519.pub" = {
+        text = (import ../share.nix).freeman.public-key;
         executable = false;
       };
-      ".ssh/id_rsa" = {
-        text = (import ./secret.nix { inherit lib; }).freeman.private-key;
+      ".ssh/id_ed25519" = {
+        text = (import ./secret.nix).private-key;
         executable = false;
       };
     };
@@ -159,7 +160,14 @@
       enable = true;
       hashKnownHosts = true;
       compression = true;
-      matchBlocks = (pkgs.callPackage ./secret.nix { inherit lib; }).hosts;
+      matchBlocks = {
+        "freeman.engineer" = {
+          user = "root";
+        };
+        "git-code-commit.*.amazonaws.com" = lib.hm.dag.entryBefore [ "freeman.engineer" ] {
+          user = "APKA6ECL465SUMKZQKLN";
+        };
+      };
     };
 
     bat = { enable = true; };

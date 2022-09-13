@@ -27,6 +27,11 @@
       inputs.flake-utils.follows = "flake-utils";
     };
 
+    agenix = {
+      url = "github:ryantm/agenix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
   };
 
   outputs =
@@ -37,13 +42,13 @@
     , xddxdd
     , flake-utils
     , home-manager
-    , ...
+    , sops-nix
+    , agenix
     }:
       with nixpkgs;
       let
         pkgsFor = system: import nixpkgs { inherit system; };
         system = "x86_64-linux";
-        secret = (import ./nixos/secret.nix { inherit lib; });
       in
       rec {
         # replace 'joes-desktop' with your hostname here.
@@ -52,6 +57,7 @@
             nixos-hardware.nixosModules.lenovo-thinkpad-x1-9th-gen
             nixos-hardware.nixosModules.common-gpu-intel
             #bttc.nixosModules.bttc
+            agenix.nixosModule
             ./nixos/configuration.nix
             ({ pkgs, ... }: {
               nixpkgs.overlays = [
@@ -59,7 +65,7 @@
                 (final: prev: {
                   myRepo = self.packages."${prev.system}";
                   xddxdd = xddxdd.packages."${prev.system}";
-                  #     b = bttc.packages."${prev.system}";
+                  agenix = agenix.packages."${prev.system}";
                 })
               ];
             })
@@ -82,27 +88,28 @@
             network.storage.legacy.databasefile = "~/.nixops/deployments.nixops";
             network.description = "Tencent cloud";
             network.enableRollback = false;
-            tc = rec {
-              _module.args = {
-                inherit secret;
-                xddxdd = xddxdd.packages."${system}";
-              };
+            tc =
+              let
+                domain = "freeman.engineer";
+              in
+              rec {
+                _module.args = {
+                  inherit domain;
+                };
 
-              imports = [ ./tc/configuration.nix ];
-              deployment.targetHost = secret.hosts.my.hostname;
-              environment = {
-                systemPackages = with (import nixpkgs { }).pkgs; [
-                  # self.packages."${system}".bttc
-                  dig
-                  git
-                  wireguard-tools
-                  traceroute
-                  python3
-                  tmux
-                  tcpdump
+                imports = [
+                  ./tc/configuration.nix
+                  agenix.nixosModule
+                  ({ pkgs, ... }: {
+                    nixpkgs.overlays = [
+                      (final: prev: {
+                        xddxdd = xddxdd.packages."${prev.system}";
+                      })
+                    ];
+                  })
                 ];
+                deployment.targetHost = domain;
               };
-            };
           };
         };
 
