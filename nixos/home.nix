@@ -14,7 +14,7 @@
         executable = false;
       };
       ".ssh/id_ed25519" = {
-        text = (import ./secret.nix).private-key;
+        source = ../secrets/freeman_pk.key;
         executable = false;
       };
     };
