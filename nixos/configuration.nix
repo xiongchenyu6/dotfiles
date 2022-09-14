@@ -95,10 +95,6 @@ rec {
     networkmanager = { enable = true; };
     enableIPv6 = true;
     hostName = "nixos"; # Define your hostname.
-    # Configure network proxy if necessary
-    # networking.proxy.default = "http://user:password@proxy:port/";
-    # networking.proxy.noProxy = "127.0.0.1,localhost,internal.domain";
-
     # Enable networking
     #networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
     wg-quick = {
@@ -109,7 +105,7 @@ rec {
           dns = [ "fe80::100%wg_freeman" "172.22.240.97" "1.1.1.1" ];
           peers = [{
             endpoint = "freeman.engineer:22616";
-            publicKey = share.my.wg.public-key;
+            publicKey = share.tc.wg.public-key;
             persistentKeepalive = 30;
             allowedIPs = [
               "10.0.0.0/8"
@@ -367,8 +363,6 @@ rec {
       # Enable automatic login for the user.
     };
 
-    aria2 = { enable = true; };
-
     # Enable CUPS to print documents.
     printing = {
       enable = true;
@@ -406,17 +400,17 @@ rec {
 
     udisks2 = { enable = true; };
 
-    syncthing = {
-      enable = true;
-      user = "freeman";
-      dataDir = "/home/freeman";
-      folders = {
-        "Office" = {
-          enable = true;
-          path = "/home/freeman/office";
-        };
-      };
-    };
+    # syncthing = {
+    #   enable = true;
+    #   user = "freeman";
+    #   dataDir = "/home/freeman";
+    #   folders = {
+    #     "Office" = {
+    #       enable = true;
+    #       path = "/home/freeman/office";
+    #     };
+    #   };
+    # };
 
     postgresql = {
       enable = true;
@@ -475,32 +469,7 @@ rec {
     sudo = { enable = true; };
     acme = { acceptTerms = true; };
     pki.certificates = [
-      ''
-        -----BEGIN CERTIFICATE-----
-        MIID8DCCAtigAwIBAgIFIBYBAAAwDQYJKoZIhvcNAQELBQAwYjELMAkGA1UEBhMC
-        WEQxDTALBgNVBAoMBGRuNDIxIzAhBgNVBAsMGmRuNDIgQ2VydGlmaWNhdGUgQXV0
-        aG9yaXR5MR8wHQYDVQQDDBZkbjQyIFJvb3QgQXV0aG9yaXR5IENBMCAXDTE2MDEx
-        NjAwMTIwNFoYDzIwMzAxMjMxMjM1OTU5WjBiMQswCQYDVQQGEwJYRDENMAsGA1UE
-        CgwEZG40MjEjMCEGA1UECwwaZG40MiBDZXJ0aWZpY2F0ZSBBdXRob3JpdHkxHzAd
-        BgNVBAMMFmRuNDIgUm9vdCBBdXRob3JpdHkgQ0EwggEiMA0GCSqGSIb3DQEBAQUA
-        A4IBDwAwggEKAoIBAQDBGRDeAYYR8YIMsNTl/5rI46r0AAiCwM9/BXohl8G1i6PR
-        VO76BA931VyYS9mIGMEXEJLlJPrvYetdexHlvrqJ8mDJO4IFOnRUYCNmGtjNKHvx
-        6lUlmowEoP+dSFRMnbwtoN9xrmRHDed1BfTFAirSDL6jY1RiK60p62oIpF6o6/FS
-        FE7RXUEv0xm65II2etGj8oT2B7L2DDDb23bu6RQFx491tz/V1TVW0JJE3yYeAPqu
-        y3rJUGddafj5/SWnHdtAsUK8RVfhyRxCummAHuolmRKfbyOj0i5KzRXkfEn50cDw
-        GQwVUM6mUbuqFrKC7PRhRIwc3WVgBHewTZlnF/sJAgMBAAGjgaowgacwDgYDVR0P
-        AQH/BAQDAgEGMA8GA1UdEwEB/wQFMAMBAf8wHQYDVR0OBBYEFFR2iLLAtTDQ/E/J
-        bTv5jFURrBUVMB8GA1UdIwQYMBaAFFR2iLLAtTDQ/E/JbTv5jFURrBUVMEQGA1Ud
-        HgQ9MDugOTAHggUuZG40MjAKhwisFAAA//wAADAihyD9QgAAAAAAAAAAAAAAAAAA
-        //8AAAAAAAAAAAAAAAAAADANBgkqhkiG9w0BAQsFAAOCAQEAXKQ7QaCBaeJxmU11
-        S1ogDSrZ7Oq8jU+wbPMuQRqgdfPefjrgp7nbzfUW5GrL58wqj+5/FAqltflmSIHl
-        aB4MpqM8pyvjlc/jYxUNFglj2WYxO0IufBrlKI5ePZ4omUjpR4YR4gQpYCuWlZmu
-        P6v/P0WrfgdFTk0LGEA9OwKcTqkPpcI/SjB3rmZcs42yQWvimAF94GtScE09uKlI
-        9QLS2UBmtl5EJRFVrDEC12dyamq8dDRfddyaT4MoQOAq3D9BQ1pHByu3pz/QFaJC
-        1zAi8vbktPY7OMprTOc8pHDL3q8KFP8jJcoEzZ5Jw0vkCrULhLXvtFtjB0djzVxQ
-        C0IKqQ==
-        -----END CERTIFICATE-----
-      ''
+      share.dn42.root-ca
     ];
   };
   # 

@@ -7,6 +7,13 @@ in
   imports = [ ./hardware-configuration.nix ];
   age.secrets.tc_wg_pk.file = ../secrets/tc_wg_pk.age;
 
+  age.secrets.tc_https_pk = {
+    file = ../secrets/tc_https_pk.age;
+    mode = "770";
+    owner = "nginx";
+    group = "nginx";
+  };
+
   boot = {
     cleanTmpDir = true;
     kernel.sysctl = {
@@ -143,7 +150,7 @@ in
   };
 
   users.users.root.openssh.authorizedKeys.keys = [
-    "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIABVd0cIdwKzf4yLoRXQwjaaVYPFv8ZfYvTUMOMTFJ/p freeman@nixos"
+    share.freeman.user.public-key
   ];
 
   systemd = {
@@ -433,8 +440,8 @@ in
       enable = true;
       virtualHosts."default" = {
         addSSL = true;
-        sslCertificateKey = ../ssl/PRIVATEKEYNOPASS.key;
-        sslCertificate = ../ssl/SERVER.cert;
+        sslCertificateKey = config.age.secrets.tc_https_pk.path;
+        sslCertificate = builtins.toFile "SERVER.cert" share.tc.https.cert;
         # enableACME = true;
         locations."/" = {
           proxyPass = "http://127.0.0.1:5000";
