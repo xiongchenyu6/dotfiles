@@ -18,17 +18,17 @@ rec {
   bttc = pkgs.callPackage ./pkgs/bttc { };
   delivery = pkgs.callPackage ./pkgs/delivery { };
   my_cookies = pkgs.callPackage ./pkgs/python3/my_cookies { };
-  dotfiles = with pkgs;
-    stdenv.mkDerivation {
-      pname = "dotfiles";
-      version = "0.1.0";
-      src = ./.;
-      installPhase = ''
-        mkdir -p $out/etc;
-        cp -r . $out/etc;
-      '';
-    };
-  default = dotfiles;
+  # dotfiles = with pkgs;
+  #   stdenv.mkDerivation {
+  #     pname = "dotfiles";
+  #     version = "0.1.0";
+  #     src = ./.;
+  #     installPhase = ''
+  #       mkdir -p $out/etc;
+  #       cp -r . $out/etc;
+  #     '';
+  #   };
+  # default = dotfiles;
   # };
 
   # some-qt5-package = pkgs.libsForQt5.callPackage ./pkgs/some-qt5-package { };
