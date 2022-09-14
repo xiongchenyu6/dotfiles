@@ -1,11 +1,11 @@
 { config, pkgs, lib, symlinkJoin, domain, ... }:
 let
-  script = (import ../dn42/update-roa.nix { inherit pkgs; });
-  share = (import ../share.nix);
+  script = (import ../../dn42/update-roa.nix { inherit pkgs; });
+  share = (import ../../share.nix);
 in
 {
   imports = [ ./hardware-configuration.nix ];
-  age.secrets.tc_wg_pk.file = ../secrets/tc_wg_pk.age;
+  age.secrets.tc_wg_pk.file = ../../secrets/tc_wg_pk.age;
 
   age.secrets.tc_https_pk = {
     file = ../secrets/tc_https_pk.age;

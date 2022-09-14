@@ -1306,6 +1306,10 @@ Bind to lsp mode
 (require 'pdf-tools)
 
 #+end_src
+** GNUS
+#+begin_src emacs-lisp
+(setq gnus-init-file "~/.config/emacs/gnus.el")
+#+end_src
 
 * Conclusion
 ** Tangle on save
