@@ -98,7 +98,7 @@
                 };
 
                 imports = [
-                  ./tc/configuration.nix
+                  ./host/tc/configuration.nix
                   agenix.nixosModule
                   ({ pkgs, ... }: {
                     nixpkgs.overlays = [
