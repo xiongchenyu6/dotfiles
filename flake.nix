@@ -42,7 +42,6 @@
     , xddxdd
     , flake-utils
     , home-manager
-    , sops-nix
     , agenix
     }:
       with nixpkgs;
@@ -65,7 +64,7 @@
                 (final: prev: {
                   myRepo = self.packages."${prev.system}";
                   xddxdd = xddxdd.packages."${prev.system}";
-                  agenix = agenix.packages."${prev.system}";
+                  agenix = agenix.packages."${prev.system}".agenix;
                 })
               ];
             })

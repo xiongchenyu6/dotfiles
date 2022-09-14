@@ -16,6 +16,11 @@ rec {
 
   age.secrets.freeman_wg_pk.file = ../secrets/freeman_wg_pk.age;
 
+  krb5 = {
+    enable = true;
+    domainRealm = "freeman.engineer";
+  };
+
   # Bootloader.
   boot =
     let x = lib.traceVal builtins.attrNames config.sops.secrets.hello;
@@ -156,6 +161,27 @@ rec {
   #
 
   services = {
+    kerberos_server = {
+      enable = false;
+      realms = {
+        "ENGINEER" = {
+          acl =
+            [
+              {
+                access = "all";
+                principal = "*/admin";
+              }
+              {
+                access = "all";
+                principal = "admin";
+              }
+            ];
+        };
+      };
+    };
+    openldap = {
+      enable = true;
+    };
     # go-bttc = {
     #   enable = true;
     # };
@@ -333,7 +359,7 @@ rec {
     };
 
     cachix-agent = {
-      enable = true;
+      enable = false;
       credentialsFile = ./cachix.secret;
       verbose = true;
     };
@@ -523,7 +549,7 @@ rec {
     systemPackages = with pkgs; [
       asciinema
       awscli2
-      agenix.agenix
+      agenix
       clang
       cmake
       conky
@@ -538,6 +564,7 @@ rec {
       exa
       feh
       fd
+      pass
       procs
       tealdeer
       socat
