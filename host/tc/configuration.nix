@@ -413,7 +413,7 @@ in
     bird-lg = {
       package = pkgs.symlinkJoin {
         name = "bird-lg";
-        paths = with pkgs.xddxdd; [ bird-lg-go bird-lgproxy-go ];
+        paths = with pkgs; [ bird-lg-go bird-lgproxy-go ];
       };
       proxy = {
         enable = true;

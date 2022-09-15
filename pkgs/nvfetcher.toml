@@ -1,0 +1,13 @@
+[bttc]
+src.github = "bttcprotocol/bttc"
+fetch.github = "bttcprotocol/bttc"
+git.fetchSubmodules = true
+
+[delivery]
+src.github = "bttcprotocol/delivery"
+fetch.github = "bttcprotocol/delivery"
+git.fetchSubmodules = true
+
+[my_cookies]
+src.pypi="my_cookies"
+fetch.pypi="my_cookies"

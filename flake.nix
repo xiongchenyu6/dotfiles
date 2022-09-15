@@ -32,6 +32,16 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    nvfetcher = {
+      url = "github:berberman/nvfetcher";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.flake-utils.follows = "flake-utils";
+    };
+
+    nixos-generators = {
+      url = "github:nix-community/nixos-generators";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =
@@ -43,6 +53,9 @@
     , flake-utils
     , home-manager
     , agenix
+    , nvfetcher
+    , nixos-generators
+    , ...
     }:
       with nixpkgs;
       let
@@ -59,19 +72,19 @@
             agenix.nixosModule
             ./nixos/configuration.nix
             ({ pkgs, ... }: {
-              nixpkgs.overlays = [
-                emacs.overlay
-                (final: prev: {
-                  myRepo = self.packages."${prev.system}";
-                  xddxdd = xddxdd.packages."${prev.system}";
-                  agenix = agenix.packages."${prev.system}".agenix;
-                })
-              ];
+              nixpkgs = {
+                overlays = [
+                  self.overlay
+                  emacs.overlay
+                  agenix.overlay
+                  xddxdd.overlay
+                ];
+              };
             })
             home-manager.nixosModules.home-manager
             {
               home-manager.useGlobalPkgs = true;
-              home-manager.useUserPackages = false;
+              home-manager.useUserPackages = true;
               home-manager.users.freeman = import ./nixos/home.nix;
 
               # Optionally, use home-manager.extraSpecialArgs to pass
@@ -99,37 +112,36 @@
                 imports = [
                   ./host/tc/configuration.nix
                   agenix.nixosModule
-                  ({ pkgs, ... }: {
-                    nixpkgs.overlays = [
-                      (final: prev: {
-                        xddxdd = xddxdd.packages."${prev.system}";
-                      })
-                    ];
-                  })
                 ];
+
+                nixpkgs = {
+                  overlays = [
+                    xddxdd.overlay
+                  ];
+                };
                 deployment.targetHost = domain;
               };
           };
         };
+      } // flake-utils.lib.eachDefaultSystem
+        (system:
+        let pkgs = pkgsFor system;
+        in
+        rec {
+          packages = import ./pkgs/default.nix { inherit pkgs nixos-generators; lib = nixpkgs.lib; };
 
-      } // flake-utils.lib.eachDefaultSystem (system:
-      let pkgs = pkgsFor system;
-      in
-      rec {
-        packages = import ./default.nix { inherit pkgs; };
-        libs = import ./lib/default.nix { inherit pkgs; };
-        overlays = import ./overlays/default.nix { inherit pkgs; };
-
-        # used by nix develop and nix shell
-        devShell = pkgs.mkShell {
-          buildInputs = with pkgs; [
-            # to test with nix (Nix) 2.7.0 and NixOps 2.0.0-pre-7220cbd use
-            nix
-            nixopsUnstable
-          ];
-        };
-      })
+          # used by nix develop and nix shell
+          devShell = pkgs.mkShell {
+            buildInputs = with pkgs; [
+              # to test with nix (Nix) 2.7.0 and NixOps 2.0.0-pre-7220cbd use
+              nix
+              nixopsUnstable
+            ];
+          };
+        })
       // {
         templates = import ./templates/default.nix;
+        overlay = import ./overlay.nix { inherit nixos-generators; lib = nixpkgs.lib; };
+        libs = import ./lib/default.nix;
       };
 }
