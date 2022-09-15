@@ -36,7 +36,6 @@ in
           '';
           EnvironmentFile = "/etc/Bttc/metadata";
           ExecStartPre = "/bin/chmod +x $NODE_DIR/bttc/start.sh";
-          ExecStart = "/bin/bash $NODE_DIR/bttc/start.sh $VALIDATOR_ADDRESS";
           RestartSec = "5s";
           DynamicUser = "yes";
           WorkingDirectory = cfg.dataDir;
@@ -67,7 +66,6 @@ in
             '';
             EnvironmentFile = "/etc/Bttc/metadata";
             ExecStartPre = "/bin/chmod +x $NODE_DIR/bttc/start.sh";
-            ExecStart = "/bin/bash $NODE_DIR/bttc/start.sh $VALIDATOR_ADDRESS";
             RestartSec = "5s";
             DynamicUser = "yes";
             WorkingDirectory = cfg.dataDir;
@@ -99,7 +97,6 @@ in
             '';
             EnvironmentFile = "/etc/Bttc/metadata";
             ExecStartPre = "/bin/chmod +x $NODE_DIR/bttc/start.sh";
-            ExecStart = "/bin/bash $NODE_DIR/bttc/start.sh $VALIDATOR_ADDRESS";
             RestartSec = "5s";
             DynamicUser = "yes";
             WorkingDirectory = cfg.dataDir;
@@ -133,7 +130,6 @@ in
             '';
             EnvironmentFile = "/etc/Bttc/metadata";
             ExecStartPre = "/bin/chmod +x $NODE_DIR/bttc/start.sh";
-            ExecStart = "/bin/bash $NODE_DIR/bttc/start.sh $VALIDATOR_ADDRESS";
             RestartSec = "5s";
             DynamicUser = "yes";
             WorkingDirectory = cfg.dataDir;

@@ -590,6 +590,7 @@ rec {
       imagemagick
       ispell
       inetutils
+      jdt-language-server
       killall
       lsof
       libxml2
