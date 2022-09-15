@@ -18,6 +18,31 @@ let
   callPackage = lib.callPackageWith allPkgs;
   my-pkgs = rec {
     example-package = callPackage ./example-package { };
+    example-docker =
+      pkgs.dockerTools.buildImage {
+        name = "hello-docker";
+        tag = "latest";
+        created = "now";
+        runAsRoot = ''
+          mkdir /data
+        '';
+        copyToRoot = pkgs.buildEnv {
+          name = "image-root";
+          paths = [
+            pkgs.coreutils
+            pkgs.bash
+            pkgs.vim
+          ];
+          pathsToLink = [ "/bin" ];
+        };
+
+        config = {
+          WorkingDir = "/data";
+          Env = [ "PATH=${pkgs.coreutils}/bin/" ];
+          Cmd = [ "${pkgs.coreutils}/bin/cat" "${my-pkgs.example-package}" ];
+        };
+      };
+
     bttc = callPackage ./bttc { };
     delivery = callPackage ./delivery { };
     my_cookies = callPackage ./python3/my_cookies { };
