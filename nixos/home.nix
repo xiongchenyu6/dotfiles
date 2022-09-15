@@ -480,7 +480,7 @@
     man = { enable = true; };
     qutebrowser = { enable = true; };
     vim = {
-      enable = true;
+      enable = false;
       plugins = with pkgs.vimPlugins; [ nerdtree denite tagbar ale lightline-vim ];
       settings = { };
     };

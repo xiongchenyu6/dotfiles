@@ -18,7 +18,7 @@ rec {
 
   krb5 = {
     enable = true;
-    domainRealm = "freeman.engineer";
+    domain_realm = "freeman.engineer";
   };
 
   # Bootloader.
@@ -595,7 +595,7 @@ rec {
       libxml2
       libtool
       libsodium
-      (python3.withPackages (ps: [ myRepo.my_cookies ]))
+      (python3.withPackages (ps: [ my_cookies ]))
       pinentry
       linuxPackages.ply
       wakatime
@@ -605,6 +605,7 @@ rec {
       nodejs-16_x
       nodePackages."typescript-language-server"
       nodePackages."bash-language-server"
+      nvfetcher
       openssl
       # openjdk
       pkgconfig
@@ -627,8 +628,8 @@ rec {
       wakatime
       whatsapp-for-linux
       xclip
-      xddxdd.qq
-      xddxdd.wechat-uos
+      qq
+      wechat-uos
       xscreensaver
       zoom-us
     ];
