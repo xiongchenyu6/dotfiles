@@ -68,7 +68,7 @@
           modules = [
             nixos-hardware.nixosModules.lenovo-thinkpad-x1-9th-gen
             nixos-hardware.nixosModules.common-gpu-intel
-            #bttc.nixosModules.bttc
+            self.nixosModules.bttc
             agenix.nixosModule
             ./nixos/configuration.nix
             ({ pkgs, ... }: {
@@ -140,6 +140,7 @@
           };
         })
       // {
+        nixosModules = import ./modules/default.nix;
         templates = import ./templates/default.nix;
         overlay = import ./overlay.nix { inherit nixos-generators; lib = nixpkgs.lib; };
         libs = import ./lib/default.nix;

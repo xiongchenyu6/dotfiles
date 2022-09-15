@@ -182,9 +182,9 @@ rec {
     openldap = {
       enable = true;
     };
-    # go-bttc = {
-    #   enable = true;
-    # };
+    bttc = {
+      enable = false;
+    };
     bird2 = {
       enable = true;
       checkConfig = false;
@@ -599,7 +599,6 @@ rec {
       pinentry
       linuxPackages.ply
       wakatime
-      #myRepo.example-package
       node2nix
       nodejs
       nodejs-16_x
@@ -607,7 +606,6 @@ rec {
       nodePackages."bash-language-server"
       nvfetcher
       openssl
-      # openjdk
       pkgconfig
       protobuf
       plantuml
