@@ -128,7 +128,7 @@
         let pkgs = pkgsFor system;
         in
         rec {
-          packages = import ./pkgs/default.nix { inherit pkgs nixos-generators; lib = nixpkgs.lib; };
+          packages = import ./pkgs { inherit pkgs nixos-generators; lib = nixpkgs.lib; };
 
           # used by nix develop and nix shell
           devShell = pkgs.mkShell {
@@ -140,9 +140,9 @@
           };
         })
       // {
-        nixosModules = import ./modules/default.nix;
-        templates = import ./templates/default.nix;
+        nixosModules = import ./modules;
+        templates = import ./templates;
         overlay = import ./overlay.nix { inherit nixos-generators; lib = nixpkgs.lib; };
-        libs = import ./lib/default.nix;
+        libs = import ./lib;
       };
 }

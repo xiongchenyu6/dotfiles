@@ -1,5 +1,5 @@
 {
   # Add your NixOS modules here
   #
-  bttc = import ./bttc.nix;
+  bttc = import ./bttc;
 }

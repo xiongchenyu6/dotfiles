@@ -912,22 +912,23 @@ Otherwise, show the default maximum number of recent items."
 
 (setq lsp-java-content-provider-preferred "fernflower")
 ;; 
-(setq lsp-java-java-path "/Library/Java/JavaVirtualMachines/openjdk.jdk/Contents/Home/bin/java")
+;; (setq lsp-java-java-path "/Library/Java/JavaVirtualMachines/openjdk.jdk/Contents/Home/bin/java")
+ (setq lsp-java-java-path "/etc/profiles/per-user/freeman/bin/java")
 
-(setq lsp-java-configuration-runtimes '[
-                                        (:name "JavaSE-1.8"
-					       :path "/Library/Java/JavaVirtualMachines/zulu-8.jdk/Contents/Home"
-                                               )
-                                        (:name "JavaSE-18"
-					       :path "/Library/Java/JavaVirtualMachines/openjdk.jdk/Contents/Home"
-                                         :default t 
-                                               )
-                                        ])
-(advice-add 'lsp :before (lambda (&rest _args) (eval '(setf (lsp-session-server-id->folders (lsp-session)) (ht)))))
+;; (setq lsp-java-configuration-runtimes '[
+;;                                         (:name "JavaSE-1.8"
+;; 					       :path "/Library/Java/JavaVirtualMachines/zulu-8.jdk/Contents/Home"
+;;                                                )
+;;                                         (:name "JavaSE-18"
+;; 					       :path "/Library/Java/JavaVirtualMachines/openjdk.jdk/Contents/Home"
+;;                                          :default t 
+;;                                                )
+;;                                         ])
+;; (advice-add 'lsp :before (lambda (&rest _args) (eval '(setf (lsp-session-server-id->folders (lsp-session)) (ht)))))
 
-(setq lsp-java-imports-gradle-wrapper-checksums [(:sha256 "66406bdca09802f8d7e09a344a8474bbb19abd7f7ac1a4d6682910520a11d08d" :allowed t)])
+;; (setq lsp-java-imports-gradle-wrapper-checksums [(:sha256 "66406bdca09802f8d7e09a344a8474bbb19abd7f7ac1a4d6682910520a11d08d" :allowed t)])
 
-(setq lsp-java-import-gradle-java-home "/Library/Java/JavaVirtualMachines/zulu-8.jdk/Contents/Home")
+;; (setq lsp-java-import-gradle-java-home "/Library/Java/JavaVirtualMachines/zulu-8.jdk/Contents/Home")
 
 (require 'lsp-java-boot)
 
