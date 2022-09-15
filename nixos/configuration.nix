@@ -133,6 +133,11 @@ rec {
         enable = true;
       };
     };
+    virtualbox = {
+      host = {
+        enable = true;
+      };
+    };
   };
 
   # Set your time zone.
@@ -494,9 +499,11 @@ rec {
     rtkit = { enable = true; };
     sudo = { enable = true; };
     acme = { acceptTerms = true; };
-    pki.certificates = [
-      share.dn42.root-ca
-    ];
+    pki = {
+      certificates = [
+        share.dn42.root-ca
+      ];
+    };
   };
   # 
 
@@ -569,6 +576,8 @@ rec {
       tealdeer
       socat
       rustscan
+      genymotion
+      virtualbox
       gitAndTools.gitflow
       git-crypt
       geoip
@@ -590,8 +599,8 @@ rec {
       imagemagick
       ispell
       inetutils
-      jdt-language-server
       killall
+      # kubernix
       lsof
       libxml2
       libtool
