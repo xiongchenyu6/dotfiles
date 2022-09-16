@@ -8,6 +8,11 @@ src.github = "bttcprotocol/delivery"
 fetch.github = "bttcprotocol/delivery"
 git.fetchSubmodules = true
 
+[launch]
+src.git = "https://github.com/bttcprotocol/launch.git"
+#src.manual = "f71388e3a8091a1c6bc10aa03d7edf8e7b638f23"
+fetch.git = "https://github.com/bttcprotocol/launch.git"
+
 [my_cookies]
 src.pypi="my_cookies"
 fetch.pypi="my_cookies"

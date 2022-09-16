@@ -23,6 +23,18 @@
       sha256 = "sha256-HItF37qlIm6IT8WSomTulkX7524UZwpwMbqyjckXFxA=";
     });
   };
+  launch = {
+    pname = "launch";
+    version = "f71388e3a8091a1c6bc10aa03d7edf8e7b638f23";
+    src = fetchgit {
+      url = "https://github.com/bttcprotocol/launch.git";
+      rev = "f71388e3a8091a1c6bc10aa03d7edf8e7b638f23";
+      fetchSubmodules = false;
+      deepClone = false;
+      leaveDotGit = false;
+      sha256 = "sha256-5iUjWxjTmMxkfo+WZnjCKmHNTeaKkv5jdiDawMmvbQw=";
+    };
+  };
   my_cookies = {
     pname = "my_cookies";
     version = "0.1.3";

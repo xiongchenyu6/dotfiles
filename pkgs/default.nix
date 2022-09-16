@@ -43,6 +43,13 @@ let
         };
       };
 
+    launch = stdenv.mkDerivation (source.launch // {
+      installPhase = ''
+        mkdir -p $out;
+        cp -r . $out;
+      '';
+
+    });
     bttc = callPackage ./bttc { };
     delivery = callPackage ./delivery { };
     my_cookies = callPackage ./python3/my_cookies { };
