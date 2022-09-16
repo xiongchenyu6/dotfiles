@@ -10,6 +10,8 @@ in
 
     mainnet = mkEnableOption "weather to use mainnet";
 
+    dynamicUser = mkEnableOption "weather to use dynamic user";
+
     nodeDir = mkOption {
       description = lib.mdDoc "Data directory.";
       default = "node";
@@ -57,13 +59,36 @@ in
       BSC_RPC_URL = "https://data-seed-prebsc-1-s1.binance.org:8545/";
       TRON_RPC_URL = "47.252.19.181:50051";
       TRON_GRID_URL = "https://test-tronevent.bt.io";
+      serviceConfig = {
+        User = "bttc";
+        Restart = "on-failure";
+        RestartSec = "5s";
+        WorkingDirectory = "/var/lib/bttc";
+        DynamicUser = if cfg.dynamicUser then "yes" else "no";
+        RuntimeDirectory = "bttc";
+        RuntimeDirectoryMode = "0755";
+        StateDirectory = "bttc";
+        StateDirectoryMode = "0700";
+        LogsDirectory = "bttc";
+        CacheDirectory = "bttc";
+        CacheDirectoryMode = "0750";
+        SystemCallArchitectures = "native";
+        Type = "simple";
+        KillSignal = "SIGINT";
+        TimeoutStopSec = 120;
+      };
     in
     mkIf
       cfg.enable
       {
         services.rabbitmq.enable = true;
+        networking.firewall = {
+          allowedTCPPorts = [ 30303 26627 26660 26656 8546 8545 ];
+          allowedUDPPorts = [ 30303 8546 8545 ];
+        };
         systemd.services = {
           bttc = {
+            inherit serviceConfig;
             description = "Bttc Service Daemon";
             wantedBy = [ "multi-user.target" ];
             after = [ "networking.target" ];
@@ -129,26 +154,9 @@ in
                 --rpc.txfeecap 0 \
                 --mine
             '';
-            serviceConfig = {
-              User = "bttc";
-              Restart = "on-failure";
-              RestartSec = "5s";
-              WorkingDirectory = "/var/lib/bttc";
-              DynamicUser = "yes";
-              RuntimeDirectory = "bttc";
-              RuntimeDirectoryMode = "0755";
-              StateDirectory = "bttc";
-              StateDirectoryMode = "0700";
-              LogsDirectory = "bttc";
-              CacheDirectory = "bttc";
-              CacheDirectoryMode = "0750";
-              SystemCallArchitectures = "native";
-              Type = "simple";
-              KillSignal = "SIGINT";
-              TimeoutStopSec = 120;
-            };
           };
           deliveryd = {
+            inherit serviceConfig;
             description = "Deliveryd Service Daemon";
             wantedBy = [ "multi-user.target" ];
             after = [ "networking.target" "rabbitmq.service" ];
@@ -180,28 +188,9 @@ in
               ${pkgs.delivery}/bin/deliveryd start --home $DELIVERY_HOME_DIR
             '';
 
-            serviceConfig =
-              {
-                User = "bttc";
-                Restart = "on-failure";
-                RestartSec = "5s";
-                WorkingDirectory = "/var/lib/bttc";
-                DynamicUser = "yes";
-                RuntimeDirectory = "bttc";
-                RuntimeDirectoryMode = "0755";
-                StateDirectory = "bttc";
-                StateDirectoryMode = "0700";
-                LogsDirectory = "bttc";
-                CacheDirectory = "bttc";
-                CacheDirectoryMode = "0750";
-                SystemCallArchitectures = "native";
-                Type = "simple";
-                KillSignal = "SIGINT";
-                TimeoutStopSec = 120;
-              };
-
           };
           deliveryd-rest-server = {
+            inherit serviceConfig;
             description = "Bttc Service Daemon";
             wantedBy = [ "multi-user.target" ];
             after = [ "networking.target" ];
@@ -213,35 +202,15 @@ in
                 DELIVERY_HOME_DIR = "./.deliveryd";
               };
             script = ''
-              ${pkgs.delivery}/bin/deliveryd --home $DELIVERY_HOME_DIR --laddr tcp://0.0.0.0:1317 --node tcp://localhost:26657 rest-server
+              ${pkgs.delivery}/bin/deliveryd --home $DELIVERY_HOME_DIR --laddr tcp://0.0.0.0:1317 --node http://localhost:26657 rest-server
             '';
-            serviceConfig =
-              {
-                User = "bttc";
-                Restart = "on-failure";
-                RestartSec = "5s";
-                WorkingDirectory = "/var/lib/bttc";
-                DynamicUser = "yes";
-                RuntimeDirectory = "bttc";
-                RuntimeDirectoryMode = "0755";
-                StateDirectory = "bttc";
-                StateDirectoryMode = "0700";
-                LogsDirectory = "bttc";
-                CacheDirectory = "bttc";
-                CacheDirectoryMode = "0750";
-                SystemCallArchitectures = "native";
-                Type = "simple";
-                KillSignal = "SIGINT";
-                TimeoutStopSec = 120;
-
-              };
-
           };
-          deliveryd-birdge = {
+          deliveryd-bridge = {
+            inherit serviceConfig;
             description = "Bttc Service Daemon";
             wantedBy = [ "multi-user.target" ];
             after = [ "networking.target" "deliveryd.service" ];
-            #          before = [ "deliveryd-birdge.service" ];
+            before = [ "deliveryd-birdge.service" ];
             startLimitIntervalSec = 500;
             startLimitBurst = 5;
             environment =
@@ -249,27 +218,8 @@ in
                 DELIVERY_HOME_DIR = "./.deliveryd";
               };
             script = ''
-              ${pkgs.delivery}/bin/bridge --home $DELIVERY_HOME_DIR start --all --node http://0.0.0.0:26657 --log_level=debug
+              ${pkgs.delivery}/bin/bridge --home $DELIVERY_HOME_DIR start --all --node http://localhost:26657 --log_level=debug
             '';
-            serviceConfig =
-              {
-                User = "bttc";
-                Restart = "on-failure";
-                RestartSec = "5s";
-                WorkingDirectory = "/var/lib/bttc";
-                DynamicUser = "yes";
-                RuntimeDirectory = "bttc";
-                RuntimeDirectoryMode = "0755";
-                StateDirectory = "bttc";
-                StateDirectoryMode = "0700";
-                LogsDirectory = "bttc";
-                CacheDirectory = "bttc";
-                CacheDirectoryMode = "0750";
-                SystemCallArchitectures = "native";
-                Type = "simple";
-                KillSignal = "SIGINT";
-                TimeoutStopSec = 120;
-              };
           };
         };
         users.users.bttc = {

@@ -23,8 +23,6 @@ rec {
 
   # Bootloader.
   boot =
-    let x = lib.traceVal builtins.attrNames config.sops.secrets.hello;
-    in
     {
       tmpOnTmpfs = lib.mkDefault true;
       loader = {
