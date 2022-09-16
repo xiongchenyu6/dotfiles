@@ -59,6 +59,7 @@ in
       BSC_RPC_URL = "https://data-seed-prebsc-1-s1.binance.org:8545/";
       TRON_RPC_URL = "47.252.19.181:50051";
       TRON_GRID_URL = "https://test-tronevent.bt.io";
+      TRON_GRID_API_KEY = "4bfa950b-a637-4286-954c-611f8303efb1";
       serviceConfig = {
         User = "bttc";
         Restart = "on-failure";
@@ -180,6 +181,7 @@ in
               sed -i '/bsc_rpc_url/cbsc_rpc_url = "${BSC_RPC_URL}"' $DELIVERY_HOME_DIR/config/delivery-config.toml 
               sed -i '/tron_rpc_url/ctron_rpc_url = "${TRON_RPC_URL}"' $DELIVERY_HOME_DIR/config/delivery-config.toml 
               sed -i '/tron_grid_url/ctron_grid_url = "${TRON_GRID_URL}"' $DELIVERY_HOME_DIR/config/delivery-config.toml
+              sed -i '/tron_grid_api_key/ctron_grid_api_key = "${TRON_GRID_API_KEY}"' $DELIVERY_HOME_DIR/config/delivery-config.toml
 
               # copy node directories to home directories
               cp -rf ${delivery-genesis} $DELIVERY_HOME_DIR/config/delivery_genesis.json
