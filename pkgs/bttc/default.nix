@@ -7,7 +7,7 @@ buildGoModule
     enableParallelBuilding = true;
     proxyVendor = true;
     vendorSha256 = "sha256-ZIBsUN9AT/15410t1ypA8CqhGcFExxalsOyv8zQ06qQ=";
-    subPackages = [ "cmd/geth" ];
+    subPackages = [ "cmd/geth" "cmd/bootnode" ];
     doCheck = false;
     postInstall = "mv $out/bin/geth $out/bin/${bin}";
     meta = with lib; {

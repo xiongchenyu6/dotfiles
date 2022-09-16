@@ -42,6 +42,10 @@
       url = "github:nix-community/nixos-generators";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    nix-std = {
+      url = "github:chessai/nix-std";
+    };
+
   };
 
   outputs =
@@ -55,6 +59,7 @@
     , agenix
     , nvfetcher
     , nixos-generators
+    , nix-std
     , ...
     }:
       with nixpkgs;

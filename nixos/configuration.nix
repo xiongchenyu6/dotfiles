@@ -188,7 +188,7 @@ rec {
       enable = true;
     };
     bttc = {
-      enable = false;
+      enable = true;
     };
     bird2 = {
       enable = true;
@@ -489,7 +489,6 @@ rec {
       };
       upower = { enable = true; };
     };
-
   };
 
   # Enable sound with pipewire.

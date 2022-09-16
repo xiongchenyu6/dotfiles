@@ -37,6 +37,24 @@
         },
         "version": "v1.0.2"
     },
+    "launch": {
+        "cargoLocks": null,
+        "extract": null,
+        "name": "launch",
+        "passthru": null,
+        "pinned": false,
+        "src": {
+            "deepClone": false,
+            "fetchSubmodules": false,
+            "leaveDotGit": false,
+            "name": null,
+            "rev": "f71388e3a8091a1c6bc10aa03d7edf8e7b638f23",
+            "sha256": "sha256-5iUjWxjTmMxkfo+WZnjCKmHNTeaKkv5jdiDawMmvbQw=",
+            "type": "git",
+            "url": "https://github.com/bttcprotocol/launch.git"
+        },
+        "version": "f71388e3a8091a1c6bc10aa03d7edf8e7b638f23"
+    },
     "my_cookies": {
         "cargoLocks": null,
         "extract": null,
