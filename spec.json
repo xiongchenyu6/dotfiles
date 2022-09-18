@@ -1,0 +1,26 @@
+{
+  "enabled": 1,
+  "hidden": false,
+  "description": "declarative spec",
+  "type": 0,
+  "inputs": {
+    "pulls": {
+      "emailresponsible": false,
+      "type": "githubpulls",
+      "value": "tomberek hydra-demo"
+    },
+    "hydra-demo": {
+      "emailresponsible": false,
+      "type": "git",
+      "value": "https://github.com/tomberek/hydra-demo generative"
+    }
+  },
+  "nixexprinput": "hydra-demo",
+  "nixexprpath": "jobsets.nix",
+  "checkinterval": 300,
+  "schedulingshares": 100,
+  "enableemail": true,
+  "emailoverride": "tom@example.com",
+  "keepnr": 10,
+  "enable_dynamic_run_command": true
+}
