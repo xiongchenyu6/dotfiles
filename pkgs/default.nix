@@ -72,7 +72,7 @@ let
     #       cp -r . $out/etc;
     #     '';
     #   };
-    # default = dotfiles;
+    default = example-docker;
     # };
   };
 in

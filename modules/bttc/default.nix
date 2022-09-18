@@ -1,4 +1,4 @@
-{ config, lib, pkgs, ... }:
+{ config, lib, pkgs, std, ... }:
 with lib;
 let
   cfg = config.services.bttc;
@@ -11,6 +11,8 @@ in
     mainnet = mkEnableOption "weather to use mainnet";
 
     dynamicUser = mkEnableOption "weather to use dynamic user";
+
+    prometheus = mkEnableOption "weather to enable prometheus metrics export";
 
     nodeDir = mkOption {
       description = lib.mdDoc "Data directory.";
@@ -31,7 +33,7 @@ in
 
     deliveryHomeDir = mkOption {
       description = lib.mdDoc "Data directory.";
-      default = "./deliveryd";
+      default = "./.deliveryd";
       type = types.str;
     };
 
@@ -40,26 +42,34 @@ in
       default = "./bttc/data";
       type = types.str;
     };
+
     infuraKey = mkOption {
       description = lib.mdDoc "Data directory.";
       default = "dc39d257c9d94e37801677d9b066824c";
+      type = types.str;
+    };
+
+    tronGridApiKey = mkOption {
+      description = lib.mdDoc "Data directory.";
+      default = "4bfa950b-a637-4286-954c-611f8303efb1";
       type = types.str;
     };
   };
 
   config =
     let
-      bttc-gensis = "${pkgs.launch}/testnet-1029/without-sentry/bttc/genesis.json";
-      bttc-static-nodes = "${pkgs.launch}/testnet-1029/without-sentry/bttc/static-nodes.json";
-      delivery-genesis = "${pkgs.launch}/testnet-1029/without-sentry/delivery/config/genesis.json";
-      delivery-seeds = importTOML "${pkgs.launch}/testnet-1029/without-sentry/delivery/delivery-seeds.txt";
+      conf-base = "${pkgs.launch}/${if cfg.mainnet then "mainnet" else "testnet-1029"}/without-sentry";
+      bttc-gensis = "${conf-base}/bttc/genesis.json";
+      bttc-static-nodes = "${conf-base}/bttc/static-nodes.json";
+      delivery-genesis = "${conf-base}/delivery/config/genesis.json";
+      delivery-seeds = importTOML "${conf-base}/delivery/delivery-seeds.txt";
 
       DELIVERY_BTTC_RPC_URL = "http://bttc0:8545";
-      DELIVERY_ETH_RPC_URL = "https://goerli.infura.io/v3/dc39d257c9d94e37801677d9b066824c";
+      DELIVERY_ETH_RPC_URL = "https://goerli.infura.io/v3/${cfg.infuraKey}";
       BSC_RPC_URL = "https://data-seed-prebsc-1-s1.binance.org:8545/";
       TRON_RPC_URL = "47.252.19.181:50051";
       TRON_GRID_URL = "https://test-tronevent.bt.io";
-      TRON_GRID_API_KEY = "4bfa950b-a637-4286-954c-611f8303efb1";
+
       serviceConfig = {
         User = "bttc";
         Restart = "on-failure";
@@ -83,6 +93,7 @@ in
       cfg.enable
       {
         services.rabbitmq.enable = true;
+
         networking.firewall = {
           allowedTCPPorts = [ 30303 26627 26660 26656 8546 8545 ];
           allowedUDPPorts = [ 30303 8546 8545 ];
@@ -167,7 +178,7 @@ in
 
             environment =
               {
-                DELIVERY_HOME_DIR = "./.deliveryd";
+                DELIVERY_HOME_DIR = "${cfg.deliveryHomeDir}";
               };
             preStart = ''
               set -x
@@ -181,7 +192,7 @@ in
               sed -i '/bsc_rpc_url/cbsc_rpc_url = "${BSC_RPC_URL}"' $DELIVERY_HOME_DIR/config/delivery-config.toml 
               sed -i '/tron_rpc_url/ctron_rpc_url = "${TRON_RPC_URL}"' $DELIVERY_HOME_DIR/config/delivery-config.toml 
               sed -i '/tron_grid_url/ctron_grid_url = "${TRON_GRID_URL}"' $DELIVERY_HOME_DIR/config/delivery-config.toml
-              sed -i '/tron_grid_api_key/ctron_grid_api_key = "${TRON_GRID_API_KEY}"' $DELIVERY_HOME_DIR/config/delivery-config.toml
+              sed -i '/tron_grid_api_key/ctron_grid_api_key = "${cfg.tronGridApiKey}"' $DELIVERY_HOME_DIR/config/delivery-config.toml
 
               # copy node directories to home directories
               cp -rf ${delivery-genesis} $DELIVERY_HOME_DIR/config/delivery_genesis.json
@@ -201,7 +212,7 @@ in
             startLimitBurst = 5;
             environment =
               {
-                DELIVERY_HOME_DIR = "./.deliveryd";
+                DELIVERY_HOME_DIR = "${cfg.deliveryHomeDir}";
               };
             script = ''
               ${pkgs.delivery}/bin/deliveryd --home $DELIVERY_HOME_DIR --laddr tcp://0.0.0.0:1317 --node http://localhost:26657 rest-server
@@ -217,7 +228,7 @@ in
             startLimitBurst = 5;
             environment =
               {
-                DELIVERY_HOME_DIR = "./.deliveryd";
+                DELIVERY_HOME_DIR = "${cfg.deliveryHomeDir}";
               };
             script = ''
               ${pkgs.delivery}/bin/bridge --home $DELIVERY_HOME_DIR start --all --node http://localhost:26657 --log_level=debug

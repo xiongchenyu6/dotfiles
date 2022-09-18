@@ -480,7 +480,7 @@
     man = { enable = true; };
     qutebrowser = { enable = true; };
     vim = {
-      enable = false;
+      enable = true;
       plugins = with pkgs.vimPlugins; [ nerdtree denite tagbar ale lightline-vim ];
       settings = { };
     };
@@ -492,7 +492,6 @@
       plugins = with pkgs.tmuxPlugins; [ yank ];
       secureSocket = false;
       keyMode = "vi";
-
     };
     starship = {
       enable = true;
