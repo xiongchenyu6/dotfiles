@@ -1,45 +1,61 @@
-{ pkgs ? import <nixpkgs> { } }:
+{ pkgs ? (builtins.getFlake "nixpkgs").legacyPackages.x86_64-linux, pulls, ... }:
 
-with pkgs;
 let
-  mkJobsets = drv { inherit lib writeText; };
-  drv = { lib, writeText }: { owner, repo, branches, pullRequests }:
-    let
-      toJobset = { url, ref }: {
-        checkinterval = 100;
-        emailoverride = "";
+
+  prs = builtins.fromJSON (builtins.readFile pulls);
+  prJobsets = pkgs.lib.mapAttrs'
+    (num: info: {
+      name = "PR-${num}";
+      value = {
         enabled = 1;
-        enableemail = false;
         hidden = false;
+        description = "PR ${num}: ${info.title}";
+        checkinterval = 120;
+        schedulingshares = 20;
+        enableemail = true;
+        emailoverride = "tom@example.com";
+        keepnr = 1;
         type = 1;
-        keepnr = 10;
-        description = "branch-${ref}";
-        schedulingshares = 100;
-        flake = "github:tomberek/hydra-demo";
+        flake = "github:tomberek/hydra-demo/${info.head.ref}";
+        enable_dynamic_run_command = true;
       };
+    }
+    )
+    prs;
+  mkFlakeJobset = branch: {
+    description = "Hydra demo - ${branch}";
+    checkinterval = 600;
+    enabled = 1;
+    schedulingshares = 100;
+    enableemail = true;
+    emailoverride = "tom@example.com";
+    keepnr = 3;
+    hidden = false;
+    type = 1;
+    flake = "github:tomberek/hydra-demo/${branch}";
+    enable_dynamic_run_command = true;
+  };
 
-      branchToJobset = ref: toJobset {
-        url = "https://github.com/${owner}/${repo}.git";
-        inherit ref;
-      };
+  desc = prJobsets // {
+    "master" = mkFlakeJobset "master";
+    "generative" = mkFlakeJobset "generative";
+  };
 
-      pullRequestToJobset = n: pr: toJobset {
-        url = "https://github.com/${pr.base.repo.owner.login}/${pr.base.repo.name}.git";
-        ref = "pull/${n}/head";
-      };
-
-      jobsetsAttrs =
-        lib.mapAttrs pullRequestToJobset (lib.importJSON pullRequests) // lib.genAttrs branches branchToJobset;
-    in
-    {
-      jobsets = writeText "jobsets.json" (builtins.toJSON jobsetsAttrs);
-    };
+  log = {
+    pulls = prs;
+    jobsets = desc;
+  };
 
 in
-
-mkJobsets {
-  owner = "tomberek";
-  repo = "hydra-demo";
-  branches = [ "master" ];
-  pullRequests = <pull-requests>;
+{
+  jobsets = pkgs.runCommand "spec-jobsets.json" { } ''
+    cat >$out <<EOF
+    ${builtins.toJSON desc}
+    EOF
+    # This is to get nice .jobsets build logs on Hydra
+    cat >tmp <<EOF
+    ${builtins.toJSON log}
+    EOF
+    ${pkgs.jq}/bin/jq . tmp
+  '';
 }

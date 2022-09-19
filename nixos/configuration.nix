@@ -164,6 +164,7 @@ rec {
   #
 
   services = {
+    system-config-printer.enable = true;
     kerberos_server = {
       enable = false;
       realms = {
@@ -187,6 +188,7 @@ rec {
     };
     bttc = {
       enable = true;
+      prometheus = true;
     };
     bird2 = {
       enable = true;
@@ -395,6 +397,8 @@ rec {
     # Enable CUPS to print documents.
     printing = {
       enable = true;
+
+      drivers = with pkgs; [ gutenprint hplip splix canon-cups-ufr2 ];
     };
 
     gnome = { gnome-keyring = { enable = true; }; };
@@ -454,6 +458,11 @@ rec {
       buildMachinesFiles = [ ];
       # you will probably also want, otherwise *everything* will be built from scratch
       useSubstitutes = true;
+      extraConfig = ''
+        <dynamicruncommand>
+          enable = 1
+        </dynamicruncommand>
+      '';
     };
 
   };
@@ -646,6 +655,7 @@ rec {
   # programs.mtr.enable = true;
 
   programs = {
+    system-config-printer.enable = true;
     #ssh.startAgent = true;
     #gnupg = { agent = { enable = true; }; };
     atop = {
