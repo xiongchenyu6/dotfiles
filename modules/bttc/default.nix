@@ -1,4 +1,4 @@
-{ config, lib, pkgs, std, ... }:
+{ config, lib, pkgs, ... }:
 with lib;
 let
   cfg = config.services.bttc;
@@ -19,6 +19,7 @@ in
       default = "node";
       type = types.str;
     };
+
     nodekeyDir = mkOption {
       description = lib.mdDoc "Data directory.";
       default = "./bttc/nodekey";
@@ -33,7 +34,7 @@ in
 
     deliveryHomeDir = mkOption {
       description = lib.mdDoc "Data directory.";
-      default = "./.deliveryd";
+      default = "./deliveryd";
       type = types.str;
     };
 
@@ -58,6 +59,7 @@ in
 
   config =
     let
+
       conf-base = "${pkgs.launch}/${if cfg.mainnet then "mainnet" else "testnet-1029"}/without-sentry";
       bttc-gensis = "${conf-base}/bttc/genesis.json";
       bttc-static-nodes = "${conf-base}/bttc/static-nodes.json";
@@ -65,10 +67,12 @@ in
       delivery-seeds = importTOML "${conf-base}/delivery/delivery-seeds.txt";
 
       DELIVERY_BTTC_RPC_URL = "http://bttc0:8545";
-      DELIVERY_ETH_RPC_URL = "https://goerli.infura.io/v3/${cfg.infuraKey}";
-      BSC_RPC_URL = "https://data-seed-prebsc-1-s1.binance.org:8545/";
-      TRON_RPC_URL = "47.252.19.181:50051";
-      TRON_GRID_URL = "https://test-tronevent.bt.io";
+      DELIVERY_ETH_RPC_URL = if cfg.mainnet then "https://mainnet.infura.io/v3/${cfg.infuraKey}" else "https://goerli.infura.io/v3/${cfg.infuraKey}";
+      BSC_RPC_URL = if cfg.mainnet then "https://bsc-dataseed.binance.org/" else "https://data-seed-prebsc-1-s1.binance.org:8545/";
+      TRON_RPC_URL = if cfg.mainnet then "grpc.trongrid.io:50051" else "47.252.19.181:50051";
+      TRON_GRID_URL = if cfg.mainnet then "https://tronevent.bt.io/" else "https://test-tronevent.bt.io";
+
+      update_toml = k: v: file: ''sed -i '/${k} =/c${k} = ${v}' ${file}'';
 
       serviceConfig = {
         User = "bttc";
@@ -193,9 +197,8 @@ in
               sed -i '/tron_rpc_url/ctron_rpc_url = "${TRON_RPC_URL}"' $DELIVERY_HOME_DIR/config/delivery-config.toml 
               sed -i '/tron_grid_url/ctron_grid_url = "${TRON_GRID_URL}"' $DELIVERY_HOME_DIR/config/delivery-config.toml
               sed -i '/tron_grid_api_key/ctron_grid_api_key = "${cfg.tronGridApiKey}"' $DELIVERY_HOME_DIR/config/delivery-config.toml
-
-              # copy node directories to home directories
-              cp -rf ${delivery-genesis} $DELIVERY_HOME_DIR/config/delivery_genesis.json
+              ${update_toml "genesis_file" "\"${delivery-genesis}\"" "$DELIVERY_HOME_DIR/config/config.toml"}
+              ${update_toml "prometheus" (if cfg.prometheus then "true" else "false") "$DELIVERY_HOME_DIR/config/config.toml"}
             '';
             script = ''
               ${pkgs.delivery}/bin/deliveryd start --home $DELIVERY_HOME_DIR
@@ -231,7 +234,7 @@ in
                 DELIVERY_HOME_DIR = "${cfg.deliveryHomeDir}";
               };
             script = ''
-              ${pkgs.delivery}/bin/bridge --home $DELIVERY_HOME_DIR start --all --node http://localhost:26657 --log_level=debug
+              ${pkgs.delivery}/bin/bridge --home $DELIVERY_HOME_DIR start --all --node http://localhost:26657 --log_level = debug
             '';
           };
         };
@@ -243,3 +246,5 @@ in
         users.groups.bttc = { };
       };
 }
+
+

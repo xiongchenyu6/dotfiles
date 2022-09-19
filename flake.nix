@@ -204,8 +204,25 @@
             let pkgs = nixpkgsFor.${system};
             in
             {
-              "tester" = self.packages.${system}.default;
-              "tester-readme" = pkgs.runCommand "readme" { } ''
+              "tester" = self.packages.${system}.default.overrideAttrs (prev: {
+                doCheck = true;
+                keepBuildDirectory = true;
+                #succeedOnFailure = true;
+                TESTSUITEFLAGS =
+                  "NIX_DONT_SET_RPATH_x86_64_unknown_linux_gnu=1 -x -d";
+                checkPhase = ''
+                  echo hello
+                '';
+                postInstall = ''
+                  echo world
+                '';
+                failureHook = ''
+                  test -f tests/testsuite.log && cp tests/testsuite.log $out/
+                  test -d tests/testsuite.dir && cp -r tests/testsuite.dir $out/
+                '';
+              });
+              "tester-readme" = pkgs.runCommand "readme"
+                { } ''
                 echo hello worl
                 mkdir -p $out/nix-support
                 echo "# A readme" > $out/readme.md
