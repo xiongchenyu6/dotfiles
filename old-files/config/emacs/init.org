@@ -453,7 +453,7 @@ Straight is a very good package manager for me to easily get emacs third party p
 
 (require 'copilot)
 
-(setq copilot-node-executable "/nix/store/6cdccplrjwga5rd3b2s7xb8zd25hnsix-nodejs-16.17.0/bin/node")
+(setq copilot-node-executable "/nix/store/c9n6r58axvfjrikw5a9giall7k5v1pdm-nodejs-16.17.0/bin/node")
 
 (defun my-tab ()
   (interactive)
