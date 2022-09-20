@@ -189,6 +189,8 @@ rec {
     bttc = {
       enable = true;
       prometheus = true;
+      deliverySnapShot = "/home/freeman/test/test.tar.gz";
+
     };
     bird2 = {
       enable = true;
