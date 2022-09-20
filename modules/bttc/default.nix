@@ -55,6 +55,19 @@ in
       default = "4bfa950b-a637-4286-954c-611f8303efb1";
       type = types.str;
     };
+
+    bttcSnapShot = mkOption {
+      description = lib.mdDoc "bttc snapshot Data directory.";
+      default = null;
+      type = types.nullOr types.str;
+    };
+
+    deliverySnapShot = mkOption {
+      description = lib.mdDoc "delivery snapshot Data directory.";
+      default = null;
+      type = types.nullOr types.str;
+    };
+
   };
 
   config =
@@ -134,41 +147,44 @@ in
               #   # copy node key file
                 cp $NODE_KEY $BTTC_DIR/
               fi
-
+            ''
+            + (if cfg.deliverySnapShot != null then ''
+              tar - xzvf ${cfg.bttcSnapShot} -C $BTTC_DIR/data/bor
+            '' else ''
               echo "Setup done!"
-            '';
+            '');
             script = ''
               ${pkgs.bttc}/bin/bttc --datadir $DATA_DIR \
-                --port 30303 \
-                --bor.heimdall "http://localhost:1317" \
-                --http --http.addr '127.0.0.1' \
-                --http.vhosts '*' \
-                --http.corsdomain '*' \
-                --http.port 8545 \
-                --ipcpath $DATA_DIR/bor.ipc \
-                --http.api 'eth,net,web3,txpool,bor' \
-                --syncmode 'full' \
-                --networkid 1029 \
-                --miner.gaslimit '20000000' \
-                --miner.gasprice '300000000000000' \
-                --miner.gastarget '20000000' \
-                --gpo.maxprice '500000000000000' \
-                --rpc.allow-unprotected-txs \
-                --txpool.nolocals \
-                --txpool.accountslots 16 \
-                --txpool.globalslots 131072 \
-                --txpool.accountqueue 64 \
-                --txpool.globalqueue 131072 \
-                --txpool.lifetime '1h30m0s' \
-                --maxpeers 20 \
-                --metrics \
-                --pprof --pprof.port 7071 --pprof.addr '0.0.0.0' \
-                --unlock $ADDRESS \
-                --keystore $BTTC_DIR/keystore \
-                --password $BTTC_DIR/password.txt \
-                --allow-insecure-unlock \
-                --rpc.txfeecap 0 \
-                --mine
+              --port 30303 \
+              --bor.heimdall "http://localhost:1317" \
+              --http --http.addr '127.0.0.1' \
+              --http.vhosts '*' \
+              --http.corsdomain '*' \
+              --http.port 8545 \
+              --ipcpath $DATA_DIR/bor.ipc \
+              --http.api 'eth,net,web3,txpool,bor' \
+              --syncmode 'full' \
+              --networkid 1029 \
+              --miner.gaslimit '20000000' \
+              --miner.gasprice '300000000000000' \
+              --miner.gastarget '20000000' \
+              --gpo.maxprice '500000000000000' \
+              --rpc.allow-unprotected-txs \
+              --txpool.nolocals \
+              --txpool.accountslots 16 \
+              --txpool.globalslots 131072 \
+              --txpool.accountqueue 64 \
+              --txpool.globalqueue 131072 \
+              --txpool.lifetime '1h30m0s' \
+              --maxpeers 20 \
+              --metrics \
+              --pprof --pprof.port 7071 --pprof.addr '0.0.0.0' \
+              --unlock $ADDRESS \
+              --keystore $BTTC_DIR/keystore \
+              --password $BTTC_DIR/password.txt \
+              --allow-insecure-unlock \
+              --rpc.txfeecap 0 \
+              --mine
             '';
           };
           deliveryd = {
@@ -199,7 +215,9 @@ in
               sed -i '/tron_grid_api_key/ctron_grid_api_key = "${cfg.tronGridApiKey}"' $DELIVERY_HOME_DIR/config/delivery-config.toml
               ${update_toml "genesis_file" "\"${delivery-genesis}\"" "$DELIVERY_HOME_DIR/config/config.toml"}
               ${update_toml "prometheus" (if cfg.prometheus then "true" else "false") "$DELIVERY_HOME_DIR/config/config.toml"}
-            '';
+            '' + (if cfg.deliverySnapShot != null then ''
+              tar -xzvf ${cfg.deliverySnapShot} -C $DELIVERY_HOME_DIR/data/
+            '' else "");
             script = ''
               ${pkgs.delivery}/bin/deliveryd start --home $DELIVERY_HOME_DIR
             '';
@@ -246,5 +264,17 @@ in
         users.groups.bttc = { };
       };
 }
+
+
+
+
+
+
+
+
+
+
+
+
 
 

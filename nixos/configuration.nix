@@ -617,7 +617,6 @@ rec {
       wakatime
       node2nix
       nodejs
-      nodejs-16_x
       nodePackages."typescript-language-server"
       nodePackages."bash-language-server"
       nvfetcher
