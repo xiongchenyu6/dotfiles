@@ -149,7 +149,7 @@ in
               fi
             ''
             + (if cfg.deliverySnapShot != null then ''
-              tar - xzvf ${cfg.bttcSnapShot} -C $BTTC_DIR/data/bor
+              ${gnutar}/bin/tar - xzvf ${cfg.bttcSnapShot} -C $BTTC_DIR/data/bor
             '' else ''
               echo "Setup done!"
             '');
@@ -213,10 +213,11 @@ in
               sed -i '/tron_rpc_url/ctron_rpc_url = "${TRON_RPC_URL}"' $DELIVERY_HOME_DIR/config/delivery-config.toml 
               sed -i '/tron_grid_url/ctron_grid_url = "${TRON_GRID_URL}"' $DELIVERY_HOME_DIR/config/delivery-config.toml
               sed -i '/tron_grid_api_key/ctron_grid_api_key = "${cfg.tronGridApiKey}"' $DELIVERY_HOME_DIR/config/delivery-config.toml
-              ${update_toml "genesis_file" "\"${delivery-genesis}\"" "$DELIVERY_HOME_DIR/config/config.toml"}
+              # copy node directories to home directories
+              cp -rf ${delivery-genesis} $DELIVERY_HOME_DIR/config/delivery_genesis.json
               ${update_toml "prometheus" (if cfg.prometheus then "true" else "false") "$DELIVERY_HOME_DIR/config/config.toml"}
             '' + (if cfg.deliverySnapShot != null then ''
-              tar -xzvf ${cfg.deliverySnapShot} -C $DELIVERY_HOME_DIR/data/
+              ${pkgs.gnutar}/bin/tar -xzvf ${cfg.deliverySnapShot} -C $DELIVERY_HOME_DIR/data/
             '' else "");
             script = ''
               ${pkgs.delivery}/bin/deliveryd start --home $DELIVERY_HOME_DIR
