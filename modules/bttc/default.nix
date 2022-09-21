@@ -68,11 +68,24 @@ in
       type = types.nullOr types.str;
     };
 
+    deiliveryPrivateKeyPath = mkOption {
+      description = lib.mdDoc "encrypted password file for bttc node to decrypt private key";
+      type = types.path;
+    };
+
+    bttcKeyStorePath = mkOption {
+      description = lib.mdDoc "encrypted password file for bttc node to decrypt private key";
+      type = types.path;
+    };
+
+    passwordFilePath = mkOption {
+      description = lib.mdDoc "encrypted password file for bttc node to decrypt private key";
+      type = types.path;
+    };
   };
 
   config =
     let
-
       conf-base = "${pkgs.launch}/${if cfg.mainnet then "mainnet" else "testnet-1029"}/without-sentry";
       bttc-gensis = "${conf-base}/bttc/genesis.json";
       bttc-static-nodes = "${conf-base}/bttc/static-nodes.json";
@@ -104,6 +117,7 @@ in
         Type = "simple";
         KillSignal = "SIGINT";
         TimeoutStopSec = 120;
+        RemoveIPC = "no";
       };
     in
     mkIf
@@ -119,8 +133,10 @@ in
           bttc = {
             inherit serviceConfig;
             description = "Bttc Service Daemon";
+            path = [ pkgs.gzip ];
             wantedBy = [ "multi-user.target" ];
             after = [ "networking.target" ];
+            bindsTo = [ "deliveryd-bridge.service" ];
             startLimitIntervalSec = 500;
             startLimitBurst = 5;
             environment = {
@@ -150,12 +166,11 @@ in
             ''
             + (if cfg.bttcSnapShot != null then ''
               mkdir -p $BTTC_DIR/data/bor
-              ${pkgs.gnutar}/bin/tar - xzvf ${cfg.bttcSnapShot} -C /var/lib/bttc/$BTTC_DIR/data/bor
+              # ${pkgs.gnutar}/bin/tar - xzvf ${cfg.bttcSnapShot} -C /var/lib/bttc/$BTTC_DIR/data/bor
             '' else ''
               echo "Setup done!"
             '');
-            script = ''
-              ${pkgs.bttc}/bin/bttc --datadir $DATA_DIR \
+            script = ''${pkgs.bttc}/bin/bttc --datadir $DATA_DIR \     
               --port 30303 \
               --bor.heimdall "http://localhost:1317" \
               --http --http.addr '127.0.0.1' \
@@ -191,6 +206,7 @@ in
           deliveryd = {
             inherit serviceConfig;
             description = "Deliveryd Service Daemon";
+            path = [ pkgs.gzip ];
             wantedBy = [ "multi-user.target" ];
             after = [ "networking.target" "rabbitmq.service" ];
             before = [ "deliveryd-rest-server.service" ];
@@ -217,18 +233,12 @@ in
               ${update_toml "prometheus" (if cfg.prometheus then "true" else "false") "$DELIVERY_HOME_DIR/config/config.toml"}
               # copy node directories to home directories
               cp -rf ${delivery-genesis} $DELIVERY_HOME_DIR/config/delivery_genesis.json
+              ${pkgs.coreutils}/bin/chmod 600 $DELIVERY_HOME_DIR/config/priv_validator_key.json
             '' + (if cfg.deliverySnapShot != null then ''
-              ls /var/lib/bttc/
-              ls /var/lib/bttc/snapshot
-              ls $DELIVERY_HOME_DIR/data/
-              ls $DELIVERY_HOME_DIR/snapshot/
               mkdir -p $DELIVERY_HOME_DIR/data/
-              ${pkgs.gnutar}/bin/tar -xzvf ${cfg.deliverySnapShot} -C /var/lib/bttc/$DELIVERY_HOME_DIR/data/
+              # ${pkgs.gnutar}/bin/tar -xzvf "${cfg.deliverySnapShot}" -C "/var/lib/bttc/deliveryd/data/"
             '' else "");
-            script = ''
-              ${pkgs.delivery}/bin/deliveryd start --home $DELIVERY_HOME_DIR
-            '';
-
+            script = "${pkgs.delivery}/bin/deliveryd start --home $DELIVERY_HOME_DIR";
           };
           deliveryd-rest-server = {
             inherit serviceConfig;
@@ -236,6 +246,7 @@ in
             wantedBy = [ "multi-user.target" ];
             after = [ "networking.target" ];
             before = [ "deliveryd-birdge.service" ];
+            bindsTo = [ "deliveryd.service" ];
             startLimitIntervalSec = 500;
             startLimitBurst = 5;
             environment =
@@ -252,6 +263,7 @@ in
             wantedBy = [ "multi-user.target" ];
             after = [ "networking.target" "deliveryd.service" ];
             before = [ "deliveryd-birdge.service" ];
+            bindsTo = [ "deliveryd.service" ];
             startLimitIntervalSec = 500;
             startLimitBurst = 5;
             environment =
@@ -259,7 +271,7 @@ in
                 DELIVERY_HOME_DIR = "${cfg.deliveryHomeDir}";
               };
             script = ''
-              ${pkgs.delivery}/bin/bridge --home $DELIVERY_HOME_DIR start --all --node http://localhost:26657 --log_level = debug
+              ${pkgs.delivery}/bin/bridge --home $DELIVERY_HOME_DIR start --all --node http://localhost:26657 --log_level debug
             '';
           };
         };
@@ -271,17 +283,3 @@ in
         users.groups.bttc = { };
       };
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-

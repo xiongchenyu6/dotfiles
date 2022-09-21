@@ -607,7 +607,7 @@
         with epkgs; [
           epkgs.vterm
           epkgs.org-contrib
-          epkgs.org-roam
+          #  epkgs.org-roam
           epkgs.org-re-reveal
           epkgs.pdf-tools
           epkgs.leetcode

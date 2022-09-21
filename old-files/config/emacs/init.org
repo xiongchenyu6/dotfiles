@@ -254,7 +254,7 @@ Straight is a very good package manager for me to easily get emacs third party p
 #+end_src
 *** Auto Save
 #+begin_src emacs-lisp
-(setq auto-save-visited-interval 0.1)
+(setq auto-save-visited-interval 0.5)
 #+end_src
 *** Indentation
 #+begin_src emacs-lisp
@@ -484,6 +484,8 @@ Straight is a very good package manager for me to easily get emacs third party p
 (require 'wakatime-mode)
 (global-wakatime-mode +1)
 (setq wakatime-api-key "06fb08d0-68a4-4b39-bbb0-d34d325dc046")
+(setq wakatime-noprompt t)
+(setq wakatime-disable-on-error t)
 #+end_src
 *** Navigation
 #+begin_src emacs-lisp

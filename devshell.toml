@@ -1,0 +1,21 @@
+# https://numtide.github.io/devshell
+[[env]]
+name = "GO111MODULE"
+value = "on"
+[[commands]]
+category="Client programming language"
+package = "nodejs" # https://search.nixos.org/packages?type=packages&query=nodejs
+name = "node"
+help = """
+1. use npm i to install dependency first
+             2. use npm run dev for dev build 
+             3. use npm run prod for prod build 
+"""
+[[commands]]
+category="Server programming language"
+package = "go" # https://search.nixos.org/packages?type=packages&query=nodejs
+help = """
+1. use npm go mod to install dependency first
+             2. use go build dev for dev build 
+             3. use go build prod for prod build 
+"""
