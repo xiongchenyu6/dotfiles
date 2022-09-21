@@ -53,6 +53,9 @@ let
     bttc = callPackage ./bttc { };
     delivery = callPackage ./delivery { };
     my_cookies = callPackage ./python3/my_cookies { };
+    tronbox = (callPackage ./npm/tronbox {
+      nodejs = pkgs.nodejs-14_x;
+    }).tronbox;
 
     vbox = nixos-generators.nixosGenerate {
       system = system;

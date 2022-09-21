@@ -18,11 +18,12 @@
       };
     };
 
+    devshell.url = "github:numtide/devshell";
+
     emacs = {
       url = "github:nix-community/emacs-overlay";
       inputs = {
         nixpkgs.follows = "nixpkgs";
-
       };
     };
 
@@ -41,14 +42,6 @@
       };
     };
 
-    nvfetcher = {
-      url = "github:berberman/nvfetcher";
-      inputs = {
-        nixpkgs.follows = "nixpkgs";
-        flake-utils.follows = "flake-utils";
-      };
-    };
-
     nixos-generators = {
       url = "github:nix-community/nixos-generators";
       inputs = {
@@ -58,6 +51,14 @@
 
     nix-std = {
       url = "github:chessai/nix-std";
+    };
+
+    nixos-mailserver = {
+      url = "gitlab:simple-nixos-mailserver/nixos-mailserver";
+      inputs = {
+        nixpkgs.follows = "nixpkgs";
+        utils.follows = "flake-utils";
+      };
     };
   };
 
@@ -70,16 +71,18 @@
     , flake-utils
     , home-manager
     , agenix
-    , nvfetcher
     , nixos-generators
     , nix-std
+    , devshell
+    , nixos-mailserver
     , ...
     } @attrs:
       with nixpkgs;
       with lib;
       with flake-utils.lib;
       let
-        pkgsFor = system: import nixpkgs { inherit system; };
+        overlays = [ devshell.overlay ];
+        pkgsFor = system: import nixpkgs { inherit system overlays; };
         std = nix-std.lib;
       in
       rec {
@@ -95,7 +98,7 @@
               ./nixos/configuration.nix
               ({ pkgs, ... }: {
                 nixpkgs = {
-                  overlays = map (x: x.overlay) [
+                  overlays = map (x: x.overlay or x.overlays.default) [
                     self
                     emacs
                     agenix
@@ -110,11 +113,9 @@
                   useUserPackages = true;
                   users.freeman = import ./nixos/home.nix;
                 };
-
                 # Optionally, use home-manager.extraSpecialArgs to pass
                 # arguments to home.nix
               }
-
             ];
           };
         };
@@ -168,12 +169,15 @@
           packages = import ./pkgs { inherit pkgs nixos-generators; inherit (nixpkgs) lib; };
 
           # used by nix develop and nix shell
-          devShell = pkgs.mkShell {
-            buildInputs = with pkgs; [
+          devShell = pkgs.devshell.mkShell {
+            packages = with pkgs; [
               # to test with nix (Nix) 2.7.0 and NixOps 2.0.0-pre-7220cbd use
+              gopls
               nix
               nixopsUnstable
             ];
+            imports = [ (pkgs.devshell.importTOML ./devshell.toml) ];
+
           };
         })
       // {
@@ -181,8 +185,10 @@
           inherit std;
         };
         templates = import ./templates;
-        overlay = import ./overlay.nix {
-          inherit nixos-generators; inherit (nixpkgs) lib;
+        overlays = {
+          default = import ./overlay.nix {
+            inherit nixos-generators; inherit (nixpkgs) lib;
+          };
         };
         libs = import ./lib;
       } //

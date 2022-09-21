@@ -18,7 +18,7 @@ rec {
 
   krb5 = {
     enable = true;
-    domain_realm = "freeman.engineer";
+    domain_realm = "FREEMAN.ENGINEER";
   };
 
   # Bootloader.
@@ -97,7 +97,7 @@ rec {
 
     networkmanager = { enable = true; };
     enableIPv6 = true;
-    hostName = "nixos"; # Define your hostname.
+    hostName = "nixos.freeman.engineer"; # Define your hostname.
     # Enable networking
     #networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
     wg-quick = {
@@ -189,7 +189,6 @@ rec {
     bttc = {
       enable = true;
       prometheus = true;
-      deliverySnapShot = "/home/freeman/test/test.tar.gz";
 
     };
     bird2 = {
@@ -555,6 +554,9 @@ rec {
     config = {
       allowUnfree = true;
       allowBroken = true;
+      permittedInsecurePackages = [
+        "nodejs-10.24.1"
+      ];
     };
   };
 
@@ -631,6 +633,7 @@ rec {
       tree
       tomb
       tcpdump
+      tronbox
       unzip
       vlc
       scrot
