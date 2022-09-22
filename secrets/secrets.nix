@@ -1,6 +1,6 @@
 let
   /* edit permissions */
-  share = (import ../share.nix);
+  share = (import ../common/share.nix);
   freeman = share.freeman.user.public-key;
   users = [ freeman ];
 

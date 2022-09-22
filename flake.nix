@@ -96,12 +96,14 @@
               self.nixosModules.bttc
               agenix.nixosModule
               ./nixos/configuration.nix
+              ./common/configuration.nix
               ({ pkgs, ... }: {
                 nixpkgs = {
                   overlays = map (x: x.overlay or x.overlays.default) [
-                    self
-                    emacs
                     agenix
+                    emacs
+                    devshell
+                    self
                     xddxdd
                   ];
                 };
@@ -135,6 +137,7 @@
             defaults = {
               imports = [
                 agenix.nixosModule
+                ./common/configuration.nix
               ];
             };
             tc =
@@ -203,7 +206,6 @@
 
           # Nixpkgs instantiated for supported system types.
           nixpkgsFor = forAllSystems (system: import nixpkgs { inherit system; });
-
         in
         {
           hydraJobs = forAllSystems (system:
