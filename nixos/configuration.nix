@@ -4,7 +4,7 @@
 
 { config, pkgs, options, lib, ... }:
 let
-  share = (import ../share.nix);
+  share = (import ../common/share.nix);
   script = (import ../dn42/update-roa.nix { inherit pkgs; });
 in
 rec {
@@ -97,7 +97,8 @@ rec {
 
     networkmanager = { enable = true; };
     enableIPv6 = true;
-    hostName = "nixos.freeman.engineer"; # Define your hostname.
+    hostName = "nixos"; # Define your hostname.
+    domain = "freeman.engineer";
     # Enable networking
     #networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
     wg-quick = {
@@ -408,7 +409,6 @@ rec {
 
     dbus = { enable = true; };
     # Enable the OpenSSH daemon.
-    openssh = { enable = true; };
     pipewire = {
       enable = true;
       alsa = {
@@ -574,7 +574,7 @@ rec {
       cachix
       consul
       discord
-      dig
+      devshell.cli
       lua
       nixopsUnstable
       neofetch
@@ -586,7 +586,6 @@ rec {
       tealdeer
       socat
       rustscan
-      genymotion
       virtualbox
       gitAndTools.gitflow
       git-crypt
@@ -608,8 +607,6 @@ rec {
       heroku
       imagemagick
       ispell
-      inetutils
-      killall
       # kubernix
       lsof
       libxml2
@@ -630,9 +627,7 @@ rec {
       plantuml
       ripgrep
       rnix-lsp
-      tree
       tomb
-      tcpdump
       tronbox
       unzip
       vlc
@@ -640,7 +635,6 @@ rec {
       stow
       slack
       wineWowPackages.staging
-      wireguard-tools
       wireshark
       #wpa_supplicant_gui
       wakatime

@@ -10,7 +10,7 @@
       ".curlrc" = { source = ../old-files/downloader/.curlrc; };
       ".editorconfig" = { source = ../old-files/editor/.editorconfig; };
       ".ssh/id_ed25519.pub" = {
-        text = (import ../share.nix).freeman.user.public-key;
+        text = (import ../common/share.nix).freeman.user.public-key;
         executable = false;
       };
       ".ssh/id_ed25519" = {
