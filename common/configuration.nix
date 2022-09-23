@@ -5,9 +5,27 @@
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
 { config, pkgs, lib, symlinkJoin, domain, ... }:
-
-
 {
+  krb5 = {
+    enable = true;
+    realms = {
+      "FREEMAN.ENGINEER" = {
+        admin_server = "freeman.engineer";
+        kdc = "freeman.engineer";
+        default_domain = "freeman.engineer";
+        kpasswd_server = "freeman.engineer";
+      };
+    };
+    libdefaults = {
+      default_realm = "FREEMAN.ENGINEER";
+    };
+    domain_realm = {
+      "freeman.engineer" = "FREEMAN.ENGINEER";
+      ".freeman.engineer" = "FREEMAN.ENGINEER";
+    };
+  };
+
+
   networking = {
     domain = "freeman.engineer";
   };

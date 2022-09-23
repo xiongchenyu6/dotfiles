@@ -44,11 +44,21 @@ in
       allowedTCPPorts = [
         53
         80 # ui
+        88 # kerberos
         179
         443
         8000
       ];
-      allowedUDPPorts = [ 53 179 22616 23396 21816 33434 ];
+      allowedUDPPorts = [
+        53
+        80
+        88
+        179
+        22616
+        23396
+        21816
+        33434
+      ];
     };
     sits = {
       he-ipv6 = {
@@ -169,6 +179,25 @@ in
     };
   };
   services = {
+    kerberos_server = {
+      enable = true;
+      realms = {
+        "FREEMAN.ENGINEER" = {
+          acl =
+            [
+              {
+                access = "all";
+                principal = "*/admin";
+              }
+              {
+                access = "all";
+                principal = "admin";
+              }
+            ];
+        };
+      };
+    };
+
     dnsmasq = {
       enable = true;
       alwaysKeepRunning = true;
