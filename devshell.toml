@@ -19,3 +19,5 @@ help = """
              2. use go build dev for dev build 
              3. use go build prod for prod build 
 """
+[[commands]]
+package = "colmena"

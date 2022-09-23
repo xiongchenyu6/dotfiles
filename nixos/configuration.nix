@@ -16,11 +16,6 @@ rec {
 
   age.secrets.freeman_wg_pk.file = ../secrets/freeman_wg_pk.age;
 
-  krb5 = {
-    enable = true;
-    domain_realm = "FREEMAN.ENGINEER";
-  };
-
   # Bootloader.
   boot =
     {
@@ -33,7 +28,6 @@ rec {
         efi = {
           canTouchEfiVariables = true;
           efiSysMountPoint = "/boot/efi";
-
         };
       };
       kernelModules = [ "tcp_bbr" ];
@@ -123,6 +117,9 @@ rec {
         };
       };
     };
+    extraHosts = ''
+      #  127.0.0.1 freeman.engineer
+    '';
   };
 
   virtualisation = {
@@ -165,27 +162,49 @@ rec {
   #
 
   services = {
-    system-config-printer.enable = true;
-    kerberos_server = {
-      enable = false;
-      realms = {
-        "ENGINEER" = {
-          acl =
-            [
-              {
-                access = "all";
-                principal = "*/admin";
-              }
-              {
-                access = "all";
-                principal = "admin";
-              }
-            ];
-        };
-      };
-    };
     openldap = {
       enable = true;
+      settings =
+        {
+          attrs.olcLogLevel = [ "stats" ];
+          children = {
+            "cn=schema".includes = [
+              "${pkgs.openldap}/etc/schema/core.ldif"
+              "${pkgs.openldap}/etc/schema/cosine.ldif"
+              "${pkgs.openldap}/etc/schema/inetorgperson.ldif"
+            ];
+            "olcDatabase={-1}frontend" = {
+              attrs = {
+                objectClass = "olcDatabaseConfig";
+                olcDatabase = "{-1}frontend";
+                olcAccess = [ "{0}to * by dn.exact=uidNumber=0+gidNumber=0,cn=peercred,cn=external,cn=auth manage stop by * none stop" ];
+              };
+            };
+            "olcDatabase={0}config" = {
+              attrs = {
+                objectClass = "olcDatabaseConfig";
+                olcDatabase = "{0}config";
+                olcAccess = [ "{0}to * by * none break" ];
+              };
+            };
+            "olcDatabase={1}mdb" = {
+              attrs = {
+                objectClass = [ "olcDatabaseConfig" "olcMdbConfig" ];
+                olcDatabase = "{1}mdb";
+                olcDbDirectory = "/var/lib/openldap/ldap";
+                olcDbIndex = [
+                  "objectClass eq"
+                  "cn pres,eq"
+                  "uid pres,eq"
+                  "sn pres,eq,subany"
+                ];
+                olcSuffix = "dc=example,dc=com";
+                olcAccess = [ "{0}to * by * read break" ];
+              };
+            };
+          };
+        };
+      #  mutableConfig = true;
     };
     bttc = {
       enable = true;
@@ -572,10 +591,8 @@ rec {
       conky
       cabal2nix
       cachix
-      consul
       discord
       devshell.cli
-      lua
       nixopsUnstable
       neofetch
       exa
@@ -592,6 +609,7 @@ rec {
       geoip
       gnumake
       gh
+      gopls
       haskell-language-server
       (haskellPackages.ghcWithPackages (self:
         with haskellPackages;
@@ -609,9 +627,6 @@ rec {
       ispell
       # kubernix
       lsof
-      libxml2
-      libtool
-      libsodium
       (python3.withPackages (ps: [ my_cookies ]))
       pinentry
       linuxPackages.ply

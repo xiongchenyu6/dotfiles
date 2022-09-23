@@ -122,47 +122,43 @@
           };
         };
 
-        nixopsConfigurations = {
-          default = rec {
-            inherit nixpkgs;
-            network = {
-              storage = {
-                legacy = {
-                  databasefile = "~/.nixops/deployments.nixops";
-                };
-              };
-              description = "Tencent cloud";
-              enableRollback = true;
+        colmena = {
+          meta = {
+            nixpkgs = import nixpkgs {
+              system = "x86_64-linux";
+              overlays = [ ];
             };
-            defaults = {
-              imports = [
-                agenix.nixosModule
-                ./common/configuration.nix
-              ];
-            };
-            tc =
-              let
-                domain = "freeman.engineer";
-              in
-              rec {
-                _module.args = {
-                  inherit domain;
-                };
-
-                imports = [
-                  ./host/tc/configuration.nix
-                ];
-
-                nixpkgs = {
-                  overlays = [
-                    xddxdd.overlay
-                  ];
-                };
-                deployment = {
-                  targetHost = domain;
-                };
-              };
           };
+          defaults = { ... }: {
+            imports = [
+              agenix.nixosModule
+              ./common/configuration.nix
+            ];
+
+          };
+          tc =
+            let
+              domain = "freeman.engineer";
+            in
+            rec {
+              _module.args = {
+                inherit domain;
+              };
+
+              imports = [
+                ./host/tc/configuration.nix
+              ];
+
+              nixpkgs = {
+                overlays = [
+                  xddxdd.overlay
+                ];
+              };
+              deployment = {
+                targetHost = domain;
+                tags = [ "wg" ];
+              };
+            };
         };
       } // eachDefaultSystem
         (system:
