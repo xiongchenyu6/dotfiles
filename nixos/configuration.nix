@@ -162,50 +162,6 @@ rec {
   #
 
   services = {
-    openldap = {
-      enable = true;
-      settings =
-        {
-          attrs.olcLogLevel = [ "stats" ];
-          children = {
-            "cn=schema".includes = [
-              "${pkgs.openldap}/etc/schema/core.ldif"
-              "${pkgs.openldap}/etc/schema/cosine.ldif"
-              "${pkgs.openldap}/etc/schema/inetorgperson.ldif"
-            ];
-            "olcDatabase={-1}frontend" = {
-              attrs = {
-                objectClass = "olcDatabaseConfig";
-                olcDatabase = "{-1}frontend";
-                olcAccess = [ "{0}to * by dn.exact=uidNumber=0+gidNumber=0,cn=peercred,cn=external,cn=auth manage stop by * none stop" ];
-              };
-            };
-            "olcDatabase={0}config" = {
-              attrs = {
-                objectClass = "olcDatabaseConfig";
-                olcDatabase = "{0}config";
-                olcAccess = [ "{0}to * by * none break" ];
-              };
-            };
-            "olcDatabase={1}mdb" = {
-              attrs = {
-                objectClass = [ "olcDatabaseConfig" "olcMdbConfig" ];
-                olcDatabase = "{1}mdb";
-                olcDbDirectory = "/var/lib/openldap/ldap";
-                olcDbIndex = [
-                  "objectClass eq"
-                  "cn pres,eq"
-                  "uid pres,eq"
-                  "sn pres,eq,subany"
-                ];
-                olcSuffix = "dc=example,dc=com";
-                olcAccess = [ "{0}to * by * read break" ];
-              };
-            };
-          };
-        };
-      #  mutableConfig = true;
-    };
     bttc = {
       enable = true;
       prometheus = true;
@@ -534,39 +490,12 @@ rec {
   # 
 
   users = {
-    defaultUserShell = pkgs.zsh;
     users = {
       freeman = {
-        shell = pkgs.zsh;
-        isNormalUser = true;
-        description = "freeman";
-        extraGroups = [
-          "networkmanager"
-          "wheel"
-          "video"
-          "audio"
-          "cdrom"
-          "disk"
-          "floppy"
-          "scanner"
-          "storage"
-          "power"
-          "dialout"
-          "plugdev"
-          "lp"
-          "input"
-          "docker"
-          "socket"
-          "spi"
-          "bus"
-          "dropbox"
-        ];
         packages = with pkgs; [ tdesktop ];
       };
     };
   };
-
-  # Define a user account. Don't forget to set a password with ‘passwd’.
 
   # Allow unfree packages
   nixpkgs = {

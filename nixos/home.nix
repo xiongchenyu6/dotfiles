@@ -168,6 +168,9 @@
           user = "APKA6ECL465SUMKZQKLN";
         };
       };
+      extraConfig = ''
+        GSSAPIAuthentication yes
+      '';
     };
 
     bat = { enable = true; };

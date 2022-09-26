@@ -105,6 +105,14 @@
                     devshell
                     self
                     xddxdd
+                  ] ++ [
+                    (final: prev: {
+                      krb5Full = prev.krb5Full.overrideAttrs (old: {
+                        configureFlags = old.configureFlags ++ [
+                          "--with-ldap"
+                        ];
+                      });
+                    })
                   ];
                 };
               })
@@ -126,7 +134,15 @@
           meta = {
             nixpkgs = import nixpkgs {
               system = "x86_64-linux";
-              overlays = [ ];
+              overlays = [
+                (final: prev: {
+                  krb5Full = prev.krb5Full.overrideAttrs (old: {
+                    configureFlags = old.configureFlags ++ [
+                      "--with-ldap"
+                    ];
+                  });
+                })
+              ];
             };
           };
           defaults = { ... }: {
@@ -214,9 +230,10 @@
                 #succeedOnFailure = true;
                 TESTSUITEFLAGS =
                   "NIX_DONT_SET_RPATH_x86_64_unknown_linux_gnu=1 -x -d";
-                checkPhase = ''
-                  echo hello
-                '';
+                checkPhase =
+                  ''
+                    echo hello
+                  '';
                 postInstall = ''
                   echo world
                 '';
