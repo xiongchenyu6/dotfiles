@@ -70,7 +70,7 @@ in
 
     deiliveryPrivateKeyPath = mkOption {
       description = lib.mdDoc "encrypted password file for bttc node to decrypt private key";
-      type = types.path;
+      type = types.nullOr types.path;
     };
 
     bttcKeyStorePath = mkOption {
@@ -150,7 +150,7 @@ in
               mkdir -p $BTTC_DIR/keystore
 
               # init bttc
-              ${pkgs.bttc}/bin/bttc --datadir $DATA_DIR init ${bttc-gensis}
+              ${pkgs.bttc}/bin/bttc init ${bttc-gensis} --datadir $DATA_DIR
 
               # copy peers file
               if [ ! -f $DATA_DIR/bor/static-nodes.json ]; then
@@ -163,6 +163,7 @@ in
               #   # copy node key file
                 cp $NODE_KEY $BTTC_DIR/
               fi
+              ln -sf ${cfg.bttcKeyStorePath} $BTTC_DIR/keystore/
             ''
             + (if cfg.bttcSnapShot != null then ''
               mkdir -p $BTTC_DIR/data/bor
@@ -170,36 +171,37 @@ in
             '' else ''
               echo "Setup done!"
             '');
-            script = ''${pkgs.bttc}/bin/bttc --datadir $DATA_DIR \     
-              --port 30303 \
-              --bor.heimdall "http://localhost:1317" \
-              --http --http.addr '127.0.0.1' \
-              --http.vhosts '*' \
-              --http.corsdomain '*' \
-              --http.port 8545 \
-              --ipcpath $DATA_DIR/bor.ipc \
-              --http.api 'eth,net,web3,txpool,bor' \
-              --syncmode 'full' \
-              --networkid 1029 \
-              --miner.gaslimit '20000000' \
-              --miner.gasprice '300000000000000' \
-              --miner.gastarget '20000000' \
-              --gpo.maxprice '500000000000000' \
-              --rpc.allow-unprotected-txs \
-              --txpool.nolocals \
-              --txpool.accountslots 16 \
-              --txpool.globalslots 131072 \
-              --txpool.accountqueue 64 \
-              --txpool.globalqueue 131072 \
-              --txpool.lifetime '1h30m0s' \
-              --maxpeers 20 \
-              --metrics \
-              --pprof --pprof.port 7071 --pprof.addr '0.0.0.0' \
-              --unlock $ADDRESS \
-              --keystore $BTTC_DIR/keystore \
-              --password $BTTC_DIR/password.txt \
-              --allow-insecure-unlock \
-              --rpc.txfeecap 0 \
+            script =
+              ''${pkgs.bttc}/bin/bttc --datadir $DATA_DIR
+              --port 30303 
+              --bor.heimdall "http://localhost:1317" 
+              --http --http.addr '127.0.0.1' 
+              --http.vhosts '*'
+              --http.corsdomain '*'
+              --http.port 8545
+              --ipcpath $DATA_DIR/bor.ipc
+              --http.api 'eth,net,web3,txpool,bor'
+              --syncmode 'full'
+              --networkid 1029
+              --miner.gaslimit '20000000'
+              --miner.gasprice '300000000000000'
+              --miner.gastarget '20000000'
+              --gpo.maxprice '500000000000000'
+              --rpc.allow-unprotected-txs
+              --txpool.nolocals
+              --txpool.accountslots 16
+              --txpool.globalslots 131072
+              --txpool.accountqueue 64
+              --txpool.globalqueue 131072
+              --txpool.lifetime '1h30m0s'
+              --maxpeers 20 
+              --metrics 
+              --pprof --pprof.port 7071 --pprof.addr '0.0.0.0' 
+              --unlock $ADDRESS 
+              --keystore $BTTC_DIR/keystore 
+              --password ${cfg.passwordFilePath} 
+              --allow-insecure-unlock 
+              --rpc.txfeecap 0
               --mine
             '';
           };
@@ -237,6 +239,8 @@ in
             '' + (if cfg.deliverySnapShot != null then ''
               mkdir -p $DELIVERY_HOME_DIR/data/
               # ${pkgs.gnutar}/bin/tar -xzvf "${cfg.deliverySnapShot}" -C "/var/lib/bttc/deliveryd/data/"
+            '' else "") + (if cfg.deiliveryPrivateKeyPath != null then ''
+              cp ${cfg.deiliveryPrivateKeyPath} $DELIVERY_HOME_DIR/config/priv_validator_key.json
             '' else "");
             script = "${pkgs.delivery}/bin/deliveryd start --home $DELIVERY_HOME_DIR";
           };
@@ -283,3 +287,4 @@ in
         users.groups.bttc = { };
       };
 }
+

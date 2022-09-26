@@ -4,9 +4,6 @@ let
   share = (import ../../common/share.nix);
 in
 {
-  imports = [
-    ./hardware-configuration.nix
-  ];
   age.secrets.tc_wg_pk.file = ../../secrets/tc_wg_pk.age;
 
   age.secrets.tc_https_pk = {
@@ -16,8 +13,14 @@ in
     group = "nginx";
   };
 
+  imports = [
+    ./hardware-configuration.nix
+  ];
+
+  boot.cleanTmpDir = true;
+  zramSwap.enable = true;
   boot = {
-    cleanTmpDir = true;
+    #isContainer = true;
     kernel.sysctl = {
       "net.ipv4.ip_forward" = 1;
       "net.ipv6.conf.all.forwarding" = 1;
@@ -27,8 +30,10 @@ in
       "net.ipv4.conf.all.rp_filter" = 0;
     };
   };
-  zramSwap = { enable = true; };
 
+  users.users.root.openssh.authorizedKeys.keys = [
+    share.freeman.user.public-key
+  ];
 
   networking = {
     hostName = "mail";
@@ -46,6 +51,7 @@ in
         80 # ui
         88 # kerberos
         179
+        389
         443
         8000
       ];
@@ -54,6 +60,7 @@ in
         80
         88
         179
+        389
         22616
         23396
         21816
@@ -150,10 +157,6 @@ in
     };
   };
 
-  users.users.root.openssh.authorizedKeys.keys = [
-    share.freeman.user.public-key
-  ];
-
   systemd = {
     timers = {
       dn42-roa = {
@@ -198,28 +201,61 @@ in
       };
     };
 
-    dnsmasq = {
+    bind = {
       enable = true;
-      alwaysKeepRunning = true;
-      servers = [
-        "/dn42/172.20.0.53"
-        "/20.172.in-addr.arpa/172.20.0.53"
-        "/21.172.in-addr.arpa/172.20.0.53"
-        "/22.172.in-addr.arpa/172.20.0.53"
-        "/23.172.in-addr.arpa/172.20.0.53"
-        "/10.in-addr.arpa/172.20.0.53"
-        "/dn42/172.23.0.53"
-        "/20.172.in-addr.arpa/172.23.0.53"
-        "/21.172.in-addr.arpa/172.23.0.53"
-        "/22.172.in-addr.arpa/172.23.0.53"
-        "/23.172.in-addr.arpa/172.23.0.53"
-        "/10.in-addr.arpa/172.23.0.53"
-        "/d.f.ip6.arpa/fd42:d42:d42:54::1"
-        "/d.f.ip6.arpa/fd42:d42:d42:53::1"
-      ];
       extraConfig = ''
-        interface=wg_freeman
-        address=/tecmint.dn42/172.22.240.97
+        zone "dn42" {
+          type forward;
+          forwarders { 172.20.0.53; fd42:d42:d42:54::1; };
+        };
+        zone "20.172.in-addr.arpa" {
+          type forward;
+          forwarders { 172.20.0.53; fd42:d42:d42:54::1; };
+        };
+        zone "21.172.in-addr.arpa" {
+          type forward;
+          forwarders { 172.20.0.53; fd42:d42:d42:54::1; };
+        };
+        zone "22.172.in-addr.arpa" {
+          type forward;
+          forwarders { 172.20.0.53; fd42:d42:d42:54::1; };
+        };
+        zone "23.172.in-addr.arpa" {
+          type forward;
+          forwarders { 172.20.0.53; fd42:d42:d42:54::1; };
+        };
+        zone "10.in-addr.arpa" {
+          type forward;
+          forwarders { 172.20.0.53; fd42:d42:d42:54::1; };
+        };
+        zone "d.f.ip6.arpa" {
+          type forward;
+          forwarders { 172.20.0.53; fd42:d42:d42:54::1; };
+        };
+      '';
+      cacheNetworks = [
+        "203.117.163.130/32"
+        "127.0.0.0/24"
+        "10.0.0.0/8"
+        "172.20.0.0/14"
+        "172.31.0.0/16"
+        "fd00::/8"
+        "fe80::/64"
+      ];
+      zones = lib.singleton {
+        name = "inner.freeman.engineer";
+        master = true;
+        file = pkgs.writeText "root.zone" ''
+          $TTL 3600
+          $ORIGIN inner.freeman.engineer.
+          @         IN SOA ns.inner.freeman.engineer. mail.inner.freeman.engineer. ( 1 3h 1h 1w 1d )
+                    IN MX  10 mail.freeman.engineer.
+          ns        IN A    43.156.66.157
+          *         IN A    43.156.66.157
+        '';
+      };
+      extraOptions = ''
+        empty-zones-enable no;
       '';
     };
     postfix = {
