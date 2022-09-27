@@ -53,6 +53,11 @@
       url = "github:chessai/nix-std";
     };
 
+    flake-utils-plus = {
+      url = "github:gytis-ivaskevicius/flake-utils-plus";
+      inputs.flake-utils.follows = "flake-utils";
+    };
+
     nixos-mailserver = {
       url = "gitlab:simple-nixos-mailserver/nixos-mailserver";
       inputs = {
@@ -69,6 +74,7 @@
     , emacs
     , xddxdd
     , flake-utils
+    , flake-utils-plus
     , home-manager
     , agenix
     , nixos-generators
@@ -76,10 +82,11 @@
     , devshell
     , nixos-mailserver
     , ...
-    } @attrs:
+    } @inputs:
       with nixpkgs;
       with lib;
       with flake-utils.lib;
+      with flake-utils-plus.lib;
       let
         overlays = [ devshell.overlay ];
         pkgsFor = system: import nixpkgs { inherit system overlays; };
