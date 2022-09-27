@@ -53,12 +53,12 @@ let
     bttc = callPackage ./bttc { };
     delivery = callPackage ./delivery { };
     my_cookies = callPackage ./python3/my_cookies { };
-    tronbox = (callPackage ./npm/tronbox {
+    inherit (callPackage ./npm/tronbox {
       nodejs = pkgs.nodejs-14_x;
-    }).tronbox;
+    }) tronbox;
 
     vbox = nixos-generators.nixosGenerate {
-      system = system;
+      inherit system;
       format = "virtualbox";
     };
     amazon = nixos-generators.nixosGenerate {

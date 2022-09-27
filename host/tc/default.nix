@@ -4,10 +4,10 @@ let
   share = import ../../common/share.nix;
 in
 {
-  age.secrets.tc_wg_pk.file = ../../secrets/tc_wg_pk.age;
+  age.secrets.tc_wg_pk.file = ../../common/secrets/tc_wg_pk.age;
 
   age.secrets.tc_https_pk = {
-    file = ../../secrets/tc_https_pk.age;
+    file = ../../common/secrets/tc_https_pk.age;
     mode = "770";
     owner = "nginx";
     group = "nginx";

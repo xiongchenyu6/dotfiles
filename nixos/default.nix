@@ -2,8 +2,8 @@
 
 { config, pkgs, options, lib, ... }:
 let
-  share = (import ../common/share.nix);
-  script = (import ../dn42/update-roa.nix { inherit pkgs; });
+  share = import ../common/share.nix;
+  script = import ../dn42/update-roa.nix { inherit pkgs; };
 in
 rec {
   imports = [
@@ -12,7 +12,7 @@ rec {
     ./cachix.nix
   ];
 
-  age.secrets.freeman_wg_pk.file = ../secrets/freeman_wg_pk.age;
+  age.secrets.freeman_wg_pk.file = ../common/secrets/freeman_wg_pk.age;
 
   # Bootloader.
   boot =
