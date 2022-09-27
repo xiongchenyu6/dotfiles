@@ -14,7 +14,7 @@
         executable = false;
       };
       ".ssh/id_ed25519" = {
-        source = ../secrets/freeman_pk.key;
+        source = ../common/secrets/freeman_pk.key;
         executable = false;
       };
     };
@@ -633,6 +633,7 @@
         fadeTicks = 20;
       };
     };
+
     dunst = {
       enable = true;
       iconTheme = {
@@ -651,6 +652,8 @@
           font = "JetBrainsMono Nerd Font 10";
           line_height = 4;
           format = "<b>%s</b>\\n%b";
+          browser = "${pkgs.xdg-utils}/bin/xdg-open";
+          dmenu = "${pkgs.rofi}/bin/rofi -dmenu -i -p dunst";
         };
       };
     };

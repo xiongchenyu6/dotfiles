@@ -92,37 +92,43 @@
         pkgsFor = system: import nixpkgs { inherit system overlays; };
         std = nix-std.lib;
       in
-      rec {
-        # replace 'joes-desktop' with your hostname here.
-        nixosConfigurations = {
-          nixos = nixosSystem {
-            specialArgs = attrs;
+      mkFlake
+        {
+          inherit self inputs;
+
+          supportedSystems = [ "x86_64-linux" ];
+
+          channelsConfig = {
+            allowUnfree = true;
+            allowBroken = true;
+          };
+
+          sharedOverlays =
+            map (x: x.overlay or x.overlays.default) [
+              agenix
+              emacs
+              devshell
+              self
+              xddxdd
+            ]
+            ++ [
+              (final: prev: {
+                krb5Full = prev.krb5Full.overrideAttrs (old: {
+                  configureFlags = old.configureFlags ++ [
+                    "--with-ldap"
+                  ];
+                });
+              })
+            ];
+
+          hostDefaults = {
+            extraArgs = inputs;
             modules = [
               nixos-hardware.nixosModules.lenovo-thinkpad-x1-9th-gen
               nixos-hardware.nixosModules.common-gpu-intel
               self.nixosModules.bttc
               agenix.nixosModule
-              ./nixos
               ./common
-              ({ pkgs, ... }: {
-                nixpkgs = {
-                  overlays = map (x: x.overlay or x.overlays.default) [
-                    agenix
-                    emacs
-                    devshell
-                    self
-                    xddxdd
-                  ] ++ [
-                    (final: prev: {
-                      krb5Full = prev.krb5Full.overrideAttrs (old: {
-                        configureFlags = old.configureFlags ++ [
-                          "--with-ldap"
-                        ];
-                      });
-                    })
-                  ];
-                };
-              })
               home-manager.nixosModules.home-manager
               {
                 home-manager = {
@@ -135,8 +141,42 @@
               }
             ];
           };
-        };
+          hosts.nixos.modules = [
+            ./nixos
+          ];
 
+          # replace 'joes-desktop' with your hostname here.
+          outputsBuilder = channels: {
+            # Evaluates to `apps.<system>.custom-neovim  = utils.lib.mkApp { drv = ...; exePath = ...; };`.
+            # apps = {
+            #   custom-neovim = mkApp {
+            #     drv = fancy-neovim;
+            #     exePath = "/bin/nvim";
+            #   };
+            # };
+
+            # Evaluates to `packages.<system>.package-from-overlays = <unstable-nixpkgs-reference>.package-from-overlays`.
+
+            packages = import ./pkgs { pkgs = channels.nixpkgs; inherit nixos-generators; inherit (nixpkgs) lib; };
+
+            # Evaluates to `apps.<system>.firefox  = utils.lib.mkApp { drv = ...; };`.
+            # defaultApp = mkApp { drv = channels.nixpkgs.firefox; };
+
+            # Evaluates to `defaultPackage.<system>.neovim = <nixpkgs-channel-reference>.neovim`.
+            # defaultPackage = channels.nixpkgs.neovim;
+
+            devShell = channels.nixpkgs.devshell.mkShell {
+              packages = with channels.nixpkgs; [
+                # to test with nix (Nix) 2.7.0 and NixOps 2.0.0-pre-7220cbd use
+                gopls
+                nix
+                nixopsUnstable
+              ];
+              imports = [ (channels.nixpkgs.devshell.importTOML ./devshell.toml) ];
+            };
+          };
+          overlays.default = import ./overlay.nix { inherit nixos-generators lib; };
+        } // {
         colmena = {
           meta = {
             nixpkgs = import nixpkgs {
@@ -157,14 +197,13 @@
               agenix.nixosModule
               ./common
             ];
-
           };
           tc =
             let
               domain = "freeman.engineer";
             in
             rec {
-              _module.args = {
+              _module. args = {
                 inherit domain;
               };
 
@@ -183,35 +222,10 @@
               };
             };
         };
-      } // eachDefaultSystem
-        (system:
-        let pkgs = pkgsFor system;
-        in
-        rec {
-          packages = import ./pkgs { inherit pkgs nixos-generators; inherit (nixpkgs) lib; };
-
-          # used by nix develop and nix shell
-          devShell = pkgs.devshell.mkShell {
-            packages = with pkgs; [
-              # to test with nix (Nix) 2.7.0 and NixOps 2.0.0-pre-7220cbd use
-              gopls
-              nix
-              nixopsUnstable
-            ];
-            imports = [ (pkgs.devshell.importTOML ./devshell.toml) ];
-
-          };
-        })
-      // {
         nixosModules = import ./modules {
           inherit std;
         };
         templates = import ./templates;
-        overlays = {
-          default = import ./overlay.nix {
-            inherit nixos-generators; inherit (nixpkgs) lib;
-          };
-        };
         libs = import ./lib;
       } //
       (
@@ -237,10 +251,9 @@
                 #succeedOnFailure = true;
                 TESTSUITEFLAGS =
                   "NIX_DONT_SET_RPATH_x86_64_unknown_linux_gnu=1 -x -d";
-                checkPhase =
-                  ''
-                    echo hello
-                  '';
+                checkPhase = ''
+                  echo hello
+                '';
                 postInstall = ''
                   echo world
                 '';

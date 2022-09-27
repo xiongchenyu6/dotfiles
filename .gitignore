@@ -6,7 +6,6 @@ undo/
 node_modules/
 .DS_Store
 clojure/.clojure/.cpcache
-old-files/config/**
 !old-files/config/nvim
 !old-files/config/nvim/*
 !old-files/config/emacs/
