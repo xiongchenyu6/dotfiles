@@ -114,48 +114,48 @@
         };
     };
     yt-dlp = { enable = true; };
-    urxvt = {
-      enable = true;
-      extraConfig = {
-        depth = 32;
-        perl-ext-common = "default,matcher,selection-to-clipboard";
-        url-launcher = "${pkgs.brave}/bin/brave";
-        underlineURLs = "true";
-        "matcher.button" = "1";
-        "clipboard.autocopy" = true;
-        preeditType = "OverTheSpot";
-        secondaryScroll = true;
-        saveLines = 32767;
-        foreground = "#CCCCCC";
-        background = "#1B1D1E";
-        color0 = "#1B1D1E";
-        color8 = "#808080";
-        color1 = "#FF0044";
-        color9 = "#F92672";
-        color2 = "#82B414";
-        color10 = "#A6E22E";
-        color3 = "#FD971F";
-        color11 = "#E6DB74";
-        color4 = "#266C98";
-        color12 = "#7070F0";
-        color5 = "#AC0CB1";
-        color13 = "#D63AE1";
-        color6 = "#AE81FF";
-        color14 = "#66D9EF";
-        color7 = "#CCCCCC";
-        color15 = "#F8F8F2";
-        skipBuiltinGlyphs = false;
-      };
-      fonts = [ "xft:Hack Nerd Font:size=13" ];
-      iso14755 = false;
-      keybindings = {
-        "Shift-Control-c" = "eval:selection_to_clipboard";
-        "Shift-Control-v" = "eval:paste_clipboard";
-      };
-      shading = 20;
-      transparent = true;
-      scroll = { bar = { enable = false; }; };
-    };
+    # urxvt = {
+    #   enable = true;
+    #   extraConfig = {
+    #     depth = 32;
+    #     perl-ext-common = "default,matcher,selection-to-clipboard";
+    #     url-launcher = "${pkgs.brave}/bin/brave";
+    #     underlineURLs = "true";
+    #     "matcher.button" = "1";
+    #     "clipboard.autocopy" = true;
+    #     preeditType = "OverTheSpot";
+    #     secondaryScroll = true;
+    #     saveLines = 32767;
+    #     foreground = "#CCCCCC";
+    #     background = "#1B1D1E";
+    #     color0 = "#1B1D1E";
+    #     color8 = "#808080";
+    #     color1 = "#FF0044";
+    #     color9 = "#F92672";
+    #     color2 = "#82B414";
+    #     color10 = "#A6E22E";
+    #     color3 = "#FD971F";
+    #     color11 = "#E6DB74";
+    #     color4 = "#266C98";
+    #     color12 = "#7070F0";
+    #     color5 = "#AC0CB1";
+    #     color13 = "#D63AE1";
+    #     color6 = "#AE81FF";
+    #     color14 = "#66D9EF";
+    #     color7 = "#CCCCCC";
+    #     color15 = "#F8F8F2";
+    #     skipBuiltinGlyphs = false;
+    #   };
+    #   fonts = [ "xft:Hack Nerd Font:size=13" ];
+    #   iso14755 = false;
+    #   keybindings = {
+    #     "Shift-Control-c" = "eval:selection_to_clipboard";
+    #     "Shift-Control-v" = "eval:paste_clipboard";
+    #   };
+    #   shading = 20;
+    #   transparent = true;
+    #   scroll = { bar = { enable = false; }; };
+    # };
     ssh = {
       enable = true;
       hashKnownHosts = true;
@@ -637,7 +637,7 @@
       enable = true;
       iconTheme = {
         name = "Adwaita";
-        package = pkgs.gnome3.adwaita-icon-theme;
+        package = pkgs.gnome.adwaita-icon-theme;
         size = "16x16";
       };
       settings = {
@@ -707,7 +707,7 @@
         "module/ip" = {
           type = "custom/script";
           exec =
-            "${pkgs.iproute}/bin/ip a show wlp0s20f3 | ${pkgs.gnugrep}/bin/grep inet | ${pkgs.gawk}/bin/awk '{print $2}' | ${pkgs.coreutils}/bin/head -n 1";
+            "${pkgs.iproute2}/bin/ip a show wlp0s20f3 | ${pkgs.gnugrep}/bin/grep inet | ${pkgs.gawk}/bin/awk '{print $2}' | ${pkgs.coreutils}/bin/head -n 1";
           interval = 60;
           format-prefix = " אַ ";
           format-prefix-foreground = "#e06c75";
@@ -716,7 +716,7 @@
         "module/vpn" = {
           type = "custom/script";
           exec =
-            "${pkgs.iproute}/bin/ip a show tun0 | ${pkgs.gnugrep}/bin/grep inet | ${pkgs.gawk}/bin/awk '{print $2}' | ${pkgs.coreutils}/bin/head -n 1";
+            "${pkgs.iproute2}/bin/ip a show tun0 | ${pkgs.gnugrep}/bin/grep inet | ${pkgs.gawk}/bin/awk '{print $2}' | ${pkgs.coreutils}/bin/head -n 1";
           interval = 60;
           format-prefix = "  ";
           format-prefix-foreground = "#e06c75";

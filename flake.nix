@@ -95,8 +95,8 @@
               nixos-hardware.nixosModules.common-gpu-intel
               self.nixosModules.bttc
               agenix.nixosModule
-              ./nixos/configuration.nix
-              ./common/configuration.nix
+              ./nixos
+              ./common
               ({ pkgs, ... }: {
                 nixpkgs = {
                   overlays = map (x: x.overlay or x.overlays.default) [
@@ -148,7 +148,7 @@
           defaults = { ... }: {
             imports = [
               agenix.nixosModule
-              ./common/configuration.nix
+              ./common
             ];
 
           };
@@ -162,7 +162,7 @@
               };
 
               imports = [
-                ./host/tc/configuration.nix
+                ./host/tc
               ];
 
               nixpkgs = {

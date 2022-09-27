@@ -243,15 +243,15 @@ in
         "fe80::/64"
       ];
       zones = lib.singleton {
-        name = "inner.freeman.engineer";
+        name = "mail.freeman.engineer";
         master = true;
-        file = pkgs.writeText "root.zone" ''
+        file = pkgs.writeText "mail.freeman.engineer" ''
           $TTL 3600
-          $ORIGIN inner.freeman.engineer.
-          @         IN SOA ns.inner.freeman.engineer. mail.inner.freeman.engineer. ( 1 3h 1h 1w 1d )
-                    IN MX  10 mail.freeman.engineer.
-          ns        IN A    43.156.66.157
-          *         IN A    43.156.66.157
+          $ORIGIN mail.freeman.engineer.
+          @         IN SOA    mail.freeman.engineer. hostmaster.mail.freeman.engineer. ( 1 3h 1h 1w 1d )
+          @         IN NS     ns1.mail.freeman.engineer.
+          ns1       IN A      43.156.66.157
+          *         IN A      43.156.66.157
         '';
       };
       extraOptions = ''
