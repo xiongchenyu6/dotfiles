@@ -575,6 +575,7 @@ rec {
       scrot
       stow
       slack
+      statix
       wineWowPackages.staging
       wireshark
       #wpa_supplicant_gui
