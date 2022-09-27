@@ -1,6 +1,4 @@
-# Edit this configuration file to define what should be installed on
-# your system.  Help is available in the configuration.nix(5) man page
-# and in the NixOS manual (accessible by running ‘nixos-help’).
+# Edit
 
 { config, pkgs, options, lib, ... }:
 let
@@ -163,7 +161,7 @@ rec {
 
   services = {
     bttc = {
-      enable = true;
+      enable = false;
       prometheus = true;
 
     };
@@ -566,7 +564,6 @@ rec {
       nodePackages."bash-language-server"
       nvfetcher
       openssl
-      pkgconfig
       protobuf
       plantuml
       ripgrep
