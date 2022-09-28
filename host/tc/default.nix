@@ -182,6 +182,9 @@ in
     };
   };
   services = {
+    tat-agent = {
+      enable = true;
+    };
     kerberos_server = {
       enable = true;
       realms = {

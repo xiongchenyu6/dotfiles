@@ -7,7 +7,7 @@
     keyboard = { options = [ "caps:ctrl_modifier" ]; };
     file = {
       ".wakatime.cfg" = { source = ../old-files/wakatime/.wakatime.cfg; };
-      ".curlrc" = { source = ../old-files/downloader/.curlrc; };
+      # ".curlrc" = { source = ../old-files/downloader/.curlrc; };
       ".editorconfig" = { source = ../old-files/editor/.editorconfig; };
       ".ssh/id_ed25519.pub" = {
         text = (import ../common/share.nix).freeman.user.public-key;

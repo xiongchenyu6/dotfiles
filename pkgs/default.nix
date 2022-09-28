@@ -65,6 +65,7 @@ let
       system = "x86_64-linux";
       format = "amazon";
     };
+    tat = callPackage ./tat { };
     # dotfiles = with pkgs;
     #   stdenv.mkDerivation {
     #     pname = "dotfiles";

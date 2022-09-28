@@ -143,30 +143,6 @@
             };
           declarativeContents = {
             ${dbSuffix} = ''
-              dn: ${dbSuffix}
-              objectClass: top
-              objectClass: dcObject
-              objectClass: organization
-              o: ${dbDomain}
-
-              dn: ou=posix,${dbSuffix}
-              objectClass: top
-              objectClass: organizationalUnit
-
-              dn: ou=accounts,ou=posix,${dbSuffix}
-              objectClass: top
-              objectClass: organizationalUnit
-
-              dn: uid=${testUser},ou=accounts,ou=posix,${dbSuffix}
-              objectClass: person
-              objectClass: posixAccount
-              # userPassword: somePasswordHash
-              homeDirectory: /home/${testUser}
-              uidNumber: 1234
-              gidNumber: 1234
-              cn: ""
-              sn: ""
-
               dn: uid=kdc-service,dc=freeman,dc=engineer
               uid: kdc-service
               objectClass: account
@@ -180,6 +156,26 @@
               objectClass: simpleSecurityObject
               userPassword: x
               description: Account used for the Kerberos Admin server
+
+              dn: ${dbSuffix}
+              objectClass: top
+              objectClass: dcObject
+              objectClass: organization
+              o: ${dbDomain}
+
+              dn: ou=developers,${dbSuffix}
+              objectClass: top
+              objectClass: organizationalUnit
+
+              dn: uid=${testUser},ou=developers,${dbSuffix}
+              objectClass: person
+              objectClass: posixAccount
+              homeDirectory: /home/${testUser}
+              uidNumber: 1234
+              gidNumber: 1234
+              cn: ""
+              sn: ""
+
             '';
           };
           mutableConfig = false;
