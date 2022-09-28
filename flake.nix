@@ -208,11 +208,13 @@
               };
 
               imports = [
+                self.nixosModules.tat-agent
                 ./host/tc
               ];
 
               nixpkgs = {
                 overlays = [
+                  self.overlays.default
                   xddxdd.overlay
                 ];
               };

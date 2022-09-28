@@ -3,4 +3,5 @@ _: {
   #
   bttc = import ./bttc;
   unit-status-telegram = import ./unit-status-telegram;
+  tat-agent = import ./tat-agent;
 }
