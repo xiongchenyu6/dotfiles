@@ -53,6 +53,7 @@ in
         179
         389
         443
+        636
         8000
       ];
       allowedUDPPorts = [
@@ -61,6 +62,7 @@ in
         88
         179
         389
+        636
         22616
         23396
         21816
@@ -495,16 +497,32 @@ in
     };
     nginx = {
       enable = true;
-      virtualHosts."default" = {
-        addSSL = true;
-        sslCertificateKey = config.age.secrets.tc_https_pk.path;
-        sslCertificate = builtins.toFile "SERVER.cert" share.tc.https.cert;
-        # enableACME = true;
-        locations."/" = {
-          proxyPass = "http://127.0.0.1:5000";
-          proxyWebsockets = true;
+      virtualHosts = {
+        bird-lg = {
+          serverName = "sg1.freeman.engineer";
+          addSSL = true;
+          sslCertificateKey = config.age.secrets.tc_https_pk.path;
+          sslCertificate = builtins.toFile "SERVER.cert" share.tc.https.cert;
+          # enableACME = true;
+          locations."/" = {
+            proxyPass = "http://127.0.0.1:5000";
+            proxyWebsockets = true;
+          };
         };
+        grafana = {
+          serverName = "a.mail.freeman.engineer";
+          addSSL = true;
+          sslCertificateKey = config.age.secrets.tc_https_pk.path;
+          sslCertificate = builtins.toFile "SERVER.cert" share.tc.https.cert;
+          # enableACME = true;
+          locations."/" = {
+            proxyPass = "http://127.0.0.1:8000";
+            proxyWebsockets = true;
+          };
+        };
+
       };
+
     };
   };
 }

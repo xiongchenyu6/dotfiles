@@ -16,3 +16,17 @@ fetch.git = "https://github.com/bttcprotocol/launch.git"
 [my_cookies]
 src.pypi="my_cookies"
 fetch.pypi="my_cookies"
+
+#zsh plugins
+[alias-tips]
+src.git = "https://github.com/djui/alias-tips.git"
+fetch.git = "https://github.com/djui/alias-tips.git"
+
+[wakatime-zsh-plugin]
+src.git = "https://github.com/sobolevn/wakatime-zsh-plugin.git"
+fetch.git = "https://github.com/sobolevn/wakatime-zsh-plugin.git"
+
+[forgit]
+src.git = "https://github.com/wfxr/forgit.git"
+fetch.git = "https://github.com/wfxr/forgit.git"
+
