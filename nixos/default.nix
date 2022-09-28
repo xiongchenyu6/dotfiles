@@ -500,9 +500,6 @@ rec {
     config = {
       allowUnfree = true;
       allowBroken = true;
-      permittedInsecurePackages = [
-        "nodejs-10.24.1"
-      ];
     };
   };
 

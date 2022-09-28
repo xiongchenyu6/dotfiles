@@ -235,7 +235,7 @@
 
     bat = { enable = true; };
     exa = { enable = true; };
-    command-not-found.enable = true;
+    # command-not-found.enable = true;
 
     # Let Home Manager install and manage itself.
 
@@ -501,36 +501,14 @@
           "tmux"
         ];
       };
-      plugins = [
-        {
-          name = "alias-tips";
-          src = pkgs.fetchFromGitHub {
-            owner = "djui";
-            repo = "alias-tips";
-            rev = "8fc0d2f9b480991f78ce67c49621731d0336b22f";
-            sha256 = "sha256-b6b5/m0oinrB2jIPLFohWjZBhDbNJmi537u5pgzaefc=";
-          };
-        }
-        {
-          name = "wakatime-zsh-plugin";
-          src = pkgs.fetchFromGitHub {
-            owner = "sobolevn";
-            repo = "wakatime-zsh-plugin";
-            rev = "0.1.1";
-            sha256 = "sha256-9/JGJgfAjXLIioCo3gtzCXJdcmECy6s59Oj0uVOfuuo=";
-          };
-        }
-        {
-          name = "forgit";
-          src = pkgs.fetchFromGitHub {
-            owner = "wfxr";
-            repo = "forgit";
-            rev = "3f50933f047510020428114551da0ee5cdfb32a3";
-            sha256 = "sha256-TSF4Vr5uf/+MVU4yCdIHNnwB7kkp4mF+hkhKtLqQvmk=";
-
-          };
-        }
-      ];
+      plugins =
+        let source = with pkgs; callPackage ../pkgs/_sources/generated.nix {
+          inherit fetchFromGitHub fetchurl fetchgit;
+        };
+        in
+        map
+          (name: (removeAttrs source.${name} [ "pname" "version" ]) // { name = "${name}"; })
+          [ "alias-tips" "wakatime-zsh-plugin" "forgit" ];
       enableCompletion = true;
       enableAutosuggestions = true;
       enableSyntaxHighlighting = true;
