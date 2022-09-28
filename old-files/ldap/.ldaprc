@@ -1,0 +1,3 @@
+URI     ldap://freeman.engineer
+BASE    dc=freeman,dc=engineer
+SASL_MECH GSSAPI

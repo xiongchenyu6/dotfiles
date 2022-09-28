@@ -7,8 +7,8 @@
     keyboard = { options = [ "caps:ctrl_modifier" ]; };
     file = {
       ".wakatime.cfg" = { source = ../old-files/wakatime/.wakatime.cfg; };
-      # ".curlrc" = { source = ../old-files/downloader/.curlrc; };
-      ".editorconfig" = { source = ../old-files/editor/.editorconfig; };
+      ".curlrc" = { source = ../old-files/downloader/.curlrc; };
+      ".ldaprc" = { source = ../old-files/ldap/.ldaprc; };
       ".ssh/id_ed25519.pub" = {
         text = (import ../common/share.nix).freeman.user.public-key;
         executable = false;
@@ -54,25 +54,85 @@
       };
     };
   };
-  # gtk = {
-  #   enable = true;
-  #   iconTheme = {
-  #     name = "Adwaita-dark";
-  #     package = pkgs.gnome3.adwaita-icon-theme;
-  #   };
-  #   theme = {
-  #     name = "Adwaita-dark";
-  #     package = pkgs.gnome3.adwaita-icon-theme;
-  #   };
-  # };
+
+  gtk = {
+    enable = true;
+  };
+
   i18n = {
     inputMethod = {
       enabled = "fcitx5";
       fcitx5 = { addons = with pkgs; [ fcitx5-chinese-addons ]; };
     };
   };
+  editorconfig = {
+    enable = true;
+    settings = {
+      "*" = {
+        end_of_line = "lf";
+        insert_final_newline = true;
+      };
+      "*.{js,py}" = {
+        charset = "utf-8";
+      };
+      "*.{py,cpp,c,h,proto}" = {
+        indent_style = "space";
+        indent_size = 4;
+      };
+
+      "Makefile" = {
+        indent_style = "tab";
+      };
+      "lib/**.js" = {
+        indent_style = "space";
+        indent_size = 2;
+      };
+      "{package.json,.travis.yml}" = {
+        indent_style = "space";
+        indent_size = 2;
+      };
+    };
+  };
 
   programs = {
+    bottom = {
+      enable = true;
+    };
+
+    broot = {
+      enable = true;
+    };
+
+    btop = {
+      enable = true;
+    };
+
+    keychain = {
+      enable = true;
+    };
+    nix-index = {
+      enable = true;
+    };
+    noti = {
+      enable = true;
+    };
+    readline = {
+      enable = true;
+    };
+    sqls = {
+      enable = true;
+    };
+
+    octant = {
+      enable = true;
+    };
+    texlive = {
+      enable = true;
+
+    };
+    tint2 = {
+      enable = true;
+    };
     alacritty = {
       enable = true;
       settings = {
