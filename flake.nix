@@ -182,6 +182,7 @@
             nixpkgs = import nixpkgs {
               system = "x86_64-linux";
               overlays = [
+                emacs.overlay
                 (final: prev: {
                   krb5Full = prev.krb5Full.overrideAttrs (old: {
                     configureFlags = old.configureFlags ++ [
@@ -210,6 +211,17 @@
               imports = [
                 self.nixosModules.tat-agent
                 ./host/tc
+                home-manager.nixosModules.home-manager
+                {
+                  home-manager = {
+                    useGlobalPkgs = true;
+                    useUserPackages = true;
+                    users.freeman = import ./nixos/home.nix;
+                  };
+                  # Optionally, use home-manager.extraSpecialArgs to pass
+                  # arguments to home.nix
+                }
+
               ];
 
               nixpkgs = {

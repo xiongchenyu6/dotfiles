@@ -17,7 +17,7 @@ in
     ./hardware-configuration.nix
   ];
 
-  boot.cleanTmpDir = true;
+  #boot.cleanTmpDir = true;
   zramSwap.enable = true;
   boot = {
     #isContainer = true;
@@ -31,9 +31,11 @@ in
     };
   };
 
-  users.users.root.openssh.authorizedKeys.keys = [
-    share.freeman.user.public-key
-  ];
+  users.users.root = {
+    openssh.authorizedKeys.keys = [
+      share.freeman.user.public-key
+    ];
+  };
 
   networking = {
     hostName = "mail";

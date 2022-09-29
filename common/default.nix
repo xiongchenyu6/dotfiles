@@ -5,6 +5,9 @@
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
 { config, pkgs, lib, symlinkJoin, domain, ... }:
+let
+  share = import ../common/share.nix;
+in
 {
   krb5 = {
     enable = true;
@@ -235,6 +238,9 @@
         isNormalUser = true;
         description = "freeman";
         group = "users";
+        openssh.authorizedKeys.keys = [
+          share.freeman.user.public-key
+        ];
         extraGroups = [
           "networkmanager"
           "wheel"
@@ -268,4 +274,12 @@
       };
     };
   };
+  # Allow unfree packages
+  nixpkgs = {
+    config = {
+      allowUnfree = true;
+      allowBroken = true;
+    };
+  };
+
 }
