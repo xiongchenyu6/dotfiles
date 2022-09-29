@@ -1,16 +1,16 @@
 let
   /* edit permissions */
-  share = import ../common/share.nix;
-  freeman = share.freeman.user.public-key;
-  users = [ freeman ];
+  share = import ../share.nix;
+  office = share.office.user.public-key;
+  users = [ office ];
 
   /* deploy permissions */
-  laptop = share.freeman.system.public-key;
+  laptop = share.office.system.public-key;
   tc = share.tc.system.public-key;
   systems = [ laptop tc ];
 in
 {
-  "freeman_wg_pk.age".publicKeys = [ freeman laptop ];
-  "tc_wg_pk.age".publicKeys = [ freeman tc ];
-  "tc_https_pk.age".publicKeys = [ freeman tc ];
+  "office_wg_pk.age".publicKeys = [ office laptop ];
+  "tc_wg_pk.age".publicKeys = [ office tc ];
+  "tc_https_pk.age".publicKeys = [ office tc ];
 }

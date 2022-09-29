@@ -90,7 +90,7 @@ in
     let
       dbDomain = "freeman.engineer";
       dbSuffix = "dc=freeman,dc=engineer";
-      testUser = "test";
+      defaultUser = "freeman";
       ldapRootUser = "admin";
       ldapRootPassword = "a";
     in
@@ -170,18 +170,17 @@ in
               objectClass: top
               objectClass: organizationalUnit
 
-              dn: uid=${testUser},ou=developers,${dbSuffix}
+              dn: uid=${defaultUser},ou=developers,${dbSuffix}
               objectClass: person
               objectClass: posixAccount
-              homeDirectory: /home/${testUser}
+              homeDirectory: /home/${defaultUser}
               uidNumber: 1234
               gidNumber: 1234
               cn: ""
               sn: ""
-
             '';
           };
-          mutableConfig = false;
+          mutableConfig = true;
         };
 
       sssd = {
@@ -212,6 +211,9 @@ in
       };
       openssh = {
         enable = true;
+        banner = ''
+          Welcome to the NixOS machine
+        '';
         startWhenNeeded = false;
         #useDns = true;
         extraConfig = ''
@@ -228,17 +230,16 @@ in
     };
 
   users = {
-    defaultUserShell = pkgs.zsh;
     # Define a user account. Don't forget to set a password with ‘passwd’.
     users = {
       freeman = {
-        shell = pkgs.zsh;
         isNormalUser = true;
         description = "freeman";
         group = "users";
         openssh.authorizedKeys.keys = [
-          share.freeman.user.public-key
+          share.office.user.public-key
         ];
+        shell = pkgs.zsh;
         extraGroups = [
           "networkmanager"
           "wheel"

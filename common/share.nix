@@ -1,5 +1,5 @@
 {
-  freeman = {
+  office = {
     user = {
       public-key = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIABVd0cIdwKzf4yLoRXQwjaaVYPFv8ZfYvTUMOMTFJ/p freeman@nixos";
     };
