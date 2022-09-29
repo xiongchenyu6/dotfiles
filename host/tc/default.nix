@@ -1,13 +1,14 @@
 { config, pkgs, lib, symlinkJoin, domain, ... }:
 let
+  common-files-path = ../../common;
   script = import ../../dn42/update-roa.nix { inherit pkgs; };
-  share = import ../../common/share.nix;
+  share = import (common-files-path + /share.nix);
 in
 {
-  age.secrets.tc_wg_pk.file = ../../common/secrets/tc_wg_pk.age;
+  age.secrets.tc_wg_pk.file = common-files-path + /secrets/tc_wg_pk.age;
 
   age.secrets.tc_https_pk = {
-    file = ../../common/secrets/tc_https_pk.age;
+    file = common-files-path + /secrets/tc_https_pk.age;
     mode = "770";
     owner = "nginx";
     group = "nginx";
@@ -522,9 +523,7 @@ in
             proxyWebsockets = true;
           };
         };
-
       };
-
     };
   };
 }

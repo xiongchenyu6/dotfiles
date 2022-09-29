@@ -97,6 +97,7 @@
           inherit self inputs;
 
           supportedSystems = [ "x86_64-linux" ];
+          #supportedSystems = allSystems;
 
           channelsConfig = {
             allowUnfree = true;
@@ -104,7 +105,8 @@
           };
 
           sharedOverlays =
-            map (x: x.overlay or x.overlays.default) [
+            map
+              (x: x.overlay or x.overlays.default) [
               agenix
               emacs
               devshell
@@ -128,21 +130,12 @@
               nixos-hardware.nixosModules.common-gpu-intel
               self.nixosModules.bttc
               agenix.nixosModule
-              ./common
+              ./nixos
               home-manager.nixosModules.home-manager
-              {
-                home-manager = {
-                  useGlobalPkgs = true;
-                  useUserPackages = true;
-                  users.freeman = import ./nixos/home.nix;
-                };
-                # Optionally, use home-manager.extraSpecialArgs to pass
-                # arguments to home.nix
-              }
             ];
           };
-          hosts.nixos.modules = [
-            ./nixos
+          hosts.office.modules = [
+            ./host/office
           ];
 
           # replace 'joes-desktop' with your hostname here.
@@ -196,7 +189,7 @@
           defaults = { ... }: {
             imports = [
               agenix.nixosModule
-              ./common
+              ./nixos
             ];
           };
           tc =
@@ -212,16 +205,6 @@
                 self.nixosModules.tat-agent
                 ./host/tc
                 home-manager.nixosModules.home-manager
-                {
-                  home-manager = {
-                    useGlobalPkgs = true;
-                    useUserPackages = true;
-                    users.freeman = import ./nixos/home.nix;
-                  };
-                  # Optionally, use home-manager.extraSpecialArgs to pass
-                  # arguments to home.nix
-                }
-
               ];
 
               nixpkgs = {
