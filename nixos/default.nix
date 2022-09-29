@@ -495,13 +495,6 @@ rec {
     };
   };
 
-  # Allow unfree packages
-  nixpkgs = {
-    config = {
-      allowUnfree = true;
-      allowBroken = true;
-    };
-  };
 
   # List packages installed in system profile. To search, run:
   # $ nix search wget

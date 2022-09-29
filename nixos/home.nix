@@ -95,9 +95,6 @@
   };
 
   programs = {
-    bottom = {
-      enable = true;
-    };
 
     broot = {
       enable = true;
@@ -107,15 +104,18 @@
       enable = true;
     };
 
-    keychain = {
-      enable = true;
-    };
+    # keychain = {
+    #   enable = true;
+    # };
+
     nix-index = {
       enable = true;
     };
+
     noti = {
       enable = true;
     };
+
     readline = {
       enable = true;
     };
@@ -126,6 +126,7 @@
     octant = {
       enable = true;
     };
+
     texlive = {
       enable = true;
 
@@ -133,6 +134,20 @@
     tint2 = {
       enable = true;
     };
+
+    nushell = {
+      enable = true;
+    };
+
+    atuin = {
+      enable = true;
+      settings = {
+        auto_sync = true;
+        sync_frequency = "1s";
+        sync_address = "https://api.atuin.sh";
+      };
+    };
+
     alacritty = {
       enable = true;
       settings = {
@@ -142,12 +157,15 @@
         ];
       };
     };
+
     chromium = {
       enable = true;
       package = pkgs.brave;
       #google-chrome
     };
+
     java = { enable = true; };
+
     topgrade = {
       enable = true;
       settings =
