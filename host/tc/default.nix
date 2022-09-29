@@ -34,7 +34,7 @@ in
 
   users.users.root = {
     openssh.authorizedKeys.keys = [
-      share.freeman.user.public-key
+      share.office.user.public-key
     ];
   };
 
@@ -44,7 +44,7 @@ in
       enable = true;
       enableIPv6 = true;
       externalInterface = "ens5";
-      internalInterfaces = [ "wg_freeman" ];
+      internalInterfaces = [ "wg_office" ];
     };
 
     firewall = {
@@ -96,13 +96,13 @@ in
     };
     wg-quick = {
       interfaces = {
-        wg_freeman = {
+        wg_office = {
           privateKeyFile = config.age.secrets.tc_wg_pk.path;
           address = [ "172.22.240.97/27" "fe80::100/64" "fd48:4b4:f3::1/48" ];
           listenPort = 22616;
           table = "off";
           peers = [{
-            publicKey = share.freeman.wg.public-key;
+            publicKey = share.office.wg.public-key;
             allowedIPs =
               [ "172.22.240.98/32" "fe80::101/128" "fd48:4b4:f3::2/128" ];
           }];
@@ -251,13 +251,13 @@ in
         "fe80::/64"
       ];
       zones = lib.singleton {
-        name = "mail.freeman.engineer";
+        name = "inner.freeman.engineer";
         master = true;
-        file = pkgs.writeText "mail.freeman.engineer" ''
+        file = pkgs.writeText "inner.freeman.engineer" ''
           $TTL 3600
-          $ORIGIN mail.freeman.engineer.
-          @         IN SOA    mail.freeman.engineer. hostmaster.mail.freeman.engineer. ( 1 3h 1h 1w 1d )
-          @         IN NS     ns1.mail.freeman.engineer.
+          $ORIGIN inner.freeman.engineer.
+          @         IN SOA    inner.freeman.engineer. hostmaster.inner.freeman.engineer. ( 1 3h 1h 1w 1d )
+          @         IN NS     ns1.inner.freeman.engineer.
           ns1       IN A      43.156.66.157
           *         IN A      43.156.66.157
         '';
@@ -484,7 +484,7 @@ in
         allowedIPs = [ "127.0.0.1" "43.156.66.157" "14.100.28.225" ];
       };
       frontend = {
-        inherit domain;
+        domain = "inner" + domain;
         enable = true;
         netSpecificMode = "dn42";
         servers = [ "sg1" ];
@@ -502,7 +502,7 @@ in
       enable = true;
       virtualHosts = {
         bird-lg = {
-          serverName = "sg1.freeman.engineer";
+          serverName = "bird-lg.inner.freeman.engineer";
           addSSL = true;
           sslCertificateKey = config.age.secrets.tc_https_pk.path;
           sslCertificate = builtins.toFile "SERVER.cert" share.tc.https.cert;
@@ -513,7 +513,7 @@ in
           };
         };
         grafana = {
-          serverName = "a.mail.freeman.engineer";
+          serverName = "grafana.inner.freeman.engineer";
           addSSL = true;
           sslCertificateKey = config.age.secrets.tc_https_pk.path;
           sslCertificate = builtins.toFile "SERVER.cert" share.tc.https.cert;

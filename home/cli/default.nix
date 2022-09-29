@@ -14,11 +14,11 @@
         ".curlrc" = { source = old-files-path + /downloader/.curlrc; };
         ".ldaprc" = { source = old-files-path + /ldap/.ldaprc; };
         ".ssh/id_ed25519.pub" = {
-          text = (import (common-files-path + /share.nix)).freeman.user.public-key;
+          text = (import (common-files-path + /share.nix)).office.user.public-key;
           executable = false;
         };
         ".ssh/id_ed25519" = {
-          source = common-files-path + /secrets/freeman_pk.key;
+          source = common-files-path + /secrets/office_pk.key;
           executable = false;
         };
       };
@@ -85,7 +85,7 @@
       enable = true;
       settings = {
         auto_sync = true;
-        sync_frequency = "1s";
+        sync_frequency = "1m";
         sync_address = "https://api.atuin.sh";
       };
     };
