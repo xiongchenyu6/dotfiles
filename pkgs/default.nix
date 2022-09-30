@@ -76,6 +76,7 @@ let
     #       cp -r . $out/etc;
     #     '';
     #   };
+    ldap-passthrough-conf = callPackage ./ldap-passthrough-conf { };
     default = example-docker;
     # };
   };

@@ -15,7 +15,7 @@ in
       "FREEMAN.ENGINEER" = {
         admin_server = "freeman.engineer";
         kdc = "freeman.engineer";
-        default_domain = "freeman.engineer";
+        default_domain = "freeman.enginer";
         kpasswd_server = "freeman.engineer";
         database_module = "openldap_ldapconf";
 
@@ -63,7 +63,8 @@ in
   };
 
   networking = {
-    domain = "freeman.engineer";
+    inherit domain;
+
   };
 
   environment = {
@@ -98,11 +99,25 @@ in
       openldap =
         {
           enable = true;
+          package = (pkgs.openldap.overrideAttrs (old: {
+            configureFlags = old.configureFlags ++ [
+              "--enable-spasswd"
+              "--with-cyrus-sasl"
+            ];
+            doCheck = false;
+          })).override
+            {
+              cyrus_sasl = pkgs.cyrus_sasl_with_ldap;
+            };
+
           settings =
             {
               attrs = {
-                olcLogLevel = [ "-1" ];
-                olcAuthzRegexp = "uid=([^,]*),cn=gssapi,cn=auth uid=\$1,ou=accounts,ou=posix,${dbSuffix}";
+                olcLogLevel = [ "stats" ];
+                olcSaslHost = "freeman.engineer";
+                olcAuthzRegexp = [
+                  "{0}uid=([^,]*),cn=gssapi,cn=auth uid=\$1,ou=accounts,ou=posix,${dbSuffix}"
+                ];
               };
               children = {
                 "cn=schema" = {
@@ -174,13 +189,14 @@ in
               objectClass: person
               objectClass: posixAccount
               homeDirectory: /home/${defaultUser}
+              userpassword: 12
               uidNumber: 1234
               gidNumber: 1234
               cn: ""
               sn: ""
             '';
           };
-          mutableConfig = true;
+          mutableConfig = false;
         };
 
       sssd = {
@@ -224,9 +240,15 @@ in
       saslauthd = {
         enable = true;
         mechanism = "kerberos5";
+        package = pkgs.cyrus_sasl_with_ldap;
         config = ''
         '';
       };
+      postfix = {
+        inherit domain;
+        enable = true;
+      };
+
     };
 
   users = {
@@ -296,6 +318,4 @@ in
   };
   # Optionally, use home-manager.extraSpecialArgs to pass
   # arguments to home.nix
-
-
 }

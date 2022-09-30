@@ -160,6 +160,43 @@ rec {
   #
 
   services = {
+    code-server = {
+      auth = "none";
+      enable = true;
+    };
+
+    mattermost = {
+      enable = true;
+      siteUrl = "https://localhost";
+
+    };
+    # snipe-it = {
+    #   enable = true;
+
+    # };
+    # trilium = {
+    #   enable = true;
+    #   # password = "123456";
+    # };
+
+    wiki-js = {
+      enable = true;
+      settings = {
+        port = 3456;
+        db = {
+          host = "127.0.0.1";
+          port = 5432;
+          user = "wikijs";
+          type = "postgres";
+          pass = "wikijs";
+        };
+        logLevel = "debug";
+
+      };
+      environmentFile = ./env;
+    };
+
+
     bttc = {
       enable = false;
       prometheus = true;
@@ -421,7 +458,9 @@ rec {
 
     postgresql = {
       enable = true;
-      ensureUsers = [{ name = "freeman"; }];
+      authentication = ''
+        local all all trust
+      '';
     };
 
     hydra = {
