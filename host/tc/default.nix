@@ -266,10 +266,6 @@ in
         empty-zones-enable no;
       '';
     };
-    postfix = {
-      inherit domain;
-      enable = true;
-    };
 
     bird2 = {
       enable = true;
@@ -484,7 +480,7 @@ in
         allowedIPs = [ "127.0.0.1" "43.156.66.157" "14.100.28.225" ];
       };
       frontend = {
-        domain = "inner" + domain;
+        domain = "inner." + domain;
         enable = true;
         netSpecificMode = "dn42";
         servers = [ "sg1" ];
@@ -498,8 +494,13 @@ in
         };
       };
     };
+    gitweb = {
+      projectroot = "/tmp/test";
+      gitwebTheme = true;
+    };
     nginx = {
       enable = true;
+      gitweb = { enable = true; };
       virtualHosts = {
         bird-lg = {
           serverName = "bird-lg.inner.freeman.engineer";

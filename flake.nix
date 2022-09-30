@@ -91,6 +91,7 @@
         overlays = [ devshell.overlay ];
         pkgsFor = system: import nixpkgs { inherit system overlays; };
         std = nix-std.lib;
+        domain = "freeman.engineer";
       in
       mkFlake
         {
@@ -120,11 +121,17 @@
                     "--with-ldap"
                   ];
                 });
+
+                cyrus_sasl_with_ldap = (prev.cyrus_sasl.override { enableLdap = true; }).overrideAttrs (old: {
+                  postInstall = ''
+                    ln -sf ${prev.ldap-passthrough-conf}/slapd.conf $out/lib/sasl2/
+                  '';
+                });
               })
             ];
 
           hostDefaults = {
-            extraArgs = inputs;
+            extraArgs = { inherit domain; };
             modules = [
               nixos-hardware.nixosModules.lenovo-thinkpad-x1-9th-gen
               nixos-hardware.nixosModules.common-gpu-intel
@@ -134,6 +141,7 @@
               home-manager.nixosModules.home-manager
             ];
           };
+
           hosts.office.modules = [
             ./host/office
           ];
@@ -175,6 +183,7 @@
             nixpkgs = import nixpkgs {
               system = "x86_64-linux";
               overlays = [
+                self.overlays.default
                 emacs.overlay
                 (final: prev: {
                   krb5Full = prev.krb5Full.overrideAttrs (old: {
@@ -182,6 +191,12 @@
                       "--with-ldap"
                     ];
                   });
+                  cyrus_sasl_with_ldap = (prev.cyrus_sasl.override { enableLdap = true; }).overrideAttrs (old: {
+                    postInstall = ''
+                      ln -sf ${prev.ldap-passthrough-conf}/slapd.conf $out/lib/sasl2/
+                    '';
+                  });
+
                 })
               ];
             };
@@ -193,11 +208,8 @@
             ];
           };
           tc =
-            let
-              domain = "freeman.engineer";
-            in
             rec {
-              _module. args = {
+              _module.args = {
                 inherit domain;
               };
 
