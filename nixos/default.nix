@@ -98,7 +98,7 @@ in
     {
       openldap =
         {
-          enable = true;
+          enable = false;
           urlList = [ "ldap:///" "ldapi:///" "ldaps:///" ];
           package = (pkgs.openldap.overrideAttrs (old: {
             configureFlags = old.configureFlags ++ [
@@ -323,7 +323,7 @@ in
   };
   nix = {
     settings = {
-      experimental-features = [ "nix-command" "flakes" ];
+      experimental-features = [ "nix-command" "flakes" "repl-flake" ];
       trusted-users = [ "root" "freeman" ];
     };
   };
