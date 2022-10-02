@@ -18,7 +18,13 @@
       };
     };
 
-    devshell.url = "github:numtide/devshell";
+    devshell = {
+      url = "github:numtide/devshell";
+      inputs = {
+        nixpkgs.follows = "nixpkgs";
+        flake-utils.follows = "flake-utils";
+      };
+    };
 
     emacs = {
       url = "github:nix-community/emacs-overlay";
@@ -166,15 +172,21 @@
             # Evaluates to `defaultPackage.<system>.neovim = <nixpkgs-channel-reference>.neovim`.
             # defaultPackage = channels.nixpkgs.neovim;
 
-            devShell = channels.nixpkgs.devshell.mkShell {
-              packages = with channels.nixpkgs; [
-                # to test with nix (Nix) 2.7.0 and NixOps 2.0.0-pre-7220cbd use
-                gopls
+            # devShell = channels.nixpkgs.devshell.mkShell {
+            #   packages = with channels.nixpkgs; [
+            #     # to test with nix (Nix) 2.7.0 and NixOps 2.0.0-pre-7220cbd use
+            #     gopls
+            #     nix
+            #   ];
+            #   imports = [ (channels.nixpkgs.devshell.importTOML ./devshell.toml) ];
+            # };
+            devShell = channels.nixpkgs.mkShell {
+              buildInputs = with channels.nixpkgs; [
                 nix
-                nixopsUnstable
+                colmena
               ];
-              imports = [ (channels.nixpkgs.devshell.importTOML ./devshell.toml) ];
             };
+
           };
           overlays.default = import ./overlay.nix { inherit nixos-generators lib; };
         } // {

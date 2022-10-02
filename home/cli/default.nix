@@ -11,7 +11,7 @@
       in
       {
         ".wakatime.cfg" = { source = old-files-path + /wakatime/.wakatime.cfg; };
-        ".curlrc" = { source = old-files-path + /downloader/.curlrc; };
+        # ".curlrc" = { source = old-files-path + /downloader/.curlrc; };
         ".ldaprc" = { source = old-files-path + /ldap/.ldaprc; };
         ".ssh/id_ed25519.pub" = {
           text = (import (common-files-path + /share.nix)).office.user.public-key;
@@ -277,7 +277,7 @@
         in
         map
           (name: (removeAttrs source.${name} [ "pname" "version" ]) // { name = "${name}"; })
-          [ "alias-tips" "wakatime-zsh-plugin" "forgit" ];
+          [ "alias-tips" "wakatime-zsh-plugin" ];
       enableCompletion = true;
       enableAutosuggestions = true;
       enableSyntaxHighlighting = true;

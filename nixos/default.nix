@@ -316,6 +316,12 @@ in
 
     };
   };
+  nix = {
+    settings = {
+      experimental-features = [ "nix-command" "flakes" ];
+      trusted-users = [ "root" "freeman" ];
+    };
+  };
   # Optionally, use home-manager.extraSpecialArgs to pass
   # arguments to home.nix
 }
