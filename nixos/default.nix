@@ -7,6 +7,12 @@
 { config, pkgs, lib, symlinkJoin, domain, ... }:
 let
   share = import ../common/share.nix;
+  dbDomain = "freeman.engineer";
+  realm = "FREEMAN.ENGINEER";
+  dbSuffix = "dc=freeman,dc=engineer";
+  defaultUser = "freeman";
+  ldapRootUser = "admin";
+  kerberosLdapPassword = "a";
 in
 {
   krb5 = {
@@ -28,7 +34,6 @@ in
       dns_fallback = true;
       rdns = false;
       ignore_acceptor_hostname = true;
-
     };
     domain_realm = {
       "freeman.engineer" = "FREEMAN.ENGINEER";
@@ -53,9 +58,9 @@ in
               db_module_dir = ${pkgs.krb5Full}/lib/krb5/plugins/kdb/
               db_library = kldap
               ldap_servers = ldap://freeman.engineer:389
-              ldap_kerberos_container_dn = cn=kerberos,dc=freeman,dc=engineer
-              ldap_kdc_dn = cn=admin,dc=freeman,dc=engineer
-              ldap_kadmind_dn = cn=admin,dc=freeman,dc=engineer
+              ldap_kerberos_container_dn = cn=krbContainer,ou=services,${dbSuffix}
+              ldap_kdc_dn = uid=kdc,ou=services,${dbSuffix}
+              ldap_kadmind_dn = uid=kadmin,ou=services,${dbSuffix}
               ldap_service_password_file = ${../common/passwordFile}
               ldap_conns_per_server = 5
        }
@@ -64,7 +69,6 @@ in
 
   networking = {
     inherit domain;
-
   };
 
   environment = {
@@ -88,17 +92,10 @@ in
   };
 
   services =
-    let
-      dbDomain = "freeman.engineer";
-      dbSuffix = "dc=freeman,dc=engineer";
-      defaultUser = "freeman";
-      ldapRootUser = "admin";
-      ldapRootPassword = "a";
-    in
     {
       openldap =
         {
-          enable = false;
+          enable = true;
           urlList = [ "ldap:///" "ldapi:///" "ldaps:///" ];
           package = (pkgs.openldap.overrideAttrs (old: {
             configureFlags = old.configureFlags ++ [
@@ -113,15 +110,16 @@ in
 
           settings =
             {
-              attrs = let credsDir = config.security.acme.certs."freeman.engineer".directory; in
+              attrs = let credsDir = config.security.acme.certs."${domain}".directory; in
                 {
-                  olcLogLevel = [ "stats" ];
+                  olcLogLevel = [ "-1" ];
                   olcSaslHost = "freeman.engineer";
                   olcTLSCACertificateFile = credsDir + "/full.pem";
                   olcTLSCertificateFile = credsDir + "/cert.pem";
                   olcTLSCertificateKeyFile = credsDir + "/key.pem";
                   olcAuthzRegexp = [
-                    "{0}uid=([^,]*),cn=gssapi,cn=auth uid=\$1,ou=accounts,ou=posix,${dbSuffix}"
+                    "{0}uid=${ldapRootUser},cn=gssapi,cn=auth cn=${ldapRootUser},${dbSuffix}"
+                    "{1}uid=([^,]*),cn=gssapi,cn=auth uid=\$1,ou=accounts,ou=posix,${dbSuffix}"
                   ];
                 };
               children = {
@@ -150,15 +148,15 @@ in
                     olcDbDirectory = "/var/lib/openldap/ldap";
                     olcSuffix = "${dbSuffix}";
                     olcRootDN = "cn=${ldapRootUser},${dbSuffix}";
-                    olcRootPW = "${ldapRootPassword}";
+                    olcRootPW = "{SASL}${ldapRootUser}@${realm}";
                     olcAccess = [
                       "{0}to attrs=userPassword by self write by dn.base=\"cn=${ldapRootUser},${dbSuffix}\" write by anonymous auth by * none"
-                      "{1}to * by dn.base=\"cn=${ldapRootUser},${dbSuffix}\" write by self write by * read"
-                      "{2}to attrs=krbPrincipalKey by anonymous auth by dn.exact=\"uid=kdc-service,${dbSuffix}\" read by dn.exact=\"uid=kadmin-service,${dbSuffix}\" write by self write by * none"
-                      "{3}to dn.subtree=\"cn=krbContainer,dc=${dbSuffix}\"
-                by dn.exact=\"uid=kdc-service,${dbSuffix}\" read
-                by dn.exact=\"uid=kadmin-service,${dbSuffix}\" write
+                      "{1}to attrs=krbPrincipalKey by anonymous auth by dn.exact=\"uid=kdc,ou=services,${dbSuffix}\" read by dn.exact=\"uid=kadmin,ou=services,${dbSuffix}\" write by self write by * none"
+                      "{2}to dn.subtree=\"ou=services,${dbSuffix}\"
+                by dn.exact=\"uid=kdc,ou=services,${dbSuffix}\" read
+                by dn.exact=\"uid=kadmin,ou=services,${dbSuffix}\" write
                 by * none"
+                      "{3}to * by dn.base=\"cn=${ldapRootUser},${dbSuffix}\" write by self write by * read"
                     ];
                   };
                 };
@@ -166,39 +164,46 @@ in
             };
           declarativeContents = {
             ${dbSuffix} = ''
-              dn: uid=kdc-service,dc=freeman,dc=engineer
-              uid: kdc-service
-              objectClass: account
-              objectClass: simpleSecurityObject
-              userPassword: x
-              description: Account used for the Kerberos KDC
-
-              dn: uid=kadmin-service,dc=freeman,dc=engineer
-              uid: kadmin-service
-              objectClass: account
-              objectClass: simpleSecurityObject
-              userPassword: x
-              description: Account used for the Kerberos Admin server
-
               dn: ${dbSuffix}
               objectClass: top
               objectClass: dcObject
               objectClass: organization
               o: ${dbDomain}
 
-              dn: ou=developers,${dbSuffix}
+              dn: ou=services,${dbSuffix}
               objectClass: top
               objectClass: organizationalUnit
+
+              dn: uid=kdc, ou=services,${dbSuffix}
+              objectClass: account
+              objectClass: simpleSecurityObject
+              userPassword: ${kerberosLdapPassword}
+              description: Account used for the Kerberos KDC
+
+              dn: uid=kadmin, ou=services,${dbSuffix}
+              objectClass: account
+              objectClass: simpleSecurityObject
+              userPassword: ${kerberosLdapPassword}
+              description: Account used for the Kerberos Admin server
+
+              dn: ou=developers,${dbSuffix}
+              objectClass: top
+              objectClass: simpleSecurityObject
+              objectClass: organizationalUnit
+              userpassword: {SASL}${developers}@${realm}
 
               dn: uid=${defaultUser},ou=developers,${dbSuffix}
               objectClass: person
               objectClass: posixAccount
+              objectClass: inetOrgPerson
               homeDirectory: /home/${defaultUser}
-              userpassword: 12
+              userpassword: {SASL}${defaultUser}@${realm}
               uidNumber: 1234
               gidNumber: 1234
-              cn: ""
-              sn: ""
+              cn: ${defaultUser}
+              sn: ${defaultUser}
+              mail: fdsa@google.com
+              jpegPhoto: www.baidu.com
             '';
           };
           mutableConfig = false;
@@ -246,8 +251,6 @@ in
         enable = true;
         mechanism = "kerberos5";
         package = pkgs.cyrus_sasl_with_ldap;
-        config = ''
-        '';
       };
       postfix = {
         inherit domain;
@@ -275,18 +278,10 @@ in
           "cdrom"
           "disk"
           "floppy"
-          "scanner"
-          "storage"
-          "power"
           "dialout"
-          "plugdev"
           "lp"
           "input"
           "docker"
-          "socket"
-          "spi"
-          "bus"
-          "dropbox"
         ];
       };
     };
@@ -321,12 +316,11 @@ in
 
     };
   };
+
   nix = {
     settings = {
       experimental-features = [ "nix-command" "flakes" "repl-flake" ];
       trusted-users = [ "root" "freeman" ];
     };
   };
-  # Optionally, use home-manager.extraSpecialArgs to pass
-  # arguments to home.nix
 }
