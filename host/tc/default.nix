@@ -204,13 +204,16 @@ in
           Type = "oneshot";
           UMask = 0077;
         };
-        path = [ pkgs.bind ];
+        path = [ pkgs.bind pkgs.gnused ];
         script = ''
           mkdir -p /var/lib/secrets
           chown named:root /var/lib/secrets
           tsig-keygen rfc2136key.inner.${domain} > /var/lib/secrets/dnskeys.conf
           chown named:root /var/lib/secrets/dnskeys.conf
-          chmod 777 /var/lib/secrets/dnskeys.conf
+
+          secret=`sed -n -e 's/secret "\(.*\)";/\1/p' /var/lib/secrets/dnskeys.conf`
+
+          chmod 700 /var/lib/secrets/dnskeys.conf
 
           # Copy the secret value from the dnskeys.conf, and put it in
           # RFC2136_TSIG_SECRET below
@@ -219,13 +222,14 @@ in
           RFC2136_NAMESERVER='127.0.0.1:53'
           RFC2136_TSIG_ALGORITHM='hmac-sha256.'
           RFC2136_TSIG_KEY='rfc2136key.inner.${domain}'
-          RFC2136_TSIG_SECRET='a'
+          RFC2136_TSIG_SECRET="''${secret:1}"
           EOF
           chmod 400 /var/lib/secrets/certs.secret
         '';
       };
     };
   };
+
   services = {
     tat-agent = {
       enable = false;
@@ -296,10 +300,10 @@ in
       ];
       zones = [
         rec{
-          name = "inner.freeman.engineer";
+          name = "inner.${domain}";
           master = true;
           file = "/var/db/bind/${name}";
-          extraConfig = "allow-update { key rfc2136key.inner.freeman.engineer.; };";
+          extraConfig = "allow-update { key rfc2136key.inner.${domain}.; };";
         }
       ];
       extraOptions = ''
@@ -544,22 +548,26 @@ in
       gitweb = { enable = true; };
       virtualHosts = {
         bird-lg = {
-          serverName = "bird-lg.inner.freeman.engineer";
+          serverName = "bird-lg.inner.${domain}";
           addSSL = true;
           acmeRoot = null;
-          useACMEHost = "inner.freeman.engineer";
-
+          useACMEHost = "inner.${domain}";
+          kTLS = true;
           locations."/" = {
             proxyPass = "http://127.0.0.1:5000";
             proxyWebsockets = true;
+            basicAuth = {
+              user = "bird";
+              password = "bird";
+            };
           };
         };
         grafana = {
-          serverName = "grafana.inner.freeman.engineer";
+          serverName = "grafana.inner.${domain}";
           addSSL = true;
           acmeRoot = null;
-          useACMEHost = "inner.freeman.engineer";
-
+          useACMEHost = "inner.${domain}";
+          kTLS = true;
           locations."/" = {
             proxyPass = "http://127.0.0.1:8000";
             proxyWebsockets = true;
@@ -573,14 +581,22 @@ in
       acceptTerms = true;
       defaults = {
         email = "xiongchenyu6@gmail.cam";
-        dnsProvider = "namedotcom";
-        credentialsFile = config.age.secrets.acme_credentials.path;
-        # We don't need to wait for propagation since this is a local DNS server
-        dnsPropagationCheck = false;
+        # postRun = ''
+        #   ${pkgs.systemd}/bin/systemctl restart openldap
+        # '';
       };
       certs = {
-        "inner.freeman.engineer" = {
-          domain = "*.inner.freeman.engineer";
+        "${domain}" = {
+          domain = "${domain}";
+          dnsProvider = "namedotcom";
+          credentialsFile = config.age.secrets.acme_credentials.path;
+          # We don't need to wait for propagation since this is a local DNS server
+          dnsPropagationCheck = false;
+          reloadServices = [ "openldap" ];
+          group = "openldap";
+        };
+        "inner.${domain}" = {
+          domain = "*.inner.${domain}";
           dnsProvider = "rfc2136";
           credentialsFile = "/var/lib/secrets/certs.secret";
           # We don't need to wait for propagation since this is a local DNS server

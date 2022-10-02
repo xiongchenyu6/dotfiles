@@ -99,6 +99,7 @@ in
       openldap =
         {
           enable = true;
+          urlList = [ "ldap:///" "ldapi:///" "ldaps:///" ];
           package = (pkgs.openldap.overrideAttrs (old: {
             configureFlags = old.configureFlags ++ [
               "--enable-spasswd"
@@ -112,13 +113,17 @@ in
 
           settings =
             {
-              attrs = {
-                olcLogLevel = [ "stats" ];
-                olcSaslHost = "freeman.engineer";
-                olcAuthzRegexp = [
-                  "{0}uid=([^,]*),cn=gssapi,cn=auth uid=\$1,ou=accounts,ou=posix,${dbSuffix}"
-                ];
-              };
+              attrs = let credsDir = config.security.acme.certs."freeman.engineer".directory; in
+                {
+                  olcLogLevel = [ "stats" ];
+                  olcSaslHost = "freeman.engineer";
+                  olcTLSCACertificateFile = credsDir + "/full.pem";
+                  olcTLSCertificateFile = credsDir + "/cert.pem";
+                  olcTLSCertificateKeyFile = credsDir + "/key.pem";
+                  olcAuthzRegexp = [
+                    "{0}uid=([^,]*),cn=gssapi,cn=auth uid=\$1,ou=accounts,ou=posix,${dbSuffix}"
+                  ];
+                };
               children = {
                 "cn=schema" = {
                   includes = [
