@@ -546,6 +546,8 @@ in
     nginx = {
       enable = true;
       gitweb = { enable = true; };
+      additionalModules = [ pkgs.nginxModules.pam ];
+
       virtualHosts = {
         bird-lg = {
           serverName = "bird-lg.inner.${domain}";
