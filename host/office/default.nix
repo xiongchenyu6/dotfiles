@@ -464,7 +464,7 @@ rec {
     };
 
     hydra = {
-      enable = true;
+      enable = false;
       hydraURL = "http://localhost:3000"; # externally visible URL
       notificationSender = "hydra@localhost"; # e-mail of hydra service
       # a standalone hydra will require you to unset the buildMachinesFiles list to avoid using a nonexistant /etc/nix/machines
@@ -548,8 +548,8 @@ rec {
       cabal2nix
       cachix
       discord
-      devshell.cli
-      nixopsUnstable
+      # devshell.cli
+      # nixopsUnstable
       neofetch
       exa
       feh
@@ -648,15 +648,12 @@ rec {
       jetbrains-mono
     ];
   };
+
   nix = {
     extraOptions = ''
       keep-outputs = true
       keep-derivations = true
     '';
-    settings = {
-      experimental-features = [ "nix-command" "flakes" ];
-      trusted-users = [ "root" "freeman" ];
-    };
   };
 
   # Open ports in the firewall.

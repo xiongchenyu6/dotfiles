@@ -1,18 +1,27 @@
 { config, pkgs, lib, symlinkJoin, domain, ... }:
 let
   common-files-path = ../../common;
+  secret-files-paht = common-files-path + "/secrets";
   script = import ../../dn42/update-roa.nix { inherit pkgs; };
   share = import (common-files-path + /share.nix);
 in
 {
-  age.secrets.tc_wg_pk.file = common-files-path + /secrets/tc_wg_pk.age;
+  age.secrets.tc_wg_pk.file = secret-files-paht + /tc_wg_pk.age;
 
   age.secrets.tc_https_pk = {
-    file = common-files-path + /secrets/tc_https_pk.age;
+    file = secret-files-paht + /tc_https_pk.age;
     mode = "770";
     owner = "nginx";
     group = "nginx";
   };
+
+  age.secrets.acme_credentials = {
+    file = secret-files-paht + /acme_credentials.age;
+    mode = "770";
+    owner = "acme";
+    group = "acme";
+  };
+
 
   imports = [
     ./hardware-configuration.nix
@@ -184,11 +193,42 @@ in
         unitConfig = { Type = "one-shot"; };
         serviceConfig = { ExecStart = "${script}/bin/update-roa"; };
       };
+
+      dns-rfc2136-conf = {
+        requiredBy = [ "acme-inner.${domain}.service" "bind.service" ];
+        before = [ "acme-inner.${domain}.service" "bind.service" ];
+        unitConfig = {
+          ConditionPathExists = "!/var/lib/secrets/dnskeys.conf";
+        };
+        serviceConfig = {
+          Type = "oneshot";
+          UMask = 0077;
+        };
+        path = [ pkgs.bind ];
+        script = ''
+          mkdir -p /var/lib/secrets
+          chown named:root /var/lib/secrets
+          tsig-keygen rfc2136key.inner.${domain} > /var/lib/secrets/dnskeys.conf
+          chown named:root /var/lib/secrets/dnskeys.conf
+          chmod 777 /var/lib/secrets/dnskeys.conf
+
+          # Copy the secret value from the dnskeys.conf, and put it in
+          # RFC2136_TSIG_SECRET below
+
+          cat > /var/lib/secrets/certs.secret << EOF
+          RFC2136_NAMESERVER='127.0.0.1:53'
+          RFC2136_TSIG_ALGORITHM='hmac-sha256.'
+          RFC2136_TSIG_KEY='rfc2136key.inner.${domain}'
+          RFC2136_TSIG_SECRET='a'
+          EOF
+          chmod 400 /var/lib/secrets/certs.secret
+        '';
+      };
     };
   };
   services = {
     tat-agent = {
-      enable = true;
+      enable = false;
     };
     kerberos_server = {
       enable = true;
@@ -212,6 +252,8 @@ in
     bind = {
       enable = true;
       extraConfig = ''
+        include "/var/lib/secrets/dnskeys.conf";
+
         zone "dn42" {
           type forward;
           forwarders { 172.20.0.53; fd42:d42:d42:54::1; };
@@ -241,7 +283,9 @@ in
           forwarders { 172.20.0.53; fd42:d42:d42:54::1; };
         };
       '';
+
       cacheNetworks = [
+        "0.0.0.0/0"
         "203.117.163.130/32"
         "127.0.0.0/24"
         "10.0.0.0/8"
@@ -250,18 +294,14 @@ in
         "fd00::/8"
         "fe80::/64"
       ];
-      zones = lib.singleton {
-        name = "inner.freeman.engineer";
-        master = true;
-        file = pkgs.writeText "inner.freeman.engineer" ''
-          $TTL 3600
-          $ORIGIN inner.freeman.engineer.
-          @         IN SOA    inner.freeman.engineer. hostmaster.inner.freeman.engineer. ( 1 3h 1h 1w 1d )
-          @         IN NS     ns1.inner.freeman.engineer.
-          ns1       IN A      43.156.66.157
-          *         IN A      43.156.66.157
-        '';
-      };
+      zones = [
+        rec{
+          name = "inner.freeman.engineer";
+          master = true;
+          file = "/var/db/bind/${name}";
+          extraConfig = "allow-update { key rfc2136key.inner.freeman.engineer.; };";
+        }
+      ];
       extraOptions = ''
         empty-zones-enable no;
       '';
@@ -498,6 +538,7 @@ in
       projectroot = "/tmp/test";
       gitwebTheme = true;
     };
+
     nginx = {
       enable = true;
       gitweb = { enable = true; };
@@ -505,9 +546,9 @@ in
         bird-lg = {
           serverName = "bird-lg.inner.freeman.engineer";
           addSSL = true;
-          sslCertificateKey = config.age.secrets.tc_https_pk.path;
-          sslCertificate = builtins.toFile "SERVER.cert" share.tc.https.cert;
-          # enableACME = true;
+          acmeRoot = null;
+          useACMEHost = "inner.freeman.engineer";
+
           locations."/" = {
             proxyPass = "http://127.0.0.1:5000";
             proxyWebsockets = true;
@@ -516,13 +557,35 @@ in
         grafana = {
           serverName = "grafana.inner.freeman.engineer";
           addSSL = true;
-          sslCertificateKey = config.age.secrets.tc_https_pk.path;
-          sslCertificate = builtins.toFile "SERVER.cert" share.tc.https.cert;
-          # enableACME = true;
+          acmeRoot = null;
+          useACMEHost = "inner.freeman.engineer";
+
           locations."/" = {
             proxyPass = "http://127.0.0.1:8000";
             proxyWebsockets = true;
           };
+        };
+      };
+    };
+  };
+  security = {
+    acme = {
+      acceptTerms = true;
+      defaults = {
+        email = "xiongchenyu6@gmail.cam";
+        dnsProvider = "namedotcom";
+        credentialsFile = config.age.secrets.acme_credentials.path;
+        # We don't need to wait for propagation since this is a local DNS server
+        dnsPropagationCheck = false;
+      };
+      certs = {
+        "inner.freeman.engineer" = {
+          domain = "*.inner.freeman.engineer";
+          dnsProvider = "rfc2136";
+          credentialsFile = "/var/lib/secrets/certs.secret";
+          # We don't need to wait for propagation since this is a local DNS server
+          dnsPropagationCheck = false;
+          group = "nginx";
         };
       };
     };
