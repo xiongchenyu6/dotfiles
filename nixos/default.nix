@@ -15,13 +15,15 @@ let
   kerberosLdapPassword = "a";
 in
 {
+  system.nixos.tags = [ "freeman" ];
+
   krb5 = {
     enable = true;
     realms = {
       "FREEMAN.ENGINEER" = {
         admin_server = "freeman.engineer";
-        kdc = "freeman.engineer";
-        default_domain = "freeman.enginer";
+        kdc = [ "freeman.engineer" "mail.freeman.engineer" ];
+        default_domain = "freeman.engineer";
         kpasswd_server = "freeman.engineer";
         database_module = "openldap_ldapconf";
 
@@ -93,146 +95,43 @@ in
 
   services =
     {
-      openldap =
-        {
-          enable = true;
-          urlList = [ "ldap:///" "ldapi:///" "ldaps:///" ];
-          package = (pkgs.openldap.overrideAttrs (old: {
-            configureFlags = old.configureFlags ++ [
-              "--enable-spasswd"
-              "--with-cyrus-sasl"
-            ];
-            doCheck = false;
-          })).override
-            {
-              cyrus_sasl = pkgs.cyrus_sasl_with_ldap;
-            };
-
-          settings =
-            {
-              attrs = let credsDir = config.security.acme.certs."${domain}".directory; in
-                {
-                  olcLogLevel = [ "-1" ];
-                  olcSaslHost = "freeman.engineer";
-                  olcTLSCACertificateFile = credsDir + "/full.pem";
-                  olcTLSCertificateFile = credsDir + "/cert.pem";
-                  olcTLSCertificateKeyFile = credsDir + "/key.pem";
-                  olcAuthzRegexp = [
-                    "{0}uid=${ldapRootUser},cn=gssapi,cn=auth cn=${ldapRootUser},${dbSuffix}"
-                    "{1}uid=([^,]*),cn=gssapi,cn=auth uid=\$1,ou=accounts,ou=posix,${dbSuffix}"
-                  ];
-                };
-              children = {
-                "cn=schema" = {
-                  includes = [
-                    "${pkgs.openldap}/etc/schema/core.ldif"
-                    "${pkgs.openldap}/etc/schema/collective.ldif"
-                    "${pkgs.openldap}/etc/schema/corba.ldif"
-                    "${pkgs.openldap}/etc/schema/cosine.ldif"
-                    "${pkgs.openldap}/etc/schema/duaconf.ldif"
-                    "${pkgs.openldap}/etc/schema/dyngroup.ldif"
-                    "${pkgs.openldap}/etc/schema/inetorgperson.ldif"
-                    "${pkgs.openldap}/etc/schema/java.ldif"
-                    "${pkgs.openldap}/etc/schema/nis.ldif"
-                    "${pkgs.openldap}/etc/schema/misc.ldif"
-                    "${pkgs.openldap}/etc/schema/openldap.ldif"
-                    "${pkgs.openldap}/etc/schema/pmi.ldif"
-                    ../common/kerberos.ldif
-                  ];
-                };
-                "olcDatabase={1}mdb" = {
-                  attrs = {
-                    objectClass = [ "olcDatabaseConfig" "olcMdbConfig" ];
-                    olcDbIndex = "krbPrincipalName eq,pres,sub";
-                    olcDatabase = "{1}mdb";
-                    olcDbDirectory = "/var/lib/openldap/ldap";
-                    olcSuffix = "${dbSuffix}";
-                    olcRootDN = "cn=${ldapRootUser},${dbSuffix}";
-                    olcRootPW = "{SASL}${ldapRootUser}@${realm}";
-                    olcAccess = [
-                      "{0}to attrs=userPassword by self write by dn.base=\"cn=${ldapRootUser},${dbSuffix}\" write by anonymous auth by * none"
-                      "{1}to attrs=krbPrincipalKey by anonymous auth by dn.exact=\"uid=kdc,ou=services,${dbSuffix}\" read by dn.exact=\"uid=kadmin,ou=services,${dbSuffix}\" write by self write by * none"
-                      "{2}to dn.subtree=\"ou=services,${dbSuffix}\"
-                by dn.exact=\"uid=kdc,ou=services,${dbSuffix}\" read
-                by dn.exact=\"uid=kadmin,ou=services,${dbSuffix}\" write
-                by * none"
-                      "{3}to * by dn.base=\"cn=${ldapRootUser},${dbSuffix}\" write by self write by * read"
-                    ];
-                  };
-                };
-              };
-            };
-          declarativeContents = {
-            ${dbSuffix} = ''
-              dn: ${dbSuffix}
-              objectClass: top
-              objectClass: dcObject
-              objectClass: organization
-              o: ${dbDomain}
-
-              dn: ou=services,${dbSuffix}
-              objectClass: top
-              objectClass: organizationalUnit
-
-              dn: uid=kdc, ou=services,${dbSuffix}
-              objectClass: account
-              objectClass: simpleSecurityObject
-              userPassword: ${kerberosLdapPassword}
-              description: Account used for the Kerberos KDC
-
-              dn: uid=kadmin, ou=services,${dbSuffix}
-              objectClass: account
-              objectClass: simpleSecurityObject
-              userPassword: ${kerberosLdapPassword}
-              description: Account used for the Kerberos Admin server
-
-              dn: ou=developers,${dbSuffix}
-              objectClass: top
-              objectClass: simpleSecurityObject
-              objectClass: organizationalUnit
-              userpassword: {SASL}${developers}@${realm}
-
-              dn: uid=${defaultUser},ou=developers,${dbSuffix}
-              objectClass: person
-              objectClass: posixAccount
-              objectClass: inetOrgPerson
-              homeDirectory: /home/${defaultUser}
-              userpassword: {SASL}${defaultUser}@${realm}
-              uidNumber: 1234
-              gidNumber: 1234
-              cn: ${defaultUser}
-              sn: ${defaultUser}
-              mail: fdsa@google.com
-              jpegPhoto: www.baidu.com
-            '';
-          };
-          mutableConfig = false;
-        };
 
       sssd = {
         enable = true;
         config = ''
           [sssd]
           config_file_version = 2
-          services = nss, pam, ssh, autofs
+          services = nss, pam, ssh, autofs, sudo
           domains = ${dbDomain}
           [nss]
           [pam]
+          [sudo]
+          debug_level = 0x3ff0
 
           [domain/${dbDomain}]
           autofs_provider = ldap
-          ldap_schema = rfc2307bis
+          ldap_schema = rfc2307
           id_provider = ldap
-          ldap_uri = ldap://localhost:389
+          sudo_provider = ldap
+          ldap_uri = ldaps://freeman.engineer
           ldap_search_base = ${dbSuffix}
           ldap_default_bind_dn = cn=${ldapRootUser},${dbSuffix}
+          ldap_sudo_search_base = ou=SUDOers,${dbSuffix}
           ldap_sasl_mech = GSSAPI
+          ldap_sasl_authid = host/${dbDomain}
+          ldap_sasl_realm = FREEMAN.ENGINEER
+
+          chpass_provider = krb5
+
+          use_fully_qualified_names = false
 
           auth_provider = krb5
+          access_provider = simple
+
           krb5_realm = FREEMAN.ENGINEER
           krb5_server = ${dbDomain}
           krb5_validate = true
-          debug_level = 9
+          debug_level = 0x3ff0
         '';
       };
       openssh = {
@@ -241,10 +140,12 @@ in
           Welcome to the NixOS machine
         '';
         startWhenNeeded = false;
-        #useDns = true;
+        useDns = true;
         extraConfig = ''
           GSSAPIAuthentication yes
+          UsePAM yes
           GSSAPICleanupCredentials yes
+          PasswordAuthentication yes
         '';
       };
       saslauthd = {
@@ -287,11 +188,21 @@ in
     };
   };
 
-  security.pam = {
-    krb5.enable = false;
-    services = {
-      sshd = {
-        makeHomeDir = true;
+  security = {
+    sudo = {
+      extraRules = [
+        {
+          groups = [ "developers" ];
+          commands = [ "ALL" ];
+        }
+      ];
+    };
+    pam = {
+      krb5.enable = false;
+      services = {
+        sshd = {
+          makeHomeDir = true;
+        };
       };
     };
   };

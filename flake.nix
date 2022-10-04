@@ -172,20 +172,20 @@
             # Evaluates to `defaultPackage.<system>.neovim = <nixpkgs-channel-reference>.neovim`.
             # defaultPackage = channels.nixpkgs.neovim;
 
-            # devShell = channels.nixpkgs.devshell.mkShell {
-            #   packages = with channels.nixpkgs; [
-            #     # to test with nix (Nix) 2.7.0 and NixOps 2.0.0-pre-7220cbd use
-            #     gopls
-            #     nix
-            #   ];
-            #   imports = [ (channels.nixpkgs.devshell.importTOML ./devshell.toml) ];
-            # };
-            devShell = channels.nixpkgs.mkShell {
-              buildInputs = with channels.nixpkgs; [
+            devShell = channels.nixpkgs.devshell.mkShell {
+              packages = with channels.nixpkgs; [
+                # to test with nix (Nix) 2.7.0 and NixOps 2.0.0-pre-7220cbd use
+                gopls
                 nix
-                colmena
               ];
+              imports = [ (channels.nixpkgs.devshell.importTOML ./devshell.toml) ];
             };
+            # devShell = channels.nixpkgs.mkShell {
+            #   buildInputs = with channels.nixpkgs; [
+            #     nix
+            #     colmena
+            #   ];
+            # };
 
           };
           overlays.default = import ./overlay.nix { inherit nixos-generators lib; };
@@ -208,7 +208,7 @@
                       ln -sf ${prev.ldap-passthrough-conf}/slapd.conf $out/lib/sasl2/
                     '';
                   });
-
+                  sssd = prev.sssd.override { withSudo = true; };
                 })
               ];
             };

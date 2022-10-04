@@ -10,6 +10,7 @@ rec {
     # Include the results of the hardware scan.
     ./hardware-configuration.nix
     ../../common/cachix.nix
+    ../../nixos/client.nix
   ];
 
   age.secrets.office_wg_pk.file = ../../common/secrets/office_wg_pk.age;
@@ -548,8 +549,7 @@ rec {
       cabal2nix
       cachix
       discord
-      # devshell.cli
-      # nixopsUnstable
+      devshell.cli
       neofetch
       exa
       feh
@@ -581,7 +581,6 @@ rec {
       heroku
       imagemagick
       ispell
-      # kubernix
       lsof
       (python3.withPackages (ps: [ my_cookies ]))
       pinentry

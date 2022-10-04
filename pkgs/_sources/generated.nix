@@ -16,24 +16,24 @@
   bttc = {
     pname = "bttc";
     version = "v1.0.2";
-    src = fetchFromGitHub {
+    src = fetchFromGitHub ({
       owner = "bttcprotocol";
       repo = "bttc";
       rev = "v1.0.2";
       fetchSubmodules = true;
       sha256 = "sha256-qptNGs6NmbIEzmosASAvdZSIUhw5RVcgEF55/RhgR3I=";
-    };
+    });
   };
   delivery = {
     pname = "delivery";
     version = "v1.0.2";
-    src = fetchFromGitHub {
+    src = fetchFromGitHub ({
       owner = "bttcprotocol";
       repo = "delivery";
       rev = "v1.0.2";
       fetchSubmodules = true;
       sha256 = "sha256-HItF37qlIm6IT8WSomTulkX7524UZwpwMbqyjckXFxA=";
-    };
+    });
   };
   forgit = {
     pname = "forgit";
