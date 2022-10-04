@@ -25,6 +25,7 @@ in
 
   imports = [
     ./hardware-configuration.nix
+    ../../nixos/server.nix
   ];
 
   #boot.cleanTmpDir = true;
@@ -69,12 +70,12 @@ in
         8000
       ];
       allowedUDPPorts = [
-        53
+        53 # dns
         80
-        88
-        179
-        389
-        636
+        88 # kerberos
+        179 # bird2
+        389 # ldap
+        636 # ldaps
         22616
         23396
         21816
@@ -305,6 +306,23 @@ in
           file = "/var/db/bind/${name}";
           extraConfig = "allow-update { key rfc2136key.inner.${domain}.; };";
         }
+        # rec {
+        #   name = "66.156.43.in-addr.arpa";
+        #   master = true;
+        #   file = pkgs.writeText "66.156.43.in-addr.arpa" ''
+        #     $TTL 86400
+        #     $ORIGIN 66.156.43.in-addr.arpa.
+        #     @     IN     SOA    dns1.example.com.     hostmaster.example.com. (
+        #                         2001062501 ; serial
+        #                         21600      ; refresh after 6 hours
+        #                         3600       ; retry after 1 hour
+        #                         604800     ; expire after 1 week
+        #                         86400 )    ; minimum TTL of 1 day
+
+        #           IN     NS     dns1.example.com.
+        #     157   IN     ITR    mail.freeman.engineer.
+        #   '';
+        # }
       ];
       extraOptions = ''
         empty-zones-enable no;
@@ -558,11 +576,11 @@ in
           locations."/" = {
             proxyPass = "http://127.0.0.1:5000";
             proxyWebsockets = true;
-            basicAuth = {
-              user = "bird";
-              password = "bird";
-            };
           };
+          extraConfig = ''
+            auth_pam  "Password Required";
+            auth_pam_service_name "nginx";
+          '';
         };
         grafana = {
           serverName = "grafana.inner.${domain}";
@@ -577,6 +595,25 @@ in
         };
       };
     };
+  };
+  security.pam.services.nginx.setEnvironment = false;
+  systemd.services.nginx.serviceConfig = {
+    SupplementaryGroups = [ "shadow" ];
+    NoNewPrivileges = lib.mkForce false;
+    PrivateDevices = lib.mkForce false;
+    ProtectHostname = lib.mkForce false;
+    ProtectKernelTunables = lib.mkForce false;
+    ProtectKernelModules = lib.mkForce false;
+    RestrictAddressFamilies = lib.mkForce [ ];
+    LockPersonality = lib.mkForce false;
+    MemoryDenyWriteExecute = lib.mkForce false;
+    RestrictRealtime = lib.mkForce false;
+    RestrictSUIDSGID = lib.mkForce false;
+    SystemCallArchitectures = lib.mkForce "";
+    ProtectClock = lib.mkForce false;
+    ProtectKernelLogs = lib.mkForce false;
+    RestrictNamespaces = lib.mkForce false;
+    SystemCallFilter = lib.mkForce "";
   };
   security = {
     acme = {

@@ -31,10 +31,10 @@
       xmonad = {
         enable = true;
         enableContribAndExtras = true;
+        config = ../../old-files/config/xmonad/xmonad.hs;
         extraPackages = haskellPackages: [
-          haskellPackages.xmonad
-          haskellPackages.xmonad-contrib
-          haskellPackages.xmonad-extras
+          haskellPackages.directory
+          haskellPackages.X11
         ];
       };
     };
