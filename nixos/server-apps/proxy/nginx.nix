@@ -38,7 +38,7 @@ in
           useACMEHost = "inner.${domain}";
           kTLS = true;
           locations."/" = {
-            proxyPass = "http://127.0.0.1:8000";
+            proxyPass = "http://127.0.0.1:${toString config.services.grafana.port}";
             proxyWebsockets = true;
           };
         };
