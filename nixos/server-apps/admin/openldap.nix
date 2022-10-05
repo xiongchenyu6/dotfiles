@@ -65,7 +65,7 @@ in
                   attrs = {
                     objectClass = [ "olcModuleList" ];
                     cn = "module{0}";
-                    olcModuleLoad = "{0}back_monitor";
+                    olcModuleLoad = [ "{0}dynlist" "{1}back_monitor" ];
                   };
                 };
                 "olcDatabase={1}mdb" = {
@@ -87,7 +87,18 @@ in
                       "{3}to * by dn.base=\"cn=${ldapRootUser},${dbSuffix}\" write by self write by * read"
                     ];
                   };
+                  children = {
+                    "olcOverlay={0}dynlist" = {
+                      attrs = {
+                        objectClass = [ "olcOverlayConfig" "olcDynamicList" ];
+                        olcDynListAttrSet = "groupOfURLs memberURL member+dgMemberOf";
+                        olcOverlay = "dynlist";
+                      };
+                    };
+
+                  };
                 };
+
                 "olcDatabase={2}monitor" = {
                   attrs = {
                     objectClass = [ "olcDatabaseConfig" "olcMonitorConfig" ];
@@ -123,17 +134,23 @@ in
               description: Account used for the Kerberos Admin server
 
               dn: ou=developers,${dbSuffix}
+              ou: developers
               objectClass: top
               objectClass: organizationalUnit
+              description: Parent object of all UNIX accounts
 
               dn: cn=developers,ou=developers,${dbSuffix}
+              objectClass: top
               objectClass: posixGroup
               cn: developers
               gidNumber: 1234
+              description: Linux group used for the Kerberos Admin server
 
               dn: uid=${defaultUser},ou=developers,${dbSuffix}
               objectClass: person
               objectClass: posixAccount
+              objectClass: organizationalPerson
+              objectClass: shadowAccount
               objectClass: inetOrgPerson
               homeDirectory: /home/${defaultUser}
               userpassword: {SASL}${defaultUser}@${realm}
@@ -180,9 +197,16 @@ in
               cn: defaults
               description: Default sudoOptions go here
               sudoOption: env_keep+=SSH_AUTH_SOCK
+
+              dn: cn=grafana,ou=developers,${dbSuffix}
+              objectClass: groupOfURLs
+              cn: grafana
+              memberURL: ldap:///ou=developers,${dbSuffix}??sub?(objectClass=person)
+
+
             '';
           };
-          mutableConfig = true;
+          mutableConfig = false;
         };
     };
 }

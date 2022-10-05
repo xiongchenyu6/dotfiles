@@ -23,7 +23,7 @@ in
 
         [domain/${dbDomain}]
         autofs_provider = ldap
-        ldap_schema = rfc2307
+        ldap_schema = rfc2307bis
         id_provider = ldap
         sudo_provider = ldap
         ldap_uri = ldaps://freeman.engineer
