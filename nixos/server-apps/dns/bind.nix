@@ -92,23 +92,23 @@
           file = "/var/db/bind/${name}";
           extraConfig = "allow-update { key rfc2136key.inner.${domain}.; };";
         }
-        # rec {
-        #   name = "66.156.43.in-addr.arpa";
-        #   master = true;
-        #   file = pkgs.writeText "66.156.43.in-addr.arpa" ''
-        #     $TTL 86400
-        #     $ORIGIN 66.156.43.in-addr.arpa.
-        #     @     IN     SOA    dns1.example.com.     hostmaster.example.com. (
-        #                         2001062501 ; serial
-        #                         21600      ; refresh after 6 hours
-        #                         3600       ; retry after 1 hour
-        #                         604800     ; expire after 1 week
-        #                         86400 )    ; minimum TTL of 1 day
+        rec {
+          name = "157.66.156.43.in-addr.arpa";
+          master = true;
+          file = pkgs.writeText "157.66.156.43.in-addr.arpa" ''
+            $TTL 86400
+            $ORIGIN 157.66.156.43.in-addr.arpa.
+            @     IN     SOA    dns1.example.com.     hostmaster.example.com. (
+                                2001062501 ; serial
+                                21600      ; refresh after 6 hours
+                                3600       ; retry after 1 hour
+                                604800     ; expire after 1 week
+                                86400 )    ; minimum TTL of 1 day
 
-        #           IN     NS     dns1.example.com.
-        #     157   IN     ITR    mail.freeman.engineer.
-        #   '';
-        # }
+                  IN     NS     dns1.example.com.
+                  IN     PTR    mail.${domain}.
+          '';
+        }
       ];
       extraOptions = ''
         empty-zones-enable no;
