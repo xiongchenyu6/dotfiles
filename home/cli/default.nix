@@ -97,6 +97,7 @@
       matchBlocks = {
         "freeman.engineer" = {
           user = "root";
+          port = 2222;
         };
         "git-code-commit.*.amazonaws.com" = lib.hm.dag.entryBefore [ "freeman.engineer" ] {
           user = "APKA6ECL465SUMKZQKLN";
@@ -104,12 +105,12 @@
       };
       extraConfig = ''
         GSSAPIAuthentication yes
+        PasswordAuthentication yes
       '';
     };
 
     bat = { enable = true; };
     exa = { enable = true; };
-    # command-not-found.enable = true;
 
     # Let Home Manager install and manage itself.
 

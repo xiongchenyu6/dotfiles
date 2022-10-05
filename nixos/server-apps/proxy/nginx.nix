@@ -40,6 +40,17 @@ in
             proxyWebsockets = true;
           };
         };
+        hydra = {
+          serverName = "hydra.inner.${domain}";
+          addSSL = true;
+          acmeRoot = null;
+          useACMEHost = "inner.${domain}";
+          kTLS = true;
+          locations."/" = {
+            proxyPass = "http://127.0.0.1:3000";
+            proxyWebsockets = true;
+          };
+        };
       };
     };
   };
