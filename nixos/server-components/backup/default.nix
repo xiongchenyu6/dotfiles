@@ -1,10 +1,10 @@
 { config, pkgs, options, lib, ... }:
 
 {
-  services.restics = {
+  services.restic = {
     server = {
-      enable = true;
-      port = 8000;
+      enable = false;
+      listenAddress = "localhost:8001";
     };
   };
 }
