@@ -54,7 +54,7 @@ Straight is a very good package manager for me to easily get emacs third party p
                                      "##" "#(" "#?" "#_" "%%" ".=" ".-" ".." ".?" "+>" "++" "?:"
                                      "?=" "?." "??" ";;" "/*" "/=" "/>" "//" "__" "~~" "(*" "*)"
                                      "\\\\" "://" "=?"))
-(global-ligature-mode t)
+/=(global-ligature-mode t)
 (add-hook 'prog-mode-hook
           (lambda ()
             (setq-local prettify-symbols-alist
@@ -77,6 +77,7 @@ Straight is a very good package manager for me to easily get emacs third party p
                           ))
             ))
 #+end_src
+
 *** Transparent
 #+begin_src emacs-lisp
 (set-frame-parameter (selected-frame) 'alpha '(85 100))

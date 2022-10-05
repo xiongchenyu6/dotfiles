@@ -55,22 +55,11 @@
       };
     };
 
-    nix-std = {
-      url = "github:chessai/nix-std";
-    };
-
     flake-utils-plus = {
       url = "github:gytis-ivaskevicius/flake-utils-plus";
       inputs.flake-utils.follows = "flake-utils";
     };
 
-    nixos-mailserver = {
-      url = "gitlab:simple-nixos-mailserver/nixos-mailserver";
-      inputs = {
-        nixpkgs.follows = "nixpkgs";
-        utils.follows = "flake-utils";
-      };
-    };
   };
 
   outputs =
@@ -84,9 +73,7 @@
     , home-manager
     , agenix
     , nixos-generators
-    , nix-std
     , devshell
-    , nixos-mailserver
     , ...
     } @inputs:
       with nixpkgs;
@@ -96,7 +83,6 @@
       let
         overlays = [ devshell.overlay ];
         pkgsFor = system: import nixpkgs { inherit system overlays; };
-        std = nix-std.lib;
         domain = "freeman.engineer";
       in
       mkFlake
@@ -137,13 +123,14 @@
             ];
 
           hostDefaults = {
-            extraArgs = { inherit domain; };
+            extraArgs = {
+              inherit domain;
+            };
             modules = [
               nixos-hardware.nixosModules.lenovo-thinkpad-x1-9th-gen
               nixos-hardware.nixosModules.common-gpu-intel
               self.nixosModules.bttc
               agenix.nixosModule
-              ./nixos
               home-manager.nixosModules.home-manager
             ];
           };
@@ -172,7 +159,7 @@
             # Evaluates to `defaultPackage.<system>.neovim = <nixpkgs-channel-reference>.neovim`.
             # defaultPackage = channels.nixpkgs.neovim;
 
-            devShell = channels.nixpkgs.devshell.mkShell {
+            devShells.default = channels.nixpkgs.devshell.mkShell {
               packages = with channels.nixpkgs; [
                 # to test with nix (Nix) 2.7.0 and NixOps 2.0.0-pre-7220cbd use
                 gopls
@@ -196,6 +183,7 @@
               system = "x86_64-linux";
               overlays = [
                 self.overlays.default
+                xddxdd.overlay
                 emacs.overlay
                 (final: prev: {
                   krb5Full = prev.krb5Full.overrideAttrs (old: {
@@ -213,43 +201,33 @@
               ];
             };
           };
-          defaults = { ... }: {
+          defaults = {
             imports = [
               agenix.nixosModule
-              ./nixos
+              home-manager.nixosModules.home-manager
             ];
           };
           tc =
-            rec {
+            {
               _module.args = {
                 inherit domain;
               };
 
               imports = [
-                self.nixosModules.tat-agent
                 ./host/tc
-                home-manager.nixosModules.home-manager
               ];
 
-              nixpkgs = {
-                overlays = [
-                  self.overlays.default
-                  xddxdd.overlay
-                ];
-              };
               deployment = {
                 targetHost = domain;
                 tags = [ "wg" ];
               };
             };
         };
-        nixosModules = import ./modules {
-          inherit std;
-        };
+        nixosModules = import ./modules { };
         templates = import ./templates;
-        libs = import ./lib;
       } //
       (
+
         let
           # System types to support.
           supportedSystems =
@@ -266,7 +244,7 @@
             let pkgs = nixpkgsFor.${system};
             in
             {
-              "tester" = self.packages.${system}.default.overrideAttrs (prev: {
+              tester = self.packages.${system}.default.overrideAttrs (prev: {
                 doCheck = true;
                 keepBuildDirectory = true;
                 #succeedOnFailure = true;
@@ -276,6 +254,7 @@
                   echo hello
                 '';
                 postInstall = ''
+                  echo hello
                   echo world
                 '';
                 failureHook = ''
@@ -283,7 +262,7 @@
                   test -d tests/testsuite.dir && cp -r tests/testsuite.dir $out/
                 '';
               });
-              "tester-readme" = pkgs.runCommand "readme"
+              tester-readme = pkgs.runCommand "readme"
                 { } ''
                 echo hello worl
                 mkdir -p $out/nix-support
