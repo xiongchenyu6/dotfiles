@@ -56,7 +56,6 @@ rec {
       domain = {
         enable = true;
         port = 9004;
-
       };
       nginx = {
         enable = true;
