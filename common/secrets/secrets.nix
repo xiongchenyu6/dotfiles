@@ -14,4 +14,5 @@ in
   "tc_wg_pk.age".publicKeys = [ office tc ];
   "tc_https_pk.age".publicKeys = [ office tc ];
   "acme_credentials.age".publicKeys = [ office tc ];
+  "ldap_credentials.age".publicKeys = [ office tc ];
 }

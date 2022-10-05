@@ -10,6 +10,8 @@ in
   services = {
     nginx = {
       enable = true;
+      statusPage = true;
+      recommendedProxySettings = true;
       gitweb = { enable = true; };
       additionalModules = [ pkgs.nginxModules.pam ];
 
@@ -51,6 +53,18 @@ in
             proxyWebsockets = true;
           };
         };
+        prometheus = {
+          serverName = "prometheus.inner.${domain}";
+          addSSL = true;
+          acmeRoot = null;
+          useACMEHost = "inner.${domain}";
+          kTLS = true;
+          locations."/" = {
+            proxyPass = "http://127.0.0.1:9090";
+            proxyWebsockets = true;
+          };
+        };
+
       };
     };
   };

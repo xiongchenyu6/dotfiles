@@ -61,6 +61,13 @@ in
                     ../../../common/sudoers.ldif
                   ];
                 };
+                "cn=module{0}" = {
+                  attrs = {
+                    objectClass = [ "olcModuleList" ];
+                    cn = "module{0}";
+                    olcModuleLoad = "{0}back_monitor";
+                  };
+                };
                 "olcDatabase={1}mdb" = {
                   attrs = {
                     objectClass = [ "olcDatabaseConfig" "olcMdbConfig" ];
@@ -78,6 +85,14 @@ in
                 by dn.exact=\"uid=kadmin,ou=services,${dbSuffix}\" write
                 by * none"
                       "{3}to * by dn.base=\"cn=${ldapRootUser},${dbSuffix}\" write by self write by * read"
+                    ];
+                  };
+                };
+                "olcDatabase={2}monitor" = {
+                  attrs = {
+                    objectClass = [ "olcDatabaseConfig" "olcMonitorConfig" ];
+                    olcAccess = [
+                      "{0}to * by dn.base=\"gidNumber=0+uidNumber=0,cn=peercred,cn=external,cn=auth\" read by dn.base=\"cn=${ldapRootUser},${dbSuffix}\" read by * none"
                     ];
                   };
                 };
@@ -171,3 +186,4 @@ in
         };
     };
 }
+

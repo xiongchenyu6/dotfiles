@@ -1,12 +1,12 @@
 { config, pkgs, lib, symlinkJoin, domain, ... }:
 let
   common-files-path = ../../common;
-  secret-files-paht = common-files-path + "/secrets";
+  secret-files-path = common-files-path + "/secrets";
   script = import ../../dn42/update-roa.nix { inherit pkgs; };
   share = import (common-files-path + /share.nix);
 in
 {
-  age.secrets.tc_wg_pk.file = secret-files-paht + /tc_wg_pk.age;
+  age.secrets.tc_wg_pk.file = secret-files-path + /tc_wg_pk.age;
 
 
   networking = {
