@@ -10,6 +10,13 @@
     ++ (ls ./common-components)
     ++ (ls ./client-components)
   ;
+
+  nix = {
+    generateNixPathFromInputs = true;
+    generateRegistryFromInputs = true;
+    linkInputs = true;
+  };
+
   environment = {
     systemPackages = with pkgs; [
       asciinema

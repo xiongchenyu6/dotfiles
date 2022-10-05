@@ -17,9 +17,6 @@
       options = "--delete-older-than 7d";
       randomizedDelaySec = "1h";
     };
-    #    generateNixPathFromInputs = true;
-    # generateRegistryFromInputs = true;
-    #linkInputs = true;
     optimise.automatic = true;
     settings = {
       experimental-features = [
