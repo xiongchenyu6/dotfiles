@@ -158,6 +158,7 @@ in
               gidNumber: 1234
               cn: ${defaultUser}
               sn: ${defaultUser}
+              givenName: ${defaultUser}
               mail: fdsa@google.com
               jpegPhoto: www.baidu.com
 
@@ -171,6 +172,7 @@ in
               gidNumber: 1234
               cn: user3
               sn: user3
+              givenName: user3
               mail: fdsa@google.com
               jpegPhoto: www.baidu.com
 
@@ -184,6 +186,7 @@ in
               gidNumber: 1234
               cn: user4
               sn: user4
+              givenName: user4
               mail: fdsa@google.com
               jpegPhoto: www.baidu.com
 
