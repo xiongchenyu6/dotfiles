@@ -3,7 +3,7 @@
 {
   services = {
     hydra = {
-      enable = true;
+      enable = false;
       hydraURL = "https://hydra.inner.${domain}"; # externally visible URL
       notificationSender = "hydra@mail.freeman.engineer"; # e-mail of hydra service
       # a standalone hydra will require you to unset the buildMachinesFiles list to avoid using a nonexistant /etc/nix/machines

@@ -31,17 +31,17 @@ in
             auth_pam_service_name "nginx";
           '';
         };
-        restic = {
-          serverName = "restic.inner.${domain}";
-          addSSL = true;
-          acmeRoot = null;
-          useACMEHost = "inner.${domain}";
-          kTLS = true;
-          locations."/" = {
-            proxyPass = config.services.restic.server.listenAddress;
-            proxyWebsockets = true;
-          };
-        };
+        # restic = {
+        #   serverName = "restic.inner.${domain}";
+        #   addSSL = true;
+        #   acmeRoot = null;
+        #   useACMEHost = "inner.${domain}";
+        #   kTLS = true;
+        #   locations."/" = {
+        #     proxyPass = config.services.restic.server.listenAddress;
+        #     proxyWebsockets = true;
+        #   };
+        # };
         grafana = {
           serverName = "grafana.inner.${domain}";
           addSSL = true;

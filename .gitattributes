@@ -6,3 +6,4 @@
 .netrc filter=git-crypt diff=git-crypt
 id_rsa filter=git-crypt diff=git-crypt
 passwordFile filter=git-crypt diff=git-crypt
+ldap.toml filter=git-crypt diff=git-crypt
