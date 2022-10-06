@@ -6,7 +6,7 @@
     realms = {
       "FREEMAN.ENGINEER" = {
         admin_server = "freeman.engineer";
-        kdc = [ "freeman.engineer" "mail.freeman.engineer" ];
+        kdc = [ "freeman.engineer" ];
         default_domain = "freeman.engineer";
         kpasswd_server = "freeman.engineer";
         database_module = "openldap_ldapconf";
