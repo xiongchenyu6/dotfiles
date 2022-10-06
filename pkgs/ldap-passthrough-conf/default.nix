@@ -5,14 +5,21 @@
   name = "ldap-passthrough-conf";
 
   src = ./.;
-  file = pkgs.writeText "slapd.conf" ''
+  slapd = pkgs.writeText "slapd.conf" ''
     pwcheck_method: saslauthd
     saslauthd_path: /run/saslauthd/mux
+  '';
+  smtpd = pkgs.writeText "smtpd.conf" ''
+    pwcheck_method: saslauthd
+    mech_list: PLAIN LOGIN
+    saslauthd_path: /run/saslauthd/mux
+    allow_plaintext: true
   '';
 
   installPhase = ''
     mkdir -p $out;
-    cp ${file} $out/slapd.conf;
+    cp ${slapd} $out/slapd.conf;
+    cp ${smtpd} $out/smtpd.conf;
   '';
 
 }

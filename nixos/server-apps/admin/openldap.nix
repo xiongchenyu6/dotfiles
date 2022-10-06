@@ -205,11 +205,9 @@ in
               objectClass: groupOfURLs
               cn: grafana
               memberURL: ldap:///ou=developers,${dbSuffix}??sub?(objectClass=person)
-
-
             '';
           };
-          mutableConfig = false;
+          mutableConfig = true;
         };
     };
 }

@@ -20,6 +20,7 @@ in
     firewall = {
       enable = true;
       allowedTCPPorts = [
+        25 # SMTP
         53
         80 # ui
         88 # kerberos
