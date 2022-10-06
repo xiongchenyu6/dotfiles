@@ -26,10 +26,6 @@ in
             proxyPass = "http://127.0.0.1:5000";
             proxyWebsockets = true;
           };
-          extraConfig = ''
-            auth_pam  "Password Required";
-            auth_pam_service_name "nginx";
-          '';
         };
         # restic = {
         #   serverName = "restic.inner.${domain}";
@@ -73,6 +69,10 @@ in
           locations."/" = {
             proxyPass = "http://127.0.0.1:9090";
             proxyWebsockets = true;
+            extraConfig = ''
+              auth_pam  "Password Required";
+              auth_pam_service_name "nginx";
+            '';
           };
         };
 
