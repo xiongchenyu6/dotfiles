@@ -16,35 +16,35 @@
   bttc = {
     pname = "bttc";
     version = "v1.0.2";
-    src = fetchFromGitHub {
+    src = fetchFromGitHub ({
       owner = "bttcprotocol";
       repo = "bttc";
       rev = "v1.0.2";
       fetchSubmodules = true;
       sha256 = "sha256-qptNGs6NmbIEzmosASAvdZSIUhw5RVcgEF55/RhgR3I=";
-    };
+    });
   };
   delivery = {
     pname = "delivery";
     version = "v1.0.2";
-    src = fetchFromGitHub {
+    src = fetchFromGitHub ({
       owner = "bttcprotocol";
       repo = "delivery";
       rev = "v1.0.2";
       fetchSubmodules = true;
       sha256 = "sha256-HItF37qlIm6IT8WSomTulkX7524UZwpwMbqyjckXFxA=";
-    };
+    });
   };
   forgit = {
     pname = "forgit";
-    version = "49579b2d1f620db6a71d070b40416c1af8a32168";
+    version = "25789d2198f364a8e4a942cf8493fae2ef7b9fe4";
     src = fetchgit {
       url = "https://github.com/wfxr/forgit.git";
-      rev = "49579b2d1f620db6a71d070b40416c1af8a32168";
+      rev = "25789d2198f364a8e4a942cf8493fae2ef7b9fe4";
       fetchSubmodules = false;
       deepClone = false;
       leaveDotGit = false;
-      sha256 = "sha256-dz7HNm9+dgb2ibomdrYdtSUC+ksrYdRR5RjBxSmc9eI=";
+      sha256 = "sha256-ha456LUCUctUn8WAThDza437U5iyUkFirQ2UBtrrROg=";
     };
   };
   launch = {

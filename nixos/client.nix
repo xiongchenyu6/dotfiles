@@ -70,6 +70,7 @@
       nodePackages."typescript-language-server"
       nodePackages."bash-language-server"
       nvfetcher
+      #nixopsUnstable
       openssl
       protobuf
       plantuml
@@ -101,12 +102,16 @@
     {
       dbus = { enable = true; };
 
+      trilium-server = {
+        enable = true;
+        noAuthentication = true;
+      };
+
       gnome = { gnome-keyring = { enable = true; }; };
 
-      openldap =
-        {
-          enable = true;
-        };
+      openldap = {
+        enable = true;
+      };
     };
 
   users = {

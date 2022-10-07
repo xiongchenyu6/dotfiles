@@ -23,9 +23,9 @@
 
             smtpd_tls_security_level = "encrypt";
             smtpd_client_restrictions = "permit_sasl_authenticated,reject";
-            smtpd_sender_login_maps = "hash:/etc/postfix/vaccounts";
-            smtpd_sender_restrictions = "reject_sender_login_mismatch";
-            smtpd_recipient_restrictions = "reject_non_fqdn_recipient,reject_unknown_recipient_domain,permit_sasl_authenticated,reject";
+            # smtpd_sender_login_maps = "hash:/etc/postfix/vaccounts";
+            # smtpd_sender_restrictions = "reject_sender_login_mismatch";
+            # smtpd_recipient_restrictions = "reject_non_fqdn_recipient,reject_unknown_recipient_domain,permit_sasl_authenticated,reject";
 
           };
           config = {
@@ -60,41 +60,6 @@
             smtp_tls_mandatory_exclude_ciphers = "MD5, DES, ADH, RC4, PSD, SRP, 3DES, eNULL, aNULL";
             smtp_tls_exclude_ciphers = "MD5, DES, ADH, RC4, PSD, SRP, 3DES, eNULL, aNULL";
           };
-          # extraMasterConf = ''
-          #   smtp        inet  n        -       -       -        -        smtpd -v
-          # '';
-        };
-      dovecot2 =
-        {
-          enable = true;
-          # group = "openldap";
-          sslCACert = credsDir + "/full.pem";
-          sslServerKey = credsDir + "/cert.pem";
-          sslServerCert = credsDir + "/key.pem";
-          enableImap = true;
-          enablePop3 = true;
-          enablePAM = true;
-          enableQuota = true;
-          enableLmtp = true;
-          modules = [ pkgs.dovecot_pigeonhole ];
-          extraConfig = ''
-            mail_debug = yes
-            auth_debug = yes
-            verbose_ssl = yes
-            ssl = required
-            ssl_min_protocol = TLSv1.2
-            ssl_prefer_server_ciphers = yes
-          '';
         };
     };
-  # systemd.services.dovecot2.requires = [ "acme-finished-${domain}.target" ];
-  # systemd.services.dovecot2.serviceConfig.LoadCredential =
-  #   let
-  #     certDir = config.security.acme.certs."${domain}".directory;
-  #   in
-  #   [
-  #     "full.pem:${certDir}/full.pem"
-  #     "cert.pem:${certDir}/cert.pem"
-  #     "key.pem:${certDir}/key.pem"
-  #   ];
 }
