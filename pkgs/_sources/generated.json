@@ -66,12 +66,12 @@
             "fetchSubmodules": false,
             "leaveDotGit": false,
             "name": null,
-            "rev": "49579b2d1f620db6a71d070b40416c1af8a32168",
-            "sha256": "sha256-dz7HNm9+dgb2ibomdrYdtSUC+ksrYdRR5RjBxSmc9eI=",
+            "rev": "25789d2198f364a8e4a942cf8493fae2ef7b9fe4",
+            "sha256": "sha256-ha456LUCUctUn8WAThDza437U5iyUkFirQ2UBtrrROg=",
             "type": "git",
             "url": "https://github.com/wfxr/forgit.git"
         },
-        "version": "49579b2d1f620db6a71d070b40416c1af8a32168"
+        "version": "25789d2198f364a8e4a942cf8493fae2ef7b9fe4"
     },
     "launch": {
         "cargoLocks": null,

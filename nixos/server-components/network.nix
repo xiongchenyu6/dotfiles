@@ -27,7 +27,9 @@ in
         179
         389
         443
-        636
+        465 # smpts
+        636 # ldaps
+        993 # imaps
         8000
       ];
       allowedUDPPorts = [
@@ -36,7 +38,7 @@ in
         88 # kerberos
         179 # bird2
         389 # ldap
-        636 # ldaps
+        636
         22616
         23396
         21816
