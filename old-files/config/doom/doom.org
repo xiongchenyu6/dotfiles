@@ -521,12 +521,11 @@ Used to use this key binding to increase number in vim a lot.
             `(define-key ,(intern (concat "evil-" mode "-state-map")) (kbd ,key-set)
                ',(intern (concat "evil-numbers/" func)))) `(,@modes))))
 
-(eval
- (macroexpand-1
-  '(set-evil-number-keymap "C-a" "inc-at-pt" "normal" "insert")))
-;; (eval
-;;  (macroexpand
-;;   '(set-evil-number-keymap "C-x" "dec-at-pt" "normal" "insert")))
+(macroexpand-1
+ '(set-evil-number-keymap "C-a" "inc-at-pt" "normal" "insert"))
+
+(macroexpand
+ '(set-evil-number-keymap "C-x" "dec-at-pt" "normal" "insert"))
 #+end_src
 
 * Mail
