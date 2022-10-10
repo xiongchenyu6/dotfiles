@@ -1,9 +1,22 @@
 { config, pkgs, options, lib, domain, ... }:
+let
+  common-files-path = ../../../common;
+  secret-files-path = common-files-path + "/secrets";
+  share = import (common-files-path + /share.nix);
+in
 
 {
+  age.secrets.ldap-password = {
+    file = secret-files-path + /ldap-password.age;
+    mode = "770";
+    owner = "hydra";
+    group = "hydra";
+  };
+
   services = {
     hydra = {
-      enable = false;
+      enable = true;
+      package = pkgs.hydra-unstable;
       hydraURL = "https://hydra.inner.${domain}"; # externally visible URL
       notificationSender = "hydra@mail.freeman.engineer"; # e-mail of hydra service
       # a standalone hydra will require you to unset the buildMachinesFiles list to avoid using a nonexistant /etc/nix/machines
@@ -11,11 +24,67 @@
       # you will probably also want, otherwise *everything* will be built from scratch
       useSubstitutes = true;
       # listenHost = "hydra.inner.${domain}";
-      extraConfig = ''
-        <dynamicruncommand>
-          enable = 1
-        </dynamicruncommand>
-      '';
+      extraConfig = let passwordFile = ./ldap-password.conf; in
+        ''
+          <dynamicruncommand>
+            enable = 1
+          </dynamicruncommand>
+
+          <hydra_notify>
+            <prometheus>
+              listen_address = 127.0.0.1
+              port = 9199
+            </prometheus>
+          </hydra_notify>
+
+          <ldap>
+            <role_mapping>
+              grafana = admin
+              grafana = bump-to-front
+              grafana = cancel-build
+              grafana = create-projects
+              grafana = restart-jobs
+            </role_mapping>
+            <config>
+              <credential>
+                class = Password
+                password_field = password
+                password_type = self_check
+              </credential>
+              <store>
+                class = LDAP
+                ldap_server = ldaps://${domain}
+                <ldap_server_options>
+                  timeout = 30
+                  debug = 2
+                </ldap_server_options>
+                binddn = "cn=admin,dc=freeman,dc=engineer"
+                include ${config.age.secrets.ldap-password.path}
+                start_tls = 0
+                <start_tls_options>
+                  verify = none
+                </start_tls_options>
+                user_basedn = "ou=developers,dc=freeman,dc=engineer"
+                user_filter = "(&(objectClass=inetOrgPerson)(uid=%s))"
+                user_scope = one
+                user_field = uid
+                <user_search_options>
+                  deref = always
+                </user_search_options>
+                # Important for role mappings to work:
+                use_roles = 1
+                role_basedn = "cn=grafana,ou=developers,dc=freeman,dc=engineer"
+                role_filter = "(&(objectClass=groupOfURLs)(member=%s))"
+                role_field = cn
+                role_value = dn
+                <role_search_options>
+                  deref = always
+                </role_search_options>
+            </config>
+          </ldap>
+          </ldap>
+
+        '';
     };
   };
 }

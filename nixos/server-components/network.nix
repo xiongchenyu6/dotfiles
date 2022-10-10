@@ -27,6 +27,7 @@ in
         179
         389
         443
+        464 # kerberos change password
         465 # smpts
         636 # ldaps
         993 # imaps

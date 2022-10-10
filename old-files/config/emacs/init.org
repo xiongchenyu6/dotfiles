@@ -54,7 +54,7 @@ Straight is a very good package manager for me to easily get emacs third party p
                                      "##" "#(" "#?" "#_" "%%" ".=" ".-" ".." ".?" "+>" "++" "?:"
                                      "?=" "?." "??" ";;" "/*" "/=" "/>" "//" "__" "~~" "(*" "*)"
                                      "\\\\" "://" "=?"))
-/=(global-ligature-mode t)
+(global-ligature-mode t)
 (add-hook 'prog-mode-hook
           (lambda ()
             (setq-local prettify-symbols-alist
@@ -230,23 +230,23 @@ Straight is a very good package manager for me to easily get emacs third party p
 #+end_src
 *** Native Global Mode
 #+begin_src emacs-lisp
-(auto-save-visited-mode +1)
+(auto-save-visited-mode t)
 
-(global-auto-composition-mode +1)
-(global-auto-revert-mode +1)
-(global-eldoc-mode +1)
+(global-auto-composition-mode t)
+(global-auto-revert-mode t)
+(global-eldoc-mode t)
 ;; (global-linum-mode +1)
-(global-visual-line-mode +1)
+(global-visual-line-mode t)
 ;; (global-word-wrap-whitespace-mode +1)
-(auto-fill-mode +1)
-(save-place-mode +1)
+(auto-fill-mode t)
+(save-place-mode t)
 
 (setq-default abbrev-mode t)
-(winner-mode +1)
+(winner-mode t)
 (global-tab-line-mode)
 (global-prettify-symbols-mode)
 
-(next-error-follow-minor-mode 1)
+(next-error-follow-minor-mode t)
 (pixel-scroll-precision-mode t)
 #+end_src
 *** Buffer
@@ -454,7 +454,7 @@ Straight is a very good package manager for me to easily get emacs third party p
 
 (require 'copilot)
 
-(setq copilot-node-executable "/nix/store/sg9v02dyy3301yq92k8kvdi17yfjrh52-nodejs-14.20.1/bin/node")
+(setq copilot-node-executable "/nix/store/4m582jbyfrd48wrgb9lvcaicda5b5fbm-nodejs-14.20.1/bin/node")
 
 (defun my-tab ()
   (interactive)
@@ -477,7 +477,6 @@ Straight is a very good package manager for me to easily get emacs third party p
 #+begin_src emacs-lisp
 (add-hook 'prog-mode-hook 'hs-minor-mode)
 (add-hook 'hs-minor-mode-hook (lambda () (hs-hide-initial-comment-block)))
-
 #+end_src
 *** Motivation
 #+begin_src emacs-lisp

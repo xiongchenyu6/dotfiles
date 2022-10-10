@@ -196,18 +196,26 @@
               position = "0x0";
               mode = "1920x1200";
               rate = "60.00";
+              scale = {
+                x = 1.5;
+                y = 1.5;
+              };
+              dpi = 144;
             };
 
             "HDMI-1" = {
               enable = true;
               crtc = 1;
               primary = false;
-              position = "1920x0";
+              position = "2880x0";
               mode = "3840x2160";
               rate = "60.00";
               rotate = "left";
+              scale = {
+                x = 1;
+                y = 1;
+              };
             };
-
           };
           # hooks.postswitch = ''
           #   polybar-msg cmd restart
@@ -273,13 +281,12 @@
         cert-digest-algo = "SHA256";
       };
     };
-    qutebrowser = { enable = true; };
 
     xmobar = {
       enable = true;
       extraConfig = ''
         Config {
-                font = "xft:WenQuanYi Zen Hei:size=12"
+                font = "xft:WenQuanYi Zen Hei:size=8"
               , borderColor = "black"
               , border = TopB
               , bgColor = "black"
@@ -430,7 +437,7 @@
         };
         "bar/bottom" = {
           width = "100%";
-          height = "30";
+          height = 35;
           bottom = true;
           background = "\${colors.background}";
           foreground = "\${colors.foreground}";
@@ -440,6 +447,7 @@
           tray-position = "right";
           tray-padding = "2";
           tray-background = "\${colors.background}";
+          tray-maxsize = 20;
           enable-ipc = true;
         };
         "module/date" = {

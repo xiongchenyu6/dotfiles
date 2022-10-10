@@ -33,6 +33,7 @@ rec {
               "localhost:9008"
               "localhost:9009"
               "localhost:9010"
+              "localhost:9199"
             ];
           }];
         }
@@ -57,26 +58,28 @@ rec {
         enable = true;
         port = 9004;
       };
+
       nginx = {
         enable = true;
         port = 9005;
-
       };
+
       openldap = {
         enable = true;
         port = 9007;
         ldapCredentialFile = config.age.secrets.ldap_credentials.path;
       };
+
       postfix = {
         enable = true;
         port = 9008;
-
       };
+
       postgres = {
         enable = true;
         port = 9009;
-
       };
+
       wireguard = {
         enable = true;
         port = 9010;

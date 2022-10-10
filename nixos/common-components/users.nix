@@ -7,6 +7,20 @@ in
 {
   users = {
     # Define a user account. Don't forget to set a password with ‘passwd’.
+    motd = ''
+
+                                       Welcome to:
+              ______.      ___       ______.    ______.  .__  ___    ___
+             /___   /     /   \     |   _   \  |   _   \ |__| \  \  /  /
+                /  /     /  .  \    |  <_>  /  |  <_>  / |  |  \  \/  /
+               /  /     /  /-\  \   |   _  .   |   _  .  |  |   >    <
+              /  /__.  /  /---\  \  |  <_>  \  |  <_>  \ |  |  /  /\  \
+             /._____/ /__/     \__\ |______./  |______./ |__| /__/  \_ \
+                                                                      \/
+
+
+      '';
+
     users.root = {
       openssh.authorizedKeys.keys = [
         share.office.user.public-key
