@@ -86,7 +86,6 @@ in
             proxyWebsockets = true;
           };
         };
-
       };
     };
   };

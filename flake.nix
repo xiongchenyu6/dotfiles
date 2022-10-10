@@ -4,6 +4,8 @@
 
   inputs = {
     # Core Dependencies
+    nixpkgs-stable.url = "github:NixOS/nixpkgs/nixos-22.05";
+
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
 
     nixos-hardware.url = "github:NixOS/nixos-hardware/master";
@@ -59,6 +61,13 @@
       url = "github:gytis-ivaskevicius/flake-utils-plus";
       inputs.flake-utils.follows = "flake-utils";
     };
+    nixops = {
+      url = "github:NixOS/nixops";
+      inputs = {
+        nixpkgs.follows = "nixpkgs";
+        utils.follows = "flake-utils";
+      };
+    };
 
   };
 
@@ -74,6 +83,8 @@
     , agenix
     , nixos-generators
     , devshell
+    , nixops
+    , nixpkgs-stable
     , ...
     } @inputs:
       with nixpkgs;
@@ -120,6 +131,7 @@
                     ln -sf ${prev.ldap-passthrough-conf}/smtpd.conf $out/lib/sasl2/
                   '';
                 });
+                nixopsUnstable = (import nixpkgs-stable { system = "x86_64-linux"; }).nixopsUnstable;
               })
             ];
 
@@ -206,6 +218,8 @@
                     });
                   sssd = prev.sssd.override
                     { withSudo = true; };
+                  hydra-unstable = prev.hydra-unstable.overrideAttrs
+                    (old: { doCheck = false; });
                 })
               ];
             };

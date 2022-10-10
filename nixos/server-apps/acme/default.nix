@@ -2,13 +2,13 @@
 
 let
   common-files-path = ../../../common;
-  secret-files-paht = common-files-path + "/secrets";
+  secret-files-path = common-files-path + "/secrets";
   share = import (common-files-path + /share.nix);
 in
 {
 
   age.secrets.acme_credentials = {
-    file = secret-files-paht + /acme_credentials.age;
+    file = secret-files-path + /acme_credentials.age;
     mode = "770";
     owner = "acme";
     group = "acme";

@@ -61,7 +61,10 @@
       imagemagick
       ispell
       lsof
-      (python3.withPackages (ps: [ my_cookies ]))
+      (python3.withPackages (ps: [
+        my_cookies
+        python310Packages.python-lsp-server
+      ]))
       pinentry
       linuxPackages.ply
       wakatime
@@ -70,7 +73,7 @@
       nodePackages."typescript-language-server"
       nodePackages."bash-language-server"
       nvfetcher
-      #nixopsUnstable
+      nixopsUnstable
       openssl
       protobuf
       plantuml
