@@ -2,7 +2,6 @@
 let
   common-files-path = ../../common;
   secret-files-path = common-files-path + "/secrets";
-  script = import ../../dn42/update-roa.nix { inherit pkgs; };
   share = import (common-files-path + /share.nix);
 in
 {
@@ -41,6 +40,7 @@ in
         389 # ldap
         636
         22616
+        22617
         23396
         21816
         33434
@@ -70,6 +70,19 @@ in
     };
     wg-quick = {
       interfaces = {
+        # wg_tronlink = {
+        #   privateKeyFile = config.age.secrets.tc_wg_pk.path;
+        #   address = [ "172.22.240.97/27" "fe80::100/64" ];
+        #   listenPort = 22617;
+        #   peers = [{
+        #     endpoint = "vpn.trontech.link:22617";
+        #     publicKey = "QobRd0pwcPQfDf1mdvsB8ZklMW7/RCd84qOVDQD3WH8=";
+        #     persistentKeepalive = 1;
+        #     allowedIPs =
+        #       [ "172.64.224.1/24" "fe80::101/64" ];
+        #   }];
+        # };
+
         wg_office = {
           privateKeyFile = config.age.secrets.tc_wg_pk.path;
           address = [ "172.22.240.97/27" "fe80::100/64" "fd48:4b4:f3::1/48" ];

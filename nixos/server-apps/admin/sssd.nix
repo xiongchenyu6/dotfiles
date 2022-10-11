@@ -5,7 +5,6 @@ let
   dbSuffix = "dc=freeman,dc=engineer";
   defaultUser = "freeman";
   ldapRootUser = "admin";
-  kerberosLdapPassword = "a";
 in
 {
   services = {
@@ -26,12 +25,12 @@ in
         ldap_schema = rfc2307bis
         id_provider = ldap
         sudo_provider = ldap
-        ldap_uri = ldaps://freeman.engineer
+        ldap_uri = ldaps://${config.networking.fqdn}
         ldap_search_base = ${dbSuffix}
         ldap_default_bind_dn = cn=${ldapRootUser},${dbSuffix}
         ldap_sudo_search_base = ou=SUDOers,${dbSuffix}
         ldap_sasl_mech = GSSAPI
-        ldap_sasl_authid = host/${dbDomain}
+        ldap_sasl_authid = host/${config.networking.fqdn}
         ldap_sasl_realm = FREEMAN.ENGINEER
 
         chpass_provider = krb5
@@ -42,7 +41,7 @@ in
         access_provider = simple
 
         krb5_realm = FREEMAN.ENGINEER
-        krb5_server = ${dbDomain}
+        krb5_server = ${config.networking.fqdn}
         krb5_validate = true
         debug_level = 0x3ff0
       '';

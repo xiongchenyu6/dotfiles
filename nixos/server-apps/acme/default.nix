@@ -26,9 +26,9 @@ in
         # '';
       };
       certs = {
-        "${domain}" = {
-          domain = "${domain}";
+        "${config.networking.fqdn}" = {
           dnsProvider = "namedotcom";
+          domain = "*.${domain}";
           credentialsFile = config.age.secrets.acme_credentials.path;
           # We don't need to wait for propagation since this is a local DNS server
           dnsPropagationCheck = false;

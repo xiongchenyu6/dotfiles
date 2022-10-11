@@ -5,10 +5,10 @@
     enable = true;
     realms = {
       "FREEMAN.ENGINEER" = {
-        admin_server = "freeman.engineer";
-        kdc = [ "freeman.engineer" ];
-        default_domain = "freeman.engineer";
-        kpasswd_server = "freeman.engineer";
+        admin_server = "mail.freeman.engineer";
+        kdc = [ "mail.freeman.engineer" ];
+        default_domain = "mail.freeman.engineer";
+        kpasswd_server = "mail.freeman.engineer";
         database_module = "openldap_ldapconf";
 
       };

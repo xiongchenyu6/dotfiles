@@ -2,7 +2,7 @@
 
 {
   services =
-    let credsDir = config.security.acme.certs."${domain}".directory; in
+    let credsDir = config.security.acme.certs."${config.networking.fqdn}".directory; in
     {
       postfix =
         {

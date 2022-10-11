@@ -38,6 +38,17 @@ in
             ];
           }];
         };
+        wg_tronlink = {
+          privateKeyFile = config.age.secrets.office_wg_pk.path;
+          address = [ "172.64.224.2/24" "fe80::102/64" ];
+          peers = [{
+            endpoint = "vpn.trontech.link:22617";
+            publicKey = share.tronlink.wg.public-key;
+            persistentKeepalive = 5;
+            allowedIPs =
+              [ "172.64.224.1/24" "fe80::101/64" "172.32.0.0/16" ];
+          }];
+        };
       };
     };
     extraHosts = ''
