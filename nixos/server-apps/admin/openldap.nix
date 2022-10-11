@@ -1,11 +1,12 @@
 { config, pkgs, lib, symlinkJoin, domain, ... }:
 let
-  dbDomain = "freeman.engineer";
   realm = "FREEMAN.ENGINEER";
   dbSuffix = "dc=freeman,dc=engineer";
   defaultUser = "freeman";
   ldapRootUser = "admin";
-  kerberosLdapPassword = "a";
+  common-files-path = ../../../common;
+  kdcPasswordFile = common-files-path + "/kdc.password";
+  kadminPasswordFile = common-files-path + "/kadmin.password";
 in
 
 {
@@ -28,10 +29,10 @@ in
 
           settings =
             {
-              attrs = let credsDir = config.security.acme.certs."${domain}".directory; in
+              attrs = let credsDir = config.security.acme.certs."${config.networking.fqdn}".directory; in
                 {
                   olcLogLevel = [ "stats" ];
-                  olcSaslHost = "freeman.engineer";
+                  olcSaslHost = config.networking.fqdn;
                   olcSaslRealm = "FREEMAN.ENGINEER";
                   olcTLSCACertificateFile = credsDir + "/full.pem";
                   olcTLSCertificateFile = credsDir + "/cert.pem";
@@ -115,7 +116,7 @@ in
               objectClass: top
               objectClass: dcObject
               objectClass: organization
-              o: ${dbDomain}
+              o: ${domain}
 
               dn: ou=services,${dbSuffix}
               objectClass: top
@@ -124,13 +125,13 @@ in
               dn: uid=kdc, ou=services,${dbSuffix}
               objectClass: account
               objectClass: simpleSecurityObject
-              userPassword: ${kerberosLdapPassword}
+              userPassword: ${builtins.readFile kdcPasswordFile}
               description: Account used for the Kerberos KDC
 
               dn: uid=kadmin, ou=services,${dbSuffix}
               objectClass: account
               objectClass: simpleSecurityObject
-              userPassword: ${kerberosLdapPassword}
+              userPassword: ${builtins.readFile kadminPasswordFile}
               description: Account used for the Kerberos Admin server
 
               dn: ou=developers,${dbSuffix}
@@ -161,6 +162,7 @@ in
               givenName: ${defaultUser}
               mail: fdsa@google.com
               jpegPhoto: www.baidu.com
+
 
               dn: uid=user3,ou=developers,${dbSuffix}
               objectClass: person
@@ -207,7 +209,7 @@ in
               memberURL: ldap:///ou=developers,${dbSuffix}??sub?(objectClass=person)
             '';
           };
-          mutableConfig = true;
+          mutableConfig = false;
         };
     };
 }

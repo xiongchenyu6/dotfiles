@@ -131,7 +131,7 @@
                     ln -sf ${prev.ldap-passthrough-conf}/smtpd.conf $out/lib/sasl2/
                   '';
                 });
-                nixopsUnstable = (import nixpkgs-stable { system = "x86_64-linux"; }).nixopsUnstable;
+                # nixopsUnstable = (import nixpkgs-stable { system = "x86_64-linux"; }).nixopsUnstable;
               })
             ];
 

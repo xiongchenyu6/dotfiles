@@ -29,7 +29,7 @@ in
           openldap_ldapconf = {
               db_module_dir = ${pkgs.krb5Full}/lib/krb5/plugins/kdb/
               db_library = kldap
-              ldap_servers = ldap://freeman.engineer:389
+              ldap_servers = ldaps://${config.networking.fqdn}
               ldap_kerberos_container_dn = cn=krbContainer,ou=services,${dbSuffix}
               ldap_kdc_dn = uid=kdc,ou=services,${dbSuffix}
               ldap_kadmind_dn = uid=kadmin,ou=services,${dbSuffix}
