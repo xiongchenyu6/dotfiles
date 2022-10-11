@@ -3,11 +3,7 @@ let
   dbDomain = "freeman.engineer";
   realm = "FREEMAN.ENGINEER";
   dbSuffix = "dc=freeman,dc=engineer";
-  defaultUser = "freeman";
-  ldapRootUser = "admin";
-  kerberosLdapPassword = "a";
 in
-
 {
   krb5 = {
     enable = true;
@@ -43,7 +39,7 @@ in
     kerberos_server = {
       enable = true;
       realms = {
-        "FREEMAN.ENGINEER" = {
+        "${realm}" = {
           acl =
             [
               {

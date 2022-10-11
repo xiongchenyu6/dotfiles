@@ -55,7 +55,7 @@
           ns1       IN A      43.156.66.157
           *         IN A      43.156.66.157
           EOF
-          chown named:named /var/db/
+          chown named:named /var/db/bind/inner.${config.networking.domain}
         '';
 
       };

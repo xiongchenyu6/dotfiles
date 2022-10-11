@@ -231,16 +231,12 @@
           };
           tc =
             {
-              _module.args = {
-                inherit domain;
-              };
-
               imports = [
                 ./host/tc
               ];
 
               deployment = {
-                targetHost = domain;
+                targetHost = "freeman.engineer";
                 tags = [ "wg" ];
               };
             };
