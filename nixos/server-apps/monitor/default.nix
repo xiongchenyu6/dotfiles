@@ -1,4 +1,4 @@
-{ config, pkgs, lib, symlinkJoin, domain, ... }:
+{ config, pkgs, lib, ... }:
 
 {
   imports = [ ./grafana.nix ./prometheus.nix ];

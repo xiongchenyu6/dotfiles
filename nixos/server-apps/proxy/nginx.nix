@@ -1,4 +1,4 @@
-{ config, pkgs, lib, symlinkJoin, domain, ... }:
+{ config, pkgs, lib, ... }:
 let
   common-files-path = ../../common;
   secret-files-paht = common-files-path + "/secrets";
@@ -17,10 +17,10 @@ in
 
       virtualHosts = {
         bird-lg = {
-          serverName = "bird-lg.inner.${domain}";
+          serverName = "bird-lg.inner.${config.networking.domain}";
           addSSL = true;
           acmeRoot = null;
-          useACMEHost = "inner.${domain}";
+          useACMEHost = "inner.${config.networking.domain}";
           kTLS = true;
           locations."/" = {
             proxyPass = "http://127.0.0.1:5000";
@@ -28,10 +28,10 @@ in
           };
         };
         # restic = {
-        #   serverName = "restic.inner.${domain}";
+        #   serverName = "restic.inner.${config.networking.domain}";
         #   addSSL = true;
         #   acmeRoot = null;
-        #   useACMEHost = "inner.${domain}";
+        #   useACMEHost = "inner.${config.networking.domain}";
         #   kTLS = true;
         #   locations."/" = {
         #     proxyPass = config.services.restic.server.listenAddress;
@@ -39,10 +39,10 @@ in
         #   };
         # };
         grafana = {
-          serverName = "grafana.inner.${domain}";
+          serverName = "grafana.inner.${config.networking.domain}";
           addSSL = true;
           acmeRoot = null;
-          useACMEHost = "inner.${domain}";
+          useACMEHost = "inner.${config.networking.domain}";
           kTLS = true;
           locations."/" = {
             proxyPass = "http://127.0.0.1:${toString config.services.grafana.port}";
@@ -50,10 +50,10 @@ in
           };
         };
         hydra = {
-          serverName = "hydra.inner.${domain}";
+          serverName = "hydra.inner.${config.networking.domain}";
           addSSL = true;
           acmeRoot = null;
-          useACMEHost = "inner.${domain}";
+          useACMEHost = "inner.${config.networking.domain}";
           kTLS = true;
           locations."/" = {
             proxyPass = "http://127.0.0.1:3000";
@@ -61,10 +61,10 @@ in
           };
         };
         prometheus = {
-          serverName = "prometheus.inner.${domain}";
+          serverName = "prometheus.inner.${config.networking.domain}";
           addSSL = true;
           acmeRoot = null;
-          useACMEHost = "inner.${domain}";
+          useACMEHost = "inner.${config.networking.domain}";
           kTLS = true;
           locations."/" = {
             proxyPass = "http://127.0.0.1:9090";
@@ -76,10 +76,10 @@ in
           };
         };
         alps = {
-          serverName = "alps.inner.${domain}";
+          serverName = "alps.inner.${config.networking.domain}";
           addSSL = true;
           acmeRoot = null;
-          useACMEHost = "inner.${domain}";
+          useACMEHost = "inner.${config.networking.domain}";
           kTLS = true;
           locations."/" = {
             proxyPass = "http://127.0.0.1:1323";

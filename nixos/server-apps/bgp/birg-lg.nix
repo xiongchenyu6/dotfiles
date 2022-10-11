@@ -1,4 +1,4 @@
-{ config, pkgs, lib, symlinkJoin, domain, ... }:
+{ config, pkgs, lib, ... }:
 let
   common-files-path = ../../common;
   secret-files-paht = common-files-path + "/secrets";
@@ -20,7 +20,7 @@ in
         allowedIPs = [ "127.0.0.1" "43.156.66.157" "14.100.28.225" ];
       };
       frontend = {
-        domain = "inner." + domain;
+        domain = "inner." + config.networking.domain;
         enable = true;
         netSpecificMode = "dn42";
         servers = [ "sg1" ];

@@ -1,4 +1,4 @@
-{ config, pkgs, lib, symlinkJoin, domain, ... }:
+{ config, pkgs, lib, ... }:
 
 let
   common-files-path = ../../../common;
@@ -28,7 +28,7 @@ in
       certs = {
         "${config.networking.fqdn}" = {
           dnsProvider = "namedotcom";
-          domain = "*.${domain}";
+          domain = "*.${config.networking.domain}";
           credentialsFile = config.age.secrets.acme_credentials.path;
           # We don't need to wait for propagation since this is a local DNS server
           dnsPropagationCheck = false;
@@ -39,8 +39,8 @@ in
           ];
           group = "openldap";
         };
-        "inner.${domain}" = {
-          domain = "*.inner.${domain}";
+        "inner.${config.networking.domain}" = {
+          domain = "*.inner.${config.networking.domain}";
           dnsProvider = "rfc2136";
           credentialsFile = "/var/lib/secrets/certs.secret";
           # We don't need to wait for propagation since this is a local DNS server

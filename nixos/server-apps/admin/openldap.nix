@@ -1,4 +1,4 @@
-{ config, pkgs, lib, symlinkJoin, domain, ... }:
+{ config, pkgs, lib, ... }:
 let
   realm = "FREEMAN.ENGINEER";
   dbSuffix = "dc=freeman,dc=engineer";
@@ -116,7 +116,7 @@ in
               objectClass: top
               objectClass: dcObject
               objectClass: organization
-              o: ${domain}
+              o: ${config.networking.domain}
 
               dn: ou=services,${dbSuffix}
               objectClass: top
@@ -125,14 +125,14 @@ in
               dn: uid=kdc, ou=services,${dbSuffix}
               objectClass: account
               objectClass: simpleSecurityObject
-              userPassword: ${builtins.readFile kdcPasswordFile}
               description: Account used for the Kerberos KDC
+              userPassword: ${builtins.readFile kdcPasswordFile}
 
               dn: uid=kadmin, ou=services,${dbSuffix}
               objectClass: account
               objectClass: simpleSecurityObject
-              userPassword: ${builtins.readFile kadminPasswordFile}
               description: Account used for the Kerberos Admin server
+              userPassword: ${builtins.readFile kadminPasswordFile}
 
               dn: ou=developers,${dbSuffix}
               ou: developers

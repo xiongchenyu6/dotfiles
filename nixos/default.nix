@@ -4,9 +4,13 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
-{ config, pkgs, lib, symlinkJoin, domain, ... }:
+{ config, pkgs, lib, ... }:
 
 {
+  networking = {
+    domain = "freeman.engineer";
+  };
+
   time = { timeZone = "Asia/Singapore"; };
 
   i18n = {
@@ -17,10 +21,6 @@
 
   system.nixos = {
     tags = [ "test" "add-feat" ];
-  };
-
-  networking = {
-    inherit domain;
   };
 
   environment = {

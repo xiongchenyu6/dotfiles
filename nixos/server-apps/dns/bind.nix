@@ -1,11 +1,11 @@
-{ config, pkgs, lib, symlinkJoin, domain, ... }:
+{ config, pkgs, lib, symlinkJoin, ... }:
 
 {
   systemd = {
     services = {
       dns-rfc2136-conf = {
-        requiredBy = [ "acme-inner.${domain}.service" "bind.service" ];
-        before = [ "acme-inner.${domain}.service" "bind.service" ];
+        requiredBy = [ "acme-inner.${config.networking.domain}.service" "bind.service" ];
+        before = [ "acme-inner.${config.networking.domain}.service" "bind.service" ];
         unitConfig = {
           ConditionPathExists = "!/var/lib/secrets/dnskeys.conf";
         };
@@ -17,7 +17,7 @@
         script = ''
           mkdir -p /var/lib/secrets
           chown named:root /var/lib/secrets
-          tsig-keygen rfc2136key.inner.${domain} > /var/lib/secrets/dnskeys.conf
+          tsig-keygen rfc2136key.inner.${config.networking.domain} > /var/lib/secrets/dnskeys.conf
           chown named:root /var/lib/secrets/dnskeys.conf
 
           secret=`sed -n -e 's/secret "\(.*\)";/\1/p' /var/lib/secrets/dnskeys.conf`
@@ -30,11 +30,34 @@
           cat > /var/lib/secrets/certs.secret << EOF
           RFC2136_NAMESERVER='127.0.0.1:53'
           RFC2136_TSIG_ALGORITHM='hmac-sha256.'
-          RFC2136_TSIG_KEY='rfc2136key.inner.${domain}'
+          RFC2136_TSIG_KEY='rfc2136key.inner.${config.networking.domain}'
           RFC2136_TSIG_SECRET="''${secret:1}"
           EOF
           chmod 400 /var/lib/secrets/certs.secret
         '';
+      };
+      reload-private-zone = {
+        requiredBy = [ "bind.service" ];
+        before = [ "bind.service" ];
+        serviceConfig = {
+          Type = "oneshot";
+          UMask = 0077;
+          RemainAfterExit = true;
+        };
+        script = ''
+          mkdir -p /var/db/bind/
+          chown named:root /var/db/bind/
+          cat > /var/db/bind/inner.${config.networking.domain} << EOF
+          \$TTL 3600
+          \$ORIGIN inner.freeman.engineer.
+          @         IN SOA    inner.freeman.engineer. hostmaster.inner.freeman.engineer. ( 1 3h 1h 1w 1d )
+          @         IN NS     ns1.inner.freeman.engineer.
+          ns1       IN A      43.156.66.157
+          *         IN A      43.156.66.157
+          EOF
+          chown named:named /var/db/
+        '';
+
       };
     };
   };
@@ -87,10 +110,10 @@
       ];
       zones = [
         rec{
-          name = "inner.${domain}";
+          name = "inner.${config.networking.domain}";
           master = true;
           file = "/var/db/bind/${name}";
-          extraConfig = "allow-update { key rfc2136key.inner.${domain}.; };";
+          extraConfig = "allow-update { key rfc2136key.inner.${config.networking.domain}.; };";
         }
         rec {
           name = "157.66.156.43.in-addr.arpa";
@@ -106,7 +129,7 @@
                                 86400 )    ; minimum TTL of 1 day
 
                   IN     NS     dns1.example.com.
-                  IN     PTR    mail.${domain}.
+                  IN     PTR    ${config.networking.fqdn}.
           '';
         }
       ];

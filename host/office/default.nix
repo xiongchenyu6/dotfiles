@@ -2,6 +2,10 @@
 
 { config, pkgs, options, lib, ... }:
 rec {
+  networking = {
+    hostName = "office";
+  };
+
   imports = [
     # Include the results of the hardware scan.
     ./hardware-configuration.nix

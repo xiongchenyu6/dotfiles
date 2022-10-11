@@ -1,4 +1,4 @@
-{ config, pkgs, lib, symlinkJoin, domain, ... }:
+{ config, pkgs, lib, ... }:
 
 {
   services.grafana = let ldapConfigFile = ./ldap.toml; in
@@ -8,7 +8,7 @@
       addr = "127.0.0.1";
       port = 3001;
       # Grafana needs to know on which domain and URL it's running:
-      domain = "grafana.inner.${domain}";
+      domain = "grafana.inner.${config.networking.domain}";
       server.serveFromSubPath = true;
       extraOptions = {
         AUTH_LDAP_ENABLED = "true";
