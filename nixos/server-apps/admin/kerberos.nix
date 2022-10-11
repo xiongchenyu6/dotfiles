@@ -1,4 +1,4 @@
-{ config, pkgs, lib, symlinkJoin, domain, ... }:
+{ config, pkgs, lib, ... }:
 let
   dbDomain = "freeman.engineer";
   realm = "FREEMAN.ENGINEER";

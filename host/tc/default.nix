@@ -1,5 +1,9 @@
-{ config, pkgs, lib, symlinkJoin, domain, ... }:
+{ config, pkgs, lib, ... }:
 {
+  networking = {
+    hostName = "mail";
+  };
+
   imports = [
     ./hardware-configuration.nix
     ../../nixos
@@ -21,7 +25,4 @@
     };
   };
 
-  networking = {
-    hostName = "mail";
-  };
 }

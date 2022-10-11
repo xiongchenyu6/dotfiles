@@ -1,4 +1,4 @@
-{ config, pkgs, lib, symlinkJoin, domain, ... }:
+{ config, pkgs, lib, ... }:
 let
   common-files-path = ../../../common;
   secret-files-path = common-files-path + "/secrets";

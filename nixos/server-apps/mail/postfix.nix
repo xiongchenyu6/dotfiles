@@ -1,4 +1,4 @@
-{ config, pkgs, lib, symlinkJoin, domain, ... }:
+{ config, pkgs, lib, ... }:
 
 {
   services =
@@ -6,7 +6,7 @@
     {
       postfix =
         {
-          inherit domain;
+          domain = config.networking.domain;
           enable = true;
           enableSubmission = true;
           enableSubmissions = true;

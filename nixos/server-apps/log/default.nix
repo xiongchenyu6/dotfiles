@@ -1,4 +1,4 @@
-{ config, pkgs, options, lib, domain, ... }:
+{ config, pkgs, options, lib, ... }:
 
 {
   services = {

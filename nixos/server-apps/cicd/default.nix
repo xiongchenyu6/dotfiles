@@ -1,4 +1,4 @@
-{ config, pkgs, options, lib, domain, ... }:
+{ config, pkgs, options, lib, ... }:
 let
   common-files-path = ../../../common;
   secret-files-path = common-files-path + "/secrets";
@@ -17,13 +17,13 @@ in
     hydra = {
       enable = true;
       package = pkgs.hydra-unstable;
-      hydraURL = "https://hydra.inner.${domain}"; # externally visible URL
+      hydraURL = "https://hydra.inner.${config.networking.domain}"; # externally visible URL
       notificationSender = "hydra@mail.freeman.engineer"; # e-mail of hydra service
       # a standalone hydra will require you to unset the buildMachinesFiles list to avoid using a nonexistant /etc/nix/machines
       buildMachinesFiles = [ ];
       # you will probably also want, otherwise *everything* will be built from scratch
       useSubstitutes = true;
-      # listenHost = "hydra.inner.${domain}";
+      # listenHost = "hydra.inner.${config.networking.domain}";
       extraConfig = let passwordFile = ./ldap-password.conf; in
         ''
           <dynamicruncommand>
@@ -53,7 +53,7 @@ in
               </credential>
               <store>
                 class = LDAP
-                ldap_server = ldaps://${domain}
+                ldap_server = ldaps://${config.networking.fqdn}
                 <ldap_server_options>
                   timeout = 30
                   debug = 2

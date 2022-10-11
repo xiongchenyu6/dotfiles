@@ -94,7 +94,6 @@
       let
         overlays = [ devshell.overlay ];
         pkgsFor = system: import nixpkgs { inherit system overlays; };
-        domain = "freeman.engineer";
       in
       mkFlake
         {

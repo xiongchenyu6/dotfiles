@@ -1,4 +1,4 @@
-{ config, pkgs, lib, symlinkJoin, domain, ... }:
+{ config, pkgs, lib, ... }:
 let
   script = import ./update-roa.nix { inherit pkgs; };
 in
