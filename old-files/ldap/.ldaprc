@@ -1,4 +1,5 @@
 URI     ldaps://mail.freeman.engineer
 BASE    dc=freeman,dc=engineer
 SASL_MECH GSSAPI
-SASL_REALM FREEMAN.ENGINEER
+# SASL_REALM FREEMAN.ENGINEER
+# SASL_REALM FREEMAN.ENGINEER
