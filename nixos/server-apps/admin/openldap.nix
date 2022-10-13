@@ -33,7 +33,7 @@ in
                 {
                   olcLogLevel = [ "stats" ];
                   olcSaslHost = config.networking.fqdn;
-                  olcSaslRealm = "FREEMAN.ENGINEER";
+                  olcSaslRealm = realm;
                   olcTLSCACertificateFile = credsDir + "/full.pem";
                   olcTLSCertificateFile = credsDir + "/cert.pem";
                   olcTLSCertificateKeyFile = credsDir + "/key.pem";

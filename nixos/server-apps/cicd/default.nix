@@ -3,14 +3,19 @@ let
   common-files-path = ../../../common;
   secret-files-path = common-files-path + "/secrets";
   share = import (common-files-path + /share.nix);
+  realm = "FREEMAN.ENGINEER";
+  dbSuffix = "dc=freeman,dc=engineer";
+  defaultUser = "freeman";
+  ldapRootUser = "admin";
+  owner = "hydra";
 in
 
 {
   age.secrets.ldap-password = {
     file = secret-files-path + /ldap-password.age;
     mode = "770";
-    owner = "hydra";
-    group = "hydra";
+    inherit owner;
+    group = owner;
   };
 
   services = {
@@ -18,7 +23,7 @@ in
       enable = true;
       package = pkgs.hydra-unstable;
       hydraURL = "https://hydra.inner.${config.networking.domain}"; # externally visible URL
-      notificationSender = "hydra@mail.freeman.engineer"; # e-mail of hydra service
+      notificationSender = "${owner}@${config.networking.fqdn}"; # e-mail of hydra service
       # a standalone hydra will require you to unset the buildMachinesFiles list to avoid using a nonexistant /etc/nix/machines
       buildMachinesFiles = [ ];
       # you will probably also want, otherwise *everything* will be built from scratch
@@ -58,13 +63,13 @@ in
                   timeout = 30
                   debug = 2
                 </ldap_server_options>
-                binddn = "cn=admin,dc=freeman,dc=engineer"
+                binddn = "cn=admin,${dbSuffix}"
                 include ${config.age.secrets.ldap-password.path}
                 start_tls = 0
                 <start_tls_options>
                   verify = none
                 </start_tls_options>
-                user_basedn = "ou=developers,dc=freeman,dc=engineer"
+                user_basedn = "ou=developers,${dbSuffix}"
                 user_filter = "(&(objectClass=inetOrgPerson)(uid=%s))"
                 user_scope = one
                 user_field = uid
@@ -73,7 +78,7 @@ in
                 </user_search_options>
                 # Important for role mappings to work:
                 use_roles = 1
-                role_basedn = "cn=grafana,ou=developers,dc=freeman,dc=engineer"
+                role_basedn = "cn=grafana,ou=developers,${dbSuffix}"
                 role_filter = "(&(objectClass=groupOfURLs)(member=%s))"
                 role_field = cn
                 role_value = dn
@@ -83,7 +88,6 @@ in
             </config>
           </ldap>
           </ldap>
-
         '';
     };
   };

@@ -9,7 +9,7 @@
           port = 465;
         };
         imaps = {
-          host = "freeman.engineer";
+          host = config.networking.fqdn;
         };
       };
     };

@@ -33,6 +33,7 @@
       exa
       feh
       fd
+      jp2a
       pass
       procs
       tealdeer
@@ -122,6 +123,7 @@
       freeman = {
         packages = with pkgs; [ tdesktop ];
       };
+
     };
   };
   programs = {
@@ -147,5 +149,7 @@
       keep-derivations = true
     '';
   };
+
+
 
 }

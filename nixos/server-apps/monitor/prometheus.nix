@@ -13,6 +13,18 @@ rec {
     group = "openldap-exporter";
   };
 
+  users = {
+    users =
+      {
+        openldap-exporter = {
+          group = "openldap-exporter";
+          isSystemUser = true;
+        };
+      };
+    groups.openldap-exporter = { };
+  };
+
+
   services.prometheus =
     {
       enable = true;
@@ -65,7 +77,7 @@ rec {
       };
 
       openldap = {
-        enable = true;
+        enable = false;
         port = 9007;
         ldapCredentialFile = config.age.secrets.ldap_credentials.path;
       };

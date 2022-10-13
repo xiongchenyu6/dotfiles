@@ -31,7 +31,7 @@ in
         ldap_sudo_search_base = ou=SUDOers,${dbSuffix}
         ldap_sasl_mech = GSSAPI
         ldap_sasl_authid = host/${config.networking.fqdn}
-        ldap_sasl_realm = FREEMAN.ENGINEER
+        ldap_sasl_realm = ${realm}
 
         chpass_provider = krb5
 

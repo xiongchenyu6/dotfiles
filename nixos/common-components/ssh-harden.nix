@@ -6,7 +6,6 @@
       Welcome to the NixOS machine
     '';
     startWhenNeeded = false;
-    useDns = true;
     forwardX11 = true;
     passwordAuthentication = true;
     ports = [ 2222 ];
