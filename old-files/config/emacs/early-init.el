@@ -28,10 +28,25 @@
 (require 'gcmh)
 (gcmh-mode 1)
 
-(straight-use-package 'material-theme)
-
-(require 'material-theme)
-
 (setq custom-safe-themes t)
-;(load-theme 'material t)
-(load-theme 'modus-vivendi t)
+
+
+(straight-use-package 'doom-themes)
+
+(load-theme 'doom-monokai-classic t)
+
+;; Enable flashing mode-line on errors
+(doom-themes-visual-bell-config)
+;; Enable custom neotree theme (all-the-icons must be installed!)
+(doom-themes-neotree-config)
+;; or for treemacs users
+(setq doom-themes-treemacs-theme "doom-atom") ; use "doom-colors" for less minimal icon theme
+;; Corrects (and improves) org-mode's native fontification.
+(doom-themes-org-config)
+
+;; (straight-use-package 'material-theme)
+
+;; (load-theme 'material t)
+
+
+

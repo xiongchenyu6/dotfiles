@@ -382,6 +382,14 @@
           epkgs.pdf-tools
           epkgs.leetcode
         ];
+      extraConfig = ''
+        (add-to-list 'default-frame-alist
+                     '(font . "JetBrains Mono-16"))
+        (setq gnus-init-file "~/.config/emacs/gnus.el")
+        (setq custom-file "~/.config/emacs/custom.el")
+        (setq yas-snippet-dirs
+              '("~/.config/emacs/snippets"))
+      '';
     };
     go = { enable = true; };
   };
@@ -390,6 +398,9 @@
       enable = true;
       defaultEditor = true;
       client = { enable = true; };
+      socketActivation = {
+        enable = false;
+      };
     };
 
     xscreensaver = {

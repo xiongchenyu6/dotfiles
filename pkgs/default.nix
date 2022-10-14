@@ -6,7 +6,7 @@
 # commands such as:
 #     nix-build -A mypackage
 
-{ pkgs, nixos-generators, lib, ... }:
+{ pkgs, lib, ... }:
 
 with pkgs;
 with builtins;
@@ -57,15 +57,17 @@ let
       nodejs = pkgs.nodejs-14_x;
     }) tronbox;
 
-    vbox = nixos-generators.nixosGenerate {
-      inherit system;
-      format = "virtualbox";
-    };
-    amazon = nixos-generators.nixosGenerate {
-      system = "x86_64-linux";
-      format = "amazon";
-    };
-    tat = callPackage ./tat { };
+    # vbox = nixos-generators.nixosGenerate {
+    #   inherit system;
+    #   format = "virtualbox";
+    # };
+    # amazon = nixos-generators.nixosGenerate {
+    #   system = "x86_64-linux";
+    #   format = "amazon";
+    # };
+
+    # tat = callPackage ./tat { };
+
     # dotfiles = with pkgs;
     #   stdenv.mkDerivation {
     #     pname = "dotfiles";

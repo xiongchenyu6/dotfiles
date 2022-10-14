@@ -22,11 +22,7 @@ Straight is a very good package manager for me to easily get emacs third party p
 #+end_src
 ** UI
 *** Font
-
 #+begin_src emacs-lisp
-(add-to-list 'default-frame-alist
-             '(font . "JetBrains Mono-16"))
-
 (straight-use-package
  '(ligature :type git :host github :repo "mickeynp/ligature.el"))
 
@@ -77,14 +73,10 @@ Straight is a very good package manager for me to easily get emacs third party p
                           ))
             ))
 #+end_src
-
 *** Transparent
 #+begin_src emacs-lisp
-(set-frame-parameter (selected-frame) 'alpha '(85 100))
-
-(add-to-list 'default-frame-alist '(alpha 85 100))
+(add-to-list 'default-frame-alist '(alpha 88 100))
 #+end_src
-
 ** General
 *** Native Setup
 #+begin_src emacs-lisp
@@ -128,8 +120,6 @@ Straight is a very good package manager for me to easily get emacs third party p
 (add-hook 'prog-mode-hook 'electric-pair-local-mode)
 (add-hook 'conf-mode-hook 'electric-pair-local-mode)
 
-(setq custom-file "~/.config/emacs/custom.el")
-
 (setq electric-pair-pairs '((8216 . 8217) (8220 . 8221)))
 
 ;; (with-eval-after-load 'elec-pair
@@ -164,7 +154,6 @@ Straight is a very good package manager for me to easily get emacs third party p
 
 ; ;; Add newline at bottom of file
  require-final-newline t
-
 
  ;; Backup setups
  ;; We use temporary directory /tmp for backup files
@@ -228,27 +217,6 @@ Straight is a very good package manager for me to easily get emacs third party p
 #+begin_src emacs-lisp
 (setq native-comp-always-compile t)
 #+end_src
-*** Native Global Mode
-#+begin_src emacs-lisp
-(auto-save-visited-mode t)
-
-(global-auto-composition-mode t)
-(global-auto-revert-mode t)
-(global-eldoc-mode t)
-;; (global-linum-mode +1)
-(global-visual-line-mode t)
-;; (global-word-wrap-whitespace-mode +1)
-(auto-fill-mode t)
-(save-place-mode t)
-
-(setq-default abbrev-mode t)
-(winner-mode t)
-(global-tab-line-mode)
-(global-prettify-symbols-mode)
-
-(next-error-follow-minor-mode t)
-(pixel-scroll-precision-mode t)
-#+end_src
 *** Buffer
 #+begin_src emacs-lisp
 (setq kill-buffer-query-functions nil)
@@ -256,12 +224,13 @@ Straight is a very good package manager for me to easily get emacs third party p
 *** Auto Save
 #+begin_src emacs-lisp
 (setq auto-save-visited-interval 0.5)
-#+end_src
+
+(setq auto-save-visited-predicate (lambda () (eq meow-normal-mode t)))
+#+end_src       
 *** Indentation
 #+begin_src emacs-lisp
 (setq editorconfig-mode t)
 #+end_src
-
 ** Structure Editing
 *** Meow
 #+begin_src emacs-lisp
@@ -431,7 +400,6 @@ Straight is a very good package manager for me to easily get emacs third party p
 #+end_src
 *** Auto complete
 #+begin_src emacs-lisp
-
 (straight-use-package 'company)
 (add-hook 'prog-mode-hook 'company-mode)
 (add-hook 'conf-mode-hook 'company-mode)
@@ -445,6 +413,7 @@ Straight is a very good package manager for me to easily get emacs third party p
 (add-hook 'company-mode-hook 'company-box-mode)
 
 (setq company-tooltip-align-annotations t)
+
 (straight-use-package 'yasnippet)
 
 (yas-global-mode 1)
@@ -454,7 +423,7 @@ Straight is a very good package manager for me to easily get emacs third party p
 
 (require 'copilot)
 
-(setq copilot-node-executable "/nix/store/4m582jbyfrd48wrgb9lvcaicda5b5fbm-nodejs-14.20.1/bin/node")
+(setq copilot-node-executable "/nix/store/pzsk91sxxin42axlvdfbbbjiyz3jzfy3-nodejs-16.17.1/bin/node")
 
 (defun my-tab ()
   (interactive)
@@ -472,6 +441,7 @@ Straight is a very good package manager for me to easily get emacs third party p
   (define-key company-active-map (kbd "TAB") 'my-tab))
 
 (add-hook 'prog-mode-hook 'copilot-mode)
+;; (add-hook 'pro)
 #+end_src
 *** Fold
 #+begin_src emacs-lisp
@@ -625,7 +595,6 @@ Otherwise, show the default maximum number of recent items."
 #+end_src
 ** Lang
 *** lsp & lsp-ui
-
 #+begin_src emacs-lisp
   (straight-use-package 'lsp-mode)
   (setq lsp-enable-dap-auto-configure nil)
@@ -663,7 +632,6 @@ Otherwise, show the default maximum number of recent items."
 
 (advice-add 'lsp :before 'direnv-update-environment)
 #+end_src
-
 *** dap
 #+begin_src emacs-lisp
   (straight-use-package 'dap-mode)
@@ -677,7 +645,6 @@ Otherwise, show the default maximum number of recent items."
 
   (setq dap-auto-configure-features '(sessions locals controls tooltip))
 #+end_src
-
 *** window
 #+begin_src emacs-lisp
   (add-to-list 'display-buffer-alist
@@ -726,7 +693,6 @@ Otherwise, show the default maximum number of recent items."
 
 
 #+end_src
-
 *** apl
 #+begin_src emacs-lisp
 (straight-use-package 'gnu-apl-mode)
@@ -807,7 +773,6 @@ Otherwise, show the default maximum number of recent items."
 (add-hook 'haskell-literate-mode-hook #'eglot-ensure)
 
 #+end_src
-
 *** docker
 #+begin_src elisp
 (straight-use-package 'dockerfile-mode)
@@ -837,18 +802,15 @@ Otherwise, show the default maximum number of recent items."
 ;; (straight-use-package 'company-nixos-options)
 ;; (add-to-list 'company-backends 'company-nixos-options)
 #+end_src
-
 *** Rust
 #+begin_src emacs-lisp
 (straight-use-package 'rust-mode)
 (add-hook 'rust-mode-hook 'lsp-deferred)
 #+end_src
-
 *** Scheme
 #+begin_src emacs-lisp
 (straight-use-package 'racket-mode)
 #+end_src
-
 *** Solidity
 #+begin_src emacs-lisp
 (straight-use-package 'solidity-mode)
@@ -1057,7 +1019,6 @@ Bind to lsp mode
 
                                                 nil t))
 #+end_src
-
 ** Org
 *** Org contrib
 *** Org attach
@@ -1083,7 +1044,6 @@ Bind to lsp mode
 *** Org Reveal
 #+begin_src emacs-lisp
 ;(straight-use-package 'org-re-reveal)
-
 (require 'org-re-reveal)
 #+end_src
 *** Org Roam
@@ -1127,6 +1087,8 @@ Bind to lsp mode
                 ("[ ]" . "☐"))))
 
 (add-hook 'org-mode-hook 'meomacs--org-prettify-symbols)
+
+(setq org-startup-indented t)
 
 (setq org-hide-emphasis-markers t)
 (setq org-hide-leading-stars t)
@@ -1225,8 +1187,6 @@ Bind to lsp mode
 (straight-use-package 'ox-hugo)
 
 (require 'ox-hugo)
-
-
 #+end_src
 ** Key bindings
 *** open app
@@ -1301,17 +1261,32 @@ Bind to lsp mode
 (autoload 'leetcode "leetcode" nil t)
 
 (setq leetcode-prefer-language "cpp"
-      leetcode-prefer-sql "mysql"
-      )
+      leetcode-prefer-sql "mysql")
 #+end_src
 ** Pdf
 #+begin_src emacs-lisp
 (require 'pdf-tools)
-
 #+end_src
-** GNUS
+** Native Global Mode
 #+begin_src emacs-lisp
-(setq gnus-init-file "~/.config/emacs/gnus.el")
+
+(global-auto-composition-mode t)
+(global-auto-revert-mode t)
+(global-eldoc-mode t)
+;; (global-linum-mode +1)
+(global-visual-line-mode t)
+;; (global-word-wrap-whitespace-mode +1)
+(auto-fill-mode t)
+(save-place-mode t)
+
+(setq-default abbrev-mode t)
+(winner-mode t)
+(global-tab-line-mode)
+(global-prettify-symbols-mode)
+
+(next-error-follow-minor-mode t)
+(pixel-scroll-precision-mode t)
+(auto-save-visited-mode t)
 #+end_src
 
 * Conclusion
@@ -1319,4 +1294,3 @@ Bind to lsp mode
 ;; Local Variables:
 ;; eval: (add-hook 'after-save-hook (lambda () (org-babel-tangle)) nil t)
 ;; End:
-
