@@ -53,6 +53,7 @@ let
     bttc = callPackage ./bttc { };
     delivery = callPackage ./delivery { };
     my_cookies = callPackage ./python3/my_cookies { };
+    epc = callPackage ./python3/epc { };
     inherit (callPackage ./npm/tronbox {
       nodejs = pkgs.nodejs-14_x;
     }) tronbox;
