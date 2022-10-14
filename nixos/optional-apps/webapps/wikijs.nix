@@ -18,6 +18,5 @@
       };
       environmentFile = ../../common/env;
     };
-
   };
 }
