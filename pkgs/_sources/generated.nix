@@ -35,16 +35,24 @@
       sha256 = "sha256-HItF37qlIm6IT8WSomTulkX7524UZwpwMbqyjckXFxA=";
     });
   };
+  epc = {
+    pname = "epc";
+    version = "0.0.5";
+    src = fetchurl {
+      url = "https://pypi.io/packages/source/e/epc/epc-0.0.5.tar.gz";
+      sha256 = "sha256-oU0up0gXlVog6wCBLjpGMKEyiX602XZCAkDxFSwNfSU=";
+    };
+  };
   forgit = {
     pname = "forgit";
-    version = "25789d2198f364a8e4a942cf8493fae2ef7b9fe4";
+    version = "089853173e382be2d41ccbeadd56b361547a1481";
     src = fetchgit {
       url = "https://github.com/wfxr/forgit.git";
-      rev = "25789d2198f364a8e4a942cf8493fae2ef7b9fe4";
+      rev = "089853173e382be2d41ccbeadd56b361547a1481";
       fetchSubmodules = false;
       deepClone = false;
       leaveDotGit = false;
-      sha256 = "sha256-ha456LUCUctUn8WAThDza437U5iyUkFirQ2UBtrrROg=";
+      sha256 = "sha256-yJNZv8cEUMnThYsREmKjwmtRLIYak5RRAQaN8LGseRw=";
     };
   };
   launch = {

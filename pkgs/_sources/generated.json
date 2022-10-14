@@ -55,6 +55,20 @@
         },
         "version": "v1.0.2"
     },
+    "epc": {
+        "cargoLocks": null,
+        "extract": null,
+        "name": "epc",
+        "passthru": null,
+        "pinned": false,
+        "src": {
+            "name": null,
+            "sha256": "sha256-oU0up0gXlVog6wCBLjpGMKEyiX602XZCAkDxFSwNfSU=",
+            "type": "url",
+            "url": "https://pypi.io/packages/source/e/epc/epc-0.0.5.tar.gz"
+        },
+        "version": "0.0.5"
+    },
     "forgit": {
         "cargoLocks": null,
         "extract": null,
@@ -66,12 +80,12 @@
             "fetchSubmodules": false,
             "leaveDotGit": false,
             "name": null,
-            "rev": "25789d2198f364a8e4a942cf8493fae2ef7b9fe4",
-            "sha256": "sha256-ha456LUCUctUn8WAThDza437U5iyUkFirQ2UBtrrROg=",
+            "rev": "089853173e382be2d41ccbeadd56b361547a1481",
+            "sha256": "sha256-yJNZv8cEUMnThYsREmKjwmtRLIYak5RRAQaN8LGseRw=",
             "type": "git",
             "url": "https://github.com/wfxr/forgit.git"
         },
-        "version": "25789d2198f364a8e4a942cf8493fae2ef7b9fe4"
+        "version": "089853173e382be2d41ccbeadd56b361547a1481"
     },
     "launch": {
         "cargoLocks": null,

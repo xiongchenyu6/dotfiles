@@ -64,6 +64,8 @@
       lsof
       (python3.withPackages (ps: [
         my_cookies
+        epc
+        python310Packages.orjson
         python310Packages.python-lsp-server
       ]))
       pinentry

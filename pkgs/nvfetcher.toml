@@ -30,3 +30,6 @@ fetch.git = "https://github.com/sobolevn/wakatime-zsh-plugin.git"
 src.git = "https://github.com/wfxr/forgit.git"
 fetch.git = "https://github.com/wfxr/forgit.git"
 
+[epc]
+src.pypi="epc"
+fetch.pypi="epc"
