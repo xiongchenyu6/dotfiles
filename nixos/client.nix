@@ -25,6 +25,7 @@
       clang
       cmake
       conky
+      composer2nix
       cabal2nix
       cachix
       discord
@@ -71,6 +72,7 @@
       pinentry
       linuxPackages.ply
       wakatime
+      nixfmt
       node2nix
       nodejs
       nodePackages."typescript-language-server"

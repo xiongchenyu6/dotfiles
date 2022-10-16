@@ -7,26 +7,25 @@
 #+PROPERTY: header-args :results silent :tangle "init.el"
 
 * My Configuration
-** Package Mangager
-Straight is a very good package manager for me to easily get emacs third party pkgs from elpm and github.
-#+begin_src emacs-lisp
-(defvar straight-keymap
-  (let ((keymap (make-keymap)))
-    (define-key keymap "c" 'straight-check-package)
-    (define-key keymap "C" 'straight-check-all)
-    (define-key keymap "p" 'straight-pull-package) ;
-    (define-key keymap "P" 'straight-pull-all)
-    (define-key keymap "b" 'straight-rebuild-package)
-    (define-key keymap "B" 'straight-rebuild-all)
-    keymap))
-#+end_src
 ** UI
 *** Font
 #+begin_src emacs-lisp
-(straight-use-package
- '(ligature :type git :host github :repo "mickeynp/ligature.el"))
-
 (set-mouse-color "white")
+#+end_src
+*** Theme
+#+begin_src emacs-lisp
+(load-theme 'doom-dracula t)
+
+;; Enable flashing mode-line on errors
+(doom-themes-visual-bell-config)
+;; Enable custom neotree theme (all-the-icons must be installed!)
+(doom-themes-neotree-config)
+;; or for treemacs users
+(setq doom-themes-treemacs-theme "doom-atom") ; use "doom-colors" for less minimal icon theme
+;; Corrects (and improves) org-mode's native fontification.
+(doom-themes-org-config)
+
+;; (load-theme 'material t)
 #+end_src
 *** Ligature
 #+begin_src emacs-lisp
@@ -58,7 +57,7 @@ Straight is a very good package manager for me to easily get emacs third party p
                           ;; Functional
                           ("def" . "ƒ")
                           ("composition" . "∘")
-                          ;("map" . "↦")
+                                        ;("map" . "↦")
                           ("lambda" . "λ")
                           ;; Types
                           ("null" . "∅")
@@ -70,8 +69,10 @@ Straight is a very good package manager for me to easily get emacs third party p
                           ("bool" . "𝔹")
                           ("list" . "𝕃")
                           ;; Flow
-                          ))
-            ))
+                          )
+                        )
+            )
+          )
 #+end_src
 *** Transparent
 #+begin_src emacs-lisp
@@ -125,8 +126,6 @@ Straight is a very good package manager for me to easily get emacs third party p
 ;; (with-eval-after-load 'elec-pair
 ;;   (setq electric-pair-inhibit-predicate (lambda (c) (message c) (char-equal c ?\")))
 ;;   )
-(straight-use-package 'rainbow-delimiters)
-
 (require 'rainbow-delimiters)
 
 (add-hook 'prog-mode-hook #'rainbow-delimiters-mode)
@@ -203,13 +202,11 @@ Straight is a very good package manager for me to easily get emacs third party p
 
 (global-hl-line-mode t)
 
-(straight-use-package 'which-key)
-
 (require 'which-key)
 
 (which-key-mode)
 
-(setq read-process-output-max (* 1024 1024)) ;; 1mb
+(setq read-process-output-max (* (* 1024 1024) 3)) ;; 3mb
 
 (windmove-default-keybindings)
 #+end_src
@@ -234,7 +231,6 @@ Straight is a very good package manager for me to easily get emacs third party p
 ** Structure Editing
 *** Meow
 #+begin_src emacs-lisp
-(straight-use-package 'meow)
 (require 'meow)
 (setq meow-esc-delay 0.001)
 (defun meow-setup ()
@@ -341,15 +337,11 @@ Straight is a very good package manager for me to easily get emacs third party p
 #+end_src
 *** Lispy
 #+begin_src emacs-lisp
-
-(straight-use-package 'lispy)
-
 (require 'lispy)
 
 (add-hook 'emacs-lisp-mode-hook (lambda () (lispy-mode 1)))
 (add-hook 'clojure-mode-hook (lambda () (lispy-mode 1)))
 (add-hook 'racket-mode-hook (lambda () (lispy-mode 1)))
-
 #+end_src
 ** Irc
 #+begin_src emacs-lisp
@@ -375,20 +367,15 @@ Straight is a very good package manager for me to easily get emacs third party p
   (setq erc-autojoin-channels-alist '((".*" "#emacs" "#haskell" "#clojure" "#scala")))
   (erc-tls :server "irc.libera.chat" :port 6697 :nick  "freemanX" :password (my-nickserv-password))
   )
-
 #+end_src
 ** Coding
 *** Better terminal
 #+begin_src emacs-lisp
-(straight-use-package 'vterm)
 (require 'vterm)
 (setq vterm-kill-buffer-on-exit t)
-
 #+end_src
 *** Better Search
 #+begin_src emacs-lisp
-(straight-use-package 'rg)
-
 (autoload 'rg-project "wgrep" nil t)
 (autoload 'rg-project "rg" nil t)
 
@@ -396,52 +383,6 @@ Straight is a very good package manager for me to easily get emacs third party p
   (define-key wgrep-mode-map (kbd "C-c C-c") #'wgrep-finish-edit))
 
 (define-key project-prefix-map "r" 'rg-project)
-
-#+end_src
-*** Auto complete
-#+begin_src emacs-lisp
-(straight-use-package 'company)
-(add-hook 'prog-mode-hook 'company-mode)
-(add-hook 'conf-mode-hook 'company-mode)
-
-(autoload 'company-mode "company" nil t)
-
-(straight-use-package 'company-box)
-
-(require 'company-box)
-
-(add-hook 'company-mode-hook 'company-box-mode)
-
-(setq company-tooltip-align-annotations t)
-
-(straight-use-package 'yasnippet)
-
-(yas-global-mode 1)
-
-(straight-use-package
- '(copilot :type git :host github :repo "zerolfx/copilot.el" :files ("dist" "*.el")))
-
-(require 'copilot)
-
-(setq copilot-node-executable "/nix/store/pzsk91sxxin42axlvdfbbbjiyz3jzfy3-nodejs-16.17.1/bin/node")
-
-(defun my-tab ()
-  (interactive)
-  (or (copilot-accept-completion)
-      (yas-expand)
-      (company-indent-or-complete-common nil)))
-;; (setq copilot--completion-timer 0.5)
-                                        ; modify company-mode behaviors
-(with-eval-after-load 'company
-  ;; disable inline previews
-  (delq 'company-preview-if-just-one-frontend company-frontends)
-  (define-key company-mode-map (kbd "<tab>") 'my-tab)
-  (define-key company-mode-map (kbd "TAB") 'my-tab)
-  (define-key company-active-map (kbd "<tab>") 'my-tab)
-  (define-key company-active-map (kbd "TAB") 'my-tab))
-
-(add-hook 'prog-mode-hook 'copilot-mode)
-;; (add-hook 'pro)
 #+end_src
 *** Fold
 #+begin_src emacs-lisp
@@ -450,7 +391,6 @@ Straight is a very good package manager for me to easily get emacs third party p
 #+end_src
 *** Motivation
 #+begin_src emacs-lisp
-(straight-use-package 'wakatime-mode)
 (require 'wakatime-mode)
 (global-wakatime-mode +1)
 (setq wakatime-api-key "06fb08d0-68a4-4b39-bbb0-d34d325dc046")
@@ -485,22 +425,16 @@ Straight is a very good package manager for me to easily get emacs third party p
 #+end_src
 *** Git
 #+begin_src emacs-lisp
-(straight-use-package 'magit)
 (autoload 'magit "magit" nil t)
 #+end_src
 *** Better minibuffer
 #+begin_src emacs-lisp
 (fido-mode)
 (fido-vertical-mode)
-(straight-use-package 'marginalia)
-
-(straight-use-package
- '(marginalia :type git :host github :repo "minad/marginalia"))
 
 (require 'marginalia)
 
 (marginalia-mode)
-(straight-use-package 'orderless)
 
 (require 'orderless)
 
@@ -593,110 +527,198 @@ Otherwise, show the default maximum number of recent items."
 	 (file (nth j files)))
     (funcall recentf-menu-action file))) ; find-file by default
 #+end_src
+*** Auto complete
+#+begin_src emacs-lisp
+(yas-global-mode 1)
+
+(require 'copilot)
+
+(setq copilot-node-executable "/nix/store/pzsk91sxxin42axlvdfbbbjiyz3jzfy3-nodejs-16.17.1/bin/node")
+
+(add-hook 'prog-mode-hook 'copilot-mode)
+
+;; (require 'corfu)
+;; (global-corfu-mode)
+;; (add-hook 'corfu-mode-hook #'corfu-doc-mode)
+
+
+;; Enable auto completion and configure quitting
+;; (setq copilot--completion-timer 0.5)
+
+
+
+;; (defun orderless-fast-dispatch (word index total)
+;;   (and (= index 0) (= total 1) (length< word 4)
+;;        `(orderless-regexp . ,(concat "^" (regexp-quote word)))))
+
+;; (orderless-define-completion-style orderless-fast
+;;   (orderless-style-dispatchers '(orderless-fast-dispatch))
+;;   (orderless-matching-styles '(orderless-literal orderless-regexp)))
+
+;; (setq corfu-auto t
+;;       corfu-auto-delay 0
+;;       corfu-auto-prefix 0
+;;       corfu-cycle t
+;;       completion-styles '(orderless-fast)
+;;       corfu-quit-no-match 'separator) ;; or t
+#+end_src
 ** Lang
 *** lsp & lsp-ui
 #+begin_src emacs-lisp
-  (straight-use-package 'lsp-mode)
-  (setq lsp-enable-dap-auto-configure nil)
+;; (setq lsp-enable-dap-auto-configure nil)
 
-(setq lsp-keymap-prefix "C-c l")
+;; (setq lsp-keymap-prefix "C-c l")
 
-(require 'lsp)
+;; (require 'lsp)
 
-  (autoload 'lsp "lsp-mode" nil t)
+;; (autoload 'lsp "lsp-mode" nil t)
 
-  (with-eval-after-load 'lsp-mode
-    (add-hook 'lsp-mode-hook #'lsp-enable-which-key-integration))
+;; (with-eval-after-load 'lsp-mode
+;; (add-hook 'lsp-mode-hook #'lsp-enable-which-key-integration))
 
-  (advice-add 'lsp :before 'direnv-update-environment)
+;; (advice-add 'lsp :before 'direnv-update-environment)
+
+;; (add-hook 'sh-mode-hook 'lsp-deferred)
+;; (add-hook 'js-mode-hook #'lsp-deferred)
+;; (add-hook 'c++-mode-hook #'lsp-deferred)
+;; (add-hook 'cmake-mode-hook 'lsp-deferred)
+;; (add-hook 'typescript-mode-hook 'lsp-deferred)
+;; (add-hook 'go-mode-hook #'lsp-go-install-save-hooks)
+;; (defun lsp-go-install-save-hooks ()
+;;   (add-hook 'before-save-hook #'lsp-format-buffer t t)
+;;   )
+
+;; (add-hook 'before-save-hook #'lsp-format-buffer t t)
+
+;; (add-hook 'haskell-mode-hook #'eglot-ensure)
+;; (add-hook 'haskell-literate-mode-hook #'eglot-ensure)
+;; (add-hook 'dockerfile-mode-hook 'lsp-deferred)
+
+;; (add-hook 'go-mode-hook 'lsp-deferred)
+
+;; (add-hook 'nix-mode-hook 'lsp-deferred)
+;; (defun lsp-nix-install-save-hooks ()
+;;   (add-hook 'before-save-hook #'lsp-format-buffer t t)
+;;   ;(add-hook 'before-save-hook #'lsp-organize-imports t t)
+;;   )
+;; (add-hook 'nix-mode-hook #'lsp-nix-install-save-hooks)
+;; (add-hook 'rust-mode-hook 'lsp-deferred)
+;; (add-hook 'python-mode-hook 'lsp-deferred)
+;; (add-hook 'sql-mode-hook 'lsp-deferred)
+;; (add-hook 'html-mode-hook #'lsp-deferred)
+;; (add-hook 'css-mode-hook #'lsp-deferred)
+;; (add-hook 'yaml-mode-hook #'lsp-deferred)
+
+
+(direnv-mode t)
+
+(add-to-list 'load-path "/home/freeman/git/lsp-bridge")
+
+(require 'lsp-bridge)
+
+(advice-add 'lsp-bridge-restart-process :before 'direnv-update-environment)
+
+(global-lsp-bridge-mode)
+
+(defun my-tab ()
+  (interactive)
+  (or (copilot-accept-completion)
+      (yas-expand)
+      (acm-complete)))
+
+(with-eval-after-load 'lsp-bridge
+  ;; disable inline previews
+  ;; (define-key corfu-map (kbd "<tab>") 'my-tab)
+  ;; (define-key corfu-map (kbd "TAB") 'my-tab)
+  (define-key prog-mode-map (kbd "<tab>") 'my-tab)
+  (define-key prog-mode-map (kbd "TAB") 'my-tab)
+  )
+
+(define-key lsp-bridge-mode-map [remap xref-find-definitions] #'lsp-bridge-find-def)
+(define-key lsp-bridge-mode-map [remap xref-find-references] #'lsp-bridge-find-references)
+(define-key lsp-bridge-mode-map [remap xref-go-back] #'lsp-bridge-find-def-return)
 #+end_src
 **** lsp ui
 #+begin_src emacs-lisp
 ;; plist only work in mac
 ;; (setq lsp-use-plists t)
-(setq lsp-enable-snippet t)
-(setq lsp-enable-dap-auto-configure t)
-(setq lsp-enable-relative-indentation t)
-(setq lsp-semantic-tokens-enable t)
+;; (setq lsp-enable-snippet t)
+;; (setq lsp-enable-dap-auto-configure t)
+;; (setq lsp-enable-relative-indentation t)
+;; (setq lsp-semantic-tokens-enable t)
 
-(straight-use-package 'lsp-ui)
+;; (autoload 'lsp "lsp-ui" nil t)
+;; (require 'lsp-ui)
 
-(autoload 'lsp "lsp-ui" nil t)
-(require 'lsp-ui)
+;; ;; (define-key lsp-ui-mode-map [remap xref-find-definitions] #'lsp-ui-peek-find-definitions)
+;; ;; (define-key lsp-ui-mode-map [remap xref-find-references] #'lsp-ui-peek-find-references)
 
-;; (define-key lsp-ui-mode-map [remap xref-find-definitions] #'lsp-ui-peek-find-definitions)
-;; (define-key lsp-ui-mode-map [remap xref-find-references] #'lsp-ui-peek-find-references)
+;; (setq lsp-ui-doc-include-signature t)
+;; (setq lsp-ui-doc-use-webkit t)
 
-(setq lsp-ui-doc-include-signature t)
-(setq lsp-ui-doc-use-webkit t)
-
-(advice-add 'lsp :before 'direnv-update-environment)
+;; (advice-add 'lsp :before 'direnv-update-environment)
 #+end_src
 *** dap
 #+begin_src emacs-lisp
-  (straight-use-package 'dap-mode)
+(require 'dap-mode)
 
-  (require 'dap-mode)
+(add-hook 'dap-stopped-hook
+          (lambda (arg) (call-interactively #'dap-hydra)))
 
-  (add-hook 'dap-stopped-hook
-            (lambda (arg) (call-interactively #'dap-hydra)))
+(require 'dap-cpptools)
 
-  (require 'dap-cpptools)
-
-  (setq dap-auto-configure-features '(sessions locals controls tooltip))
+(setq dap-auto-configure-features '(sessions locals controls tooltip))
 #+end_src
 *** window
 #+begin_src emacs-lisp
-  (add-to-list 'display-buffer-alist
-               `(,(rx bos "*Flycheck errors*" eos)
-                 (display-buffer-reuse-window
-                  display-buffer-in-side-window)
-                 (side            . bottom)
-                 (reusable-frames . visible)
-                 (window-height   . 0.23)))
+(add-to-list 'display-buffer-alist
+             `(,(rx bos "*Flycheck errors*" eos)
+               (display-buffer-reuse-window
+                display-buffer-in-side-window)
+               (side            . bottom)
+               (reusable-frames . visible)
+               (window-height   . 0.23)))
 
-  (add-to-list 'display-buffer-alist
-               `(,(rx bos "*compilation*" eos)
-                 (display-buffer-reuse-window
-                  display-buffer-in-side-window)
-                 (side            . bottom)
-                 (reusable-frames . visible)
-                 (window-height   . 0.23)))
+(add-to-list 'display-buffer-alist
+             `(,(rx bos "*compilation*" eos)
+               (display-buffer-reuse-window
+                display-buffer-in-side-window)
+               (side            . bottom)
+               (reusable-frames . visible)
+               (window-height   . 0.23)))
 
-  (add-to-list 'display-buffer-alist
-               `(,(rx bos "*vterm*" eos)
-                 (display-buffer-reuse-window
-                  display-buffer-in-side-window)
-                 (side            . bottom)
-                 (reusable-frames . visible)
-                 (window-height   . 0.23)))
+(add-to-list 'display-buffer-alist
+             `(,(rx bos "*vterm*" eos)
+               (display-buffer-reuse-window
+                display-buffer-in-side-window)
+               (side            . bottom)
+               (reusable-frames . visible)
+               (window-height   . 0.23)))
 
-  (add-to-list 'display-buffer-alist
-               `(,(rx bos "*Async Shell Command*" eos)
-                 (display-buffer-reuse-window
-                  display-buffer-in-side-window)
-                 (side            . bottom)
-                 (reusable-frames . visible)
-                 (window-height   . 0.23)))
+(add-to-list 'display-buffer-alist
+             `(,(rx bos "*Async Shell Command*" eos)
+               (display-buffer-reuse-window
+                display-buffer-in-side-window)
+               (side            . bottom)
+               (reusable-frames . visible)
+               (window-height   . 0.23)))
 
-  (add-to-list 'display-buffer-alist
-               `(,(rx bos "*Occur*" eos)
-                 (display-buffer-reuse-window
-                  display-buffer-in-side-window)
-                 (side            . bottom)
-                 (reusable-frames . visible)
-                 (window-height   . 0.33)))
-
-  (add-hook 'occur-hook
-            '(lambda ()
-               (switch-to-buffer-other-window "*Occur*")))
+(add-to-list 'display-buffer-alist
+             `(,(rx bos "*Occur*" eos)
+               (display-buffer-reuse-window
+                display-buffer-in-side-window)
+               (side            . bottom)
+               (reusable-frames . visible)
+               (window-height   . 0.33)))
 
 
+(setq org-src-window-setup 'current-window)
+(add-hook 'occur-hook
+          '(lambda ()
+             (switch-to-buffer-other-window "*Occur*")))
 #+end_src
 *** apl
 #+begin_src emacs-lisp
-(straight-use-package 'gnu-apl-mode)
-
 (defun em-gnu-apl-init ()
   (setq buffer-face-mode-face 'gnu-apl-default)
   (buffer-face-mode))
@@ -706,117 +728,61 @@ Otherwise, show the default maximum number of recent items."
 #+end_src
 *** bash
 #+begin_src emacs-lisp
-(add-hook 'sh-mode-hook 'lsp-deferred)
 #+end_src
 *** javascript
 #+begin_src emacs-lisp
 (with-eval-after-load 'js
   (define-key js-mode-map (kbd "M-.") nil)
 )
-
-(add-hook 'js-mode-hook #'lsp-deferred)
 #+end_src
 *** Clojure
 #+begin_src emacs-lisp
-(straight-use-package 'clojure-mode)
-(straight-use-package 'cider)
 (with-eval-after-load 'dap-mode
   (require 'dap-chrome))
 #+end_src
 *** C++/C
 #+begin_src emacs-lisp
-(add-hook 'c++-mode-hook #'lsp-deferred)
 (add-hook 'c++-mode-hook (lambda () (c-toggle-hungry-state) (c-toggle-auto-newline)))
 #+end_src
 *** Cmake
 #+begin_src emacs-lisp
-(straight-use-package 'cmake-mode)
-
-(add-hook 'cmake-mode-hook 'lsp-deferred)
 #+end_src
 *** typescript
 #+begin_src emacs-lisp
-(straight-use-package 'tide)
-
-(add-hook 'typescript-mode-hook 'lsp-deferred)
 #+end_src
 *** go
 #+begin_src emacs-lisp
-(straight-use-package 'go-mode)
-
-(defun lsp-go-install-save-hooks ()
-  (add-hook 'before-save-hook #'lsp-format-buffer t t)
-  ;(add-hook 'before-save-hook #'lsp-organize-imports t t)
-  )
-(add-hook 'go-mode-hook #'lsp-go-install-save-hooks)
-
-(add-hook 'before-save-hook #'lsp-format-buffer t t)
-
-
-(add-hook 'go-mode-hook 'lsp-deferred)
-(add-hook 'go-mode-hook #'yas-minor-mode)
 #+end_src
 *** Haskell
 #+begin_src emacs-lisp
-(straight-use-package 'haskell-mode)
-
 (require 'haskell-interactive-mode)
 (require 'haskell-process)
 (add-hook 'haskell-mode-hook 'interactive-haskell-mode)
 
 ;; Hooks so haskell and literate haskell major modes trigger LSP setup
-(straight-use-package 'eglot)
-(straight-use-package 'lsp-haskell)
-(require 'lsp-haskell)
-
-(add-hook 'haskell-mode-hook #'eglot-ensure)
-(add-hook 'haskell-literate-mode-hook #'eglot-ensure)
-
+;(require 'lsp-haskell)
 #+end_src
 *** docker
 #+begin_src elisp
-(straight-use-package 'dockerfile-mode)
-
-(add-hook 'dockerfile-mode-hook 'lsp-deferred)
 #+end_src
 *** Plantuml
 #+begin_src emacs-lisp
 (setq org-plantuml-exec-mode 'plantuml
       )
 #+end_src
-*** graphviz
-#+begin_src emacs-lisp
- (straight-use-package 'graphviz-dot-mode)
-#+end_src
 *** Nix
 #+begin_src emacs-lisp
-(straight-use-package 'nix-mode)
-(straight-use-package 'direnv)
-(add-hook 'nix-mode-hook 'lsp-deferred)
-(defun lsp-nix-install-save-hooks ()
-  (add-hook 'before-save-hook #'lsp-format-buffer t t)
-  ;(add-hook 'before-save-hook #'lsp-organize-imports t t)
-  )
-(add-hook 'nix-mode-hook #'lsp-nix-install-save-hooks)
-
-;; (straight-use-package 'company-nixos-options)
-;; (add-to-list 'company-backends 'company-nixos-options)
+(with-eval-after-load 'nix-mode
+  (add-hook 'save-buffer-hook 'nix-format-buffer))
 #+end_src
 *** Rust
 #+begin_src emacs-lisp
-(straight-use-package 'rust-mode)
-(add-hook 'rust-mode-hook 'lsp-deferred)
 #+end_src
 *** Scheme
 #+begin_src emacs-lisp
-(straight-use-package 'racket-mode)
 #+end_src
 *** Solidity
 #+begin_src emacs-lisp
-(straight-use-package 'solidity-mode)
-;; (straight-use-package 'company-solidity)
-;; (straight-use-package 'solidity-flycheck)
-
 ;; (setq solidity-flycheck-solc-checker-active t)
 ;; (setq solidity-flycheck-solium-checker-active t)
 ;; (setq flycheck-solidity-solc-addstd-contracts t)
@@ -834,40 +800,31 @@ Otherwise, show the default maximum number of recent items."
 
 ;(require 'lsp-solidity)
 
-(eval-after-load 'solidity
-  (add-to-list 'lsp-language-id-configuration '(solidity-mode . "solidity")))
+;(eval-after-load 'solidity
+ ; (add-to-list 'lsp-language-id-configuration '(solidity-mode . "solidity")))
 #+end_src
 *** python
 #+begin_src emacs-lisp
-(add-hook 'python-mode-hook 'lsp)
 ;; (add-hook 'python-mode-hook (lambda () (whitespace-mode +1)))
 #+end_src
-*** SML
+*** COMMENT SML
 #+begin_src emacs-lisp
-;; (straight-use-package 'sml-mode)
+(autoload 'sml-mode  "sml-mode" "Major mode for editing SML." t)
 
-;; (autoload 'sml-mode  "sml-mode" "Major mode for editing SML." t)
-
-;; (setq auto-mode-alist
-;;       (cons '("\.sml$" . sml-mode)
-;;             (cons '("\.sig$" . sml-mode)
-;;                   auto-mode-alist)))
+(setq auto-mode-alist
+      (cons '("\.sml$" . sml-mode)
+            (cons '("\.sig$" . sml-mode)
+                  auto-mode-alist)))
 #+end_src
-*** Scala
+*** COMMENT Scala
 #+begin_src emacs-lisp
-(straight-use-package 'scala-mode)
-(straight-use-package 'sbt-mode)
-(straight-use-package 'lsp-metals)
-
 (with-eval-after-load 'scala-mode
   (require 'lsp-metals)
   (add-hook 'scala-mode-hook 'lsp))
 
 #+end_src
-*** Java
+*** COMMENT Java
 #+begin_src emacs-lisp
-(straight-use-package 'lsp-java)
-
 (require 'lsp-java)
 
 (add-hook 'java-mode-hook #'lsp)
@@ -877,7 +834,7 @@ Otherwise, show the default maximum number of recent items."
 (setq lsp-java-content-provider-preferred "fernflower")
 ;; 
 ;; (setq lsp-java-java-path "/Library/Java/JavaVirtualMachines/openjdk.jdk/Contents/Home/bin/java")
- (setq lsp-java-java-path "/etc/profiles/per-user/freeman/bin/java")
+(setq lsp-java-java-path "/etc/profiles/per-user/freeman/bin/java")
 
 ;; (setq lsp-java-configuration-runtimes '[
 ;;                                         (:name "JavaSE-1.8"
@@ -908,40 +865,23 @@ Otherwise, show the default maximum number of recent items."
 #+end_src
 *** SQL
 #+begin_src emacs-lisp
-(add-hook 'sql-mode-hook 'lsp)
-
 #+end_src
 *** yaml
 #+begin_src emacs-lisp
-(straight-use-package 'yaml-mode)
-
 ;; (setq lsp-yaml-schemas '(:kubernetes "/*-k8s.yaml"))
 
-(add-hook 'yaml-mode-hook #'lsp)
 #+end_src
 *** restapi
 #+begin_src emacs-lisp
-(straight-use-package 'restclient)
 (require 'restclient)
-
-(straight-use-package 'company-restclient)
-
-(require 'company-restclient)
-
-(add-to-list 'company-backends 'company-restclient)
 
 (add-to-list 'auto-mode-alist '("\\.http\\'" . restclient-mode))
 #+end_src
 *** web
 #+begin_src emacs-lisp
-
-;; (straight-use-package 'web-mode)
-
 ;; (require 'web-mode)
 
 ;; (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
-
-(straight-use-package 'emmet-mode)
 
 (require 'emmet-mode)
 (setq sgml-basic-offset 4)
@@ -949,55 +889,48 @@ Otherwise, show the default maximum number of recent items."
 (add-hook 'sgml-mode-hook 'emmet-mode) ;; Auto-start on any markup modes
 (add-hook 'css-mode-hook  'emmet-mode) ;; enable Emmet's css abbreviation.
 
-(add-hook 'html-mode-hook #'lsp)
-
-(add-hook 'css-mode-hook #'lsp)
-
-
 ;; (add-hook 'html-mode 'lsp)
 #+end_src
 *** pdf
 #+begin_src emacs-lisp
+(require 'pdf-tools)
 #+end_src
 ** Error check
 *** flycheck
 Bind to lsp mode
 #+begin_src emacs-lisp
 (add-hook 'lsp-mode-hook #'flycheck-mode)
-
 #+end_src
 *** flyspell
 #+begin_src emacs-lisp
-  (defun flyspell-on-for-buffer-type ()
-      "Enable Flyspell appropriately for the major mode of the current buffer.  Uses `flyspell-prog-mode' for modes derived from `prog-mode', so only strings and comments get checked.  All other buffers get `flyspell-mode' to check all text.  If flyspell is already enabled, does nothing."
-      (interactive)
-      (if (not (symbol-value flyspell-mode)) ; if not already on
-	(progn
-	  (if (derived-mode-p 'prog-mode)
-	    (progn
-	      (message "Flyspell on (code)")
-	      (flyspell-prog-mode))
-	    ;; else
-	    (progn
-	      (message "Flyspell on (text)")
-	      (flyspell-mode 1)))
-	  ;; I tried putting (flyspell-buffer) here but it didn't seem to work
-	  )))
-    
-    (defun flyspell-toggle ()
-      "Turn Flyspell on if it is off, or off if it is on.  When turning on, it uses `flyspell-on-for-buffer-type' so code-vs-text is handled appropriately."
-      (interactive)
-      (if (symbol-value flyspell-mode)
-	  (progn ; flyspell is on, turn it off
-	    (message "Flyspell off")
-	    (flyspell-mode -1))
-	  ; else - flyspell is off, turn it on
-	  (flyspell-on-for-buffer-type)))
+(defun flyspell-on-for-buffer-type ()
+  "Enable Flyspell appropriately for the major mode of the current buffer.  Uses `flyspell-prog-mode' for modes derived from `prog-mode', so only strings and comments get checked.  All other buffers get `flyspell-mode' to check all text.  If flyspell is already enabled, does nothing."
+  (interactive)
+  (if (not (symbol-value flyspell-mode)) ; if not already on
+    (progn
+      (if (derived-mode-p 'prog-mode)
+        (progn
+          (message "Flyspell on (code)")
+          (flyspell-prog-mode))
+        ;; else
+        (progn
+          (message "Flyspell on (text)")
+          (flyspell-mode 1)))
+      ;; I tried putting (flyspell-buffer) here but it didn't seem to work
+      )))
 
-    (add-hook 'find-file-hook 'flyspell-on-for-buffer-type)
-    ;; (add-hook 'after-change-major-mode-hook 'flyspell-on-for-buffer-type)
+(defun flyspell-toggle ()
+  "Turn Flyspell on if it is off, or off if it is on.  When turning on, it uses `flyspell-on-for-buffer-type' so code-vs-text is handled appropriately."
+  (interactive)
+  (if (symbol-value flyspell-mode)
+      (progn ; flyspell is on, turn it off
+        (message "Flyspell off")
+        (flyspell-mode -1))
+      ; else - flyspell is off, turn it on
+      (flyspell-on-for-buffer-type)))
 
-
+(add-hook 'find-file-hook 'flyspell-on-for-buffer-type)
+;; (add-hook 'after-change-major-mode-hook 'flyspell-on-for-buffer-type)
 #+end_src
 ** Safe Variable
 #+begin_src emacs-lisp
@@ -1033,23 +966,17 @@ Bind to lsp mode
 #+end_src
 *** Org download
 #+begin_src emacs-lisp
-(straight-use-package 'org-download)
-
 ;;(require 'org-download)
 
 (setq org-download-image-dir "~/Pictures")
 (setq org-download-method 'attach)
-
 #+end_src
 *** Org Reveal
 #+begin_src emacs-lisp
-;(straight-use-package 'org-re-reveal)
 (require 'org-re-reveal)
 #+end_src
 *** Org Roam
 #+begin_src emacs-lisp
-;(straight-use-package 'org-roam)
-
 (setq org-roam-directory (expand-file-name "~/Dropbox/Notes")
       org-roam-capture-templates
       '(("d" "default" plain "%?"
@@ -1095,7 +1022,6 @@ Bind to lsp mode
 
 (setq org-confirm-babel-evaluate nil)
 
-(straight-use-package 'ob-mermaid)
 
 (require 'ob-mermaid)
 
@@ -1105,15 +1031,9 @@ Bind to lsp mode
   (add-to-list 'org-latex-packages-alist '("" "geometry"))
   )
 
-(straight-use-package 'ob-restclient)
-
 (require 'ob-restclient)
 
-(straight-use-package 'ox-gfm)
 (require 'ox-gfm)
-
-(straight-use-package
- '(org-cv :type git :host github :repo "Titan-C/org-cv"))
 
 (require 'ox-moderncv nil t)
 
@@ -1184,16 +1104,11 @@ Bind to lsp mode
 #+end_src
 *** Org Hugo
 #+begin_src emacs-lisp
-(straight-use-package 'ox-hugo)
-
 (require 'ox-hugo)
 #+end_src
 ** Key bindings
 *** open app
 #+begin_src emacs-lisp
-(defalias 'straight-keymap straight-keymap)
-(global-set-key (kbd "C-x p") 'straight-keymap)
-
 (define-key global-map (kbd "C-c p") project-prefix-map)
 
 (with-eval-after-load "sql"
@@ -1217,25 +1132,29 @@ Bind to lsp mode
 (define-key mode-specific-map "t" toggle-map)
 (define-key mode-specific-map "a" addon-map)
 
+(define-key addon-map "t" 'vterm)
+(define-key addon-map "g" 'gnus)
+(define-key addon-map "i" 'erc-myself)
+
 (meow-leader-define-key
  '("i" . imenu)
- '("<SPC>" . switch-to-buffer)
+ '("<SPC>" . project-find-file)
+ ;; '("<SPC>" . switch-to-buffer)
  '("\\" . split-window-right)
  '("-" . split-window-below)
  '("s" . mode-line-other-buffer)
  '("w" . ace-window)
  '("r" . recentf-minibuffer-dialog)
  '("q" . treemacs-select-window)
- '("f" . project-find-file)
- '("b" . toggle-hiding)
+ '("b" . switch-to-buffer)
+ '("f" . toggle-hiding)
  '("z" . toggle-selective-display)
  '("d" . dap-hydra)
+ '("o" . occur)
+ ;; '("*" . rg)
  ;; '("h" . window-left)
  ;; '("l" . window-right)
- ; '("*" . rg)
- 
  '(":" . replace-regexp))
-
 
 (require 'treemacs-project-follow-mode)
 (treemacs-project-follow-mode t)
@@ -1244,32 +1163,23 @@ Bind to lsp mode
 (setq treemacs-tag-follow-delay 0.2)
 ; one beautiful work around to make c+[ works
 (define-key meow-insert-state-keymap 
-            (kbd "C-g") [escape]
-            )
+            (kbd "C-g") [escape])
 #+end_src
 *** Ace
 #+begin_src emacs-lisp
-(straight-use-package 'ace-link)
-
 (require 'ace-link)
 
 (ace-link-setup-default)
 #+end_src
 ** Leetcode
 #+begin_src emacs-lisp
-;(straight-use-package 'leetcode)
 (autoload 'leetcode "leetcode" nil t)
 
 (setq leetcode-prefer-language "cpp"
       leetcode-prefer-sql "mysql")
 #+end_src
-** Pdf
-#+begin_src emacs-lisp
-(require 'pdf-tools)
-#+end_src
 ** Native Global Mode
 #+begin_src emacs-lisp
-
 (global-auto-composition-mode t)
 (global-auto-revert-mode t)
 (global-eldoc-mode t)
@@ -1287,6 +1197,11 @@ Bind to lsp mode
 (next-error-follow-minor-mode t)
 (pixel-scroll-precision-mode t)
 (auto-save-visited-mode t)
+(setq auto-insert-query nil)
+(global-subword-mode t)
+
+(auto-insert-mode 1)
+(setq bookmark-save-flag 1)
 #+end_src
 
 * Conclusion

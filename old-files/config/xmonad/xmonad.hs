@@ -18,10 +18,11 @@ import XMonad.Hooks.WallpaperSetter
 import XMonad.Prompt
 import XMonad.Prompt.Man
 import XMonad.Prompt.Pass
-import XMonad.Prompt.Ssh
+import XMonad.Prompt.Ssh()
 import XMonad.Util.Brightness (change)
 import XMonad.Util.EZConfig (additionalKeys)
 import XMonad.Util.SpawnOnce
+
 
 myTerminal :: String
 myTerminal = "alacritty"
@@ -43,7 +44,7 @@ myManageHook =
       className =? "Wechat" --> doShift "chat",
       className =? "wechat" --> doShift "chat",
       className =? "Slack" --> doShift "chat",
-      className =? "stalonetray" --> doIgnore
+      className =? "stalonetray" --> doIgnore   
     ]
 
 myStartupHook :: X ()

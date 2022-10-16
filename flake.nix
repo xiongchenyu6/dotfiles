@@ -30,9 +30,7 @@
 
     emacs = {
       url = "github:nix-community/emacs-overlay";
-      inputs = {
-        nixpkgs.follows = "nixpkgs";
-      };
+      inputs = { nixpkgs.follows = "nixpkgs"; };
     };
 
     xddxdd = {
@@ -43,24 +41,31 @@
       };
     };
 
-    agenix = {
-      url = "github:ryantm/agenix";
+    xiongchenyu6 = {
+      #url = "github:xiongchenyu6/nur-packages";
+      url = "/home/freeman/private/nur-packages";
+
       inputs = {
         nixpkgs.follows = "nixpkgs";
+        flake-utils.follows = "flake-utils";
       };
+    };
+
+    agenix = {
+      url = "github:ryantm/agenix";
+      inputs = { nixpkgs.follows = "nixpkgs"; };
     };
 
     nixos-generators = {
       url = "github:nix-community/nixos-generators";
-      inputs = {
-        nixpkgs.follows = "nixpkgs";
-      };
+      inputs = { nixpkgs.follows = "nixpkgs"; };
     };
 
     flake-utils-plus = {
       url = "github:gytis-ivaskevicius/flake-utils-plus";
       inputs.flake-utils.follows = "flake-utils";
     };
+
     nixops = {
       url = "github:NixOS/nixops";
       inputs = {
@@ -69,225 +74,129 @@
       };
     };
 
+    composer2nix = {
+      url = "github:samuelludwig/composer2nix/flakeify";
+      inputs = {
+        nixpkgs.follows = "nixpkgs";
+        flake-utils.follows = "flake-utils";
+      };
+    };
+
   };
 
-  outputs =
-    { self
-    , nixpkgs
-    , nixos-hardware
-    , emacs
-    , xddxdd
-    , flake-utils
-    , flake-utils-plus
-    , home-manager
-    , agenix
-    , nixos-generators
-    , devshell
-    , nixops
-    , nixpkgs-stable
-    , ...
-    } @inputs:
-      with nixpkgs;
-      with lib;
-      with flake-utils.lib;
-      with flake-utils-plus.lib;
-      let
-        overlays = [ devshell.overlay ];
-        pkgsFor = system: import nixpkgs { inherit system overlays; };
-      in
-      mkFlake
-        {
-          inherit self inputs;
+  outputs = { self, composer2nix, nixpkgs, nixos-hardware, emacs, xddxdd
+    , flake-utils, flake-utils-plus, home-manager, agenix, nixos-generators
+    , devshell, nixops, nixpkgs-stable, xiongchenyu6, ... }@inputs:
+    with nixpkgs;
+    with lib;
+    with flake-utils.lib;
+    with flake-utils-plus.lib;
+    let
+      overlays = [ devshell.overlay ];
+      pkgsFor = system: import nixpkgs { inherit system overlays; };
+    in mkFlake {
+      inherit self inputs;
 
-          supportedSystems = [ "x86_64-linux" ];
-          #supportedSystems = allSystems;
+      supportedSystems = [ "x86_64-linux" ];
+      #supportedSystems = allSystems;
 
-          channelsConfig = {
-            allowUnfree = true;
-            allowBroken = true;
-          };
+      channelsConfig = {
+        allowUnfree = true;
+        allowBroken = true;
+      };
 
-          sharedOverlays =
-            map
-              (x: x.overlay or x.overlays.default) [
-              agenix
-              emacs
-              devshell
-              self
-              xddxdd
-            ]
-            ++ [
+      sharedOverlays = map (x: x.overlay or x.overlays.default) [
+        agenix
+        emacs
+        devshell
+        xddxdd
+        xiongchenyu6
+      ] ++ [
+        (final: prev: {
+          krb5Full = prev.krb5Full.overrideAttrs (old: {
+            configureFlags = old.configureFlags ++ [ "--with-ldap" ];
+          });
+
+          cyrus_sasl_with_ldap =
+            (prev.cyrus_sasl.override { enableLdap = true; }).overrideAttrs
+              
+            (old: {
+              postInstall = ''
+                ln -sf ${prev.ldap-passthrough-conf}/slapd.conf $out/lib/sasl2/
+                ln -sf ${prev.ldap-passthrough-conf}/smtpd.conf $out/lib/sasl2/
+              '';
+            });
+          composer2nix =
+            composer2nix.packages."x86_64-linux".composer2nix-noDev;
+        })
+      ];
+
+      hostDefaults = {
+        extraArgs = { inherit domain; };
+        modules = [
+          nixos-hardware.nixosModules.lenovo-thinkpad-x1-9th-gen
+          nixos-hardware.nixosModules.common-gpu-intel
+          agenix.nixosModule
+          home-manager.nixosModules.home-manager
+          xiongchenyu6.nixosModules.bttc
+        ];
+      };
+
+      hosts.office.modules = [ ./host/office ];
+
+      outputsBuilder = channels: {
+        devShells.default = channels.nixpkgs.devshell.mkShell {
+          packages = with channels.nixpkgs; [
+            gopls
+            nix
+          ];
+          imports = [ (channels.nixpkgs.devshell.importTOML ./devshell.toml) ];
+        };
+      };
+    } // {
+      colmena = {
+        meta = {
+          nixpkgs = import nixpkgs {
+            system = "x86_64-linux";
+            overlays = [
+              xiongchenyu6.overlay
+              xddxdd.overlay
+              emacs.overlay
               (final: prev: {
                 krb5Full = prev.krb5Full.overrideAttrs (old: {
-                  configureFlags = old.configureFlags ++ [
-                    "--with-ldap"
-                  ];
+                  configureFlags = old.configureFlags ++ [ "--with-ldap" ];
                 });
-
-                cyrus_sasl_with_ldap = (prev.cyrus_sasl.override { enableLdap = true; }).overrideAttrs (old: {
+                postfix = prev.postfix.override {
+                  cyrus_sasl = final.cyrus_sasl_with_ldap;
+                };
+                cyrus_sasl_with_ldap = (prev.cyrus_sasl.override {
+                  enableLdap = true;
+                }).overrideAttrs (old: {
                   postInstall = ''
                     ln -sf ${prev.ldap-passthrough-conf}/slapd.conf $out/lib/sasl2/
                     ln -sf ${prev.ldap-passthrough-conf}/smtpd.conf $out/lib/sasl2/
                   '';
                 });
-                # nixopsUnstable = (import nixpkgs-stable { system = "x86_64-linux"; }).nixopsUnstable;
+                sssd = prev.sssd.override { withSudo = true; };
+                hydra-unstable =
+                  prev.hydra-unstable.overrideAttrs (old: { doCheck = false; });
               })
             ];
-
-          hostDefaults = {
-            extraArgs = {
-              inherit domain;
-            };
-            modules = [
-              nixos-hardware.nixosModules.lenovo-thinkpad-x1-9th-gen
-              nixos-hardware.nixosModules.common-gpu-intel
-              self.nixosModules.bttc
-              agenix.nixosModule
-              home-manager.nixosModules.home-manager
-            ];
           };
-
-          hosts.office.modules = [
-            ./host/office
-          ];
-
-          # replace 'joes-desktop' with your hostname here.
-          outputsBuilder = channels: {
-            # Evaluates to `apps.<system>.custom-neovim  = utils.lib.mkApp { drv = ...; exePath = ...; };`.
-            # apps = {
-            #   custom-neovim = mkApp {
-            #     drv = fancy-neovim;
-            #     exePath = "/bin/nvim";
-            #   };
-            # };
-
-            # Evaluates to `packages.<system>.package-from-overlays = <unstable-nixpkgs-reference>.package-from-overlays`.
-
-            packages = import ./pkgs { pkgs = channels.nixpkgs; inherit nixos-generators; inherit (nixpkgs) lib; };
-
-            # Evaluates to `apps.<system>.firefox  = utils.lib.mkApp { drv = ...; };`.
-            # defaultApp = mkApp { drv = channels.nixpkgs.firefox; };
-
-            # Evaluates to `defaultPackage.<system>.neovim = <nixpkgs-channel-reference>.neovim`.
-            # defaultPackage = channels.nixpkgs.neovim;
-
-            devShells.default = channels.nixpkgs.devshell.mkShell {
-              packages = with channels.nixpkgs; [
-                # to test with nix (Nix) 2.7.0 and NixOps 2.0.0-pre-7220cbd use
-                gopls
-                nix
-              ];
-              imports = [ (channels.nixpkgs.devshell.importTOML ./devshell.toml) ];
-            };
-            # devShell = channels.nixpkgs.mkShell {
-            #   buildInputs = with channels.nixpkgs; [
-            #     nix
-            #     colmena
-            #   ];
-            # };
-
-          };
-          overlays.default = import ./overlay.nix { inherit nixos-generators lib; };
-        } // {
-        colmena = {
-          meta = {
-            nixpkgs = import nixpkgs {
-              system = "x86_64-linux";
-              overlays = [
-                self.overlays.default
-                xddxdd.overlay
-                emacs.overlay
-                (final: prev: {
-                  krb5Full = prev.krb5Full.overrideAttrs (old: {
-                    configureFlags = old.configureFlags ++ [
-                      "--with-ldap"
-                    ];
-                  });
-                  postfix = prev.postfix.override {
-                    cyrus_sasl = final.cyrus_sasl_with_ldap;
-                  };
-                  cyrus_sasl_with_ldap = (prev.cyrus_sasl.override {
-                    enableLdap = true;
-                  }).overrideAttrs
-                    (old: {
-                      postInstall = ''
-                        ln -sf ${prev.ldap-passthrough-conf}/slapd.conf $out/lib/sasl2/
-                        ln -sf ${prev.ldap-passthrough-conf}/smtpd.conf $out/lib/sasl2/
-                      '';
-                    });
-                  sssd = prev.sssd.override
-                    { withSudo = true; };
-                  hydra-unstable = prev.hydra-unstable.overrideAttrs
-                    (old: { doCheck = false; });
-                })
-              ];
-            };
-          };
-          defaults = {
-            imports = [
-              agenix.nixosModule
-              home-manager.nixosModules.home-manager
-            ];
-          };
-          tc =
-            {
-              imports = [
-                ./host/tc
-              ];
-
-              deployment = {
-                targetHost = "freeman.engineer";
-                tags = [ "wg" ];
-              };
-            };
         };
-        nixosModules = import ./modules { };
-        templates = import ./templates;
-      } //
-      (
+        defaults = {
+          imports =
+            [ agenix.nixosModule home-manager.nixosModules.home-manager ];
+        };
+        tc = {
+          imports = [ ./host/tc ];
 
-        let
-          # System types to support.
-          supportedSystems =
-            [ "x86_64-linux" ];
-
-          # Helper function to generate an attrset '{ x86_64-linux = f "x86_64-linux"; ... }'.
-          forAllSystems = nixpkgs.lib.genAttrs supportedSystems;
-
-          # Nixpkgs instantiated for supported system types.
-          nixpkgsFor = forAllSystems (system: import nixpkgs { inherit system; });
-        in
-        {
-          hydraJobs = forAllSystems (system:
-            let pkgs = nixpkgsFor.${system};
-            in
-            {
-              tester = self.packages.${system}.default.overrideAttrs (prev: {
-                doCheck = true;
-                keepBuildDirectory = true;
-                #succeedOnFailure = true;
-                TESTSUITEFLAGS =
-                  "NIX_DONT_SET_RPATH_x86_64_unknown_linux_gnu=1 -x -d";
-                checkPhase = ''
-                  echo hello
-                '';
-                postInstall = ''
-                  echo hello
-                  echo world
-                '';
-                failureHook = ''
-                  test -f tests/testsuite.log && cp tests/testsuite.log $out/
-                  test -d tests/testsuite.dir && cp -r tests/testsuite.dir $out/
-                '';
-              });
-              tester-readme = pkgs.runCommand "readme"
-                { } ''
-                echo hello worl
-                mkdir -p $out/nix-support
-                echo "# A readme" > $out/readme.md
-                echo "doc readme $out/readme.md" >> $out/nix-support/hydra-build-products
-              '';
-            });
-        }
-      );
+          deployment = {
+            targetHost = "freeman.engineer";
+            tags = [ "wg" ];
+          };
+          inputs = { };
+        };
+      };
+    };
 }

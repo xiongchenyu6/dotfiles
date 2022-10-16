@@ -84,7 +84,7 @@
     alacritty = {
       enable = true;
       settings = {
-        font = { size = 9; };
+        font = { size = 12; };
         key_bindings = [
           { key = "Space"; mods = "Control"; mode = "~Search"; action = "ToggleViMode"; }
         ];
@@ -117,10 +117,6 @@
               "~/private/*/"
             ];
             arguments = "--rebase --autostash";
-          };
-          commands = {
-            "emacs straight" =
-              "emacs --batch -l ~/.config/emacs/early-init.el -f straight-pull-all";
           };
         };
     };
@@ -189,6 +185,7 @@
               "00ffffffffffff001e6dc15bb37c030004200103803c2278ea40b5ae5142ad260f5054210800d1c061404540010101010101010101014dd000a0f0703e803020350058542100001a000000fd00283c1e873c000a202020202020000000fc004c4720554c54524146494e450a000000ff003230344e54464136513533310a01800203427223090707830100004d01030410121f202261605f5e5d6d030c001000b83c20006001020367d85dc401788003e30f0003e2006ae305c000e6060581606050a36600a0f0701f803020350058542100001a565e00a0a0a029503020350058542100001a023a801871382d40582c450058542100001a00000000000000e2";
           };
           config = {
+
             "eDP-1" = {
               enable = true;
               crtc = 0;
@@ -207,7 +204,7 @@
               enable = true;
               crtc = 1;
               primary = false;
-              position = "2880x0";
+              position = "3840x0";
               mode = "3840x2160";
               rate = "60.00";
               rotate = "left";
@@ -215,6 +212,27 @@
                 x = 1;
                 y = 1;
               };
+              dpi = 144;
+            };
+          };
+          # hooks.postswitch = ''
+          #   polybar-msg cmd restart
+          # '';
+        };
+        home = {
+          fingerprint = {
+            "eDP-1" =
+              "00ffffffffffff0009e54c0900000000121e0104a51e1378036980a7544c9825115356000000010101010101010101010101010101019c3e80c870b03c40302036002ebc1000001a000000fd001e3c4a4a10010a202020202020000000fe00424f452043510a202020202020000000fe004e4531343057554d2d4e36320a000a";
+          };
+          config = {
+
+            "eDP-1" = {
+              enable = true;
+              crtc = 0;
+              primary = true;
+              position = "0x0";
+              mode = "1920x1200";
+              rate = "60.00";
             };
           };
           # hooks.postswitch = ''
@@ -267,6 +285,7 @@
         file-allocation = "prealloc";
       };
     };
+    
     gh = {
       enable = true;
       settings = { git_protocal = "ssh"; };
@@ -286,7 +305,7 @@
       enable = true;
       extraConfig = ''
         Config {
-                font = "xft:WenQuanYi Zen Hei:size=8"
+                font = "xft:WenQuanYi Zen Hei:size=12"
               , borderColor = "black"
               , border = TopB
               , bgColor = "black"
@@ -374,17 +393,64 @@
       enable = true;
       package = pkgs.emacsGitNativeComp;
       extraPackages = epkgs:
+        with pkgs;
         with epkgs; [
-          epkgs.vterm
-          epkgs.org-contrib
-          epkgs.org-roam
-          epkgs.org-re-reveal
-          epkgs.pdf-tools
-          epkgs.leetcode
+          ace-link
+          clojure-mode
+          cider
+          cmake-mode
+          corfu
+          corfu-doc
+          copilot-el
+          dockerfile-mode
+          direnv
+          eglot
+          emmet-mode
+          dap-mode
+          doom-themes
+          graphviz-dot-mode
+          gnu-apl-mode
+          gcmh
+          go-mode
+          haskell-mode
+          leetcode
+          lispy
+          ligature
+          nix-mode
+          meow
+          magit
+          marginalia
+          ox-gfm
+          ox-hugo
+          ob-mermaid
+          ob-restclient
+          org-contrib
+          org-roam
+          org-re-reveal
+          org-download
+          org-cv
+          orderless
+          pdf-tools
+          posframe
+          restclient
+          rainbow-delimiters
+          racket-mode
+          rg
+          rust-mode
+          solidity-mode
+          sml-mode
+          scala-mode
+          sbt-mode
+          tide
+          vterm
+          wakatime-mode
+          which-key
+          yasnippet
+          yaml-mode
         ];
       extraConfig = ''
         (add-to-list 'default-frame-alist
-                     '(font . "JetBrains Mono-16"))
+                     '(font . "JetBrains Mono-14"))
         (setq gnus-init-file "~/.config/emacs/gnus.el")
         (setq custom-file "~/.config/emacs/custom.el")
         (setq yas-snippet-dirs
@@ -448,17 +514,17 @@
         };
         "bar/bottom" = {
           width = "100%";
-          height = 35;
+          height = 50;
           bottom = true;
           background = "\${colors.background}";
           foreground = "\${colors.foreground}";
           modules-left = "date ip pip vpn";
           modules-center = "crypto";
-          font-0 = "Hack Nerd Font:size=14";
+          font-0 = "Hack Nerd Font:size=24";
           tray-position = "right";
           tray-padding = "2";
           tray-background = "\${colors.background}";
-          tray-maxsize = 20;
+          tray-maxsize = 40;
           enable-ipc = true;
         };
         "module/date" = {
