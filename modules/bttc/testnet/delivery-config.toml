@@ -1,4 +1,0 @@
-eth_rpc_url = "https://goerli.infura.io/v3/dc39d257c9d94e37801677d9b066824c" 
-bsc_rpc_url = "https://data-seed-prebsc-1-s1.binance.org:8545/"
-tron_rpc_url = "47.252.19.181:50051" 
-tron_grid_url = "https://test-tronevent.bt.io"

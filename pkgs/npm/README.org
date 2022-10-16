@@ -1,5 +1,0 @@
-* How to generate nix package for npm package
-use `node2nix` to generate default.nix
-#+begin_src sh
-node2nix -i <(echo '["tronbox"]') --nodejs-10
-#+end_src

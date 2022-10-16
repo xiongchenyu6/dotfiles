@@ -6,7 +6,7 @@
     {
       postfix =
         {
-          domain = config.networking.domain;
+          inherit (config.networking) domain;
           enable = true;
           enableSubmission = true;
           enableSubmissions = true;

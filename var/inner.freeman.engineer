@@ -1,6 +1,0 @@
-$TTL 3600
-$ORIGIN inner.freeman.engineer.
-@         IN SOA    inner.freeman.engineer. hostmaster.inner.freeman.engineer. ( 1 3h 1h 1w 1d )
-@         IN NS     ns1.inner.freeman.engineer.
-ns1       IN A      43.156.66.157
-*         IN A      43.156.66.157

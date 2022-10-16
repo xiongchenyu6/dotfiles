@@ -202,7 +202,7 @@
         ".HTF/"
         ".ghc.environment.*"
         "nohup.out"
-        ".attach_pid*"
+        ".attach_bid*"
       ];
     };
     zsh = {
@@ -245,7 +245,7 @@
                echo "Already a tag on this commit"
            fi
         }
-
+        export LSP_USE_PLISTS=true
       '';
       oh-my-zsh = {
         enable = true;
@@ -272,7 +272,7 @@
         ];
       };
       plugins =
-        let source = with pkgs; callPackage ../../pkgs/_sources/generated.nix {
+        let source = with pkgs; callPackage ./_sources/generated.nix {
           inherit fetchFromGitHub fetchurl fetchgit;
         };
         in
