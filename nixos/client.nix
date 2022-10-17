@@ -115,12 +115,8 @@
     openldap = { enable = true; };
   };
 
-  users = {
-    users = {
-      freeman = { packages = with pkgs; [ tdesktop ]; };
+  users = { users = { freeman = { packages = with pkgs; [ tdesktop ]; }; }; };
 
-    };
-  };
   programs = {
     atop = {
       enable = true;
@@ -138,5 +134,4 @@
       keep-derivations = true
     '';
   };
-
 }

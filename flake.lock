@@ -867,8 +867,8 @@
         "oci-arm-host-capacity-src": "oci-arm-host-capacity-src"
       },
       "locked": {
-        "lastModified": 1666001338,
-        "narHash": "sha256-Os4m/kVoYUtOkedLF1ekpHnj+3wBD1eI2Q6ALK6u+GU=",
+        "lastModified": 1666019641,
+        "narHash": "sha256-Td/8ll79UeNppwPaCmSaa6YIEoAy9f3tHcWUkc737wE=",
         "type": "git",
         "url": "file:///home/freeman/private/nur-packages"
       },
