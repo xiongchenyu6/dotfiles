@@ -712,6 +712,13 @@ Otherwise, show the default maximum number of recent items."
                (reusable-frames . visible)
                (window-height   . 0.33)))
 
+(add-to-list 'display-buffer-alist
+             `(,(rx bos "*PLANTUML Preview*" eos)
+               (display-buffer-reuse-window
+                display-buffer-in-side-window)
+               (side            . bottom)
+               (reusable-frames . visible)
+               (window-height   . 0.8)))
 
 (setq org-src-window-setup 'current-window)
 (add-hook 'occur-hook
@@ -772,7 +779,7 @@ Otherwise, show the default maximum number of recent items."
 (setq plantuml-default-exec-mode 'jar)
 (setq plantuml-jar-path "/home/freeman/plantuml.jar")
 (setq org-plantuml-jar-path "/home/freeman/plantuml.jar")
-
+(setq plantuml-output-type "png")
 #+end_src
 *** Nix
 #+begin_src emacs-lisp
@@ -964,14 +971,17 @@ Bind to lsp mode
 (require 'org-contrib)
 
 (setq org-attach-id-dir "~/Dropbox/Org/.attach")
-(setq org-startup-with-inline-images t)
+
+(setq org-image-actual-width nil)
+
+;; (setq org-startup-with-inline-images t)
 
 (with-eval-after-load 'org
   (add-hook 'org-babel-after-execute-hook 'org-redisplay-inline-images))
 #+end_src
 *** Org download
 #+begin_src emacs-lisp
-;;(require 'org-download)
+(require 'org-download)
 
 (setq org-download-image-dir "~/Pictures")
 (setq org-download-method 'attach)
@@ -1163,9 +1173,9 @@ Bind to lsp mode
 
 (require 'treemacs-project-follow-mode)
 (treemacs-project-follow-mode t)
-(require 'treemacs-tag-follow-mode)
-(treemacs-tag-follow-mode t)
-(setq treemacs-tag-follow-delay 0.2)
+;; (require 'treemacs-tag-follow-mode)
+;; (treemacs-tag-follow-mode t)
+;; (setq treemacs-tag-follow-delay 0.2)
 ; one beautiful work around to make c+[ works
 (define-key meow-insert-state-keymap 
             (kbd "C-g") [escape])
