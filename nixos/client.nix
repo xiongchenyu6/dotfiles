@@ -1,15 +1,10 @@
-{ config, pkgs, lib, symlinkJoin, ... }:
-{
-  imports =
-    let
-      ls = dir: builtins.map (f: (dir + "/${f}")) (builtins.attrNames (builtins.readDir dir));
-    in
-    [ ]
-    ++ (ls ./common-apps)
-    ++ (ls ./client-apps)
-    ++ (ls ./common-components)
-    ++ (ls ./client-components)
-  ;
+{ config, pkgs, lib, symlinkJoin, ... }: {
+  imports = let
+    ls = dir:
+      builtins.map (f: (dir + "/${f}"))
+      (builtins.attrNames (builtins.readDir dir));
+  in [ ] ++ (ls ./common-apps) ++ (ls ./client-apps) ++ (ls ./common-components)
+  ++ (ls ./client-components);
 
   nix = {
     generateNixPathFromInputs = true;
@@ -47,6 +42,7 @@
       gnumake
       gh
       gopls
+      graphviz
       haskell-language-server
       (haskellPackages.ghcWithPackages (self:
         with haskellPackages;
@@ -106,27 +102,22 @@
     pathsToLink = [ "/share/zsh" ];
   };
 
-  services =
-    {
-      dbus = { enable = true; };
+  services = {
+    dbus = { enable = true; };
 
-      trilium-server = {
-        enable = true;
-        noAuthentication = true;
-      };
-
-      gnome = { gnome-keyring = { enable = true; }; };
-
-      openldap = {
-        enable = true;
-      };
+    trilium-server = {
+      enable = true;
+      noAuthentication = true;
     };
+
+    gnome = { gnome-keyring = { enable = true; }; };
+
+    openldap = { enable = true; };
+  };
 
   users = {
     users = {
-      freeman = {
-        packages = with pkgs; [ tdesktop ];
-      };
+      freeman = { packages = with pkgs; [ tdesktop ]; };
 
     };
   };
@@ -139,13 +130,7 @@
     nm-applet = { enable = true; };
   };
 
-  home-manager = {
-    users = {
-      freeman = {
-        imports = [ ../home/gui ];
-      };
-    };
-  };
+  home-manager = { users = { freeman = { imports = [ ../home/gui ]; }; }; };
 
   nix = {
     extraOptions = ''
@@ -153,7 +138,5 @@
       keep-derivations = true
     '';
   };
-
-
 
 }

@@ -13,6 +13,7 @@ old-files/config/emacs/*
 !old-files/config/emacs/early-init.el 
 !old-files/config/emacs/init.org 
 !old-files/config/emacs/custom 
+!old-files/config/emacs/snippets 
 !old-files/config/kitty
 !old-files/config/Code/User
 !old-files/config/doom
