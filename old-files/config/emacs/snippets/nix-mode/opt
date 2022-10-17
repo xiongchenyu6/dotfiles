@@ -1,0 +1,8 @@
+# key: opt
+# name: nixos module option
+# --
+${1:name} = mkOption {
+description = lib.mdDoc "$1";
+default = "$2";
+type = types.$0;
+};
