@@ -40,9 +40,7 @@
     };
   };
 
-  gtk = {
-    enable = true;
-  };
+  gtk = { enable = true; };
 
   i18n = {
     inputMethod = {
@@ -53,41 +51,32 @@
 
   programs = {
 
-    broot = {
-      enable = true;
-    };
+    broot = { enable = true; };
 
-    nix-index = {
-      enable = true;
-    };
+    nix-index = { enable = true; };
 
-    noti = {
-      enable = true;
-    };
+    noti = { enable = true; };
 
-    sqls = {
-      enable = true;
-    };
+    sqls = { enable = true; };
 
-    octant = {
-      enable = true;
-    };
+    octant = { enable = true; };
 
     texlive = {
       enable = true;
 
     };
-    tint2 = {
-      enable = true;
-    };
+    tint2 = { enable = true; };
 
     alacritty = {
       enable = true;
       settings = {
         font = { size = 12; };
-        key_bindings = [
-          { key = "Space"; mods = "Control"; mode = "~Search"; action = "ToggleViMode"; }
-        ];
+        key_bindings = [{
+          key = "Space";
+          mods = "Control";
+          mode = "~Search";
+          action = "ToggleViMode";
+        }];
       };
     };
 
@@ -101,24 +90,17 @@
 
     topgrade = {
       enable = true;
-      settings =
-        {
-          assume_yes = true;
-          disable = [
-            "emacs"
-          ];
-          set_title = false;
-          cleanup = true;
-          git = {
-            max_concurrency = 10;
-            repos = [
-              "~/workspace/*/"
-              "~/git/*/"
-              "~/private/*/"
-            ];
-            arguments = "--rebase --autostash";
-          };
+      settings = {
+        assume_yes = true;
+        disable = [ "emacs" ];
+        set_title = false;
+        cleanup = true;
+        git = {
+          max_concurrency = 10;
+          repos = [ "~/workspace/*/" "~/git/*/" "~/private/*/" ];
+          arguments = "--rebase --autostash";
         };
+      };
     };
     yt-dlp = { enable = true; };
     # urxvt = {
@@ -285,7 +267,7 @@
         file-allocation = "prealloc";
       };
     };
-    
+
     gh = {
       enable = true;
       settings = { git_protocal = "ssh"; };
@@ -396,6 +378,7 @@
         with pkgs;
         with epkgs; [
           ace-link
+          all-the-icons
           clojure-mode
           cider
           cmake-mode
@@ -408,6 +391,7 @@
           emmet-mode
           dap-mode
           doom-themes
+          doom-modeline
           graphviz-dot-mode
           gnu-apl-mode
           gcmh
@@ -430,6 +414,7 @@
           org-download
           org-cv
           orderless
+          plantuml-mode
           pdf-tools
           posframe
           restclient
@@ -464,9 +449,7 @@
       enable = true;
       defaultEditor = true;
       client = { enable = true; };
-      socketActivation = {
-        enable = false;
-      };
+      socketActivation = { enable = false; };
     };
 
     xscreensaver = {
@@ -649,9 +632,7 @@
     };
     syncthing = {
       enable = true;
-      tray = {
-        enable = true;
-      };
+      tray = { enable = true; };
     };
   };
 }

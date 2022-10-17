@@ -19,16 +19,10 @@
     };
     optimise.automatic = true;
     settings = {
-      experimental-features = [
-        "nix-command"
-        "flakes"
-        "repl-flake"
-        "ca-derivations"
-      ];
-      trusted-users = [
-        "root"
-        "freeman"
-      ];
+      allow-import-from-derivation = true;
+      experimental-features =
+        [ "nix-command" "flakes" "repl-flake" "ca-derivations" ];
+      trusted-users = [ "root" "freeman" ];
 
       auto-optimise-store = true;
       substituters = [

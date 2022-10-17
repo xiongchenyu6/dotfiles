@@ -24,7 +24,6 @@
 (setq doom-themes-treemacs-theme "doom-atom") ; use "doom-colors" for less minimal icon theme
 ;; Corrects (and improves) org-mode's native fontification.
 (doom-themes-org-config)
-
 ;; (load-theme 'material t)
 #+end_src
 *** Ligature
@@ -386,8 +385,9 @@
 #+end_src
 *** Fold
 #+begin_src emacs-lisp
+(setq hs-hide-all-non-comment-function #'ignore)
+(add-hook 'hs-minor-mode-hook (lambda () (hs-hide-initial-comment-block) (hs-hide-all)))
 (add-hook 'prog-mode-hook 'hs-minor-mode)
-(add-hook 'hs-minor-mode-hook (lambda () (hs-hide-initial-comment-block)))
 #+end_src
 *** Motivation
 #+begin_src emacs-lisp
@@ -439,8 +439,9 @@
 (require 'orderless)
 
 ;; 在设置completion-styles之前，保存Emacs默认的completion-styles
-(defvar osfva/default-completion-styles completion-styles)
 (setq completion-styles '(orderless))
+
+(defvar osfva/default-completion-styles completion-styles)
 
 ;; 此处配置省略...
 
@@ -767,13 +768,17 @@ Otherwise, show the default maximum number of recent items."
 #+end_src
 *** Plantuml
 #+begin_src emacs-lisp
-(setq org-plantuml-exec-mode 'plantuml
-      )
+;; Sample jar configuration
+(setq plantuml-default-exec-mode 'jar)
+(setq plantuml-jar-path "/home/freeman/plantuml.jar")
+(setq org-plantuml-jar-path "/home/freeman/plantuml.jar")
+
 #+end_src
 *** Nix
 #+begin_src emacs-lisp
 (with-eval-after-load 'nix-mode
-  (add-hook 'save-buffer-hook 'nix-format-buffer))
+  (add-hook 'before-save-hook 'nix-format-buffer)
+  )
 #+end_src
 *** Rust
 #+begin_src emacs-lisp
@@ -1202,6 +1207,10 @@ Bind to lsp mode
 
 (auto-insert-mode 1)
 (setq bookmark-save-flag 1)
+#+end_src
+** modeline
+#+begin_src emacs-lisp
+(doom-modeline-mode 1)
 #+end_src
 
 * Conclusion

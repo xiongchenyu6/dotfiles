@@ -28,6 +28,19 @@
       };
     };
 
+    deploy.url = "github:serokell/deploy-rs";
+    deploy.inputs.nixpkgs.follows = "nixpkgs";
+
+    digga = {
+      url = "github:divnix/digga";
+      inputs = {
+        nixpkgs.follows = "nixpkgs";
+        nixlib.follows = "nixpkgs";
+        home-manager.follows = "home-manager";
+        deploy.follows = "deploy";
+      };
+    };
+
     emacs = {
       url = "github:nix-community/emacs-overlay";
       inputs = { nixpkgs.follows = "nixpkgs"; };
@@ -86,7 +99,8 @@
 
   outputs = { self, composer2nix, nixpkgs, nixos-hardware, emacs, xddxdd
     , flake-utils, flake-utils-plus, home-manager, agenix, nixos-generators
-    , devshell, nixops, nixpkgs-stable, xiongchenyu6, ... }@inputs:
+    , devshell, nixops, nixpkgs-stable, xiongchenyu6, digga, deploy, ...
+    }@inputs:
     with nixpkgs;
     with lib;
     with flake-utils.lib;
@@ -105,6 +119,8 @@
         allowBroken = true;
       };
 
+      lib = import ./lib { lib = digga.lib // nixos.lib; };
+
       sharedOverlays = map (x: x.overlay or x.overlays.default) [
         agenix
         emacs
@@ -119,7 +135,7 @@
 
           cyrus_sasl_with_ldap =
             (prev.cyrus_sasl.override { enableLdap = true; }).overrideAttrs
-              
+
             (old: {
               postInstall = ''
                 ln -sf ${prev.ldap-passthrough-conf}/slapd.conf $out/lib/sasl2/
@@ -142,14 +158,11 @@
         ];
       };
 
-      hosts.office.modules = [ ./host/office ];
+      hosts.office.modules = [ ./hosts/office ];
 
       outputsBuilder = channels: {
         devShells.default = channels.nixpkgs.devshell.mkShell {
-          packages = with channels.nixpkgs; [
-            gopls
-            nix
-          ];
+          packages = with channels.nixpkgs; [ gopls nix ];
           imports = [ (channels.nixpkgs.devshell.importTOML ./devshell.toml) ];
         };
       };
@@ -158,6 +171,7 @@
         meta = {
           nixpkgs = import nixpkgs {
             system = "x86_64-linux";
+
             overlays = [
               xiongchenyu6.overlay
               xddxdd.overlay
@@ -189,7 +203,7 @@
             [ agenix.nixosModule home-manager.nixosModules.home-manager ];
         };
         tc = {
-          imports = [ ./host/tc ];
+          imports = [ ./hosts/tc ];
 
           deployment = {
             targetHost = "freeman.engineer";
