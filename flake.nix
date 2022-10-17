@@ -155,6 +155,7 @@
           agenix.nixosModule
           home-manager.nixosModules.home-manager
           xiongchenyu6.nixosModules.bttc
+          xiongchenyu6.nixosModules.oci-arm-host-capacity
         ];
       };
 
@@ -199,8 +200,11 @@
           };
         };
         defaults = {
-          imports =
-            [ agenix.nixosModule home-manager.nixosModules.home-manager ];
+          imports = [
+            agenix.nixosModule
+            home-manager.nixosModules.home-manager
+            xiongchenyu6.nixosModules.oci-arm-host-capacity
+          ];
         };
         tc = {
           imports = [ ./hosts/tc ];
@@ -209,7 +213,6 @@
             targetHost = "freeman.engineer";
             tags = [ "wg" ];
           };
-          inputs = { };
         };
       };
     };

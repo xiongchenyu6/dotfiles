@@ -1,8 +1,6 @@
 { config, pkgs, lib, ... }:
-let
-  script = import ./update-roa.nix { inherit pkgs; };
-in
-{
+let script = import ./update-roa.nix { inherit pkgs; };
+in {
   systemd = {
     timers = {
       dn42-roa = {
@@ -22,8 +20,10 @@ in
       dn42-roa = {
         after = [ "network.target" ];
         description = "DN42 ROA Updated";
-        unitConfig = { Type = "one-shot"; };
-        serviceConfig = { ExecStart = "${script}/bin/update-roa"; };
+        serviceConfig = {
+          Type = "oneshot";
+          ExecStart = "${script}/bin/update-roa";
+        };
       };
     };
   };
