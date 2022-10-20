@@ -4,24 +4,22 @@
 
   home = {
     keyboard = { options = [ "caps:ctrl_modifier" ]; };
-    file =
-      let
-        old-files-path = ../../old-files;
-        common-files-path = ../../common;
-      in
-      {
-        ".wakatime.cfg" = { source = old-files-path + /wakatime/.wakatime.cfg; };
-        # ".curlrc" = { source = old-files-path + /downloader/.curlrc; };
-        ".ldaprc" = { source = old-files-path + /ldap/.ldaprc; };
-        ".ssh/id_ed25519.pub" = {
-          text = (import (common-files-path + /share.nix)).office.user.public-key;
-          executable = false;
-        };
-        ".ssh/id_ed25519" = {
-          source = common-files-path + /secrets/office_pk.key;
-          executable = false;
-        };
+    file = let
+      old-files-path = ../../old-files;
+      common-files-path = ../../common;
+    in {
+      ".wakatime.cfg" = { source = old-files-path + /wakatime/.wakatime.cfg; };
+      ".ldaprc" = { source = old-files-path + /ldap/.ldaprc; };
+      ".ssh/id_ed25519.pub" = {
+        text = (import (common-files-path + /share.nix)).office.user.public-key;
+        executable = false;
       };
+      ".curlrc" = { source = old-files-path + /downloader/.curlrc; };
+      ".ssh/id_ed25519" = {
+        source = common-files-path + /secrets/office_pk.key;
+        executable = false;
+      };
+    };
   };
 
   # Packages that should be installed to the user profile.
@@ -41,17 +39,13 @@
         end_of_line = "lf";
         insert_final_newline = true;
       };
-      "*.{js,py}" = {
-        charset = "utf-8";
-      };
+      "*.{js,py}" = { charset = "utf-8"; };
       "*.{py,cpp,c,h,proto}" = {
         indent_style = "space";
         indent_size = 4;
       };
 
-      "Makefile" = {
-        indent_style = "tab";
-      };
+      "Makefile" = { indent_style = "tab"; };
       "lib/**.js" = {
         indent_style = "space";
         indent_size = 2;
@@ -65,21 +59,15 @@
 
   programs = {
 
-    btop = {
-      enable = true;
-    };
+    btop = { enable = true; };
 
     # keychain = {
     #   enable = true;
     # };
 
-    readline = {
-      enable = true;
-    };
+    readline = { enable = true; };
 
-    nushell = {
-      enable = true;
-    };
+    nushell = { enable = true; };
 
     atuin = {
       enable = true;
@@ -95,13 +83,11 @@
       hashKnownHosts = true;
       compression = true;
       matchBlocks = {
-        "freeman.engineer" = {
-          user = "root";
-          port = 2222;
-        };
-        "git-code-commit.*.amazonaws.com" = lib.hm.dag.entryBefore [ "freeman.engineer" ] {
-          user = "APKA6ECL465SUMKZQKLN";
-        };
+        "freeman.engineer" = { port = 2222; };
+        "git-code-commit.*.amazonaws.com" =
+          lib.hm.dag.entryBefore [ "freeman.engineer" ] {
+            user = "APKA6ECL465SUMKZQKLN";
+          };
       };
       extraConfig = ''
         GSSAPIAuthentication yes
@@ -271,14 +257,15 @@
           "tmux"
         ];
       };
-      plugins =
-        let source = with pkgs; callPackage ./_sources/generated.nix {
-          inherit fetchFromGitHub fetchurl fetchgit;
-        };
-        in
-        map
-          (name: (removeAttrs source.${name} [ "pname" "version" ]) // { name = "${name}"; })
-          [ "alias-tips" "wakatime-zsh-plugin" ];
+      plugins = let
+        source = with pkgs;
+          callPackage ./_sources/generated.nix {
+            inherit fetchFromGitHub fetchurl fetchgit;
+          };
+      in map (name:
+        (removeAttrs source.${name} [ "pname" "version" ]) // {
+          name = "${name}";
+        }) [ "alias-tips" "wakatime-zsh-plugin" ];
       enableCompletion = true;
       enableAutosuggestions = true;
       enableSyntaxHighlighting = true;
@@ -290,7 +277,13 @@
 
     vim = {
       enable = true;
-      plugins = with pkgs.vimPlugins; [ nerdtree denite tagbar ale lightline-vim ];
+      plugins = with pkgs.vimPlugins; [
+        nerdtree
+        denite
+        tagbar
+        ale
+        lightline-vim
+      ];
       settings = { };
     };
 
