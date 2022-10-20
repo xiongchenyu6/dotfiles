@@ -1,13 +1,11 @@
-{ config, pkgs, lib, ... }:
-{
-  networking = {
-    hostName = "mail";
-  };
+{ config, pkgs, lib, ... }: {
+  networking = { hostName = "mail"; };
 
   imports = [
     ./hardware-configuration.nix
     ../../nixos
     ../../nixos/server.nix
+    ../../nixos/optional-apps/gitea
   ];
 
   boot.cleanTmpDir = true;
