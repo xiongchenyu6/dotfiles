@@ -976,8 +976,8 @@ Bind to lsp mode
 
 ;; (setq org-startup-with-inline-images t)
 
-(with-eval-after-load 'org
-  (add-hook 'org-babel-after-execute-hook 'org-redisplay-inline-images))
+;; (with-eval-after-load 'org
+;;   (add-hook 'org-babel-after-execute-hook 'org-redisplay-inline-images))
 #+end_src
 *** Org download
 #+begin_src emacs-lisp

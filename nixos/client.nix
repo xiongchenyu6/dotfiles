@@ -16,6 +16,7 @@
     systemPackages = with pkgs; [
       asciinema
       awscli2
+      azure-cli
       agenix
       clang
       cmake
@@ -105,10 +106,10 @@
   services = {
     dbus = { enable = true; };
 
-    trilium-server = {
-      enable = true;
-      noAuthentication = true;
-    };
+    # trilium-server = {
+    #   enable = true;
+    #   noAuthentication = true;
+    # };
 
     gnome = { gnome-keyring = { enable = true; }; };
 

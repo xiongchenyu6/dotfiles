@@ -1,0 +1,20 @@
+# key: newuser
+# name: add new openldap user
+# expand-env: ((yas-indent-line 'fixed) (yas-wrap-around-region 'nil))
+# --
+          dn: uid=$1,ou=developers,\${dbSuffix}
+          objectClass: person
+          objectClass: posixAccount
+          objectClass: organizationalPerson
+          objectClass: shadowAccount
+          objectClass: inetOrgPerson
+          homeDirectory: /home/$1
+          userpassword: {SASL}$1@\${realm}
+          uidNumber: $2
+          gidNumber: 1234
+          cn: $1
+          sn: $1
+          givenName: $1
+          mail: $1@tron.network
+          jpegPhoto: www.baidu.com
+

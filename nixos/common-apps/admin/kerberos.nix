@@ -3,8 +3,7 @@ let
   realm = "FREEMAN.ENGINEER";
   tronRealm = "TRONTECH.LINK";
   tronDomain = "trontech.link";
-in
-{
+in {
   krb5 = {
     enable = true;
     realms = {

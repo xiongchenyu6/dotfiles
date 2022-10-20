@@ -28,19 +28,6 @@
       };
     };
 
-    deploy.url = "github:serokell/deploy-rs";
-    deploy.inputs.nixpkgs.follows = "nixpkgs";
-
-    digga = {
-      url = "github:divnix/digga";
-      inputs = {
-        nixpkgs.follows = "nixpkgs";
-        nixlib.follows = "nixpkgs";
-        home-manager.follows = "home-manager";
-        deploy.follows = "deploy";
-      };
-    };
-
     emacs = {
       url = "github:nix-community/emacs-overlay";
       inputs = { nixpkgs.follows = "nixpkgs"; };
@@ -99,16 +86,42 @@
 
   outputs = { self, composer2nix, nixpkgs, nixos-hardware, emacs, xddxdd
     , flake-utils, flake-utils-plus, home-manager, agenix, nixos-generators
-    , devshell, nixops, nixpkgs-stable, xiongchenyu6, digga, deploy, ...
-    }@inputs:
+    , devshell, nixops, nixpkgs-stable, xiongchenyu6, ... }@inputs:
     with nixpkgs;
     with lib;
     with flake-utils.lib;
     with flake-utils-plus.lib;
     let
-      overlays = [ devshell.overlay ];
+      overlays = map (x: x.overlay or x.overlays.default) [
+        agenix
+        emacs
+        devshell
+        xddxdd
+        xiongchenyu6
+      ] ++ [
+        (final: prev: {
+          composer2nix =
+            composer2nix.packages."x86_64-linux".composer2nix-noDev;
+          krb5Full = prev.krb5Full.overrideAttrs (old: {
+            configureFlags = old.configureFlags ++ [ "--with-ldap" ];
+          });
+          postfix =
+            prev.postfix.override { cyrus_sasl = final.cyrus_sasl_with_ldap; };
+          cyrus_sasl_with_ldap =
+            (prev.cyrus_sasl.override { enableLdap = true; }).overrideAttrs
+            (old: {
+              postInstall = ''
+                ln -sf ${prev.ldap-passthrough-conf}/slapd.conf $out/lib/sasl2/
+                ln -sf ${prev.ldap-passthrough-conf}/smtpd.conf $out/lib/sasl2/
+              '';
+            });
+          sssd = prev.sssd.override { withSudo = true; };
+          hydra-unstable =
+            prev.hydra-unstable.overrideAttrs (old: { doCheck = false; });
+        })
+      ];
       pkgsFor = system: import nixpkgs { inherit system overlays; };
-    in mkFlake {
+    in (mkFlake {
       inherit self inputs;
 
       supportedSystems = [ "x86_64-linux" ];
@@ -121,31 +134,7 @@
 
       lib = import ./lib { lib = digga.lib // nixos.lib; };
 
-      sharedOverlays = map (x: x.overlay or x.overlays.default) [
-        agenix
-        emacs
-        devshell
-        xddxdd
-        xiongchenyu6
-      ] ++ [
-        (final: prev: {
-          krb5Full = prev.krb5Full.overrideAttrs (old: {
-            configureFlags = old.configureFlags ++ [ "--with-ldap" ];
-          });
-
-          cyrus_sasl_with_ldap =
-            (prev.cyrus_sasl.override { enableLdap = true; }).overrideAttrs
-
-            (old: {
-              postInstall = ''
-                ln -sf ${prev.ldap-passthrough-conf}/slapd.conf $out/lib/sasl2/
-                ln -sf ${prev.ldap-passthrough-conf}/smtpd.conf $out/lib/sasl2/
-              '';
-            });
-          composer2nix =
-            composer2nix.packages."x86_64-linux".composer2nix-noDev;
-        })
-      ];
+      sharedOverlays = overlays;
 
       hostDefaults = {
         extraArgs = { inherit domain; };
@@ -155,7 +144,6 @@
           agenix.nixosModule
           home-manager.nixosModules.home-manager
           xiongchenyu6.nixosModules.bttc
-          xiongchenyu6.nixosModules.oci-arm-host-capacity
         ];
       };
 
@@ -172,31 +160,7 @@
         meta = {
           nixpkgs = import nixpkgs {
             system = "x86_64-linux";
-
-            overlays = [
-              xiongchenyu6.overlay
-              xddxdd.overlay
-              emacs.overlay
-              (final: prev: {
-                krb5Full = prev.krb5Full.overrideAttrs (old: {
-                  configureFlags = old.configureFlags ++ [ "--with-ldap" ];
-                });
-                postfix = prev.postfix.override {
-                  cyrus_sasl = final.cyrus_sasl_with_ldap;
-                };
-                cyrus_sasl_with_ldap = (prev.cyrus_sasl.override {
-                  enableLdap = true;
-                }).overrideAttrs (old: {
-                  postInstall = ''
-                    ln -sf ${prev.ldap-passthrough-conf}/slapd.conf $out/lib/sasl2/
-                    ln -sf ${prev.ldap-passthrough-conf}/smtpd.conf $out/lib/sasl2/
-                  '';
-                });
-                sssd = prev.sssd.override { withSudo = true; };
-                hydra-unstable =
-                  prev.hydra-unstable.overrideAttrs (old: { doCheck = false; });
-              })
-            ];
+            inherit overlays;
           };
         };
         defaults = {
@@ -215,5 +179,5 @@
           };
         };
       };
-    };
+    });
 }
