@@ -83,6 +83,7 @@
       rnix-lsp
       tomb
       tronbox
+      mysql
       unzip
       vlc
       scrot

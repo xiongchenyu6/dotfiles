@@ -1,29 +1,26 @@
 # Edit
 
-{ config, pkgs, options, lib, ... }:
-rec {
-  networking = {
-    hostName = "office";
-  };
+{ config, pkgs, options, lib, ... }: rec {
+  networking = { hostName = "office"; };
 
   imports = [
     # Include the results of the hardware scan.
     ./hardware-configuration.nix
     ../../nixos
     ../../nixos/client.nix
+    ../../nixos/optional-apps/gitea
   ];
-  boot =
-    {
-      tmpOnTmpfs = lib.mkDefault true;
-      loader = {
-        systemd-boot = {
-          enable = true;
-          editor = false;
-        };
-        efi = {
-          canTouchEfiVariables = true;
-          efiSysMountPoint = "/boot/efi";
-        };
+  boot = {
+    tmpOnTmpfs = lib.mkDefault true;
+    loader = {
+      systemd-boot = {
+        enable = true;
+        editor = false;
+      };
+      efi = {
+        canTouchEfiVariables = true;
+        efiSysMountPoint = "/boot/efi";
       };
     };
+  };
 }

@@ -4,8 +4,7 @@ let
   secret-files-paht = common-files-path + "/secrets";
   script = import ../../dn42/update-roa.nix { inherit pkgs; };
   share = import (common-files-path + /share.nix);
-in
-{
+in {
 
   services = {
     nginx = {
@@ -18,7 +17,7 @@ in
       virtualHosts = {
         bird-lg = {
           serverName = "bird-lg.inner.${config.networking.domain}";
-          addSSL = true;
+          forceSSL = true;
           acmeRoot = null;
           useACMEHost = "inner.${config.networking.domain}";
           kTLS = true;
@@ -40,18 +39,19 @@ in
         # };
         grafana = {
           serverName = "grafana.inner.${config.networking.domain}";
-          addSSL = true;
+          forceSSL = true;
           acmeRoot = null;
           useACMEHost = "inner.${config.networking.domain}";
           kTLS = true;
           locations."/" = {
-            proxyPass = "http://127.0.0.1:${toString config.services.grafana.port}";
+            proxyPass =
+              "http://127.0.0.1:${toString config.services.grafana.port}";
             proxyWebsockets = true;
           };
         };
         hydra = {
           serverName = "hydra.inner.${config.networking.domain}";
-          addSSL = true;
+          forceSSL = true;
           acmeRoot = null;
           useACMEHost = "inner.${config.networking.domain}";
           kTLS = true;
@@ -62,7 +62,7 @@ in
         };
         prometheus = {
           serverName = "prometheus.inner.${config.networking.domain}";
-          addSSL = true;
+          forceSSL = true;
           acmeRoot = null;
           useACMEHost = "inner.${config.networking.domain}";
           kTLS = true;
@@ -77,7 +77,7 @@ in
         };
         alps = {
           serverName = "alps.inner.${config.networking.domain}";
-          addSSL = true;
+          forceSSL = true;
           acmeRoot = null;
           useACMEHost = "inner.${config.networking.domain}";
           kTLS = true;
@@ -86,6 +86,20 @@ in
             proxyWebsockets = true;
           };
         };
+
+        gitea = {
+          serverName = "git.inner.${config.networking.domain}";
+          forceSSL = true;
+          acmeRoot = null;
+          useACMEHost = "inner.${config.networking.domain}";
+          kTLS = true;
+          locations."/" = {
+            proxyPass =
+              "http://127.0.0.1:${toString config.services.gitea.httpPort}";
+            proxyWebsockets = true;
+          };
+        };
+
       };
     };
   };
