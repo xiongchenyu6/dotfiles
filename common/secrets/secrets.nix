@@ -14,7 +14,10 @@ in {
   "tc_https_pk.age".publicKeys = [ office tc ];
   "acme_credentials.age".publicKeys = [ office tc ];
   "ldap_credentials.age".publicKeys = [ office tc ];
+  "ldap_user_pass.age".publicKeys = [ office tc ];
   "ldap-password.age".publicKeys = [ office tc ];
   "gitea_postgres.age".publicKeys = [ office tc ];
+  "discourse_postgres.age".publicKeys = [ office tc ];
+  "django_secret.age".publicKeys = [ office tc ];
 }
 
