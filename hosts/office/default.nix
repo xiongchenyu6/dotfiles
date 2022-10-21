@@ -8,7 +8,6 @@
     ./hardware-configuration.nix
     ../../nixos
     ../../nixos/client.nix
-    ../../nixos/optional-apps/gitea
   ];
   boot = {
     tmpOnTmpfs = lib.mkDefault true;

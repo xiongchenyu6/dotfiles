@@ -13,6 +13,9 @@
         envPath = "${envPath}";
       };
   };
+  environment = {
+    systemPackages = with pkgs; [ calibre xvfb-run imagemagick ];
+  };
 
   programs = {
     zsh = {

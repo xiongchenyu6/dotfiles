@@ -100,6 +100,48 @@ in {
           };
         };
 
+        healthchecks = {
+          serverName = "healthchecks.inner.${config.networking.domain}";
+          forceSSL = true;
+          acmeRoot = null;
+          useACMEHost = "inner.${config.networking.domain}";
+          kTLS = true;
+          locations."/" = {
+            proxyPass =
+              "http://127.0.0.1:${toString config.services.healthchecks.port}";
+          };
+        };
+        calibre-web = {
+          serverName = "calibre-web.inner.${config.networking.domain}";
+          forceSSL = true;
+          acmeRoot = null;
+          useACMEHost = "inner.${config.networking.domain}";
+          kTLS = true;
+          locations."/" = {
+            proxyPass = "http://localhost:${
+                toString config.services.calibre-web.listen.port
+              }";
+          };
+        };
+        gotify = {
+          serverName = "gotify.inner.${config.networking.domain}";
+          forceSSL = true;
+          acmeRoot = null;
+          useACMEHost = "inner.${config.networking.domain}";
+          kTLS = true;
+          locations."/" = {
+            proxyPass =
+              "http://localhost:${toString config.services.gotify.port}";
+          };
+        };
+        mail = {
+          # forceSSL = lib.mkForce true;
+          onlySSL = true;
+          acmeRoot = null;
+          useACMEHost = "inner.${config.networking.domain}";
+          kTLS = true;
+          serverName = "discourse.inner.${config.networking.domain}";
+        };
       };
     };
   };

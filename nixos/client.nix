@@ -115,6 +115,14 @@
     gnome = { gnome-keyring = { enable = true; }; };
 
     openldap = { enable = true; };
+
+    vikunja = {
+      enable = true;
+      frontendScheme = "http";
+      frontendHostname = "localhost";
+      setupNginx = true;
+    };
+    nginx.enable = true;
   };
 
   users = { users = { freeman = { packages = with pkgs; [ tdesktop ]; }; }; };
