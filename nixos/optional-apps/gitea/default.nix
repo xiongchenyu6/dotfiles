@@ -36,6 +36,8 @@ in {
       extraConfig = ''
         [database]
         SSL_MODE = require
+        [cron.sync_external_users]
+        RUN_AT_START = true
       '';
       # extraConfig = ''
       #   [database]
