@@ -160,10 +160,13 @@ in {
           givenName: ${defaultUser}
           mail: fdsa@google.com
           jpegPhoto: www.baidu.com
+          loginShell: /run/current-system/sw/bin/zsh
 
           dn: uid=user3,ou=developers,${dbSuffix}
           objectClass: person
           objectClass: posixAccount
+          objectClass: organizationalPerson
+          objectClass: shadowAccount
           objectClass: inetOrgPerson
           homeDirectory: /home/user3
           userpassword: {SASL}user3@${realm}
@@ -179,6 +182,8 @@ in {
           dn: uid=user4,ou=developers,${dbSuffix}
           objectClass: person
           objectClass: posixAccount
+          objectClass: organizationalPerson
+          objectClass: shadowAccount
           objectClass: inetOrgPerson
           homeDirectory: /home/user4
           userpassword: {SASL}user4@${realm}
@@ -206,8 +211,7 @@ in {
           givenName: ziqing.wan
           mail: ziqing.wan@tron.network
           jpegPhoto: www.baidu.com
-
-
+          loginShell: /run/current-system/sw/bin/zsh
 
           dn: ou=SUDOers,${dbSuffix}
           objectClass: top

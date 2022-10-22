@@ -22,6 +22,13 @@ in {
   services.discourse = {
     enable = true;
     hostname = "discourse.inner.${config.networking.domain}";
+    package = pkgs.discourseAllPlugins;
+    plugins = with config.services.discourse.package.plugins; [
+      discourse-ldap-auth
+      discourse-solved
+      discourse-spoiler-alert
+      discourse-voting
+    ];
     enableACME = true;
     # secretKeyBaseFile = config.age.secrets.django_secret.path;
     database = {
@@ -49,4 +56,5 @@ in {
     };
     nginx.enable = true;
   };
+}
 
