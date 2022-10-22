@@ -372,6 +372,11 @@
 #+begin_src emacs-lisp
 (require 'vterm)
 (setq vterm-kill-buffer-on-exit t)
+
+(add-hook 'vterm-mode-hook
+          (lambda ()
+            (add-hook 'meow-insert-mode-hook (lambda () (vterm-copy-mode -1)) nil 'make-it-local)
+            (add-hook 'meow-normal-mode-hook (lambda () (vterm-copy-mode 1)) nil 'make-it-local)))
 #+end_src
 *** Better Search
 #+begin_src emacs-lisp
