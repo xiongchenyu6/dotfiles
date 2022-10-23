@@ -15,6 +15,7 @@ in {
   "acme_credentials.age".publicKeys = [ office tc ];
   "ldap_credentials.age".publicKeys = [ office tc ];
   "ldap_user_pass.age".publicKeys = [ office tc ];
+  "kerberos_admin_pass.age".publicKeys = [ office tc ];
   "ldap-password.age".publicKeys = [ office tc ];
   "gitea_postgres.age".publicKeys = [ office tc ];
   "discourse_postgres.age".publicKeys = [ office tc ];
