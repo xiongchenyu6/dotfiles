@@ -93,7 +93,6 @@ in {
                   olcOverlay = "dynlist";
                 };
               };
-
             };
           };
 
@@ -196,23 +195,6 @@ in {
           jpegPhoto: www.baidu.com
           loginShell: /run/current-system/sw/bin/zsh
 
-          dn: uid=ziqing.wan,ou=developers,${dbSuffix}
-          objectClass: person
-          objectClass: posixAccount
-          objectClass: organizationalPerson
-          objectClass: shadowAccount
-          objectClass: inetOrgPerson
-          homeDirectory: /home/ziqing.wan
-          userpassword: {SASL}ziqing.wan@${realm}
-          uidNumber: 1241
-          gidNumber: 1234
-          cn: ziqing.wan
-          sn: ziqing.wan
-          givenName: ziqing.wan
-          mail: ziqing.wan@tron.network
-          jpegPhoto: www.baidu.com
-          loginShell: /run/current-system/sw/bin/zsh
-
           dn: ou=SUDOers,${dbSuffix}
           objectClass: top
           objectClass: organizationalUnit
@@ -234,4 +216,3 @@ in {
     };
   };
 }
-

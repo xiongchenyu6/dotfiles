@@ -9,7 +9,6 @@
     ../../nixos/optional-apps/healthcheck.nix
     ../../nixos/optional-apps/calibre-web.nix
     ../../nixos/optional-apps/gotify-server.nix
-    ../../nixos/optional-apps/discourse.nix
   ];
 
   boot.cleanTmpDir = true;

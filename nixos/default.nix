@@ -5,7 +5,17 @@
 
 { config, pkgs, lib, ... }:
 
-{
+let
+  init-kerberos-ticket = pkgs.writeText "init-kerberos.sh" ''
+    pass=1
+    host=`hostname -f`
+    kadmin -p admin -w $pass -q "delprinc -force host/$host"
+    kadmin -p admin -w $pass -q "ank -randkey host/$host"
+    kadmin -p admin -w $pass -q "ktrem host/$host"
+    kadmin -p admin -w $pass -q "ktadd host/$host"
+    systemctl restart sssd
+  '';
+in {
   networking = { domain = "freeman.engineer"; };
 
   time = { timeZone = "Asia/Singapore"; };

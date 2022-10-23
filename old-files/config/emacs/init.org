@@ -375,8 +375,8 @@
 
 (add-hook 'vterm-mode-hook
           (lambda ()
-            (add-hook 'meow-insert-mode-hook (lambda () (vterm-copy-mode -1)) nil 'make-it-local)
-            (add-hook 'meow-normal-mode-hook (lambda () (vterm-copy-mode 1)) nil 'make-it-local)))
+            (add-hook 'meow-insert-mode-hook (lambda () (if (eq major-mode 'vterm-mode) (vterm-copy-mode -1))) nil 'make-it-local)
+            (add-hook 'meow-normal-mode-hook (lambda () (if (eq major-mode 'vterm-mode) (vterm-copy-mode 1))) nil 'make-it-local)))
 #+end_src
 *** Better Search
 #+begin_src emacs-lisp
