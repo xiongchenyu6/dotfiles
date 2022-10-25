@@ -404,6 +404,7 @@
           meow
           magit
           marginalia
+          nov
           ox-gfm
           ox-hugo
           ob-mermaid

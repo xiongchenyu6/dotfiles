@@ -34,6 +34,7 @@
       pass
       procs
       tealdeer
+      tendermint
       socat
       rustscan
       virtualbox
@@ -44,6 +45,7 @@
       gh
       gopls
       graphviz
+      gradle2nix
       haskell-language-server
       (haskellPackages.ghcWithPackages (self:
         with haskellPackages;
@@ -145,3 +147,4 @@
     '';
   };
 }
+

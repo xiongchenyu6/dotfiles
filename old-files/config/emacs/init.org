@@ -726,6 +726,7 @@ Otherwise, show the default maximum number of recent items."
                (window-height   . 0.8)))
 
 (setq org-src-window-setup 'current-window)
+
 (add-hook 'occur-hook
           '(lambda ()
              (switch-to-buffer-other-window "*Occur*")))
@@ -893,6 +894,9 @@ Otherwise, show the default maximum number of recent items."
 (require 'restclient)
 
 (add-to-list 'auto-mode-alist '("\\.http\\'" . restclient-mode))
+(add-to-list 'auto-mode-alist '("\\.pdf\\'" . pdf-view-mode))
+(add-to-list 'auto-mode-alist '("\\.epub\\'" . nov-mode))
+
 #+end_src
 *** web
 #+begin_src emacs-lisp
