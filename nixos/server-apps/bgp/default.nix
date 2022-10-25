@@ -1,5 +1,4 @@
-{ config, pkgs, options, lib, ... }:
-{
+{ config, pkgs, options, lib, ... }: {
   imports = [ ./birg-lg.nix ];
   services = {
     bird2 = {

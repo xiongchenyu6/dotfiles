@@ -89,12 +89,18 @@
         flake-utils.follows = "flake-utils";
       };
     };
+    pre-commit-hooks = {
+      url = "github:cachix/pre-commit-hooks.nix";
+      inputs = { flake-utils.follows = "flake-utils"; };
+
+    };
 
   };
 
   outputs = { self, composer2nix, nixpkgs, nixos-hardware, emacs, xddxdd
     , flake-utils, flake-utils-plus, home-manager, agenix, nixos-generators
-    , devshell, nixops, nixpkgs-stable, gradle2nix, xiongchenyu6, ... }@inputs:
+    , devshell, nixops, nixpkgs-stable, gradle2nix, pre-commit-hooks
+    , xiongchenyu6, ... }@inputs:
     with nixpkgs;
     with lib;
     with flake-utils.lib;
@@ -109,7 +115,7 @@
       ] ++ [
         (final: prev: {
           composer2nix =
-            composer2nix.packages."x86_64-linux".composer2nix-noDev;
+            composer2nix.packages."${prev.system}".composer2nix-noDev;
           krb5Full = prev.krb5Full.overrideAttrs (old: {
             configureFlags = old.configureFlags ++ [ "--with-ldap" ];
           });
@@ -126,22 +132,20 @@
           sssd = prev.sssd.override { withSudo = true; };
           hydra-unstable =
             prev.hydra-unstable.overrideAttrs (old: { doCheck = false; });
-          gradle2nix = gradle2nix.packages."x86_64-linux".gradle2nix;
+          gradle2nix = gradle2nix.packages."${prev.system}".gradle2nix;
         })
       ];
       pkgsFor = system: import nixpkgs { inherit system overlays; };
     in (mkFlake {
       inherit self inputs;
 
-      supportedSystems = [ "x86_64-linux" ];
+      supportedSystems = [ "x86_64-linux" "aarch64-darwin" ];
       #supportedSystems = allSystems;
 
       channelsConfig = {
         allowUnfree = true;
         allowBroken = true;
       };
-
-      lib = import ./lib { lib = digga.lib // nixos.lib; };
 
       sharedOverlays = overlays;
 
@@ -159,12 +163,23 @@
       hosts.office.modules = [ ./hosts/office ];
 
       outputsBuilder = channels: {
+        checks.pre-commit-check =
+          pre-commit-hooks.lib."${channels.nixpkgs.system}".run {
+            src = ./.;
+            hooks = {
+              nixfmt.enable = true;
+              statix.enable = true;
+              nix-linter.enable = true;
+            };
+          };
+
         devShells.default = channels.nixpkgs.devshell.mkShell {
           packages = with channels.nixpkgs; [ gopls nix ];
           imports = [ (channels.nixpkgs.devshell.importTOML ./devshell.toml) ];
         };
       };
     } // {
+
       colmena = {
         meta = {
           nixpkgs = import nixpkgs {

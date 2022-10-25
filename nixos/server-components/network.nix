@@ -3,10 +3,8 @@ let
   common-files-path = ../../common;
   secret-files-path = common-files-path + "/secrets";
   share = import (common-files-path + /share.nix);
-in
-{
+in {
   age.secrets.tc_wg_pk.file = secret-files-path + /tc_wg_pk.age;
-
 
   networking = {
     nat = {
