@@ -1,5 +1,4 @@
-{ config, pkgs, lib, symlinkJoin, ... }:
-{
+{ config, pkgs, lib, symlinkJoin, ... }: {
   fonts = {
     fontconfig = { enable = true; };
     fontDir = { enable = true; };

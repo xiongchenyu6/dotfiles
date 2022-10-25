@@ -4,8 +4,7 @@ let
   common-files-path = ../../../common;
   secret-files-path = common-files-path + "/secrets";
   share = import (common-files-path + /share.nix);
-in
-{
+in {
 
   age.secrets.acme_credentials = {
     file = secret-files-path + /acme_credentials.age;
@@ -32,11 +31,8 @@ in
           credentialsFile = config.age.secrets.acme_credentials.path;
           # We don't need to wait for propagation since this is a local DNS server
           dnsPropagationCheck = false;
-          reloadServices = [
-            "openldap.service"
-            "postfix.service"
-            "dovecot2.service"
-          ];
+          reloadServices =
+            [ "openldap.service" "postfix.service" "dovecot2.service" ];
           group = "openldap";
         };
         "inner.${config.networking.domain}" = {

@@ -1,9 +1,7 @@
 { config, pkgs, options, lib, ... }:
-let
-  share = import ../../common/share.nix;
-in
+let share = import ../../common/share.nix;
 
-{
+in {
   age.secrets.office_wg_pk.file = ../../common/secrets/office_wg_pk.age;
 
   networking = {
@@ -45,8 +43,7 @@ in
             endpoint = "vpn.trontech.link:22617";
             publicKey = share.tronlink.wg.public-key;
             persistentKeepalive = 5;
-            allowedIPs =
-              [ "172.64.224.1/24" "fe80::101/64" "172.32.0.0/16" ];
+            allowedIPs = [ "172.64.224.1/24" "fe80::101/64" "172.32.0.0/16" ];
           }];
         };
       };

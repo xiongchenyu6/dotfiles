@@ -1,20 +1,14 @@
 {
   security = {
     sudo = {
-      extraRules = [
-        {
-          groups = [ "developers" ];
-          commands = [ "ALL" ];
-        }
-      ];
+      extraRules = [{
+        groups = [ "developers" ];
+        commands = [ "ALL" ];
+      }];
     };
     pam = {
       krb5.enable = false;
-      services = {
-        sshd = {
-          makeHomeDir = true;
-        };
-      };
+      services = { sshd = { makeHomeDir = true; }; };
     };
   };
 }

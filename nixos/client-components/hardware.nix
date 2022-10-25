@@ -3,9 +3,7 @@
 {
   services = {
     # Enable CUPS to print documents.
-    printing = {
-      enable = true;
-    };
+    printing = { enable = true; };
     upower = { enable = true; };
     pipewire = {
       enable = true;
@@ -26,7 +24,6 @@
         ACTION=="add", SUBSYSTEM=="backlight", KERNEL=="intel_backlight", MODE="0666", RUN+="${pkgs.coreutils}/bin/chmod a+w /sys/class/backlight/%k/brightness"
       '';
     };
-
 
     # use the example session manager (no others are packaged yet so this is enabled by default,
     # no need to redefine it in your config for now)

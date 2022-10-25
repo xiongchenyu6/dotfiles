@@ -4,14 +4,16 @@
   systemd = {
     services = {
       dns-rfc2136-conf = {
-        requiredBy = [ "acme-inner.${config.networking.domain}.service" "bind.service" ];
-        before = [ "acme-inner.${config.networking.domain}.service" "bind.service" ];
+        requiredBy =
+          [ "acme-inner.${config.networking.domain}.service" "bind.service" ];
+        before =
+          [ "acme-inner.${config.networking.domain}.service" "bind.service" ];
         unitConfig = {
           ConditionPathExists = "!/var/lib/secrets/dnskeys.conf";
         };
         serviceConfig = {
           Type = "oneshot";
-          UMask = 0077;
+          UMask = 77;
         };
         path = [ pkgs.bind pkgs.gnused ];
         script = ''
@@ -41,7 +43,7 @@
         before = [ "bind.service" ];
         serviceConfig = {
           Type = "oneshot";
-          UMask = 0077;
+          UMask = 77;
           RemainAfterExit = true;
         };
         script = ''
@@ -109,11 +111,12 @@
         "fe80::/64"
       ];
       zones = [
-        rec{
+        rec {
           name = "inner.${config.networking.domain}";
           master = true;
           file = "/var/db/bind/${name}";
-          extraConfig = "allow-update { key rfc2136key.inner.${config.networking.domain}.; };";
+          extraConfig =
+            "allow-update { key rfc2136key.inner.${config.networking.domain}.; };";
         }
         rec {
           name = "157.66.156.43.in-addr.arpa";

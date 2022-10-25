@@ -19,6 +19,7 @@
       azure-cli
       agenix
       clang
+      clang-tools
       cmake
       conky
       composer2nix

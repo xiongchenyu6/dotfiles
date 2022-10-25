@@ -5,8 +5,7 @@ let
   dbSuffix = "dc=freeman,dc=engineer";
   defaultUser = "freeman";
   ldapRootUser = "admin";
-in
-{
+in {
   services = {
     sssd = {
       enable = true;

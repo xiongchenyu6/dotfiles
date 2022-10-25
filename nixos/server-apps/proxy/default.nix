@@ -1,5 +1,1 @@
-{ config, pkgs, lib, ... }:
-
-{
-  imports = [ ./nginx.nix ];
-}
+_: { imports = [ ./nginx.nix ]; }

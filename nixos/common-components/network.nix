@@ -1,11 +1,7 @@
 { config, pkgs, options, lib, ... }:
-let
-  share = import ../../common/share.nix;
-in
+let share = import ../../common/share.nix;
 
-{
-  networking = {
-    domain = "freeman.engineer";
-  };
+in {
+  networking = { domain = "freeman.engineer"; };
 
 }

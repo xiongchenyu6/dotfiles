@@ -24,7 +24,8 @@
         packageName = "my-xmonad";
       in {
         packages.${packageName} =
-          haskellPackages.callCabal2nix (nixpkgs.lib.debug.traceVal packageName) (builtins.toString ./.) rec {
+          haskellPackages.callCabal2nix (nixpkgs.lib.debug.traceVal packageName)
+          (builtins.toString ./.) rec {
             # Dependency overrides go here
           };
 
@@ -38,13 +39,11 @@
             xlibsWrapper
             alsaLib.dev
 
-    xorg.libXrandr
+            xorg.libXrandr
 
-    xorg.libXScrnSaver
+            xorg.libXScrnSaver
           ];
-              nativeBuildInputs = with pkgs; [
-        pkg-config
-    ];
+          nativeBuildInputs = with pkgs; [ pkg-config ];
           inputsFrom = builtins.attrValues self.packages.${system};
         };
       });

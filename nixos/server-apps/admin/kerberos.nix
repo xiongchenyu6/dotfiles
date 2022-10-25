@@ -3,8 +3,7 @@ let
   dbDomain = "freeman.engineer";
   realm = "FREEMAN.ENGINEER";
   dbSuffix = "dc=freeman,dc=engineer";
-in
-{
+in {
   krb5 = {
     enable = true;
     appdefaults = {
@@ -17,9 +16,7 @@ in
         initial_timeout = 1;
       };
     };
-    plugins = {
-      ldap_util = { };
-    };
+    plugins = { ldap_util = { }; };
     extraConfig = ''
       [dbmodules]
           openldap_ldapconf = {
@@ -40,17 +37,16 @@ in
       enable = true;
       realms = {
         "${realm}" = {
-          acl =
-            [
-              {
-                access = "all";
-                principal = "*/admin";
-              }
-              {
-                access = "all";
-                principal = "admin";
-              }
-            ];
+          acl = [
+            {
+              access = "all";
+              principal = "*/admin";
+            }
+            {
+              access = "all";
+              principal = "admin";
+            }
+          ];
         };
       };
     };
