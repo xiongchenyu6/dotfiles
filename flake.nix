@@ -82,11 +82,19 @@
       };
     };
 
+    gradle2nix = {
+      url = "github:randomnetcat/gradle2nix";
+      inputs = {
+        nixpkgs.follows = "nixpkgs";
+        flake-utils.follows = "flake-utils";
+      };
+    };
+
   };
 
   outputs = { self, composer2nix, nixpkgs, nixos-hardware, emacs, xddxdd
     , flake-utils, flake-utils-plus, home-manager, agenix, nixos-generators
-    , devshell, nixops, nixpkgs-stable, xiongchenyu6, ... }@inputs:
+    , devshell, nixops, nixpkgs-stable, gradle2nix, xiongchenyu6, ... }@inputs:
     with nixpkgs;
     with lib;
     with flake-utils.lib;
@@ -118,32 +126,7 @@
           sssd = prev.sssd.override { withSudo = true; };
           hydra-unstable =
             prev.hydra-unstable.overrideAttrs (old: { doCheck = false; });
-          calibre-web = prev.calibre-web.overrideAttrs (old: {
-            buildInputs = old.propagatedBuildInputs
-              ++ (with prev.python3.pkgs; [
-                python-ldap
-                prev.Flask-SimpleLDAP
-              ]);
-            postPatch = ''
-              mkdir -p src/calibreweb
-              mv cps.py src/calibreweb/__init__.py
-              mv cps src/calibreweb
-              substituteInPlace setup.cfg \
-                --replace "cps = calibreweb:main" "calibre-web = calibreweb:main" \
-                --replace "chardet>=3.0.0,<4.1.0" "chardet>=3.0.0,<6" \
-                --replace "Flask>=1.0.2,<2.1.0" "Flask>=1.0.2" \
-                --replace "Flask-Login>=0.3.2,<0.6.2" "Flask-Login>=0.3.2" \
-                --replace "flask-wtf>=0.14.2,<1.1.0" "flask-wtf>=0.14.2" \
-                --replace "lxml>=3.8.0,<4.9.0" "lxml>=3.8.0" \
-                --replace "tornado>=4.1,<6.2" "tornado>=4.1,<7" \
-                --replace "PyPDF3>=1.0.0,<1.0.7" "PyPDF3>=1.0.0" \
-                --replace "requests>=2.11.1,<2.28.0" "requests" \
-                --replace "unidecode>=0.04.19,<1.4.0" "unidecode>=0.04.19" \
-                --replace "python-ldap>=3.0.0,<3.5.0" "python-ldap>=3.0.0" \
-                --replace "Flask-SimpleLDAP>=1.4.0,<1.5.0" "Flask-SimpleLDAP>=1.4.0" \
-                --replace "werkzeug<2.1.0" ""
-            '';
-          });
+          gradle2nix = gradle2nix.packages."x86_64-linux".gradle2nix;
         })
       ];
       pkgsFor = system: import nixpkgs { inherit system overlays; };
