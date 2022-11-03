@@ -84,6 +84,10 @@
       # controlMaster = "auto";
       matchBlocks = {
         "freeman.engineer" = { port = 2222; };
+        "mail.freeman.engineer" = {
+          port = 2222;
+          user = "root";
+        };
         "git-code-commit.*.amazonaws.com" =
           lib.hm.dag.entryBefore [ "freeman.engineer" ] {
             user = "APKA6ECL465SUMKZQKLN";

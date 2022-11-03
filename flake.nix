@@ -12,6 +12,11 @@
 
     flake-utils.url = "github:numtide/flake-utils";
 
+    flake-compat = {
+      url = "github:edolstra/flake-compat";
+      flake = false;
+    };
+
     home-manager = {
       url = "github:nix-community/home-manager";
       inputs = {
@@ -74,14 +79,6 @@
       };
     };
 
-    composer2nix = {
-      url = "github:samuelludwig/composer2nix/flakeify";
-      inputs = {
-        nixpkgs.follows = "nixpkgs";
-        flake-utils.follows = "flake-utils";
-      };
-    };
-
     gradle2nix = {
       url = "github:randomnetcat/gradle2nix";
       inputs = {
@@ -89,6 +86,7 @@
         flake-utils.follows = "flake-utils";
       };
     };
+
     pre-commit-hooks = {
       url = "github:cachix/pre-commit-hooks.nix";
       inputs = { flake-utils.follows = "flake-utils"; };
@@ -116,15 +114,24 @@
       inputs = {
         nixpkgs.follows = "nixpkgs";
         utils.follows = "flake-utils";
+        flake-compat.follows = "flake-compat";
       };
+    };
+
+    digga = {
+      url = "github:divnix/digga";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.nixlib.follows = "nixpkgs";
+      inputs.home-manager.follows = "home-manager";
+      inputs.deploy.follows = "deploy-rs";
     };
 
   };
 
-  outputs = { self, composer2nix, nixpkgs, nixos-hardware, emacs, xddxdd
-    , flake-utils, flake-utils-plus, home-manager, agenix, nixos-generators
-    , devshell, nixops, nixpkgs-stable, gradle2nix, pre-commit-hooks, nix-alien
-    , xiongchenyu6, winklink, deploy-rs, ... }@inputs:
+  outputs = { self, nixpkgs, nixos-hardware, emacs, xddxdd, flake-utils
+    , flake-utils-plus, home-manager, agenix, nixos-generators, devshell, nixops
+    , nixpkgs-stable, gradle2nix, pre-commit-hooks, nix-alien, xiongchenyu6
+    , winklink, deploy-rs, digga, ... }@inputs:
     with nixpkgs;
     with lib;
     with flake-utils.lib;
@@ -139,8 +146,6 @@
         nix-alien
       ] ++ [
         (final: prev: {
-          composer2nix =
-            composer2nix.packages."${prev.system}".composer2nix-noDev;
           krb5Full = prev.krb5Full.overrideAttrs (old: {
             configureFlags = old.configureFlags ++ [ "--with-ldap" ];
           });
@@ -185,7 +190,6 @@
                 --add-flags "--add-opens java.base/java.lang=ALL-UNNAMED"
             '';
           });
-
         })
       ];
       pkgsFor = system: import nixpkgs { inherit system overlays; };
@@ -235,18 +239,27 @@
         };
       };
     } // {
-      deploy.nodes.mail = {
+
+      deploy = {
         sshOpts = [ "-p" "2222" ];
-        hostname = "freeman.engineer";
         fastConnection = true;
-        profiles = {
-          system = {
-            sshUser = "root";
-            path = deploy-rs.lib.x86_64-linux.activate.nixos
-              self.nixosConfigurations.mail;
-            user = "root";
-          };
-        };
+        nodes = digga.lib.mkDeployNodes self.nixosConfigurations { };
       };
+
+      # deploy = {
+      #   sshOpts = [ "-p" "2222" ];
+      #   fastConnection = true;
+      #   nodes.mail = {
+      #     hostname = "freeman.engineer";
+      #     profiles = {
+      #       system = {
+      #         sshUser = "root";
+      #         user = "root";
+      #         path = deploy-rs.lib.x86_64-linux.activate.nixos
+      #           self.nixosConfigurations.mail;
+      #       };
+      #     };
+      #   };
+      # };
     };
 }
