@@ -116,6 +116,7 @@
       qq
       wechat-uos
       xscreensaver
+      ssh-askpass-fullscreen
       zoom-us
     ];
     pathsToLink = [ "/share/zsh" ];

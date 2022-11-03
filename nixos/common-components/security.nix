@@ -3,7 +3,7 @@ _: {
     rtkit = { enable = true; };
     sudo = {
       enable = true;
-      wheelNeedsPassword = false;
+      wheelNeedsPassword = true;
     };
     acme = { acceptTerms = true; };
     pki = let share = import ../../common/share.nix;
