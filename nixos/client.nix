@@ -23,7 +23,6 @@
       clang-tools
       cmake
       conky
-      composer2nix
       cabal2nix
       cachix
       discord

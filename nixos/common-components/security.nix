@@ -1,7 +1,10 @@
 _: {
   security = {
     rtkit = { enable = true; };
-    sudo = { enable = true; };
+    sudo = {
+      enable = true;
+      wheelNeedsPassword = false;
+    };
     acme = { acceptTerms = true; };
     pki = let share = import ../../common/share.nix;
     in {
