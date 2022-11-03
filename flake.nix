@@ -193,7 +193,7 @@
         })
       ];
       pkgsFor = system: import nixpkgs { inherit system overlays; };
-    in mkFlake {
+    in digga.lib.mkFlake {
       inherit self inputs;
 
       supportedSystems = [ "x86_64-linux" "aarch64-darwin" ];
@@ -204,7 +204,15 @@
         allowBroken = true;
       };
 
+      channels = { nixpkgs = { }; };
       sharedOverlays = overlays;
+
+      nixos = {
+        hostDefaults = {
+          system = "x86_64-linux";
+          channelName = "nixpkgs";
+        };
+      };
 
       hostDefaults = {
         extraArgs = { inherit domain; };
@@ -220,7 +228,7 @@
       hosts = {
         office.modules = [ ./hosts/office ];
         mail.modules =
-          [ xiongchenyu6.nixosModules.oci-arm-host-capacity ./hosts/tc ];
+          [ xiongchenyu6.nixosModules.oci-arm-host-capacity ./hosts/mail ];
       };
 
       outputsBuilder = channels: {
@@ -238,28 +246,13 @@
           packages = with channels.nixpkgs; [ gopls nix deploy-rs ];
         };
       };
-    } // {
 
       deploy = {
-        sshOpts = [ "-p" "2222" ];
+        sshOpts = [ "-X" "-p" "2222" ];
         fastConnection = true;
-        nodes = digga.lib.mkDeployNodes self.nixosConfigurations { };
+        nodes = digga.lib.mkDeployNodes self.nixosConfigurations {
+          mail = { profiles = { system = { sshUser = "root"; }; }; };
+        };
       };
-
-      # deploy = {
-      #   sshOpts = [ "-p" "2222" ];
-      #   fastConnection = true;
-      #   nodes.mail = {
-      #     hostname = "freeman.engineer";
-      #     profiles = {
-      #       system = {
-      #         sshUser = "root";
-      #         user = "root";
-      #         path = deploy-rs.lib.x86_64-linux.activate.nixos
-      #           self.nixosConfigurations.mail;
-      #       };
-      #     };
-      #   };
-      # };
     };
 }

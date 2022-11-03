@@ -17,6 +17,20 @@
     systemPackages = with pkgs; [ calibre xvfb-run imagemagick ];
   };
 
+  environment.etc."sudo.conf" = {
+    mode = "0400";
+    # uncomment one of the following lines
+    #text = "Path askpass ${askpass}";
+    # text = "Path askpass ${pkgs.x11_ssh_askpass}/libexec/x11-ssh-askpass";
+    # text =
+    #   "Path askpass ${pkgs.ssh-askpass-fullscreen}/bin/ssh-askpass-fullscreen";
+    text =
+      "Path askpass ${pkgs.lxqt.lxqt-openssh-askpass}/bin/lxqt-openssh-askpass";
+    #text = "Path askpass ${pkgs.ksshaskpass}/bin/ksshaskpass";
+  };
+
+  services.openssh.forwardX11 = true; # The server must allow X11 forwarding
+
   programs = {
     zsh = {
       enable = true;

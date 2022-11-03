@@ -1,5 +1,8 @@
 { config, pkgs, lib, ... }: {
-  networking = { hostName = "mail"; };
+  networking = let
+    file-path = builtins.split "/" (toString ./.);
+    hostName = lib.last file-path;
+  in { inherit hostName; };
 
   imports = [
     ./hardware-configuration.nix
