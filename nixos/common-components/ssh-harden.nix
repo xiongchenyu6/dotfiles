@@ -1,9 +1,9 @@
 { config, pkgs, lib, ... }: {
   services.openssh = {
     enable = true;
-    banner = ''
-      Welcome to the NixOS machine
-    '';
+    # banner = ''
+    #   Welcome to the NixOS machine
+    # '';
     startWhenNeeded = false;
     forwardX11 = true;
     passwordAuthentication = true;
@@ -26,9 +26,7 @@
     ];
     extraConfig = ''
       GSSAPIAuthentication yes
-      UsePAM yes
       GSSAPICleanupCredentials yes
-      PasswordAuthentication yes
     '';
   };
 }

@@ -61,10 +61,8 @@
 
     octant = { enable = true; };
 
-    texlive = {
-      enable = true;
+    texlive = { enable = true; };
 
-    };
     tint2 = { enable = true; };
 
     alacritty = {
@@ -287,7 +285,7 @@
       enable = true;
       extraConfig = ''
         Config {
-                font = "xft:WenQuanYi Zen Hei:size=12"
+                font = "xft:WenQuanYi Zen Hei:size=10"
               , borderColor = "black"
               , border = TopB
               , bgColor = "black"
@@ -389,6 +387,7 @@
           direnv
           eglot
           emmet-mode
+          format-all
           dap-mode
           doom-themes
           doom-modeline
@@ -400,6 +399,7 @@
           leetcode
           lispy
           ligature
+          lsp-java
           nix-mode
           meow
           magit
@@ -418,6 +418,7 @@
           plantuml-mode
           pdf-tools
           posframe
+          protobuf-mode
           restclient
           rainbow-delimiters
           racket-mode
@@ -498,17 +499,17 @@
         };
         "bar/bottom" = {
           width = "100%";
-          height = 50;
+          height = 40;
           bottom = true;
           background = "\${colors.background}";
           foreground = "\${colors.foreground}";
           modules-left = "date ip pip vpn";
           modules-center = "crypto";
-          font-0 = "Hack Nerd Font:size=24";
+          font-0 = "Hack Nerd Font:size=16";
           tray-position = "right";
           tray-padding = "2";
           tray-background = "\${colors.background}";
-          tray-maxsize = 40;
+          tray-maxsize = 25;
           enable-ipc = true;
         };
         "module/date" = {

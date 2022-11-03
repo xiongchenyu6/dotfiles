@@ -18,6 +18,7 @@
       awscli2
       azure-cli
       agenix
+      apg
       clang
       clang-tools
       cmake
@@ -26,12 +27,13 @@
       cabal2nix
       cachix
       discord
-      devshell.cli
+      deploy-rs
       neofetch
       exa
       feh
       fd
       jp2a
+      jdt-language-server
       pass
       procs
       tealdeer
@@ -47,6 +49,7 @@
       gopls
       graphviz
       gradle2nix
+      gcc
       haskell-language-server
       (haskellPackages.ghcWithPackages (self:
         with haskellPackages;
@@ -63,28 +66,36 @@
       imagemagick
       ispell
       lsof
-      (python3.withPackages (ps: [
-        my_cookies
-        epc
-        python310Packages.orjson
-        python310Packages.python-lsp-server
-      ]))
+      (python3.withPackages (ps:
+        with python3.pkgs; [
+          my_cookies
+          epc
+          orjson
+          python-lsp-server
+          cmake-language-server
+        ]))
       pinentry
+      patchelf
       linuxPackages.ply
       wakatime
+      metals
       nixfmt
+      nixpkgs-fmt
       node2nix
       nodejs
       nodePackages."typescript-language-server"
       nodePackages."bash-language-server"
       nvfetcher
+      # nix-alien
+      # nix-index-update
       nixopsUnstable
       openssl
       protobuf
       plantuml
       ripgrep
       rnix-lsp
-      tomb
+      terraform
+      terranix
       tronbox
       mysql
       unzip
@@ -93,8 +104,12 @@
       stow
       slack
       statix
+      scalafmt
+      solc-select
+      litecli
       wineWowPackages.staging
       wireshark
+      winklink
       #wpa_supplicant_gui
       wakatime
       whatsapp-for-linux
@@ -137,6 +152,7 @@
       atopgpu = { enable = true; };
     };
     nm-applet = { enable = true; };
+    nix-ld.enable = true;
   };
 
   home-manager = { users = { freeman = { imports = [ ../home/gui ]; }; }; };
@@ -145,6 +161,8 @@
     extraOptions = ''
       keep-outputs = true
       keep-derivations = true
+      restrict-eval = false
+      sandbox = false
     '';
   };
 }

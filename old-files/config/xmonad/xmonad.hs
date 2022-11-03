@@ -129,6 +129,7 @@ customerKeyMaps =
     ((modm, xK_f), spawn "rofi -i -show filebrowser -show-icons"),
     ((modm, xK_s), spawn "rofi -i -show ssh -show-icons"),
     ((modm, xK_m), manPrompt popupConfig),
+
     ((modm .|. controlMask .|. shiftMask, xK_p), passGeneratePrompt popupConfig),
     ( (modm .|. shiftMask, xK_z),
       spawn "xscreensaver-command -lock; xset dpms force off"

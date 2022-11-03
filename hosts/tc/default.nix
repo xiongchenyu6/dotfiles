@@ -9,6 +9,7 @@
     ../../nixos/optional-apps/healthcheck.nix
     ../../nixos/optional-apps/calibre-web.nix
     ../../nixos/optional-apps/gotify-server.nix
+    # ../../nixos/optional-apps/hercules-ci-agent.nix
   ];
 
   boot.cleanTmpDir = true;

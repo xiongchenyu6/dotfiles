@@ -1,0 +1,6 @@
+{ "mycache":  
+  { "kind": "CachixCache"
+    , "authToken": "eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJiMzRmMTFhZS0xOTJkLTRmMzYtYTQ1Mi1lOGRjNWJkZWI0NWEiLCJzY29wZXMiOiJjYWNoZSJ9.DdXgbDNdiparHiayf7uqlXjXZbHCm0OGffHs7wNHsiw" 
+    , "publicKeys": ["xiongchenyu6.cachix.org-1:mpOGlINmMwc2gb3xb1BjVmhzR8BYWzWYlg4xlTiBr7Q="] 
+  }
+}
