@@ -3,7 +3,7 @@
 {
   services = {
     postgresql = {
-      enable = true;
+      enable = false;
       authentication = ''
         local all all trust
       '';

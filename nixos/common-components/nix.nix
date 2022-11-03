@@ -29,7 +29,7 @@
         "https://nix-community.cachix.org"
         "https://xddxdd.cachix.org"
         "https://colmena.cachix.org"
-        "https://cache.nixos.org/"
+        "https://cache.nixos.org"
         "https://xiongchenyu6.cachix.org"
       ];
       trusted-public-keys = [
@@ -40,5 +40,12 @@
       ];
     };
   };
-}
 
+  nix.distributedBuilds = false;
+  nix.buildMachines = [{
+    hostName = "hydra.inner.trontech.link";
+    sshUser = "michael.yang";
+    systems = [ "x86_64-linux" ];
+    maxJobs = 2;
+  }];
+}

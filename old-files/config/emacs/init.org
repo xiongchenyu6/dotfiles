@@ -368,6 +368,7 @@
   )
 #+end_src
 ** Coding
+
 *** Better terminal
 #+begin_src emacs-lisp
 (require 'vterm)
@@ -539,7 +540,7 @@ Otherwise, show the default maximum number of recent items."
 
 (require 'copilot)
 
-(setq copilot-node-executable "/nix/store/pzsk91sxxin42axlvdfbbbjiyz3jzfy3-nodejs-16.17.1/bin/node")
+(setq copilot-node-executable "/nix/store/p8w2d2wlhavc6hqafb62qn2c5zz45lil-nodejs-16.17.1/bin/node")
 
 (add-hook 'prog-mode-hook 'copilot-mode)
 
@@ -643,6 +644,16 @@ Otherwise, show the default maximum number of recent items."
 (define-key lsp-bridge-mode-map [remap xref-find-definitions] #'lsp-bridge-find-def)
 (define-key lsp-bridge-mode-map [remap xref-find-references] #'lsp-bridge-find-references)
 (define-key lsp-bridge-mode-map [remap xref-go-back] #'lsp-bridge-find-def-return)
+
+
+(setq lsp-bridge-enable-log t)
+
+;; (setenv "PATH" (concat (getenv "PATH") ":/home/freeman/.config/emacs/.cache/lsp/eclipse.jdt.ls/bin"))
+
+;; (setq exec-path (append exec-path '("/home/freeman/.config/emacs/.cache/lsp/eclipse.jdt.ls/bin")))
+
+
+;(setq lsp-bridge-jdtls-worksapce)
 #+end_src
 **** lsp ui
 #+begin_src emacs-lisp
@@ -787,11 +798,91 @@ Otherwise, show the default maximum number of recent items."
 (setq org-plantuml-jar-path "/home/freeman/plantuml.jar")
 (setq plantuml-output-type "png")
 #+end_src
-*** Nix
+*** Format all
 #+begin_src emacs-lisp
-(with-eval-after-load 'nix-mode
-  (add-hook 'before-save-hook 'nix-format-buffer)
-  )
+(setq format-all-default-formatters
+   '(("Assembly" asmfmt)
+     ("ATS" atsfmt)
+     ("Bazel" buildifier)
+     ("BibTeX" emacs-bibtex)
+     ("C" clang-format)
+     ("C#" clang-format)
+     ("C++" clang-format)
+     ("Cabal Config" cabal-fmt)
+     ("Clojure" zprint)
+     ("CMake" cmake-format)
+     ("Crystal" crystal)
+     ("CSS" prettier)
+     ("Cuda" clang-format)
+     ("D" dfmt)
+     ("Dart" dart-format)
+     ("Dhall" dhall)
+     ("Dockerfile" dockfmt)
+     ("Elixir" mix-format)
+     ("Elm" elm-format)
+     ("Emacs Lisp" emacs-lisp)
+     ("Erlang" efmt)
+     ("F#" fantomas)
+     ("Fish" fish-indent)
+     ("Fortran Free Form" fprettify)
+     ("GLSL" clang-format)
+     ("Go" gofmt)
+     ("GraphQL" prettier)
+     ("Haskell" brittany)
+     ("HTML" html-tidy)
+     ("HTML+ERB" erb-format)
+     ("Java" clang-format)
+     ("JavaScript" prettier)
+     ("JSON" prettier)
+     ("JSON5" prettier)
+     ("Jsonnet" jsonnetfmt)
+     ("JSX" prettier)
+     ("Kotlin" ktlint)
+     ("LaTeX" latexindent)
+     ("Less" prettier)
+     ("Literate Haskell" brittany)
+     ("Lua" lua-fmt)
+     ("Markdown" prettier)
+     ("Nix" nixfmt)
+     ("Objective-C" clang-format)
+     ("OCaml" ocp-indent)
+     ("Perl" perltidy)
+     ("PHP" prettier)
+     ("Protocol Buffer" clang-format)
+     ("PureScript" purty)
+     ("Python" black)
+     ("R" styler)
+     ("Reason" bsrefmt)
+     ("ReScript" rescript)
+     ("Ruby" rufo)
+     ("Rust" rustfmt)
+     ("Scala" scalafmt)
+     ("SCSS" prettier)
+     ("Shell" shfmt)
+     ("Solidity" prettier)
+     ("SQL" sqlformat)
+     ("Svelte" prettier)
+     ("Swift" swiftformat)
+     ("Terraform" terraform-fmt)
+     ("TOML" prettier)
+     ("TSX" prettier)
+     ("TypeScript" prettier)
+     ("V" v-fmt)
+     ("Verilog" istyle-verilog)
+     ("Vue" prettier)
+     ("XML" html-tidy)
+     ("YAML" prettier)
+     ("Zig" zig)
+     ("_Angular" prettier)
+     ("_Flow" prettier)
+     ("_Gleam" gleam)
+     ("_Ledger" ledger-mode)
+     ("_Nginx" nginxfmt)
+     ("_Snakemake" snakefmt)))
+
+(add-hook 'prog-mode-hook 'format-all-mode)
+
+(add-hook 'format-all-mode-hook 'format-all-ensure-formatter)
 #+end_src
 *** Rust
 #+begin_src emacs-lisp
@@ -841,17 +932,19 @@ Otherwise, show the default maximum number of recent items."
   (add-hook 'scala-mode-hook 'lsp))
 
 #+end_src
-*** COMMENT Java
-#+begin_src emacs-lisp
-(require 'lsp-java)
+*** Java
 
-(add-hook 'java-mode-hook #'lsp)
+#+begin_src emacs-lisp
+;; (require 'lsp-java)
+
+;; (add-hook 'java-mode-hook #'lsp)
 
 (add-hook 'jave-mode-hook (lambda () (c-toggle-hungry-state) (c-toggle-auto-newline)))
 
 (setq lsp-java-content-provider-preferred "fernflower")
-;; 
-;; (setq lsp-java-java-path "/Library/Java/JavaVirtualMachines/openjdk.jdk/Contents/Home/bin/java")
+;; ;; 
+;; ;; (setq lsp-java-java-path "/Library/Java/JavaVirtualMachines/openjdk.jdk/Contents/Home/bin/java")
+
 (setq lsp-java-java-path "/etc/profiles/per-user/freeman/bin/java")
 
 ;; (setq lsp-java-configuration-runtimes '[
@@ -869,11 +962,11 @@ Otherwise, show the default maximum number of recent items."
 
 ;; (setq lsp-java-import-gradle-java-home "/Library/Java/JavaVirtualMachines/zulu-8.jdk/Contents/Home")
 
-(require 'lsp-java-boot)
+;; (require 'lsp-java-boot)
 
 ;; to enable the lenses
-(add-hook 'lsp-mode-hook #'lsp-lens-mode)
-(add-hook 'java-mode-hook #'lsp-java-boot-lens-mode)
+;; (add-hook 'lsp-mode-hook #'lsp-lens-mode)
+;; (add-hook 'java-mode-hook #'lsp-java-boot-lens-mode)
 
 ;; (setq 
 ;;  lsp-java-trace-server t)

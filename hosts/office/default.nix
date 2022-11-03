@@ -8,6 +8,7 @@
     ./hardware-configuration.nix
     ../../nixos
     ../../nixos/client.nix
+    ../../nixos/optional-apps/mysql.nix
   ];
 
   boot = {
@@ -43,13 +44,15 @@
 
       services.nextcloud = {
         enable = true;
-        package = pkgs.nextcloud24;
         hostName = "localhost";
-        config.adminpassFile = toString (pkgs.writeText "adminpass"
-          "test123"); # DON'T DO THIS IN PRODUCTION - the password file will be world-readable in the Nix Store!
+        config = {
+          adminpassFile = toString (pkgs.writeText "adminpass"
+            "test123"); # DON'T DO THIS IN PRODUCTION - the password file will be world-readable in the Nix Store!
+          extraTrustedDomains = [ "192.168.100.11" ];
+        };
       };
 
-      system.stateVersion = "22.05";
+      system.stateVersion = "22.11";
 
       networking.firewall = {
         enable = true;

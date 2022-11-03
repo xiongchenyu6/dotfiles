@@ -66,8 +66,7 @@
     # };
 
     readline = { enable = true; };
-
-    nushell = { enable = true; };
+    # nushell = { enable = true; };
 
     atuin = {
       enable = true;
@@ -82,6 +81,7 @@
       enable = true;
       hashKnownHosts = true;
       compression = true;
+      # controlMaster = "auto";
       matchBlocks = {
         "freeman.engineer" = { port = 2222; };
         "git-code-commit.*.amazonaws.com" =
@@ -278,13 +278,22 @@
     vim = {
       enable = true;
       plugins = with pkgs.vimPlugins; [
-        nerdtree
-        denite
-        tagbar
         ale
+        denite
         lightline-vim
+        nerdtree
+        tagbar
       ];
-      settings = { };
+      settings = {
+        expandtab = true;
+        history = 1000;
+        background = "dark";
+      };
+      extraConfig = ''
+        set clipboard+=unnamed  " use the clipboards of vim and win
+        set paste               " Paste from a windows or from vim
+        set go+=a               " Visual selection automatically copied to the clipboard
+      '';
     };
 
     zoxide = { enable = true; };
