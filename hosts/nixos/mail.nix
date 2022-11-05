@@ -1,4 +1,4 @@
-{ config, pkgs, lib, modulesPath, ... }: {
+{ config, pkgs, lib, modulesPath, suites, ... }: {
 
   boot.loader.grub.device = "/dev/vda";
   boot.initrd.availableKernelModules = [ "ata_piix" "uhci_hcd" "xen_blkfront" ];
@@ -15,7 +15,7 @@
 
   imports = [
     (modulesPath + "/profiles/qemu-guest.nix")
-    ../../profiles
+    ../../profiles/base.nix
     ../../profiles/server.nix
     ../../profiles/optional-apps/gitea
     ../../profiles/optional-apps/healthcheck.nix

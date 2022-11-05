@@ -267,7 +267,7 @@
             inherit fetchFromGitHub fetchurl fetchgit;
           };
       in map (name:
-        (removeAttrs source.${name} [ "pname" "version" ]) // {
+        (removeAttrs source.${name} [ "pname" "version" "date" ]) // {
           name = "${name}";
         }) [ "alias-tips" "wakatime-zsh-plugin" ];
       enableCompletion = true;

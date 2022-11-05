@@ -16,14 +16,26 @@ let
     systemctl restart sssd
   '';
 in {
-  networking = { domain = "freeman.engineer"; };
+  sops.defaultSopsFile = ../secrets/example.yaml;
+  sops.secrets.example_key = { };
+  # sops.secrets."example_array" = { };
+  # sops.secrets."example_booleans[0]" = {
+  #   format = "yaml";
+  #   # can be also set per secret
+  #   sopsFile = ../secrets/example.yaml;
+  # };
+
+  networking = {
+    domain =
+      builtins.trace config.sops.secrets."example_key".path "freeman.engineer";
+  };
 
   time = { timeZone = "Asia/Singapore"; };
 
+  # Select internationalisation properties.
   i18n = {
     defaultLocale = "en_US.UTF-8";
     supportedLocales = [ "zh_CN.UTF-8/UTF-8" "en_US.UTF-8/UTF-8" ];
-    # Select internationalisation properties.
   };
 
   system.nixos = { tags = [ "test" "add-feat" ]; };
@@ -44,11 +56,11 @@ in {
       tcpdump
       file
       schema2ldif
+      ssh-to-age
       cyrus_sasl
       mycli
     ];
   };
   system = { stateVersion = "22.11"; }; # Did you read the comment?
-
 }
 

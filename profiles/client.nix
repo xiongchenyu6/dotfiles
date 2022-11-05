@@ -103,6 +103,7 @@
       stow
       slack
       statix
+      sops
       scalafmt
       solc-select
       litecli
@@ -116,7 +117,7 @@
       qq
       wechat-uos
       xscreensaver
-      ssh-askpass-fullscreen
+      yaml-language-server
       zoom-us
     ];
     pathsToLink = [ "/share/zsh" ];

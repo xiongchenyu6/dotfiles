@@ -21,4 +21,3 @@ in {
   "discourse_postgres.age".publicKeys = [ office tc ];
   "django_secret.age".publicKeys = [ office tc ];
 }
-
