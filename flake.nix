@@ -4,8 +4,6 @@
 
   inputs = {
     # Core Dependencies
-    nixpkgs-stable.url = "github:NixOS/nixpkgs/nixos-22.05";
-
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
 
     nixos-hardware.url = "github:NixOS/nixos-hardware/master";
@@ -90,7 +88,6 @@
     pre-commit-hooks = {
       url = "github:cachix/pre-commit-hooks.nix";
       inputs = { flake-utils.follows = "flake-utils"; };
-
     };
 
     nix-alien = {
@@ -130,8 +127,8 @@
 
   outputs = { self, nixpkgs, nixos-hardware, emacs, xddxdd, flake-utils
     , flake-utils-plus, home-manager, agenix, nixos-generators, devshell, nixops
-    , nixpkgs-stable, gradle2nix, pre-commit-hooks, nix-alien, xiongchenyu6
-    , winklink, deploy-rs, digga, ... }@inputs:
+    , gradle2nix, pre-commit-hooks, nix-alien, xiongchenyu6, winklink, deploy-rs
+    , digga, ... }@inputs:
     with nixpkgs;
     with lib;
     with flake-utils.lib;
@@ -146,6 +143,7 @@
         nix-alien
       ] ++ [
         (final: prev: {
+          __dontExport = true;
           krb5Full = prev.krb5Full.overrideAttrs (old: {
             configureFlags = old.configureFlags ++ [ "--with-ldap" ];
           });
@@ -193,6 +191,7 @@
         })
       ];
       pkgsFor = system: import nixpkgs { inherit system overlays; };
+      domain = "freeman.engineer";
     in digga.lib.mkFlake {
       inherit self inputs;
 
@@ -205,30 +204,65 @@
       };
 
       channels = { nixpkgs = { }; };
+
       sharedOverlays = overlays;
 
       nixos = {
         hostDefaults = {
-          system = "x86_64-linux";
           channelName = "nixpkgs";
+          modules = [
+            nixos-hardware.nixosModules.lenovo-thinkpad-x1-9th-gen
+            nixos-hardware.nixosModules.common-gpu-intel
+            agenix.nixosModule
+            home-manager.nixosModules.home-manager
+            xiongchenyu6.nixosModules.bttc
+          ];
         };
+        hosts = {
+          mail = {
+            modules = [ xiongchenyu6.nixosModules.oci-arm-host-capacity ];
+          };
+        };
+
+        imports = [ (digga.lib.importHosts ./hosts/nixos) ];
+        # importables = { inherit domain; };
       };
 
-      hostDefaults = {
-        extraArgs = { inherit domain; };
-        modules = [
-          nixos-hardware.nixosModules.lenovo-thinkpad-x1-9th-gen
-          nixos-hardware.nixosModules.common-gpu-intel
-          agenix.nixosModule
-          home-manager.nixosModules.home-manager
-          xiongchenyu6.nixosModules.bttc
-        ];
-      };
+      devshell = {
+        modules = { pkgs, ... }:
+          let
+            inherit (pkgs)
+              agenix cachix editorconfig-checker mdbook nixUnstable nixfmt
+              nvfetcher;
+            pkgWithCategory = category: package: { inherit package category; };
+            devos = pkgWithCategory "devos";
+            linter = pkgWithCategory "linter";
+            docs = pkgWithCategory "docs";
 
-      hosts = {
-        office.modules = [ ./hosts/office ];
-        mail.modules =
-          [ xiongchenyu6.nixosModules.oci-arm-host-capacity ./hosts/mail ];
+          in {
+            commands = [
+              (devos nixUnstable)
+              (devos agenix)
+              {
+                category = "devos";
+                name = nvfetcher.pname;
+                help = nvfetcher.meta.description;
+                command =
+                  "cd $PRJ_ROOT/pkgs; ${nvfetcher}/bin/nvfetcher -c ./sources.toml $@";
+              }
+
+              (linter nixfmt)
+              (linter editorconfig-checker)
+
+              (docs mdbook)
+            ] ++ lib.optionals (!pkgs.stdenv.buildPlatform.isi686)
+              [ (devos cachix) ] ++ lib.optionals
+              (pkgs.stdenv.hostPlatform.isLinux
+                && !pkgs.stdenv.buildPlatform.isDarwin) [
+                  (devos inputs.nixos-generators.defaultPackage.${pkgs.system})
+                  (devos inputs.deploy-rs.packages.${pkgs.system}.deploy-rs)
+                ];
+          };
       };
 
       outputsBuilder = channels: {
@@ -241,10 +275,6 @@
               nix-linter.enable = true;
             };
           };
-
-        devShells.default = channels.nixpkgs.devshell.mkShell {
-          packages = with channels.nixpkgs; [ gopls nix deploy-rs ];
-        };
       };
 
       deploy = {
