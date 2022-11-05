@@ -51,14 +51,14 @@
     };
   };
 
-  networking = { hostName = "office"; };
+  # networking = { hostName = "office"; };
 
   imports = [
     # Include the results of the hardware scan.
     (modulesPath + "/installer/scan/not-detected.nix")
-    ../../nixos
-    ../../nixos/client.nix
-    ../../nixos/optional-apps/mysql.nix
+    ../../profiles
+    ../../profiles/client.nix
+    ../../profiles/optional-apps/mysql.nix
   ];
 
   boot = {

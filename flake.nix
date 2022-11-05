@@ -191,7 +191,6 @@
         })
       ];
       pkgsFor = system: import nixpkgs { inherit system overlays; };
-      domain = "freeman.engineer";
     in digga.lib.mkFlake {
       inherit self inputs;
 
@@ -225,7 +224,6 @@
         };
 
         imports = [ (digga.lib.importHosts ./hosts/nixos) ];
-        # importables = { inherit domain; };
       };
 
       devshell = {
@@ -279,6 +277,8 @@
 
       deploy = {
         sshOpts = [ "-X" "-p" "2222" ];
+        # autoRollback = false;
+        # magicRollback = false;
         fastConnection = true;
         nodes = digga.lib.mkDeployNodes self.nixosConfigurations {
           mail = { profiles = { system = { sshUser = "root"; }; }; };

@@ -155,7 +155,7 @@
     nix-ld.enable = true;
   };
 
-  home-manager = { users = { freeman = { imports = [ ../home/gui ]; }; }; };
+  home-manager = { users = { freeman = { imports = [ ../users/gui ]; }; }; };
 
   nix = {
     extraOptions = ''

@@ -6,9 +6,6 @@
         commands = [ "ALL" ];
       }];
     };
-    pam = {
-      krb5.enable = false;
-      services = { sshd = { makeHomeDir = true; }; };
-    };
+    pam = { services = { sshd = { makeHomeDir = true; }; }; };
   };
 }
