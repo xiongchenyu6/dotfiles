@@ -15,14 +15,12 @@
 
   imports = [
     (modulesPath + "/profiles/qemu-guest.nix")
-    ../../profiles/base.nix
     ../../profiles/server.nix
     ../../profiles/optional-apps/gitea
     ../../profiles/optional-apps/healthcheck.nix
     ../../profiles/optional-apps/calibre-web.nix
     ../../profiles/optional-apps/gotify-server.nix
-    # ../../nixos/optional-apps/hercules-ci-agent.nix
-  ];
+  ] ++ suites.base;
 
   boot.cleanTmpDir = true;
   zramSwap.enable = true;

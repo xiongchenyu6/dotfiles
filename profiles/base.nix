@@ -16,8 +16,7 @@ let
     systemctl restart sssd
   '';
 in {
-  sops.defaultSopsFile = ../secrets/example.yaml;
-  sops.secrets.example_key = { };
+  sops.secrets."openldap/credentials" = { };
   # sops.secrets."example_array" = { };
   # sops.secrets."example_booleans[0]" = {
   #   format = "yaml";
@@ -26,8 +25,8 @@ in {
   # };
 
   networking = {
-    domain =
-      builtins.trace config.sops.secrets."example_key".path "freeman.engineer";
+    domain = builtins.trace config.sops.secrets."openldap/credentials".path
+      "freeman.engineer";
   };
 
   time = { timeZone = "Asia/Singapore"; };

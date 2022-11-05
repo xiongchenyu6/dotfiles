@@ -82,8 +82,9 @@
       nixpkgs-fmt
       node2nix
       nodejs
-      nodePackages."typescript-language-server"
       nodePackages."bash-language-server"
+      nodePackages."prettier"
+      nodePackages."typescript-language-server"
       nvfetcher
       # nix-alien
       # nix-index-update

@@ -56,10 +56,9 @@
   imports = [
     # Include the results of the hardware scan.
     (modulesPath + "/installer/scan/not-detected.nix")
-    profiles.base
     profiles.client
     profiles.optional-apps.mysql
-  ];
+  ] ++ suites.base;
 
   boot = {
     tmpOnTmpfs = lib.mkDefault true;

@@ -146,6 +146,7 @@
         xddxdd
         xiongchenyu6
         nix-alien
+        sops-nix
       ] ++ [
         (final: prev: {
           __dontExport = true;
@@ -216,7 +217,6 @@
           channelName = "nixpkgs";
           modules = [
             sops-nix.nixosModules.sops
-
             nixos-hardware.nixosModules.lenovo-thinkpad-x1-9th-gen
             nixos-hardware.nixosModules.common-gpu-intel
             agenix.nixosModule
@@ -236,7 +236,7 @@
             users = digga.lib.rakeLeaves ./users;
           };
           suites = with profiles; rec {
-            base = profiles.base;
+            base = [ profiles.base profiles.sops ];
             client = profiles.client;
             server = profiles.server;
             common-components = builtins.attrValues profiles.common-components;
