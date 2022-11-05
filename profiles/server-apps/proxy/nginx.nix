@@ -26,17 +26,6 @@ in {
             proxyWebsockets = true;
           };
         };
-        # restic = {
-        #   serverName = "restic.inner.${config.networking.domain}";
-        #   addSSL = true;
-        #   acmeRoot = null;
-        #   useACMEHost = "inner.${config.networking.domain}";
-        #   kTLS = true;
-        #   locations."/" = {
-        #     proxyPass = config.services.restic.server.listenAddress;
-        #     proxyWebsockets = true;
-        #   };
-        # };
         grafana = {
           serverName = "grafana.inner.${config.networking.domain}";
           forceSSL = true;

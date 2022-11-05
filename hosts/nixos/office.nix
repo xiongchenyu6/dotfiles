@@ -1,6 +1,6 @@
 # Edit
 
-{ config, pkgs, options, lib, modulesPath, ... }: rec {
+{ config, pkgs, options, lib, modulesPath, suites, profiles, ... }: rec {
 
   boot = {
     initrd = {
@@ -10,7 +10,7 @@
     };
     kernelModules = [ "kvm-intel" ];
     extraModulePackages = [ ];
-    extraModprobeConfig = ''
+    extraModprobeConfig = builtins.trace suites ''
       options i915 force_probe=46a6
     '';
 
@@ -56,9 +56,9 @@
   imports = [
     # Include the results of the hardware scan.
     (modulesPath + "/installer/scan/not-detected.nix")
-    ../../profiles
-    ../../profiles/client.nix
-    ../../profiles/optional-apps/mysql.nix
+    profiles.base
+    profiles.client
+    profiles.optional-apps.mysql
   ];
 
   boot = {

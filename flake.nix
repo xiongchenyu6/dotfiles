@@ -3,7 +3,6 @@
     "Flake to manage my laptop, my nur and my hosts on Tencent Cloud";
 
   inputs = {
-    # Core Dependencies
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
 
     nixos-hardware.url = "github:NixOS/nixos-hardware/master";
@@ -47,7 +46,6 @@
     xiongchenyu6 = {
       #url = "github:xiongchenyu6/nur-packages";
       url = "/home/freeman/private/nur-packages";
-
       inputs = {
         nixpkgs.follows = "nixpkgs";
         flake-utils.follows = "flake-utils";
@@ -117,10 +115,17 @@
 
     digga = {
       url = "github:divnix/digga";
+      inputs = {
+        nixpkgs.follows = "nixpkgs";
+        nixlib.follows = "nixpkgs";
+        home-manager.follows = "home-manager";
+        deploy.follows = "deploy-rs";
+      };
+    };
+    sops-nix = {
+      url = "github:Mic92/sops-nix";
+      # optional, not necessary for the module
       inputs.nixpkgs.follows = "nixpkgs";
-      inputs.nixlib.follows = "nixpkgs";
-      inputs.home-manager.follows = "home-manager";
-      inputs.deploy.follows = "deploy-rs";
     };
 
   };
@@ -128,7 +133,7 @@
   outputs = { self, nixpkgs, nixos-hardware, emacs, xddxdd, flake-utils
     , flake-utils-plus, home-manager, agenix, nixos-generators, devshell, nixops
     , gradle2nix, pre-commit-hooks, nix-alien, xiongchenyu6, winklink, deploy-rs
-    , digga, ... }@inputs:
+    , digga, sops-nix, ... }@inputs:
     with nixpkgs;
     with lib;
     with flake-utils.lib;
@@ -210,6 +215,8 @@
         hostDefaults = {
           channelName = "nixpkgs";
           modules = [
+            sops-nix.nixosModules.sops
+
             nixos-hardware.nixosModules.lenovo-thinkpad-x1-9th-gen
             nixos-hardware.nixosModules.common-gpu-intel
             agenix.nixosModule
@@ -224,6 +231,27 @@
         };
 
         imports = [ (digga.lib.importHosts ./hosts/nixos) ];
+        importables = rec {
+          profiles = digga.lib.rakeLeaves ./profiles // {
+            users = digga.lib.rakeLeaves ./users;
+          };
+          suites = with profiles; rec {
+            base = profiles.base;
+            client = profiles.client;
+            server = profiles.server;
+            common-components = builtins.attrValues profiles.common-components;
+            common-apps = builtins.attrValues profiles.common-apps;
+            client-components = builtins.attrValues profiles.client-components;
+            client-apps = builtins.attrValues profiles.client-apps;
+            server-apps = builtins.attrValues profiles.server-apps;
+            server-components = builtins.attrValues profiles.server-components;
+            mysql = profiles.optional-apps.mysql;
+            gitea = profiles.optional-apps.gitea;
+            healthcheck = profiles.optional-apps.healthcheck;
+            calibre-web = profiles.optional-apps.calibre-web;
+            gotify-server = profiles.optional-apps.gotify-server;
+          };
+        };
       };
 
       devshell = {
@@ -241,14 +269,7 @@
             commands = [
               (devos nixUnstable)
               (devos agenix)
-              {
-                category = "devos";
-                name = nvfetcher.pname;
-                help = nvfetcher.meta.description;
-                command =
-                  "cd $PRJ_ROOT/pkgs; ${nvfetcher}/bin/nvfetcher -c ./sources.toml $@";
-              }
-
+              (devos nvfetcher)
               (linter nixfmt)
               (linter editorconfig-checker)
 

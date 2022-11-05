@@ -1,0 +1,12 @@
+keys:
+  - &freeman age1ee4lt5y5fq3kwff4nex6kygr86p08kz0883ce3tg22xl95c48ewsf4cmem
+  - &office age1uslkhdyuqxn24rhe77v2acfx4tzn6ywyhgqqkalnqxm0y3mkk9rqqsngvf
+  - &mail age139jqnxvx3n8ucxyxerrz59ctegpj6se04y5uval3gxhjzh4ma4gq5dgtnz
+  
+creation_rules:
+  - path_regex: secrets/[^/]+\.yaml$
+    key_groups:
+    - age:
+      - *freeman
+      - *office
+      - *mail

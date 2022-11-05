@@ -1,6 +1,7 @@
 {
     "alias-tips": {
         "cargoLocks": null,
+        "date": "2022-11-03",
         "extract": null,
         "name": "alias-tips",
         "passthru": null,
@@ -10,15 +11,16 @@
             "fetchSubmodules": false,
             "leaveDotGit": false,
             "name": null,
-            "rev": "cd13ef223c4f310d774cdf8cb0435474cc2bcbbe",
-            "sha256": "sha256-fDYAJSJHatxHhAT68AH4PuIHdwxFXipAoDHITVpkkkE=",
+            "rev": "4d2cf6f10e5080f3273be06b9801e1fd1f25d28d",
+            "sha256": "sha256-0N2DCpMraIXtEc7hMp0OBANNuYhHPLqzJ/hrAFcLma8=",
             "type": "git",
             "url": "https://github.com/djui/alias-tips.git"
         },
-        "version": "cd13ef223c4f310d774cdf8cb0435474cc2bcbbe"
+        "version": "4d2cf6f10e5080f3273be06b9801e1fd1f25d28d"
     },
     "wakatime-zsh-plugin": {
         "cargoLocks": null,
+        "date": "2022-04-27",
         "extract": null,
         "name": "wakatime-zsh-plugin",
         "passthru": null,
