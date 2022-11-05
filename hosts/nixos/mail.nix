@@ -8,19 +8,19 @@
     fsType = "ext4";
   };
 
-  networking = let
-    file-path = builtins.split "/" (toString ./.);
-    hostName = lib.last file-path;
-  in { hostName = "mail"; };
+  # networking = let
+  #   file-path = builtins.split "/" (toString ./.);
+  #   hostName = lib.last file-path;
+  # in { hostName = "mail"; };
 
   imports = [
     (modulesPath + "/profiles/qemu-guest.nix")
-    ../../nixos
-    ../../nixos/server.nix
-    ../../nixos/optional-apps/gitea
-    ../../nixos/optional-apps/healthcheck.nix
-    ../../nixos/optional-apps/calibre-web.nix
-    ../../nixos/optional-apps/gotify-server.nix
+    ../../profiles
+    ../../profiles/server.nix
+    ../../profiles/optional-apps/gitea
+    ../../profiles/optional-apps/healthcheck.nix
+    ../../profiles/optional-apps/calibre-web.nix
+    ../../profiles/optional-apps/gotify-server.nix
     # ../../nixos/optional-apps/hercules-ci-agent.nix
   ];
 

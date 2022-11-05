@@ -53,7 +53,7 @@ in {
     users = {
       freeman = {
         home = { stateVersion = "22.11"; };
-        imports = [ ../../home/cli ];
+        imports = [ ../../users/cli ];
       };
     };
   };
