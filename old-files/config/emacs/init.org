@@ -540,7 +540,7 @@ Otherwise, show the default maximum number of recent items."
 
 (require 'copilot)
 
-(setq copilot-node-executable "/nix/store/p8w2d2wlhavc6hqafb62qn2c5zz45lil-nodejs-16.17.1/bin/node")
+(setq copilot-node-executable "/nix/store/iwvpxyzik0mi11qwnmhp0n1nn7c6yh26-nodejs-14.21.1/bin/node")
 
 (add-hook 'prog-mode-hook 'copilot-mode)
 

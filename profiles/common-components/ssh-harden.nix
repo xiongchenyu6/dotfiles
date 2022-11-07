@@ -1,4 +1,10 @@
 { config, pkgs, lib, ... }: {
+  environment.etc."sudo.conf" = {
+    mode = "0400";
+    text =
+      "Path askpass ${pkgs.lxqt.lxqt-openssh-askpass}/bin/lxqt-openssh-askpass";
+  };
+
   services.openssh = {
     enable = true;
     # banner = ''

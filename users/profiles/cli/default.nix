@@ -3,10 +3,12 @@
   # paths it should manage.
 
   home = {
+
+    stateVersion = "22.11";
     keyboard = { options = [ "caps:ctrl_modifier" ]; };
     file = let
-      old-files-path = ../../old-files;
-      common-files-path = ../../common;
+      old-files-path = ../../../old-files;
+      common-files-path = ../../../common;
     in {
       ".wakatime.cfg" = { source = old-files-path + /wakatime/.wakatime.cfg; };
       ".ldaprc" = { source = old-files-path + /ldap/.ldaprc; };
@@ -32,6 +34,7 @@
   # You can update Home Manager without changing this value. See
   # the Home Manager release notes for a list of state version
   # changes in each release.
+
   editorconfig = {
     enable = true;
     settings = {

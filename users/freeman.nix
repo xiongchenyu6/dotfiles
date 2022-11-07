@@ -1,6 +1,11 @@
-{ config, pkgs, options, lib, ... }:
+# Edit this configuration file to define what should be installed on
+
+# your system.  Help is available in the configuration.nix(5) man page
+# and in the NixOS manual (accessible by running ‘nixos-help’).
+
+{ hmUsers, pkgs, config, ... }:
 let
-  common-files-path = ../../common;
+  common-files-path = ../common;
   share = import (common-files-path + /share.nix);
 
 in {
@@ -19,10 +24,6 @@ in {
 
 
     '';
-
-    users.root = {
-      openssh.authorizedKeys.keys = [ share.office.user.public-key ];
-    };
 
     users = {
       freeman = {
@@ -47,15 +48,10 @@ in {
       };
     };
   };
-  home-manager = {
-    useGlobalPkgs = true;
-    useUserPackages = true;
-    users = {
-      freeman = {
-        home = { stateVersion = "22.11"; };
-        imports = [ ../../users/cli ];
-      };
-    };
+  home-manager.users = {
+    freeman = if config.networking.hostName == "mail" then
+      hmUsers.freeman-cli
+    else
+      hmUsers.freeman-gui;
   };
-
 }

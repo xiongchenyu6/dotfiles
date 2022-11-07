@@ -1,16 +1,12 @@
-{ config, pkgs, lib, symlinkJoin, ... }: {
-  imports = let
-    ls = dir:
-      builtins.map (f: (dir + "/${f}"))
-      (builtins.attrNames (builtins.readDir dir));
-  in [ ] ++ (ls ./common-apps) ++ (ls ./client-apps) ++ (ls ./common-components)
-  ++ (ls ./client-components);
+# Edit this configuration file to define what should be installed on
 
-  nix = {
-    generateNixPathFromInputs = true;
-    generateRegistryFromInputs = true;
-    linkInputs = true;
-  };
+# your system.  Help is available in the configuration.nix(5) man page
+# and in the NixOS manual (accessible by running ‘nixos-help’).
+
+{ config, pkgs, lib, ... }:
+
+{
+  imports = [ ./common.nix ];
 
   environment = {
     systemPackages = with pkgs; [
@@ -19,6 +15,7 @@
       azure-cli
       agenix
       apg
+      bundix
       clang
       clang-tools
       cmake
@@ -47,7 +44,6 @@
       gh
       gopls
       graphviz
-      gradle2nix
       gcc
       haskell-language-server
       (haskellPackages.ghcWithPackages (self:
@@ -68,7 +64,7 @@
       (python3.withPackages (ps:
         with python3.pkgs; [
           my_cookies
-          epc
+          pkgs.epc
           orjson
           python-lsp-server
           cmake-language-server
@@ -94,6 +90,7 @@
       plantuml
       ripgrep
       rnix-lsp
+      tdesktop
       terraform
       terranix
       tronbox
@@ -127,25 +124,10 @@
   services = {
     dbus = { enable = true; };
 
-    # trilium-server = {
-    #   enable = true;
-    #   noAuthentication = true;
-    # };
-
     gnome = { gnome-keyring = { enable = true; }; };
 
     openldap = { enable = true; };
-
-    vikunja = {
-      enable = true;
-      frontendScheme = "http";
-      frontendHostname = "localhost";
-      setupNginx = true;
-    };
-    nginx.enable = true;
   };
-
-  users = { users = { freeman = { packages = with pkgs; [ tdesktop ]; }; }; };
 
   programs = {
     atop = {
@@ -157,15 +139,13 @@
     nix-ld.enable = true;
   };
 
-  home-manager = { users = { freeman = { imports = [ ../users/gui ]; }; }; };
-
   nix = {
+    generateNixPathFromInputs = true;
+    generateRegistryFromInputs = true;
+    linkInputs = true;
     extraOptions = ''
       keep-outputs = true
       keep-derivations = true
-      restrict-eval = false
-      sandbox = false
     '';
   };
 }
-

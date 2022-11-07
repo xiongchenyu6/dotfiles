@@ -27,11 +27,12 @@
       ${pkgs.xorg.xset}/bin/xset -b
       ${pkgs.xorg.xset}/bin/xset r rate 180 60
     '';
-    windowManager = {
+    windowManager = let old-files-path = ../../../old-files;
+    in {
       xmonad = {
         enable = true;
         enableContribAndExtras = true;
-        config = ../../old-files/config/xmonad/xmonad.hs;
+        config = old-files-path + "/config/xmonad/xmonad.hs";
         extraPackages = haskellPackages: [
           haskellPackages.directory
           haskellPackages.X11
@@ -100,7 +101,9 @@
         };
       };
     };
+
     yt-dlp = { enable = true; };
+
     # urxvt = {
     #   enable = true;
     #   extraConfig = {
@@ -591,6 +594,7 @@
       ];
       shadowOpacity = 0.5;
       vSync = true;
+
       opacityRules = [
         "85:class_g = 'kitty'"
         "95:class_g = 'Alacritty'"
@@ -598,6 +602,7 @@
         "90:class_g = 'Wine'"
         "90:class_g = 'Thunderbird'"
       ];
+
       fadeDelta = 2;
       fadeSteps = [ 1.8e-2 1.8e-2 ];
 
@@ -613,6 +618,7 @@
         inactive-opacity = 1;
         inactive-opacity-override = true;
       };
+
       wintypes = {
         tooltip = {
           # fade: Fade the particular type of windows.
