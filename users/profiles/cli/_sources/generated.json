@@ -1,7 +1,6 @@
 {
     "alias-tips": {
         "cargoLocks": null,
-        "date": "2022-11-03",
         "extract": null,
         "name": "alias-tips",
         "passthru": null,
@@ -20,7 +19,6 @@
     },
     "wakatime-zsh-plugin": {
         "cargoLocks": null,
-        "date": "2022-04-27",
         "extract": null,
         "name": "wakatime-zsh-plugin",
         "passthru": null,

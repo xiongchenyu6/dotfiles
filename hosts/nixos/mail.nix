@@ -1,4 +1,4 @@
-{ config, pkgs, lib, modulesPath, suites, ... }: {
+{ config, pkgs, lib, modulesPath, suites, profiles, ... }: {
 
   boot.loader.grub.device = "/dev/vda";
   boot.initrd.availableKernelModules = [ "ata_piix" "uhci_hcd" "xen_blkfront" ];
@@ -15,12 +15,13 @@
 
   imports = [
     (modulesPath + "/profiles/qemu-guest.nix")
-    ../../profiles/server.nix
-    ../../profiles/optional-apps/gitea
-    ../../profiles/optional-apps/healthcheck.nix
-    ../../profiles/optional-apps/calibre-web.nix
-    ../../profiles/optional-apps/gotify-server.nix
-  ] ++ suites.base;
+    profiles.optional-apps.gitea
+    profiles.optional-apps.healthcheck
+    profiles.optional-apps.calibre-web
+    profiles.optional-apps.gotify-server
+    profiles.users.root
+    profiles.users.freeman
+  ] ++ suites.server-base;
 
   boot.cleanTmpDir = true;
   zramSwap.enable = true;

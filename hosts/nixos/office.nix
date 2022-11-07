@@ -10,7 +10,7 @@
     };
     kernelModules = [ "kvm-intel" ];
     extraModulePackages = [ ];
-    extraModprobeConfig = builtins.trace suites ''
+    extraModprobeConfig = ''
       options i915 force_probe=46a6
     '';
 
@@ -56,9 +56,12 @@
   imports = [
     # Include the results of the hardware scan.
     (modulesPath + "/installer/scan/not-detected.nix")
-    profiles.client
     profiles.optional-apps.mysql
-  ] ++ suites.base;
+    profiles.core.nixos
+    profiles.client-pkgs.nixos
+    profiles.users.root
+    profiles.users.freeman
+  ] ++ suites.client-base;
 
   boot = {
     tmpOnTmpfs = lib.mkDefault true;

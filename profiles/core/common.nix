@@ -1,35 +1,14 @@
-{ config, pkgs, lib, ... }: {
-  imports = let
-    ls = dir:
-      builtins.map (f: (dir + "/${f}"))
-      (builtins.attrNames (builtins.readDir dir));
-  in [ ] ++ (ls ./common-apps) ++ (ls ./server-apps) ++ (ls ./common-components)
-  ++ (ls ./server-components);
-  services = {
-    oci-arm-host-capacity =
-      let envPath = ../common/oci-arm-host-capacity.secret;
-      in {
-        enable = true;
-        envPath = "${envPath}";
-      };
-  };
-  environment = {
-    systemPackages = with pkgs; [ calibre xvfb-run imagemagick ];
-  };
+# Edit this configuration file to define what should be installed on
 
-  environment.etc."sudo.conf" = {
-    mode = "0400";
-    # uncomment one of the following lines
-    #text = "Path askpass ${askpass}";
-    # text = "Path askpass ${pkgs.x11_ssh_askpass}/libexec/x11-ssh-askpass";
-    # text =
-    #   "Path askpass ${pkgs.ssh-askpass-fullscreen}/bin/ssh-askpass-fullscreen";
-    text =
-      "Path askpass ${pkgs.lxqt.lxqt-openssh-askpass}/bin/lxqt-openssh-askpass";
-    #text = "Path askpass ${pkgs.ksshaskpass}/bin/ksshaskpass";
-  };
+# your system.  Help is available in the configuration.nix(5) man page
+# and in the NixOS manual (accessible by running ‘nixos-help’).
 
-  services.openssh.forwardX11 = true; # The server must allow X11 forwarding
+{ config, pkgs, lib, ... }:
+
+{
+  system = { stateVersion = "22.11"; }; # Did you read the comment?
+
+  system.nixos = { tags = [ "test" "add-feat" ]; };
 
   programs = {
     zsh = {
@@ -140,4 +119,5 @@
       };
     };
   };
+
 }
