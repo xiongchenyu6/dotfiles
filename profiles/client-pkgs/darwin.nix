@@ -109,7 +109,7 @@
         padding_right = 20;
         spacing_left = 25;
         spacing_right = 15;
-        icon_font = ''"Hack Regular Nerd Font Complete:12.0"'';
+        icon_font = ''"Hack Nerd Font:Regular:12.0"'';
         background_color = "0xff202020";
         foreground_color = "0xffa8a8a8";
         power_icon_color = "0xffcd950c";
