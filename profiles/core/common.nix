@@ -57,4 +57,6 @@
     maxJobs = 2;
   }];
 
+  time = { timeZone = "Asia/Singapore"; };
+
 }

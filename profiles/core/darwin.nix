@@ -17,4 +17,6 @@
 
   };
   security.pam.enableSudoTouchIdAuth = true;
+
+  system.darwinLabel = "with-gui";
 }
