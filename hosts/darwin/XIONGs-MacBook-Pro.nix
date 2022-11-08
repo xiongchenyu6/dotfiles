@@ -6,6 +6,6 @@
 { config, pkgs, lib, profiles, suites, ... }:
 
 {
-  imports = suites.base;
+  imports = [ profiles.users.root profiles.users.xiongchenyu ] ++ suites.base;
 }
 
