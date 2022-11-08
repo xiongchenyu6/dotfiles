@@ -11,7 +11,7 @@
   homebrew = {
     enable = true;
     brews = [{
-      name = "mysql@5.6";
+      name = "mysql";
       restart_service = true;
       start_service = true;
       link = true;

@@ -8,7 +8,25 @@
 {
   imports = [ ./common.nix ];
 
-  environment = { pathsToLink = [ "/share/zsh" ]; };
+  environment = {
+    systemPackages = with pkgs; [
+      clang
+      clang-tools
+      cmake
+      gcc
+      patchelf
+      linuxPackages.ply
+      tdesktop
+      wineWowPackages.staging
+      #wpa_supplicant_gui
+      whatsapp-for-linux
+      xclip
+      qq
+      wechat-uos
+    ];
+
+    pathsToLink = [ "/share/zsh" ];
+  };
 
   services = {
     dbus = { enable = true; };
@@ -26,6 +44,7 @@
     };
     nm-applet = { enable = true; };
     nix-ld.enable = true;
+    wireshark = { enable = true; };
   };
 
 }
