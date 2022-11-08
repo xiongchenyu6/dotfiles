@@ -246,10 +246,10 @@
       home = {
         importables = rec {
           profiles = digga.lib.rakeLeaves ./users/profiles;
-          suites = with profiles; rec {
+          suites = with profiles; {
             cli = [ cli ];
             linux-gui = [ gui.nixos cli ];
-            mac-gui = [ gui.darwin cli ];
+            mac-gui = [ gui.darwin profiles.cli ];
           };
         };
         users = {
