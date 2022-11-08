@@ -68,31 +68,31 @@
         window_gap = 10;
       };
     };
-    system = {
-      defaults = {
-        NSGlobalDomain = {
-          InitialKeyRepeat = 180;
-          KeyRepeat = 60;
-          AppleTemperatureUnit = "Celsius";
-          AppleShowAllFiles = true;
-        };
-        dock = {
-          autohide = true;
-          dashboard-in-overlay = true;
-          mru-spaces = false;
-        };
-        finder = {
-          AppleShowAllExtensions = true;
-          AppleShowAllFiles = true;
-          QuitMenuItem = true;
-          ShowPathbar = true;
-          ShowStatusBar = true;
-        };
+  };
+  system = {
+    defaults = {
+      NSGlobalDomain = {
+        InitialKeyRepeat = 180;
+        KeyRepeat = 60;
+        AppleTemperatureUnit = "Celsius";
+        AppleShowAllFiles = true;
       };
-      keyboard = {
-        enableKeyMapping = true;
-        remapCapsLockToControl = true;
+      dock = {
+        autohide = true;
+        dashboard-in-overlay = true;
+        mru-spaces = false;
       };
+      finder = {
+        AppleShowAllExtensions = true;
+        AppleShowAllFiles = true;
+        QuitMenuItem = true;
+        ShowPathbar = true;
+        ShowStatusBar = true;
+      };
+    };
+    keyboard = {
+      enableKeyMapping = true;
+      remapCapsLockToControl = true;
     };
   };
 }
