@@ -139,13 +139,4 @@
     nix-ld.enable = true;
   };
 
-  nix = {
-    generateNixPathFromInputs = true;
-    generateRegistryFromInputs = true;
-    linkInputs = true;
-    extraOptions = ''
-      keep-outputs = true
-      keep-derivations = true
-    '';
-  };
 }

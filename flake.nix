@@ -27,8 +27,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    nixpkgs-darwin-stable.url = "github:NixOS/nixpkgs/nixpkgs-22.05-darwin";
-
     devshell = {
       url = "github:numtide/devshell";
       inputs = {
@@ -173,20 +171,11 @@
       channelsConfig = {
         allowUnfree = true;
         allowBroken = true;
+        # allowUnsupportedSystem = true;
       };
 
       channels = {
         nixpkgs = { imports = [ (digga.lib.importOverlays ./overlays) ]; };
-        nixpkgs-darwin-stable = {
-          overlays = [
-            # TODO: restructure overlays directory for per-channel overrides
-            # `importOverlays` will import everything under the path given
-            (channels: final: prev:
-              {
-                inherit (channels.nixpkgs) mas;
-              } // prev.lib.optionalAttrs true { })
-          ];
-        };
       };
 
       sharedOverlays = overlays;
@@ -234,7 +223,7 @@
       darwin = {
         hostDefaults = {
           system = "x86_64-darwin";
-          channelName = "nixpkgs-darwin-stable";
+          channelName = "nixpkgs";
           modules = [
             digga.darwinModules.nixConfig
             home-manager.darwinModules.home-manager
