@@ -2,6 +2,7 @@
 
 { config, pkgs, options, lib, modulesPath, suites, profiles, ... }: rec {
 
+  system.nixos.tags = [ "with-gui" ];
   boot = {
     initrd = {
       availableKernelModules =
@@ -32,10 +33,7 @@
   # (the default) this is the recommended approach. When using systemd-networkd it's
   # still possible to use this option, but it's recommended to use it in conjunction
   # with explicit per-interface declarations with `networking.interfaces.<interface>.useDHCP`.
-  networking = {
-    useDHCP = lib.mkDefault true;
-
-  };
+  networking = { useDHCP = lib.mkDefault true; };
   # networking.interfaces.wlp0s20f3.useDHCP = lib.mkDefault true;
 
   nixpkgs = { hostPlatform = lib.mkDefault "x86_64-linux"; };
@@ -50,8 +48,6 @@
       };
     };
   };
-
-  # networking = { hostName = "office"; };
 
   imports = [
     # Include the results of the hardware scan.

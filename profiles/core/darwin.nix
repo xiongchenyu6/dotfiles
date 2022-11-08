@@ -6,7 +6,9 @@
 { config, pkgs, lib, ... }:
 
 {
-  imports = [ ./common.nix ];
-  services.nix-daemon.enable = true;
+  environment.systemPackages = with pkgs; [ krb5 openssh_gssapi litecli ];
 
+  imports = [ ./common.nix ];
+  nix.package = pkgs.nix;
+  services.nix-daemon.enable = true;
 }
