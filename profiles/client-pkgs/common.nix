@@ -24,7 +24,6 @@
       agenix
       apg
       bundix
-      conky
       cabal2nix
       cachix
       discord
@@ -33,7 +32,6 @@
       exa
       feh
       fd
-      jp2a
       jdt-language-server
       pass
       procs
@@ -96,8 +94,6 @@
       tronbox
       mysql
       unzip
-      vlc
-      scrot
       stow
       slack
       statix
