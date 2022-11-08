@@ -10,10 +10,40 @@
 
   environment = {
     systemPackages = with pkgs; [
+      apg
+      bundix
       conky
       clang
       clang-tools
       cmake
+      cabal2nix
+      discord
+      geoip
+      gnumake
+      gh
+      gopls
+      graphviz
+      haskell-language-server
+      (haskellPackages.ghcWithPackages (self:
+        with haskellPackages;
+        with pkgs.haskell.lib; [
+          apply-refact
+          cabal-install
+          hlint
+          stylish-haskell
+          hasktags
+          hoogle
+          pandoc
+        ]))
+      heroku
+      imagemagick
+      ispell
+      lsof
+      pinentry
+
+      pass
+      procs
+
       gcc
       jp2a
       patchelf

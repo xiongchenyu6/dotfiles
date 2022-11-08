@@ -22,46 +22,19 @@
       awscli2
       azure-cli
       agenix
-      apg
-      bundix
-      cabal2nix
       cachix
-      discord
       deploy-rs
       neofetch
       exa
       feh
       fd
       jdt-language-server
-      pass
-      procs
       tealdeer
       tendermint
       socat
       rustscan
       gitAndTools.gitflow
       git-crypt
-      geoip
-      gnumake
-      gh
-      gopls
-      graphviz
-      haskell-language-server
-      (haskellPackages.ghcWithPackages (self:
-        with haskellPackages;
-        with pkgs.haskell.lib; [
-          apply-refact
-          cabal-install
-          hlint
-          stylish-haskell
-          hasktags
-          hoogle
-          pandoc
-        ]))
-      heroku
-      imagemagick
-      ispell
-      lsof
       (python3.withPackages (ps:
         with python3.pkgs; [
           my_cookies
@@ -70,11 +43,9 @@
           python-lsp-server
           cmake-language-server
         ]))
-      pinentry
       wakatime
       metals
       nixfmt
-      nixpkgs-fmt
       node2nix
       nodejs
       nodePackages."bash-language-server"
@@ -85,14 +56,12 @@
       # nix-index-update
       nixopsUnstable
       openssl
-      protobuf
       plantuml
       ripgrep
       rnix-lsp
       terraform
       terranix
       tronbox
-      mysql
       unzip
       stow
       slack
