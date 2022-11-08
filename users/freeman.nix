@@ -49,9 +49,9 @@ in {
     };
   };
   home-manager.users = {
-    freeman = if config.networking.hostName == "mail" then
-      hmUsers.freeman-cli
+    freeman = if (builtins.elem "with-gui" config.system.nixos.tags) then
+      hmUsers.freeman-gui
     else
-      hmUsers.freeman-gui;
+      hmUsers.freeman-cli;
   };
 }
