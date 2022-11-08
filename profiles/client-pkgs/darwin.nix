@@ -32,7 +32,6 @@
     global = {
       autoUpdate = true;
       brewfile = true;
-      noLock = true;
     };
     # mac app store
     masApps = { WireGuard = 1451685025; };
