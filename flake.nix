@@ -100,6 +100,7 @@
       inputs = {
         nixpkgs.follows = "nixpkgs";
         flake-utils.follows = "flake-utils";
+        devshell.follows = "devshell";
       };
     };
 
@@ -117,8 +118,12 @@
       inputs = {
         nixpkgs.follows = "nixpkgs";
         nixlib.follows = "nixpkgs";
+        latest.follows = "nixpkgs";
+        darwin.follows = "darwin";
+        devshell.follows = "devshell";
         home-manager.follows = "home-manager";
         deploy.follows = "deploy-rs";
+        flake-compat.follows = "flake-compat";
       };
     };
 
@@ -137,8 +142,8 @@
 
   outputs = { self, nixpkgs, nixos-hardware, emacs, xddxdd, flake-utils
     , flake-utils-plus, home-manager, agenix, nixos-generators, devshell, nixops
-    , gradle2nix, pre-commit-hooks, nix-alien, xiongchenyu6, winklink, deploy-rs
-    , digga, sops-nix, ... }@inputs:
+    , pre-commit-hooks, nix-alien, xiongchenyu6, winklink, deploy-rs, digga
+    , sops-nix, ... }@inputs:
     with nixpkgs;
     with lib;
     with flake-utils.lib;
