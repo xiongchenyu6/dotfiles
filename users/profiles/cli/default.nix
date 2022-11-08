@@ -3,7 +3,6 @@
   # paths it should manage.
 
   home = {
-
     stateVersion = "22.11";
     keyboard = { options = [ "caps:ctrl_modifier" ]; };
     file = let

@@ -24,9 +24,6 @@
       agenix
       apg
       bundix
-      clang
-      clang-tools
-      cmake
       conky
       cabal2nix
       cachix
@@ -44,7 +41,6 @@
       tendermint
       socat
       rustscan
-      virtualbox
       gitAndTools.gitflow
       git-crypt
       geoip
@@ -52,7 +48,6 @@
       gh
       gopls
       graphviz
-      gcc
       haskell-language-server
       (haskellPackages.ghcWithPackages (self:
         with haskellPackages;
@@ -78,8 +73,6 @@
           cmake-language-server
         ]))
       pinentry
-      patchelf
-      linuxPackages.ply
       wakatime
       metals
       nixfmt
@@ -98,7 +91,6 @@
       plantuml
       ripgrep
       rnix-lsp
-      tdesktop
       terraform
       terranix
       tronbox
@@ -113,16 +105,10 @@
       scalafmt
       solc-select
       litecli
-      wineWowPackages.staging
       wireshark
       winklink
       #wpa_supplicant_gui
       wakatime
-      whatsapp-for-linux
-      xclip
-      qq
-      wechat-uos
-      xscreensaver
       yaml-language-server
       zoom-us
     ];
