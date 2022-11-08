@@ -244,7 +244,7 @@
             users = digga.lib.rakeLeaves ./users;
           };
           suites = with profiles; rec {
-            base = [ core.darwin client-apps.darwin ];
+            base = [ core.darwin client-pkgs.darwin ];
           };
         };
       };
