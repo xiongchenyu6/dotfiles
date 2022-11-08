@@ -6,6 +6,11 @@
 { config, pkgs, lib, ... }:
 
 {
+  fonts = {
+    fontconfig = { enable = true; };
+    enableGhostscriptFonts = true;
+  };
+
   imports = [ ./common.nix ];
 
   networking = { domain = "freeman.engineer"; };

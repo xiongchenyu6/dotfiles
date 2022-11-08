@@ -11,6 +11,16 @@
     tmux = { enable = true; };
   };
 
+  fonts = {
+    fontDir = { enable = true; };
+    fonts = with pkgs; [
+      wqy_microhei
+      wqy_zenhei
+      (nerdfonts.override { fonts = [ "Hack" ]; })
+      jetbrains-mono
+    ];
+  };
+
   nix = {
     gc = {
       automatic = true;

@@ -246,14 +246,21 @@
       home = {
         importables = rec {
           profiles = digga.lib.rakeLeaves ./users/profiles;
-          suites = with profiles; rec { base = [ cli ]; };
+          suites = with profiles; rec {
+            cli = [ cli ];
+            linux-gui = [ gui.nixos cli ];
+            mac-gui = [ gui.darwin cli ];
+          };
         };
         users = {
           freeman-cli = { suites, config, profiles, ... }: {
-            imports = suites.base;
+            imports = suites.cli;
           };
           freeman-gui = { suites, config, profiles, ... }: {
-            imports = suites.base ++ [ profiles.gui ];
+            imports = suites.linux-gui;
+          };
+          xiongchenyu = { suites, config, profiles, ... }: {
+            imports = suites.mac-gui;
           };
         };
       };
