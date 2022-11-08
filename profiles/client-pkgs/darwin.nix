@@ -15,6 +15,8 @@
       dbeaver
       vscode
       pkgs.emacsGitNativeComp
+      docker
+      discord
     ];
   };
   homebrew = {
@@ -26,11 +28,18 @@
       link = true;
       conflicts_with = [ "mysql" ];
     }];
-    casks = [ "visual-studio-code" "docker" "virtualbox" ];
-    global.autoUpdate = true;
+    casks = [ "virtualbox" ];
+    global = {
+      autoUpdate = true;
+      brewfile = true;
+      noLock = true;
+    };
+    # mac app store
+    masApps = { WireGuard = 1451685025; };
+    taps = [ "homebrew/core" "homebrew/cask" "homebrew/cask-drivers" ];
     onActivation = {
       autoUpdate = true;
-      cleanup = "uninstall";
+      cleanup = "zap";
       upgrade = true;
     };
   };
@@ -48,8 +57,51 @@
     };
     skhd = {
       enable = true;
-      skhdConfig = "alt + shift - r : chunkc quit";
+      skhdConfig = ''
+        cmd + ctrl - return : open -n -a /Applications/Nix Apps/Alacritty.app
+        # enter fullscreen mode for the focused container
+        cmd + alt - f : yabai -m window --toggle zoom-fullscreen
+        # change focus between tiling / floating windows
+        cmd + shift + alt - space : yabai -m window --toggle float
+        # change layout of desktop
+        cmd + alt - w : yabai -m space --layout stack
+        cmd + alt - e : yabai -m space --layout bsp
+        # change focus
+        cmd + alt - h : yabai -m window --focus west
+        cmd + alt - j : yabai -m window --focus south
+        cmd + alt - k : yabai -m window --focus north
+        cmd + alt - l : yabai -m window --focus east
+        # move focused window
+        cmd + shift + alt - h : yabai -m window --warp west
+        cmd + shift + alt - j : yabai -m window --warp south
+        cmd + shift + alt - k : yabai -m window --warp north
+        cmd + shift + alt - l : yabai -m window --warp east
+        cmd + alt - 1 : yabai -m space --focus 1
+        cmd + alt - 2 : yabai -m space --focus 2
+        cmd + alt - 3 : yabai -m space --focus 3
+        cmd + alt - 4 : yabai -m space --focus 4
+        cmd + alt - 5 : yabai -m space --focus 5
+        cmd + alt - 6 : yabai -m space --focus 6
+        cmd + alt - 7 : yabai -m space --focus 7
+        cmd + alt - 8 : yabai -m space --focus 8
+        cmd + alt - 9 : yabai -m space --focus 9
+        cmd + alt - 0 : yabai -m space --focus 10
+        # move focused container to workspace
+        cmd + shift + alt - 1 : yabai -m window --space  1; yabai -m space --focus 1
+        cmd + shift + alt - 2 : yabai -m window --space  2; yabai -m space --focus 2
+        cmd + shift + alt - 3 : yabai -m window --space  3; yabai -m space --focus 3
+        cmd + shift + alt - 4 : yabai -m window --space  4; yabai -m space --focus 4
+        cmd + shift + alt - 5 : yabai -m window --space  5; yabai -m space --focus 5
+        cmd + shift + alt - 6 : yabai -m window --space  6; yabai -m space --focus 6
+        cmd + shift + alt - 7 : yabai -m window --space  7; yabai -m space --focus 7
+        cmd + shift + alt - 8 : yabai -m window --space  8; yabai -m space --focus 8
+        cmd + shift + alt - 9 : yabai -m window --space  9; yabai -m space --focus 9
+        cmd + shift + alt - 0 : yabai -m window --space  10; yabai -m space --focus 10
+      '';
     };
+
+    activate-system.enable = true;
+
     spacebar = {
       enable = true;
       package = pkgs.spacebar;
@@ -91,7 +143,10 @@
     };
     yabai = {
       enable = true;
+      enableScriptingAddition = true;
       config = {
+        layout = "bsp";
+
         focus_follows_mouse = "autoraise";
         mouse_follows_focus = "off";
         window_placement = "second_child";
@@ -124,6 +179,7 @@
         ShowPathbar = true;
         ShowStatusBar = true;
       };
+      trackpad = { Clicking = true; };
     };
     keyboard = {
       enableKeyMapping = true;
