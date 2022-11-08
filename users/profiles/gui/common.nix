@@ -95,16 +95,6 @@
       enable = true;
       settings = { git_protocal = "ssh"; };
     };
-    gpg = {
-      enable = true;
-      settings = {
-        keyserver = "hkp://keyserver.ubuntu.com";
-        fixed-list-mode = true;
-        keyid-format = "0xlong";
-        list-options = "show-uid-validity";
-        cert-digest-algo = "SHA256";
-      };
-    };
 
     sbt = {
       enable = true;

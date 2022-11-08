@@ -58,6 +58,16 @@
 
   programs = {
     tint2 = { enable = true; };
+    gpg = {
+      enable = true;
+      settings = {
+        keyserver = "hkp://keyserver.ubuntu.com";
+        fixed-list-mode = true;
+        keyid-format = "0xlong";
+        list-options = "show-uid-validity";
+        cert-digest-algo = "SHA256";
+      };
+    };
 
     chromium = {
       enable = true;
