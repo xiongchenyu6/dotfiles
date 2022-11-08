@@ -10,13 +10,17 @@
 
   environment = {
     systemPackages = with pkgs; [
+      conky
       clang
       clang-tools
       cmake
       gcc
+      jp2a
       patchelf
       linuxPackages.ply
       tdesktop
+      vlc
+      scrot
       wineWowPackages.staging
       #wpa_supplicant_gui
       whatsapp-for-linux
