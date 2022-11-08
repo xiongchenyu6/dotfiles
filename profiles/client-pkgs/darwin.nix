@@ -40,9 +40,12 @@
     postgresql = {
       enable = true;
       package = pkgs.postgresql;
-      enableTCPIP = true;
+      #     enableTCPIP = true;
     };
-    redis = { enable = true; };
+    redis = {
+      enable = true;
+      bind = "127.0.0.1";
+    };
     skhd = {
       enable = true;
       skhdConfig = "alt + shift - r : chunkc quit";

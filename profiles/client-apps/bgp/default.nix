@@ -7,20 +7,6 @@ in {
     #   enable = true;
     # };
 
-    # mattermost = {
-    #   enable = true;
-    #   siteUrl = "https://localhost";
-
-    # };
-    # snipe-it = {
-    #   enable = true;
-
-    # };
-    # trilium = {
-    #   enable = true;
-    #   # password = "123456";
-    # };
-
     bird2 = {
       enable = true;
       checkConfig = false;
