@@ -6,6 +6,8 @@
 { config, pkgs, lib, ... }:
 
 {
+  environment.systemPackages = with pkgs; [ litecli ssh-to-age imagemagick ];
+
   programs = {
     zsh = { enable = true; };
     tmux = { enable = true; };
@@ -58,5 +60,4 @@
   }];
 
   time = { timeZone = "Asia/Singapore"; };
-
 }

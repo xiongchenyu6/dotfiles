@@ -6,9 +6,7 @@
 { config, pkgs, lib, ... }:
 
 {
-  environment = {
-    systemPackages = with pkgs; [ python3 calibre xvfb-run imagemagick ];
-  };
+  environment = { systemPackages = with pkgs; [ python3 calibre xvfb-run ]; };
 
   services = {
     oci-arm-host-capacity =
