@@ -237,7 +237,7 @@
           profiles = digga.lib.rakeLeaves ./profiles // {
             users = digga.lib.rakeLeaves ./users;
           };
-          suites = with profiles; rec {
+          suites = with profiles; {
             base = [ core.darwin client-pkgs.darwin ];
           };
         };
@@ -249,7 +249,7 @@
           suites = with profiles; {
             cli = [ cli ];
             linux-gui = [ gui.nixos cli ];
-            mac-gui = [ gui.darwin profiles.cli ];
+            mac-gui = [ gui.darwin cli ];
           };
         };
         users = {

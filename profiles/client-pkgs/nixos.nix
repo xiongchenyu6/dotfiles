@@ -20,10 +20,8 @@
       discord
       geoip
       gnumake
-      gh
-      gopls
-      graphviz
       haskell-language-server
+      (python3.withPackages (ps: with python3.pkgs; [ my_cookies ]))
       (haskellPackages.ghcWithPackages (self:
         with haskellPackages;
         with pkgs.haskell.lib; [
@@ -40,10 +38,8 @@
       ispell
       lsof
       pinentry
-
       pass
       procs
-
       gcc
       jp2a
       patchelf

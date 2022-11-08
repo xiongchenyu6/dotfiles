@@ -35,9 +35,11 @@
       rustscan
       gitAndTools.gitflow
       git-crypt
+      gh
+      gopls
+      graphviz
       (python3.withPackages (ps:
         with python3.pkgs; [
-          my_cookies
           pkgs.epc
           orjson
           python-lsp-server

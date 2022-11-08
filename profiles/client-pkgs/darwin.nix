@@ -7,7 +7,15 @@
 
 {
   imports = [ ./common.nix ];
-
+  environment = {
+    systemPackages = with pkgs; [
+      postman
+      iterm2
+      jetbrains.idea-community
+      dbeaver
+      vscode
+    ];
+  };
   homebrew = {
     enable = true;
     brews = [{
@@ -17,17 +25,7 @@
       link = true;
       conflicts_with = [ "mysql" ];
     }];
-    casks = [
-      "google-chrome"
-      "iterm2"
-      "slack"
-      "visual-studio-code"
-      "docker"
-      "virtualbox"
-      "postman"
-      "dbeaver-community"
-      "intellij-idea-ce"
-    ];
+    casks = [ "visual-studio-code" "docker" "virtualbox" ];
     global.autoUpdate = true;
     onActivation = {
       autoUpdate = true;
