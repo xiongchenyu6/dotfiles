@@ -9,6 +9,12 @@
   environment.systemPackages = with pkgs; [ krb5 openssh_gssapi litecli ];
 
   imports = [ ./common.nix ];
-  nix.package = pkgs.nix;
   services.nix-daemon.enable = true;
+  system = { stateVersion = 4; }; # Did you read the comment?
+  nix = {
+    settings = { auto-optimise-store = true; };
+    package = pkgs.nix;
+
+  };
+  security.pam.enableSudoTouchIdAuth = true;
 }

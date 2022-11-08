@@ -5,4 +5,15 @@
 
 { config, pkgs, lib, ... }:
 
-{ }
+{
+  nix = {
+    generateNixPathFromInputs = true;
+    generateRegistryFromInputs = true;
+    linkInputs = true;
+    extraOptions = ''
+      keep-outputs = true
+      keep-derivations = true
+    '';
+  };
+
+}
