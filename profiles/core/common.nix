@@ -20,6 +20,9 @@
       wqy_zenhei
       (nerdfonts.override { fonts = [ "Hack" ]; })
       jetbrains-mono
+      emacs-all-the-icons-fonts
+      font-awesome
+
     ];
   };
 
