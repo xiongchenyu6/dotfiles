@@ -39,6 +39,7 @@
     netbird = { enable = true; };
     postgresql = {
       enable = true;
+      package = pkgs.postgresql;
       enableTCPIP = true;
     };
     redis = { enable = true; };
