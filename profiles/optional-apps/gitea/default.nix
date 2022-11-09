@@ -3,14 +3,10 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
-{ config, pkgs, lib, ... }:
+{ config, lib, ... }:
 
-let
-  common-files-path = ../../../common;
-  secret-files-path = common-files-path + "/secrets";
-in {
-  age.secrets.gitea_postgres = {
-    file = secret-files-path + /gitea_postgres.age;
+{
+  sops.secrets."database/postgres/gitea" = {
     mode = "770";
     owner = "gitea";
     group = "gitea";
@@ -29,16 +25,20 @@ in {
         # type = "mysql";
         host = "postgres-database-1.postgres.database.azure.com";
         type = "postgres";
-        passwordFile = config.age.secrets.gitea_postgres.path;
+        passwordFile = config.sops.secrets."database/postgres/gitea".path;
         createDatabase = false;
       };
-      settings = { server = { SSH_PORT = 2222; }; };
-      extraConfig = ''
-        [database]
-        SSL_MODE = require
-        [cron.sync_external_users]
-        RUN_AT_START = true
-      '';
+      settings = {
+        server = { SSH_PORT = 2222; };
+        database = { SSL_MODE = lib.mkForce "require"; };
+        "cron.sync_external_users" = { RUN_AT_START = true; };
+      };
+      # extraConfig = ''
+      #   [database]
+      #   SSL_MODE = require
+      #   [cron.sync_external_users]
+      #   RUN_AT_START = true
+      # '';
       # extraConfig = ''
       #   [database]
       #   SSL_MODE = skip-verify

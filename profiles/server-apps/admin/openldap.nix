@@ -4,10 +4,9 @@ let
   dbSuffix = "dc=freeman,dc=engineer";
   defaultUser = "freeman";
   ldapRootUser = "admin";
-  common-files-path = ../../../common;
-  kdcPasswordFile = common-files-path + "/kdc.password";
-  kadminPasswordFile = common-files-path + "/kadmin.password";
-
+  secrets-files-path = ../../../secrets;
+  kdcPasswordFile = secrets-files-path + "/kdc.password";
+  kadminPasswordFile = secrets-files-path + "/kadmin.password";
 in {
   services = {
     openldap = {
@@ -51,8 +50,8 @@ in {
               "${pkgs.openldap}/etc/schema/misc.ldif"
               "${pkgs.openldap}/etc/schema/openldap.ldif"
               "${pkgs.openldap}/etc/schema/pmi.ldif"
-              ../../../common/kerberos.ldif
-              ../../../common/sudoers.ldif
+              ./kerberos.ldif
+              ./sudoers.ldif
             ];
           };
           "cn=module{0}" = {

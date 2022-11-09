@@ -1,4 +1,4 @@
-{ config, pkgs, lib, symlinkJoin, ... }:
+{ config, pkgs, lib, ... }:
 
 {
   systemd = {

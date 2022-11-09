@@ -1,11 +1,4 @@
-{ config, pkgs, lib, ... }:
-let
-  common-files-path = ../../common;
-  secret-files-paht = common-files-path + "/secrets";
-  script = import ../../dn42/update-roa.nix { inherit pkgs; };
-  share = import (common-files-path + /share.nix);
-in {
-
+{ config, pkgs, lib, ... }: {
   services = {
     nginx = {
       enable = true;
@@ -33,8 +26,9 @@ in {
           useACMEHost = "inner.${config.networking.domain}";
           kTLS = true;
           locations."/" = {
-            proxyPass =
-              "http://127.0.0.1:${toString config.services.grafana.port}";
+            proxyPass = "http://127.0.0.1:${
+                toString config.services.grafana.settings.server.http_port
+              }";
             proxyWebsockets = true;
           };
         };

@@ -20,6 +20,7 @@
     profiles.optional-apps.calibre-web
     profiles.optional-apps.gotify-server
     profiles.users.root
+    profiles.server-pkgs.nixos
     profiles.users.freeman
   ] ++ suites.server-base;
 

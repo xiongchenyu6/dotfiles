@@ -1,23 +1,21 @@
-{ config, pkgs, lib, ... }: {
+{ config, pkgs, lib, profiles, ... }: {
   # Home Manager needs a bit of information about you and the
   # paths it should manage.
 
   home = {
     stateVersion = "22.11";
     keyboard = { options = [ "caps:ctrl_modifier" ]; };
-    file = let
-      old-files-path = ../../../old-files;
-      common-files-path = ../../../common;
+    file = let old-files-path = ../../../old-files;
     in {
       ".wakatime.cfg" = { source = old-files-path + /wakatime/.wakatime.cfg; };
       ".ldaprc" = { source = old-files-path + /ldap/.ldaprc; };
       ".ssh/id_ed25519.pub" = {
-        text = (import (common-files-path + /share.nix)).office.user.public-key;
+        text = profiles.share.office.user.public-key;
         executable = false;
       };
       ".curlrc" = { source = old-files-path + /downloader/.curlrc; };
       ".ssh/id_ed25519" = {
-        source = common-files-path + /secrets/office_pk.key;
+        source = ../../../secrets/office_pk.key;
         executable = false;
       };
     };

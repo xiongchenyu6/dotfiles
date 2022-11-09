@@ -3,7 +3,7 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
-{ config, pkgs, lib, ... }:
+{ pkgs, ... }:
 
 {
   nix = {
@@ -40,7 +40,7 @@
       graphviz
       (python3.withPackages (ps:
         with python3.pkgs; [
-          pkgs.epc
+          six
           orjson
           python-lsp-server
           cmake-language-server

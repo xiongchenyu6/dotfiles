@@ -1,10 +1,10 @@
-{ config, pkgs, options, lib, ... }:
-
 {
+  sops.secrets."cachix/secret" = { };
+
   services = {
     cachix-agent = {
       enable = true;
-      credentialsFile = ../../common/cachix.secret;
+      credentialsFile = config.sops.secrets."cachix/secret".path;
       verbose = true;
     };
   };

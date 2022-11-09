@@ -1,6 +1,4 @@
-{ config, pkgs, options, lib, ... }:
-let script = import ../../dn42/update-roa.nix { inherit pkgs; };
-in {
+{ config, ... }: {
   services = {
     # code-server = {
     #   auth = "none";

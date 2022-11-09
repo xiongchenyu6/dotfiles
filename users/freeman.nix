@@ -3,34 +3,14 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
-{ hmUsers, pkgs, config, ... }:
-let
-  common-files-path = ../common;
-  share = import (common-files-path + /share.nix);
-
-in {
+{ hmUsers, pkgs, config, profiles, ... }: {
   users = {
-    # Define a user account. Don't forget to set a password with ‘passwd’.
-    motd = ''
-
-                                Welcome to:
-       ______.      ___       ______.    ______.  .__  ___    ___
-      /___   /     /   \     |   _   \  |   _   \ |__| \  \  /  /
-         /  /     /  .  \    |  <_>  /  |  <_>  / |  |  \  \/  /
-        /  /     /  /-\  \   |   _  .   |   _  .  |  |   >    <
-       /  /__.  /  /---\  \  |  <_>  \  |  <_>  \ |  |  /  /\  \
-      /._____/ /__/     \__\ |______./  |______./ |__| /__/  \_ \
-                                                               \/
-
-
-    '';
-
     users = {
       freeman = {
         isNormalUser = true;
         description = "freeman";
         group = "users";
-        openssh.authorizedKeys.keys = [ share.office.user.public-key ];
+        openssh.authorizedKeys.keys = [ profiles.share.office.user.public-key ];
         shell = pkgs.zsh;
         extraGroups = [
           "networkmanager"

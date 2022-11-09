@@ -4,6 +4,7 @@ let
   realm = "FREEMAN.ENGINEER";
   dbSuffix = "dc=freeman,dc=engineer";
 in {
+  sops.secrets."openldap/passwordFile" = { mode = "770"; };
   krb5 = {
     enable = true;
     appdefaults = {
@@ -26,7 +27,9 @@ in {
               ldap_kerberos_container_dn = cn=krbContainer,ou=services,${dbSuffix}
               ldap_kdc_dn = uid=kdc,ou=services,${dbSuffix}
               ldap_kadmind_dn = uid=kadmin,ou=services,${dbSuffix}
-              ldap_service_password_file = ${../../../common/passwordFile}
+              ldap_service_password_file = ${
+                config.sops.secrets."openldap/passwordFile".path
+              }
               ldap_conns_per_server = 5
        }
     '';

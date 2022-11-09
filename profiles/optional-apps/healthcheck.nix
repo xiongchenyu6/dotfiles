@@ -3,18 +3,13 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
-{ config, pkgs, lib, ... }:
-
-let
-  common-files-path = ../../common;
-  secret-files-path = common-files-path + "/secrets";
-in {
-
-  age.secrets.django_secret = {
-    file = secret-files-path + /django_secret.age;
-    mode = "777";
-    owner = "healthchecks";
-    group = "healthchecks";
+{ config, lib, ... }: {
+  sops.secrets = {
+    "django/secret" = {
+      mode = "777";
+      owner = "healthchecks";
+      group = "healthchecks";
+    };
   };
 
   services.healthchecks = {
@@ -23,7 +18,7 @@ in {
     enable = true;
     settings = {
       DEBUG = true;
-      SECRET_KEY_FILE = config.age.secrets.django_secret.path;
+      SECRET_KEY_FILE = config.sops.secrets."django/secret".path;
       COMPRESS_ENABLED = "False";
       REGISTRATION_OPEN = true;
       EMAIL_HOST = "mail.freeman.engineer";
@@ -32,7 +27,6 @@ in {
       DEFAULT_FROM_EMAIL = "healthchecks@mail.freeman.engineer";
       PING_ENDPOINT = "https://healthchecks.inner.freeman.engineer/";
       SITE_ROOT = "https://healthchekcs.inner.${config.networking.domain}";
-
     };
   };
 

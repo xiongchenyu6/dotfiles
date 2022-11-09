@@ -1,10 +1,5 @@
-{ config, pkgs, lib, ... }:
-let
-  common-files-path = ../../common;
-  secret-files-path = common-files-path + "/secrets";
-  share = import (common-files-path + /share.nix);
-in {
-  age.secrets.tc_wg_pk.file = secret-files-path + /tc_wg_pk.age;
+{ config, profiles, ... }: {
+  sops.secrets."wireguard/mail" = { };
 
   networking = {
     nat = {
@@ -82,18 +77,18 @@ in {
         # };
 
         wg_office = {
-          privateKeyFile = config.age.secrets.tc_wg_pk.path;
+          privateKeyFile = config.sops.secrets."wireguard/mail".path;
           address = [ "172.22.240.97/27" "fe80::100/64" "fd48:4b4:f3::1/48" ];
           listenPort = 22616;
           table = "off";
           peers = [{
-            publicKey = share.office.wg.public-key;
+            publicKey = profiles.share.office.wg.public-key;
             allowedIPs =
               [ "172.22.240.98/32" "fe80::101/128" "fd48:4b4:f3::2/128" ];
           }];
         };
         wg_theresa = {
-          privateKeyFile = config.age.secrets.tc_wg_pk.path;
+          privateKeyFile = config.sops.secrets."wireguard/mail".path;
           address = [ "172.22.240.97/27" "fe80::100/64" ];
           listenPort = 23396;
           table = "off";
@@ -110,7 +105,7 @@ in {
           }];
         };
         wg_potat0 = {
-          privateKeyFile = config.age.secrets.tc_wg_pk.path;
+          privateKeyFile = config.sops.secrets."wireguard/mail".path;
           address = [ "172.22.240.97/27" "fe80::100/64" ];
           listenPort = 21816;
           table = "off";
@@ -127,7 +122,7 @@ in {
           }];
         };
         wg_tech9 = {
-          privateKeyFile = config.age.secrets.tc_wg_pk.path;
+          privateKeyFile = config.sops.secrets."wireguard/mail".path;
           address = [ "172.22.240.97/27" "fe80::100/64" ];
           listenPort = 21588;
           table = "off";

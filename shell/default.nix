@@ -2,7 +2,7 @@
   exportedModules = { pkgs, lib, inputs, extraModulesPath, ... }:
     let
       inherit (pkgs)
-        agenix cachix editorconfig-checker mdbook nixUnstable nixfmt nvfetcher;
+        sops cachix editorconfig-checker mdbook nixUnstable nixfmt nvfetcher;
       pkgWithCategory = category: package: { inherit package category; };
       devos = pkgWithCategory "devos";
       linter = pkgWithCategory "linter";
@@ -21,7 +21,7 @@
 
       commands = [
         (devos nixUnstable)
-        (devos agenix)
+        (devos sops)
         (devos nvfetcher)
         (linter nixfmt)
         (linter editorconfig-checker)

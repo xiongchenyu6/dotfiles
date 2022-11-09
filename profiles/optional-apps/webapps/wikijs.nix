@@ -1,5 +1,3 @@
-{ config, pkgs, options, lib, ... }:
-
 {
   services = {
     wiki-js = {
@@ -16,7 +14,6 @@
         logLevel = "debug";
 
       };
-      environmentFile = ../../common/env;
     };
   };
 }
