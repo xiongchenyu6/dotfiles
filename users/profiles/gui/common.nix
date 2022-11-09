@@ -113,7 +113,6 @@
     };
     emacs = {
       enable = true;
-      package = pkgs.emacsGitNativeComp;
       extraPackages = epkgs:
         with pkgs;
         with epkgs; [
