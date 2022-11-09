@@ -48,7 +48,7 @@
     postgresql = {
       enable = true;
       package = pkgs.postgresql;
-      #     enableTCPIP = true;
+      enableTCPIP = true;
     };
     redis = {
       enable = true;
@@ -56,40 +56,6 @@
     };
     skhd = {
       enable = true;
-      # skhdConfig = ''
-      #   cmd + ctrl - return : open -n -a /Applications/Nix Apps/Alacritty.app
-      #   # focus window
-      #   cmd - h : yabai -m window --focus west
-      #   cmd - j : yabai -m window --focus south
-      #   cmd - k : yabai -m window --focus north
-      #   cmd - l : yabai -m window --focus east
-      #   # move window
-      #   shift + cmd - h : yabai -m window --warp west
-      #   shift + cmd - j : yabai -m window --warp south
-      #   shift + cmd - k : yabai -m window --warp north
-      #   shift + cmd - l : yabai -m window --warp east
-      #   # make floating window fill screen
-      #   shift + alt - up     : yabai -m window --grid 1:1:0:0:1:1
-      #   # fast focus space
-      #   # (done in System Preferences -> Keyboard -> Shortcuts)
-      #   # send window to space and follow focus
-      #   shift + cmd - 1 : yabai -m window --space  1; yabai -m space --focus 1
-      #   shift + cmd - 2 : yabai -m window --space  2; yabai -m space --focus 2
-      #   shift + cmd - 3 : yabai -m window --space  3; yabai -m space --focus 3
-      #   shift + cmd - 4 : yabai -m window --space  4; yabai -m space --focus 4
-      #   shift + cmd - 5 : yabai -m window --space  5; yabai -m space --focus 5
-      #   shift + cmd - 6 : yabai -m window --space  6; yabai -m space --focus 6
-      #   shift + cmd - 7 : yabai -m window --space  7; yabai -m space --focus 7
-      #   shift + cmd - 8 : yabai -m window --space  8; yabai -m space --focus 8
-      #   shift + cmd - 9 : yabai -m window --space  9; yabai -m space --focus 9
-      #   shift + cmd - 0 : yabai -m window --space 10; yabai -m space --focus 10
-      #   # toggle window fullscreen zoom
-      #   alt - f : yabai -m window --toggle zoom-fullscreen
-      #   # float / unfloat window and center on screen
-      #   alt - t : yabai -m window --toggle float;\
-      #             yabai -m window --grid 4:4:1:1:2:2
-
-      # '';
       skhdConfig = let
         modMask = "cmd";
         moveMask = "ctrl + cmd";
