@@ -14,8 +14,8 @@
       jetbrains.idea-community
       dbeaver
       vscode
-      pkgs.emacsGitNativeComp
       docker
+      emacsMacport
       discord
     ];
   };
