@@ -236,6 +236,7 @@
            fi
         }
         export LSP_USE_PLISTS=true
+        eval $(${pkgs.bash-my-aws}/bin/bma-init)
       '';
       oh-my-zsh = {
         enable = true;

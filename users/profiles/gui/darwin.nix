@@ -7,6 +7,6 @@
 
 {
   imports = [ ./common.nix ];
-  programs = { emacs = { package = pkgs.emacsMacport; }; };
+  programs = { emacs = { package = lib.mkForce pkgs.emacsMacport; }; };
 }
 

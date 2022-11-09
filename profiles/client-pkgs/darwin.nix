@@ -15,7 +15,7 @@
       dbeaver
       vscode
       docker
-      emacsMacport
+      # emacsMacport
       discord
     ];
   };
