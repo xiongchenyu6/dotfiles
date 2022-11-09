@@ -155,7 +155,7 @@
       package = pkgs.spacebar;
       config = {
         position = "top";
-        display = "main";
+        display = "all";
         height = 26;
         title = "on";
         spaces = "on";
