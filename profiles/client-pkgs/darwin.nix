@@ -140,7 +140,7 @@
             ${moveMask} - right                       : ${prefix} window --display prev
             ${moveMask} - left                        : ${prefix} window --display next
             # apps  ▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁
-            ${modMask} - return                       : ${myTerminal}
+            ${modMask} - return                       : open -n -a 'Terminal.app'
             ${modMask} + shift - return               : ${myEditor}
             ${modMask} - b                            : ${myBrowser}
             # reset  ▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁
@@ -189,12 +189,12 @@
         right_shell_command = "whoami";
       };
     };
+
     yabai = {
       enable = true;
       enableScriptingAddition = true;
       config = {
         layout = "bsp";
-
         focus_follows_mouse = "autoraise";
         mouse_follows_focus = "off";
         window_placement = "second_child";
@@ -207,6 +207,7 @@
       };
     };
   };
+
   system = {
     defaults = {
       NSGlobalDomain = {
