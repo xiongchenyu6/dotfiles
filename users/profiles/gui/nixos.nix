@@ -270,7 +270,6 @@
 
     blueman-applet = { enable = true; };
     dropbox = { enable = true; };
-    emacs = { package = pkgs.emacsGitNativeComp; };
     polybar = {
       enable = true;
       config = {

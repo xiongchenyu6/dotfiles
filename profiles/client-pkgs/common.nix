@@ -21,7 +21,6 @@
       asciinema
       awscli2
       azure-cli
-      agenix
       cachix
       deploy-rs
       neofetch

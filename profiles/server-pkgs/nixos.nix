@@ -22,14 +22,18 @@
         service_status = {
           kdc = "kdc";
           kadmind = "kadmind";
-          openldap = "slapd";
+          openldap = "openldap";
         };
-        ssl_certificates = { sort_method = "manual"; };
-        "ssl_certificates.certs" = {
-          inner = "/var/lib/acme/inner.freeman.engineer/cert.pem";
-          mail = "/var/lib/acme/mail.freeman.engineer/cert.pem";
+        s_s_l_certs = {
+          sort_method = "manual";
+          certs = {
+            "*.inner.freeman.engineer" =
+              "/var/lib/acme/inner.freeman.engineer/cert.pem";
+            "mail.freeman.engineer" =
+              "/var/lib/acme/mail.freeman.engineer/cert.pem";
+          };
         };
-        weather = { loc = "New York,New York"; };
+        # weather = { loc = "Singapore,Singapore"; };
         filesystems = { root = "/"; };
         memory = { swap_pos = "beside"; };
         last_login = {
@@ -45,5 +49,7 @@
       enable = true;
       envPath = config.sops.secrets."oci-arm-host-capacity".path;
     };
+
   };
+  systemd.services.rust-motd = { serviceConfig = { User = "acme"; }; };
 }

@@ -34,6 +34,7 @@
   hardware = {
     pulseaudio = { enable = false; };
     bluetooth = { enable = true; };
+    opengl.enable = true;
   };
   # Enable sound with pipewire.
   sound = { enable = true; };
