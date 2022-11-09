@@ -7,4 +7,7 @@
 
 {
   imports = [ ./common.nix ];
+  emacs = { package = pkgs.emacsMacport; };
+
 }
+
