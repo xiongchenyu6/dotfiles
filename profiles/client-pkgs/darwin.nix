@@ -121,8 +121,7 @@
       package = pkgs.spacebar;
       config = {
         position = "top";
-        display = "all";
-        height = 26;
+        height = 32;
         title = "on";
         spaces = "on";
         clock = "on";
@@ -141,7 +140,6 @@
         power_icon_strip = " ";
         space_icon = "•";
         space_icon_strip = "1 2 3 4 5 6 7 8 9 10";
-        spaces_for_all_displays = "on";
         display_separator = "on";
         display_separator_icon = "";
         space_icon_color = "0xff458588";
@@ -153,7 +151,11 @@
         right_shell = "on";
         right_shell_icon = "";
         right_shell_command = "whoami";
+        display = "all";
+        spaces_for_all_displays = "on";
+        debug_output = "on";
       };
+      extraConfig = ''echo "spacebar config loaded..."'';
     };
 
     yabai = {
