@@ -1,5 +1,1 @@
-{ config, pkgs, options, lib, ... }:
-
-{
-  imports = [ ./kerberos.nix ];
-}
+{ imports = [ ./kerberos.nix ]; }

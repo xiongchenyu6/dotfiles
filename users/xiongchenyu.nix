@@ -3,12 +3,7 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
-{ hmUsers, pkgs, config, ... }:
-let
-  common-files-path = ../common;
-  share = import (common-files-path + /share.nix);
-
-in {
+{ hmUsers, pkgs, config, ... }: {
   users = {
     users = {
       xiongchenyu = {

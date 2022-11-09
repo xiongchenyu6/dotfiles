@@ -3,10 +3,15 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
-{ config, pkgs, lib, ... }:
+{ pkgs, ... }:
 
 {
-  environment.systemPackages = with pkgs; [ litecli ssh-to-age imagemagick ];
+  environment.systemPackages = with pkgs; [
+    tree
+    litecli
+    ssh-to-age
+    imagemagick
+  ];
 
   programs = {
     zsh = { enable = true; };

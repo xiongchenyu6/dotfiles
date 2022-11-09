@@ -1,11 +1,4 @@
-{ config, pkgs, lib, ... }:
-let
-  common-files-path = ../../common;
-  secret-files-paht = common-files-path + "/secrets";
-  script = import ../../dn42/update-roa.nix { inherit pkgs; };
-  share = import (common-files-path + /share.nix);
-
-in {
+{ config, pkgs, ... }: {
   services = {
     bird-lg = {
       package = pkgs.symlinkJoin {

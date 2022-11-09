@@ -1,17 +1,9 @@
 { config, pkgs, options, lib, ... }:
 let
-  common-files-path = ../../../common;
-  secret-files-path = common-files-path + "/secrets";
-  share = import (common-files-path + /share.nix);
-  realm = "FREEMAN.ENGINEER";
   dbSuffix = "dc=freeman,dc=engineer";
-  defaultUser = "freeman";
-  ldapRootUser = "admin";
   owner = "hydra";
-
 in {
-  age.secrets.ldap-password = {
-    file = secret-files-path + /ldap-password.age;
+  sops.secrets."openldap/password" = {
     mode = "770";
     inherit owner;
     group = owner;
@@ -32,8 +24,7 @@ in {
       # you will probably also want, otherwise *everything* will be built from scratch
       useSubstitutes = true;
       # listenHost = "hydra.inner.${config.networking.domain}";
-      extraConfig = let passwordFile = ./ldap-password.conf;
-      in ''
+      extraConfig = ''
         <dynamicruncommand>
           enable = 1
         </dynamicruncommand>
@@ -67,7 +58,7 @@ in {
                 debug = 2
               </ldap_server_options>
               binddn = "cn=admin,${dbSuffix}"
-              include ${config.age.secrets.ldap-password.path}
+              include ${config.sops.secrets."openldap/password".path}
               start_tls = 0
               <start_tls_options>
                 verify = none

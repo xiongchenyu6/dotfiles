@@ -1,13 +1,8 @@
 { config, pkgs, lib, ... }:
 
-let
-  common-files-path = ../../../common;
-  secret-files-path = common-files-path + "/secrets";
-  share = import (common-files-path + /share.nix);
-in {
+{
 
-  age.secrets.acme_credentials = {
-    file = secret-files-path + /acme_credentials.age;
+  sops.secrets."acme/namecom" = {
     mode = "770";
     owner = "acme";
     group = "acme";
@@ -28,7 +23,7 @@ in {
         "${config.networking.fqdn}" = {
           dnsProvider = "namedotcom";
           domain = "*.${config.networking.domain}";
-          credentialsFile = config.age.secrets.acme_credentials.path;
+          credentialsFile = config.sops.secrets."acme/namecom".path;
           # We don't need to wait for propagation since this is a local DNS server
           dnsPropagationCheck = false;
           reloadServices =

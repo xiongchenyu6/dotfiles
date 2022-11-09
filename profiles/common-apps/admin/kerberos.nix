@@ -1,4 +1,4 @@
-{ config, pkgs, options, lib, ... }:
+{ config, ... }:
 let
   realm = "FREEMAN.ENGINEER";
   tronRealm = "TRONTECH.LINK";

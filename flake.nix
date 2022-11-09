@@ -57,11 +57,6 @@
       };
     };
 
-    agenix = {
-      url = "github:ryantm/agenix";
-      inputs = { nixpkgs.follows = "nixpkgs"; };
-    };
-
     nixos-generators = {
       url = "github:nix-community/nixos-generators";
       inputs = { nixpkgs.follows = "nixpkgs"; };
@@ -139,7 +134,7 @@
   };
 
   outputs = { self, nixpkgs, nixos-hardware, emacs, xddxdd, flake-utils
-    , flake-utils-plus, home-manager, agenix, nixos-generators, devshell, nixops
+    , flake-utils-plus, home-manager, nixos-generators, devshell, nixops
     , pre-commit-hooks, nix-alien, xiongchenyu6, winklink, deploy-rs, digga
     , sops-nix, ... }@inputs:
     with nixpkgs;
@@ -148,7 +143,6 @@
     with flake-utils-plus.lib;
     let
       overlays = map (x: x.overlay or x.overlays.default) [
-        agenix
         emacs
         devshell
         xddxdd
@@ -187,7 +181,6 @@
             sops-nix.nixosModules.sops
             nixos-hardware.nixosModules.lenovo-thinkpad-x1-9th-gen
             nixos-hardware.nixosModules.common-gpu-intel
-            agenix.nixosModule
             digga.darwinModules.nixConfig
             home-manager.nixosModules.home-manager
             xiongchenyu6.nixosModules.bttc
@@ -203,6 +196,7 @@
         importables = rec {
           profiles = digga.lib.rakeLeaves ./profiles // {
             users = digga.lib.rakeLeaves ./users;
+            share = (import ./profiles/shares.nix);
           };
           suites = with profiles; rec {
             base = [ core.nixos sops ];
@@ -227,7 +221,6 @@
           modules = [
             digga.darwinModules.nixConfig
             home-manager.darwinModules.home-manager
-            agenix.nixosModules.age
           ];
         };
 
@@ -236,6 +229,7 @@
         importables = rec {
           profiles = digga.lib.rakeLeaves ./profiles // {
             users = digga.lib.rakeLeaves ./users;
+            share = (import ./profiles/shares.nix { });
           };
           suites = with profiles; {
             base = [ core.darwin client-pkgs.darwin ];
@@ -245,7 +239,9 @@
 
       home = {
         importables = rec {
-          profiles = digga.lib.rakeLeaves ./users/profiles;
+          profiles = digga.lib.rakeLeaves ./users/profiles // {
+            share = (import ./profiles/shares.nix);
+          };
           suites = with profiles; {
             cli = [ cli ];
             linux-gui = [ gui.nixos cli ];
@@ -283,8 +279,8 @@
 
       deploy = {
         sshOpts = [ "-X" "-p" "2222" ];
-        # autoRollback = false;
-        # magicRollback = false;
+        autoRollback = false;
+        magicRollback = false;
         fastConnection = true;
         nodes = digga.lib.mkDeployNodes self.nixosConfigurations {
           mail = { profiles = { system = { sshUser = "root"; }; }; };

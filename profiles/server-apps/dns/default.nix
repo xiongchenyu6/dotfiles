@@ -1,5 +1,1 @@
-{ config, pkgs, lib, ... }:
-
-{
-  imports = [ ./bind.nix ];
-}
+{ imports = [ ./bind.nix ]; }

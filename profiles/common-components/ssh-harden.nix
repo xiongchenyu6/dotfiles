@@ -1,4 +1,4 @@
-{ config, pkgs, lib, ... }: {
+{ pkgs, ... }: {
   environment.etc."sudo.conf" = {
     mode = "0400";
     text =

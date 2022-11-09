@@ -1,4 +1,4 @@
-{ config, pkgs, lib, ... }:
+{ pkgs, ... }:
 let script = import ./update-roa.nix { inherit pkgs; };
 in {
   systemd = {

@@ -1,5 +1,3 @@
-{ config, pkgs, options, lib, ... }:
-
 {
   services = {
     postgresql = {

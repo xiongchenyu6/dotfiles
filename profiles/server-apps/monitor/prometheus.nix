@@ -1,12 +1,6 @@
-{ config, pkgs, lib, ... }:
-let
-  common-files-path = ../../../common;
-  secret-files-path = common-files-path + "/secrets";
+{ config, pkgs, ... }: {
 
-in rec {
-
-  age.secrets.ldap_credentials = {
-    file = secret-files-path + /ldap_credentials.age;
+  sops.secrets."openldap/credentials" = {
     mode = "770";
     owner = "openldap-exporter";
     group = "openldap-exporter";
@@ -70,7 +64,7 @@ in rec {
     openldap = {
       enable = false;
       port = 9007;
-      ldapCredentialFile = config.age.secrets.ldap_credentials.path;
+      ldapCredentialFile = config.sops.secrets."openldap/credentials".path;
     };
 
     postfix = {
