@@ -39,6 +39,7 @@
       graphviz
       (python3.withPackages (ps:
         with python3.pkgs; [
+          epc
           six
           orjson
           python-lsp-server

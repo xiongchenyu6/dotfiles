@@ -21,7 +21,7 @@
       geoip
       gnumake
       haskell-language-server
-      (python3.withPackages (ps: with python3.pkgs; [ my_cookies ]))
+      (python3.withPackages (ps: with python3.pkgs; [ epc my_cookies ]))
       (haskellPackages.ghcWithPackages (self:
         with haskellPackages;
         with pkgs.haskell.lib; [
