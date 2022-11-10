@@ -3,7 +3,7 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
-{ config, pkgs, ... }:
+{ pkgs, ... }:
 
 {
   imports = [ ./common.nix ];
@@ -15,7 +15,6 @@
       dbeaver
       vscode
       docker
-      # emacsMacport
       discord
     ];
   };
@@ -59,10 +58,9 @@
       skhdConfig = let
         modMask = "cmd";
         moveMask = "ctrl + cmd";
-        myTerminal = "${pkgs.alacritty}/bin/alacritty";
+        # myTerminal = "${pkgs.alacritty}/bin/alacritty";
         myEditor = "emacsclient -a '' -nc";
         myBrowser = "open /Applications/Safari.app";
-        noop = "/dev/null";
         prefix = "${pkgs.yabai}/bin/yabai -m";
         fstOrSnd = { fst, snd }:
           domain:

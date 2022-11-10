@@ -3,7 +3,6 @@ let
   dbDomain = "freeman.engineer";
   realm = "FREEMAN.ENGINEER";
   dbSuffix = "dc=freeman,dc=engineer";
-  defaultUser = "freeman";
   ldapRootUser = "admin";
 in {
   services = {

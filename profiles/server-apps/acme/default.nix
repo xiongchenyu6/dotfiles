@@ -1,6 +1,4 @@
-{ config, pkgs, lib, ... }:
-
-{
+{ config, ... }: {
 
   sops.secrets."acme/namecom" = {
     mode = "770";

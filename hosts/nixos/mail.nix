@@ -1,4 +1,4 @@
-{ config, pkgs, lib, modulesPath, suites, profiles, ... }: {
+{ modulesPath, suites, profiles, ... }: {
 
   boot.loader.grub.device = "/dev/vda";
   boot.initrd.availableKernelModules = [ "ata_piix" "uhci_hcd" "xen_blkfront" ];

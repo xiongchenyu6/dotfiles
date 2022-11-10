@@ -1,4 +1,3 @@
-final: prev: {
-  hydra-unstable =
-    prev.hydra-unstable.overrideAttrs (old: { doCheck = false; });
+_: prev: {
+  hydra-unstable = prev.hydra-unstable.overrideAttrs (_: { doCheck = false; });
 }

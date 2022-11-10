@@ -3,10 +3,12 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
-{ config, pkgs, lib, ... }:
+{ pkgs, lib, ... }:
 
 {
   imports = [ ./common.nix ];
-  programs = { emacs = { package = lib.mkForce pkgs.emacsMacport; }; };
+  programs = lib.mkIf (!pkgs.stdenv.isLinux) {
+    emacs = { package = lib.mkForce pkgs.emacsMacport; };
+  };
 }
 

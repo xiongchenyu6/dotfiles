@@ -1,6 +1,6 @@
 # Edit
 
-{ config, pkgs, options, lib, modulesPath, suites, profiles, ... }: rec {
+{ config, lib, modulesPath, suites, profiles, ... }: rec {
 
   system.nixos.tags = [ "with-gui" ];
   boot = {
