@@ -119,16 +119,18 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    # Common Grub2 themes
     grub2-themes.url = "github:vinceliuice/grub2-themes";
     grub2-themes.inputs.nixpkgs.follows = "nixpkgs";
-    grub2-themes-png.url = "github:AnotherGroupChat/grub2-themes-png";
-    grub2-themes-png.inputs.nixpkgs.follows = "nixpkgs";
+
+    hyprland.url = "github:vaxerski/Hyprland";
+    hyprland.inputs.nixpkgs.follows = "nixpkgs";
+
   };
 
   outputs = { self, nixpkgs, nixos-hardware, emacs, xddxdd, flake-utils
     , flake-utils-plus, home-manager, devshell, pre-commit-hooks, nix-alien
-    , xiongchenyu6, winklink, digga, sops-nix, grub2-themes, ... }@inputs:
+    , xiongchenyu6, winklink, digga, sops-nix, grub2-themes, hyprland, ...
+    }@inputs:
     with nixpkgs;
     with lib;
     with flake-utils.lib;
@@ -176,6 +178,7 @@
             home-manager.nixosModules.home-manager
             xiongchenyu6.nixosModules.bttc
             grub2-themes.nixosModule
+            hyprland.nixosModules.default
           ];
         };
         hosts = {
@@ -231,6 +234,8 @@
       };
 
       home = {
+        modules = [ hyprland.homeManagerModules.default ];
+
         importables = rec {
           profiles = digga.lib.rakeLeaves ./users/profiles // {
             share = import ./profiles/shares.nix;
