@@ -216,7 +216,7 @@
 
       darwin = {
         hostDefaults = {
-          system = "x86_64-darwin";
+          system = "aarch64-darwin";
           channelName = "nixpkgs";
           modules = [
             digga.darwinModules.nixConfig
@@ -225,7 +225,7 @@
         };
 
         imports = [ (digga.lib.importHosts ./hosts/darwin) ];
-        hosts = { };
+        hosts = { XIONGs-MacBook-Pro = { system = "x86_64-darwin"; }; };
         importables = rec {
           profiles = digga.lib.rakeLeaves ./profiles // {
             users = digga.lib.rakeLeaves ./users;
