@@ -45,6 +45,18 @@
     };
   };
 
+  wayland = {
+    windowManager = {
+      hyprland = {
+        enable = true;
+        xwayland = {
+          enable = true;
+          hidpi = true;
+        };
+      };
+    };
+  };
+
   gtk = lib.mkIf pkgs.stdenv.isLinux { enable = true; };
 
   i18n = lib.mkIf pkgs.stdenv.isLinux {

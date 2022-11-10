@@ -76,6 +76,7 @@
         version = 2;
         device = "nodev";
         configurationLimit = 5;
+        # useOSProber = true;
         # Allow for dualboot
         extraEntries = ''
           menuentry "Windows" --class windows {
@@ -83,7 +84,7 @@
             insmod fat
             insmod search_fs_uuid
             insmod chain
-            chainloader /EFI/Microsoft/Boot/bootmgfw.efi
+            chainloader /dev/nvme0n1p1@/EFI/Microsoft/Boot/bootmgfw.efi
           }
         '';
       };
