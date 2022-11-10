@@ -1,1 +1,8 @@
-{ imports = [ ./grafana.nix ./prometheus.nix ./endlessh-go.nix ]; }
+{
+  imports = [
+    ./grafana.nix
+    ./prometheus.nix
+    ./prometheus-exporters.nix
+    ./endlessh-go.nix
+  ];
+}

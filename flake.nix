@@ -232,7 +232,8 @@
             share = (import ./profiles/shares.nix { });
           };
           suites = with profiles; {
-            base = [ core.darwin client-pkgs.darwin ];
+            base = [ core.darwin ];
+            full = [ core.darwin client-pkgs.darwin ];
           };
         };
       };

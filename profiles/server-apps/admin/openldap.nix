@@ -12,12 +12,7 @@ in {
     openldap = {
       enable = true;
       urlList = [ "ldap:///" "ldapi:///" "ldaps:///" ];
-      package = (pkgs.openldap.overrideAttrs (old: {
-        configureFlags = old.configureFlags
-          ++ [ "--enable-spasswd" "--with-cyrus-sasl" ];
-        doCheck = false;
-      })).override { cyrus_sasl = pkgs.cyrus_sasl_with_ldap; };
-
+      package = pkgs.openldap_with_cyrus_sasl;
       settings = {
         attrs = let
           credsDir =
@@ -50,8 +45,8 @@ in {
               "${pkgs.openldap}/etc/schema/misc.ldif"
               "${pkgs.openldap}/etc/schema/openldap.ldif"
               "${pkgs.openldap}/etc/schema/pmi.ldif"
-              ./kerberos.ldif
-              ./sudoers.ldif
+              "${pkgs.ldap-extra-schemas}/kerberos.ldif"
+              "${pkgs.ldap-extra-schemas}/sudoers.ldif"
             ];
           };
           "cn=module{0}" = {
