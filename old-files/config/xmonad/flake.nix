@@ -16,16 +16,12 @@
         pkgs = nixpkgs.legacyPackages.${system};
 
         inherit (pkgs) haskellPackages;
-
-        jailbreakUnbreak = pkg:
-          pkgs.haskell.lib.doJailbreak (pkg.overrideAttrs (_: { meta = { }; }));
-
         # DON'T FORGET TO PUT YOUR PACKAGE NAME HERE, REMOVING `throw`
         packageName = "my-xmonad";
       in {
         packages.${packageName} =
           haskellPackages.callCabal2nix (nixpkgs.lib.debug.traceVal packageName)
-          (builtins.toString ./.) rec {
+          (builtins.toString ./.) {
             # Dependency overrides go here
           };
 

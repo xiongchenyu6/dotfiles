@@ -34,10 +34,9 @@
       rustscan
       gitAndTools.gitflow
       git-crypt
-      gh
       gopls
       graphviz
-      (python3.withPackages (ps:
+      (python3.withPackages (_:
         with python3.pkgs; [
           epc
           six
@@ -71,10 +70,8 @@
       sops
       scalafmt
       solc-select
-      litecli
       wireshark
       winklink
-      #wpa_supplicant_gui
       wakatime
       yaml-language-server
       zoom-us

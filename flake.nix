@@ -67,14 +67,6 @@
       inputs.flake-utils.follows = "flake-utils";
     };
 
-    nixops = {
-      url = "github:NixOS/nixops";
-      inputs = {
-        nixpkgs.follows = "nixpkgs";
-        utils.follows = "flake-utils";
-      };
-    };
-
     pre-commit-hooks = {
       url = "github:cachix/pre-commit-hooks.nix";
       inputs = { flake-utils.follows = "flake-utils"; };
@@ -107,11 +99,12 @@
     };
 
     digga = {
-      url = "github:divnix/digga";
+      url = "github:divnix/digga/home-manager-22.11";
       inputs = {
         nixpkgs.follows = "nixpkgs";
         nixlib.follows = "nixpkgs";
         latest.follows = "nixpkgs";
+        nixpkgs-unstable.follows = "nixpkgs";
         darwin.follows = "darwin";
         devshell.follows = "devshell";
         home-manager.follows = "home-manager";
@@ -134,9 +127,8 @@
   };
 
   outputs = { self, nixpkgs, nixos-hardware, emacs, xddxdd, flake-utils
-    , flake-utils-plus, home-manager, nixos-generators, devshell, nixops
-    , pre-commit-hooks, nix-alien, xiongchenyu6, winklink, deploy-rs, digga
-    , sops-nix, ... }@inputs:
+    , flake-utils-plus, home-manager, devshell, pre-commit-hooks, nix-alien
+    , xiongchenyu6, winklink, digga, sops-nix, ... }@inputs:
     with nixpkgs;
     with lib;
     with flake-utils.lib;
@@ -150,12 +142,11 @@
         nix-alien
         sops-nix
       ] ++ [
-        (final: prev: {
+        (_: prev: {
           __dontExport = true;
           winklink = winklink.packages."${prev.system}".default;
         })
       ];
-      pkgsFor = system: import nixpkgs { inherit system overlays; };
     in digga.lib.mkFlake {
       inherit self inputs;
 
@@ -196,7 +187,7 @@
         importables = rec {
           profiles = digga.lib.rakeLeaves ./profiles // {
             users = digga.lib.rakeLeaves ./users;
-            share = (import ./profiles/shares.nix);
+            share = import ./profiles/shares.nix;
           };
           suites = with profiles; rec {
             base = [ core.nixos sops ];
@@ -229,7 +220,7 @@
         importables = rec {
           profiles = digga.lib.rakeLeaves ./profiles // {
             users = digga.lib.rakeLeaves ./users;
-            share = (import ./profiles/shares.nix { });
+            share = import ./profiles/shares.nix { };
           };
           suites = with profiles; {
             base = [ core.darwin ];
@@ -241,7 +232,7 @@
       home = {
         importables = rec {
           profiles = digga.lib.rakeLeaves ./users/profiles // {
-            share = (import ./profiles/shares.nix);
+            share = import ./profiles/shares.nix;
           };
           suites = with profiles; {
             cli = [ cli ];
@@ -250,15 +241,9 @@
           };
         };
         users = {
-          freeman-cli = { suites, config, profiles, ... }: {
-            imports = suites.cli;
-          };
-          freeman-gui = { suites, config, profiles, ... }: {
-            imports = suites.linux-gui;
-          };
-          xiongchenyu = { suites, config, profiles, ... }: {
-            imports = suites.mac-gui;
-          };
+          freeman-cli = { suites, ... }: { imports = suites.cli; };
+          freeman-gui = { suites, ... }: { imports = suites.linux-gui; };
+          xiongchenyu = { suites, ... }: { imports = suites.mac-gui; };
         };
       };
 

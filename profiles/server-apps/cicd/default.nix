@@ -1,4 +1,4 @@
-{ config, pkgs, options, lib, ... }:
+{ config, pkgs, ... }:
 let
   dbSuffix = "dc=freeman,dc=engineer";
   owner = "hydra";

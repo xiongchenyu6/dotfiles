@@ -1,4 +1,4 @@
-{ config, pkgs, lib, profiles, ... }: {
+{ pkgs, lib, profiles, ... }: {
   # Home Manager needs a bit of information about you and the
   # paths it should manage.
 
@@ -9,11 +9,11 @@
     in {
       ".wakatime.cfg" = { source = old-files-path + /wakatime/.wakatime.cfg; };
       ".ldaprc" = { source = old-files-path + /ldap/.ldaprc; };
+      ".curlrc" = { source = old-files-path + /downloader/.curlrc; };
       ".ssh/id_ed25519.pub" = {
         text = profiles.share.office.user.public-key;
         executable = false;
       };
-      ".curlrc" = { source = old-files-path + /downloader/.curlrc; };
       ".ssh/id_ed25519" = {
         source = ../../../secrets/office_pk.key;
         executable = false;
@@ -164,8 +164,6 @@
         "Debug/"
         "compile_commands.json"
         "tests/CMakeCache.txt"
-        ".ccls-cache/*"
-        ".ccls-cache/"
         "**/.ensime*"
         ".metals/"
         ".bloop/"
@@ -271,7 +269,7 @@
         (removeAttrs source.${name} [ "pname" "version" "date" ]) // {
           name = "${name}";
         }) [ "alias-tips" "wakatime-zsh-plugin" ];
-      enableCompletion = true;
+      enableCompletion = false;
       enableAutosuggestions = true;
       enableSyntaxHighlighting = true;
     };

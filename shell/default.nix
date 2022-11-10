@@ -1,4 +1,4 @@
-{ ... }: {
+_: {
   exportedModules = { pkgs, lib, inputs, extraModulesPath, ... }:
     let
       inherit (pkgs)
@@ -15,6 +15,9 @@
           enable = true;
           pre-commit.text = ''
             echo "commit hook"
+            system=$(uname -s | tr '[:upper:]' '[:lower:]')
+            arch=$(uname -m)
+            nix build .#checks.$arch-$system.pre-commit-check
           '';
         };
       };

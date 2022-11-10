@@ -3,7 +3,7 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
-{ pkgs, lib, ... }:
+{ pkgs, ... }:
 
 {
   imports = [ ./common.nix ];
@@ -21,8 +21,8 @@
       geoip
       gnumake
       haskell-language-server
-      (python3.withPackages (ps: with python3.pkgs; [ epc my_cookies ]))
-      (haskellPackages.ghcWithPackages (self:
+      (python3.withPackages (_: with python3.pkgs; [ epc my_cookies ]))
+      (haskellPackages.ghcWithPackages (_:
         with haskellPackages;
         with pkgs.haskell.lib; [
           apply-refact

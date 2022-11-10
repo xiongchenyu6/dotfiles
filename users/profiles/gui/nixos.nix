@@ -3,12 +3,10 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
-{ config, pkgs, lib, ... }:
-
-{
+{ pkgs, lib, ... }: {
 
   imports = [ ./common.nix ];
-  home = {
+  home = lib.mkIf pkgs.stdenv.isLinux {
     pointerCursor = {
       name = "Vanilla-DMZ";
       package = pkgs.vanilla-dmz;
@@ -27,7 +25,7 @@
   # # You can update Home Manager without changing this value. See
   # # the Home Manager release notes for a list of state version
   # # changes in each release.
-  xsession = {
+  xsession = lib.mkIf pkgs.stdenv.isLinux {
     enable = true;
     initExtra = ''
       ${pkgs.xorg.xset}/bin/xset -b
@@ -47,16 +45,17 @@
     };
   };
 
-  gtk = { enable = true; };
+  gtk = lib.mkIf pkgs.stdenv.isLinux { enable = true; };
 
-  i18n = {
+  i18n = lib.mkIf pkgs.stdenv.isLinux {
     inputMethod = {
       enabled = "fcitx5";
       fcitx5 = { addons = with pkgs; [ fcitx5-chinese-addons ]; };
     };
   };
 
-  programs = {
+  programs = lib.mkIf pkgs.stdenv.isLinux {
+
     tint2 = { enable = true; };
     gpg = {
       enable = true;
@@ -157,7 +156,7 @@
       enable = true;
       extraConfig = ''
         Config {
-                font = "xft:WenQuanYi Zen Hei:size=10"
+                font = "xft:WenQuanYi Zen Hei:size=12"
               , borderColor = "black"
               , border = TopB
               , bgColor = "black"
@@ -227,7 +226,7 @@
     };
   };
 
-  services = {
+  services = lib.mkIf pkgs.stdenv.isLinux {
     emacs = {
       enable = true;
       defaultEditor = true;
@@ -421,5 +420,4 @@
       tray = { enable = true; };
     };
   };
-
 }

@@ -1,4 +1,4 @@
-{ config, ... }: {
+{
   services = {
     # code-server = {
     #   auth = "none";

@@ -1,4 +1,4 @@
-{ config, pkgs, lib, ... }:
+{ config, pkgs, ... }:
 let
   realm = "FREEMAN.ENGINEER";
   dbSuffix = "dc=freeman,dc=engineer";
