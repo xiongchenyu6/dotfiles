@@ -489,7 +489,6 @@
     ;;               :buffer "*magit cmt prompt*"))
     ;; I haven't tested this but should be simple to get the same behaior
     (add-magit-faces)
-    (evil-insert 1)  ; If you use evil
     ))
 
 (remove-hook 'git-commit-setup-hook 'with-editor-usage-message)
@@ -831,6 +830,19 @@ Otherwise, show the default maximum number of recent items."
 *** C++/C
 #+begin_src emacs-lisp
 (add-hook 'c++-mode-hook (lambda () (c-toggle-hungry-state) (c-toggle-auto-newline)))
+(defun pretty-for-add ()
+  (setq font-lock-keywords nil)
+  (font-lock-add-keywords
+   nil
+   `((,pretty-for-rgx 0 (prog1 nil
+                          (compose-region
+                           (match-beginning 1) (match-end 1)
+                           `(?\∀ (Br . Bl) ?\())
+                          (compose-region
+                           (match-beginning 2) (match-end 2)
+                           ,(concat "\t" (list #x2203))))))))
+
+(add-hook 'c-mode-hook 'pretty-for-add)
 #+end_src
 *** Cmake
 #+begin_src emacs-lisp
