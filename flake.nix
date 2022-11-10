@@ -128,7 +128,7 @@
 
   outputs = { self, nixpkgs, nixos-hardware, emacs, xddxdd, flake-utils
     , flake-utils-plus, home-manager, devshell, pre-commit-hooks, nix-alien
-    , xiongchenyu6, winklink, digga, sops-nix, ... }@inputs:
+    , xiongchenyu6, winklink, digga, sops-nix, grub2-themes, ... }@inputs:
     with nixpkgs;
     with lib;
     with flake-utils.lib;
@@ -175,6 +175,7 @@
             digga.darwinModules.nixConfig
             home-manager.nixosModules.home-manager
             xiongchenyu6.nixosModules.bttc
+            grub2-themes.nixosModule
           ];
         };
         hosts = {
