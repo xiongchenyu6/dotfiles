@@ -1,5 +1,8 @@
-{ config, pkgs, ... }:
-let
+{
+  config,
+  pkgs,
+  ...
+}: let
   realm = "FREEMAN.ENGINEER";
   dbSuffix = "dc=freeman,dc=engineer";
   defaultUser = "freeman";
@@ -11,14 +14,14 @@ in {
   services = {
     openldap = {
       enable = true;
-      urlList = [ "ldap:///" "ldapi:///" "ldaps:///" ];
+      urlList = ["ldap:///" "ldapi:///" "ldaps:///"];
       package = pkgs.openldap_with_cyrus_sasl;
       settings = {
         attrs = let
           credsDir =
             config.security.acme.certs."${config.networking.fqdn}".directory;
         in {
-          olcLogLevel = [ "stats" ];
+          olcLogLevel = ["stats"];
           olcSaslHost = config.networking.fqdn;
           olcSaslRealm = realm;
           olcTLSCACertificateFile = credsDir + "/full.pem";
@@ -51,14 +54,14 @@ in {
           };
           "cn=module{0}" = {
             attrs = {
-              objectClass = [ "olcModuleList" ];
+              objectClass = ["olcModuleList"];
               cn = "module{0}";
-              olcModuleLoad = [ "{0}dynlist" "{1}back_monitor" ];
+              olcModuleLoad = ["{0}dynlist" "{1}back_monitor"];
             };
           };
           "olcDatabase={1}mdb" = {
             attrs = {
-              objectClass = [ "olcDatabaseConfig" "olcMdbConfig" ];
+              objectClass = ["olcDatabaseConfig" "olcMdbConfig"];
               olcDbIndex = "krbPrincipalName eq,pres,sub";
               olcDatabase = "{1}mdb";
               olcDbDirectory = "/var/lib/openldap/ldap";
@@ -82,7 +85,7 @@ in {
             children = {
               "olcOverlay={0}dynlist" = {
                 attrs = {
-                  objectClass = [ "olcOverlayConfig" "olcDynamicList" ];
+                  objectClass = ["olcOverlayConfig" "olcDynamicList"];
                   olcDynListAttrSet = "groupOfURLs memberURL member+dgMemberOf";
                   olcOverlay = "dynlist";
                 };
@@ -92,7 +95,7 @@ in {
 
           "olcDatabase={2}monitor" = {
             attrs = {
-              objectClass = [ "olcDatabaseConfig" "olcMonitorConfig" ];
+              objectClass = ["olcDatabaseConfig" "olcMonitorConfig"];
               olcAccess = [
                 ''
                   {0}to * by dn.base="gidNumber=0+uidNumber=0,cn=peercred,cn=external,cn=auth" read by dn.base="cn=${ldapRootUser},${dbSuffix}" read by * none''

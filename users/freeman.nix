@@ -1,16 +1,20 @@
 # Edit this configuration file to define what should be installed on
-
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
-
-{ hmUsers, pkgs, config, profiles, ... }: {
+{
+  hmUsers,
+  pkgs,
+  config,
+  profiles,
+  ...
+}: {
   users = {
     users = {
       freeman = {
         isNormalUser = true;
         description = "freeman";
         group = "users";
-        openssh.authorizedKeys.keys = [ profiles.share.office.user.public-key ];
+        openssh.authorizedKeys.keys = [profiles.share.office.user.public-key];
         shell = pkgs.zsh;
         extraGroups = [
           "networkmanager"
@@ -29,9 +33,9 @@
     };
   };
   home-manager.users = {
-    freeman = if (builtins.elem "with-gui" config.system.nixos.tags) then
-      hmUsers.freeman-gui
-    else
-      hmUsers.freeman-cli;
+    freeman =
+      if (builtins.elem "with-gui" config.system.nixos.tags)
+      then hmUsers.freeman-gui
+      else hmUsers.freeman-cli;
   };
 }

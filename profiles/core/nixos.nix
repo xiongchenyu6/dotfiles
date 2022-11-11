@@ -1,36 +1,32 @@
 # Edit this configuration file to define what should be installed on
-
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
-
-{ pkgs, ... }:
-
-{
+{pkgs, ...}: {
   fonts = {
-    fontconfig = { enable = true; };
+    fontconfig = {enable = true;};
     enableGhostscriptFonts = true;
   };
 
-  imports = [ ./common.nix ];
+  imports = [./common.nix];
 
-  networking = { domain = "freeman.engineer"; };
+  networking = {domain = "freeman.engineer";};
 
   # Select internationalisation properties.
   i18n = {
     defaultLocale = "en_US.UTF-8";
-    supportedLocales = [ "zh_CN.UTF-8/UTF-8" "en_US.UTF-8/UTF-8" ];
+    supportedLocales = ["zh_CN.UTF-8/UTF-8" "en_US.UTF-8/UTF-8"];
   };
 
   nix = {
     daemonCPUSchedPolicy = "idle";
     daemonIOSchedClass = "idle";
-    gc = { randomizedDelaySec = "1h"; };
+    gc = {randomizedDelaySec = "1h";};
     optimise.automatic = true;
   };
 
-  system = { stateVersion = "22.11"; }; # Did you read the comment?
+  system = {stateVersion = "22.11";}; # Did you read the comment?
 
-  system.nixos = { tags = [ "test" "add-feat" ]; };
+  system.nixos = {tags = ["test" "add-feat"];};
 
   programs = {
     zsh = {
@@ -98,25 +94,23 @@
         "HIST_REDUCE_BLANKS"
         "HIST_VERIFY"
         "HIST_BEEP"
-
       ];
       enableCompletion = true;
-      autosuggestions = { enable = true; };
-      syntaxHighlighting = { enable = true; };
+      autosuggestions = {enable = true;};
+      syntaxHighlighting = {enable = true;};
       enableBashCompletion = true;
     };
     git = {
       enable = true;
-      lfs = { enable = true; };
+      lfs = {enable = true;};
     };
     tmux = {
       enable = true;
       terminal = "screen-256color";
       shortcut = "space";
-      plugins = with pkgs.tmuxPlugins; [ yank ];
+      plugins = with pkgs.tmuxPlugins; [yank];
       secureSocket = false;
       keyMode = "vi";
-
     };
     starship = {
       enable = true;
@@ -128,7 +122,6 @@
         continuation_prompt = "▶▶";
         kubernetes = {
           disabled = false;
-
         };
         directory = {
           truncation_length = 20;
@@ -141,5 +134,4 @@
       };
     };
   };
-
 }

@@ -1,5 +1,4 @@
-{ config, ... }: {
-
+{config, ...}: {
   sops.secrets."acme/namecom" = {
     mode = "770";
     owner = "acme";
@@ -24,8 +23,7 @@
           credentialsFile = config.sops.secrets."acme/namecom".path;
           # We don't need to wait for propagation since this is a local DNS server
           dnsPropagationCheck = false;
-          reloadServices =
-            [ "openldap.service" "postfix.service" "dovecot2.service" ];
+          reloadServices = ["openldap.service" "postfix.service" "dovecot2.service"];
           group = "openldap";
         };
         "inner.${config.networking.domain}" = {

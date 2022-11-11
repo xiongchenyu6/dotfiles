@@ -1,5 +1,4 @@
-{ config, ... }:
-let
+{config, ...}: let
   realm = "FREEMAN.ENGINEER";
   tronRealm = "TRONTECH.LINK";
   tronDomain = "trontech.link";
@@ -9,14 +8,14 @@ in {
     realms = {
       "${realm}" = {
         admin_server = "mail.${config.networking.domain}";
-        kdc = [ "mail.${config.networking.domain}" ];
+        kdc = ["mail.${config.networking.domain}"];
         default_domain = "mail.${config.networking.domain}";
         kpasswd_server = "mail.${config.networking.domain}";
         database_module = "openldap_ldapconf";
       };
       "${tronRealm}" = {
         admin_server = "admin.inner.${tronDomain}";
-        kdc = [ "admin.inner.${tronDomain}" ];
+        kdc = ["admin.inner.${tronDomain}"];
         default_domain = "admin.inner.${tronDomain}";
         kpasswd_server = "admin.inner.${tronDomain}";
         database_module = "openldap_ldapconf";

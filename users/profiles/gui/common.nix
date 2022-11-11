@@ -1,51 +1,53 @@
-{ pkgs, ... }: {
+{pkgs, ...}: {
   # Home Manager needs a bit of information about you and the
   # paths it should manage.
 
   programs = {
-    broot = { enable = true; };
+    broot = {enable = true;};
 
-    nix-index = { enable = true; };
+    nix-index = {enable = true;};
 
-    noti = { enable = true; };
+    noti = {enable = true;};
 
-    sqls = { enable = true; };
+    sqls = {enable = true;};
 
-    octant = { enable = true; };
+    octant = {enable = true;};
 
-    texlive = { enable = true; };
+    texlive = {enable = true;};
 
     alacritty = {
       enable = true;
       settings = {
-        font = { size = 12; };
-        key_bindings = [{
-          key = "Space";
-          mods = "Control";
-          mode = "~Search";
-          action = "ToggleViMode";
-        }];
+        font = {size = 12;};
+        key_bindings = [
+          {
+            key = "Space";
+            mods = "Control";
+            mode = "~Search";
+            action = "ToggleViMode";
+          }
+        ];
       };
     };
 
-    java = { enable = true; };
+    java = {enable = true;};
 
     topgrade = {
       enable = true;
       settings = {
         assume_yes = true;
-        disable = [ "emacs" ];
+        disable = ["emacs"];
         set_title = false;
         cleanup = true;
         git = {
           max_concurrency = 10;
-          repos = [ "~/workspace/*/" "~/git/*/" "~/private/*/" ];
+          repos = ["~/workspace/*/" "~/git/*/" "~/private/*/"];
           arguments = "--rebase --autostash";
         };
       };
     };
 
-    yt-dlp = { enable = true; };
+    yt-dlp = {enable = true;};
 
     aria2 = {
       enable = true;
@@ -93,7 +95,7 @@
 
     gh = {
       enable = true;
-      settings = { git_protocal = "ssh"; };
+      settings = {git_protocal = "ssh";};
     };
 
     sbt = {
@@ -186,6 +188,6 @@
               '("~/.config/emacs/snippets"))
       '';
     };
-    go = { enable = true; };
+    go = {enable = true;};
   };
 }

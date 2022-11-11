@@ -1,11 +1,7 @@
 # Edit this configuration file to define what should be installed on
-
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
-
-{ pkgs, ... }:
-
-{
+{pkgs, ...}: {
   environment.systemPackages = with pkgs; [
     tree
     litecli
@@ -14,16 +10,16 @@
   ];
 
   programs = {
-    zsh = { enable = true; };
-    tmux = { enable = true; };
+    zsh = {enable = true;};
+    tmux = {enable = true;};
   };
 
   fonts = {
-    fontDir = { enable = true; };
+    fontDir = {enable = true;};
     fonts = with pkgs; [
       wqy_microhei
       wqy_zenhei
-      (nerdfonts.override { fonts = [ "Hack" ]; })
+      (nerdfonts.override {fonts = ["Hack"];})
       jetbrains-mono
       emacs-all-the-icons-fonts
       font-awesome
@@ -37,9 +33,8 @@
     };
     settings = {
       allow-import-from-derivation = true;
-      experimental-features =
-        [ "nix-command" "flakes" "repl-flake" "ca-derivations" ];
-      trusted-users = [ "root" "freeman" ];
+      experimental-features = ["nix-command" "flakes" "repl-flake" "ca-derivations"];
+      trusted-users = ["root" "freeman"];
 
       auto-optimise-store = true;
       substituters = [
@@ -59,12 +54,14 @@
   };
 
   nix.distributedBuilds = false;
-  nix.buildMachines = [{
-    hostName = "hydra.inner.trontech.link";
-    sshUser = "michael.yang";
-    systems = [ "x86_64-linux" ];
-    maxJobs = 2;
-  }];
+  nix.buildMachines = [
+    {
+      hostName = "hydra.inner.trontech.link";
+      sshUser = "michael.yang";
+      systems = ["x86_64-linux"];
+      maxJobs = 2;
+    }
+  ];
 
-  time = { timeZone = "Asia/Singapore"; };
+  time = {timeZone = "Asia/Singapore";};
 }

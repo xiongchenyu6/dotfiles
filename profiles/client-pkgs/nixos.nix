@@ -1,12 +1,8 @@
 # Edit this configuration file to define what should be installed on
-
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
-
-{ pkgs, ... }:
-
-{
-  imports = [ ./common.nix ];
+{pkgs, ...}: {
+  imports = [./common.nix];
 
   environment = {
     systemPackages = with pkgs; [
@@ -21,7 +17,7 @@
       geoip
       gnumake
       haskell-language-server
-      (python3.withPackages (_: with python3.pkgs; [ epc my_cookies ]))
+      (python3.withPackages (_: with python3.pkgs; [epc my_cookies]))
       (haskellPackages.ghcWithPackages (_:
         with haskellPackages;
         with pkgs.haskell.lib; [
@@ -55,26 +51,25 @@
       wechat-uos
     ];
 
-    pathsToLink = [ "/share/zsh" ];
+    pathsToLink = ["/share/zsh"];
   };
 
   services = {
-    dbus = { enable = true; };
+    dbus = {enable = true;};
 
-    gnome = { gnome-keyring = { enable = true; }; };
+    gnome = {gnome-keyring = {enable = true;};};
 
-    openldap = { enable = true; };
+    openldap = {enable = true;};
   };
 
   programs = {
     atop = {
       enable = true;
-      netatop = { enable = true; };
-      atopgpu = { enable = true; };
+      netatop = {enable = true;};
+      atopgpu = {enable = true;};
     };
-    nm-applet = { enable = true; };
+    nm-applet = {enable = true;};
     nix-ld.enable = true;
-    wireshark = { enable = true; };
+    wireshark = {enable = true;};
   };
-
 }

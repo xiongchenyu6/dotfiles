@@ -1,20 +1,23 @@
 # Edit
-
-{ config, lib, modulesPath, suites, profiles, ... }: rec {
-
-  system.nixos.tags = [ "with-gui" ];
+{
+  config,
+  lib,
+  modulesPath,
+  suites,
+  profiles,
+  ...
+}: rec {
+  system.nixos.tags = ["with-gui"];
   boot = {
     initrd = {
-      availableKernelModules =
-        [ "xhci_pci" "thunderbolt" "nvme" "usb_storage" "usbhid" "sd_mod" ];
-      kernelModules = [ ];
+      availableKernelModules = ["xhci_pci" "thunderbolt" "nvme" "usb_storage" "usbhid" "sd_mod"];
+      kernelModules = [];
     };
-    kernelModules = [ "kvm-intel" ];
-    extraModulePackages = [ ];
+    kernelModules = ["kvm-intel"];
+    extraModulePackages = [];
     extraModprobeConfig = ''
       options i915 force_probe=46a6
     '';
-
   };
 
   fileSystems."/" = {
@@ -27,18 +30,18 @@
     fsType = "vfat";
   };
 
-  swapDevices = [ ];
+  swapDevices = [];
 
   # Enables DHCP on each ethernet and wireless interface. In case of scripted networking
   # (the default) this is the recommended approach. When using systemd-networkd it's
   # still possible to use this option, but it's recommended to use it in conjunction
   # with explicit per-interface declarations with `networking.interfaces.<interface>.useDHCP`.
-  networking = { useDHCP = lib.mkDefault true; };
+  networking = {useDHCP = lib.mkDefault true;};
   # networking.interfaces.wlp0s20f3.useDHCP = lib.mkDefault true;
 
-  nixpkgs = { hostPlatform = lib.mkDefault "x86_64-linux"; };
+  nixpkgs = {hostPlatform = lib.mkDefault "x86_64-linux";};
 
-  powerManagement = { cpuFreqGovernor = lib.mkDefault "powersave"; };
+  powerManagement = {cpuFreqGovernor = lib.mkDefault "powersave";};
 
   hardware = {
     cpu = {
@@ -49,15 +52,17 @@
     };
   };
 
-  imports = [
-    # Include the results of the hardware scan.
-    (modulesPath + "/installer/scan/not-detected.nix")
-    profiles.optional-apps.mysql
-    profiles.core.nixos
-    profiles.client-pkgs.nixos
-    profiles.users.root
-    profiles.users.freeman
-  ] ++ suites.client-base;
+  imports =
+    [
+      # Include the results of the hardware scan.
+      (modulesPath + "/installer/scan/not-detected.nix")
+      profiles.optional-apps.mysql
+      profiles.core.nixos
+      profiles.client-pkgs.nixos
+      profiles.users.root
+      profiles.users.freeman
+    ]
+    ++ suites.client-base;
 
   boot = {
     tmpOnTmpfs = lib.mkDefault true;
@@ -76,17 +81,17 @@
         version = 2;
         device = "nodev";
         configurationLimit = 5;
-        # useOSProber = true;
+        useOSProber = true;
         # Allow for dualboot
-        extraEntries = ''
-          menuentry "Windows" --class windows {
-            insmod part_gpt
-            insmod fat
-            insmod search_fs_uuid
-            insmod chain
-            chainloader /dev/nvme0n1p1@/EFI/Microsoft/Boot/bootmgfw.efi
-          }
-        '';
+        # extraEntries = ''
+        #   menuentry "Windows" --class windows {
+        #     insmod part_gpt
+        #     insmod fat
+        #     insmod search_fs_uuid
+        #     insmod chain
+        #     chainloader /dev/nvme0n1p1@/EFI/Microsoft/Boot/bootmgfw.efi
+        #   }
+        # '';
       };
       grub2-theme = {
         enable = true;
@@ -101,7 +106,7 @@
 
   networking.nat = {
     enable = true;
-    internalInterfaces = [ "ve-+" ];
+    internalInterfaces = ["ve-+"];
     externalInterface = "wlp0s20f3";
     # Lazy IPv6 connectivity for the container
     enableIPv6 = true;

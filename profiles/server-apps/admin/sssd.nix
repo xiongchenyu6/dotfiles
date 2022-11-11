@@ -1,5 +1,4 @@
-{ config, ... }:
-let
+{config, ...}: let
   dbDomain = "freeman.engineer";
   realm = "FREEMAN.ENGINEER";
   dbSuffix = "dc=freeman,dc=engineer";

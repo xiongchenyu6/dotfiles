@@ -1,8 +1,12 @@
-{ modulesPath, suites, profiles, ... }: {
-
+{
+  modulesPath,
+  suites,
+  profiles,
+  ...
+}: {
   boot.loader.grub.device = "/dev/vda";
-  boot.initrd.availableKernelModules = [ "ata_piix" "uhci_hcd" "xen_blkfront" ];
-  boot.initrd.kernelModules = [ "nvme" ];
+  boot.initrd.availableKernelModules = ["ata_piix" "uhci_hcd" "xen_blkfront"];
+  boot.initrd.kernelModules = ["nvme"];
   fileSystems."/" = {
     device = "/dev/vda2";
     fsType = "ext4";
@@ -13,16 +17,18 @@
   #   hostName = lib.last file-path;
   # in { hostName = "mail"; };
 
-  imports = [
-    (modulesPath + "/profiles/qemu-guest.nix")
-    profiles.optional-apps.gitea
-    profiles.optional-apps.healthcheck
-    profiles.optional-apps.calibre-web
-    profiles.optional-apps.gotify-server
-    profiles.users.root
-    profiles.server-pkgs.nixos
-    profiles.users.freeman
-  ] ++ suites.server-base;
+  imports =
+    [
+      (modulesPath + "/profiles/qemu-guest.nix")
+      profiles.optional-apps.gitea
+      profiles.optional-apps.healthcheck
+      profiles.optional-apps.calibre-web
+      profiles.optional-apps.gotify-server
+      profiles.users.root
+      profiles.server-pkgs.nixos
+      profiles.users.freeman
+    ]
+    ++ suites.server-base;
 
   boot.cleanTmpDir = true;
   zramSwap.enable = true;

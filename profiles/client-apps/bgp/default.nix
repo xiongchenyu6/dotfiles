@@ -128,7 +128,7 @@
                 import limit 1000 action block;
             };
 
-            ipv6 {   
+            ipv6 {
                 import filter {
                   if is_valid_network_v6() && !is_self_net_v6() then {
                     if (roa_check(dn42_roa_v6, net, bgp_path.last) != ROA_VALID) then {
@@ -138,7 +138,7 @@
                   } else reject;
                 };
                 export filter { if is_valid_network_v6() && source ~ [RTS_STATIC, RTS_BGP] then accept; else reject; };
-                import limit 1000 action block; 
+                import limit 1000 action block;
             };
         }
         protocol static {
@@ -178,5 +178,4 @@
       '';
     };
   };
-
 }

@@ -1,1 +1,1 @@
-{ imports = [ ./kerberos.nix ]; }
+{imports = [./kerberos.nix];}

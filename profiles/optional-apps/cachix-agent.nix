@@ -1,5 +1,5 @@
 {
-  sops.secrets."cachix/secret" = { };
+  sops.secrets."cachix/secret" = {};
 
   services = {
     cachix-agent = {
@@ -9,4 +9,3 @@
     };
   };
 }
-

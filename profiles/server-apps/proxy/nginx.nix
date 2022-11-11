@@ -1,11 +1,16 @@
-{ config, pkgs, lib, ... }: {
+{
+  config,
+  pkgs,
+  lib,
+  ...
+}: {
   services = {
     nginx = {
       enable = true;
       statusPage = true;
       recommendedProxySettings = true;
-      gitweb = { enable = true; };
-      additionalModules = [ pkgs.nginxModules.pam ];
+      gitweb = {enable = true;};
+      additionalModules = [pkgs.nginxModules.pam];
 
       virtualHosts = {
         bird-lg = {
@@ -27,8 +32,8 @@
           kTLS = true;
           locations."/" = {
             proxyPass = "http://127.0.0.1:${
-                toString config.services.grafana.settings.server.http_port
-              }";
+              toString config.services.grafana.settings.server.http_port
+            }";
             proxyWebsockets = true;
           };
         };
@@ -77,8 +82,7 @@
           useACMEHost = "inner.${config.networking.domain}";
           kTLS = true;
           locations."/" = {
-            proxyPass =
-              "http://127.0.0.1:${toString config.services.gitea.httpPort}";
+            proxyPass = "http://127.0.0.1:${toString config.services.gitea.httpPort}";
             proxyWebsockets = true;
           };
         };
@@ -90,8 +94,7 @@
           useACMEHost = "inner.${config.networking.domain}";
           kTLS = true;
           locations."/" = {
-            proxyPass =
-              "http://127.0.0.1:${toString config.services.healthchecks.port}";
+            proxyPass = "http://127.0.0.1:${toString config.services.healthchecks.port}";
           };
         };
         calibre-web = {
@@ -102,8 +105,8 @@
           kTLS = true;
           locations."/" = {
             proxyPass = "http://localhost:${
-                toString config.services.calibre-web.listen.port
-              }";
+              toString config.services.calibre-web.listen.port
+            }";
           };
         };
         gotify = {
@@ -113,8 +116,7 @@
           useACMEHost = "inner.${config.networking.domain}";
           kTLS = true;
           locations."/" = {
-            proxyPass =
-              "http://localhost:${toString config.services.gotify.port}";
+            proxyPass = "http://localhost:${toString config.services.gotify.port}";
           };
         };
         mail = {
@@ -130,13 +132,13 @@
   };
 
   systemd.services.nginx.serviceConfig = {
-    SupplementaryGroups = [ "shadow" ];
+    SupplementaryGroups = ["shadow"];
     NoNewPrivileges = lib.mkForce false;
     PrivateDevices = lib.mkForce false;
     ProtectHostname = lib.mkForce false;
     ProtectKernelTunables = lib.mkForce false;
     ProtectKernelModules = lib.mkForce false;
-    RestrictAddressFamilies = lib.mkForce [ ];
+    RestrictAddressFamilies = lib.mkForce [];
     LockPersonality = lib.mkForce false;
     MemoryDenyWriteExecute = lib.mkForce false;
     RestrictRealtime = lib.mkForce false;
