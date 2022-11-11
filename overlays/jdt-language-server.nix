@@ -2,7 +2,10 @@ _: prev: {
   jdt-language-server = prev.jdt-language-server.overrideAttrs (_: {
     installPhase = let
       # The application ships with config directories for linux and mac
-      configDir = if prev.stdenv.isDarwin then "config_mac" else "config_linux";
+      configDir =
+        if prev.stdenv.isDarwin
+        then "config_mac"
+        else "config_linux";
     in ''
       install -D -t $out/share/java/plugins/ plugins/*.jar
       install -Dm 444 -t $out/share/config ${configDir}/*

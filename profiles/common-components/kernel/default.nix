@@ -1,6 +1,6 @@
 {
   boot = {
-    kernelModules = [ "tcp_bbr" ];
+    kernelModules = ["tcp_bbr"];
     kernel = {
       sysctl = {
         # The Magic SysRq key is a key combo that allows users connected to the

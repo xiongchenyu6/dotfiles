@@ -1,6 +1,8 @@
-{ config, pkgs, ... }:
-
 {
+  config,
+  pkgs,
+  ...
+}: {
   services = let
     credsDir = config.security.acme.certs."${config.networking.fqdn}".directory;
   in {
@@ -16,7 +18,7 @@
       enableQuota = true;
       enableLmtp = true;
       showPAMFailure = true;
-      modules = [ pkgs.dovecot_pigeonhole ];
+      modules = [pkgs.dovecot_pigeonhole];
       mailboxes = {
         Drafts = {
           specialUse = "Drafts";

@@ -1,5 +1,8 @@
-{ config, pkgs, ... }:
-let
+{
+  config,
+  pkgs,
+  ...
+}: let
   dbSuffix = "dc=freeman,dc=engineer";
   owner = "hydra";
 in {
@@ -13,14 +16,11 @@ in {
     hydra = {
       enable = true;
       package = pkgs.hydra-unstable;
-      hydraURL =
-        "https://hydra.inner.${config.networking.domain}"; # externally visible URL
-      notificationSender =
-        "${owner}@${config.networking.fqdn}"; # e-mail of hydra service
-      dbi =
-        "dbi:Pg:dbname=hydra;host=postgres-database-1.postgres.database.azure.com;user=hydra;password=hydra";
+      hydraURL = "https://hydra.inner.${config.networking.domain}"; # externally visible URL
+      notificationSender = "${owner}@${config.networking.fqdn}"; # e-mail of hydra service
+      dbi = "dbi:Pg:dbname=hydra;host=postgres-database-1.postgres.database.azure.com;user=hydra;password=hydra";
       # a standalone hydra will require you to unset the buildMachinesFiles list to avoid using a nonexistant /etc/nix/machines
-      buildMachinesFiles = [ ];
+      buildMachinesFiles = [];
       # you will probably also want, otherwise *everything* will be built from scratch
       useSubstitutes = true;
       # listenHost = "hydra.inner.${config.networking.domain}";

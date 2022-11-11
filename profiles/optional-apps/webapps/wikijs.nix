@@ -12,7 +12,6 @@
           pass = "wikijs";
         };
         logLevel = "debug";
-
       };
     };
   };

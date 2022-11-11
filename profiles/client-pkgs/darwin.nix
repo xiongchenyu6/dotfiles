@@ -1,12 +1,8 @@
 # Edit this configuration file to define what should be installed on
-
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
-
-{ pkgs, ... }:
-
-{
-  imports = [ ./common.nix ];
+{pkgs, ...}: {
+  imports = [./common.nix];
   environment = {
     systemPackages = with pkgs; [
       postman
@@ -20,21 +16,23 @@
   };
   homebrew = {
     enable = true;
-    brews = [{
-      name = "mysql";
-      restart_service = true;
-      start_service = true;
-      link = true;
-      conflicts_with = [ "mysql" ];
-    }];
-    casks = [ "virtualbox" ];
+    brews = [
+      {
+        name = "mysql";
+        restart_service = true;
+        start_service = true;
+        link = true;
+        conflicts_with = ["mysql"];
+      }
+    ];
+    casks = ["virtualbox"];
     global = {
       autoUpdate = true;
       brewfile = true;
     };
     # mac app store
     # masApps = { WireGuard = 1451685025; };
-    taps = [ "homebrew/core" "homebrew/cask" "homebrew/cask-drivers" ];
+    taps = ["homebrew/core" "homebrew/cask" "homebrew/cask-drivers"];
     onActivation = {
       autoUpdate = true;
       cleanup = "zap";
@@ -43,7 +41,7 @@
   };
 
   services = {
-    netbird = { enable = true; };
+    netbird = {enable = true;};
     postgresql = {
       enable = true;
       package = pkgs.postgresql;
@@ -62,9 +60,10 @@
         myEditor = "emacsclient -a '' -nc";
         myBrowser = "open /Applications/Safari.app";
         prefix = "${pkgs.yabai}/bin/yabai -m";
-        fstOrSnd = { fst, snd }:
-          domain:
-          "${prefix} ${domain} --focus ${fst} || ${prefix} ${domain} --focus ${snd}";
+        fstOrSnd = {
+          fst,
+          snd,
+        }: domain: "${prefix} ${domain} --focus ${fst} || ${prefix} ${domain} --focus ${snd}";
         nextOrFirst = fstOrSnd {
           fst = "next";
           snd = "first";
@@ -74,41 +73,41 @@
           snd = "last";
         };
       in ''
-            # windows ▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁
-            # select
-            ${modMask} - j                            : ${prefix} window --focus next || ${prefix} window --focus "$((${prefix} query --spaces --display next || ${prefix} query --spaces --display first) |${pkgs.jq}/bin/jq -re '.[] | select(.visible == 1)."first-window"')" || ${prefix} display --focus next || ${prefix} display --focus first
-            ${modMask} - k                            : ${prefix} window --focus prev || ${prefix} window --focus "$((yabai -m query --spaces --display prev || ${prefix} query --spaces --display last) | ${pkgs.jq}/bin/jq -re '.[] | select(.visible == 1)."last-window"')" || ${prefix} display --focus prev || ${prefix} display --focus last
-            # close
-            ${modMask} + ${moveMask} - c	      : ${prefix} window --close && yabai -m window --focus prev
-            # fullscreen
-            ${modMask} - h                            : ${prefix} window --toggle zoom-fullscreen
-            # rotate
-            ${modMask} - r                            : ${prefix} window --focus smallest && yabai -m window --warp largest && yabai -m window --focus largest
-            # increase region
-            ${modMask} + ctrl - j		      : ${prefix} window --resize right:-20:0; \
-        						${prefix} window --resize left:-20:0
-            ${modMask} + ctrl - k	 	      : ${prefix} window --resize right:20:0; \
-        						${prefix} window --resize left:20:0
-            # spaces ▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁
-            # switch
-            ${modMask} + alt - j                      : ${prevOrLast "space"}
-            ${modMask} + alt - k                      : ${nextOrFirst "space"}
-            # send window
-            ${modMask} + ctrl + alt - j              : ${prefix} window --space prev
-            ${modMask} + ctrl + alt - k              : ${prefix} window --space next
-            # display  ▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁
-            # focus
-            ${modMask} - left                         : ${prevOrLast "display"}
-            ${modMask} - right                        : ${nextOrFirst "display"}
-            # send window
-            ${moveMask} - right                       : ${prefix} window --display prev
-            ${moveMask} - left                        : ${prefix} window --display next
-            # apps  ▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁
-            ${modMask} - return                       : open -n -a 'Terminal.app'
-            ${modMask} + shift - return               : ${myEditor}
-            ${modMask} - b                            : ${myBrowser}
-            # reset  ▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁
-            ${modMask} - q                            : pkill yabai; pkill skhd; osascript -e 'display notification "wm restarted"'
+        # windows ▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁
+        # select
+        ${modMask} - j                            : ${prefix} window --focus next || ${prefix} window --focus "$((${prefix} query --spaces --display next || ${prefix} query --spaces --display first) |${pkgs.jq}/bin/jq -re '.[] | select(.visible == 1)."first-window"')" || ${prefix} display --focus next || ${prefix} display --focus first
+        ${modMask} - k                            : ${prefix} window --focus prev || ${prefix} window --focus "$((yabai -m query --spaces --display prev || ${prefix} query --spaces --display last) | ${pkgs.jq}/bin/jq -re '.[] | select(.visible == 1)."last-window"')" || ${prefix} display --focus prev || ${prefix} display --focus last
+        # close
+        ${modMask} + ${moveMask} - c	      : ${prefix} window --close && yabai -m window --focus prev
+        # fullscreen
+        ${modMask} - h                            : ${prefix} window --toggle zoom-fullscreen
+        # rotate
+        ${modMask} - r                            : ${prefix} window --focus smallest && yabai -m window --warp largest && yabai -m window --focus largest
+        # increase region
+        ${modMask} + ctrl - j		      : ${prefix} window --resize right:-20:0; \
+        		${prefix} window --resize left:-20:0
+        ${modMask} + ctrl - k	 	      : ${prefix} window --resize right:20:0; \
+        		${prefix} window --resize left:20:0
+        # spaces ▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁
+        # switch
+        ${modMask} + alt - j                      : ${prevOrLast "space"}
+        ${modMask} + alt - k                      : ${nextOrFirst "space"}
+        # send window
+        ${modMask} + ctrl + alt - j              : ${prefix} window --space prev
+        ${modMask} + ctrl + alt - k              : ${prefix} window --space next
+        # display  ▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁
+        # focus
+        ${modMask} - left                         : ${prevOrLast "display"}
+        ${modMask} - right                        : ${nextOrFirst "display"}
+        # send window
+        ${moveMask} - right                       : ${prefix} window --display prev
+        ${moveMask} - left                        : ${prefix} window --display next
+        # apps  ▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁
+        ${modMask} - return                       : open -n -a 'Terminal.app'
+        ${modMask} + shift - return               : ${myEditor}
+        ${modMask} - b                            : ${myBrowser}
+        # reset  ▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁
+        ${modMask} - q                            : pkill yabai; pkill skhd; osascript -e 'display notification "wm restarted"'
       '';
     };
 
@@ -194,7 +193,7 @@
         ShowPathbar = true;
         ShowStatusBar = true;
       };
-      trackpad = { Clicking = true; };
+      trackpad = {Clicking = true;};
     };
     keyboard = {
       enableKeyMapping = true;

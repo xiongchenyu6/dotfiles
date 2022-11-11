@@ -1,15 +1,21 @@
-{ pkgs, lib, profiles, ... }: {
+{
+  pkgs,
+  lib,
+  profiles,
+  ...
+}: {
   # Home Manager needs a bit of information about you and the
   # paths it should manage.
 
   home = {
     stateVersion = "22.11";
-    keyboard = { options = [ "caps:ctrl_modifier" ]; };
-    file = let old-files-path = ../../../old-files;
+    keyboard = {options = ["caps:ctrl_modifier"];};
+    file = let
+      old-files-path = ../../../old-files;
     in {
-      ".wakatime.cfg" = { source = old-files-path + /wakatime/.wakatime.cfg; };
-      ".ldaprc" = { source = old-files-path + /ldap/.ldaprc; };
-      ".curlrc" = { source = old-files-path + /downloader/.curlrc; };
+      ".wakatime.cfg" = {source = old-files-path + /wakatime/.wakatime.cfg;};
+      ".ldaprc" = {source = old-files-path + /ldap/.ldaprc;};
+      ".curlrc" = {source = old-files-path + /downloader/.curlrc;};
       ".ssh/id_ed25519.pub" = {
         text = profiles.share.office.user.public-key;
         executable = false;
@@ -39,13 +45,13 @@
         end_of_line = "lf";
         insert_final_newline = true;
       };
-      "*.{js,py}" = { charset = "utf-8"; };
+      "*.{js,py}" = {charset = "utf-8";};
       "*.{py,cpp,c,h,proto}" = {
         indent_style = "space";
         indent_size = 4;
       };
 
-      "Makefile" = { indent_style = "tab"; };
+      "Makefile" = {indent_style = "tab";};
       "lib/**.js" = {
         indent_style = "space";
         indent_size = 2;
@@ -58,14 +64,13 @@
   };
 
   programs = {
-
-    btop = { enable = true; };
+    btop = {enable = true;};
 
     # keychain = {
     #   enable = true;
     # };
 
-    readline = { enable = true; };
+    readline = {enable = true;};
     # nushell = { enable = true; };
 
     atuin = {
@@ -83,15 +88,14 @@
       compression = true;
       # controlMaster = "auto";
       matchBlocks = {
-        "freeman.engineer" = { port = 2222; };
+        "freeman.engineer" = {port = 2222;};
         "mail.freeman.engineer" = {
           port = 2222;
           user = "root";
         };
-        "git-code-commit.*.amazonaws.com" =
-          lib.hm.dag.entryBefore [ "freeman.engineer" ] {
-            user = "APKA6ECL465SUMKZQKLN";
-          };
+        "git-code-commit.*.amazonaws.com" = lib.hm.dag.entryBefore ["freeman.engineer"] {
+          user = "APKA6ECL465SUMKZQKLN";
+        };
       };
       extraConfig = ''
         GSSAPIAuthentication yes
@@ -99,25 +103,24 @@
       '';
     };
 
-    bat = { enable = true; };
-    exa = { enable = true; };
+    bat = {enable = true;};
+    exa = {enable = true;};
 
     # Let Home Manager install and manage itself.
 
-    home-manager = { enable = true; };
+    home-manager = {enable = true;};
 
     direnv = {
       enable = true;
       enableZshIntegration = true;
-      nix-direnv = { enable = true; };
+      nix-direnv = {enable = true;};
     };
 
     git = {
       enable = true;
-      lfs = { enable = true; };
+      lfs = {enable = true;};
       aliases = {
-        trash =
-          "!mkdir -p .trash && git ls-files --others --exclude-standard | xargs mv -f -t .trash";
+        trash = "!mkdir -p .trash && git ls-files --others --exclude-standard | xargs mv -f -t .trash";
       };
       signing = {
         key = "5AF7AFBF695E8A5D";
@@ -132,13 +135,13 @@
         };
       };
       extraConfig = {
-        push = { default = "current"; };
-        color = { ui = "auto"; };
+        push = {default = "current";};
+        color = {ui = "auto";};
         core = {
           autocrlf = "input";
           editor = "emacs";
         };
-        pull = { rebase = false; };
+        pull = {rebase = false;};
         user = {
           name = "freeman";
           email = "xiongchenyu6@gmail.com";
@@ -204,26 +207,26 @@
       initExtra = ''
         function gre {
            VERSION=$(git describe --abbrev=0 --tags)
-           
+
            #replace . with space so can split into an array
-           
+
            read -r -a VERSION_BITS <<< "''${VERSION//./ }"
-           
+
            #get number parts and increase last one by 1
            VNUM1=''${VERSION_BITS[0]}
            VNUM2=''${VERSION_BITS[1]}
            VNUM3=''${VERSION_BITS[2]}
            VNUM3=$((VNUM3+1))
-           
+
            #create new tag
            NEW_TAG="$VNUM1.$VNUM2.$VNUM3"
-           
+
            echo "Updating $VERSION to $NEW_TAG"
-           
+
            #get current hash and see if it already has a tag
            GIT_COMMIT=$(git rev-parse HEAD)
            NEEDS_TAG=$(git describe --contains "$GIT_COMMIT")
-           
+
            #only tag if no tag already
            if [ -z "$NEEDS_TAG" ]; then
                git tag "$NEW_TAG"
@@ -265,18 +268,20 @@
           callPackage ./_sources/generated.nix {
             inherit fetchFromGitHub fetchurl fetchgit;
           };
-      in map (name:
-        (removeAttrs source.${name} [ "pname" "version" "date" ]) // {
-          name = "${name}";
-        }) [ "alias-tips" "wakatime-zsh-plugin" ];
+      in
+        map (name:
+          (removeAttrs source.${name} ["pname" "version" "date"])
+          // {
+            name = "${name}";
+          }) ["alias-tips" "wakatime-zsh-plugin"];
       enableCompletion = false;
       enableAutosuggestions = true;
       enableSyntaxHighlighting = true;
     };
 
-    jq = { enable = true; };
+    jq = {enable = true;};
 
-    man = { enable = true; };
+    man = {enable = true;};
 
     vim = {
       enable = true;
@@ -299,13 +304,13 @@
       '';
     };
 
-    zoxide = { enable = true; };
+    zoxide = {enable = true;};
 
     tmux = {
       enable = true;
       terminal = "screen-256color";
       shortcut = "space";
-      plugins = with pkgs.tmuxPlugins; [ yank ];
+      plugins = with pkgs.tmuxPlugins; [yank];
       secureSocket = false;
       keyMode = "vi";
     };
@@ -318,15 +323,15 @@
         right_format = "$all";
         # A continuation prompt that displays two filled in arrows
         continuation_prompt = "▶▶";
-        kubernetes = { disabled = false; };
+        kubernetes = {disabled = false;};
         directory = {
           truncation_length = 20;
           truncation_symbol = "…/";
         };
-        status = { disabled = false; };
-        time = { disabled = false; };
-        git_metrics = { disabled = false; };
-        sudo = { disabled = false; };
+        status = {disabled = false;};
+        time = {disabled = false;};
+        git_metrics = {disabled = false;};
+        sudo = {disabled = false;};
       };
     };
   };

@@ -1,6 +1,5 @@
 {
-  description =
-    "Flake to manage my laptop, my nur and my hosts on Tencent Cloud";
+  description = "Flake to manage my laptop, my nur and my hosts on Tencent Cloud";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
@@ -37,7 +36,7 @@
 
     emacs = {
       url = "github:nix-community/emacs-overlay";
-      inputs = { nixpkgs.follows = "nixpkgs"; };
+      inputs = {nixpkgs.follows = "nixpkgs";};
     };
 
     xddxdd = {
@@ -59,7 +58,7 @@
 
     nixos-generators = {
       url = "github:nix-community/nixos-generators";
-      inputs = { nixpkgs.follows = "nixpkgs"; };
+      inputs = {nixpkgs.follows = "nixpkgs";};
     };
 
     flake-utils-plus = {
@@ -69,7 +68,7 @@
 
     pre-commit-hooks = {
       url = "github:cachix/pre-commit-hooks.nix";
-      inputs = { flake-utils.follows = "flake-utils"; };
+      inputs = {flake-utils.follows = "flake-utils";};
     };
 
     nix-alien = {
@@ -124,141 +123,171 @@
 
     hyprland.url = "github:vaxerski/Hyprland";
     hyprland.inputs.nixpkgs.follows = "nixpkgs";
-
   };
 
-  outputs = { self, nixpkgs, nixos-hardware, emacs, xddxdd, flake-utils
-    , flake-utils-plus, home-manager, devshell, pre-commit-hooks, nix-alien
-    , xiongchenyu6, winklink, digga, sops-nix, grub2-themes, hyprland, ...
-    }@inputs:
+  outputs = {
+    self,
+    nixpkgs,
+    nixos-hardware,
+    emacs,
+    xddxdd,
+    flake-utils,
+    flake-utils-plus,
+    home-manager,
+    devshell,
+    pre-commit-hooks,
+    nix-alien,
+    xiongchenyu6,
+    winklink,
+    digga,
+    sops-nix,
+    grub2-themes,
+    hyprland,
+    ...
+  } @ inputs:
     with nixpkgs;
     with lib;
     with flake-utils.lib;
-    with flake-utils-plus.lib;
-    let
-      overlays = map (x: x.overlay or x.overlays.default) [
-        emacs
-        devshell
-        xddxdd
-        xiongchenyu6
-        nix-alien
-        sops-nix
-      ] ++ [
-        (_: prev: {
-          __dontExport = true;
-          winklink = winklink.packages."${prev.system}".default;
-        })
-      ];
-    in digga.lib.mkFlake {
-      inherit self inputs;
+    with flake-utils-plus.lib; let
+      overlays =
+        map (x: x.overlay or x.overlays.default) [
+          emacs
+          devshell
+          xddxdd
+          xiongchenyu6
+          nix-alien
+          sops-nix
+        ]
+        ++ [
+          (_: prev: {
+            __dontExport = true;
+            winklink = winklink.packages."${prev.system}".default;
+          })
+        ];
+    in
+      digga.lib.mkFlake {
+        inherit self inputs;
 
-      supportedSystems = [ "x86_64-linux" "aarch64-darwin" "x86_64-darwin" ];
-      #supportedSystems = allSystems;
+        supportedSystems = ["x86_64-linux" "aarch64-darwin" "x86_64-darwin"];
+        #supportedSystems = allSystems;
 
-      channelsConfig = {
-        allowUnfree = true;
-        allowBroken = true;
-        # allowUnsupportedSystem = true;
-      };
-
-      channels = {
-        nixpkgs = { imports = [ (digga.lib.importOverlays ./overlays) ]; };
-      };
-
-      sharedOverlays = overlays;
-
-      nixos = {
-        hostDefaults = {
-          channelName = "nixpkgs";
-          modules = [
-            sops-nix.nixosModules.sops
-            nixos-hardware.nixosModules.lenovo-thinkpad-x1-9th-gen
-            nixos-hardware.nixosModules.common-gpu-intel
-            digga.darwinModules.nixConfig
-            home-manager.nixosModules.home-manager
-            xiongchenyu6.nixosModules.bttc
-            grub2-themes.nixosModule
-            hyprland.nixosModules.default
-          ];
+        channelsConfig = {
+          allowUnfree = true;
+          allowBroken = true;
+          # allowUnsupportedSystem = true;
         };
-        hosts = {
-          mail = {
-            modules = [ xiongchenyu6.nixosModules.oci-arm-host-capacity ];
+
+        channels = {
+          nixpkgs = {imports = [(digga.lib.importOverlays ./overlays)];};
+        };
+
+        sharedOverlays = overlays;
+
+        nixos = {
+          hostDefaults = {
+            channelName = "nixpkgs";
+            modules = [
+              sops-nix.nixosModules.sops
+              nixos-hardware.nixosModules.lenovo-thinkpad-x1-9th-gen
+              nixos-hardware.nixosModules.common-gpu-intel
+              digga.darwinModules.nixConfig
+              home-manager.nixosModules.home-manager
+              xiongchenyu6.nixosModules.bttc
+              grub2-themes.nixosModule
+              hyprland.nixosModules.default
+            ];
+          };
+          hosts = {
+            mail = {
+              modules = [xiongchenyu6.nixosModules.oci-arm-host-capacity];
+            };
+          };
+
+          imports = [(digga.lib.importHosts ./hosts/nixos)];
+          importables = rec {
+            profiles =
+              digga.lib.rakeLeaves ./profiles
+              // {
+                users = digga.lib.rakeLeaves ./users;
+                share = import ./profiles/shares.nix;
+              };
+            suites = with profiles; rec {
+              base = [core.nixos sops];
+              common-components = builtins.attrValues profiles.common-components;
+              common-apps = builtins.attrValues profiles.common-apps;
+              client-components = builtins.attrValues profiles.client-components;
+              client-apps = builtins.attrValues profiles.client-apps;
+              server-apps = builtins.attrValues profiles.server-apps;
+              server-components = builtins.attrValues profiles.server-components;
+              client-base =
+                base
+                ++ common-apps
+                ++ common-components
+                ++ client-apps
+                ++ client-components;
+              server-base =
+                base
+                ++ common-apps
+                ++ common-components
+                ++ server-apps
+                ++ server-components;
+            };
           };
         };
 
-        imports = [ (digga.lib.importHosts ./hosts/nixos) ];
-        importables = rec {
-          profiles = digga.lib.rakeLeaves ./profiles // {
-            users = digga.lib.rakeLeaves ./users;
-            share = import ./profiles/shares.nix;
+        darwin = {
+          hostDefaults = {
+            system = "aarch64-darwin";
+            channelName = "nixpkgs";
+            modules = [
+              digga.darwinModules.nixConfig
+              home-manager.darwinModules.home-manager
+            ];
           };
-          suites = with profiles; rec {
-            base = [ core.nixos sops ];
-            common-components = builtins.attrValues profiles.common-components;
-            common-apps = builtins.attrValues profiles.common-apps;
-            client-components = builtins.attrValues profiles.client-components;
-            client-apps = builtins.attrValues profiles.client-apps;
-            server-apps = builtins.attrValues profiles.server-apps;
-            server-components = builtins.attrValues profiles.server-components;
-            client-base = base ++ common-apps ++ common-components
-              ++ client-apps ++ client-components;
-            server-base = base ++ common-apps ++ common-components
-              ++ server-apps ++ server-components;
-          };
-        };
-      };
 
-      darwin = {
-        hostDefaults = {
-          system = "aarch64-darwin";
-          channelName = "nixpkgs";
-          modules = [
-            digga.darwinModules.nixConfig
-            home-manager.darwinModules.home-manager
-          ];
-        };
-
-        imports = [ (digga.lib.importHosts ./hosts/darwin) ];
-        hosts = { XIONGs-MacBook-Pro = { system = "x86_64-darwin"; }; };
-        importables = rec {
-          profiles = digga.lib.rakeLeaves ./profiles // {
-            users = digga.lib.rakeLeaves ./users;
-            share = import ./profiles/shares.nix { };
-          };
-          suites = with profiles; {
-            base = [ core.darwin ];
-            full = [ core.darwin client-pkgs.darwin ];
+          imports = [(digga.lib.importHosts ./hosts/darwin)];
+          hosts = {XIONGs-MacBook-Pro = {system = "x86_64-darwin";};};
+          importables = rec {
+            profiles =
+              digga.lib.rakeLeaves ./profiles
+              // {
+                users = digga.lib.rakeLeaves ./users;
+                share = import ./profiles/shares.nix {};
+              };
+            suites = with profiles; {
+              base = [core.darwin];
+              full = [core.darwin client-pkgs.darwin];
+            };
           };
         };
-      };
 
-      home = {
-        modules = [ hyprland.homeManagerModules.default ];
+        home = {
+          modules = [hyprland.homeManagerModules.default];
 
-        importables = rec {
-          profiles = digga.lib.rakeLeaves ./users/profiles // {
-            share = import ./profiles/shares.nix;
+          importables = rec {
+            profiles =
+              digga.lib.rakeLeaves ./users/profiles
+              // {
+                share = import ./profiles/shares.nix;
+              };
+            suites = with profiles; {
+              cli = [cli];
+              linux-gui = [gui.nixos cli];
+              mac-gui = [gui.darwin cli];
+            };
           };
-          suites = with profiles; {
-            cli = [ cli ];
-            linux-gui = [ gui.nixos cli ];
-            mac-gui = [ gui.darwin cli ];
+          users = {
+            freeman-cli = {suites, ...}: {imports = suites.cli;};
+            freeman-gui = {suites, ...}: {imports = suites.linux-gui;};
+            xiongchenyu = {suites, ...}: {imports = suites.mac-gui;};
           };
         };
-        users = {
-          freeman-cli = { suites, ... }: { imports = suites.cli; };
-          freeman-gui = { suites, ... }: { imports = suites.linux-gui; };
-          xiongchenyu = { suites, ... }: { imports = suites.mac-gui; };
-        };
-      };
 
-      devshell = ./shell;
+        devshell = ./shell;
 
-      outputsBuilder = channels: {
-        checks = {
-          pre-commit-check =
-            pre-commit-hooks.lib."${channels.nixpkgs.system}".run {
+        outputsBuilder = channels: {
+          checks = {
+            pre-commit-check = pre-commit-hooks.lib."${channels.nixpkgs.system}".run {
               src = ./.;
               hooks = {
                 nixfmt.enable = true;
@@ -266,17 +295,17 @@
                 nix-linter.enable = true;
               };
             };
+          };
         };
-      };
 
-      deploy = {
-        sshOpts = [ "-X" "-p" "2222" ];
-        autoRollback = false;
-        magicRollback = false;
-        fastConnection = true;
-        nodes = digga.lib.mkDeployNodes self.nixosConfigurations {
-          mail = { profiles = { system = { sshUser = "root"; }; }; };
+        deploy = {
+          sshOpts = ["-X" "-p" "2222"];
+          autoRollback = false;
+          magicRollback = false;
+          fastConnection = true;
+          nodes = digga.lib.mkDeployNodes self.nixosConfigurations {
+            mail = {profiles = {system = {sshUser = "root";};};};
+          };
         };
       };
-    };
 }
