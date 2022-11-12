@@ -18,6 +18,8 @@
     alacritty = {
       enable = true;
       settings = {
+        # opacity = 0.9;
+
         font = {
           size = 12;
           normal = {family = "Hack Nerd Font";};

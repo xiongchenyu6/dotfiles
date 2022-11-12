@@ -11,6 +11,15 @@
       INPUT_METHOD = "fcitx";
       XIM_SERVERS = "fcitx";
     };
+    file = {
+      ".config/hypr/hyprpaper.conf" = {
+        text = ''
+          preload = ~/Dropbox/WallPaper/dark/girls_with_guns_anime_girl_butterfly_101109_1920x1080.jpg
+          wallpaper = eDP-1,~/Dropbox/WallPaper/dark/girls_with_guns_anime_girl_butterfly_101109_1920x1080.jpg
+        '';
+        executable = false;
+      };
+    };
   };
   wayland = {
     windowManager = {
@@ -145,6 +154,7 @@
           bind = $mainMod, V, togglefloating,
           bind = $mainMod, R, pseudo, # dwindle
           bind = $mainMod, W, togglesplit, # dwindle
+          bind = $mainMod, space, fullscreen, # dwindle
 
           # Move focus with mainMod + arrow keys
           bind = $mainMod, H, movefocus, l
