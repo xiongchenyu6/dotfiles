@@ -1,6 +1,5 @@
 _: {
   exportedModules = {
-    self,
     pkgs,
     lib,
     inputs,
