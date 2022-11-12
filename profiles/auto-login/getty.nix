@@ -1,0 +1,7 @@
+{
+  services = {
+    getty = {
+      autologinUser = "freeman";
+    };
+  };
+}

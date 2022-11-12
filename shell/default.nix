@@ -1,5 +1,6 @@
 _: {
   exportedModules = {
+    self,
     pkgs,
     lib,
     inputs,
@@ -27,9 +28,7 @@ _: {
         enable = true;
         pre-commit.text = ''
           echo "commit hook"
-          system=$(uname -s | tr '[:upper:]' '[:lower:]')
-          arch=$(uname -m)
-          nix build .#checks.$arch-$system.pre-commit-check
+          nix build .#checks.${pkgs.system}.pre-commit-check
         '';
       };
     };

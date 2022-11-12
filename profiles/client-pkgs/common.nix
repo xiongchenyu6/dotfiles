@@ -19,6 +19,7 @@
       alejandra
       azure-cli
       cachix
+      cava
       deploy-rs
       neofetch
       exa

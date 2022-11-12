@@ -16,6 +16,7 @@
       discord
       geoip
       gnumake
+      sway
       haskell-language-server
       (python3.withPackages (_: with python3.pkgs; [epc my_cookies]))
       (haskellPackages.ghcWithPackages (_:
@@ -40,9 +41,11 @@
       jp2a
       patchelf
       linuxPackages.ply
+      chromium
       tdesktop
       vlc
       scrot
+      wofi
       wineWowPackages.staging
       #wpa_supplicant_gui
       whatsapp-for-linux

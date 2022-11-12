@@ -64,7 +64,15 @@
   };
 
   programs = {
-    btop = {enable = true;};
+    btop = {
+      enable = true;
+      settings = {
+        graph_symbol = "braille";
+        theme_background = "True";
+        show_battery = "True";
+        selected_battery = "Auto";
+      };
+    };
 
     # keychain = {
     #   enable = true;

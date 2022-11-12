@@ -157,6 +157,7 @@
           xiongchenyu6
           nix-alien
           sops-nix
+          hyprland
         ]
         ++ [
           (_: prev: {
@@ -216,14 +217,13 @@
               common-components = builtins.attrValues profiles.common-components;
               common-apps = builtins.attrValues profiles.common-apps;
               client-components = builtins.attrValues profiles.client-components;
-              client-apps = builtins.attrValues profiles.client-apps;
               server-apps = builtins.attrValues profiles.server-apps;
               server-components = builtins.attrValues profiles.server-components;
               client-base =
                 base
                 ++ common-apps
                 ++ common-components
-                ++ client-apps
+                ++ [profiles.bird2 profiles.auto-login.getty]
                 ++ client-components;
               server-base =
                 base
@@ -272,7 +272,7 @@
               };
             suites = with profiles; {
               cli = [cli];
-              linux-gui = [gui.nixos cli];
+              linux-gui = [gui.nixos gui.window-manager.hyprland cli];
               mac-gui = [gui.darwin cli];
             };
           };
@@ -290,7 +290,7 @@
             pre-commit-check = pre-commit-hooks.lib."${channels.nixpkgs.system}".run {
               src = ./.;
               hooks = {
-                nixfmt.enable = true;
+                alejandra.enable = true;
                 statix.enable = true;
                 nix-linter.enable = true;
               };
