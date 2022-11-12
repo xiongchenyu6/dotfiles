@@ -61,6 +61,13 @@
   };
 
   programs = lib.mkIf pkgs.stdenv.isLinux {
+    obs-studio = {
+      enable = true;
+      plugins = with pkgs.obs-studio-plugins; [
+        wlrobs
+        obs-pipewire-audio-capture
+      ];
+    };
     gpg = {
       enable = true;
       settings = {

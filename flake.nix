@@ -118,11 +118,25 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    grub2-themes.url = "github:vinceliuice/grub2-themes";
-    grub2-themes.inputs.nixpkgs.follows = "nixpkgs";
+    grub2-themes = {
+      url = "github:vinceliuice/grub2-themes";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
-    hyprland.url = "github:vaxerski/Hyprland";
-    hyprland.inputs.nixpkgs.follows = "nixpkgs";
+    hyprland = {
+      url = "github:hyprwm/Hyprland";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    hyprpaper = {
+      url = "github:hyprwm/hyprpaper";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    hyprpicker = {
+      url = "github:hyprwm/hyprpicker";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs = {
@@ -143,6 +157,8 @@
     sops-nix,
     grub2-themes,
     hyprland,
+    hyprpaper,
+    hyprpicker,
     ...
   } @ inputs:
     with nixpkgs;
@@ -158,6 +174,8 @@
           nix-alien
           sops-nix
           hyprland
+          hyprpaper
+          hyprpicker
         ]
         ++ [
           (_: prev: {

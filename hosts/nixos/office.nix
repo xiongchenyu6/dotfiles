@@ -8,17 +8,6 @@
   ...
 }: rec {
   system.nixos.tags = ["with-gui"];
-  boot = {
-    initrd = {
-      availableKernelModules = ["xhci_pci" "thunderbolt" "nvme" "usb_storage" "usbhid" "sd_mod"];
-      kernelModules = [];
-    };
-    kernelModules = ["kvm-intel"];
-    extraModulePackages = [];
-    extraModprobeConfig = ''
-      options i915 force_probe=46a6
-    '';
-  };
 
   fileSystems."/" = {
     device = "/dev/disk/by-uuid/799ba8ac-87bb-4c4e-b060-1787b4708a90";
@@ -38,8 +27,6 @@
   # with explicit per-interface declarations with `networking.interfaces.<interface>.useDHCP`.
   networking = {useDHCP = lib.mkDefault true;};
   # networking.interfaces.wlp0s20f3.useDHCP = lib.mkDefault true;
-
-  nixpkgs = {hostPlatform = lib.mkDefault "x86_64-linux";};
 
   powerManagement = {cpuFreqGovernor = lib.mkDefault "powersave";};
 
@@ -65,10 +52,23 @@
     ++ suites.client-base;
 
   boot = {
+    initrd = {
+      availableKernelModules = ["xhci_pci" "thunderbolt" "nvme" "usb_storage" "usbhid" "sd_mod"];
+      kernelModules = [];
+    };
+
+    kernelModules = ["kvm-intel" "hid-nintendo" "v4l2loopback"];
+
+    extraModulePackages = with config.boot.kernelPackages; [v4l2loopback.out];
+
+    extraModprobeConfig = ''
+      options i915 force_probe=46a6
+    '';
+
     tmpOnTmpfs = lib.mkDefault true;
+
     loader = {
       systemd-boot = {
-        # enable = true;
         editor = false;
       };
       efi = {
@@ -82,16 +82,6 @@
         device = "nodev";
         configurationLimit = 5;
         useOSProber = true;
-        # Allow for dualboot
-        # extraEntries = ''
-        #   menuentry "Windows" --class windows {
-        #     insmod part_gpt
-        #     insmod fat
-        #     insmod search_fs_uuid
-        #     insmod chain
-        #     chainloader /dev/nvme0n1p1@/EFI/Microsoft/Boot/bootmgfw.efi
-        #   }
-        # '';
       };
       grub2-theme = {
         enable = true;

@@ -1,13 +1,18 @@
 {pkgs, ...}: {
   services = {
     # Enable CUPS to print documents.
+    gnome.gnome-remote-desktop.enable = true;
     printing = {enable = true;};
     upower = {enable = true;};
     pipewire = {
       enable = true;
+      audio.enable = true;
       alsa = {
         enable = true;
         support32Bit = true;
+      };
+      jack = {
+        enable = true;
       };
       pulse = {enable = true;};
     };

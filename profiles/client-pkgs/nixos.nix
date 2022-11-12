@@ -47,10 +47,9 @@
       jp2a
       patchelf
       linuxPackages.ply
-      chromium
       tdesktop
       unrar-wrapper
-      vlc
+      mpv
       wineWowPackages.staging
       #wpa_supplicant_gui
       whatsapp-for-linux
