@@ -209,7 +209,7 @@
       autocd = true;
       shellAliases = {
         vi = "vim";
-        op = "xdg-open";
+        o = "handlr open";
         ls = "exa --icons";
       };
       initExtra = ''
@@ -247,6 +247,34 @@
         export LSP_USE_PLISTS=true
         eval $(${pkgs.bash-my-aws}/bin/bma-init)
       '';
+      zplug = let
+        ohMyZsh2Zplug = builtins.map (p: {
+          name = "plugins/${p}";
+          tags = ["from:oh-my-zsh"];
+        });
+      in {
+        enable = false;
+        plugins = ohMyZsh2Zplug [
+          "catimg"
+          "colored-man-pages"
+          "copyfile"
+          "copypath"
+          "emacs"
+          "extract"
+          "encode64"
+          "fancy-ctrl-z"
+          "git"
+          "git-hubflow"
+          "gitignore"
+          "pass"
+          "ripgrep"
+          "rsync"
+          "sudo"
+          "systemd"
+          "scala"
+          "tmux"
+        ];
+      };
       oh-my-zsh = {
         enable = true;
         plugins = [
@@ -259,7 +287,6 @@
           "encode64"
           "fancy-ctrl-z"
           "git"
-          "git-flow"
           "git-hubflow"
           "gitignore"
           "pass"
@@ -271,6 +298,7 @@
           "tmux"
         ];
       };
+
       plugins = let
         source = with pkgs;
           callPackage ./_sources/generated.nix {

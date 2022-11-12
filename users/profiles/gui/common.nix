@@ -18,7 +18,13 @@
     alacritty = {
       enable = true;
       settings = {
-        font = {size = 12;};
+        font = {
+          size = 12;
+          normal = {family = "Hack Nerd Font";};
+          bold = {family = "Hack Nerd Font";};
+          italic = {family = "Hack Nerd Font";};
+          bold_italic = {family = "Hack Nerd Font";};
+        };
         key_bindings = [
           {
             key = "Space";

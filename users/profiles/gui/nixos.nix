@@ -2,11 +2,32 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 {
+  config,
   pkgs,
   lib,
   ...
 }: {
   imports = [./common.nix];
+  xdg = {
+    enable = true;
+    mime = {
+      enable = true;
+    };
+    mimeApps = {
+      enable = true;
+    };
+    userDirs = {
+      enable = true;
+      createDirectories = true;
+      extraConfig = {
+        XDG_MISC_DIR = "${config.home.homeDirectory}/Misc";
+        XDG_TEST_DIR = "${config.home.homeDirectory}/Test";
+        XDG_GIT_DIR = "${config.home.homeDirectory}/Git";
+        XDG_PRIVATE_DIR = "${config.home.homeDirectory}/Private";
+        XDG_WORKSPACE_DIR = "${config.home.homeDirectory}/Workspace";
+      };
+    };
+  };
   home = lib.mkIf pkgs.stdenv.isLinux {
     pointerCursor = {
       name = "Vanilla-DMZ";

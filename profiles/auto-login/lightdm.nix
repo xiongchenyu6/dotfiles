@@ -1,4 +1,4 @@
-{
+{pkgs, ...}: {
   services = {
     xserver = {
       enable = true;
@@ -26,5 +26,10 @@
       libinput = {enable = true;};
       # Enable automatic login for the user.
     };
+  };
+  environment = {
+    systemPackages = with pkgs; [
+      scrot
+    ];
   };
 }
