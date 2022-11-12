@@ -8,6 +8,7 @@
     systemPackages = with pkgs; [
       apg
       bundix
+      baidupcs-go
       conky
       clang
       clang-tools
@@ -18,7 +19,11 @@
       gnumake
       sway
       haskell-language-server
-      (python3.withPackages (_: with python3.pkgs; [epc my_cookies]))
+      (python3.withPackages (_:
+        with python3.pkgs; [
+          my_cookies
+          mutagen
+        ]))
       (haskellPackages.ghcWithPackages (_:
         with haskellPackages;
         with pkgs.haskell.lib; [
@@ -31,6 +36,7 @@
           pandoc
         ]))
       heroku
+      handlr
       imagemagick
       ispell
       lsof
@@ -43,9 +49,8 @@
       linuxPackages.ply
       chromium
       tdesktop
+      unrar-wrapper
       vlc
-      scrot
-      wofi
       wineWowPackages.staging
       #wpa_supplicant_gui
       whatsapp-for-linux
@@ -63,6 +68,7 @@
     gnome = {gnome-keyring = {enable = true;};};
 
     openldap = {enable = true;};
+    ympd = {enable = true;};
   };
 
   programs = {

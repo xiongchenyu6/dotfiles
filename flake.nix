@@ -223,13 +223,14 @@
                 base
                 ++ common-apps
                 ++ common-components
-                ++ [profiles.bird2 profiles.auto-login.getty]
+                ++ [bird2 auto-login.getty]
                 ++ client-components;
               server-base =
                 base
                 ++ common-apps
                 ++ common-components
                 ++ server-apps
+                ++ [shell-enhance]
                 ++ server-components;
             };
           };
@@ -272,7 +273,7 @@
               };
             suites = with profiles; {
               cli = [cli];
-              linux-gui = [gui.nixos gui.window-manager.hyprland cli];
+              linux-gui = [gui.nixos gui.window-manager.hyprland cli gui.mpd];
               mac-gui = [gui.darwin cli];
             };
           };

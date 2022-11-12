@@ -122,7 +122,7 @@ customerKeyMaps =
     ((0, xF86XK_MonBrightnessDown), void decrease),
     ( (modm .|. shiftMask, xK_a),
       spawn
-        "sleep 0.2; scrot -s '/home/freeman/screen/%F--%H_%M_%S_$wx$h.png' -e 'xclip -selection clipboard -target image/png -i $f'"
+        "sleep 0.2; scrot -s '/home/freeman/Pictures/%F--%H_%M_%S_$wx$h.png' -e 'xclip -selection clipboard -target image/png -i $f'"
     ),
     ((modm .|. shiftMask, xK_p), spawn "passmenu"),
     ((modm, xK_p), spawn "rofi -i -show drun -show-icons"),

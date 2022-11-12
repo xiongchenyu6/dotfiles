@@ -681,7 +681,7 @@ Otherwise, show the default maximum number of recent items."
 
 (direnv-mode t)
 
-(add-to-list 'load-path "/home/freeman/git/lsp-bridge")
+(add-to-list 'load-path "/home/freeman/Git/lsp-bridge")
 
 (require 'lsp-bridge)
 

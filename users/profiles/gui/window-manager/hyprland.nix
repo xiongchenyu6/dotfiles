@@ -177,12 +177,21 @@
           bind = $mainMod SHIFT, 0, movetoworkspace, 10
 
           # Scroll through existing workspaces with mainMod + scroll
-          bind = $mainMod, mouse_down, workspace, e+1
-          bind = $mainMod, mouse_up, workspace, e-1
+          bind = $mainMod SHIFT, mouse_down, workspace, e+1
+          bind = $mainMod SHIFT, mouse_up, workspace, e-1
 
           # Move/resize windows with mainMod + LMB/RMB and dragging
-          bindm = $mainMod, mouse:272, movewindow
+          bindm = $mainMod SHIFT, mouse:272, movewindow
           bindm = $mainMod, mouse:273, resizewindow
+
+          # volumn
+          binde=, XF86AudioRaiseVolume, exec, amixer sset Master 5%+
+          binde=, XF86AudioLowerVolume, exec, amixer sset Master 5%-
+          bind=, XF86AudioMute, exec, amixer -D pipewire set Master 1+ toggle
+
+          # brightness
+          binde=, XF86MonBrightnessUp, exec, brightnessctl s +5%
+          binde=, XF86MonBrightnessDown, exec, brightnessctl s 5%-
         '';
       };
     };
