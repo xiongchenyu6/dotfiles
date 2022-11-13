@@ -32,6 +32,13 @@
             hyprctl keyword windowrule "workspace unset,brave"
           '';
         };
+        screen-shot = pkgs.writeShellApplication {
+          name = "screen-shot.sh";
+          runtimeInputs = [pkgs.hyprland];
+          text = ''
+            grim -g "$(slurp)" - | wl-copy
+          '';
+        };
       in {
         enable = true;
         xwayland = {
@@ -159,6 +166,7 @@
           bind = $mainMod, T, togglesplit, # dwindle
           bind = $mainMod, O, toggleopaque, # dwindle
           bind = $mainMod, space, fullscreen, # dwindle
+          bind = $mainMod SHIFT, S, exec, ${screen-shot}/bin/screen-shot.sh
 
           # Move focus with mainMod + arrow keys
           bind = $mainMod, H, movefocus, l
@@ -249,7 +257,7 @@
           ];
           modules-left = ["wlr/workspaces"];
           modules-center = ["hyprland/window"];
-          modules-right = ["mpd" "cpu" "memory" "temperature" "pulseaudio" "network" "backlight" "clock" "battery" "tray"];
+          modules-right = ["custom/btc" "mpd" "cpu" "memory" "temperature" "pulseaudio" "network" "backlight" "clock" "battery" "tray"];
 
           "jack" = {
             "format" = "DSP {}%";
@@ -293,15 +301,15 @@
             "format-critical" = "{temperatureC}°C";
             "format" = "";
           };
-          "backlight" = {
-            "format" = "{percent}% {icon}";
-            "format-icons" = ["" "" "" "" "" "" "" "" ""];
+          backlight = {
+            format = "{percent}% {icon}";
+            format-icons = ["" "" "" "" "" "" "" "" ""];
           };
 
-          "battery" = {
-            "states" = {
-              "warning" = 50;
-              "critical" = 20;
+          battery = {
+            states = {
+              warning = 50;
+              critical = 20;
             };
             format = "{icon}";
             format-charging = "";
@@ -376,12 +384,11 @@
             spacing = 10;
           };
 
-          "custom/hello-from-waybar" = {
-            format = "hello {}";
-            max-length = 40;
-            interval = "once";
+          "custom/btc" = {
+            format = " {}";
+            interval = 5;
             exec = pkgs.writeShellScript "hello-from-waybar" ''
-              echo "from within waybar"
+              ${pkgs.curl}/bin/curl https://blockchain.info/ticker --silent | ${pkgs.jq}/bin/jq .USD.last
             '';
           };
         };

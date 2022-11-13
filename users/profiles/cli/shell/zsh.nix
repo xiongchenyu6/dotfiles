@@ -8,7 +8,7 @@
       autocd = true;
       shellAliases = {
         vi = "vim";
-        o = "handlr open";
+        o = "xdg-open";
         ls = "exa --icons";
       };
       dirHashes = {
