@@ -9,12 +9,11 @@
       apg
       bundix
       baidupcs-go
-      conky
       clang
       clang-tools
       cmake
       cabal2nix
-      discord
+      cava
       geoip
       gnumake
       haskell-language-server
@@ -39,11 +38,11 @@
       handlr
       imagemagick
       ispell
+      inetutils
       lsof
       pinentry
       pass
       procs
-      gcc
       jp2a
       patchelf
       linuxPackages.ply

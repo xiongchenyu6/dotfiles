@@ -19,11 +19,10 @@
       alejandra
       azure-cli
       cachix
-      cava
       deploy-rs
+      discord
+      dig
       neofetch
-      exa
-      feh
       fd
       jdt-language-server
       tealdeer
@@ -32,6 +31,7 @@
       rustscan
       gitAndTools.gitflow
       git-crypt
+      gcc
       gopls
       graphviz
       (python3.withPackages (_:
@@ -73,7 +73,6 @@
       sops
       scalafmt
       solc-select
-      wireshark
       winklink
       wakatime
       zoom-us

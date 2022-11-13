@@ -42,7 +42,6 @@ _: {
         (devos nvfetcher)
         (linter nixfmt)
         (linter editorconfig-checker)
-
         (docs mdbook)
       ]
       ++ lib.optionals (!pkgs.stdenv.buildPlatform.isi686) [(devos cachix)]

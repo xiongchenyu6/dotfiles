@@ -3,7 +3,11 @@
   # paths it should manage.
 
   programs = {
-    broot = {enable = true;};
+    broot = {
+      enable = true;
+      settings = {
+      };
+    };
 
     nix-index = {enable = true;};
 
@@ -19,7 +23,6 @@
       enable = true;
       settings = {
         # opacity = 0.9;
-
         font = {
           size = 12;
           normal = {family = "Hack Nerd Font";};

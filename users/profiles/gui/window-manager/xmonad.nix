@@ -27,6 +27,10 @@
     };
   };
   programs = lib.mkIf pkgs.stdenv.isLinux {
+    feh = {
+      enable = true;
+    };
+
     autorandr = {
       enable = true;
       profiles = {
