@@ -1,3 +1,5 @@
+#!/usr/bin/env bash
+
 sudo -v
 
 # Keep-alive: update existing `sudo` time stamp until the script has finished.

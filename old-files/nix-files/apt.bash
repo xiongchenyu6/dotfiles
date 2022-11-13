@@ -1,3 +1,5 @@
+#!/usr/bin/env bash
+
 # sudo apt-get install git exuberant-ctags ncurses-term curl
 
 git clone git://github.com/zsh-users/zsh-autosuggestions "$ZSH_CUSTOM/plugins/zsh-autosuggestions"

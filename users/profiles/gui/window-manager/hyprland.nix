@@ -154,9 +154,9 @@
           bind = $mainMod SHIFT, Q, exit,
           bind = $mainMod, B, exec, brave
           bind = $mainMod, P, exec, wofi --show drun -I -G
-          bind = $mainMod, V, togglefloating,
-          bind = $mainMod, R, pseudo, # dwindle
-          bind = $mainMod, W, togglesplit, # dwindle
+          bind = $mainMod, F, togglefloating,
+          bind = $mainMod, V, pseudo, # dwindle
+          bind = $mainMod, T, togglesplit, # dwindle
           bind = $mainMod, O, toggleopaque, # dwindle
           bind = $mainMod, space, fullscreen, # dwindle
 
@@ -241,17 +241,129 @@
           layer = "top";
           position = "top";
           # height = 30;
+          spacing = 2;
+          margin-bottom = -15;
+
           output = [
             "eDP-1"
           ];
           modules-left = ["wlr/workspaces"];
-          modules-center = ["hyprland/window" "custom/hello-from-waybar"];
-          modules-right = ["mpd" "cpu" "memory" "temperature" "pulseaudio" "network" "backlight" "battery" "clock" "tray"];
+          modules-center = ["hyprland/window"];
+          modules-right = ["mpd" "cpu" "memory" "temperature" "pulseaudio" "network" "backlight" "clock" "battery" "tray"];
+
+          "jack" = {
+            "format" = "DSP {}%";
+            "format-xrun" = "{xruns} xruns";
+            "format-disconnected" = "DSP off";
+            "realtime" = true;
+          };
 
           "wlr/workspaces" = {
-            "format" = "{icon}";
-            "format-active" = " {icon} ";
-            "on-click" = "activate";
+            format = "{icon}";
+            format-active = " {icon} ";
+            on-click = "activate";
+          };
+
+          "wlr/taskbar" = {
+            format = "{icon}";
+            icon-size = 14;
+            icon-theme = "Numix-Circle";
+            tooltip-format = "{title}";
+            on-click = "activate";
+            on-click-middle = "close";
+            ignore-list = [
+              "Alacritty"
+            ];
+          };
+          "clock" = {
+            "tooltip-format" = "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>";
+            "interval" = 60;
+            "format" = "{:%I:%M}";
+          };
+          "cpu" = {
+            "interval" = 1;
+            "format" = "{icon0} {icon1} {icon2} {icon3}";
+            "format-icons" = ["▁" "▂" "▃" "▄" "▅" "▆" "▇" "█"];
+          };
+          "memory" = {
+            "format" = "{}% ";
+          };
+          "temperature" = {
+            "critical-threshold" = 80;
+            "format-critical" = "{temperatureC}°C";
+            "format" = "";
+          };
+          "backlight" = {
+            "format" = "{percent}% {icon}";
+            "format-icons" = ["" "" "" "" "" "" "" "" ""];
+          };
+
+          "battery" = {
+            "states" = {
+              "warning" = 50;
+              "critical" = 20;
+            };
+            format = "{icon}";
+            format-charging = "";
+            format-plugged = "";
+            format-icons = ["" "" "" "" ""];
+          };
+          "battery#bat2" = {
+            bat = "BAT2";
+          };
+
+          network = {
+            interface = "wlp0s20f3";
+            format-wifi = "{essid} ({signalStrength}%) ";
+            format-ethernet = "{ipaddr}/{cidr} ";
+            tooltip-format = "{ifname} via {gwaddr} ";
+            format-linked = "{ifname} (No IP) ";
+            format-disconnected = "Disconnected ⚠";
+            format-alt = "{ifname}: {ipaddr}/{cidr}";
+          };
+
+          pulseaudio = {
+            format = "{volume}% {icon} {format_source}";
+            format-bluetooth = "{volume}% {icon} {format_source}";
+            format-bluetooth-muted = " {icon} {format_source}";
+            format-muted = " {format_source}";
+            format-icons = {
+              headphone = "";
+              hands-free = "";
+              headset = "";
+              phone = "";
+              portable = "";
+              car = "";
+              default = ["" "" ""];
+            };
+            on-click = "pavucontrol";
+          };
+
+          mpd = {
+            format = "{stateIcon} {consumeIcon}{randomIcon}{repeatIcon}{singleIcon}{artist} - {album} - {title} ({elapsedTime:%M:%S}/{totalTime:%M:%S}) ⸨{songPosition}|{queueLength}⸩ {volume}% ";
+            format-disconnected = "Disconnected ";
+            format-stopped = "{consumeIcon}{randomIcon}{repeatIcon}{singleIcon}Stopped ";
+            unknown-tag = "N/A";
+            interval = 2;
+            consume-icons = {
+              on = " ";
+            };
+            random-icons = {
+              off = "<span color=\"#f53c3c\"></span> ";
+              on = " ";
+            };
+            repeat-icons = {
+              on = " ";
+            };
+            single-icons = {
+              on = "1 ";
+            };
+            state-icons = {
+              paused = "";
+              playing = "";
+            };
+            tooltip-format = "MPD (connected)";
+            tooltip-format-disconnected = "MPD (disconnected)";
           };
 
           "hyprland/window" = {
@@ -259,9 +371,9 @@
             separate-outputs = false;
           };
 
-          "tray" = {
-            "icon-size" = 21;
-            "spacing" = 10;
+          tray = {
+            icon-size = 21;
+            spacing = 10;
           };
 
           "custom/hello-from-waybar" = {

@@ -19,6 +19,12 @@
     fsType = "vfat";
   };
 
+  fileSystems."/mnt/hydra" = {
+    device = "hydra.inner.trontech.link:/export";
+    fsType = "nfs";
+    options = ["x-systemd.automount" "noauto"];
+  };
+
   swapDevices = [];
 
   # Enables DHCP on each ethernet and wireless interface. In case of scripted networking

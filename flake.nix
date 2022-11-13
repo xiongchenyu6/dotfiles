@@ -289,9 +289,9 @@
                 share = import ./profiles/shares.nix;
               };
             suites = with profiles; {
-              cli = [cli];
-              linux-gui = [gui.nixos gui.window-manager.hyprland cli gui.mpd];
-              mac-gui = [gui.darwin cli];
+              cli = [cli.common cli.shell.zsh];
+              linux-gui = [gui.nixos gui.window-manager.hyprland cli.common gui.mpd cli.shell.zsh];
+              mac-gui = [gui.darwin cli.common];
             };
           };
           users = {

@@ -4,6 +4,15 @@
   font-size: 13px;
 }
 
+#window {
+  border-radius: 20px;
+  background-color: #cdd6f4;
+  color: #516079;
+  box-shadow: rgba(0, 0, 0, 0.116) 2 2 5 2px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
 window#waybar {
   background-color: transparent;
 }
