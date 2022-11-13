@@ -1,7 +1,10 @@
 {pkgs, ...}: {
   services = {
     # Enable CUPS to print documents.
-    gnome.gnome-remote-desktop.enable = true;
+    gnome = {
+      gnome-remote-desktop.enable = true;
+      at-spi2-core.enable = true;
+    };
     printing = {enable = true;};
     upower = {enable = true;};
     pipewire = {

@@ -23,7 +23,16 @@
   };
   wayland = {
     windowManager = {
-      hyprland = {
+      hyprland = let
+        clean-up-after-start = pkgs.writeShellApplication {
+          name = "clean-up-after-start.sh";
+          runtimeInputs = [pkgs.hyprland];
+          text = ''
+            sleep 10
+            hyprctl keyword windowrule "workspace unset,brave"
+          '';
+        };
+      in {
         enable = true;
         xwayland = {
           enable = true;
@@ -41,12 +50,6 @@
 
           # See https://wiki.hyprland.org/Configuring/Monitors/
           monitor=,preferred,auto,1
-
-
-          # See https://wiki.hyprland.org/Configuring/Keywords/ for more
-
-          # Execute your favorite apps at launch
-          # exec-once = waybar & hyprpaper & firefox
 
           # Source a file (multi-file configs)
           # source = ~/.config/hypr/myColors.conf
@@ -75,7 +78,7 @@
               # See https://wiki.hyprland.org/Configuring/Variables/ for more
 
               gaps_in = 5
-              gaps_out = 20
+              gaps_out = 15
               border_size = 2
               col.active_border = rgba(1affffee)
               col.inactive_border = rgba(595959aa)
@@ -90,7 +93,7 @@
               blur = yes
               blur_size = 3
               blur_passes = 1
-              blur_new_optimizations = on
+              blur_new_optimizations = true
 
               drop_shadow = yes
               shadow_range = 4
@@ -154,6 +157,7 @@
           bind = $mainMod, V, togglefloating,
           bind = $mainMod, R, pseudo, # dwindle
           bind = $mainMod, W, togglesplit, # dwindle
+          bind = $mainMod, O, toggleopaque, # dwindle
           bind = $mainMod, space, fullscreen, # dwindle
 
           # Move focus with mainMod + arrow keys
@@ -202,6 +206,24 @@
           # brightness
           binde=, XF86MonBrightnessUp, exec, brightnessctl s +5%
           binde=, XF86MonBrightnessDown, exec, brightnessctl s 5%-
+
+
+          # # See https://wiki.hyprland.org/Configuring/Keywords/ for more
+
+          # # Execute your favorite apps at launch
+          exec-once = hyprpaper
+
+          windowrule=workspace 1 silent,alacritty
+          windowrule=workspace 3 silent,brave
+
+          exec-once=alacritty
+          exec-once=brave
+
+          exec-once=${clean-up-after-start}/bin/clean-up-after-start.sh
+
+          windowrule = opacity 0.9 0.95,^(Alacritty)$
+          windowrule = opacity 0.9 0.95,^(Emacs)$
+
         '';
       };
     };
@@ -212,6 +234,45 @@
       package = pkgs.waybar-hyprland;
       systemd = {
         enable = true;
+      };
+      style = ./waybar.css;
+      settings = {
+        mainBar = {
+          layer = "top";
+          position = "top";
+          # height = 30;
+          output = [
+            "eDP-1"
+          ];
+          modules-left = ["wlr/workspaces"];
+          modules-center = ["hyprland/window" "custom/hello-from-waybar"];
+          modules-right = ["mpd" "cpu" "memory" "temperature" "pulseaudio" "network" "backlight" "battery" "clock" "tray"];
+
+          "wlr/workspaces" = {
+            "format" = "{icon}";
+            "format-active" = " {icon} ";
+            "on-click" = "activate";
+          };
+
+          "hyprland/window" = {
+            format = "👉 {}";
+            separate-outputs = false;
+          };
+
+          "tray" = {
+            "icon-size" = 21;
+            "spacing" = 10;
+          };
+
+          "custom/hello-from-waybar" = {
+            format = "hello {}";
+            max-length = 40;
+            interval = "once";
+            exec = pkgs.writeShellScript "hello-from-waybar" ''
+              echo "from within waybar"
+            '';
+          };
+        };
       };
     };
   };

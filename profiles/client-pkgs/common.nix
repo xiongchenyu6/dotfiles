@@ -41,6 +41,7 @@
           orjson
           python-lsp-server
           cmake-language-server
+          colour
         ]))
       wakatime
       metals
@@ -50,6 +51,8 @@
       nodePackages."bash-language-server"
       nodePackages."prettier"
       nodePackages."typescript-language-server"
+      nodePackages."yaml-language-server"
+      nodePackages."vscode-langservers-extracted"
       nvfetcher
       # nix-alien
       # nix-index-update
@@ -65,13 +68,14 @@
       stow
       slack
       statix
+      shellcheck
+      shfmt
       sops
       scalafmt
       solc-select
       wireshark
       winklink
       wakatime
-      yaml-language-server
       zoom-us
     ];
   };

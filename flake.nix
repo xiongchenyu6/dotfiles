@@ -98,11 +98,10 @@
     };
 
     digga = {
-      url = "github:divnix/digga/home-manager-22.11";
+      url = "github:divnix/digga";
       inputs = {
         nixpkgs.follows = "nixpkgs";
         nixlib.follows = "nixpkgs";
-        latest.follows = "nixpkgs";
         nixpkgs-unstable.follows = "nixpkgs";
         darwin.follows = "darwin";
         devshell.follows = "devshell";
@@ -312,6 +311,9 @@
                 alejandra.enable = true;
                 statix.enable = true;
                 nix-linter.enable = true;
+                deadnix.enable = true;
+                shellcheck.enable = true;
+                shfmt.enable = true;
               };
             };
           };
