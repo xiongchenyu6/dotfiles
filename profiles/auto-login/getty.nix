@@ -11,6 +11,7 @@
       slurp
       brightnessctl
       hyprpaper
+      hyprpicker
       gnomeExtensions.zoom-wayland-extension
       wl-clipboard
       xdg_utils

@@ -114,7 +114,7 @@
         home-manager.follows = "home-manager";
         deploy.follows = "deploy-rs";
         flake-compat.follows = "flake-compat";
-        # flake-utils-plus.follows = "flake-utils-plus";
+        #flake-utils-plus.follows = "flake-utils-plus";
       };
     };
 
