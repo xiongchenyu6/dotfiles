@@ -95,7 +95,7 @@ window#waybar {
   margin-right: 10px;
 }
 
-#custom-dynamic_pill.low {
+#custom-btc {
   background: rgb(148, 226, 213);
   background: linear-gradient(
     52deg,
@@ -111,6 +111,8 @@ window#waybar {
   animation: gradient 15s ease infinite;
   font-weight: bolder;
   color: #fff;
+  margin-top: 10px;
+  margin-bottom: 10px;
 }
 #custom-dynamic_pill.normal {
   background: rgb(166, 209, 137);

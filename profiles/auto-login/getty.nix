@@ -11,9 +11,9 @@
       slurp
       brightnessctl
       hyprpaper
-      flameshot
       gnomeExtensions.zoom-wayland-extension
       wl-clipboard
+      xdg_utils
     ];
   };
   xdg = {

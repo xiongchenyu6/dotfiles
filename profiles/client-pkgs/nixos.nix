@@ -35,7 +35,6 @@
           hadolint
         ]))
       heroku
-      handlr
       imagemagick
       ispell
       inetutils

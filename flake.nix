@@ -36,7 +36,10 @@
 
     emacs = {
       url = "github:nix-community/emacs-overlay";
-      inputs = {nixpkgs.follows = "nixpkgs";};
+      inputs = {
+        flake-utils.follows = "flake-utils";
+        nixpkgs.follows = "nixpkgs";
+      };
     };
 
     xddxdd = {
@@ -68,7 +71,10 @@
 
     pre-commit-hooks = {
       url = "github:cachix/pre-commit-hooks.nix";
-      inputs = {flake-utils.follows = "flake-utils";};
+      inputs = {
+        nixpkgs.follows = "nixpkgs";
+        flake-utils.follows = "flake-utils";
+      };
     };
 
     nix-alien = {
@@ -108,6 +114,7 @@
         home-manager.follows = "home-manager";
         deploy.follows = "deploy-rs";
         flake-compat.follows = "flake-compat";
+        # flake-utils-plus.follows = "flake-utils-plus";
       };
     };
 
