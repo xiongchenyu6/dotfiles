@@ -42,10 +42,14 @@
     enable = true;
     settings = {
       "*" = {
+        indent_size = 2;
         end_of_line = "lf";
         insert_final_newline = true;
       };
       "*.{js,py}" = {charset = "utf-8";};
+      "*.css" = {
+        charset = "utf-8";
+      };
       "*.{py,cpp,c,h,proto}" = {
         indent_style = "space";
         indent_size = 4;
@@ -54,11 +58,9 @@
       "Makefile" = {indent_style = "tab";};
       "lib/**.js" = {
         indent_style = "space";
-        indent_size = 2;
       };
       "{package.json,.travis.yml}" = {
         indent_style = "space";
-        indent_size = 2;
       };
     };
   };
@@ -212,6 +214,20 @@
         o = "handlr open";
         ls = "exa --icons";
       };
+      dirHashes = {
+        docs = "$HOME/Documents";
+        vids = "$HOME/Videos";
+        dl = "$HOME/Downloads";
+      };
+      dotDir = ".config/zsh";
+      envExtra = ''
+        export LSP_USE_PLISTS=true
+      '';
+      history = {
+        extended = true;
+        ignorePatterns = ["rm -rf *"];
+      };
+
       initExtra = ''
         function gre {
            VERSION=$(git describe --abbrev=0 --tags)
@@ -244,8 +260,8 @@
                echo "Already a tag on this commit"
            fi
         }
-        export LSP_USE_PLISTS=true
         eval $(${pkgs.bash-my-aws}/bin/bma-init)
+        path+="$HOME/.npm/bin"
       '';
       zplug = let
         ohMyZsh2Zplug = builtins.map (p: {

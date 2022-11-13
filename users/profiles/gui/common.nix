@@ -34,6 +34,11 @@
             mode = "~Search";
             action = "ToggleViMode";
           }
+          {
+            key = "Return";
+            mods = "Command|Shift";
+            action = "SpawnNewInstance";
+          }
         ];
       };
     };

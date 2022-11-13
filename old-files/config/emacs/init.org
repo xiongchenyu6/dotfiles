@@ -710,7 +710,7 @@ Otherwise, show the default maximum number of recent items."
 (define-key lsp-bridge-mode-map [remap xref-go-back] #'lsp-bridge-find-def-return)
 
 
-(setq lsp-bridge-enable-log t)
+;; (setq lsp-bridge-enable-log t)
 
 ;; (setenv "PATH" (concat (getenv "PATH") ":/home/freeman/.config/emacs/.cache/lsp/eclipse.jdt.ls/bin"))
 
@@ -718,6 +718,8 @@ Otherwise, show the default maximum number of recent items."
 
 
 ;(setq lsp-bridge-jdtls-worksapce)
+
+;; (setenv "PATH" (concat (getenv "PATH") ":/home/freeman/.npm/bin"))
 #+end_src
 **** lsp ui
 #+begin_src emacs-lisp
@@ -845,6 +847,10 @@ Otherwise, show the default maximum number of recent items."
                            ,(concat "\t" (list #x2203))))))))
 
 (add-hook 'c-mode-hook 'pretty-for-add)
+#+end_src
+*** Css
+#+begin_src elisp
+(setq css-indent-offset 2)
 #+end_src
 *** Cmake
 #+begin_src emacs-lisp
@@ -1051,6 +1057,10 @@ Otherwise, show the default maximum number of recent items."
 ;;  lsp-java-progress-report t)
 
 #+end_src
+*** javascript
+#+begin_src emacs-lisp
+(setq js-indent-level 2)
+#+end_src
 *** SQL
 #+begin_src emacs-lisp
 #+end_src
@@ -1090,7 +1100,7 @@ Otherwise, show the default maximum number of recent items."
 *** flycheck
 Bind to lsp mode
 #+begin_src emacs-lisp
-(add-hook 'lsp-mode-hook #'flycheck-mode)
+(add-hook 'lsp-bridge-mode-hook #'flycheck-mode)
 #+end_src
 *** flyspell
 #+begin_src emacs-lisp
@@ -1350,12 +1360,22 @@ Bind to lsp mode
  ;; '("l" . window-right)
  '(":" . replace-regexp))
 
+
+(require 'treemacs)
 (require 'treemacs-project-follow-mode)
+(setq treemacs-show-hidden-files nil)
+(treemacs-fringe-indicator-mode t)
+(treemacs-filewatch-mode t)
+(setq treemacs-file-event-delay 100)
 (treemacs-project-follow-mode t)
-;; (require 'treemacs-tag-follow-mode)
-;; (treemacs-tag-follow-mode t)
-;; (setq treemacs-tag-follow-delay 0.2)
-; one beautiful work around to make c+[ works
+(setq treemacs-is-never-other-window t)
+(setq treemacs-silent-refresh    t)
+(setq treemacs-file-follow-delay 0.1)
+
+(require 'treemacs-tag-follow-mode)
+(treemacs-tag-follow-mode t)
+(setq treemacs-tag-follow-delay 0.1)
+                                        ; one beautiful work around to make c+[ works
 (define-key meow-insert-state-keymap 
             (kbd "C-g") [escape])
 #+end_src

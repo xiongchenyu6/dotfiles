@@ -17,7 +17,6 @@
       discord
       geoip
       gnumake
-      sway
       haskell-language-server
       (python3.withPackages (_:
         with python3.pkgs; [
@@ -53,7 +52,6 @@
       wineWowPackages.staging
       #wpa_supplicant_gui
       whatsapp-for-linux
-      xclip
       qq
       wechat-uos
     ];
@@ -71,6 +69,7 @@
   };
 
   programs = {
+    npm = {enable = true;};
     atop = {
       enable = true;
       netatop = {enable = true;};

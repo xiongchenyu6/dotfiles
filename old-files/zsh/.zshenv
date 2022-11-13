@@ -1,64 +1,62 @@
 source /etc/profile
 # If there's already a kubeconfig file in ~/.kube/config it will import that too and all the contexts
 DEFAULT_KUBECONFIG_FILE="$HOME/.kube/config"
-if test -f "${DEFAULT_KUBECONFIG_FILE}"
-then
-  export KUBECONFIG="$DEFAULT_KUBECONFIG_FILE"
+if test -f "${DEFAULT_KUBECONFIG_FILE}"; then
+	export KUBECONFIG="$DEFAULT_KUBECONFIG_FILE"
 fi
 # Your additional kubeconfig files should be inside ~/.kube/config-files
 ADD_KUBECONFIG_FILES="$HOME/.kube/clusters"
 mkdir -p "${ADD_KUBECONFIG_FILES}"
 OIFS="$IFS"
 IFS=$'\n'
-for kubeconfigFile in `find "${ADD_KUBECONFIG_FILES}" -type f -o -name "*.yaml"`
-do
-    export KUBECONFIG="$kubeconfigFile:$KUBECONFIG"
+for kubeconfigFile in $(find "${ADD_KUBECONFIG_FILES}" -type f -o -name "*.yaml"); do
+	export KUBECONFIG="$kubeconfigFile:$KUBECONFIG"
 done
 IFS="$OIFS"
 
-if [[ "$OSTYPE" == "linux-gnu" ]]; then
-    export JAVA_HOME='/usr/lib/jvm/default'
-   # export HADOOP_HOME=/usr/lib/hadoop
-    export CONFLUENT_HOME=/
-    export FLINK_HOME=/opt/flink
-    export HBASE_HOME=/opt/hbase
-    export HIVE_HOME=/opt/hive
-    export ASYNC_PROFILER_HOME=/opt/async-profiler
-    export XAUTHORITY=~/.Xauthority
-    export CONAN_USERNAME=brec
-    export CONAN_CHANNEL=stable
-    #export HADOOP_CLASSPATH=`hadoop classpath`:$HADOOP_HOME/lib/native/*
-    #export SPARK_DIST_CLASSPATH=`hadoop classpath`:$HBASE_HOME/lib/hbase-common-2.1.5.jar:$HBASE_HOME/lib/hbase-client-2.1.5.jar:$HBASE_HOME/lib/hbase-mapreduce-2.1.5.jar:$HBASE_HOME/lib/hbase-shaded-miscellaneous-2.1.0.jar:$HBASE_HOME/lib/hbase-shaded-protobuf-2.1.0.jar:$HBASE_HOME/lib/hbase-shaded-netty-2.1.0.jar
-    export BUILD_DIR=/tmp/rrdbuild
-    export GEM_HOME=$HOME/.gem/ruby/2.7.0
-elif [[ "$OSTYPE" == "darwin"* ]]; then
-    export PYENV_ROOT="$HOME/.pyenv"
-    export PATH="$PYENV_ROOT/bin:$PATH"
-    export CONAN_USER_HOME=/Users/chenyu
-    if [[ $ARCH == "arm64" ]]; then
-        [ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && \. "/opt/homebrew/opt/nvm/nvm.sh"
-        export ANDROID_SDK_ROOT=/opt/homebrew/Caskroom/android-sdk/4333796/
-        export ANDROID_AVD_HOME=~/.android/avd
+if [[ $OSTYPE == "linux-gnu" ]]; then
+	export JAVA_HOME='/usr/lib/jvm/default'
+	# export HADOOP_HOME=/usr/lib/hadoop
+	export CONFLUENT_HOME=/
+	export FLINK_HOME=/opt/flink
+	export HBASE_HOME=/opt/hbase
+	export HIVE_HOME=/opt/hive
+	export ASYNC_PROFILER_HOME=/opt/async-profiler
+	export XAUTHORITY=~/.Xauthority
+	export CONAN_USERNAME=brec
+	export CONAN_CHANNEL=stable
+	#export HADOOP_CLASSPATH=`hadoop classpath`:$HADOOP_HOME/lib/native/*
+	#export SPARK_DIST_CLASSPATH=`hadoop classpath`:$HBASE_HOME/lib/hbase-common-2.1.5.jar:$HBASE_HOME/lib/hbase-client-2.1.5.jar:$HBASE_HOME/lib/hbase-mapreduce-2.1.5.jar:$HBASE_HOME/lib/hbase-shaded-miscellaneous-2.1.0.jar:$HBASE_HOME/lib/hbase-shaded-protobuf-2.1.0.jar:$HBASE_HOME/lib/hbase-shaded-netty-2.1.0.jar
+	export BUILD_DIR=/tmp/rrdbuild
+	export GEM_HOME=$HOME/.gem/ruby/2.7.0
+elif [[ $OSTYPE == "darwin"* ]]; then
+	export PYENV_ROOT="$HOME/.pyenv"
+	export PATH="$PYENV_ROOT/bin:$PATH"
+	export CONAN_USER_HOME=/Users/chenyu
+	if [[ $ARCH == "arm64" ]]; then
+		[ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && \. "/opt/homebrew/opt/nvm/nvm.sh"
+		export ANDROID_SDK_ROOT=/opt/homebrew/Caskroom/android-sdk/4333796/
+		export ANDROID_AVD_HOME=~/.android/avd
 
-    else
-        export JAVA_HOME="$(/usr/libexec/java_home)"
-        export JDK_HOME="$(/usr/libexec/java_home)"
-#    export SCALA_HOME=/usr/local/opt/scala/idea
-        export RUBY_HOME=/usr/local/opt/ruby
-        export GEM_HOME=/usr/local/lib/ruby/gems/2.6.0
-        export PATH=/usr/local/sbin:$PATH
-        export PATH=/usr/local/opt/llvm/bin:$PATH
-        export PATH=/usr/local/opt/openssl@3/bin:$PATH
-        export HADOOP_HOME=/usr/local/Cellar/hadoop/3.3.2/libexec
-        export PKG_CONFIG_PATH="/usr/local/opt/libxml2/lib/pkgconfig"
-        export PATH="/Users/chenyu/Library/Application Support/Coursier/bin":$PATH:
-        alias openssl=/usr/local/opt/openssl@3/bin/openssl
-        [ -s "/usr/local/opt/nvm/nvm.sh" ] && \. "/usr/local/opt/nvm/nvm.sh"    
-    fi
+	else
+		export JAVA_HOME="$(/usr/libexec/java_home)"
+		export JDK_HOME="$(/usr/libexec/java_home)"
+		#    export SCALA_HOME=/usr/local/opt/scala/idea
+		export RUBY_HOME=/usr/local/opt/ruby
+		export GEM_HOME=/usr/local/lib/ruby/gems/2.6.0
+		export PATH=/usr/local/sbin:$PATH
+		export PATH=/usr/local/opt/llvm/bin:$PATH
+		export PATH=/usr/local/opt/openssl@3/bin:$PATH
+		export HADOOP_HOME=/usr/local/Cellar/hadoop/3.3.2/libexec
+		export PKG_CONFIG_PATH="/usr/local/opt/libxml2/lib/pkgconfig"
+		export PATH="/Users/chenyu/Library/Application Support/Coursier/bin":$PATH:
+		alias openssl=/usr/local/opt/openssl@3/bin/openssl
+		[ -s "/usr/local/opt/nvm/nvm.sh" ] && \. "/usr/local/opt/nvm/nvm.sh"
+	fi
 fi
 
 export NVM_DIR="$HOME/.nvm"
-export ARCH=`uname -m`
+export ARCH=$(uname -m)
 
 export LSP_USE_PLISTS=true
 # export PATH=$HOME/.nix-profile/bin/:$PATH
@@ -67,11 +65,11 @@ export PATH=$HOME/.script:$PATH
 #export PATH="$HOME/.jenv/bin:$PATH"
 
 export HADOOP_INSTALL=$HADOOP_HOME
-export HADOOP_MAPRED_HOME=$HADOOP_HOME 
-export HADOOP_COMMON_HOME=$HADOOP_HOME 
-export HADOOP_HDFS_HOME=$HADOOP_HOME 
-export YARN_HOME=$HADOOP_HOME 
-export HADOOP_COMMON_LIB_NATIVE_DIR=$HADOOP_HOME/lib/native 
+export HADOOP_MAPRED_HOME=$HADOOP_HOME
+export HADOOP_COMMON_HOME=$HADOOP_HOME
+export HADOOP_HDFS_HOME=$HADOOP_HOME
+export YARN_HOME=$HADOOP_HOME
+export HADOOP_COMMON_LIB_NATIVE_DIR=$HADOOP_HOME/lib/native
 export HADOOP_OPTS="$HADOOP_OPTS -Djava.library.path=$HADOOP_HOME/lib/native"
 export JAVA_LIBRARY_PATH=$JAVA_LIBRARY_PATH:$HADOOP_HOME/lib/native
 export FLINK_CLASSPATH=$HADOOP_HOME/lib/native/*
@@ -91,7 +89,7 @@ export PATH=$ASYNC_PROFILER_HOME:$PATH
 export METALS_ENABLED=true
 export METALS_JDK_PATH=/usr/lib/jvm/default/bin
 export GOPATH=$HOME/go
-export GO111MODULE=on 
+export GO111MODULE=on
 export PATH=$GOPATH/bin:$PATH
 export PATH=$GOPATH/src/k8s.io/kubernetes/_output/bin:$PATH
 export PATH=$HOME/.local/bin/:$PATH
@@ -99,7 +97,7 @@ export PATH=$HOME/.yarn/bin/:$PATH
 export PATH=$HOME/.emacs.d/bin/:$PATH
 export HADOOP_LOG_DIR=/data/logs
 
- #ssh
+#ssh
 export SSH_KEY_PATH="~/.ssh/rsa_id"
 
 export TERM=xterm-256color
@@ -112,7 +110,6 @@ export EDITOR="emacsclient"
 export EMAIL="xiongchenyu@bigo.sg"
 
 #export NODE_PATH=$HOME/.config/yarn/global/node_modules
-
 
 #CJK index
 export XAPIAN_CJK_NGRAM=1
