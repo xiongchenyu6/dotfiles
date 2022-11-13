@@ -33,6 +33,7 @@
           hasktags
           hoogle
           pandoc
+          hadolint
         ]))
       heroku
       handlr

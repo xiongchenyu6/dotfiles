@@ -21,7 +21,10 @@ _: {
     linter = pkgWithCategory "linter";
     docs = pkgWithCategory "docs";
   in {
-    imports = ["${extraModulesPath}/git/hooks.nix"];
+    imports = [
+      "${extraModulesPath}/git/hooks.nix"
+      "${extraModulesPath}/services/postgres.nix"
+    ];
     git = {
       hooks = {
         enable = true;
@@ -48,5 +51,10 @@ _: {
         (devos inputs.nixos-generators.defaultPackage.${pkgs.system})
         (devos inputs.deploy-rs.packages.${pkgs.system}.deploy-rs)
       ];
+    services = {
+      postgres = {
+        setupPostgresOnStartup = false;
+      };
+    };
   };
 }
