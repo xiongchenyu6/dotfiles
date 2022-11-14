@@ -57,9 +57,9 @@
                echo "Already a tag on this commit"
            fi
         }
-        eval $(${pkgs.bash-my-aws}/bin/bma-init)
         path+="$HOME/.npm/bin"
-        # complete -C '${pkgs.awscli2}/bin/aws_completer' aws
+        eval $(${pkgs.bash-my-aws}/bin/bma-init)
+        complete -C '${pkgs.awscli2}/bin/aws_completer' aws
 
         # function restricted-expand-or-complete() {
         #         if [[ ! $PWD = /mnt/* ]]; then

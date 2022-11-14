@@ -27,6 +27,9 @@
     };
   };
   programs = lib.mkIf pkgs.stdenv.isLinux {
+    emacs = {
+      package = pkgs.emacsGitNativeComp;
+    };
     feh = {
       enable = true;
     };

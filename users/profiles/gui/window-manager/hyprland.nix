@@ -15,7 +15,11 @@
       ".config/hypr/hyprpaper.conf" = {
         text = ''
           preload = ~/Dropbox/WallPaper/dark/girls_with_guns_anime_girl_butterfly_101109_1920x1080.jpg
+          preload = ~/Dropbox/WallPaper/dark/vertical/1.jpg
+          preload = ~/Dropbox/WallPaper/dark/vertical/2.jpg
           wallpaper = eDP-1,~/Dropbox/WallPaper/dark/girls_with_guns_anime_girl_butterfly_101109_1920x1080.jpg
+          wallpaper = HDMI-A-1,~/Dropbox/WallPaper/dark/vertical/1.jpg
+          ipc = on
         '';
         executable = false;
       };
@@ -56,7 +60,11 @@
           #
 
           # See https://wiki.hyprland.org/Configuring/Monitors/
+
           monitor=,preferred,auto,1
+          monitor=HDMI-A-1,3840x2160@60,1920x0,1.5
+          monitor=HDMI-A-1,transform,1
+          workspace=HDMI-A-1,1
 
           # Source a file (multi-file configs)
           # source = ~/.config/hypr/myColors.conf
@@ -151,7 +159,6 @@
           # windowrulev2 = float,class:^(kitty)$,title:^(kitty)$
           # See https://wiki.hyprland.org/Configuring/Window-Rules/ for more
 
-
           # See https://wiki.hyprland.org/Configuring/Keywords/ for more
           $mainMod = SUPER
 
@@ -163,8 +170,12 @@
           bind = $mainMod, P, exec, wofi --show drun -I -G
           bind = $mainMod, F, togglefloating,
           bind = $mainMod, V, pseudo, # dwindle
+          bind = $mainMod, W, swapactiveworkspaces, eDP-1 HDMI-A-1
           bind = $mainMod, T, togglesplit, # dwindle
-          bind = $mainMod, O, toggleopaque, # dwindle
+          bind = $mainMod, G, togglegroup, # dwindle
+          bind = $mainMod, O, toggleopaque,
+          bind = $mainMod, M ,layoutmsg, swapwithmaster
+          bind = $mainMod SHIFT, M, layoutmsg, focusmaster
           bind = $mainMod, space, fullscreen, # dwindle
           bind = $mainMod SHIFT, S, exec, ${screen-shot}/bin/screen-shot.sh
 
@@ -175,15 +186,25 @@
           bind = $mainMod, J, movefocus, d
 
           # Switch workspaces with mainMod + [0-9]
+          bind= $mainMod,1,moveworkspacetomonitor,1 current
           bind = $mainMod, 1, workspace, 1
+          bind= $mainMod,2,moveworkspacetomonitor,2 current
           bind = $mainMod, 2, workspace, 2
+          bind= $mainMod,3,moveworkspacetomonitor,3 current
           bind = $mainMod, 3, workspace, 3
+          bind= $mainMod,4,moveworkspacetomonitor,4 current
           bind = $mainMod, 4, workspace, 4
+          bind= $mainMod,5,moveworkspacetomonitor,5 current
           bind = $mainMod, 5, workspace, 5
+          bind= $mainMod,6,moveworkspacetomonitor,6 current
           bind = $mainMod, 6, workspace, 6
+          bind= $mainMod,7,moveworkspacetomonitor,7 current
           bind = $mainMod, 7, workspace, 7
+          bind= $mainMod,8,moveworkspacetomonitor,8 current
           bind = $mainMod, 8, workspace, 8
+          bind= $mainMod,9,moveworkspacetomonitor,9 current
           bind = $mainMod, 9, workspace, 9
+          bind= $mainMod,0,moveworkspacetomonitor,10 current
           bind = $mainMod, 0, workspace, 10
 
           # Move active window to a workspace with mainMod + SHIFT + [0-9]
@@ -229,14 +250,17 @@
 
           exec-once=${clean-up-after-start}/bin/clean-up-after-start.sh
 
-          windowrule = opacity 0.9 0.95,^(Alacritty)$
-          windowrule = opacity 0.9 0.95,^(Emacs)$
-
+          windowrule = opacity 0.9 0.95,Alacritty
+          windowrule = opacity 0.9 0.95,emacs
         '';
       };
     };
   };
   programs = lib.mkIf pkgs.stdenv.isLinux {
+    emacs = {
+      package = pkgs.emacsPgtkNativeComp;
+    };
+
     waybar = {
       enable = true;
       package = pkgs.waybar-hyprland;
@@ -254,6 +278,7 @@
 
           output = [
             "eDP-1"
+            "HDMI-A-1"
           ];
           modules-left = ["wlr/workspaces"];
           modules-center = ["hyprland/window"];
