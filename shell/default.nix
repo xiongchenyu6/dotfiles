@@ -13,7 +13,8 @@ _: {
       editorconfig-checker
       mdbook
       nixUnstable
-      nixfmt
+      alejandra
+      statix
       nvfetcher
       ;
     pkgWithCategory = category: package: {inherit package category;};
@@ -40,7 +41,8 @@ _: {
         (devos nixUnstable)
         (devos sops)
         (devos nvfetcher)
-        (linter nixfmt)
+        (linter alejandra)
+        (linter statix)
         (linter editorconfig-checker)
         (docs mdbook)
       ]
