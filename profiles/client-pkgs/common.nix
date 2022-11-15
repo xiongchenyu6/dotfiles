@@ -22,6 +22,7 @@
       deploy-rs
       discord
       dig
+      deadnix
       neofetch
       fd
       jdt-language-server
