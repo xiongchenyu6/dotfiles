@@ -298,7 +298,7 @@
             suites = with profiles; {
               cli = [cli.common cli.shell.zsh];
               linux-gui = [gui.nixos gui.window-manager.hyprland cli.common gui.mpd cli.shell.zsh];
-              mac-gui = [gui.darwin cli.common];
+              mac-gui = [gui.darwin cli.common cli.shell.zsh];
             };
           };
           users = {
