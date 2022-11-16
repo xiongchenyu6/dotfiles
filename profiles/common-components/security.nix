@@ -1,9 +1,17 @@
-{profiles, ...}: {
+{
+  profiles,
+  pkgs,
+  ...
+}: {
   security = {
     rtkit = {enable = true;};
     sudo = {
       enable = true;
-      wheelNeedsPassword = false;
+      # wheelNeedsPassword = false;
+      package = pkgs.sudo.override {
+        withInsults = true;
+        withSssd = true;
+      };
     };
     acme = {acceptTerms = true;};
     pam = {krb5.enable = true;};

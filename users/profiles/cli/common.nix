@@ -15,11 +15,11 @@
     in {
       ".wakatime.cfg" = {source = old-files-path + /wakatime/.wakatime.cfg;};
       ".ldaprc" = {source = old-files-path + /ldap/.ldaprc;};
-      ".curlrc" = {source = old-files-path + /downloader/.curlrc;};
       ".ssh/id_ed25519.pub" = {
         text = profiles.share.office.user.public-key;
         executable = false;
       };
+      ".curlrc" = {source = old-files-path + /downloader/.curlrc;};
       ".ssh/id_ed25519" = {
         source = ../../../secrets/office_pk.key;
         executable = false;

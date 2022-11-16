@@ -6,16 +6,16 @@
 }: {
   boot.loader.grub.device = "/dev/vda";
   boot.initrd.availableKernelModules = ["ata_piix" "uhci_hcd" "xen_blkfront"];
+
   boot.initrd.kernelModules = ["nvme"];
   fileSystems."/" = {
     device = "/dev/vda2";
     fsType = "ext4";
   };
 
-  # networking = let
-  #   file-path = builtins.split "/" (toString ./.);
-  #   hostName = lib.last file-path;
-  # in { hostName = "mail"; };
+  environment.etc."nsswitch.conf".text = ''
+    sudoers: files sss
+  '';
 
   imports =
     [
