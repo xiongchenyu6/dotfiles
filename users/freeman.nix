@@ -8,6 +8,7 @@
   profiles,
   ...
 }: {
+  sops.secrets."user/freeman/pass" = {};
   users = {
     users = {
       freeman = {
@@ -16,6 +17,7 @@
         group = "users";
         openssh.authorizedKeys.keys = [profiles.share.office.user.public-key];
         shell = pkgs.zsh;
+        passwordFile = config.sops.secrets."user/freeman/pass".path;
         extraGroups = [
           "networkmanager"
           "wheel"

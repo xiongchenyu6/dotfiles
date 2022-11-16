@@ -78,6 +78,7 @@ in {
                                   by dn.exact="uid=kdc,ou=services,${dbSuffix}" read
                                   by dn.exact="uid=kadmin,ou=services,${dbSuffix}" write
                                   by * none''
+
                 ''
                   {3}to * by dn.base="cn=${ldapRootUser},${dbSuffix}" write by self write by * read''
               ];
@@ -202,6 +203,34 @@ in {
           cn: defaults
           description: Default sudoOptions go here
           sudoOption: env_keep+=SSH_AUTH_SOCK
+
+
+          dn: cn=user4,ou=SUDOers,${dbSuffix}
+          objectClass: top
+          objectClass: sudoRole
+          cn: user3
+          sudoRunAsUser: ALL
+          sudoUser: user3
+          sudoHost: ALL
+          sudoCommand: ALL
+
+          dn: cn=user3,ou=SUDOers,${dbSuffix}
+          objectClass: top
+          objectClass: sudoRole
+          cn: user3
+          sudoRunAsUser: ALL
+          sudoUser: user3
+          sudoHost: ALL
+          sudoCommand: ALL
+
+          dn: cn=wheel_group_sudo_role,ou=SUDOers,${dbSuffix}
+          objectClass: Top
+          objectClass: sudoRole
+          cn: wheel_group_sudo_role
+          sudoRunAsUser: ALL
+          sudoHost: ALL
+          sudoUser: %developers
+          sudoCommand: ALL
 
           dn: cn=grafana,ou=developers,${dbSuffix}
           objectClass: groupOfURLs
