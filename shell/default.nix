@@ -16,6 +16,7 @@ _: {
       alejandra
       statix
       nvfetcher
+      ssh-to-age
       ;
     pkgWithCategory = category: package: {inherit package category;};
     devos = pkgWithCategory "devos";
@@ -40,6 +41,9 @@ _: {
       [
         (devos nixUnstable)
         (devos sops)
+        (
+          devos ssh-to-age
+        )
         (devos nvfetcher)
         (linter alejandra)
         (linter statix)

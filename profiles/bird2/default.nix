@@ -1,10 +1,5 @@
 {
   services = {
-    # code-server = {
-    #   auth = "none";
-    #   enable = true;
-    # };
-
     bird2 = {
       enable = true;
       checkConfig = false;
