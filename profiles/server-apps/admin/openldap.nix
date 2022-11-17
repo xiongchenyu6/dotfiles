@@ -135,12 +135,18 @@ in {
           objectClass: organizationalUnit
           description: Parent object of all UNIX accounts
 
-          dn: cn=developers,ou=developers,${dbSuffix}
+          dn: cn=owner,ou=developers,${dbSuffix}
           objectClass: top
           objectClass: posixGroup
-          cn: developers
-          gidNumber: 1234
+          gidNumber: 1233
           description: Linux group used for the Kerberos Admin server
+
+          dn: cn=developer,ou=developers,${dbSuffix}
+          objectClass: top
+          objectClass: posixGroup
+          cn: developer
+          gidNumber: 1235
+          description: Linux group used for the Kerbe
 
           dn: uid=${defaultUser},ou=developers,${dbSuffix}
           objectClass: person
@@ -168,7 +174,7 @@ in {
           homeDirectory: /home/user3
           userpassword: {SASL}user3@${realm}
           uidNumber: 1235
-          gidNumber: 1234
+          gidNumber: 1233
           cn: user3
           sn: user3
           givenName: user3
@@ -176,19 +182,19 @@ in {
           jpegPhoto: www.baidu.com
           loginShell: /run/current-system/sw/bin/zsh
 
-          dn: uid=user4,ou=developers,${dbSuffix}
+          dn: uid=user5,ou=developers,${dbSuffix}
           objectClass: person
           objectClass: posixAccount
           objectClass: organizationalPerson
           objectClass: shadowAccount
           objectClass: inetOrgPerson
-          homeDirectory: /home/user4
-          userpassword: {SASL}user4@${realm}
-          uidNumber: 1236
-          gidNumber: 1234
-          cn: user4
-          sn: user4
-          givenName: user4
+          homeDirectory: /home/user5
+          userpassword: {SASL}user5@${realm}
+          uidNumber: 1237
+          gidNumber: 1235
+          cn: user5
+          sn: user5
+          givenName: user5
           mail: fdsa@google.com
           jpegPhoto: www.baidu.com
           loginShell: /run/current-system/sw/bin/zsh
@@ -204,32 +210,20 @@ in {
           description: Default sudoOptions go here
           sudoOption: env_keep+=SSH_AUTH_SOCK
 
-
-          dn: cn=user4,ou=SUDOers,${dbSuffix}
-          objectClass: top
-          objectClass: sudoRole
-          cn: user3
-          sudoRunAsUser: ALL
-          sudoUser: user3
-          sudoHost: ALL
-          sudoCommand: ALL
-
-          dn: cn=user3,ou=SUDOers,${dbSuffix}
-          objectClass: top
-          objectClass: sudoRole
-          cn: user3
-          sudoRunAsUser: ALL
-          sudoUser: user3
-          sudoHost: ALL
-          sudoCommand: ALL
-
-          dn: cn=wheel_group_sudo_role,ou=SUDOers,${dbSuffix}
+          dn: cn=%owner,ou=SUDOers,${dbSuffix}
           objectClass: Top
           objectClass: sudoRole
-          cn: wheel_group_sudo_role
           sudoRunAsUser: ALL
-          sudoHost: ALL
-          sudoUser: %developers
+          sudoHost: 10.0.8.10/22
+          sudoUser: %owner
+          sudoCommand: ALL
+
+          dn: cn=%developer,ou=SUDOers,${dbSuffix}
+          objectClass: Top
+          objectClass: sudoRole
+          sudoRunAsUser: ALL
+          sudoHost: ma*
+          sudoUser: %developer
           sudoCommand: ALL
 
           dn: cn=grafana,ou=developers,${dbSuffix}

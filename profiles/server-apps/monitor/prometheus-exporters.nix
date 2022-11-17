@@ -32,10 +32,10 @@
       port = 9004;
     };
 
-    nginx = {
-      enable = true;
-      port = 9005;
-    };
+    # nginx = {
+    #   enable = true;
+    #   port = 9005;
+    # };
 
     openldap = {
       enable = false;

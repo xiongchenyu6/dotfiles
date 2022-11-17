@@ -13,10 +13,6 @@
     fsType = "ext4";
   };
 
-  environment.etc."nsswitch.conf".text = ''
-    sudoers: files sss
-  '';
-
   imports =
     [
       (modulesPath + "/profiles/qemu-guest.nix")

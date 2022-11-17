@@ -7,7 +7,7 @@
   services = {
     nginx = {
       enable = true;
-      statusPage = true;
+      # statusPage = true;
       recommendedProxySettings = true;
       gitweb = {enable = true;};
       additionalModules = [pkgs.nginxModules.pam];
@@ -74,7 +74,6 @@
             proxyWebsockets = true;
           };
         };
-
         gitea = {
           serverName = "git.inner.${config.networking.domain}";
           forceSSL = true;
