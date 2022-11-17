@@ -31,6 +31,8 @@ in {
 
         ldap_default_bind_dn = cn=${ldapRootUser},${dbSuffix}
         ldap_sudo_search_base = ou=SUDOers,${dbSuffix}
+        ldap_sudo_include_regexp = true
+        ldap_sudo_use_host_filter = false
         ldap_sasl_mech = GSSAPI
         ldap_sasl_authid = host/${config.networking.fqdn}
         ldap_sasl_realm = ${realm}

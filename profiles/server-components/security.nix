@@ -8,6 +8,24 @@
     #     }
     #   ];
     # };
-    pam = {services = {sshd = {makeHomeDir = true;};};};
+    pam = {
+      makeHomeDir = {
+        skelDirectory = "/etc/skel";
+      };
+
+      services = {sshd = {makeHomeDir = true;};};
+    };
+  };
+  environment = {
+    etc = {
+      "skel/.zshrc" = {
+        mode = "0755";
+        text = ''
+        '';
+      };
+      "nsswitch.conf".text = ''
+        sudoers: files sss
+      '';
+    };
   };
 }

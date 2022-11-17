@@ -8,7 +8,7 @@
   sops.secrets."oci-arm-host-capacity" = {};
 
   environment = {
-    systemPackages = with pkgs; [python3 calibre xvfb-run figlet];
+    systemPackages = with pkgs; [python3 exa calibre xvfb-run figlet];
   };
 
   programs = {
