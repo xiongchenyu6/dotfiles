@@ -1,6 +1,7 @@
 {
   config,
   pkgs,
+  lib,
   ...
 }: let
   realm = "FREEMAN.ENGINEER";
@@ -105,7 +106,58 @@ in {
           };
         };
       };
-      declarativeContents = {
+      declarativeContents = with builtins;
+      with lib; let
+        new-user = cn: uid: gid: ''
+          dn: uid=${cn},ou=developers,${dbSuffix}
+          objectClass: person
+          objectClass: posixAccount
+          objectClass: organizationalPerson
+          objectClass: shadowAccount
+          objectClass: inetOrgPerson
+          homeDirectory: /home/${cn}
+          userpassword: {SASL}${cn}@${realm}
+          uidNumber: ${toString uid}
+          gidNumber: ${toString gid}
+          cn: ${cn}
+          sn: ${cn}
+          givenName: ${cn}
+          mail: ${cn}@${config.networking.fqdn}
+          jpegPhoto: www.baidu.com
+          loginShell: /run/current-system/sw/bin/zsh
+        '';
+        init-uid = 1234;
+        names = [
+          {
+            name = defaultUser;
+            gid = 1234;
+          }
+          {
+            name = "user3";
+            gid = 1233;
+          }
+          {
+            name = "user5";
+            gid = 1235;
+          }
+        ];
+
+        numberRange = names: range init-uid (init-uid + (length names) - 1);
+
+        uid-list = numberRange names;
+
+        user-list =
+          zipListsWith (x: uid: {
+            inherit uid;
+            inherit (x) name gid;
+          })
+          names
+          uid-list;
+
+        ldap-user-list = map (x: new-user x.name x.uid x.gid) user-list;
+
+        user-contents = concatStringsSep "\n" ldap-user-list;
+      in {
         ${dbSuffix} = ''
           dn: ${dbSuffix}
           objectClass: top
@@ -148,56 +200,7 @@ in {
           gidNumber: 1235
           description: Linux group used for the Kerbe
 
-          dn: uid=${defaultUser},ou=developers,${dbSuffix}
-          objectClass: person
-          objectClass: posixAccount
-          objectClass: organizationalPerson
-          objectClass: shadowAccount
-          objectClass: inetOrgPerson
-          homeDirectory: /home/${defaultUser}
-          userpassword: {SASL}${defaultUser}@${realm}
-          uidNumber: 1234
-          gidNumber: 1234
-          cn: ${defaultUser}
-          sn: ${defaultUser}
-          givenName: ${defaultUser}
-          mail: fdsa@google.com
-          jpegPhoto: www.baidu.com
-          loginShell: /run/current-system/sw/bin/zsh
-
-          dn: uid=user3,ou=developers,${dbSuffix}
-          objectClass: person
-          objectClass: posixAccount
-          objectClass: organizationalPerson
-          objectClass: shadowAccount
-          objectClass: inetOrgPerson
-          homeDirectory: /home/user3
-          userpassword: {SASL}user3@${realm}
-          uidNumber: 1235
-          gidNumber: 1233
-          cn: user3
-          sn: user3
-          givenName: user3
-          mail: fdsa@google.com
-          jpegPhoto: www.baidu.com
-          loginShell: /run/current-system/sw/bin/zsh
-
-          dn: uid=user5,ou=developers,${dbSuffix}
-          objectClass: person
-          objectClass: posixAccount
-          objectClass: organizationalPerson
-          objectClass: shadowAccount
-          objectClass: inetOrgPerson
-          homeDirectory: /home/user5
-          userpassword: {SASL}user5@${realm}
-          uidNumber: 1237
-          gidNumber: 1235
-          cn: user5
-          sn: user5
-          givenName: user5
-          mail: fdsa@google.com
-          jpegPhoto: www.baidu.com
-          loginShell: /run/current-system/sw/bin/zsh
+          ${user-contents}
 
           dn: ou=SUDOers,${dbSuffix}
           objectClass: top
