@@ -1,4 +1,4 @@
-{
+{config, ...}: {
   sops.secrets."cachix/secret" = {};
 
   services = {
