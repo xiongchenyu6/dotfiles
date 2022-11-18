@@ -111,7 +111,7 @@
           "encode64"
           "fancy-ctrl-z"
           "git"
-          "git-hubflow"
+          "git-flow-avh"
           "gitignore"
           "pass"
           "ripgrep"

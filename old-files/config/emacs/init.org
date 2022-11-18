@@ -709,6 +709,10 @@ Otherwise, show the default maximum number of recent items."
 (define-key lsp-bridge-mode-map [remap xref-find-references] #'lsp-bridge-find-references)
 (define-key lsp-bridge-mode-map [remap xref-go-back] #'lsp-bridge-find-def-return)
 
+(with-eval-after-load 'acm-mode
+  (define-key acm-mode-map "<tab>" nil)
+  (define-key acm-mode-map "TAB" nil))
+
 
 ;; (setq lsp-bridge-enable-log t)
 
@@ -717,7 +721,7 @@ Otherwise, show the default maximum number of recent items."
 ;; (setq exec-path (append exec-path '("/home/freeman/.config/emacs/.cache/lsp/eclipse.jdt.ls/bin")))
 
 
-;(setq lsp-bridge-jdtls-worksapce)
+                                        ;(setq lsp-bridge-jdtls-worksapce)
 
 ;; (setenv "PATH" (concat (getenv "PATH") ":/home/freeman/.npm/bin"))
 #+end_src
