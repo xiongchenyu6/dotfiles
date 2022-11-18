@@ -46,7 +46,7 @@
       };
     };
 
-    java = {enable = true;};
+    java = {enable = false;};
 
     topgrade = {
       enable = true;
@@ -130,7 +130,7 @@
       ];
     };
     emacs = {
-      enable = true;
+      enable = false;
       extraPackages = epkgs:
         with pkgs;
         with epkgs; [

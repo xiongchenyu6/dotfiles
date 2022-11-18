@@ -306,6 +306,7 @@
             freeman-gui = {suites, ...}: {imports = suites.linux-gui;};
             xiongchenyu = {suites, ...}: {imports = suites.mac-gui;};
             chjiang = {suites, ...}: {imports = suites.mac-gui;};
+            liurong = {suites, ...}: {imports = suites.mac-gui;};
           };
         };
 
