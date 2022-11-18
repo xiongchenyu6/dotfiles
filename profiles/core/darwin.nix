@@ -14,4 +14,32 @@
   security.pam.enableSudoTouchIdAuth = true;
 
   system.darwinLabel = "with-gui";
+  environment.etc = {
+    enable = true;
+    "krb5.conf" = {
+      text = ''
+        [libdefaults]
+          default_realm = TRONTECH.LINK
+          dns_fallback = true
+          dns_lookup_kdc = true
+          dns_lookup_realm = true
+          ignore_acceptor_hostname = true
+          rdns = false
+
+        [realms]
+          TRONTECH.LINK = {
+            admin_server = admin.inner.trontech.link
+            database_module = openldap_ldapconf
+            default_domain = admin.inner.trontech.link
+            kdc = admin.inner.trontech.link
+            kpasswd_server = admin.inner.trontech.link
+          }
+
+        [domain_realm]
+          .inner.trontech.link = TRONTECH.LINK
+          .trontech.link = TRONTECH.LINK
+          trontech.link = TRONTECH.LINK
+      '';
+    };
+  };
 }
