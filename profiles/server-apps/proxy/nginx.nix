@@ -118,6 +118,17 @@
             proxyPass = "http://localhost:${toString config.services.gotify.port}";
           };
         };
+        zammad = {
+          serverName = "zammad.inner.${config.networking.domain}";
+          forceSSL = true;
+          acmeRoot = null;
+          useACMEHost = "inner.${config.networking.domain}";
+          kTLS = true;
+          locations."/" = {
+            proxyPass = "http://localhost:${toString config.services.zammad.port}";
+          };
+        };
+
         mail = {
           # forceSSL = lib.mkForce true;
           onlySSL = true;
