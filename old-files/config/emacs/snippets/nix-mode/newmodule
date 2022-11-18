@@ -1,0 +1,67 @@
+# -*- mode: snippet -*-
+# name: newmodule
+# key: newmodule
+# --
+# Edit this configuration file to define what should be installed on
+
+# your system.  Help is available in the configuration.nix(5) man page
+# and in the NixOS manual (accessible by running ‘nixos-help’).
+
+{ pkgs, config, lib, ... }:
+with lib;
+let
+file-path = builtins.split "/" (toString ./.);
+serviceName = lib.last file-path;
+cfg = config.services.\${serviceName};
+
+in {
+options = {
+services = {
+"\${serviceName}" = {
+enable = mkEnableOption "Enables \${serviceName} service";
+
+};
+};
+};
+config = {
+systemd = {
+services = mkIf cfg.enable {
+"\${serviceName}" = {
+wantedBy = [ "multi-user.target" ];
+after = [ "networking.target" ];
+startLimitIntervalSec = 500;
+startLimitBurst = 5;
+environment = { };
+preStart = "";
+script = "$0";
+postStart = "";
+onSuccess = [ ];
+onFailure = [ ];
+serviceConfig = {
+User = serviceName;
+Restart = "on-failure";
+RestartSec = "5s";
+WorkingDirectory = "/var/lib/\${serviceName}";
+            StateDirectory = serviceName;
+            RuntimeDirectory = serviceName;
+            LogsDirectory = serviceName;
+            CacheDirectory = serviceName;
+
+Type = "${1:simple}";
+};
+};
+};
+};
+
+users.users."\${serviceName}" = {
+description = "\${serviceName} user";
+isSystemUser = true;
+group = serviceName;
+      createHome = true;
+      home = "/var/lib/${serviceName}";
+
+};
+users.groups."\${serviceName}" = { };
+};
+
+}
