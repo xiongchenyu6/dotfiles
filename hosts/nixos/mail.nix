@@ -20,6 +20,7 @@
       profiles.optional-apps.healthcheck
       profiles.optional-apps.calibre-web
       profiles.optional-apps.gotify-server
+      profiles.optional-apps.zammad
       profiles.users.root
       profiles.server-pkgs.nixos
       profiles.users.freeman
