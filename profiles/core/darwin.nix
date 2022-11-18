@@ -15,8 +15,8 @@
 
   system.darwinLabel = "with-gui";
   environment.etc = {
-    enable = true;
     "krb5.conf" = {
+      enable = true;
       text = ''
         [libdefaults]
           default_realm = TRONTECH.LINK
