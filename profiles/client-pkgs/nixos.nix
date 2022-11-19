@@ -16,12 +16,9 @@
       cava
       geoip
       gnumake
+      gimp
       haskell-language-server
-      (python3.withPackages (_:
-        with python3.pkgs; [
-          my_cookies
-          mutagen
-        ]))
+      (python3.withPackages (_: with python3.pkgs; [my_cookies mutagen]))
       (haskellPackages.ghcWithPackages (_:
         with haskellPackages;
         with pkgs.haskell.lib; [
@@ -42,16 +39,18 @@
       pinentry
       pass
       procs
-      jp2a
       patchelf
+      jp2a
       linuxPackages.ply
       tdesktop
       unrar-wrapper
+      manix
       mpv
       wineWowPackages.staging
       #wpa_supplicant_gui
       whatsapp-for-linux
       qq
+      virtmanager
       wechat-uos
     ];
 

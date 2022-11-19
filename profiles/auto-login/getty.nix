@@ -1,7 +1,7 @@
 {pkgs, ...}: {
   services = {
     getty = {
-      autologinUser = "freeman";
+      autologinUser = "freeman.xiong";
     };
   };
   environment = {
@@ -14,6 +14,7 @@
       hyprpicker
       gnomeExtensions.zoom-wayland-extension
       wl-clipboard
+      wf-recorder
       xdg_utils
     ];
   };

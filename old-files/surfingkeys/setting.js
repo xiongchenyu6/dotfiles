@@ -193,6 +193,13 @@ var switchSearchConfigs = [
     searchUrl: "https://mipmip.github.io/home-manager-option-search/?%s",
   },
   {
+    commonUseMapKey: "c",
+    mapkey: ";np",
+    siteName: "mynixos",
+    keywordRegex: getRegExp("https://mynixos.com/search", "q"),
+    searchUrl: "https://mynixos.com/search?q=%s",
+  },
+  {
     commonUseMapKey: "v",
     mapkey: ";bb",
     siteName: "bilibili",

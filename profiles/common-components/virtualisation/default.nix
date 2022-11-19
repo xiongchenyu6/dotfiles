@@ -5,10 +5,8 @@
       rootless = {enable = true;};
     };
     # virtualbox = { host = { enable = true; }; };
-    # libvirtd.enable = true;
+    libvirtd.enable = true;
   };
 
-  # users.users.freeman.extraGroups = [ "libvirtd" ];
-
-  # networking.firewall.checkReversePath = false;
+  networking.firewall.checkReversePath = false;
 }
