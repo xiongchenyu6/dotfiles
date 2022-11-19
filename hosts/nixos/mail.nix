@@ -23,7 +23,7 @@
       profiles.optional-apps.zammad
       profiles.users.root
       profiles.server-pkgs.nixos
-      profiles.users.freeman
+      profiles.users."freeman.xiong"
     ]
     ++ suites.server-base;
 

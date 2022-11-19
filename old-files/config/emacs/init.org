@@ -7,6 +7,10 @@
 #+PROPERTY: header-args :results silent :tangle "init.el"
 
 * My Configuration
+** Env
+#+begin_src emacs-lisp
+(setenv "XDG_SESSION_TYPE" "wayland")
+#+end_src
 ** UI
 *** Font
 #+begin_src emacs-lisp
@@ -1177,7 +1181,9 @@ Bind to lsp mode
 (require 'org-download)
 
 (setq org-download-image-dir "~/Pictures")
-(setq org-download-method 'attach)
+;; (setq org-download-method 'attach)
+
+(setq org-download-screenshot-method "grim %s")
 #+end_src
 *** Org Reveal
 #+begin_src emacs-lisp
@@ -1314,6 +1320,10 @@ Bind to lsp mode
 #+begin_src emacs-lisp
 (require 'ox-hugo)
 #+end_src
+*** Org pandoc
+#+begin_src emacs-lisp
+(require 'ox-pandoc)
+#+end_src
 ** Key bindings
 *** open app
 #+begin_src emacs-lisp
@@ -1366,20 +1376,23 @@ Bind to lsp mode
 
 
 (require 'treemacs)
+(setq treemacs-follow-mode t)
 (require 'treemacs-project-follow-mode)
 (setq treemacs-show-hidden-files nil)
-(treemacs-fringe-indicator-mode t)
-(treemacs-filewatch-mode t)
+(setq treemacs-fringe-indicator-mode t)
+(setq treemacs-filewatch-mode t)
 (setq treemacs-file-event-delay 100)
-(treemacs-project-follow-mode t)
+(setq treemacs-project-follow-mode t)
 (setq treemacs-is-never-other-window t)
 (setq treemacs-silent-refresh    t)
 (setq treemacs-file-follow-delay 0.1)
+(setq treemacs-project-follow-delay 0.1)
 
 (require 'treemacs-tag-follow-mode)
 (treemacs-tag-follow-mode t)
 (setq treemacs-tag-follow-delay 0.1)
                                         ; one beautiful work around to make c+[ works
+(treemacs-follow-mode t)
 (define-key meow-insert-state-keymap 
             (kbd "C-g") [escape])
 #+end_src

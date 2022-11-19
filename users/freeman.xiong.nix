@@ -11,9 +11,9 @@
   sops.secrets."user/freeman/pass" = {};
   users = {
     users = {
-      freeman = {
+      "freeman.xiong" = {
         isNormalUser = true;
-        description = "freeman";
+        description = "freeman.xiong";
         group = "users";
         openssh.authorizedKeys.keys = [profiles.share.office.user.public-key];
         shell = pkgs.zsh;
@@ -35,7 +35,7 @@
     };
   };
   home-manager.users = {
-    freeman =
+    "freeman.xiong" =
       if (builtins.elem "with-gui" config.system.nixos.tags)
       then hmUsers.freeman-gui
       else hmUsers.freeman-cli;

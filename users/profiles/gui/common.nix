@@ -168,6 +168,7 @@
           ox-hugo
           ob-mermaid
           ob-restclient
+          ox-pandoc
           org-contrib
           org-roam
           org-re-reveal

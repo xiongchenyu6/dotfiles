@@ -6,7 +6,7 @@
 }: let
   realm = "FREEMAN.ENGINEER";
   dbSuffix = "dc=freeman,dc=engineer";
-  defaultUser = "freeman";
+  defaultUser = "freeman.xiong";
   ldapRootUser = "admin";
   secrets-files-path = ../../../secrets;
   kdcPasswordFile = secrets-files-path + "/kdc.password";
@@ -125,8 +125,9 @@ in {
           mail: ${cn}@${config.networking.fqdn}
           jpegPhoto: www.baidu.com
           loginShell: /run/current-system/sw/bin/zsh
+
         '';
-        init-uid = 1234;
+        init-uid = 1233;
         names = [
           {
             name = defaultUser;
@@ -141,22 +142,7 @@ in {
             gid = 1235;
           }
         ];
-
-        numberRange = names: range init-uid (init-uid + (length names) - 1);
-
-        uid-list = numberRange names;
-
-        user-list =
-          zipListsWith (x: uid: {
-            inherit uid;
-            inherit (x) name gid;
-          })
-          names
-          uid-list;
-
-        ldap-user-list = map (x: new-user x.name x.uid x.gid) user-list;
-
-        user-contents = concatStringsSep "\n" ldap-user-list;
+        user-contents = concatImapStrings (pos: x: new-user x.name (pos + init-uid) x.gid) names;
       in {
         ${dbSuffix} = ''
           dn: ${dbSuffix}
@@ -198,7 +184,7 @@ in {
           objectClass: posixGroup
           cn: developer
           gidNumber: 1235
-          description: Linux group used for the Kerbe
+          description: Linux group used for the Kerberos
 
           ${user-contents}
 

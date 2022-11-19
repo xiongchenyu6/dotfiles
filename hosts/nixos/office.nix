@@ -53,7 +53,8 @@
       profiles.core.nixos
       profiles.client-pkgs.nixos
       profiles.users.root
-      profiles.users.freeman
+      # profiles.users.freeman
+      profiles.users."freeman.xiong"
     ]
     ++ suites.client-base;
 
