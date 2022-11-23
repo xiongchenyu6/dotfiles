@@ -9,7 +9,7 @@
     firewall = {
       allowedTCPPorts = [179];
       allowedUDPPorts = [179 33434];
-      enable = true;
+      enable = false;
     };
 
     networkmanager = {enable = true;};

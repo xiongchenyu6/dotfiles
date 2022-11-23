@@ -148,7 +148,6 @@
           copilot-el
           dockerfile-mode
           direnv
-          eglot
           format-all
           # dap-mode
           doom-themes
@@ -161,7 +160,8 @@
           leetcode
           lispy
           ligature
-          # lsp-java
+          lsp-haskell
+          lsp-java
           # lsp-ui
           # lsp-mode
           nix-mode
