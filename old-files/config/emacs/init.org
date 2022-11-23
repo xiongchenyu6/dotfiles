@@ -634,7 +634,6 @@ Otherwise, show the default maximum number of recent items."
 
 (straight-use-package 'lsp-mode)
 (straight-use-package 'lsp-ui)
-(straight-use-package 'lsp-java)
 (straight-use-package 'dap-mode)
 
 (require 'lsp)
