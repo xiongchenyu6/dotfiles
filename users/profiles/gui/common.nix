@@ -60,6 +60,9 @@
           repos = ["~/workspace/*/" "~/git/*/" "~/private/*/"];
           arguments = "--rebase --autostash";
         };
+        commands = {
+          "emacs straight" = "emacs --batch -l ~/.config/emacs/early-init.el -f straight-pull-all";
+        };
       };
     };
 
@@ -146,9 +149,8 @@
           dockerfile-mode
           direnv
           eglot
-          emmet-mode
           format-all
-          dap-mode
+          # dap-mode
           doom-themes
           doom-modeline
           graphviz-dot-mode
@@ -159,7 +161,9 @@
           leetcode
           lispy
           ligature
-          lsp-java
+          # lsp-java
+          # lsp-ui
+          # lsp-mode
           nix-mode
           meow
           magit
