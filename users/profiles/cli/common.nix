@@ -27,17 +27,6 @@
     };
   };
 
-  # Packages that should be installed to the user profile.
-
-  # This value determines the Home Manager release that your
-  # configuration is compatible with. This helps avoid breakage
-  # when a new Home Manager release introduces backwards
-  # incompatible changes.
-  #
-  # You can update Home Manager without changing this value. See
-  # the Home Manager release notes for a list of state version
-  # changes in each release.
-
   editorconfig = {
     enable = true;
     settings = {
@@ -94,9 +83,8 @@
 
     ssh = {
       enable = true;
-      hashKnownHosts = true;
+      hashKnownHosts = false;
       compression = true;
-      # controlMaster = "auto";
       matchBlocks = {
         "freeman.engineer" = {port = 2222;};
         "mail.freeman.engineer" = {
@@ -115,8 +103,6 @@
 
     bat = {enable = true;};
     exa = {enable = true;};
-
-    # Let Home Manager install and manage itself.
 
     home-manager = {enable = true;};
 

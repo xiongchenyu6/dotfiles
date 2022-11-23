@@ -66,6 +66,7 @@
       terranix
       tronbox
       unzip
+      rust-analyzer
       stow
       slack
       statix

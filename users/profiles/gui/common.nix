@@ -139,6 +139,7 @@
           clojure-mode
           cider
           cmake-mode
+          cape
           corfu
           corfu-doc
           copilot-el

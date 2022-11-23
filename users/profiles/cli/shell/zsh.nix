@@ -60,6 +60,7 @@
         path+="$HOME/.npm/bin"
         eval $(${pkgs.bash-my-aws}/bin/bma-init)
         complete -C '${pkgs.awscli2}/bin/aws_completer' aws
+        eval $(${pkgs.rustup}/bin/rustup completions zsh)
 
         # function restricted-expand-or-complete() {
         #         if [[ ! $PWD = /mnt/* ]]; then
@@ -116,6 +117,7 @@
           "pass"
           "ripgrep"
           "rsync"
+          "rust"
           "sudo"
           "systemd"
           "scala"
