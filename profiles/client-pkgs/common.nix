@@ -58,6 +58,7 @@
       # nix-alien
       # nix-index-update
       nixopsUnstable
+      nil
       openssl
       plantuml
       ripgrep
