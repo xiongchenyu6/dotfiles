@@ -516,17 +516,6 @@
 (setq completion-styles '(orderless))
 
 (defvar osfva/default-completion-styles completion-styles)
-
-;; 此处配置省略...
-
-(with-eval-after-load 'company
-  (defun osfva/company-disable-orderless (orig-fun &rest args)
-    "Diable orderless completion style when company is doing the completion."
-    (let ((completion-styles osfva/default-completion-styles))
-      (apply orig-fun args)))
-  (advice-add #'company--perform :around #'osfva/company-disable-orderless))
-
-;; 此处配置省略...
 #+end_src
 *** Better recent file
 #+begin_src emacs-lisp
@@ -640,94 +629,93 @@ Otherwise, show the default maximum number of recent items."
 ** Lang
 *** lsp & lsp-ui
 #+begin_src emacs-lisp
-;; (setq lsp-enable-dap-auto-configure nil)
+  ;; (setq lsp-enable-dap-auto-configure nil)
 
-;; (setq lsp-keymap-prefix "C-c l")
+  ;; (setq lsp-keymap-prefix "C-c l")
 
-;; (require 'lsp)
+  ;; (require 'lsp)
 
-;; (autoload 'lsp "lsp-mode" nil t)
+  ;; (autoload 'lsp "lsp-mode" nil t)
 
-;; (with-eval-after-load 'lsp-mode
-;; (add-hook 'lsp-mode-hook #'lsp-enable-which-key-integration))
+  ;; (with-eval-after-load 'lsp-mode
+  ;; (add-hook 'lsp-mode-hook #'lsp-enable-which-key-integration))
 
-;; (advice-add 'lsp :before 'direnv-update-environment)
+  ;; (advice-add 'lsp :before 'direnv-update-environment)
 
-;; (add-hook 'sh-mode-hook 'lsp-deferred)
-;; (add-hook 'js-mode-hook #'lsp-deferred)
-;; (add-hook 'c++-mode-hook #'lsp-deferred)
-;; (add-hook 'cmake-mode-hook 'lsp-deferred)
-;; (add-hook 'typescript-mode-hook 'lsp-deferred)
-;; (add-hook 'go-mode-hook #'lsp-go-install-save-hooks)
-;; (defun lsp-go-install-save-hooks ()
-;;   (add-hook 'before-save-hook #'lsp-format-buffer t t)
-;;   )
+  ;; (add-hook 'sh-mode-hook 'lsp-deferred)
+  ;; (add-hook 'js-mode-hook #'lsp-deferred)
+  ;; (add-hook 'c++-mode-hook #'lsp-deferred)
+  ;; (add-hook 'cmake-mode-hook 'lsp-deferred)
+  ;; (add-hook 'typescript-mode-hook 'lsp-deferred)
+  ;; (add-hook 'go-mode-hook #'lsp-go-install-save-hooks)
+  ;; (defun lsp-go-install-save-hooks ()
+  ;;   (add-hook 'before-save-hook #'lsp-format-buffer t t)
+  ;;   )
 
-;; (add-hook 'before-save-hook #'lsp-format-buffer t t)
+  ;; (add-hook 'before-save-hook #'lsp-format-buffer t t)
 
-;; (add-hook 'haskell-mode-hook #'eglot-ensure)
-;; (add-hook 'haskell-literate-mode-hook #'eglot-ensure)
-;; (add-hook 'dockerfile-mode-hook 'lsp-deferred)
+  ;; (add-hook 'haskell-mode-hook #'eglot-ensure)
+  ;; (add-hook 'haskell-literate-mode-hook #'eglot-ensure)
+  ;; (add-hook 'dockerfile-mode-hook 'lsp-deferred)
 
-;; (add-hook 'go-mode-hook 'lsp-deferred)
+  ;; (add-hook 'go-mode-hook 'lsp-deferred)
 
-;; (add-hook 'nix-mode-hook 'lsp-deferred)
-;; (defun lsp-nix-install-save-hooks ()
-;;   (add-hook 'before-save-hook #'lsp-format-buffer t t)
-;;   ;(add-hook 'before-save-hook #'lsp-organize-imports t t)
-;;   )
-;; (add-hook 'nix-mode-hook #'lsp-nix-install-save-hooks)
-;; (add-hook 'rust-mode-hook 'lsp-deferred)
-;; (add-hook 'python-mode-hook 'lsp-deferred)
-;; (add-hook 'sql-mode-hook 'lsp-deferred)
-;; (add-hook 'html-mode-hook #'lsp-deferred)
-;; (add-hook 'css-mode-hook #'lsp-deferred)
-;; (add-hook 'yaml-mode-hook #'lsp-deferred)
-
-
-(direnv-mode t)
-
-(add-to-list 'load-path "/home/freeman/Git/lsp-bridge")
-
-(require 'lsp-bridge)
-
-(advice-add 'lsp-bridge-restart-process :before 'direnv-update-environment)
-
-(global-lsp-bridge-mode)
-
-(defun my-tab ()
-  (interactive)
-  (or (copilot-accept-completion)
-      (yas-expand)
-      (acm-complete)))
-
-(with-eval-after-load 'lsp-bridge
-  ;; disable inline previews
-  ;; (define-key corfu-map (kbd "<tab>") 'my-tab)
-  ;; (define-key corfu-map (kbd "TAB") 'my-tab)
-  (define-key prog-mode-map (kbd "<tab>") 'my-tab)
-  (define-key prog-mode-map (kbd "TAB") 'my-tab)
-  )
-
-(define-key lsp-bridge-mode-map [remap xref-find-definitions] #'lsp-bridge-find-def)
-(define-key lsp-bridge-mode-map [remap xref-find-references] #'lsp-bridge-find-references)
-(define-key lsp-bridge-mode-map [remap xref-go-back] #'lsp-bridge-find-def-return)
-
-(with-eval-after-load 'acm-mode
-  (define-key acm-mode-map "<tab>" nil)
-  (define-key acm-mode-map "TAB" nil))
+  ;; (add-hook 'nix-mode-hook 'lsp-deferred)
+  ;; (defun lsp-nix-install-save-hooks ()
+  ;;   (add-hook 'before-save-hook #'lsp-format-buffer t t)
+  ;;   ;(add-hook 'before-save-hook #'lsp-organize-imports t t)
+  ;;   )
+  ;; (add-hook 'nix-mode-hook #'lsp-nix-install-save-hooks)
+  ;; (add-hook 'rust-mode-hook 'lsp-deferred)
+  ;; (add-hook 'python-mode-hook 'lsp-deferred)
+  ;; (add-hook 'sql-mode-hook 'lsp-deferred)
+  ;; (add-hook 'html-mode-hook #'lsp-deferred)
+  ;; (add-hook 'css-mode-hook #'lsp-deferred)
+  ;; (add-hook 'yaml-mode-hook #'lsp-deferred)
 
 
-;; (setq lsp-bridge-enable-log t)
+  (direnv-mode t)
 
-;; (setenv "PATH" (concat (getenv "PATH") ":/home/freeman/.config/emacs/.cache/lsp/eclipse.jdt.ls/bin"))
+  (add-to-list 'load-path "/home/freeman.xiong/Git/lsp-bridge")
 
-;; (setq exec-path (append exec-path '("/home/freeman/.config/emacs/.cache/lsp/eclipse.jdt.ls/bin")))
+  (require 'lsp-bridge)
+
+  (advice-add 'lsp-bridge-restart-process :before 'direnv-update-environment)
+
+  (global-lsp-bridge-mode)
+
+  (defun my-tab ()
+    (interactive)
+    (or (copilot-accept-completion)
+        (yas-expand)
+        (acm-complete)))
+
+  (define-key lsp-bridge-mode-map [remap xref-find-definitions] #'lsp-bridge-find-def)
+  (define-key lsp-bridge-mode-map [remap xref-find-references] #'lsp-bridge-find-references)
+  (define-key lsp-bridge-mode-map [remap xref-go-back] #'lsp-bridge-find-def-return)
+
+  (define-key acm-mode-map (kbd "<tab>") #'my-tab)
+  (define-key acm-mode-map (kbd "TAB") #'my-tab)
+  (define-key acm-mode-map  (kbd "Tab") #'my-tab)
+
+  ;; (define-key lsp-bridge-mode-map (kbd "<tab>") #'my-tab)
+  ;; (define-key lsp-bridge-mode-map (kbd "TAB") #'my-tab)
+  ;; (define-key lsp-bridge-mode-map  (kbd "Tab") #'my-tab)
 
 
-                                        ;(setq lsp-bridge-jdtls-worksapce)
+  (featurep 'lsp-bridge)
 
-;; (setenv "PATH" (concat (getenv "PATH") ":/home/freeman/.npm/bin"))
+  (setq lsp-bridge-auto-format-code t)
+  ;; (setq lsp-bridge-enable-log t)
+
+  ;; (setenv "PATH" (concat (getenv "PATH") ":/home/freeman/.config/emacs/.cache/lsp/eclipse.jdt.ls/bin"))
+
+  ;; (setq exec-path (append exec-path '("/home/freeman/.config/emacs/.cache/lsp/eclipse.jdt.ls/bin")))
+
+
+                                          ;(setq lsp-bridge-jdtls-worksapce)
+
+  ;; (setenv "PATH" (concat (getenv "PATH") ":/home/freeman/.npm/bin"))
 #+end_src
 **** lsp ui
 #+begin_src emacs-lisp
@@ -891,89 +879,9 @@ Otherwise, show the default maximum number of recent items."
 #+end_src
 *** Format all
 #+begin_src emacs-lisp
-(setq format-all-default-formatters
-   '(("Assembly" asmfmt)
-     ("ATS" atsfmt)
-     ("Bazel" buildifier)
-     ("BibTeX" emacs-bibtex)
-     ("C" clang-format)
-     ("C#" clang-format)
-     ("C++" clang-format)
-     ("Cabal Config" cabal-fmt)
-     ("Clojure" zprint)
-     ("CMake" cmake-format)
-     ("Crystal" crystal)
-     ("CSS" prettier)
-     ("Cuda" clang-format)
-     ("D" dfmt)
-     ("Dart" dart-format)
-     ("Dhall" dhall)
-     ("Dockerfile" dockfmt)
-     ("Elixir" mix-format)
-     ("Elm" elm-format)
-     ("Emacs Lisp" emacs-lisp)
-     ("Erlang" efmt)
-     ("F#" fantomas)
-     ("Fish" fish-indent)
-     ("Fortran Free Form" fprettify)
-     ("GLSL" clang-format)
-     ("Go" gofmt)
-     ("GraphQL" prettier)
-     ("Haskell" brittany)
-     ("HTML" html-tidy)
-     ("HTML+ERB" erb-format)
-     ("Java" clang-format)
-     ("JavaScript" prettier)
-     ("JSON" prettier)
-     ("JSON5" prettier)
-     ("Jsonnet" jsonnetfmt)
-     ("JSX" prettier)
-     ("Kotlin" ktlint)
-     ("LaTeX" latexindent)
-     ("Less" prettier)
-     ("Literate Haskell" brittany)
-     ("Lua" lua-fmt)
-     ("Markdown" prettier)
-     ("Nix" nixfmt)
-     ("Objective-C" clang-format)
-     ("OCaml" ocp-indent)
-     ("Perl" perltidy)
-     ("PHP" prettier)
-     ("Protocol Buffer" clang-format)
-     ("PureScript" purty)
-     ("Python" black)
-     ("R" styler)
-     ("Reason" bsrefmt)
-     ("ReScript" rescript)
-     ("Ruby" rufo)
-     ("Rust" rustfmt)
-     ("Scala" scalafmt)
-     ("SCSS" prettier)
-     ("Shell" shfmt)
-     ("Solidity" prettier)
-     ("SQL" sqlformat)
-     ("Svelte" prettier)
-     ("Swift" swiftformat)
-     ("Terraform" terraform-fmt)
-     ("TOML" prettier)
-     ("TSX" prettier)
-     ("TypeScript" prettier)
-     ("V" v-fmt)
-     ("Verilog" istyle-verilog)
-     ("Vue" prettier)
-     ("XML" html-tidy)
-     ("YAML" prettier)
-     ("Zig" zig)
-     ("_Angular" prettier)
-     ("_Flow" prettier)
-     ("_Gleam" gleam)
-     ("_Ledger" ledger-mode)
-     ("_Nginx" nginxfmt)
-     ("_Snakemake" snakefmt)))
-
 (add-hook 'prog-mode-hook 'format-all-mode)
 
-(add-hook 'format-all-mode-hook 'format-all-ensure-formatter)
+;; (add-hook 'format-all-mode-hook 'format-all-ensure-formatter)
 #+end_src
 *** Rust
 #+begin_src emacs-lisp
