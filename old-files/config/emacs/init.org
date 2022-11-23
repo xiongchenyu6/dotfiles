@@ -609,6 +609,7 @@ Otherwise, show the default maximum number of recent items."
 (setq copilot-node-executable "/nix/store/iwvpxyzik0mi11qwnmhp0n1nn7c6yh26-nodejs-14.21.1/bin/node")
 
 (add-hook 'prog-mode-hook 'copilot-mode)
+(add-hook 'text-mode-hook 'copilot-mode)
 
 ;; (define-key copilot-completion-map (kbd "<tab>") '(lambda () (or (tempo-complete-tag) (copilot-accept-completion))))
 (define-key copilot-completion-map (kbd "<tab>") 'copilot-accept-completion)
@@ -695,6 +696,10 @@ Otherwise, show the default maximum number of recent items."
 (setq lsp-completion-provider :none)
 (setq lsp-completion-enable nil)
 
+
+(add-to-list 'load-path "~/Git/corfu-english-helper/")
+(require 'corfu-english-helper)
+
 ;; Optionally configure the cape-capf-buster.
 (add-hook 'lsp-mode-hook
           '(lambda () (setq-local completion-at-point-functions
@@ -703,6 +708,17 @@ Otherwise, show the default maximum number of recent items."
 		                 #'cape-dabbrev)
 		               cape-file)
 		             cape-dabbrev-min-length 10)))
+
+(add-hook 'text-mode-hook
+          '(lambda ()
+
+             (setq-local corfu-auto-prefix 0)
+             (setq-local completion-at-point-functions
+		         `(,(cape-super-capf
+		             #'cape-dabbrev
+                             #'cape-keyword)
+		           corfu-english-helper-search)
+		         cape-dabbrev-min-length 3)))
 
 (add-hook 'lsp-completion-mode-hook #'my/lsp-mode-setup-completion)
 #+end_src
