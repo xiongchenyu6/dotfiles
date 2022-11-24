@@ -68,7 +68,7 @@
       tronbox
       unzip
       rust-analyzer
-      stow
+      sbcl
       slack
       statix
       shellcheck
@@ -76,6 +76,7 @@
       sops
       scalafmt
       solc-select
+      stow
       winklink
       wakatime
       zoom-us
