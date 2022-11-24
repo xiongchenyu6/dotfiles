@@ -642,9 +642,6 @@ Otherwise, show the default maximum number of recent items."
 
 ;; (setq lsp-enable-dap-auto-configure nil)
 
-(with-eval-after-load 'lsp-mode
-  (add-hook 'lsp-mode-hook #'lsp-enable-which-key-integration))
-
 (direnv-mode t)
 (advice-add 'lsp :before 'direnv-update-environment)
 
@@ -695,7 +692,6 @@ Otherwise, show the default maximum number of recent items."
 
 (setq lsp-completion-provider :none)
 (setq lsp-completion-enable nil)
-
 
 (add-to-list 'load-path "~/Git/corfu-english-helper/")
 (require 'corfu-english-helper)
@@ -877,6 +873,10 @@ Otherwise, show the default maximum number of recent items."
 *** Cmake
 #+begin_src emacs-lisp
 #+end_src
+*** Common Lisp
+#+begin_src emacs-lisp
+
+#+end_src
 *** typescript
 #+begin_src emacs-lisp
 #+end_src
@@ -939,7 +939,7 @@ Otherwise, show the default maximum number of recent items."
 #+end_src
 *** python
 #+begin_src emacs-lisp
-;; (add-hook 'python-mode-hook (lambda () (whitespace-mode +1)))
+(add-hook 'python-mode-hook (lambda () (whitespace-mode +1)))
 #+end_src
 *** COMMENT SML
 #+begin_src emacs-lisp
@@ -1276,12 +1276,25 @@ Bind to lsp mode
 (defvar addon-map (make-keymap))
 (defalias 'addon-map addon-map)
 
-(define-key mode-specific-map "t" toggle-map)
-(define-key mode-specific-map "a" addon-map)
+(define-key mode-specific-map "t" (cons "toggle" toggle-map))
+(define-key mode-specific-map "a" (cons "addon" addon-map))
+(define-key mode-specific-map "l" (cons "lsp" lsp-command-map))
+
+(which-key-add-keymap-based-replacements mode-specific-map
+  "l" (cons "lsp" lsp-command-map))
+
+(define-key lsp-mode-map (kbd "C-c l") lsp-command-map)
+
 
 (define-key addon-map "t" 'vterm)
 (define-key addon-map "g" 'gnus)
 (define-key addon-map "i" 'erc-myself)
+
+(setq lsp-keymap-prefix "C-c l")
+
+(with-eval-after-load 'lsp-mode
+  (add-hook 'lsp-mode-hook #'lsp-enable-which-key-integration))
+
 
 (meow-leader-define-key
  '("i" . imenu)

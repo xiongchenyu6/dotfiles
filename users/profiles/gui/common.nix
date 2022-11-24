@@ -190,6 +190,7 @@
           rg
           rust-mode
           solidity-mode
+          slime
           sml-mode
           scala-mode
           sbt-mode
