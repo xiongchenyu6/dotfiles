@@ -53,17 +53,16 @@
         "hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc="
       ];
     };
+    distributedBuilds = false;
+    buildMachines = [
+      {
+        hostName = "hydra.inner.trontech.link";
+        # sshUser = "michael.yang";
+        systems = ["x86_64-linux"];
+        maxJobs = 2;
+      }
+    ];
   };
-
-  nix.distributedBuilds = false;
-  nix.buildMachines = [
-    {
-      hostName = "hydra.inner.trontech.link";
-      sshUser = "michael.yang";
-      systems = ["x86_64-linux"];
-      maxJobs = 2;
-    }
-  ];
 
   time = {timeZone = "Asia/Singapore";};
 }

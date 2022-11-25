@@ -2,12 +2,16 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 {
+  config,
   pkgs,
   lib,
   ...
 }: {
   home = lib.mkIf pkgs.stdenv.isLinux {
     sessionVariables = {
+      NIX_LD = toString (pkgs.runCommand "ld.so" {} ''
+        ln -s "$(cat '${pkgs.stdenv.cc}/nix-support/dynamic-linker')" $out
+      '');
       INPUT_METHOD = "fcitx";
       XIM_SERVERS = "fcitx";
     };
@@ -63,7 +67,7 @@
 
           monitor=,preferred,auto,1
           monitor=HDMI-A-1,3840x2160@60,1920x0,1.5
-          monitor=HDMI-A-1,transform,1
+          monitor=HDMI-A-1,transform,0
           workspace=HDMI-A-1,1
 
           # Source a file (multi-file configs)
