@@ -190,11 +190,12 @@
           rg
           rust-mode
           solidity-mode
-          slime
-          sml-mode
+          sly
+          # sml-mode
           scala-mode
           sbt-mode
           tide
+          tree-sitter
           vterm
           wakatime-mode
           which-key
@@ -210,6 +211,7 @@
               '("~/.config/emacs/snippets"))
       '';
     };
+
     go = {enable = true;};
   };
 }

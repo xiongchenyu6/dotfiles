@@ -1,7 +1,12 @@
 # Edit this configuration file to define what should be installed on
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
-{pkgs, ...}: {
+{
+  pkgs,
+  lib,
+  config,
+  ...
+}: {
   imports = [./common.nix];
 
   environment = {
@@ -36,6 +41,9 @@
       ispell
       inetutils
       lsof
+      llvm
+      lldb
+      vscode-extensions.vadimcn.vscode-lldb
       pinentry
       pass
       procs
@@ -76,5 +84,10 @@
     nm-applet = {enable = true;};
     nix-ld.enable = true;
     wireshark = {enable = true;};
+  };
+
+  environment.variables = {
+    NIX_LD_LIBRARY_PATH = lib.makeLibraryPath (config.systemd.packages ++ config.environment.systemPackages);
+    NIX_LD = "${pkgs.glibc}/lib/ld-linux-x86-64.so.2";
   };
 }
