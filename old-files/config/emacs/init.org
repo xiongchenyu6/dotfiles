@@ -1103,6 +1103,8 @@ Bind to lsp mode
       (flyspell-on-for-buffer-type)))
 
 (add-hook 'find-file-hook 'flyspell-on-for-buffer-type)
+(setq ispell-list-command "--list")
+
 ;; (add-hook 'after-change-major-mode-hook 'flyspell-on-for-buffer-type)
 #+end_src
 ** Safe Variable

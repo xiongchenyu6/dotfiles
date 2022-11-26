@@ -52,7 +52,7 @@
       profiles.optional-apps.mysql
       profiles.core.nixos
       profiles.client-pkgs.nixos
-      profiles.users.root
+      profiles.users.root.nixos
       profiles.users."freeman.xiong"
     ]
     ++ suites.client-base;

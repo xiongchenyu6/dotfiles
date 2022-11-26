@@ -57,7 +57,7 @@
     buildMachines = [
       {
         hostName = "hydra.inner.trontech.link";
-        # sshUser = "michael.yang";
+        sshUser = "freeman.xiong";
         systems = ["x86_64-linux"];
         maxJobs = 2;
       }

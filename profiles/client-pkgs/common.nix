@@ -57,7 +57,6 @@
       nodePackages."yaml-language-server"
       nodePackages."vscode-langservers-extracted"
       nvfetcher
-      nix-alien
       nix-index-update
       nixopsUnstable
       nil

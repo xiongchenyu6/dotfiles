@@ -12,6 +12,8 @@
   environment = {
     systemPackages = with pkgs; [
       apg
+      aspell
+      aspellDicts.en
       bundix
       baidupcs-go
       clang
@@ -38,7 +40,6 @@
         ]))
       heroku
       imagemagick
-      ispell
       inetutils
       lsof
       llvm
@@ -54,6 +55,7 @@
       unrar-wrapper
       manix
       mpv
+      nix-alien
       wineWowPackages.staging
       #wpa_supplicant_gui
       whatsapp-for-linux

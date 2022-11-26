@@ -6,5 +6,10 @@
   suites,
   ...
 }: {
-  imports = [profiles.users.xiongchenyu] ++ suites.full;
+  imports =
+    [
+      profiles.users.xiongchenyu
+      profiles.users.root.darwin
+    ]
+    ++ suites.full;
 }
