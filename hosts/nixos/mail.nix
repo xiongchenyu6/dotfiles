@@ -21,8 +21,8 @@
       profiles.optional-apps.calibre-web
       profiles.optional-apps.gotify-server
       profiles.optional-apps.zammad
-      profiles.users.root
       profiles.server-pkgs.nixos
+      profiles.users.root.nixos
       profiles.users."freeman.xiong"
     ]
     ++ suites.server-base;
