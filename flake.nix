@@ -211,6 +211,8 @@
         nixos = {
           hostDefaults = {
             channelName = "nixpkgs";
+            system = "x86_64-linux";
+
             modules = [
               sops-nix.nixosModules.sops
               nixos-hardware.nixosModules.lenovo-thinkpad-x1-9th-gen
@@ -222,13 +224,13 @@
               hyprland.nixosModules.default
             ];
           };
+          imports = [(digga.lib.importHosts ./hosts/nixos)];
           hosts = {
             mail = {
               modules = [xiongchenyu6.nixosModules.oci-arm-host-capacity];
             };
           };
 
-          imports = [(digga.lib.importHosts ./hosts/nixos)];
           importables = rec {
             profiles =
               digga.lib.rakeLeaves ./profiles
@@ -296,12 +298,14 @@
                 share = import ./profiles/shares.nix;
               };
             suites = with profiles; {
+              nix-remote-build = [use-remote-builder];
               cli = [cli.common cli.shell.zsh];
               linux-gui = [gui.nixos gui.window-manager.hyprland cli.common gui.mpd cli.shell.zsh];
               mac-gui = [gui.darwin cli.common cli.shell.zsh];
             };
           };
           users = {
+            root = {suites, ...}: {imports = suites.nix-remote-build;};
             freeman-cli = {suites, ...}: {imports = suites.cli;};
             freeman-gui = {suites, ...}: {imports = suites.linux-gui;};
             xiongchenyu = {suites, ...}: {imports = suites.mac-gui;};
@@ -329,7 +333,7 @@
         };
 
         deploy = {
-          sshOpts = ["-X" "-p" "2222"];
+          sshOpts = ["-Y" "-p" "2222"];
           autoRollback = false;
           magicRollback = false;
           fastConnection = true;

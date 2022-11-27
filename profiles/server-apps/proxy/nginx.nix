@@ -7,7 +7,7 @@
   services = {
     nginx = {
       enable = true;
-      # statusPage = true;
+      statusPage = true;
       recommendedProxySettings = true;
       gitweb = {enable = true;};
       additionalModules = [pkgs.nginxModules.pam];

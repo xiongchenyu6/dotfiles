@@ -9,7 +9,7 @@
     firewall = {
       allowedTCPPorts = [179];
       allowedUDPPorts = [179 33434];
-      enable = true;
+      enable = false;
     };
 
     networkmanager = {enable = true;};
@@ -47,7 +47,7 @@
               endpoint = "vpn.trontech.link:22617";
               publicKey = profiles.share.tronlink.wg.public-key;
               persistentKeepalive = 5;
-              allowedIPs = ["172.64.224.1/24" "fe80::101/64" "172.32.0.0/16"];
+              allowedIPs = ["172.64.224.1/24" "fe80::101/64" "172.32.0.0/16" "18.218.96.133/32"];
             }
           ];
         };

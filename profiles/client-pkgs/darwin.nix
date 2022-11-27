@@ -32,7 +32,7 @@
     };
     # mac app store
     # masApps = { WireGuard = 1451685025; };
-    taps = ["homebrew/core" "homebrew/cask" "homebrew/cask-drivers"];
+    taps = ["homebrew/services" "homebrew/core" "homebrew/cask" "homebrew/cask-drivers"];
     onActivation = {
       autoUpdate = true;
       cleanup = "zap";
@@ -52,7 +52,7 @@
       bind = "127.0.0.1";
     };
     skhd = {
-      enable = true;
+      enable = false;
       skhdConfig = let
         modMask = "cmd";
         moveMask = "ctrl + cmd";
@@ -156,8 +156,8 @@
     };
 
     yabai = {
-      enable = true;
-      enableScriptingAddition = true;
+      enable = false;
+      enableScriptingAddition = false;
       config = {
         layout = "bsp";
         focus_follows_mouse = "autoraise";

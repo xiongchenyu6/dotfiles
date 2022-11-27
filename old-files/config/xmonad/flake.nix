@@ -36,9 +36,7 @@
           cabal-install
           xlibsWrapper
           alsaLib.dev
-
           xorg.libXrandr
-
           xorg.libXScrnSaver
         ];
         nativeBuildInputs = with pkgs; [pkg-config];

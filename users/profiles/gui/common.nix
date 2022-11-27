@@ -60,6 +60,9 @@
           repos = ["~/workspace/*/" "~/git/*/" "~/private/*/"];
           arguments = "--rebase --autostash";
         };
+        commands = {
+          "emacs straight" = "emacs --batch -l ~/.config/emacs/early-init.el -f straight-pull-all";
+        };
       };
     };
 
@@ -139,13 +142,12 @@
           clojure-mode
           cider
           cmake-mode
+          cape
           corfu
           corfu-doc
           copilot-el
           dockerfile-mode
           direnv
-          eglot
-          emmet-mode
           format-all
           dap-mode
           doom-themes
@@ -158,7 +160,10 @@
           leetcode
           lispy
           ligature
+          lsp-haskell
           lsp-java
+          # lsp-ui
+          # lsp-mode
           nix-mode
           meow
           magit
@@ -168,6 +173,7 @@
           ox-hugo
           ob-mermaid
           ob-restclient
+          ox-pandoc
           org-contrib
           org-roam
           org-re-reveal
@@ -184,14 +190,16 @@
           rg
           rust-mode
           solidity-mode
-          sml-mode
+          sly
+          # sml-mode
           scala-mode
           sbt-mode
           tide
+          tree-sitter
+          tempel
           vterm
           wakatime-mode
           which-key
-          yasnippet
           yaml-mode
         ];
       extraConfig = ''
@@ -199,10 +207,9 @@
                      '(font . "JetBrains Mono-14"))
         (setq gnus-init-file "~/.config/emacs/gnus.el")
         (setq custom-file "~/.config/emacs/custom.el")
-        (setq yas-snippet-dirs
-              '("~/.config/emacs/snippets"))
       '';
     };
+
     go = {enable = true;};
   };
 }

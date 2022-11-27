@@ -59,6 +59,7 @@ myStartupHook = do
   -- spawnOnce "polybar"
   spawn "polybar-msg cmd restart"
   -- spawnOnce "polybar -r"
+  
   -- spawnOnce "xmobar -x 1"
 
 modm :: KeyMask
@@ -122,7 +123,7 @@ customerKeyMaps =
     ((0, xF86XK_MonBrightnessDown), void decrease),
     ( (modm .|. shiftMask, xK_a),
       spawn
-        "sleep 0.2; scrot -s '/home/freeman/Pictures/%F--%H_%M_%S_$wx$h.png' -e 'xclip -selection clipboard -target image/png -i $f'"
+        "sleep 0.2; scrot -s '/home/freeman.xiong/Pictures/%F--%H_%M_%S_$wx$h.png' -e 'xclip -selection clipboard -target image/png -i $f'"
     ),
     ((modm .|. shiftMask, xK_p), spawn "passmenu"),
     ((modm, xK_p), spawn "rofi -i -show drun -show-icons"),
@@ -139,7 +140,7 @@ customerKeyMaps =
     ),
     ( (0, xK_Print),
       spawn
-        "scrot '/home/freeman/screen/%F_$wx$h.png' -e 'xclip -selection clipboard -target image/png -i $f'"
+        "scrot '/home/freeman.xiong/screen/%F_$wx$h.png' -e 'xclip -selection clipboard -target image/png -i $f'"
     )
     -- %F Equivalent to %Y-%m-%d (the ISO 8601 date format).
     -- %T The time in 24-hour notation (%H:%M:%S). $wimagewidth $h image height
@@ -158,7 +159,7 @@ decrease = liftIO $ change (+ (-1024)) *> (pure ())
 launcherConfig :: LauncherConfig
 launcherConfig =
   LauncherConfig
-    { pathToHoogle = "/home/freeman/.local/bin/hoogle",
+    { pathToHoogle = "/home/freeman.xiong/.local/bin/hoogle",
       browser = "/usr/bin/chromium"
     }
 

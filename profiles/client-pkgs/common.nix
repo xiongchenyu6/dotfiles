@@ -21,6 +21,7 @@
       cachix
       deploy-rs
       discord
+      delve
       dig
       deadnix
       neofetch
@@ -34,6 +35,7 @@
       git-crypt
       gcc
       gopls
+      gdb
       graphviz
       (python3.withPackages (_:
         with python3.pkgs; [
@@ -55,18 +57,19 @@
       nodePackages."yaml-language-server"
       nodePackages."vscode-langservers-extracted"
       nvfetcher
-      # nix-alien
-      # nix-index-update
+      nix-index-update
       nixopsUnstable
+      nil
       openssl
       plantuml
       ripgrep
-      rnix-lsp
       terraform
       terranix
       tronbox
       unzip
-      stow
+      rust-analyzer
+      rustc
+      sbcl
       slack
       statix
       shellcheck
@@ -74,6 +77,7 @@
       sops
       scalafmt
       solc-select
+      stow
       winklink
       wakatime
       zoom-us
