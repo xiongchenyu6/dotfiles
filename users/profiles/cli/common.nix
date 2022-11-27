@@ -94,6 +94,9 @@
         "git-code-commit.*.amazonaws.com" = lib.hm.dag.entryBefore ["freeman.engineer"] {
           user = "APKA6ECL465SUMKZQKLN";
         };
+        "*.trontech.link" = {
+          user = "freeman.xiong";
+        };
       };
       extraConfig = ''
         GSSAPIAuthentication yes

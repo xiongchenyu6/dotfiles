@@ -14,6 +14,7 @@
       apg
       aspell
       aspellDicts.en
+      appimage-run
       bundix
       baidupcs-go
       clang

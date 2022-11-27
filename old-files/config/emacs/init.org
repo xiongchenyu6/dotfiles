@@ -3,7 +3,7 @@
 #+EMAIL: xiongchenyu6 at gmail.com
 #+DATE: <2022-01-31 Mon>
 #+CREATED: <2022-01-31 Mon>
-#+STARTUP: fold hidestars indent
+#+STARTUP: hidestars indent
 #+PROPERTY: header-args :results silent :tangle "init.el"
 
 * My Configuration
@@ -603,8 +603,6 @@ Otherwise, show the default maximum number of recent items."
 #+begin_src emacs-lisp
 (setq completion-cycle-threshold t)
 
-(yas-global-mode 1)
-
 (require 'copilot)
 
 (setq copilot-node-executable "/nix/store/iwvpxyzik0mi11qwnmhp0n1nn7c6yh26-nodejs-14.21.1/bin/node")
@@ -636,14 +634,9 @@ Otherwise, show the default maximum number of recent items."
 
 (straight-use-package 'lsp-mode)
 (straight-use-package 'lsp-ui)
-(straight-use-package 'dap-mode)
 (straight-use-package 'tree-sitter-langs)
 
-(defun meow--corfu-maybe-abort-advice ()
-  "Adviced for `meow-insert-exit'."
-  (corfu-quit))
-
-(add-hook 'meow-insert-exit-hook #'meow--corfu-maybe-abort-advice)
+(add-hook 'meow-insert-exit-hook #'corfu-quit)
 
 ;; (global-tree-sitter-mode)
 
@@ -700,52 +693,76 @@ Otherwise, show the default maximum number of recent items."
 
   ;; plist only work in mac
 
-  (defun my/orderless-dispatch-flex-first (_pattern index _total)
-    (and (eq index 0) 'orderless-flex))
+(defun my/orderless-dispatch-flex-first (_pattern index _total)
+  (and (eq index 0) 'orderless-flex))
 
-  (defun my/lsp-mode-setup-completion ()
-    (setf (alist-get 'styles (alist-get 'lsp-capf completion-category-defaults))
-          '(orderless)))
+(defun my/lsp-mode-setup-completion ()
+  (setf (alist-get 'styles (alist-get 'lsp-capf completion-category-defaults))
+        '(orderless)))
 
-  ;; Optionally configure the first word as flex filtered.
-  (add-hook 'orderless-style-dispatchers #'my/orderless-dispatch-flex-first nil 'local)
+;; Optionally configure the first word as flex filtered.
+(add-hook 'orderless-style-dispatchers #'my/orderless-dispatch-flex-first nil 'local)
 
-  (add-to-list 'completion-at-point-functions #'cape-dabbrev)
-  (add-to-list 'completion-at-point-functions #'cape-file)
+(add-to-list 'completion-at-point-functions #'cape-dabbrev)
+(add-to-list 'completion-at-point-functions #'cape-file)
 
-  (setq lsp-completion-provider :none)
-  (setq lsp-completion-enable nil)
+(setq lsp-completion-provider :none)
+(setq lsp-completion-enable nil)
 
-  (add-to-list 'load-path "~/Git/corfu-english-helper/")
-  (require 'corfu-english-helper)
+(add-to-list 'load-path "~/Git/corfu-english-helper/")
+(require 'corfu-english-helper)
 
-  ;; Optionally configure the cape-capf-buster.
-  (add-hook 'lsp-mode-hook
-            '(lambda () (setq-local completion-at-point-functions
-                               `(,(cape-super-capf
-                                   (cape-capf-buster #'lsp-completion-at-point)
-                                   #'cape-dabbrev)
-                                 cape-file)
-                               cape-dabbrev-min-length 10)
-               (add-hook 'before-save-hook #'lsp-format-buffer t t)
-               ))
+;; Optionally configure the cape-capf-buster.
+(add-hook 'lsp-mode-hook
+          '(lambda () (setq-local completion-at-point-functions
+                             `(,(cape-super-capf
+                                 #'tempel-complete
+                                 (cape-capf-buster #'lsp-completion-at-point)
+                                 #'cape-dabbrev)
+                               cape-file)
+                             cape-dabbrev-min-length 10)
+             (add-hook 'before-save-hook #'lsp-format-buffer t t)
+             ))
 
-  (add-hook 'text-mode-hook
-            '(lambda ()
-               (setq-local corfu-auto-prefix 0)
-               (setq-local completion-at-point-functions
-                               `(
-                                 cape-file
-                                 cape-dabbrev
-                                 corfu-english-helper-search
-                                 )
-                               cape-dabbrev-min-length 5)
-               ))
-  (toggle-corfu-english-helper)
+(add-hook 'text-mode-hook
+          '(lambda ()
+             (setq-local corfu-auto-prefix 0)
+             (setq-local completion-at-point-functions
+                         `(
+                           tempel-complete
+                           cape-file
+                           cape-dabbrev
+                           corfu-english-helper-search
+                           )
+                             cape-dabbrev-min-length 5)
+             ))
 
-  (add-hook 'lsp-completion-mode-hook #'my/lsp-mode-setup-completion)
+(define-key global-map (kbd "M-*") 'tempel-insert)
+
+(toggle-corfu-english-helper)
+
+(add-hook 'lsp-completion-mode-hook #'my/lsp-mode-setup-completion)
+
+
+(defun tempel-setup-capf ()
+  ;; Add the Tempel Capf to `completion-at-point-functions'.
+  ;; `tempel-expand' only triggers on exact matches. Alternatively use
+  ;; `tempel-complete' if you want to see all matches, but then you
+  ;; should also configure `tempel-trigger-prefix', such that Tempel
+  ;; does not trigger too often when you don't expect it. NOTE: We add
+  ;; `tempel-expand' *before* the main programming mode Capf, such
+  ;; that it will be tried first.
+  (setq-local completion-at-point-functions
+              (cons #'tempel-complete
+                    completion-at-point-functions)))
+
+(add-hook 'emacs-lisp-mode-hook 'tempel-setup-capf)
+
 #+end_src
+
+
 **** lsp ui
+
 #+begin_src emacs-lisp
 (setq lsp-enable-snippet t)
 (setq lsp-enable-dap-auto-configure t)
@@ -761,8 +778,10 @@ Otherwise, show the default maximum number of recent items."
 (setq lsp-ui-doc-use-webkit t)
 
 (advice-add 'lsp :before 'direnv-update-environment)
+
+
 #+end_src
-*** eglog
+*** COMMENT eglog
 
 #+begin_src emacs-lisp
 (add-hook 'haskell-mode-hook #'eglot-ensure)
@@ -786,8 +805,6 @@ Otherwise, show the default maximum number of recent items."
 
 (setq lsp-bridge-tabnine-complete nil)
 (setq acm-candidate-match-function 'orderless-flex)
-
-
 #+end_src
 
 *** Format All
@@ -1334,7 +1351,7 @@ Bind to lsp mode
 
 
 (meow-leader-define-key
- '("i" . imenu)
+ '("i" . lsp-ui-imenu )
  '("<SPC>" . project-find-file)
  ;; '("<SPC>" . switch-to-buffer)
  '("\\" . split-window-right)
@@ -1367,11 +1384,10 @@ Bind to lsp mode
 (setq treemacs-file-follow-delay 0.1)
 (setq treemacs-project-follow-delay 0.1)
 
-(require 'treemacs-tag-follow-mode)
-(treemacs-tag-follow-mode t)
-(setq treemacs-tag-follow-delay 0.1)
+;; (require 'treemacs-tag-follow-mode)
+;; (treemacs-tag-follow-mode t)
+;; (setq treemacs-tag-follow-delay 0.1)
                                         ; one beautiful work around to make c+[ works
-(treemacs-follow-mode t)
 (define-key meow-insert-state-keymap 
             (kbd "C-g") [escape])
 #+end_src

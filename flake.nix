@@ -211,6 +211,8 @@
         nixos = {
           hostDefaults = {
             channelName = "nixpkgs";
+            system = "x86_64-linux";
+
             modules = [
               sops-nix.nixosModules.sops
               nixos-hardware.nixosModules.lenovo-thinkpad-x1-9th-gen
@@ -222,13 +224,13 @@
               hyprland.nixosModules.default
             ];
           };
+          imports = [(digga.lib.importHosts ./hosts/nixos)];
           hosts = {
             mail = {
               modules = [xiongchenyu6.nixosModules.oci-arm-host-capacity];
             };
           };
 
-          imports = [(digga.lib.importHosts ./hosts/nixos)];
           importables = rec {
             profiles =
               digga.lib.rakeLeaves ./profiles

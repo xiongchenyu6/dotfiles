@@ -63,7 +63,6 @@
       openssl
       plantuml
       ripgrep
-      # rnix-lsp
       terraform
       terranix
       tronbox
