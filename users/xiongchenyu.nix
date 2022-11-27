@@ -9,7 +9,7 @@
   users = {
     users = {
       xiongchenyu = {
-        name = "freeman.xiong";
+        # name = "freeman.xiong";
         description = "freeman";
         shell = pkgs.zsh;
       };

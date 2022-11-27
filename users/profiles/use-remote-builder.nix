@@ -11,7 +11,7 @@
       hashKnownHosts = false;
       compression = true;
       matchBlocks = {
-        "hydra.inner.trontech.link" = {
+        "*.trontech.link" = {
           user = "freeman.xiong";
         };
       };

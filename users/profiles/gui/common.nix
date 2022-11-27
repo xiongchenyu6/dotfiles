@@ -149,7 +149,7 @@
           dockerfile-mode
           direnv
           format-all
-          # dap-mode
+          dap-mode
           doom-themes
           doom-modeline
           graphviz-dot-mode
@@ -196,10 +196,10 @@
           sbt-mode
           tide
           tree-sitter
+          tempel
           vterm
           wakatime-mode
           which-key
-          yasnippet
           yaml-mode
         ];
       extraConfig = ''
@@ -207,8 +207,6 @@
                      '(font . "JetBrains Mono-14"))
         (setq gnus-init-file "~/.config/emacs/gnus.el")
         (setq custom-file "~/.config/emacs/custom.el")
-        (setq yas-snippet-dirs
-              '("~/.config/emacs/snippets"))
       '';
     };
 
