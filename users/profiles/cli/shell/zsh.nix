@@ -48,6 +48,7 @@
            GIT_COMMIT=$(git rev-parse HEAD)
            NEEDS_TAG=$(git describe --contains "$GIT_COMMIT")
 
+
            #only tag if no tag already
            if [ -z "$NEEDS_TAG" ]; then
                git tag "$NEW_TAG"

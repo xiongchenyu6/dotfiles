@@ -620,6 +620,7 @@ Otherwise, show the default maximum number of recent items."
 *** lsp & lsp-ui
 #+begin_src emacs-lisp
 (require 'corfu)
+
 (global-corfu-mode)
 (add-hook 'corfu-mode-hook #'corfu-doc-mode)
 
@@ -637,6 +638,7 @@ Otherwise, show the default maximum number of recent items."
 (straight-use-package 'tree-sitter-langs)
 
 (add-hook 'meow-insert-exit-hook #'corfu-quit)
+
 
 ;; (global-tree-sitter-mode)
 
@@ -754,12 +756,11 @@ Otherwise, show the default maximum number of recent items."
   ;; that it will be tried first.
   (setq-local completion-at-point-functions
               (cons #'tempel-complete
-                    completion-at-point-functions)))
+                    completion-at-point-functions))
+)
 
 (add-hook 'emacs-lisp-mode-hook 'tempel-setup-capf)
-
 #+end_src
-
 
 **** lsp ui
 
