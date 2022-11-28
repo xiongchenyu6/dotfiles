@@ -1,9 +1,0 @@
-# key: ages
-# name: ages
-# --
-age.secrets.$1 = {
-file = secret-files-path + /$1.age;
-mode = "770";
-owner = "$2";
-group = "$2";
-};

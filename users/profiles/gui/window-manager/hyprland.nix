@@ -66,7 +66,7 @@
 
           monitor=,preferred,auto,1
           monitor=HDMI-A-1,3840x2160@60,1920x0,1.5
-          monitor=HDMI-A-1,transform,0
+          monitor=HDMI-A-1,transform,1
           workspace=HDMI-A-1,1
 
           # Source a file (multi-file configs)
