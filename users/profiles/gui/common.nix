@@ -144,7 +144,6 @@
           cmake-mode
           cape
           corfu
-          corfu-doc
           copilot-el
           dockerfile-mode
           direnv

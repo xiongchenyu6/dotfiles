@@ -30,6 +30,7 @@
           "lp"
           "input"
           "docker"
+          "podman"
         ];
       };
     };

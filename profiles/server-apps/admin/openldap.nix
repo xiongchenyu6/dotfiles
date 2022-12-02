@@ -108,7 +108,7 @@ in {
       };
       declarativeContents = with builtins;
       with lib; let
-        new-user = cn: uid: gid: ''
+        new-user = cn: uid: gid: tel: ''
           dn: uid=${cn},ou=developers,${dbSuffix}
           objectClass: person
           objectClass: posixAccount
@@ -125,24 +125,27 @@ in {
           mail: ${cn}@${config.networking.fqdn}
           jpegPhoto: www.baidu.com
           loginShell: /run/current-system/sw/bin/zsh
-
+          telephoneNumber: ${toString tel}
         '';
         init-uid = 1233;
         names = [
           {
             name = defaultUser;
             gid = 1234;
+            tel = 1234;
           }
           {
             name = "user3";
             gid = 1233;
+            tel = 1234;
           }
           {
             name = "user5";
             gid = 1235;
+            tel = 1234;
           }
         ];
-        user-contents = concatImapStrings (pos: x: new-user x.name (pos + init-uid) x.gid) names;
+        user-contents = concatImapStringsSep "\n" (pos: x: new-user x.name (pos + init-uid) x.gid x.tel) names;
       in {
         ${dbSuffix} = ''
           dn: ${dbSuffix}

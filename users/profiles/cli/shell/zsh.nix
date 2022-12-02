@@ -48,7 +48,6 @@
            GIT_COMMIT=$(git rev-parse HEAD)
            NEEDS_TAG=$(git describe --contains "$GIT_COMMIT")
 
-
            #only tag if no tag already
            if [ -z "$NEEDS_TAG" ]; then
                git tag "$NEW_TAG"
@@ -62,16 +61,6 @@
         eval $(${pkgs.bash-my-aws}/bin/bma-init)
         complete -C '${pkgs.awscli2}/bin/aws_completer' aws
         eval $(${pkgs.rustup}/bin/rustup completions zsh)
-
-        # function restricted-expand-or-complete() {
-        #         if [[ ! $PWD = /mnt/* ]]; then
-        #                 zle expand-or-complete
-        #         else
-        #                 echo -en "\007"
-        #         fi
-        # }
-        # zle -N restricted-expand-or-complete
-        # bindkey "^I" restricted-expand-or-complete
       '';
       zplug = let
         ohMyZsh2Zplug = builtins.map (p: {
