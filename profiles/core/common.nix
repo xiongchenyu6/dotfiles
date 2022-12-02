@@ -29,8 +29,10 @@
   nix = {
     gc = {
       automatic = true;
-      options = "--delete-older-than 7d";
+      options = "--delete-older-than 1d";
     };
+    optimise.automatic = true;
+
     settings = {
       allow-import-from-derivation = true;
       experimental-features = ["nix-command" "flakes" "repl-flake" "ca-derivations"];
@@ -41,14 +43,14 @@
         "https://cache.nixos.org"
         "https://nix-community.cachix.org"
         "https://xddxdd.cachix.org"
-        "https://colmena.cachix.org"
+        # "https://colmena.cachix.org"
         "https://xiongchenyu6.cachix.org"
         "https://hyprland.cachix.org"
       ];
       trusted-public-keys = [
         "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
         "xddxdd.cachix.org-1:ay1HJyNDYmlSwj5NXQG065C8LfoqqKaTNCyzeixGjf8="
-        "colmena.cachix.org-1:7BzpDnjjH8ki2CT3f6GdOk7QAzPOl+1t3LvTLXqYcSg="
+        # "colmena.cachix.org-1:7BzpDnjjH8ki2CT3f6GdOk7QAzPOl+1t3LvTLXqYcSg="
         "xiongchenyu6.cachix.org-1:mpOGlINmMwc2gb3xb1BjVmhzR8BYWzWYlg4xlTiBr7Q="
         "hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc="
       ];

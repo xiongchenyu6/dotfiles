@@ -1,12 +1,9 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 {
-  config,
   pkgs,
   ...
 }: {
-  sops.secrets."oci-arm-host-capacity" = {};
-
   environment = {
     systemPackages = with pkgs; [python3 exa calibre xvfb-run figlet];
   };
@@ -41,13 +38,6 @@
           user3 = 1;
         };
       };
-    };
-  };
-
-  services = {
-    oci-arm-host-capacity = {
-      enable = true;
-      envPath = config.sops.secrets."oci-arm-host-capacity".path;
     };
   };
   systemd.services.rust-motd = {serviceConfig = {User = "acme";};};
