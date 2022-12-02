@@ -620,8 +620,8 @@ Otherwise, show the default maximum number of recent items."
 *** lsp & lsp-ui
 #+begin_src emacs-lisp
 (require 'corfu)
+
 (global-corfu-mode)
-(add-hook 'corfu-mode-hook #'corfu-doc-mode)
 
 (setq corfu-auto t
       corfu-auto-delay 0
@@ -630,6 +630,7 @@ Otherwise, show the default maximum number of recent items."
       corfu-preselect-first nil
       corfu-on-exact-match nil
       corfu-preview-current nil
+      corfu-popupinfo-mode t
       corfu-quit-no-match 'separator)
 
 (straight-use-package 'lsp-mode)
@@ -661,7 +662,6 @@ Otherwise, show the default maximum number of recent items."
 (direnv-mode t)
 (advice-add 'lsp :before 'direnv-update-environment)
 
-
 (mapcar (lambda (hook)
           (add-hook hook #'lsp-deferred))
         '(c-mode-hook
@@ -684,14 +684,14 @@ Otherwise, show the default maximum number of recent items."
           ;; markdown-mode-hook
           ))
 
-  ;; (setenv "PATH" (concat (getenv "PATH") ":/home/freeman/.config/emacs/.cache/lsp/eclipse.jdt.ls/bin"))
+;; (setenv "PATH" (concat (getenv "PATH") ":/home/freeman/.config/emacs/.cache/lsp/eclipse.jdt.ls/bin"))
 
-  ;; (setq exec-path (append exec-path '("/home/freeman/.config/emacs/.cache/lsp/eclipse.jdt.ls/bin")))
+;; (setq exec-path (append exec-path '("/home/freeman/.config/emacs/.cache/lsp/eclipse.jdt.ls/bin")))
 
-                                          ;(setq lsp-bridge-jdtls-worksapce)
+                                        ;(setq lsp-bridge-jdtls-worksapce)
 
 
-  ;; plist only work in mac
+;; plist only work in mac
 
 (defun my/orderless-dispatch-flex-first (_pattern index _total)
   (and (eq index 0) 'orderless-flex))
@@ -743,7 +743,6 @@ Otherwise, show the default maximum number of recent items."
 
 (add-hook 'lsp-completion-mode-hook #'my/lsp-mode-setup-completion)
 
-
 (defun tempel-setup-capf ()
   ;; Add the Tempel Capf to `completion-at-point-functions'.
   ;; `tempel-expand' only triggers on exact matches. Alternatively use
@@ -754,12 +753,11 @@ Otherwise, show the default maximum number of recent items."
   ;; that it will be tried first.
   (setq-local completion-at-point-functions
               (cons #'tempel-complete
-                    completion-at-point-functions)))
+                    completion-at-point-functions))
+)
 
 (add-hook 'emacs-lisp-mode-hook 'tempel-setup-capf)
-
 #+end_src
-
 
 **** lsp ui
 
@@ -778,8 +776,6 @@ Otherwise, show the default maximum number of recent items."
 (setq lsp-ui-doc-use-webkit t)
 
 (advice-add 'lsp :before 'direnv-update-environment)
-
-
 #+end_src
 *** COMMENT eglog
 

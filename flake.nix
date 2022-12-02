@@ -193,7 +193,7 @@
       digga.lib.mkFlake {
         inherit self inputs;
 
-        supportedSystems = ["x86_64-linux" "aarch64-darwin" "x86_64-darwin"];
+        supportedSystems = ["x86_64-linux" "aarch64-linux" "aarch64-darwin" "x86_64-darwin"];
         #supportedSystems = allSystems;
 
         channelsConfig = {
@@ -215,19 +215,26 @@
 
             modules = [
               sops-nix.nixosModules.sops
-              nixos-hardware.nixosModules.lenovo-thinkpad-x1-9th-gen
-              nixos-hardware.nixosModules.common-gpu-intel
-              digga.darwinModules.nixConfig
+              digga.nixosModules.nixConfig
               home-manager.nixosModules.home-manager
-              xiongchenyu6.nixosModules.bttc
-              grub2-themes.nixosModule
-              hyprland.nixosModules.default
+              # xiongchenyu6.nixosModules.bttc
             ];
           };
           imports = [(digga.lib.importHosts ./hosts/nixos)];
           hosts = {
+            arm = {
+              system = "aarch64-linux";
+            };
             mail = {
               modules = [xiongchenyu6.nixosModules.oci-arm-host-capacity];
+            };
+            office = {
+              modules = [
+                grub2-themes.nixosModule
+                hyprland.nixosModules.default
+                nixos-hardware.nixosModules.lenovo-thinkpad-x1-9th-gen
+                nixos-hardware.nixosModules.common-gpu-intel
+              ];
             };
           };
 
@@ -333,12 +340,13 @@
         };
 
         deploy = {
-          sshOpts = ["-Y" "-p" "2222"];
+          # sshOpts = ["-Y" "-p" "2222"];
           autoRollback = false;
           magicRollback = false;
           fastConnection = true;
           nodes = digga.lib.mkDeployNodes self.nixosConfigurations {
             mail = {profiles = {system = {sshUser = "root";};};};
+            arm = {profiles = {system = {sshUser = "root";};};};
           };
         };
       };

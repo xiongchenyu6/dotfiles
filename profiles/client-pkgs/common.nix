@@ -39,14 +39,20 @@
       graphviz
       (python3.withPackages (_:
         with python3.pkgs; [
-          epc
-          six
-          orjson
-          python-lsp-server
           cmake-language-server
           colour
+          epc
+          ipython
+          matplotlib
+          nbformat
+          newsapi-python
+          nltk
+          orjson
+          python-lsp-server
+          pandas
+          python-dotenv
+          six
         ]))
-      wakatime
       metals
       nixfmt
       node2nix
@@ -78,6 +84,7 @@
       scalafmt
       solc-select
       stow
+      wakatime
       winklink
       wakatime
       zoom-us
