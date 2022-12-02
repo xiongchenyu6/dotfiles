@@ -6,5 +6,24 @@
   suites,
   ...
 }: {
-  imports = [profiles.users.chjiang] ++ suites.base;
+  imports =
+    [
+      profiles.users.chjiang
+      profiles.users.root.darwin
+    ]
+    ++ suites.base;
+  activate-system.enable = true;
+  homebrew = {
+    enable = true;
+    global = {
+      autoUpdate = true;
+      brewfile = true;
+    };
+    taps = ["homebrew/services" "homebrew/core" "homebrew/cask" "homebrew/cask-drivers"];
+    onActivation = {
+      autoUpdate = true;
+      cleanup = "none";
+      upgrade = true;
+    };
+  };
 }
