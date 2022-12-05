@@ -23,10 +23,12 @@
       discord
       delve
       dig
+      dapp
       deadnix
       neofetch
       fd
       jdt-language-server
+      hevm
       tealdeer
       tendermint
       socat
@@ -37,6 +39,7 @@
       gopls
       gdb
       graphviz
+      grpcurl
       (python3.withPackages (_:
         with python3.pkgs; [
           cmake-language-server

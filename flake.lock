@@ -57,6 +57,22 @@
         "type": "github"
       }
     },
+    "dapptools": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1663083918,
+        "narHash": "sha256-JVRKYeHidAdaqzypn4UZvJ/1WGCt8nK7VUm5W7KDZyA=",
+        "owner": "dapphub",
+        "repo": "dapptools",
+        "rev": "01ef8ea418c3fe49089a44d56013d8fcc34a1ec2",
+        "type": "github"
+      },
+      "original": {
+        "owner": "dapphub",
+        "repo": "dapptools",
+        "type": "github"
+      }
+    },
     "darwin": {
       "inputs": {
         "nixpkgs": [
@@ -223,11 +239,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1669948527,
-        "narHash": "sha256-dfwAxGHtdL0R8oK49r3NVVjiqznAbI/FQ88p44a+3mc=",
+        "lastModified": 1670194159,
+        "narHash": "sha256-ky7z2iSGSZdi9sSv9GXAgyF4cDQAT7Rn2Td0avXC9So=",
         "owner": "nix-community",
         "repo": "emacs-overlay",
-        "rev": "1b9f52597f61f2d8f6d40251e033410163735634",
+        "rev": "d17b8b8fc033debb3e75cfc44aaaf8f47d5e04fd",
         "type": "github"
       },
       "original": {
@@ -662,11 +678,11 @@
     },
     "nixpkgs": {
       "locked": {
-        "lastModified": 1669791787,
-        "narHash": "sha256-KBfoA2fOI5+wCrm7PR+j7jHqXeTkVRPQ0m5fcKchyuU=",
+        "lastModified": 1670064435,
+        "narHash": "sha256-+ELoY30UN+Pl3Yn7RWRPabykwebsVK/kYE9JsIsUMxQ=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "e76c78d20685a043d23f5f9e0ccd2203997f1fb1",
+        "rev": "61a8a98e6d557e6dd7ed0cdb54c3a3e3bbc5e25c",
         "type": "github"
       },
       "original": {
@@ -811,6 +827,7 @@
     },
     "root": {
       "inputs": {
+        "dapptools": "dapptools",
         "darwin": "darwin",
         "deploy-rs": "deploy-rs",
         "devshell": "devshell",

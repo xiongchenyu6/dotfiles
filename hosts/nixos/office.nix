@@ -57,6 +57,10 @@
     ]
     ++ suites.client-base;
 
+  nix = {
+    distributedBuilds = false;
+  };
+
   boot = {
     initrd = {
       availableKernelModules = ["xhci_pci" "thunderbolt" "nvme" "usb_storage" "usbhid" "sd_mod"];
