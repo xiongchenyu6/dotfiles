@@ -15,5 +15,20 @@
       };
     };
   };
-  home-manager.users = {inherit (hmUsers) xiongchenyu;};
+  home-manager = {
+    users = {
+      inherit (hmUsers) xiongchenyu;
+      root = {
+        programs = {
+          ssh = {
+            matchBlocks = {
+              "*.trontech.link" = {
+                user = "freeman.xiong";
+              };
+            };
+          };
+        };
+      };
+    };
+  };
 }
