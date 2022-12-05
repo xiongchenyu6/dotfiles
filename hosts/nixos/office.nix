@@ -44,6 +44,17 @@
       };
     };
   };
+  nix = {
+    distributedBuilds = false;
+    buildMachines = [
+      {
+        hostName = "hydra.inner.trontech.link";
+        sshUser = "freeman.xiong";
+        systems = ["x86_64-linux"];
+        maxJobs = 2;
+      }
+    ];
+  };
 
   imports =
     [
@@ -56,10 +67,6 @@
       profiles.users."freeman.xiong"
     ]
     ++ suites.client-base;
-
-  nix = {
-    distributedBuilds = false;
-  };
 
   boot = {
     initrd = {

@@ -59,14 +59,6 @@
       ];
     };
     distributedBuilds = lib.mkDefault true;
-    buildMachines = [
-      {
-        hostName = "hydra.inner.trontech.link";
-        sshUser = lib.mkDefault "freeman.xiong";
-        systems = ["x86_64-linux"];
-        maxJobs = 2;
-      }
-    ];
   };
 
   time = {timeZone = "Asia/Singapore";};
