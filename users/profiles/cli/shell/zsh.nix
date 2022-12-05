@@ -18,7 +18,6 @@
       };
       dotDir = ".config/zsh";
       envExtra = ''
-        export LSP_USE_PLISTS=true
       '';
       history = {
         extended = true;

@@ -143,6 +143,11 @@
       url = "github:hyprwm/hyprpicker";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    dapptools = {
+      url = "github:dapphub/dapptools";
+      flake = false;
+    };
   };
 
   outputs = {
@@ -165,6 +170,7 @@
     hyprland,
     hyprpaper,
     hyprpicker,
+    dapptools,
     ...
   } @ inputs:
     with nixpkgs;
@@ -184,9 +190,12 @@
           hyprpicker
         ]
         ++ [
-          (_: prev: {
+          (_: prev: let
+            dapp = import dapptools {inherit (prev) system;};
+          in {
             __dontExport = true;
             winklink = winklink.packages."${prev.system}".default;
+            inherit (dapp) hevm dapp ethsign seth;
           })
         ];
     in
@@ -338,7 +347,7 @@
         };
 
         deploy = {
-          # sshOpts = ["-Y" "-p" "2222"];
+          sshOpts = ["-Y" "-p" "2222"];
           autoRollback = false;
           magicRollback = false;
           fastConnection = true;
