@@ -13,6 +13,7 @@
       '');
       INPUT_METHOD = "fcitx";
       XIM_SERVERS = "fcitx";
+      LSP_USE_PLISTS = true;
     };
     file = {
       ".config/hypr/hyprpaper.conf" = {
@@ -261,7 +262,7 @@
   };
   programs = lib.mkIf pkgs.stdenv.isLinux {
     emacs = {
-      package = pkgs.emacsPgtkNativeComp;
+      package = pkgs.emacsPgtk;
     };
 
     waybar = {

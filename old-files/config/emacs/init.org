@@ -1167,6 +1167,13 @@ Bind to lsp mode
 *** Org Reveal
 #+begin_src emacs-lisp
 (require 'org-re-reveal)
+
+(setq org-re-reveal-revealjs-version "4"
+      org-re-reveal-root "https://cdn.jsdelivr.net/npm/reveal.js"
+      org-re-reveal-plugins '(markdown highlight zoom notes search math multiplex)
+      org-re-reveal-multiplex-url "https://reveal-multiplex.glitch.me/"
+      org-re-reveal-klipsify-src t
+      )
 #+end_src
 *** Org Roam
 #+begin_src emacs-lisp
