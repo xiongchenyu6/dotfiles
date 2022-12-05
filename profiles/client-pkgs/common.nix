@@ -27,6 +27,7 @@
       deadnix
       neofetch
       fd
+      foundry-bin
       jdt-language-server
       hevm
       tealdeer
@@ -80,8 +81,10 @@
       rustc
       sbcl
       slack
+      slither-analyzer
       statix
       shellcheck
+      solium
       shfmt
       sops
       scalafmt
