@@ -1171,6 +1171,7 @@ Bind to lsp mode
 (setq org-re-reveal-revealjs-version "4"
       org-re-reveal-root "https://cdn.jsdelivr.net/npm/reveal.js"
       org-re-reveal-plugins '(markdown highlight zoom notes search math multiplex)
+      org-re-reveal-multiplex-socketio-url "https://reveal-multiplex.glitch.me/socket.io/socket.io.js"
       org-re-reveal-multiplex-url "https://reveal-multiplex.glitch.me/"
       org-re-reveal-klipsify-src t
       )
