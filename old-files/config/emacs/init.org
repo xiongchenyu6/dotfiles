@@ -1175,6 +1175,25 @@ Bind to lsp mode
       org-re-reveal-multiplex-url "https://reveal-multiplex.glitch.me/"
       org-re-reveal-klipsify-src t
       )
+
+(org-add-link-type
+ "color"
+ (lambda (path)
+   "No follow action.")
+ (lambda (color description backend)
+   (cond
+    ((eq backend 'html)
+     (let ((rgb (assoc color color-name-rgb-alist))
+	   r g b)
+       (if rgb
+	   (progn
+	     (setq r (* 255 (/ (nth 1 rgb) 65535.0))
+		   g (* 255 (/ (nth 2 rgb) 65535.0))
+		   b (* 255 (/ (nth 3 rgb) 65535.0)))
+	     (format "<span style=\"color: rgb(%s,%s,%s)\">%s</span>"
+		     (truncate r) (truncate g) (truncate b)
+		     (or description color)))
+	 (format "No Color RGB for %s" color)))))))
 #+end_src
 *** Org Roam
 #+begin_src emacs-lisp

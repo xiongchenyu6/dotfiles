@@ -148,6 +148,13 @@
       url = "github:dapphub/dapptools";
       flake = false;
     };
+    foundry = {
+      url = "github:shazow/foundry.nix";
+      inputs = {
+        nixpkgs.follows = "nixpkgs";
+        flake-utils.follows = "flake-utils";
+      };
+    };
   };
 
   outputs = {
@@ -171,6 +178,7 @@
     hyprpaper,
     hyprpicker,
     dapptools,
+    foundry,
     ...
   } @ inputs:
     with nixpkgs;
@@ -188,6 +196,7 @@
           hyprland
           hyprpaper
           hyprpicker
+          foundry
         ]
         ++ [
           (_: prev: let
