@@ -127,19 +127,6 @@
           #   syntax-theme = "GitHub";
         };
       };
-      extraConfig = {
-        push = {default = "current";};
-        color = {ui = "auto";};
-        core = {
-          autocrlf = "input";
-          editor = "emacs";
-        };
-        pull = {rebase = false;};
-        user = {
-          name = "freeman";
-          email = "xiongchenyu6@gmail.com";
-        };
-      };
       ignores = [
         "tags"
         "*.DS_Store"
