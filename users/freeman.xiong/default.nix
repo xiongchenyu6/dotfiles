@@ -9,6 +9,7 @@
   ...
 }: {
   sops.secrets."user/freeman/pass" = {};
+  imports = [./private-info.nix];
   users = {
     users = {
       "freeman.xiong" = {

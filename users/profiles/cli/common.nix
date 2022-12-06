@@ -1,6 +1,5 @@
 {
   pkgs,
-  lib,
   profiles,
   ...
 }: {
@@ -85,19 +84,6 @@
       enable = true;
       hashKnownHosts = false;
       compression = true;
-      matchBlocks = {
-        "freeman.engineer" = {port = 2222;};
-        "mail.freeman.engineer" = {
-          port = 2222;
-          user = "root";
-        };
-        "git-code-commit.*.amazonaws.com" = lib.hm.dag.entryBefore ["freeman.engineer"] {
-          user = "APKA6ECL465SUMKZQKLN";
-        };
-        "*.trontech.link" = {
-          user = "freeman.xiong";
-        };
-      };
       extraConfig = ''
         GSSAPIAuthentication yes
         PasswordAuthentication yes

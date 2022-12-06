@@ -140,6 +140,7 @@
             # accept SSH connections (required for a server)
             tcp dport 22 accept
             tcp dport 179 accept
+            tcp dport 8000 accept
             udp dport 179 accept
             udp dport 33434 accept
 
