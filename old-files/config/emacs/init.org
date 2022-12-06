@@ -954,8 +954,8 @@ Otherwise, show the default maximum number of recent items."
 #+begin_src emacs-lisp
 ;; Sample jar configuration
 (setq plantuml-default-exec-mode 'jar)
-(setq plantuml-jar-path "/home/freeman/plantuml.jar")
-(setq org-plantuml-jar-path "/home/freeman/plantuml.jar")
+(setq plantuml-jar-path "/home/freeman.xiong/plantuml.jar")
+(setq org-plantuml-jar-path "/home/freeman.xiong/plantuml.jar")
 (setq plantuml-output-type "png")
 #+end_src
 *** Rust

@@ -35,10 +35,12 @@
       };
     };
   };
-  home-manager.users = {
-    "freeman.xiong" =
-      if (builtins.elem "with-gui" config.system.nixos.tags)
-      then hmUsers.freeman-gui
-      else hmUsers.freeman-cli;
+  home-manager = {
+    users = {
+      "freeman.xiong" =
+        if (builtins.elem "with-gui" config.system.nixos.tags)
+        then hmUsers.freeman-gui
+        else hmUsers.freeman-cli;
+    };
   };
 }
