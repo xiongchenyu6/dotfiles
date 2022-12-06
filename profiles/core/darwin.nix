@@ -2,7 +2,7 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 {pkgs, ...}: {
-  environment.systemPackages = with pkgs; [krb5 openssh_gssapi];
+  environment.systemPackages = with pkgs; [krb5 openssh_gssapi xquartz];
 
   imports = [./common.nix];
   services.nix-daemon.enable = true;

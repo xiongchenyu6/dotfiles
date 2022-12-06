@@ -35,20 +35,20 @@
     taps = ["homebrew/services" "homebrew/core" "homebrew/cask" "homebrew/cask-drivers"];
     onActivation = {
       autoUpdate = true;
-      cleanup = "zap";
+      cleanup = "none";
       upgrade = true;
     };
   };
 
   services = {
-    netbird = {enable = true;};
+    netbird = {enable = false;};
     postgresql = {
-      enable = true;
+      enable = false;
       package = pkgs.postgresql;
       enableTCPIP = true;
     };
     redis = {
-      enable = true;
+      enable = false;
       bind = "127.0.0.1";
     };
     skhd = {
@@ -114,7 +114,7 @@
     activate-system.enable = true;
 
     spacebar = {
-      enable = true;
+      enable = false;
       package = pkgs.spacebar;
       config = {
         position = "top";
