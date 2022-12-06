@@ -23,22 +23,18 @@
       discord
       delve
       dig
-      dapp
       deadnix
       neofetch
       fd
       foundry-bin
       jdt-language-server
-      hevm
       tealdeer
       tendermint
       socat
       rustscan
       gitAndTools.gitflow
       git-crypt
-      gcc
       gopls
-      gdb
       graphviz
       grpcurl
       (python3.withPackages (_:

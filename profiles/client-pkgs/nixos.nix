@@ -22,9 +22,12 @@
       cmake
       cabal2nix
       cava
+      dapp
       geoip
       gnumake
       gimp
+      gcc
+      gdb
       haskell-language-server
       (python3.withPackages (_: with python3.pkgs; [my_cookies mutagen]))
       (haskellPackages.ghcWithPackages (_:
@@ -40,6 +43,7 @@
           hadolint
         ]))
       heroku
+      hevm
       imagemagick
       inetutils
       lsof
