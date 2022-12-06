@@ -331,8 +331,16 @@
           };
           users = {
             root = {suites, ...}: {imports = suites.nix-remote-build;};
-            freeman-cli = {suites, ...}: {imports = suites.cli;};
-            freeman-gui = {suites, ...}: {imports = suites.linux-gui;};
+            freeman-cli = {
+              suites,
+              profiles,
+              ...
+            }: {imports = [profiles.cli.git-auto-sign] ++ suites.cli;};
+            freeman-gui = {
+              suites,
+              profiles,
+              ...
+            }: {imports = [profiles.cli.git-auto-sign] ++ suites.linux-gui;};
             xiongchenyu = {suites, ...}: {imports = suites.mac-gui;};
           };
         };

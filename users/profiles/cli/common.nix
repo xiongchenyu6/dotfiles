@@ -120,10 +120,6 @@
       aliases = {
         trash = "!mkdir -p .trash && git ls-files --others --exclude-standard | xargs mv -f -t .trash";
       };
-      signing = {
-        key = "5AF7AFBF695E8A5D";
-        signByDefault = true;
-      };
       delta = {
         enable = true;
         options = {
