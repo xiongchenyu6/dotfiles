@@ -190,7 +190,7 @@
           rust-mode
           solidity-mode
           sly
-          # sml-mode
+          solidity-flycheck
           scala-mode
           sbt-mode
           tide
