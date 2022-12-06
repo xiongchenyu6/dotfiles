@@ -631,6 +631,7 @@ Otherwise, show the default maximum number of recent items."
       corfu-on-exact-match nil
       corfu-preview-current nil
       corfu-popupinfo-mode t
+      corfu-popupinfo-delay t
       corfu-quit-no-match 'separator)
 
 (straight-use-package 'lsp-mode)
@@ -953,8 +954,8 @@ Otherwise, show the default maximum number of recent items."
 #+begin_src emacs-lisp
 ;; Sample jar configuration
 (setq plantuml-default-exec-mode 'jar)
-(setq plantuml-jar-path "/home/freeman/plantuml.jar")
-(setq org-plantuml-jar-path "/home/freeman/plantuml.jar")
+(setq plantuml-jar-path "/home/freeman.xiong/plantuml.jar")
+(setq org-plantuml-jar-path "/home/freeman.xiong/plantuml.jar")
 (setq plantuml-output-type "png")
 #+end_src
 *** Rust
@@ -965,25 +966,30 @@ Otherwise, show the default maximum number of recent items."
 #+end_src
 *** Solidity
 #+begin_src emacs-lisp
-;; (setq solidity-flycheck-solc-checker-active t)
-;; (setq solidity-flycheck-solium-checker-active t)
-;; (setq flycheck-solidity-solc-addstd-contracts t)
-;; (setq solidity-flycheck-use-project t)
+(require 'solidity-flycheck)
 
-;; (require 'solidity-flycheck)
+(setq solidity-flycheck-solc-checker-active t)
+(setq solidity-flycheck-solium-checker-active t)
+(setq flycheck-solidity-solc-addstd-contracts t)
+(setq solidity-flycheck-use-project t)
 
-;; (add-hook 'solidity-mode-hook
-;; 	  (lambda ()
-;; 	    (set (make-local-variable 'company-backends)
-;; 		 (append '((company-solidity company-capf company-dabbrev-code))
-;; 			 company-backends))))
 
-(add-to-list 'load-path (expand-file-name "~/.config/emacs/custom"))
+(add-to-list 'load-path (expand-file-name "~/.config/emacs"))
 
-;(require 'lsp-solidity)
+(require 'lsp-solidity)
 
-;(eval-after-load 'solidity
- ; (add-to-list 'lsp-language-id-configuration '(solidity-mode . "solidity")))
+(eval-after-load 'solidity
+ (add-to-list 'lsp-language-id-configuration '(solidity-mode . "solidity")))
+
+(eval-after-load 'autoinsert
+  '(define-auto-insert
+     '("\\.\\(sol\\)\\'" . "solidity skeleton")
+     '("Min Solity Version: "
+       "// SPDX-License-Identifier: UNLICENSED" \n
+       "pragma solidity ^" str ";" \n \n
+       "contract " (file-name-sans-extension (file-name-nondirectory (buffer-file-name))) "{" \n
+        > _ \n
+       "}" > \n)))
 #+end_src
 *** python
 #+begin_src emacs-lisp
