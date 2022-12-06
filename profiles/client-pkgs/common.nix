@@ -58,6 +58,7 @@
           six
         ]))
       metals
+      mycli
       nixfmt
       node2nix
       nodejs
@@ -71,6 +72,7 @@
       nixopsUnstable
       nil
       openssl
+      pgcli
       plantuml
       ripgrep
       terraform
