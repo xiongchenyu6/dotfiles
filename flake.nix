@@ -149,7 +149,7 @@
       flake = false;
     };
     foundry = {
-      url = "github:shazow/foundry.nix";
+      url = "github:xiongchenyu6/foundry.nix";
       inputs = {
         nixpkgs.follows = "nixpkgs";
         flake-utils.follows = "flake-utils";
