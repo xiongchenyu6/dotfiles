@@ -60,9 +60,6 @@
         eval $(${pkgs.bash-my-aws}/bin/bma-init)
         complete -C '${pkgs.awscli2}/bin/aws_completer' aws
         eval $(${pkgs.rustup}/bin/rustup completions zsh)
-        eval $(${pkgs.foundry-bin}/bin/anvil completions zsh)
-        eval $(${pkgs.foundry-bin}/bin/cast completions zsh)
-        eval $(${pkgs.foundry-bin}/bin/forge completions zsh)
       '';
       zplug = let
         ohMyZsh2Zplug = builtins.map (p: {
