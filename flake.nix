@@ -148,8 +148,9 @@
       url = "github:dapphub/dapptools";
       flake = false;
     };
+
     foundry = {
-      url = "github:shazow/foundry.nix";
+      url = "github:xiongchenyu6/foundry.nix";
       inputs = {
         nixpkgs.follows = "nixpkgs";
         flake-utils.follows = "flake-utils";
@@ -186,10 +187,9 @@
     with flake-utils.lib;
     with flake-utils-plus.lib; let
       overlays =
-        map (x: x.overlay or x.overlays.default) [
+        map (x: x.overlays.default or x.overlay) [
           emacs
           devshell
-          xddxdd
           xiongchenyu6
           nix-alien
           sops-nix
@@ -197,6 +197,7 @@
           hyprpaper
           hyprpicker
           foundry
+          xddxdd
         ]
         ++ [
           (_: prev: let
@@ -204,6 +205,7 @@
           in {
             __dontExport = true;
             winklink = winklink.packages."${prev.system}".default;
+            hyprland = hyprland.packages."${prev.system}".default; #TODO hyprland overlays did not include libdrm in it overlays
             inherit (dapp) hevm dapp ethsign seth;
           })
         ];
