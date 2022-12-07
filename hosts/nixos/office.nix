@@ -80,6 +80,7 @@
 
     extraModprobeConfig = ''
       options i915 force_probe=46a6
+      options snd-intel-dspcfg dsp_driver=1
     '';
 
     tmpOnTmpfs = lib.mkDefault true;
