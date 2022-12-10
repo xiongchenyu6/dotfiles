@@ -21,6 +21,10 @@
   fonts = {
     fontDir = {enable = true;};
     fonts = with pkgs; [
+      noto-fonts
+      noto-fonts-cjk-sans
+      noto-fonts-cjk-serif
+      sarasa-gothic #更纱黑体
       wqy_microhei
       wqy_zenhei
       (nerdfonts.override {fonts = ["Hack"];})

@@ -10,6 +10,7 @@
         vi = "vim";
         o = "xdg-open";
         ls = "exa --icons";
+        docker = "podman";
       };
       dirHashes = {
         docs = "$HOME/Documents";
@@ -58,8 +59,8 @@
         }
         path+="$HOME/.npm/bin"
         eval $(${pkgs.bash-my-aws}/bin/bma-init)
-        complete -C '${pkgs.awscli2}/bin/aws_completer' aws
         eval $(${pkgs.rustup}/bin/rustup completions zsh)
+        complete -C '${pkgs.awscli2}/bin/aws_completer' aws
       '';
       zplug = let
         ohMyZsh2Zplug = builtins.map (p: {

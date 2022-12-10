@@ -39,7 +39,6 @@
           stylish-haskell
           hasktags
           hoogle
-          pandoc
           hadolint
         ]))
       heroku

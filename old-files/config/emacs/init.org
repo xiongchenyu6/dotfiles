@@ -715,7 +715,7 @@ Otherwise, show the default maximum number of recent items."
 
 ;; Optionally configure the cape-capf-buster.
 (add-hook 'lsp-mode-hook
-          '(lambda () (setq-local completion-at-point-functions
+          #'(lambda () (setq-local completion-at-point-functions
                              `(,(cape-super-capf
                                  #'tempel-complete
                                  (cape-capf-buster #'lsp-completion-at-point)
@@ -726,7 +726,7 @@ Otherwise, show the default maximum number of recent items."
              ))
 
 (add-hook 'text-mode-hook
-          '(lambda ()
+          #'(lambda ()
              (setq-local corfu-auto-prefix 0)
              (setq-local completion-at-point-functions
                          `(
@@ -877,7 +877,7 @@ Otherwise, show the default maximum number of recent items."
 (setq org-src-window-setup 'current-window)
 
 (add-hook 'occur-hook
-          '(lambda ()
+          #'(lambda ()
              (switch-to-buffer-other-window "*Occur*")))
 #+end_src
 *** apl
@@ -1129,9 +1129,6 @@ Bind to lsp mode
 ** Safe Variable
 #+begin_src emacs-lisp
 (add-to-list 'safe-local-variable-values
-             '(LaTeX-command . "lualatex -shell-escape"))
-
-(add-to-list 'safe-local-variable-values
              '(company-clang-arguments . "-I src"))
 
 (add-to-list 'safe-local-variable-values             '(compile-command . "cmake --build build"))
@@ -1151,6 +1148,8 @@ Bind to lsp mode
 *** Org attach
 #+begin_src emacs-lisp
 (require 'org-contrib)
+
+(require 'ox-confluence)
 
 (setq org-attach-id-dir "~/Dropbox/Org/.attach")
 
@@ -1251,6 +1250,11 @@ Bind to lsp mode
 
 (require 'ob-mermaid)
 
+
+(setq tex-command "xelatex")
+
+(setq org-latex-compiler "xelatex")
+
 (with-eval-after-load "ox-latex"
   (add-to-list 'org-latex-packages-alist '("" "minted"))
   (setq org-latex-listings 'minted)
@@ -1258,8 +1262,6 @@ Bind to lsp mode
   )
 
 (require 'ob-restclient)
-
-(require 'ox-gfm)
 
 (require 'ox-moderncv nil t)
 
@@ -1279,7 +1281,7 @@ Bind to lsp mode
 ;;       (org-export-to-file 'hugocv (concat name ".md")))
 ;;   )
 
-(setq org-export-backends '(ascii html icalendar latex man md odt))
+(setq org-export-backends '(ascii html icalendar latex man odt))
 
 (with-eval-after-load "org"
   (require 'org)
@@ -1301,18 +1303,6 @@ Bind to lsp mode
      (restclient . t)
      (haskell . t)))
 
-  (require 'org-tempo)
-  (add-to-list 'org-structure-template-alist '("sh" . "src sh"))
-  (add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
-  (add-to-list 'org-structure-template-alist '("cpp" . "src cpp :namespaces std :flags  -std=c++20 :includes <iostream> <vector>"))
-  (add-to-list 'org-structure-template-alist '("cl" . "src C :includes <stdlib.h> <stdio.h>"))
-  (add-to-list 'org-structure-template-alist '("ts" . "src typescript"))
-  (add-to-list 'org-structure-template-alist '("js" . "src javascript"))
-  (add-to-list 'org-structure-template-alist '("py" . "src python"))
-  (add-to-list 'org-structure-template-alist '("go" . "src go"))
-  (add-to-list 'org-structure-template-alist '("rust" . "src rust"))
-  (add-to-list 'org-structure-template-alist '("yaml" . "src yaml"))
-  (add-to-list 'org-structure-template-alist '("json" . "src json"))
   (add-to-list 'org-emphasis-alist '("=" (:box (:line-width -2 :color "gray50" :style released-button) :inherit org-verbatim))))
 
 (setq org-directory "~/Dropbox/Org"

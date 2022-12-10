@@ -17,8 +17,6 @@
 
     octant = {enable = true;};
 
-    texlive = {enable = true;};
-
     alacritty = {
       enable = true;
       settings = {
@@ -168,7 +166,6 @@
           magit
           marginalia
           nov
-          ox-gfm
           ox-hugo
           ob-mermaid
           ob-restclient
