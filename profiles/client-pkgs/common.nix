@@ -17,7 +17,7 @@
       asciinema
       awscli2
       alejandra
-      azure-cli
+      #azure-cli
       cachix
       deploy-rs
       discord
@@ -68,11 +68,14 @@
       nixopsUnstable
       nil
       openssl
+      oath-toolkit
       pgcli
       plantuml
+      qrencode
       ripgrep
       terraform
       terranix
+      texlive.combined.scheme-full
       tronbox
       unzip
       rust-analyzer
