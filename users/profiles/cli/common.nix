@@ -190,7 +190,15 @@
       '';
     };
 
+    navi = {enable = true;};
+
     zoxide = {enable = true;};
+
+    pandoc = {enable = true;};
+
+    sagemath = {enable = true;};
+
+    sqls = {enable = true;};
 
     tmux = {
       enable = true;
