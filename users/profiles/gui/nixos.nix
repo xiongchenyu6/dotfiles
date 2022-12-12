@@ -61,6 +61,8 @@
   };
 
   programs = lib.mkIf pkgs.stdenv.isLinux {
+    sagemath = {enable = true;};
+
     obs-studio = {
       enable = true;
       plugins = with pkgs.obs-studio-plugins; [
