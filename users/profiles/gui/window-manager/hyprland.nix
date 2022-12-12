@@ -259,6 +259,14 @@
       };
     };
   };
+
+  services = {
+    wlsunset = {
+      enable = true;
+      latitude = "1.352083";
+      longitude = "103.819839";
+    };
+  };
   programs = lib.mkIf pkgs.stdenv.isLinux {
     emacs = {
       package = pkgs.emacsPgtk;
