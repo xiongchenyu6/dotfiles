@@ -6,5 +6,5 @@
   suites,
   ...
 }: {
-  imports = [profiles.users.liurong] ++ suites.base;
+  imports = [profiles.users.liurong profiles.users.root] ++ suites.full;
 }
