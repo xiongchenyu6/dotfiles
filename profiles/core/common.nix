@@ -32,23 +32,6 @@
       emacs-all-the-icons-fonts
       font-awesome
     ];
-    fontconfig = {
-      defaultFonts = {
-        emoji = ["Noto Color Emoji"];
-        monospace = [
-          "Noto Sans Mono CJK SC"
-          "DejaVu Sans Mono"
-        ];
-        sansSerif = [
-          "Noto Sans CJK SC"
-          "Source Han Sans SC"
-        ];
-        serif = [
-          "Noto Serif CJK SC"
-          "Source Han Serif SC"
-        ];
-      };
-    };
   };
 
   nix = {
