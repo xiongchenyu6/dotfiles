@@ -3,9 +3,26 @@
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 {
   fonts = {
-    fontconfig = {enable = true;};
     enableDefaultFonts = true;
     enableGhostscriptFonts = true;
+    fontconfig = {
+      enable = true;
+      defaultFonts = {
+        emoji = ["Noto Color Emoji"];
+        monospace = [
+          "Noto Sans Mono CJK SC"
+          "DejaVu Sans Mono"
+        ];
+        sansSerif = [
+          "Noto Sans CJK SC"
+          "Source Han Sans SC"
+        ];
+        serif = [
+          "Noto Serif CJK SC"
+          "Source Han Serif SC"
+        ];
+      };
+    };
   };
 
   imports = [./common.nix];
