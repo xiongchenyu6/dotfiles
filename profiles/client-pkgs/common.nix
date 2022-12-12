@@ -47,7 +47,7 @@
           newsapi-python
           nltk
           orjson
-          python-lsp-server
+          # python-lsp-server
           pandas
           python-dotenv
           six

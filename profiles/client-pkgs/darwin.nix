@@ -10,7 +10,6 @@
       jetbrains.idea-community
       dbeaver
       vscode
-      docker
       discord
     ];
   };
@@ -25,7 +24,7 @@
         conflicts_with = ["mysql"];
       }
     ];
-    casks = ["virtualbox"];
+    # casks = ["virtualbox"];
     global = {
       autoUpdate = true;
       brewfile = true;
