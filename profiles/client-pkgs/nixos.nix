@@ -23,6 +23,7 @@
       cabal2nix
       cava
       dapp
+      foundry-bin
       geoip
       gnumake
       gimp

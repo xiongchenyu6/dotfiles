@@ -26,7 +26,6 @@
       deadnix
       neofetch
       fd
-      foundry-bin
       jdt-language-server
       tealdeer
       tendermint
