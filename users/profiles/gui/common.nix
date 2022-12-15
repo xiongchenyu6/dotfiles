@@ -1,21 +1,20 @@
-{pkgs, ...}: {
+{ pkgs, ... }: {
   # Home Manager needs a bit of information about you and the
   # paths it should manage.
 
   programs = {
     broot = {
       enable = true;
-      settings = {
-      };
+      settings = { };
     };
 
-    nix-index = {enable = true;};
+    nix-index = { enable = true; };
 
-    noti = {enable = true;};
+    noti = { enable = true; };
 
-    sqls = {enable = true;};
+    sqls = { enable = true; };
 
-    octant = {enable = true;};
+    octant = { enable = true; };
 
     alacritty = {
       enable = true;
@@ -23,10 +22,10 @@
         # opacity = 0.9;
         font = {
           size = 12;
-          normal = {family = "Hack Nerd Font";};
-          bold = {family = "Hack Nerd Font";};
-          italic = {family = "Hack Nerd Font";};
-          bold_italic = {family = "Hack Nerd Font";};
+          normal = { family = "Hack Nerd Font"; };
+          bold = { family = "Hack Nerd Font"; };
+          italic = { family = "Hack Nerd Font"; };
+          bold_italic = { family = "Hack Nerd Font"; };
         };
         key_bindings = [
           {
@@ -44,27 +43,28 @@
       };
     };
 
-    java = {enable = true;};
+    java = { enable = true; };
 
     topgrade = {
       enable = true;
       settings = {
         assume_yes = true;
-        disable = ["emacs"];
+        disable = [ "emacs" ];
         set_title = false;
         cleanup = true;
         git = {
           max_concurrency = 10;
-          repos = ["~/workspace/*/" "~/git/*/" "~/private/*/"];
+          repos = [ "~/workspace/*/" "~/git/*/" "~/private/*/" ];
           arguments = "--rebase --autostash";
         };
         commands = {
-          "emacs straight" = "emacs --batch -l ~/.config/emacs/early-init.el -f straight-pull-all";
+          "emacs straight" =
+            "emacs --batch -l ~/.config/emacs/early-init.el -f straight-pull-all";
         };
       };
     };
 
-    yt-dlp = {enable = true;};
+    yt-dlp = { enable = true; };
 
     aria2 = {
       enable = true;
@@ -112,7 +112,7 @@
 
     gh = {
       enable = true;
-      settings = {git_protocal = "ssh";};
+      settings = { git_protocal = "ssh"; };
     };
 
     sbt = {
@@ -206,6 +206,6 @@
       '';
     };
 
-    go = {enable = true;};
+    go = { enable = true; };
   };
 }

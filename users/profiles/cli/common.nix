@@ -1,20 +1,15 @@
-{
-  pkgs,
-  profiles,
-  ...
-}: {
+{ pkgs, profiles, ... }: {
   # Home Manager needs a bit of information about you and the
   # paths it should manage.
 
   home = {
     stateVersion = "22.11";
-    keyboard = {options = ["caps:ctrl_modifier"];};
-    file = let
-      old-files-path = ../../../old-files;
+    keyboard = { options = [ "caps:ctrl_modifier" ]; };
+    file = let old-files-path = ../../../old-files;
     in {
-      ".wakatime.cfg" = {source = old-files-path + /wakatime/.wakatime.cfg;};
-      ".ldaprc" = {source = old-files-path + /ldap/.ldaprc;};
-      ".curlrc" = {source = old-files-path + /downloader/.curlrc;};
+      ".wakatime.cfg" = { source = old-files-path + /wakatime/.wakatime.cfg; };
+      ".ldaprc" = { source = old-files-path + /ldap/.ldaprc; };
+      ".curlrc" = { source = old-files-path + /downloader/.curlrc; };
       ".ssh/id_ed25519.pub" = {
         text = profiles.share.office.user.public-key;
         executable = false;
@@ -34,22 +29,16 @@
         end_of_line = "lf";
         insert_final_newline = true;
       };
-      "*.{js,py}" = {charset = "utf-8";};
-      "*.css" = {
-        charset = "utf-8";
-      };
+      "*.{js,py}" = { charset = "utf-8"; };
+      "*.css" = { charset = "utf-8"; };
       "*.{py,cpp,c,h,proto}" = {
         indent_style = "space";
         indent_size = 4;
       };
 
-      "Makefile" = {indent_style = "tab";};
-      "lib/**.js" = {
-        indent_style = "space";
-      };
-      "{package.json,.travis.yml}" = {
-        indent_style = "space";
-      };
+      "Makefile" = { indent_style = "tab"; };
+      "lib/**.js" = { indent_style = "space"; };
+      "{package.json,.travis.yml}" = { indent_style = "space"; };
     };
   };
 
@@ -68,7 +57,7 @@
     #   enable = true;
     # };
 
-    readline = {enable = true;};
+    readline = { enable = true; };
     # nushell = { enable = true; };
 
     atuin = {
@@ -90,21 +79,22 @@
       '';
     };
 
-    bat = {enable = true;};
-    exa = {enable = true;};
+    bat = { enable = true; };
+    exa = { enable = true; };
 
-    home-manager = {enable = true;};
+    home-manager = { enable = true; };
 
     direnv = {
       enable = true;
-      nix-direnv = {enable = true;};
+      nix-direnv = { enable = true; };
     };
 
     git = {
       enable = true;
-      lfs = {enable = true;};
+      lfs = { enable = true; };
       aliases = {
-        trash = "!mkdir -p .trash && git ls-files --others --exclude-standard | xargs mv -f -t .trash";
+        trash =
+          "!mkdir -p .trash && git ls-files --others --exclude-standard | xargs mv -f -t .trash";
       };
       delta = {
         enable = true;
@@ -164,9 +154,9 @@
       ];
     };
 
-    jq = {enable = true;};
+    jq = { enable = true; };
 
-    man = {enable = true;};
+    man = { enable = true; };
 
     vim = {
       enable = true;
@@ -190,21 +180,21 @@
       '';
     };
 
-    navi = {enable = true;};
+    navi = { enable = true; };
 
-    zoxide = {enable = true;};
+    zoxide = { enable = true; };
 
-    pandoc = {enable = true;};
+    pandoc = { enable = true; };
 
-    sagemath = {enable = true;};
+    sagemath = { enable = true; };
 
-    sqls = {enable = true;};
+    sqls = { enable = true; };
 
     tmux = {
       enable = true;
       terminal = "screen-256color";
       shortcut = "space";
-      plugins = with pkgs.tmuxPlugins; [yank];
+      plugins = with pkgs.tmuxPlugins; [ yank ];
       secureSocket = false;
       keyMode = "vi";
     };
@@ -217,15 +207,15 @@
         right_format = "$all";
         # A continuation prompt that displays two filled in arrows
         continuation_prompt = "▶▶";
-        kubernetes = {disabled = false;};
+        kubernetes = { disabled = false; };
         directory = {
           truncation_length = 20;
           truncation_symbol = "…/";
         };
-        status = {disabled = false;};
-        time = {disabled = false;};
-        git_metrics = {disabled = false;};
-        sudo = {disabled = false;};
+        status = { disabled = false; };
+        time = { disabled = false; };
+        git_metrics = { disabled = false; };
+        sudo = { disabled = false; };
       };
     };
   };

@@ -1,1 +1,1 @@
-{imports = [./bind.nix];}
+{ imports = [ ./bind.nix ]; }

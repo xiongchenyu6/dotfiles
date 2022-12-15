@@ -1,11 +1,7 @@
 # Edit this configuration file to define what should be installed on
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
-{
-  config,
-  lib,
-  ...
-}: {
+{ config, lib, ... }: {
   sops.secrets."database/postgres/gitea" = {
     mode = "770";
     owner = "gitea";
@@ -29,9 +25,9 @@
         createDatabase = false;
       };
       settings = {
-        server = {SSH_PORT = 2222;};
-        database = {SSL_MODE = lib.mkForce "require";};
-        "cron.sync_external_users" = {RUN_AT_START = true;};
+        server = { SSH_PORT = 2222; };
+        database = { SSL_MODE = lib.mkForce "require"; };
+        "cron.sync_external_users" = { RUN_AT_START = true; };
       };
       # extraConfig = ''
       #   [database]

@@ -1,1 +1,1 @@
-_: {imports = [./nginx.nix];}
+_: { imports = [ ./nginx.nix ]; }

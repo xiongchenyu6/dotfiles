@@ -1,7 +1,7 @@
 # Edit this configuration file to define what should be installed on
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
-{pkgs, ...}: {
+{ pkgs, ... }: {
   programs = {
     zsh = {
       enable = true;
@@ -10,7 +10,6 @@
         vi = "vim";
         o = "xdg-open";
         ls = "exa --icons";
-        docker = "podman";
       };
       dirHashes = {
         docs = "$HOME/Documents";
@@ -18,11 +17,10 @@
         dl = "$HOME/Downloads";
       };
       dotDir = ".config/zsh";
-      envExtra = ''
-      '';
+      envExtra = "";
       history = {
         extended = true;
-        ignorePatterns = ["rm -rf *"];
+        ignorePatterns = [ "rm -rf *" ];
       };
 
       initExtra = ''
@@ -65,7 +63,7 @@
       zplug = let
         ohMyZsh2Zplug = builtins.map (p: {
           name = "plugins/${p}";
-          tags = ["from:oh-my-zsh"];
+          tags = [ "from:oh-my-zsh" ];
         });
       in {
         enable = false;
@@ -120,12 +118,10 @@
           callPackage ./_sources/generated.nix {
             inherit fetchFromGitHub fetchurl fetchgit;
           };
-      in
-        map (name:
-          (removeAttrs source.${name} ["pname" "version" "date"])
-          // {
-            name = "${name}";
-          }) ["alias-tips" "wakatime-zsh-plugin"];
+      in map (name:
+        (removeAttrs source.${name} [ "pname" "version" "date" ]) // {
+          name = "${name}";
+        }) [ "alias-tips" "wakatime-zsh-plugin" ];
       enableCompletion = false;
       enableAutosuggestions = true;
       enableSyntaxHighlighting = true;

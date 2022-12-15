@@ -1,8 +1,4 @@
-{
-  config,
-  pkgs,
-  ...
-}: {
+{ config, pkgs, ... }: {
   sops.secrets = {
     "database/postgres/discourse" = {
       mode = "770";
@@ -47,7 +43,7 @@
       passwordFile = config.sops.secrets."django/secret".path;
     };
     mail = {
-      incoming = {};
+      incoming = { };
       outgoing = {
         serverAddress = "${config.networking.fqdn}";
         username = "discourse";

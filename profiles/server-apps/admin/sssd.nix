@@ -1,4 +1,5 @@
-{config, ...}: let
+{ config, ... }:
+let
   dbDomain = "freeman.engineer";
   realm = "FREEMAN.ENGINEER";
   dbSuffix = "dc=freeman,dc=engineer";
@@ -36,12 +37,14 @@ in {
         ldap_sasl_mech = GSSAPI
         ldap_sasl_authid = host/${config.networking.fqdn}
         ldap_sasl_realm = ${realm}
+        cache_credentials = true
 
         use_fully_qualified_names = false
 
         krb5_realm = FREEMAN.ENGINEER
         krb5_server = ${config.networking.fqdn}
         krb5_validate = true
+        debug_level = 0x3ff0
       '';
     };
   };

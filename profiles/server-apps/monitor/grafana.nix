@@ -1,6 +1,5 @@
-{config, ...}: {
-  services.grafana = let
-    ldapConfigFile = ./ldap.toml;
+{ config, ... }: {
+  services.grafana = let ldapConfigFile = ./ldap.toml;
   in {
     enable = true;
     # Listening address and TCP port

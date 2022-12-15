@@ -1,1 +1,1 @@
-{sops.defaultSopsFile = ../secrets/common.yaml;}
+{ sops.defaultSopsFile = ../secrets/common.yaml; }

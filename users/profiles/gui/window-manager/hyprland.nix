@@ -1,14 +1,10 @@
 # Edit this configuration file to define what should be installed on
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
-{
-  pkgs,
-  lib,
-  ...
-}: {
+{ pkgs, lib, ... }: {
   home = lib.mkIf pkgs.stdenv.isLinux {
     sessionVariables = {
-      NIX_LD = toString (pkgs.runCommand "ld.so" {} ''
+      NIX_LD = toString (pkgs.runCommand "ld.so" { } ''
         ln -s "$(cat '${pkgs.stdenv.cc}/nix-support/dynamic-linker')" $out
       '');
       INPUT_METHOD = "fcitx";
@@ -34,7 +30,7 @@
       hyprland = let
         clean-up-after-start = pkgs.writeShellApplication {
           name = "clean-up-after-start.sh";
-          runtimeInputs = [pkgs.hyprland];
+          runtimeInputs = [ pkgs.hyprland ];
           text = ''
             sleep 10
             hyprctl keyword windowrule "workspace unset,brave"
@@ -42,7 +38,7 @@
         };
         screen-shot = pkgs.writeShellApplication {
           name = "screen-shot.sh";
-          runtimeInputs = [pkgs.hyprland];
+          runtimeInputs = [ pkgs.hyprland ];
           text = ''
             grim -g "$(slurp)" - | wl-copy
           '';
@@ -268,16 +264,12 @@
     };
   };
   programs = lib.mkIf pkgs.stdenv.isLinux {
-    emacs = {
-      package = pkgs.emacsPgtk;
-    };
+    emacs = { package = pkgs.emacsPgtk; };
 
     waybar = {
       enable = true;
       package = pkgs.waybar-hyprland;
-      systemd = {
-        enable = true;
-      };
+      systemd = { enable = true; };
       style = ./waybar.css;
       settings = {
         mainBar = {
@@ -287,13 +279,22 @@
           spacing = 2;
           margin-bottom = -15;
 
-          output = [
-            "eDP-1"
-            "HDMI-A-1"
+          output = [ "eDP-1" "HDMI-A-1" ];
+          modules-left = [ "wlr/workspaces" ];
+          modules-center = [ "hyprland/window" ];
+          modules-right = [
+            "custom/btc"
+            "mpd"
+            "cpu"
+            "memory"
+            "temperature"
+            "pulseaudio"
+            "network"
+            "backlight"
+            "clock"
+            "battery"
+            "tray"
           ];
-          modules-left = ["wlr/workspaces"];
-          modules-center = ["hyprland/window"];
-          modules-right = ["custom/btc" "mpd" "cpu" "memory" "temperature" "pulseaudio" "network" "backlight" "clock" "battery" "tray"];
 
           "jack" = {
             "format" = "DSP {}%";
@@ -315,23 +316,21 @@
             tooltip-format = "{title}";
             on-click = "activate";
             on-click-middle = "close";
-            ignore-list = [
-              "Alacritty"
-            ];
+            ignore-list = [ "Alacritty" ];
           };
           "clock" = {
-            "tooltip-format" = "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>";
+            "tooltip-format" = ''
+              <big>{:%Y %B}</big>
+              <tt><small>{calendar}</small></tt>'';
             "interval" = 60;
             "format" = "{:%I:%M}";
           };
           "cpu" = {
             "interval" = 1;
             "format" = "{icon0} {icon1} {icon2} {icon3}";
-            "format-icons" = ["▁" "▂" "▃" "▄" "▅" "▆" "▇" "█"];
+            "format-icons" = [ "▁" "▂" "▃" "▄" "▅" "▆" "▇" "█" ];
           };
-          "memory" = {
-            "format" = "{}% ";
-          };
+          "memory" = { "format" = "{}% "; };
           "temperature" = {
             "critical-threshold" = 80;
             "format-critical" = "{temperatureC}°C";
@@ -339,7 +338,7 @@
           };
           backlight = {
             format = "{percent}% {icon}";
-            format-icons = ["" "" "" "" "" "" "" "" ""];
+            format-icons = [ "" "" "" "" "" "" "" "" "" ];
           };
 
           battery = {
@@ -350,11 +349,9 @@
             format = "{icon}";
             format-charging = "";
             format-plugged = "";
-            format-icons = ["" "" "" "" ""];
+            format-icons = [ "" "" "" "" "" ];
           };
-          "battery#bat2" = {
-            bat = "BAT2";
-          };
+          "battery#bat2" = { bat = "BAT2"; };
 
           network = {
             interface = "wlp0s20f3";
@@ -378,30 +375,26 @@
               phone = "";
               portable = "";
               car = "";
-              default = ["" "" ""];
+              default = [ "" "" "" ];
             };
             on-click = "pavucontrol";
           };
 
           mpd = {
-            format = "{stateIcon} {consumeIcon}{randomIcon}{repeatIcon}{singleIcon}{artist} - {album} - {title} ({elapsedTime:%M:%S}/{totalTime:%M:%S}) ⸨{songPosition}|{queueLength}⸩ {volume}% ";
+            format =
+              "{stateIcon} {consumeIcon}{randomIcon}{repeatIcon}{singleIcon}{artist} - {album} - {title} ({elapsedTime:%M:%S}/{totalTime:%M:%S}) ⸨{songPosition}|{queueLength}⸩ {volume}% ";
             format-disconnected = "Disconnected ";
-            format-stopped = "{consumeIcon}{randomIcon}{repeatIcon}{singleIcon}Stopped ";
+            format-stopped =
+              "{consumeIcon}{randomIcon}{repeatIcon}{singleIcon}Stopped ";
             unknown-tag = "N/A";
             interval = 2;
-            consume-icons = {
-              on = " ";
-            };
+            consume-icons = { on = " "; };
             random-icons = {
-              off = "<span color=\"#f53c3c\"></span> ";
+              off = ''<span color="#f53c3c"></span> '';
               on = " ";
             };
-            repeat-icons = {
-              on = " ";
-            };
-            single-icons = {
-              on = "1 ";
-            };
+            repeat-icons = { on = " "; };
+            single-icons = { on = "1 "; };
             state-icons = {
               paused = "";
               playing = "";
