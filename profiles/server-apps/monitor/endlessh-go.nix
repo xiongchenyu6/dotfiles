@@ -10,6 +10,6 @@
       port = 9119;
     };
     openFirewall = true;
-    extraOptions = ["-geoip_supplier=ip-api"];
+    extraOptions = [ "-geoip_supplier=ip-api" ];
   };
 }

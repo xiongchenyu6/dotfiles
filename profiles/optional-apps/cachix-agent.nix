@@ -1,5 +1,5 @@
-{config, ...}: {
-  sops.secrets."cachix/secret" = {};
+{ config, ... }: {
+  sops.secrets."cachix/secret" = { };
 
   services = {
     cachix-agent = {

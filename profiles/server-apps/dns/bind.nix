@@ -1,13 +1,11 @@
-{
-  config,
-  pkgs,
-  ...
-}: {
+{ config, pkgs, ... }: {
   systemd = {
     services = {
       dns-rfc2136-conf = {
-        requiredBy = ["acme-inner.${config.networking.domain}.service" "bind.service"];
-        before = ["acme-inner.${config.networking.domain}.service" "bind.service"];
+        requiredBy =
+          [ "acme-inner.${config.networking.domain}.service" "bind.service" ];
+        before =
+          [ "acme-inner.${config.networking.domain}.service" "bind.service" ];
         unitConfig = {
           ConditionPathExists = "!/var/lib/secrets/dnskeys.conf";
         };
@@ -15,7 +13,7 @@
           Type = "oneshot";
           UMask = 77;
         };
-        path = [pkgs.bind pkgs.gnused];
+        path = [ pkgs.bind pkgs.gnused ];
         script = ''
           mkdir -p /var/lib/secrets
           chown named:root /var/lib/secrets
@@ -39,8 +37,8 @@
         '';
       };
       reload-private-zone = {
-        requiredBy = ["bind.service"];
-        before = ["bind.service"];
+        requiredBy = [ "bind.service" ];
+        before = [ "bind.service" ];
         serviceConfig = {
           Type = "oneshot";
           UMask = 77;
@@ -114,7 +112,8 @@
           name = "inner.${config.networking.domain}";
           master = true;
           file = "/var/db/bind/${name}";
-          extraConfig = "allow-update { key rfc2136key.inner.${config.networking.domain}.; };";
+          extraConfig =
+            "allow-update { key rfc2136key.inner.${config.networking.domain}.; };";
         }
         rec {
           name = "157.66.156.43.in-addr.arpa";

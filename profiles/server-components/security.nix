@@ -9,19 +9,16 @@
     #   ];
     # };
     pam = {
-      makeHomeDir = {
-        skelDirectory = "/etc/skel";
-      };
+      makeHomeDir = { skelDirectory = "/etc/skel"; };
 
-      services = {sshd = {makeHomeDir = true;};};
+      services = { sshd = { makeHomeDir = true; }; };
     };
   };
   environment = {
     etc = {
       "skel/.zshrc" = {
         mode = "0755";
-        text = ''
-        '';
+        text = "";
       };
       "nsswitch.conf".text = ''
         sudoers: files sss

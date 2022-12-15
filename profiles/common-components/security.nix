@@ -1,12 +1,7 @@
-{
-  profiles,
-  pkgs,
-  config,
-  ...
-}: {
-  sops.secrets."oath/seed" = {};
+{ profiles, pkgs, config, ... }: {
+  sops.secrets."oath/seed" = { };
   security = {
-    rtkit = {enable = true;};
+    rtkit = { enable = true; };
     sudo = {
       enable = true;
       # wheelNeedsPassword = false;
@@ -15,9 +10,9 @@
         withSssd = true;
       };
     };
-    acme = {acceptTerms = true;};
+    acme = { acceptTerms = true; };
     pam = {
-      krb5.enable = true;
+      krb5.enable = false;
       oath = {
         enable = false;
         usersFile = config.sops.secrets."oath/seed".path;
@@ -25,7 +20,8 @@
       };
     };
     pki = {
-      certificates = [profiles.share.dn42.root-ca profiles.share.digitcert-global.root-ca];
+      certificates =
+        [ profiles.share.dn42.root-ca profiles.share.digitcert-global.root-ca ];
     };
   };
 }

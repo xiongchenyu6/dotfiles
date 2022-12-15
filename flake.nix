@@ -1,5 +1,6 @@
 {
-  description = "Flake to manage my laptop, my nur and my hosts on Tencent Cloud";
+  description =
+    "Flake to manage my laptop, my nur and my hosts on Tencent Cloud";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
@@ -61,7 +62,7 @@
 
     nixos-generators = {
       url = "github:nix-community/nixos-generators";
-      inputs = {nixpkgs.follows = "nixpkgs";};
+      inputs = { nixpkgs.follows = "nixpkgs"; };
     };
 
     flake-utils-plus = {
@@ -158,195 +159,165 @@
     };
   };
 
-  outputs = {
-    self,
-    nixpkgs,
-    nixos-hardware,
-    emacs,
-    xddxdd,
-    flake-utils,
-    flake-utils-plus,
-    home-manager,
-    devshell,
-    pre-commit-hooks,
-    nix-alien,
-    xiongchenyu6,
-    winklink,
-    digga,
-    sops-nix,
-    grub2-themes,
-    hyprland,
-    hyprpaper,
-    hyprpicker,
-    dapptools,
-    foundry,
-    ...
-  } @ inputs:
+  outputs = { self, nixpkgs, nixos-hardware, emacs, xddxdd, flake-utils
+    , flake-utils-plus, home-manager, devshell, pre-commit-hooks, nix-alien
+    , xiongchenyu6, winklink, digga, sops-nix, grub2-themes, hyprland, hyprpaper
+    , hyprpicker, dapptools, foundry, ... }@inputs:
     with nixpkgs;
     with lib;
     with flake-utils.lib;
-    with flake-utils-plus.lib; let
-      overlays =
-        map (x: x.overlays.default or x.overlay) [
-          emacs
-          devshell
-          xiongchenyu6
-          nix-alien
-          sops-nix
-          hyprland
-          hyprpaper
-          hyprpicker
-          foundry
-          xddxdd
-        ]
-        ++ [
-          (_: prev: let
-            dapp = import dapptools {inherit (prev) system;};
+    with flake-utils-plus.lib;
+    let
+      overlays = map (x: x.overlays.default or x.overlay) [
+        emacs
+        devshell
+        xiongchenyu6
+        nix-alien
+        sops-nix
+        hyprland
+        hyprpaper
+        hyprpicker
+        foundry
+        xddxdd
+      ] ++ [
+        (_: prev:
+          let dapp = import dapptools { inherit (prev) system; };
           in {
             __dontExport = true;
             winklink = winklink.packages."${prev.system}".default;
-            hyprland = hyprland.packages."${prev.system}".default; #TODO hyprland overlays did not include libdrm in it overlays
+            hyprland =
+              hyprland.packages."${prev.system}".default; # TODO hyprland overlays did not include libdrm in it overlays
             inherit (dapp) hevm dapp ethsign seth;
           })
-        ];
-    in
-      digga.lib.mkFlake {
-        inherit self inputs;
+      ];
+    in digga.lib.mkFlake {
+      inherit self inputs;
 
-        supportedSystems = ["x86_64-linux" "aarch64-linux" "aarch64-darwin" "x86_64-darwin"];
-        #supportedSystems = allSystems;
+      supportedSystems =
+        [ "x86_64-linux" "aarch64-linux" "aarch64-darwin" "x86_64-darwin" ];
+      #supportedSystems = allSystems;
 
-        channelsConfig = {
-          allowUnfree = true;
-          allowBroken = true;
-          # allowUnsupportedSystem = true;
+      channelsConfig = {
+        allowUnfree = true;
+        allowBroken = true;
+        # allowUnsupportedSystem = true;
+      };
+
+      channels = {
+        nixpkgs = { imports = [ (digga.lib.importOverlays ./overlays) ]; };
+      };
+
+      sharedOverlays = overlays;
+
+      nixos = {
+        hostDefaults = {
+          channelName = "nixpkgs";
+          system = "x86_64-linux";
+
+          modules = [
+            sops-nix.nixosModules.sops
+            digga.nixosModules.nixConfig
+            home-manager.nixosModules.home-manager
+            # xiongchenyu6.nixosModules.bttc
+          ];
         };
-
-        channels = {
-          nixpkgs = {imports = [(digga.lib.importOverlays ./overlays)];};
-        };
-
-        sharedOverlays = overlays;
-
-        nixos = {
-          hostDefaults = {
-            channelName = "nixpkgs";
-            system = "x86_64-linux";
-
+        imports = [ (digga.lib.importHosts ./hosts/nixos) ];
+        hosts = {
+          arm = { system = "aarch64-linux"; };
+          mail = {
+            modules = [ xiongchenyu6.nixosModules.oci-arm-host-capacity ];
+          };
+          office = {
             modules = [
-              sops-nix.nixosModules.sops
-              digga.nixosModules.nixConfig
-              home-manager.nixosModules.home-manager
-              # xiongchenyu6.nixosModules.bttc
+              grub2-themes.nixosModule
+              hyprland.nixosModules.default
+              nixos-hardware.nixosModules.lenovo-thinkpad-x1-9th-gen
+              nixos-hardware.nixosModules.common-gpu-intel
             ];
           };
-          imports = [(digga.lib.importHosts ./hosts/nixos)];
-          hosts = {
-            arm = {
-              system = "aarch64-linux";
-            };
-            mail = {
-              modules = [xiongchenyu6.nixosModules.oci-arm-host-capacity];
-            };
-            office = {
-              modules = [
-                grub2-themes.nixosModule
-                hyprland.nixosModules.default
-                nixos-hardware.nixosModules.lenovo-thinkpad-x1-9th-gen
-                nixos-hardware.nixosModules.common-gpu-intel
-              ];
-            };
-          };
-
-          importables = rec {
-            profiles =
-              digga.lib.rakeLeaves ./profiles
-              // {
-                users = digga.lib.rakeLeaves ./users;
-                share = import ./profiles/shares.nix;
-              };
-            suites = with profiles; rec {
-              base = [core.nixos sops];
-              common-components = builtins.attrValues profiles.common-components;
-              common-apps = builtins.attrValues profiles.common-apps;
-              client-components = builtins.attrValues profiles.client-components;
-              server-apps = builtins.attrValues profiles.server-apps;
-              server-components = builtins.attrValues profiles.server-components;
-              client-base =
-                base
-                ++ common-apps
-                ++ common-components
-                ++ [bird2 auto-login.getty]
-                ++ client-components;
-              server-base =
-                base
-                ++ common-apps
-                ++ common-components
-                ++ server-apps
-                ++ [shell-enhance]
-                ++ server-components;
-            };
-          };
         };
 
-        darwin = {
-          hostDefaults = {
-            system = "aarch64-darwin";
-            channelName = "nixpkgs";
-            modules = [
-              digga.darwinModules.nixConfig
-              home-manager.darwinModules.home-manager
+        importables = rec {
+          profiles = digga.lib.rakeLeaves ./profiles // {
+            users = digga.lib.rakeLeaves ./users;
+            share = import ./profiles/shares.nix;
+          };
+          suites = with profiles; rec {
+            base = [ core.nixos sops ];
+            common-components = builtins.attrValues profiles.common-components;
+            common-apps = builtins.attrValues profiles.common-apps;
+            client-components = builtins.attrValues profiles.client-components;
+            server-apps = builtins.attrValues profiles.server-apps;
+            server-components = builtins.attrValues profiles.server-components;
+            client-base = base ++ common-apps ++ common-components
+              ++ [ bird2 auto-login.getty ] ++ client-components;
+            server-base = base ++ common-apps ++ common-components
+              ++ server-apps ++ [ shell-enhance ] ++ server-components;
+          };
+        };
+      };
+
+      darwin = {
+        hostDefaults = {
+          system = "aarch64-darwin";
+          channelName = "nixpkgs";
+          modules = [
+            digga.darwinModules.nixConfig
+            home-manager.darwinModules.home-manager
+          ];
+        };
+
+        imports = [ (digga.lib.importHosts ./hosts/darwin) ];
+        hosts = { XIONGs-MacBook-Pro = { system = "x86_64-darwin"; }; };
+        importables = rec {
+          profiles = digga.lib.rakeLeaves ./profiles // {
+            users = digga.lib.rakeLeaves ./users;
+            share = import ./profiles/shares.nix { };
+          };
+          suites = with profiles; {
+            base = [ core.darwin ];
+            full = [ core.darwin client-pkgs.darwin ];
+          };
+        };
+      };
+
+      home = {
+        modules = [ hyprland.homeManagerModules.default ];
+
+        importables = rec {
+          profiles = digga.lib.rakeLeaves ./users/profiles // {
+            share = import ./profiles/shares.nix;
+          };
+          suites = with profiles; {
+            nix-remote-build = [ use-remote-builder ];
+            cli = [ cli.common cli.shell.zsh ];
+            linux-gui = [
+              gui.nixos
+              gui.window-manager.hyprland
+              cli.common
+              gui.mpd
+              cli.shell.zsh
             ];
-          };
-
-          imports = [(digga.lib.importHosts ./hosts/darwin)];
-          hosts = {XIONGs-MacBook-Pro = {system = "x86_64-darwin";};};
-          importables = rec {
-            profiles =
-              digga.lib.rakeLeaves ./profiles
-              // {
-                users = digga.lib.rakeLeaves ./users;
-                share = import ./profiles/shares.nix {};
-              };
-            suites = with profiles; {
-              base = [core.darwin];
-              full = [core.darwin client-pkgs.darwin];
-            };
+            mac-gui = [ gui.darwin cli.common cli.shell.zsh ];
           };
         };
-
-        home = {
-          modules = [hyprland.homeManagerModules.default];
-
-          importables = rec {
-            profiles =
-              digga.lib.rakeLeaves ./users/profiles
-              // {
-                share = import ./profiles/shares.nix;
-              };
-            suites = with profiles; {
-              nix-remote-build = [use-remote-builder];
-              cli = [cli.common cli.shell.zsh];
-              linux-gui = [gui.nixos gui.window-manager.hyprland cli.common gui.mpd cli.shell.zsh];
-              mac-gui = [gui.darwin cli.common cli.shell.zsh];
-            };
-          };
-          users = {
-            root = {suites, ...}: {imports = suites.nix-remote-build;};
-            freeman-cli = {suites, ...}: {imports = suites.cli;};
-            freeman-gui = {suites, ...}: {imports = suites.linux-gui;};
-            xiongchenyu = {suites, ...}: {imports = suites.mac-gui;};
-          };
+        users = {
+          root = { suites, ... }: { imports = suites.nix-remote-build; };
+          freeman-cli = { suites, ... }: { imports = suites.cli; };
+          freeman-gui = { suites, ... }: { imports = suites.linux-gui; };
+          xiongchenyu = { suites, ... }: { imports = suites.mac-gui; };
         };
+      };
 
-        devshell = ./shell;
+      devshell = ./shell;
 
-        outputsBuilder = channels: {
-          checks = {
-            pre-commit-check = pre-commit-hooks.lib."${channels.nixpkgs.system}".run {
+      outputsBuilder = channels: {
+        checks = {
+          pre-commit-check =
+            pre-commit-hooks.lib."${channels.nixpkgs.system}".run {
               src = ./.;
               hooks = {
-                alejandra.enable = true;
+                nixfmt.enable = true;
                 statix.enable = true;
                 nix-linter.enable = true;
                 deadnix.enable = true;
@@ -354,18 +325,18 @@
                 shfmt.enable = true;
               };
             };
-          };
-        };
-
-        deploy = {
-          sshOpts = ["-Y" "-p" "2222"];
-          autoRollback = false;
-          magicRollback = false;
-          fastConnection = true;
-          nodes = digga.lib.mkDeployNodes self.nixosConfigurations {
-            mail = {profiles = {system = {sshUser = "root";};};};
-            arm = {profiles = {system = {sshUser = "root";};};};
-          };
         };
       };
+
+      deploy = {
+        sshOpts = [ "-Y" "-p" "2222" ];
+        autoRollback = false;
+        magicRollback = false;
+        fastConnection = true;
+        nodes = digga.lib.mkDeployNodes self.nixosConfigurations {
+          mail = { profiles = { system = { sshUser = "root"; }; }; };
+          arm = { profiles = { system = { sshUser = "root"; }; }; };
+        };
+      };
+    };
 }

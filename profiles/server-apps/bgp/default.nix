@@ -1,5 +1,5 @@
 {
-  imports = [./birg-lg.nix];
+  imports = [ ./birg-lg.nix ];
   services = {
     bird2 = {
       enable = true;

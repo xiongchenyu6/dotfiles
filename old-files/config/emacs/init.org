@@ -725,6 +725,8 @@ Otherwise, show the default maximum number of recent items."
              (add-hook 'before-save-hook #'lsp-format-buffer t t)
              ))
 
+(add-hook 'nix-mode-hook #'(lambda () (add-hook 'before-save-hook #'nix-format-buffer t t)))
+
 (add-hook 'text-mode-hook
           #'(lambda ()
              (setq-local corfu-auto-prefix 0)
@@ -804,9 +806,8 @@ Otherwise, show the default maximum number of recent items."
 (setq acm-candidate-match-function 'orderless-flex)
 #+end_src
 
-*** Format All
+*** COMMENT Format All
 #+begin_src emacs-lisp
-(add-hook 'nix-mode-hook 'format-all-mode)
 (add-hook 'format-all-mode-hook 'format-all-ensure-formatter)
 #+end_src
 *** dap
@@ -879,6 +880,9 @@ Otherwise, show the default maximum number of recent items."
 (add-hook 'occur-hook
           #'(lambda ()
              (switch-to-buffer-other-window "*Occur*")))
+
+(add-hook 'rg-mode-hook #'(lambda ()
+                            (switch-to-buffer-other-window "*rg*")))
 #+end_src
 *** apl
 #+begin_src emacs-lisp

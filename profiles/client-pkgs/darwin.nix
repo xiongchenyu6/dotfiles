@@ -1,8 +1,8 @@
 # Edit this configuration file to define what should be installed on
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
-{pkgs, ...}: {
-  imports = [./common.nix];
+{ pkgs, ... }: {
+  imports = [ ./common.nix ];
   environment = {
     systemPackages = with pkgs; [
       postman
@@ -16,23 +16,26 @@
   };
   homebrew = {
     enable = true;
-    brews = [
-      {
-        name = "mysql";
-        restart_service = true;
-        start_service = true;
-        link = true;
-        conflicts_with = ["mysql"];
-      }
-    ];
-    casks = ["virtualbox"];
+    brews = [{
+      name = "mysql";
+      restart_service = true;
+      start_service = true;
+      link = true;
+      conflicts_with = [ "mysql" ];
+    }];
+    casks = [ "virtualbox" ];
     global = {
       autoUpdate = true;
       brewfile = true;
     };
     # mac app store
     # masApps = { WireGuard = 1451685025; };
-    taps = ["homebrew/services" "homebrew/core" "homebrew/cask" "homebrew/cask-drivers"];
+    taps = [
+      "homebrew/services"
+      "homebrew/core"
+      "homebrew/cask"
+      "homebrew/cask-drivers"
+    ];
     onActivation = {
       autoUpdate = true;
       cleanup = "zap";
@@ -41,7 +44,7 @@
   };
 
   services = {
-    netbird = {enable = true;};
+    netbird = { enable = true; };
     postgresql = {
       enable = true;
       package = pkgs.postgresql;
@@ -60,10 +63,9 @@
         myEditor = "emacsclient -a '' -nc";
         myBrowser = "open /Applications/Safari.app";
         prefix = "${pkgs.yabai}/bin/yabai -m";
-        fstOrSnd = {
-          fst,
-          snd,
-        }: domain: "${prefix} ${domain} --focus ${fst} || ${prefix} ${domain} --focus ${snd}";
+        fstOrSnd = { fst, snd, }:
+          domain:
+          "${prefix} ${domain} --focus ${fst} || ${prefix} ${domain} --focus ${snd}";
         nextOrFirst = fstOrSnd {
           fst = "next";
           snd = "first";
@@ -193,7 +195,7 @@
         ShowPathbar = true;
         ShowStatusBar = true;
       };
-      trackpad = {Clicking = true;};
+      trackpad = { Clicking = true; };
     };
     keyboard = {
       enableKeyMapping = true;

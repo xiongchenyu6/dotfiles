@@ -1,4 +1,4 @@
-{config, ...}: {
+{ config, ... }: {
   sops.secrets."openldap/credentials" = {
     mode = "770";
     owner = "openldap-exporter";
@@ -12,12 +12,12 @@
         isSystemUser = true;
       };
     };
-    groups.openldap-exporter = {};
+    groups.openldap-exporter = { };
   };
 
   services.prometheus.exporters = {
     node = {
-      enabledCollectors = ["systemd"];
+      enabledCollectors = [ "systemd" ];
       enable = true;
       port = 9002;
     };

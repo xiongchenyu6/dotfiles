@@ -1,19 +1,14 @@
 # Edit this configuration file to define what should be installed on
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
-{
-  pkgs,
-  lib,
-  ...
-}: {
+{ pkgs, lib, ... }: {
   xsession = lib.mkIf pkgs.stdenv.isLinux {
     enable = true;
     initExtra = ''
       ${pkgs.xorg.xset}/bin/xset -b
       ${pkgs.xorg.xset}/bin/xset r rate 180 60
     '';
-    windowManager = let
-      old-files-path = ../../../../old-files;
+    windowManager = let old-files-path = ../../../../old-files;
     in {
       xmonad = {
         enable = true;
@@ -27,20 +22,18 @@
     };
   };
   programs = lib.mkIf pkgs.stdenv.isLinux {
-    emacs = {
-      package = pkgs.emacsGitNativeComp;
-    };
-    feh = {
-      enable = true;
-    };
+    emacs = { package = pkgs.emacsGitNativeComp; };
+    feh = { enable = true; };
 
     autorandr = {
       enable = true;
       profiles = {
         office = {
           fingerprint = {
-            "eDP-1" = "00ffffffffffff0009e54c0900000000121e0104a51e1378036980a7544c9825115356000000010101010101010101010101010101019c3e80c870b03c40302036002ebc1000001a000000fd001e3c4a4a10010a202020202020000000fe00424f452043510a202020202020000000fe004e4531343057554d2d4e36320a000a";
-            "HDMI-1" = "00ffffffffffff001e6dc15bb37c030004200103803c2278ea40b5ae5142ad260f5054210800d1c061404540010101010101010101014dd000a0f0703e803020350058542100001a000000fd00283c1e873c000a202020202020000000fc004c4720554c54524146494e450a000000ff003230344e54464136513533310a01800203427223090707830100004d01030410121f202261605f5e5d6d030c001000b83c20006001020367d85dc401788003e30f0003e2006ae305c000e6060581606050a36600a0f0701f803020350058542100001a565e00a0a0a029503020350058542100001a023a801871382d40582c450058542100001a00000000000000e2";
+            "eDP-1" =
+              "00ffffffffffff0009e54c0900000000121e0104a51e1378036980a7544c9825115356000000010101010101010101010101010101019c3e80c870b03c40302036002ebc1000001a000000fd001e3c4a4a10010a202020202020000000fe00424f452043510a202020202020000000fe004e4531343057554d2d4e36320a000a";
+            "HDMI-1" =
+              "00ffffffffffff001e6dc15bb37c030004200103803c2278ea40b5ae5142ad260f5054210800d1c061404540010101010101010101014dd000a0f0703e803020350058542100001a000000fd00283c1e873c000a202020202020000000fc004c4720554c54524146494e450a000000ff003230344e54464136513533310a01800203427223090707830100004d01030410121f202261605f5e5d6d030c001000b83c20006001020367d85dc401788003e30f0003e2006ae305c000e6060581606050a36600a0f0701f803020350058542100001a565e00a0a0a029503020350058542100001a023a801871382d40582c450058542100001a00000000000000e2";
           };
           config = {
             "eDP-1" = {
@@ -78,7 +71,8 @@
         };
         home = {
           fingerprint = {
-            "eDP-1" = "00ffffffffffff0009e54c0900000000121e0104a51e1378036980a7544c9825115356000000010101010101010101010101010101019c3e80c870b03c40302036002ebc1000001a000000fd001e3c4a4a10010a202020202020000000fe00424f452043510a202020202020000000fe004e4531343057554d2d4e36320a000a";
+            "eDP-1" =
+              "00ffffffffffff0009e54c0900000000121e0104a51e1378036980a7544c9825115356000000010101010101010101010101010101019c3e80c870b03c40302036002ebc1000001a000000fd001e3c4a4a10010a202020202020000000fe00424f452043510a202020202020000000fe004e4531343057554d2d4e36320a000a";
           };
           config = {
             "eDP-1" = {
@@ -223,7 +217,8 @@
         };
         "module/crypto" = {
           type = "custom/script";
-          exec = "${pkgs.curl}/bin/curl https://blockchain.info/ticker --silent | ${pkgs.jq}/bin/jq .USD.last";
+          exec =
+            "${pkgs.curl}/bin/curl https://blockchain.info/ticker --silent | ${pkgs.jq}/bin/jq .USD.last";
           interval = 60;
           format-prefix = " ";
           format-prefix-foreground = "#e06c75";
@@ -239,7 +234,8 @@
         };
         "module/ip" = {
           type = "custom/script";
-          exec = "${pkgs.iproute2}/bin/ip a show wlp0s20f3 | ${pkgs.gnugrep}/bin/grep inet | ${pkgs.gawk}/bin/awk '{print $2}' | ${pkgs.coreutils}/bin/head -n 1";
+          exec =
+            "${pkgs.iproute2}/bin/ip a show wlp0s20f3 | ${pkgs.gnugrep}/bin/grep inet | ${pkgs.gawk}/bin/awk '{print $2}' | ${pkgs.coreutils}/bin/head -n 1";
           interval = 60;
           format-prefix = " אַ ";
           format-prefix-foreground = "#e06c75";
@@ -247,7 +243,8 @@
         };
         "module/vpn" = {
           type = "custom/script";
-          exec = "${pkgs.iproute2}/bin/ip a show tun0 | ${pkgs.gnugrep}/bin/grep inet | ${pkgs.gawk}/bin/awk '{print $2}' | ${pkgs.coreutils}/bin/head -n 1";
+          exec =
+            "${pkgs.iproute2}/bin/ip a show tun0 | ${pkgs.gnugrep}/bin/grep inet | ${pkgs.gawk}/bin/awk '{print $2}' | ${pkgs.coreutils}/bin/head -n 1";
           interval = 60;
           format-prefix = "  ";
           format-prefix-foreground = "#e06c75";
@@ -294,7 +291,7 @@
       ];
 
       fadeDelta = 2;
-      fadeSteps = [1.8e-2 1.8e-2];
+      fadeSteps = [ 1.8e-2 1.8e-2 ];
 
       settings = {
         blur = {

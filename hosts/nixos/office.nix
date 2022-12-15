@@ -1,13 +1,6 @@
 # Edit
-{
-  config,
-  lib,
-  modulesPath,
-  suites,
-  profiles,
-  ...
-}: rec {
-  system.nixos.tags = ["with-gui"];
+{ config, lib, modulesPath, suites, profiles, ... }: rec {
+  system.nixos.tags = [ "with-gui" ];
 
   fileSystems."/" = {
     device = "/dev/disk/by-uuid/799ba8ac-87bb-4c4e-b060-1787b4708a90";
@@ -22,19 +15,19 @@
   fileSystems."/mnt/hydra" = {
     device = "hydra.inner.trontech.link:/export";
     fsType = "nfs";
-    options = ["x-systemd.automount" "noauto"];
+    options = [ "x-systemd.automount" "noauto" ];
   };
 
-  swapDevices = [];
+  swapDevices = [ ];
 
   # Enables DHCP on each ethernet and wireless interface. In case of scripted networking
   # (the default) this is the recommended approach. When using systemd-networkd it's
   # still possible to use this option, but it's recommended to use it in conjunction
   # with explicit per-interface declarations with `networking.interfaces.<interface>.useDHCP`.
-  networking = {useDHCP = lib.mkDefault true;};
+  networking = { useDHCP = lib.mkDefault true; };
   # networking.interfaces.wlp0s20f3.useDHCP = lib.mkDefault true;
 
-  powerManagement = {cpuFreqGovernor = lib.mkDefault "powersave";};
+  powerManagement = { cpuFreqGovernor = lib.mkDefault "powersave"; };
 
   hardware = {
     cpu = {
@@ -46,37 +39,36 @@
   };
   nix = {
     distributedBuilds = false;
-    buildMachines = [
-      {
-        hostName = "hydra.inner.trontech.link";
-        sshUser = "freeman.xiong";
-        systems = ["x86_64-linux"];
-        maxJobs = 2;
-      }
-    ];
+    buildMachines = [{
+      hostName = "hydra.inner.trontech.link";
+      sshUser = "freeman.xiong";
+      systems = [ "x86_64-linux" ];
+      maxJobs = 2;
+    }];
   };
 
-  imports =
-    [
-      # Include the results of the hardware scan.
-      (modulesPath + "/installer/scan/not-detected.nix")
-      profiles.optional-apps.mysql
-      profiles.core.nixos
-      profiles.client-pkgs.nixos
-      profiles.users.root.nixos
-      profiles.users."freeman.xiong"
-    ]
-    ++ suites.client-base;
+  nixpkgs.config.permittedInsecurePackages = [ "python3.10-certifi-2022.9.24" ];
+
+  imports = [
+    # Include the results of the hardware scan.
+    (modulesPath + "/installer/scan/not-detected.nix")
+    profiles.optional-apps.mysql
+    profiles.core.nixos
+    profiles.client-pkgs.nixos
+    profiles.users.root.nixos
+    profiles.users."freeman.xiong"
+  ] ++ suites.client-base;
 
   boot = {
     initrd = {
-      availableKernelModules = ["xhci_pci" "thunderbolt" "nvme" "usb_storage" "usbhid" "sd_mod"];
-      kernelModules = [];
+      availableKernelModules =
+        [ "xhci_pci" "thunderbolt" "nvme" "usb_storage" "usbhid" "sd_mod" ];
+      kernelModules = [ ];
     };
 
-    kernelModules = ["kvm-intel" "hid-nintendo" "v4l2loopback"];
+    kernelModules = [ "kvm-intel" "hid-nintendo" "v4l2loopback" ];
 
-    extraModulePackages = with config.boot.kernelPackages; [v4l2loopback.out];
+    extraModulePackages = with config.boot.kernelPackages; [ v4l2loopback.out ];
 
     extraModprobeConfig = ''
       options i915 force_probe=46a6
@@ -86,9 +78,7 @@
     tmpOnTmpfs = lib.mkDefault true;
 
     loader = {
-      systemd-boot = {
-        editor = false;
-      };
+      systemd-boot = { editor = false; };
       efi = {
         canTouchEfiVariables = true;
         efiSysMountPoint = "/boot/efi";
@@ -164,7 +154,7 @@
     };
     nat = {
       enable = true;
-      internalInterfaces = ["ve-+"];
+      internalInterfaces = [ "ve-+" ];
       externalInterface = "wlp0s20f3";
       # Lazy IPv6 connectivity for the container
       enableIPv6 = true;

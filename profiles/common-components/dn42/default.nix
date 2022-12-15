@@ -1,5 +1,5 @@
-{pkgs, ...}: let
-  script = import ./update-roa.nix {inherit pkgs;};
+{ pkgs, ... }:
+let script = import ./update-roa.nix { inherit pkgs; };
 in {
   systemd = {
     timers = {
@@ -12,13 +12,13 @@ in {
           Unit = "dn42-roa.service";
         };
 
-        wantedBy = ["timers.target"];
-        before = ["bird2.service"];
+        wantedBy = [ "timers.target" ];
+        before = [ "bird2.service" ];
       };
     };
     services = {
       dn42-roa = {
-        after = ["network.target"];
+        after = [ "network.target" ];
         description = "DN42 ROA Updated";
         serviceConfig = {
           Type = "oneshot";

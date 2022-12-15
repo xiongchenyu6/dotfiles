@@ -1,7 +1,7 @@
 # Edit this configuration file to define what should be installed on
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
-{pkgs, ...}: {
+{ pkgs, ... }: {
   nix = {
     generateNixPathFromInputs = true;
     generateRegistryFromInputs = true;
@@ -14,7 +14,6 @@
 
   environment = {
     systemPackages = with pkgs; [
-      asciinema
       awscli2
       alejandra
       #azure-cli
@@ -48,7 +47,8 @@
           newsapi-python
           nltk
           orjson
-          python-lsp-server
+
+          # python-lsp-server
           pandas
           python-dotenv
           six

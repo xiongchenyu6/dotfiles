@@ -1,12 +1,9 @@
-{
-  config,
-  pkgs,
-  ...
-}: let
+{ config, pkgs, ... }:
+let
   realm = "FREEMAN.ENGINEER";
   dbSuffix = "dc=freeman,dc=engineer";
 in {
-  sops.secrets."openldap/passwordFile" = {mode = "770";};
+  sops.secrets."openldap/passwordFile" = { mode = "770"; };
   krb5 = {
     enable = true;
     appdefaults = {
@@ -19,19 +16,19 @@ in {
         initial_timeout = 1;
       };
     };
-    plugins = {ldap_util = {};};
+    plugins = { ldap_util = { }; };
     extraConfig = ''
       [dbmodules]
           openldap_ldapconf = {
-              db_module_dir = ${pkgs.krb5Full}/lib/krb5/plugins/kdb/
+              db_module_dir = ${pkgs.krb5}/lib/krb5/plugins/kdb/
               db_library = kldap
               ldap_servers = ldaps://${config.networking.fqdn}
               ldap_kerberos_container_dn = cn=krbContainer,ou=services,${dbSuffix}
               ldap_kdc_dn = uid=kdc,ou=services,${dbSuffix}
               ldap_kadmind_dn = uid=kadmin,ou=services,${dbSuffix}
               ldap_service_password_file = ${
-        config.sops.secrets."openldap/passwordFile".path
-      }
+                config.sops.secrets."openldap/passwordFile".path
+              }
               ldap_conns_per_server = 5
        }
     '';

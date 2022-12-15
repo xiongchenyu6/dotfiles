@@ -9,13 +9,13 @@ _: {
               signByDefault = true;
             };
             extraConfig = {
-              push = {default = "current";};
-              color = {ui = "auto";};
+              push = { default = "current"; };
+              color = { ui = "auto"; };
               core = {
                 autocrlf = "input";
                 editor = "emacs";
               };
-              pull = {rebase = false;};
+              pull = { rebase = false; };
               user = {
                 name = "freeman";
                 email = "xiongchenyu6@gmail.com";
@@ -24,7 +24,7 @@ _: {
           };
           ssh = {
             matchBlocks = {
-              "freeman.engineer" = {port = 2222;};
+              "freeman.engineer" = { port = 2222; };
               "mail.freeman.engineer" = {
                 port = 2222;
                 user = "root";
@@ -32,9 +32,7 @@ _: {
               "git-code-commit.*.amazonaws.com" = {
                 user = "APKA6ECL465SUMKZQKLN";
               };
-              "*.trontech.link" = {
-                user = "freeman.xiong";
-              };
+              "*.trontech.link" = { user = "freeman.xiong"; };
             };
           };
         };

@@ -1,12 +1,7 @@
-{
-  modulesPath,
-  suites,
-  profiles,
-  ...
-}: {
-  boot.initrd.availableKernelModules = ["ata_piix" "uhci_hcd" "xen_blkfront"];
+{ modulesPath, suites, profiles, ... }: {
+  boot.initrd.availableKernelModules = [ "ata_piix" "uhci_hcd" "xen_blkfront" ];
 
-  boot.initrd.kernelModules = ["nvme"];
+  boot.initrd.kernelModules = [ "nvme" ];
 
   boot.loader.grub = {
     efiSupport = true;
@@ -22,15 +17,13 @@
     fsType = "xfs";
   };
 
-  imports =
-    suites.server-base
-    ++ [
-      (modulesPath + "/profiles/qemu-guest.nix")
-      profiles.optional-apps.gotify-server
-      profiles.server-pkgs.nixos
-      profiles.users.root.nixos
-      # profiles.users."freeman.xiong"
-    ];
+  imports = suites.server-base ++ [
+    (modulesPath + "/profiles/qemu-guest.nix")
+    profiles.optional-apps.gotify-server
+    profiles.server-pkgs.nixos
+    profiles.users.root.nixos
+    # profiles.users."freeman.xiong"
+  ];
 
   boot.cleanTmpDir = true;
   zramSwap.enable = true;

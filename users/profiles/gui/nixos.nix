@@ -1,21 +1,12 @@
 # Edit this configuration file to define what should be installed on
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
-{
-  config,
-  pkgs,
-  lib,
-  ...
-}: {
-  imports = [./common.nix];
+{ config, pkgs, lib, ... }: {
+  imports = [ ./common.nix ];
   xdg = {
     enable = true;
-    mime = {
-      enable = true;
-    };
-    mimeApps = {
-      enable = true;
-    };
+    mime = { enable = true; };
+    mimeApps = { enable = true; };
     userDirs = {
       enable = true;
       createDirectories = true;
@@ -32,7 +23,7 @@
     pointerCursor = {
       name = "Vanilla-DMZ";
       package = pkgs.vanilla-dmz;
-      x11 = {enable = true;};
+      x11 = { enable = true; };
       size = 32;
     };
   };
@@ -51,11 +42,7 @@
     inputMethod = {
       enabled = "fcitx5";
       fcitx5 = {
-        addons = with pkgs; [
-          fcitx5-mozc
-          fcitx5-gtk
-          fcitx5-chinese-addons
-        ];
+        addons = with pkgs; [ fcitx5-mozc fcitx5-gtk fcitx5-chinese-addons ];
       };
     };
   };
@@ -90,8 +77,8 @@
     emacs = {
       enable = true;
       defaultEditor = true;
-      client = {enable = true;};
-      socketActivation = {enable = false;};
+      client = { enable = true; };
+      socketActivation = { enable = false; };
     };
 
     dunst = {
@@ -118,12 +105,12 @@
       };
     };
 
-    blueman-applet = {enable = true;};
-    dropbox = {enable = true;};
+    blueman-applet = { enable = true; };
+    dropbox = { enable = true; };
     gpg-agent = {
       enable = true;
       enableSshSupport = true;
-      sshKeys = ["6E215C61D97608ED447E9D8BAE448986D75FD8F6"];
+      sshKeys = [ "6E215C61D97608ED447E9D8BAE448986D75FD8F6" ];
     };
     udiskie = {
       enable = true;
@@ -133,7 +120,7 @@
     };
     syncthing = {
       enable = true;
-      tray = {enable = true;};
+      tray = { enable = true; };
     };
   };
 }

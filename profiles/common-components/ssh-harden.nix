@@ -1,4 +1,4 @@
-{pkgs, ...}: {
+{ pkgs, ... }: {
   environment.etc."sudo.conf" = {
     mode = "0400";
     text = ''
@@ -11,7 +11,7 @@
     startWhenNeeded = false;
     forwardX11 = true;
     passwordAuthentication = true;
-    ports = [2222];
+    ports = [ 2222 ];
     ciphers = [
       "chacha20-poly1305@openssh.com"
       "aes256-gcm@openssh.com"
