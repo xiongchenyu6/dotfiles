@@ -47,8 +47,7 @@
           newsapi-python
           nltk
           orjson
-
-          # python-lsp-server
+          python-lsp-server
           pandas
           python-dotenv
           six
@@ -75,7 +74,8 @@
       ripgrep
       terraform
       terranix
-      texlive.combined.scheme-full
+      tectonic
+      #texlive.combined.scheme-full
       tronbox
       unzip
       rust-analyzer

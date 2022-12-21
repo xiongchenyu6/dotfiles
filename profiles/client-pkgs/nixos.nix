@@ -18,6 +18,7 @@
       cabal2nix
       cava
       dapp
+      dingtalk
       geoip
       gnumake
       gimp
@@ -85,6 +86,17 @@
     nm-applet = { enable = true; };
     nix-ld.enable = true;
     wireshark = { enable = true; };
+    proxychains = {
+      enable = true;
+      proxies = {
+        michael = {
+          type = "socks5";
+          host = "localhost";
+          port = 8888;
+          enable = true;
+        };
+      };
+    };
   };
 
   environment.variables = {

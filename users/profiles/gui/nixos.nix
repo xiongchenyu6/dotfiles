@@ -74,6 +74,7 @@
   };
 
   services = lib.mkIf pkgs.stdenv.isLinux {
+    safeeyes.enable = true;
     emacs = {
       enable = true;
       defaultEditor = true;

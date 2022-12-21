@@ -1,14 +1,14 @@
-{ profiles, pkgs, config, ... }: {
+{ profiles, config, ... }: {
   sops.secrets."oath/seed" = { };
   security = {
     rtkit = { enable = true; };
     sudo = {
       enable = true;
       # wheelNeedsPassword = false;
-      package = pkgs.sudo.override {
-        withInsults = true;
-        withSssd = true;
-      };
+      # package = pkgs.sudo.override {
+      #   withInsults = true;
+      #   withSssd = true;
+      # };
     };
     acme = { acceptTerms = true; };
     pam = {
