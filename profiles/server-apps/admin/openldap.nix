@@ -47,6 +47,7 @@ in {
               "${pkgs.ldap-extra-schemas}/kerberos.ldif"
               "${pkgs.ldap-extra-schemas}/sudoers.ldif"
               "${pkgs.ldap-extra-schemas}/rfc2307bis.ldif"
+              "${pkgs.ldap-extra-schemas}/openssh-lpk.ldif"
             ];
           };
           "cn=module{0}" = {
@@ -112,26 +113,29 @@ in {
         with lib;
         let
           cd = "ou=developers,${dbSuffix}";
-          new-user = let cn = "${gn}.${sn}";
-          in gn: sn: uid: gid: tel: ''
-            dn: uid=${cn},${cd}
-            objectClass: person
-            objectClass: posixAccount
-            objectClass: organizationalPerson
-            objectClass: shadowAccount
-            objectClass: inetOrgPerson
-            homeDirectory: /home/${cn}
-            userpassword: {SASL}${cn}@${realm}
-            uidNumber: ${toString uid}
-            gidNumber: ${toString gid}
-            cn: ${cn}
-            sn: ${sn}
-            givenName: ${gn}
-            mail: ${cn}@mail.trontech.link
-            jpegPhoto: www.baidu.com
-            loginShell: /run/current-system/sw/bin/zsh
-            telephoneNumber: ${toString tel}
-          '';
+          new-user = gn: sn:
+            let cn = "${gn}.${sn}";
+            in uid: gid: tel: ''
+              dn: uid=${cn},${cd}
+              objectClass: person
+              objectClass: posixAccount
+              objectClass: organizationalPerson
+              objectClass: shadowAccount
+              objectClass: inetOrgPerson
+              objectClass: ldapPublicKey
+              homeDirectory: /home/${cn}
+              userpassword: {SASL}${cn}@${realm}
+              uidNumber: ${toString uid}
+              gidNumber: ${toString gid}
+              cn: ${cn}
+              sn: ${sn}
+              givenName: ${gn}
+              mail: ${cn}@mail.trontech.link
+              jpegPhoto: www.baidu.com
+              loginShell: /run/current-system/sw/bin/zsh
+              telephoneNumber: ${toString tel}
+              sshPublicKey: ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIABVd0cIdwKzf4yLoRXQwjaaVYPFv8ZfYvTUMOMTFJ/p freeman@nixos
+            '';
 
           init-uid = 1233;
           init-gid = 8888;
@@ -268,7 +272,7 @@ in {
             gidNumber: 1250
             memberURL: ldap:///${cd}??sub?(objectClass=person)
 
-            dn: cn=grafana,ou=developers,${cd}
+            dn: cn=grafana,${cd}
             objectClass: groupOfURLs
             cn: grafana
             memberURL: ldap:///${cd}??sub?(objectClass=person)

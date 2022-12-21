@@ -3,7 +3,7 @@ _: {
     let
       inherit (pkgs)
         sops cachix editorconfig-checker mdbook nixUnstable nixfmt statix
-        nvfetcher ssh-to-age;
+        nvfetcher nix-linter ssh-to-age;
       pkgWithCategory = category: package: { inherit package category; };
       devos = pkgWithCategory "devos";
       linter = pkgWithCategory "linter";
@@ -22,6 +22,10 @@ _: {
           '';
         };
       };
+      env = [{
+        name = "NIX_SSHOPTS";
+        value = "-Y -p 2222";
+      }];
 
       commands = [
         (devos nixUnstable)
@@ -31,6 +35,7 @@ _: {
         (linter nixfmt)
         (linter statix)
         (linter editorconfig-checker)
+        (linter nix-linter)
         (docs mdbook)
       ] ++ lib.optionals (!pkgs.stdenv.buildPlatform.isi686) [ (devos cachix) ]
         ++ lib.optionals (pkgs.stdenv.hostPlatform.isLinux

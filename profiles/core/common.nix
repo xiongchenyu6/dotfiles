@@ -40,7 +40,7 @@
       allow-import-from-derivation = true;
       experimental-features =
         [ "nix-command" "flakes" "repl-flake" "ca-derivations" ];
-      trusted-users = [ "root" "freeman" ];
+      trusted-users = [ "root" "freeman.xiong" ];
 
       auto-optimise-store = true;
       substituters = [

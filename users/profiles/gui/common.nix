@@ -154,6 +154,7 @@
           gcmh
           go-mode
           haskell-mode
+          kind-icon
           leetcode
           lispy
           ligature

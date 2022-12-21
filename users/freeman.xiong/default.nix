@@ -2,7 +2,7 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 { hmUsers, pkgs, config, profiles, ... }: {
-  sops.secrets."user/freeman/pass" = { };
+  sops.secrets."user/freeman/pass" = { neededForUsers = true; };
   imports = [ ./private-info.nix ];
   users = {
     users = {

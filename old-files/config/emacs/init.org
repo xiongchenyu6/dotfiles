@@ -640,6 +640,9 @@ Otherwise, show the default maximum number of recent items."
 
 (add-hook 'meow-insert-exit-hook #'corfu-quit)
 
+(setq corfu-indexed-mode t)
+;; (define-key corfu-map "\C-q" #'corfu-quick-insert)
+
 ;; (global-tree-sitter-mode)
 
 ;; (add-hook 'tree-sitter-after-on-hook #'tree-sitter-hl-mode)
@@ -654,6 +657,14 @@ Otherwise, show the default maximum number of recent items."
 ;; To prevent tree-sitter-hl from overriding lsp-mode's semantic token highlighting, lsp-mode
 ;; will now disable both semantic highlighting and tree-sitter-hl mode and subsequently re-enable both,
 ;; starting with tree-sitter-hl-mode.
+
+(setq kind-icon-default-face 'corfu-default)
+
+
+(setq kind-icon-default-style
+  '(:padding 0 :stroke 0 :margin 0 :radius 0 :height 0.8 :scale 1))
+
+(add-to-list 'corfu-margin-formatters #'kind-icon-margin-formatter)
 
 (require 'lsp)
 (setq lsp-use-plists t)
@@ -1254,16 +1265,22 @@ Bind to lsp mode
 
 (require 'ob-mermaid)
 
+(setq tex-command "tectonic")
 
-(setq tex-command "xelatex")
+(setq org-latex-compiler "tectonic")
 
-(setq org-latex-compiler "xelatex")
+(setq org-latex-pdf-process '("tectonic -Z shell-escape %f"))
 
 (with-eval-after-load "ox-latex"
+  (add-to-list 'org-latex-packages-alist '("" "ctex"))
+  (add-to-list 'org-latex-packages-alist '("" "geometry"))
   (add-to-list 'org-latex-packages-alist '("" "minted"))
   (setq org-latex-listings 'minted)
-  (add-to-list 'org-latex-packages-alist '("" "geometry"))
+  ;; (add-to-list 'org-latex-packages-alist '("" "listings"))
+  ;; (setq org-latex-listings 'listings)
   )
+
+
 
 (require 'ob-restclient)
 
