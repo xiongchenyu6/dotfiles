@@ -157,12 +157,21 @@
         flake-utils.follows = "flake-utils";
       };
     };
+
+    poetry2nix = {
+      url = "github:nix-community/poetry2nix";
+      inputs = {
+        nixpkgs.follows = "nixpkgs";
+        flake-utils.follows = "flake-utils";
+      };
+    };
+
   };
 
   outputs = { self, nixpkgs, nixos-hardware, emacs, xddxdd, flake-utils
     , flake-utils-plus, home-manager, devshell, pre-commit-hooks, nix-alien
     , xiongchenyu6, winklink, digga, sops-nix, grub2-themes, hyprland, hyprpaper
-    , hyprpicker, dapptools, foundry, ... }@inputs:
+    , hyprpicker, dapptools, foundry, poetry2nix, ... }@inputs:
     with nixpkgs;
     with lib;
     with flake-utils.lib;
@@ -179,6 +188,7 @@
         hyprpicker
         foundry
         xddxdd
+        poetry2nix
       ] ++ [
         (_: prev:
           let dapp = import dapptools { inherit (prev) system; };

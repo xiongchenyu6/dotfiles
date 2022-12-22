@@ -147,7 +147,6 @@
           direnv
           format-all
           dap-mode
-          doom-themes
           doom-modeline
           graphviz-dot-mode
           gnu-apl-mode
