@@ -26,6 +26,7 @@
       neofetch
       fd
       foundry-bin
+      firefox
       jdt-language-server
       tealdeer
       tendermint
