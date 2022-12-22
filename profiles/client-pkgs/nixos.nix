@@ -11,14 +11,14 @@
       aspellDicts.en
       appimage-run
       bundix
-      baidupcs-go
+      # baidupcs-go
       clang
       clang-tools
       cmake
       cabal2nix
       cava
       dapp
-      dingtalk
+      # dingtalk
       geoip
       gnumake
       gimp
@@ -61,9 +61,9 @@
       wineWowPackages.staging
       #wpa_supplicant_gui
       whatsapp-for-linux
-      qq
+      # qq
       virtmanager
-      wechat-uos
+      # wechat-uos
     ];
 
     pathsToLink = [ "/share/zsh" ];
