@@ -214,7 +214,7 @@
         "mach-nix": "mach-nix",
         "nix-pypi-fetcher": "nix-pypi-fetcher",
         "nixpkgs": "nixpkgs_2",
-        "poetry2nix": "poetry2nix",
+        "poetry2nix": "poetry2nix_2",
         "pre-commit-hooks": "pre-commit-hooks_2"
       },
       "locked": {
@@ -241,11 +241,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1671418991,
-        "narHash": "sha256-I53dzPNjiBeSYKuXg7dowFUM5uwiZ/OwMNSsu+no44I=",
+        "lastModified": 1671674264,
+        "narHash": "sha256-KwEPzJw2BXKy2+aSq5KgX0nFJJ5MheBbxKvW/6eOM3g=",
         "owner": "nix-community",
         "repo": "emacs-overlay",
-        "rev": "b178f5d0cfb97181ac1503f805ca7e0649202441",
+        "rev": "6964a2e706251a3465b24e2593f7afea902e04a3",
         "type": "github"
       },
       "original": {
@@ -557,11 +557,11 @@
         "xdph": "xdph"
       },
       "locked": {
-        "lastModified": 1671375934,
-        "narHash": "sha256-ijHwLyDzSVdNbpgJWaP3I+t9f44TFUggdeMUr/uURwQ=",
+        "lastModified": 1671672304,
+        "narHash": "sha256-gMfYiZbb81h6Cb71Q1SyTVS53PqqRn/kbft6dRh99Cw=",
         "owner": "hyprwm",
         "repo": "Hyprland",
-        "rev": "6424a1e398ee6a5ad442cd27fb2acb82c0f04337",
+        "rev": "eb9d06322928bbd5bc576dc15a869b0f833be48c",
         "type": "github"
       },
       "original": {
@@ -867,6 +867,29 @@
       }
     },
     "poetry2nix": {
+      "inputs": {
+        "flake-utils": [
+          "flake-utils"
+        ],
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1671550109,
+        "narHash": "sha256-4Iixlro1t75ze8TqXvfz0HTZ9TOBav3vMTuwuYqsxRE=",
+        "owner": "nix-community",
+        "repo": "poetry2nix",
+        "rev": "f18984f99c67654a1f9fbde463c88a319a2c843e",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nix-community",
+        "repo": "poetry2nix",
+        "type": "github"
+      }
+    },
+    "poetry2nix_2": {
       "flake": false,
       "locked": {
         "lastModified": 1666918719,
@@ -957,6 +980,7 @@
         "nixos-generators": "nixos-generators",
         "nixos-hardware": "nixos-hardware",
         "nixpkgs": "nixpkgs",
+        "poetry2nix": "poetry2nix",
         "pre-commit-hooks": "pre-commit-hooks",
         "sops-nix": "sops-nix",
         "winklink": "winklink",

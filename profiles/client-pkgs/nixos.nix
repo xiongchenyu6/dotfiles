@@ -49,6 +49,8 @@
       pass
       procs
       patchelf
+      poetry
+      poetry2nix.cli
       jp2a
       linuxPackages.ply
       tdesktop
