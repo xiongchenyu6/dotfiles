@@ -1,10 +1,10 @@
-{ config, pkgs, ... }: {
+{ config, ... }: {
   services = {
     bird-lg = {
-      package = pkgs.symlinkJoin {
-        name = "bird-lg";
-        paths = with pkgs; [ bird-lg-go bird-lgproxy-go ];
-      };
+      # package = pkgs.symlinkJoin {
+      #   name = "bird-lg";
+      #   paths = with pkgs; [ bird-lg-go bird-lgproxy-go ];
+      # };
       proxy = {
         enable = true;
         birdSocket = "/var/run/bird/bird.ctl";
