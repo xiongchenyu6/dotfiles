@@ -115,7 +115,7 @@ in {
           cd = "ou=developers,${dbSuffix}";
           new-user = gn: sn:
             let cn = "${gn}.${sn}";
-            in uid: gid: tel: ''
+            in uid: gid: tel: pk: ''
               dn: uid=${cn},${cd}
               objectClass: person
               objectClass: posixAccount
@@ -134,7 +134,7 @@ in {
               jpegPhoto: www.baidu.com
               loginShell: /run/current-system/sw/bin/zsh
               telephoneNumber: ${toString tel}
-              sshPublicKey: ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIABVd0cIdwKzf4yLoRXQwjaaVYPFv8ZfYvTUMOMTFJ/p freeman@nixos
+              sshPublicKey: ${pk}
             '';
 
           init-uid = 1233;
@@ -145,18 +145,24 @@ in {
               sn = "xiong";
               gid = 1234;
               tel = 123434132;
+              pk =
+                "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIABVd0cIdwKzf4yLoRXQwjaaVYPFv8ZfYvTUMOMTFJ/p freeman@nixos";
             }
             {
               gn = "user";
               sn = "3";
               gid = 1233;
               tel = 123423413;
+              pk =
+                "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIABVd0cIdwKzf4yLoRXQwjaaVYPFv8ZfYvTUMOMTFJ/p freeman@nixos";
             }
             {
               gn = "user";
               sn = "5";
               gid = 1234;
               tel = 1234423432;
+              pk =
+                "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIABVd0cIdwKzf4yLoRXQwjaaVYPFv8ZfYvTUMOMTFJ/p freeman@nixos";
             }
           ];
           group-dict = [
@@ -187,7 +193,7 @@ in {
           ];
 
           new-group = group: users: gid: ''
-            dn: cn=${group},ou=developers,${dbSuffix}
+            dn: cn=${group},${cd}
             objectClass: groupOfNames
             objectClass: posixGroup
             objectClass: top
@@ -203,7 +209,8 @@ in {
             (if (x ? "id") then x.id else (pos + init-gid))) group-dict;
 
           user-contents = concatImapStringsSep "\n"
-            (pos: x: new-user x.gn x.sn (pos + init-uid) x.gid x.tel) names;
+            (pos: x: new-user x.gn x.sn (pos + init-uid) x.gid x.tel x.pk)
+            names;
         in {
           ${dbSuffix} = ''
             dn: ${dbSuffix}

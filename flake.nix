@@ -7,6 +7,8 @@
 
     nixos-hardware.url = "github:NixOS/nixos-hardware/master";
 
+    nur.url = "github:nix-community/NUR";
+
     flake-utils.url = "github:numtide/flake-utils";
 
     flake-compat = {
@@ -43,17 +45,8 @@
       };
     };
 
-    xddxdd = {
-      url = "github:xddxdd/nur-packages";
-      inputs = {
-        nixpkgs.follows = "nixpkgs";
-        flake-utils.follows = "flake-utils";
-      };
-    };
-
     xiongchenyu6 = {
       url = "github:xiongchenyu6/nur-packages";
-      #url = "/home/freeman/private/nur-packages";
       inputs = {
         nixpkgs.follows = "nixpkgs";
         flake-utils.follows = "flake-utils";
@@ -115,7 +108,6 @@
         home-manager.follows = "home-manager";
         deploy.follows = "deploy-rs";
         flake-compat.follows = "flake-compat";
-        #flake-utils-plus.follows = "flake-utils-plus";
       };
     };
 
@@ -157,16 +149,23 @@
         flake-utils.follows = "flake-utils";
       };
     };
+
+    poetry2nix = {
+      url = "github:nix-community/poetry2nix";
+      inputs = {
+        nixpkgs.follows = "nixpkgs";
+        flake-utils.follows = "flake-utils";
+      };
+    };
+
   };
 
-  outputs = { self, nixpkgs, nixos-hardware, emacs, xddxdd, flake-utils
-    , flake-utils-plus, home-manager, devshell, pre-commit-hooks, nix-alien
-    , xiongchenyu6, winklink, digga, sops-nix, grub2-themes, hyprland, hyprpaper
-    , hyprpicker, dapptools, foundry, ... }@inputs:
+  outputs = { self, nixpkgs, nur, nixos-hardware, emacs, home-manager, devshell
+    , pre-commit-hooks, nix-alien, xiongchenyu6, winklink, digga, sops-nix
+    , grub2-themes, hyprland, hyprpaper, hyprpicker, dapptools, foundry
+    , poetry2nix, ... }@inputs:
     with nixpkgs;
     with lib;
-    with flake-utils.lib;
-    with flake-utils-plus.lib;
     let
       overlays = map (x: x.overlays.default or x.overlay) [
         emacs
@@ -178,7 +177,7 @@
         hyprpaper
         hyprpicker
         foundry
-        xddxdd
+        poetry2nix
       ] ++ [
         (_: prev:
           let dapp = import dapptools { inherit (prev) system; };
@@ -218,6 +217,8 @@
             sops-nix.nixosModules.sops
             digga.nixosModules.nixConfig
             home-manager.nixosModules.home-manager
+            nur.nixosModules.nur
+
             # xiongchenyu6.nixosModules.bttc
           ];
         };
@@ -282,7 +283,7 @@
       };
 
       home = {
-        modules = [ hyprland.homeManagerModules.default ];
+        modules = [ nur.hmModules.nur hyprland.homeManagerModules.default ];
 
         importables = rec {
           profiles = digga.lib.rakeLeaves ./users/profiles // {
