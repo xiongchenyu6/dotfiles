@@ -24,6 +24,7 @@
         636 # ldaps
         993 # imaps
         8000
+        8888
       ];
       allowedUDPPorts = [
         53 # dns
