@@ -7,6 +7,8 @@
 
     nixos-hardware.url = "github:NixOS/nixos-hardware/master";
 
+    nur.url = "github:nix-community/NUR";
+
     flake-utils.url = "github:numtide/flake-utils";
 
     flake-compat = {
@@ -155,20 +157,13 @@
         flake-utils.follows = "flake-utils";
       };
     };
-    # xddxdd = {
-    #   url = "github:xddxdd/nur-packages";
-    #   inputs = {
-    #     nixpkgs.follows = "nixpkgs";
-    #     flake-utils.follows = "flake-utils";
-    #   };
-    # };
 
   };
 
-  outputs = { self, nixpkgs, nixos-hardware, emacs, # xddxdd,
-    home-manager, devshell, pre-commit-hooks, nix-alien, xiongchenyu6, winklink
-    , digga, sops-nix, grub2-themes, hyprland, hyprpaper, hyprpicker, dapptools
-    , foundry, poetry2nix, ... }@inputs:
+  outputs = { self, nixpkgs, nur, nixos-hardware, emacs, home-manager, devshell
+    , pre-commit-hooks, nix-alien, xiongchenyu6, winklink, digga, sops-nix
+    , grub2-themes, hyprland, hyprpaper, hyprpicker, dapptools, foundry
+    , poetry2nix, ... }@inputs:
     with nixpkgs;
     with lib;
     let
@@ -182,7 +177,6 @@
         hyprpaper
         hyprpicker
         foundry
-        # xddxdd
         poetry2nix
       ] ++ [
         (_: prev:
@@ -223,6 +217,8 @@
             sops-nix.nixosModules.sops
             digga.nixosModules.nixConfig
             home-manager.nixosModules.home-manager
+            nur.nixosModules.nur
+
             # xiongchenyu6.nixosModules.bttc
           ];
         };
@@ -287,7 +283,7 @@
       };
 
       home = {
-        modules = [ hyprland.homeManagerModules.default ];
+        modules = [ nur.hmModules.nur hyprland.homeManagerModules.default ];
 
         importables = rec {
           profiles = digga.lib.rakeLeaves ./users/profiles // {

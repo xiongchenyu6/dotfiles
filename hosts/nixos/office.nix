@@ -47,7 +47,7 @@
     }];
   };
 
-  nixpkgs.config.permittedInsecurePackages = [ "python3.10-certifi-2022.9.24" ];
+  nixpkgs.config.permittedInsecurePackages = [ "python3.10-certifi-2022.12.7" ];
 
   imports = [
     # Include the results of the hardware scan.
@@ -160,7 +160,6 @@
       enableIPv6 = true;
     };
   };
-
   # containers.nextcloud = {
   #   autoStart = true;
   #   privateNetwork = true;
