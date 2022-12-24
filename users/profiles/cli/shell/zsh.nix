@@ -10,6 +10,7 @@
         vi = "vim";
         o = "xdg-open";
         ls = "exa --icons";
+        update = "sudo nixos-rebuild switch";
       };
       dirHashes = {
         docs = "$HOME/Documents";
@@ -122,7 +123,7 @@
         (removeAttrs source.${name} [ "pname" "version" "date" ]) // {
           name = "${name}";
         }) [ "alias-tips" "wakatime-zsh-plugin" ];
-      enableCompletion = false;
+      enableCompletion = true;
       enableAutosuggestions = true;
       enableSyntaxHighlighting = true;
     };

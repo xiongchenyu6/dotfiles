@@ -23,7 +23,6 @@
       delve
       dig
       deadnix
-      neofetch
       fd
       foundry-bin
       firefox
@@ -56,6 +55,8 @@
       metals
       mycli
       nixfmt
+      nix-du
+      neofetch
       node2nix
       nodejs
       nodePackages."bash-language-server"
