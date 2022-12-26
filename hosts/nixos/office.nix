@@ -52,7 +52,7 @@
   imports = [
     # Include the results of the hardware scan.
     (modulesPath + "/installer/scan/not-detected.nix")
-    profiles.optional-apps.mysql
+    profiles.server-apps.mysql
     profiles.core.nixos
     profiles.client-pkgs.nixos
     profiles.users.root.nixos

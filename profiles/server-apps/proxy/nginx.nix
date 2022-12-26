@@ -105,15 +105,27 @@
               }";
           };
         };
-        gotify = {
-          serverName = "gotify.inner.${config.networking.domain}";
+        # gotify = {
+        #   serverName = "gotify.inner.${config.networking.domain}";
+        #   forceSSL = true;
+        #   acmeRoot = null;
+        #   useACMEHost = "inner.${config.networking.domain}";
+        #   kTLS = true;
+        #   locations."/" = {
+        #     proxyPass =
+        #       "http://localhost:${toString config.services.gotify.port}";
+        #   };
+        # };
+        keycloak = {
+          serverName = "keycloak.inner.${config.networking.domain}";
           forceSSL = true;
           acmeRoot = null;
           useACMEHost = "inner.${config.networking.domain}";
           kTLS = true;
           locations."/" = {
-            proxyPass =
-              "http://localhost:${toString config.services.gotify.port}";
+            proxyPass = "https://localhost:${
+                toString config.services.keycloak.settings.https-port
+              }";
           };
         };
         zammad = {

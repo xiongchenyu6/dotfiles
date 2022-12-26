@@ -26,6 +26,7 @@
           "input"
           "docker"
           "podman"
+          "tss"
         ];
       };
     };

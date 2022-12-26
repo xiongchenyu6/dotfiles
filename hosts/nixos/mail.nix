@@ -19,12 +19,13 @@
 
   imports = [
     (modulesPath + "/profiles/qemu-guest.nix")
-    profiles.optional-apps.gitea
-    profiles.optional-apps.healthcheck
-    profiles.optional-apps.calibre-web
-    profiles.optional-apps.gotify-server
-    profiles.optional-apps.zammad
-    profiles.optional-apps.atuin
+    # profiles.server-apps.webapps.gitea
+    # profiles.server-apps.webapps.healthcheck
+    # profiles.server-apps.webapps.calibre-web
+    # profiles.server-apps.webapps.gotify-server
+    # profiles.server-apps.webapps.zammad
+    profiles.server-apps.atuin
+    profiles.server-apps.webapps.keycloak
     profiles.server-pkgs.nixos
     profiles.users.root.nixos
     profiles.users."freeman.xiong"
