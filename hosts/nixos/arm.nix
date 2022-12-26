@@ -19,7 +19,7 @@
 
   imports = suites.server-base ++ [
     (modulesPath + "/profiles/qemu-guest.nix")
-    profiles.optional-apps.gotify-server
+    profiles.server-apps.webapps.gotify-server
     profiles.server-pkgs.nixos
     profiles.users.root.nixos
     # profiles.users."freeman.xiong"

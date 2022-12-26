@@ -248,12 +248,12 @@
             common-components = builtins.attrValues profiles.common-components;
             common-apps = builtins.attrValues profiles.common-apps;
             client-components = builtins.attrValues profiles.client-components;
-            server-apps = builtins.attrValues profiles.server-apps;
             server-components = builtins.attrValues profiles.server-components;
             client-base = base ++ common-apps ++ common-components
-              ++ [ bird2 auto-login.getty ] ++ client-components;
+              ++ client-components ++ [ bird2 auto-login.getty ];
             server-base = base ++ common-apps ++ common-components
-              ++ server-apps ++ [ shell-enhance ] ++ server-components;
+              ++ server-components
+              ++ [ server-apps.log.promtail server-apps.admin.sssd ];
           };
         };
       };

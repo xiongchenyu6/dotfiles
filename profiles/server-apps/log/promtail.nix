@@ -1,4 +1,4 @@
-{
+{ config, ... }: {
   services = {
     promtail = {
       enable = true;
@@ -7,7 +7,9 @@
           http_listen_port = 9080;
           grpc_listen_port = 0;
         };
-        clients = [{ url = "http://localhost:3100/api/prom/push"; }];
+        clients = [{
+          url = "http://mail.${config.networking.domain}:3100/api/prom/push";
+        }];
         scrape_configs = [{
           job_name = "systemd-journal";
           journal = {
@@ -21,10 +23,6 @@
         }];
       };
     };
-    loki = let configFile = ./complete-local-config.yaml;
-    in {
-      enable = true;
-      inherit configFile;
-    };
   };
 }
+

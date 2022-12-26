@@ -29,6 +29,10 @@ _: {
                 port = 2222;
                 user = "root";
               };
+              "digital.freeman.engineer" = {
+                port = 2222;
+                user = "root";
+              };
               "git-code-commit.*.amazonaws.com" = {
                 user = "APKA6ECL465SUMKZQKLN";
               };
