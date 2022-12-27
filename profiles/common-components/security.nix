@@ -54,9 +54,6 @@
         window = 30;
       };
     };
-    pki = {
-      certificates =
-        [ profiles.share.dn42.root-ca profiles.share.digitcert-global.root-ca ];
-    };
+    pki = { certificates = map (x: x.cert) profiles.share.root-cas; };
   };
 }

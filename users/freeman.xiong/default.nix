@@ -10,7 +10,8 @@
         isNormalUser = true;
         description = "freeman.xiong";
         group = "users";
-        openssh.authorizedKeys.keys = [ profiles.share.office.user.public-key ];
+        openssh.authorizedKeys.keys =
+          [ profiles.share.users-dict."freeman.xiong".pk ];
         shell = pkgs.zsh;
         passwordFile = config.sops.secrets."user/freeman/pass".path;
         extraGroups = [

@@ -1,8 +1,5 @@
 { config, ... }:
-let
-  realm = "FREEMAN.ENGINEER";
-  tronRealm = "TRONTECH.LINK";
-  tronDomain = "trontech.link";
+let realm = "FREEMAN.ENGINEER";
 in {
   krb5 = {
     enable = true;
@@ -12,13 +9,6 @@ in {
         kdc = [ "mail.${config.networking.domain}" ];
         default_domain = "mail.${config.networking.domain}";
         kpasswd_server = "mail.${config.networking.domain}";
-        database_module = "openldap_ldapconf";
-      };
-      "${tronRealm}" = {
-        admin_server = "admin.inner.${tronDomain}";
-        kdc = [ "admin.inner.${tronDomain}" ];
-        default_domain = "admin.inner.${tronDomain}";
-        kpasswd_server = "admin.inner.${tronDomain}";
         database_module = "openldap_ldapconf";
       };
     };
@@ -33,9 +23,6 @@ in {
     domain_realm = {
       "${config.networking.domain}" = realm;
       ".${config.networking.domain}" = realm;
-      "${tronDomain}" = tronRealm;
-      ".inner.${tronDomain}" = tronRealm;
-      ".${tronDomain}" = tronRealm;
     };
   };
 }

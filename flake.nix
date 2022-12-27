@@ -187,6 +187,8 @@
             hyprland =
               hyprland.packages."${prev.system}".default; # TODO hyprland overlays did not include libdrm in it overlays
             inherit (dapp) hevm dapp ethsign seth;
+            lib = prev.lib.extend
+              (_lfinal: _lprev: { mine = import ./lib { inherit lib; }; });
           })
       ];
     in digga.lib.mkFlake {
@@ -218,7 +220,6 @@
             digga.nixosModules.nixConfig
             home-manager.nixosModules.home-manager
             nur.nixosModules.nur
-
             # xiongchenyu6.nixosModules.bttc
           ];
         };
@@ -241,19 +242,27 @@
         importables = rec {
           profiles = digga.lib.rakeLeaves ./profiles // {
             users = digga.lib.rakeLeaves ./users;
-            share = import ./profiles/shares.nix;
+            share = import ./profiles/shares.nix { inherit lib; };
           };
           suites = with profiles; rec {
             base = [ core.nixos sops ];
-            common-components = builtins.attrValues profiles.common-components;
-            common-apps = builtins.attrValues profiles.common-apps;
-            client-components = builtins.attrValues profiles.client-components;
-            server-components = builtins.attrValues profiles.server-components;
-            client-base = base ++ common-apps ++ common-components
-              ++ client-components ++ [ bird2 auto-login.getty ];
-            server-base = base ++ common-apps ++ common-components
-              ++ server-components
-              ++ [ server-apps.log.promtail server-apps.admin.sssd ];
+            common-comps = builtins.attrValues common-components;
+            client-comps = builtins.attrValues client-components;
+            server-comps = builtins.attrValues server-components;
+            client-base = base ++ common-comps ++ client-comps ++ [
+              auto-login.getty
+              common-apps.dn42
+              common-apps.bird-inner
+              common-apps.kerberos
+            ];
+            server-base = base ++ common-comps ++ server-comps ++ [
+              server-apps.log.promtail
+              server-apps.admin.sssd
+
+              server-apps.monitor.node-exporter
+              common-apps.dn42
+              common-apps.kerberos
+            ];
           };
         };
       };
@@ -273,7 +282,7 @@
         importables = rec {
           profiles = digga.lib.rakeLeaves ./profiles // {
             users = digga.lib.rakeLeaves ./users;
-            share = import ./profiles/shares.nix { };
+            share = import ./profiles/shares.nix { inherit lib; };
           };
           suites = with profiles; {
             base = [ core.darwin ];
@@ -287,7 +296,7 @@
 
         importables = rec {
           profiles = digga.lib.rakeLeaves ./users/profiles // {
-            share = import ./profiles/shares.nix;
+            share = import ./profiles/shares.nix { inherit lib; };
           };
           suites = with profiles; {
             nix-remote-build = [ use-remote-builder ];
@@ -320,7 +329,7 @@
               hooks = {
                 nixfmt.enable = true;
                 statix.enable = true;
-                nix-linter.enable = true;
+                # nix-linter.enable = true;
                 deadnix.enable = true;
                 shellcheck.enable = true;
                 shfmt.enable = true;

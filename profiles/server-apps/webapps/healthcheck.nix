@@ -10,21 +10,38 @@
     };
   };
 
-  services.healthchecks = {
-    port = 8001;
-    listenAddress = "${config.networking.fqdn}";
-    enable = true;
-    settings = {
-      DEBUG = true;
-      SECRET_KEY_FILE = config.sops.secrets."django/secret".path;
-      COMPRESS_ENABLED = "False";
-      REGISTRATION_OPEN = true;
-      EMAIL_HOST = "mail.freeman.engineer";
-      EMAIL_HOST_PASSWORD = "0";
-      EMAIL_HOST_USER = "freeman";
-      DEFAULT_FROM_EMAIL = "healthchecks@mail.freeman.engineer";
-      PING_ENDPOINT = "https://healthchecks.inner.freeman.engineer/";
-      SITE_ROOT = "https://healthchekcs.inner.${config.networking.domain}";
+  services = {
+    healthchecks = {
+      port = 8001;
+      listenAddress = "${config.networking.fqdn}";
+      enable = true;
+      settings = {
+        DEBUG = true;
+        SECRET_KEY_FILE = config.sops.secrets."django/secret".path;
+        COMPRESS_ENABLED = "False";
+        REGISTRATION_OPEN = true;
+        EMAIL_HOST = "mail.freeman.engineer";
+        EMAIL_HOST_PASSWORD = "0";
+        EMAIL_HOST_USER = "freeman";
+        DEFAULT_FROM_EMAIL = "healthchecks@mail.freeman.engineer";
+        PING_ENDPOINT = "https://healthchecks.inner.freeman.engineer/";
+        SITE_ROOT = "https://healthchekcs.inner.${config.networking.domain}";
+      };
+    };
+    nginx = {
+      virtualHosts = {
+        healthchecks = {
+          serverName = "healthchecks.inner.${config.networking.domain}";
+          forceSSL = true;
+          acmeRoot = null;
+          useACMEHost = "inner.${config.networking.domain}";
+          kTLS = true;
+          locations."/" = {
+            proxyPass =
+              "http://127.0.0.1:${toString config.services.healthchecks.port}";
+          };
+        };
+      };
     };
   };
 

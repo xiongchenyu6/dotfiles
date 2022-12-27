@@ -27,5 +27,21 @@
         passwordFile = config.sops.secrets."database/postgres/keycloak".path;
       };
     };
+    nginx = {
+      virtualHosts = {
+        keycloak = {
+          serverName = "keycloak.inner.${config.networking.domain}";
+          forceSSL = true;
+          acmeRoot = null;
+          useACMEHost = "inner.${config.networking.domain}";
+          kTLS = true;
+          locations."/" = {
+            proxyPass = "https://localhost:${
+                toString config.services.keycloak.settings.https-port
+              }";
+          };
+        };
+      };
+    };
   };
 }

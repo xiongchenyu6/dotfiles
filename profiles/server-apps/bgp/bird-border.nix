@@ -1,6 +1,13 @@
 {
   imports = [ ./birg-lg.nix ];
+
   services = {
+    prometheus.exporters = {
+      bird = {
+        enable = true;
+        port = 9003;
+      };
+    };
     bird2 = {
       enable = true;
       checkConfig = false;

@@ -40,5 +40,21 @@
       #   SSL_MODE = skip-verify
       # '';
     };
+    nginx = {
+      virtualHosts = {
+        gitea = {
+          serverName = "git.inner.${config.networking.domain}";
+          forceSSL = true;
+          acmeRoot = null;
+          useACMEHost = "inner.${config.networking.domain}";
+          kTLS = true;
+          locations."/" = {
+            proxyPass =
+              "http://127.0.0.1:${toString config.services.gitea.httpPort}";
+            proxyWebsockets = true;
+          };
+        };
+      };
+    };
   };
 }

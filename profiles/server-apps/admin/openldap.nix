@@ -1,4 +1,4 @@
-{ config, pkgs, lib, ... }:
+{ config, pkgs, lib, profiles, ... }:
 let
   realm = "FREEMAN.ENGINEER";
   dbSuffix = "dc=freeman,dc=engineer";
@@ -7,7 +7,30 @@ let
   kdcPasswordFile = secrets-files-path + "/kdc.password";
   kadminPasswordFile = secrets-files-path + "/kadmin.password";
 in {
+  sops.secrets."openldap/credentials" = {
+    mode = "770";
+    owner = "openldap-exporter";
+    group = "openldap-exporter";
+  };
+
+  users = {
+    users = {
+      openldap-exporter = {
+        group = "openldap-exporter";
+        isSystemUser = true;
+      };
+    };
+    groups.openldap-exporter = { };
+  };
+
   services = {
+    prometheus.exporters = {
+      openldap = {
+        enable = true;
+        port = 9007;
+        ldapCredentialFile = config.sops.secrets."openldap/credentials".path;
+      };
+    };
     openldap = {
       enable = true;
       urlList = [ "ldap:///" "ldapi:///" "ldaps:///" ];
@@ -40,7 +63,6 @@ in {
               "${pkgs.openldap}/etc/schema/dyngroup.ldif"
               "${pkgs.openldap}/etc/schema/inetorgperson.ldif"
               "${pkgs.openldap}/etc/schema/java.ldif"
-              # "${pkgs.openldap}/etc/schema/nis.ldif"
               "${pkgs.openldap}/etc/schema/misc.ldif"
               "${pkgs.openldap}/etc/schema/openldap.ldif"
               "${pkgs.openldap}/etc/schema/pmi.ldif"
@@ -113,6 +135,9 @@ in {
         with lib;
         let
           cd = "ou=developers,${dbSuffix}";
+          init-uid = 1233;
+          init-gid = 8888;
+
           new-user = gn: sn:
             let cn = "${gn}.${sn}";
             in uid: gid: tel: pk: ''
@@ -137,61 +162,6 @@ in {
               sshPublicKey: ${pk}
             '';
 
-          init-uid = 1233;
-          init-gid = 8888;
-          names = [
-            {
-              gn = "freeman";
-              sn = "xiong";
-              gid = 1234;
-              tel = 123434132;
-              pk =
-                "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIABVd0cIdwKzf4yLoRXQwjaaVYPFv8ZfYvTUMOMTFJ/p freeman@nixos";
-            }
-            {
-              gn = "user";
-              sn = "3";
-              gid = 1233;
-              tel = 123423413;
-              pk =
-                "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIABVd0cIdwKzf4yLoRXQwjaaVYPFv8ZfYvTUMOMTFJ/p freeman@nixos";
-            }
-            {
-              gn = "user";
-              sn = "5";
-              gid = 1234;
-              tel = 1234423432;
-              pk =
-                "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIABVd0cIdwKzf4yLoRXQwjaaVYPFv8ZfYvTUMOMTFJ/p freeman@nixos";
-            }
-          ];
-          group-dict = [
-            {
-              name = "test1";
-              users = [ "user.3" ];
-            }
-            {
-              name = "test2";
-              users = [ "user.5" ];
-            }
-            {
-              name = "test3";
-              users = [ "user.3" "user.5" ];
-            }
-            {
-              name = "podman";
-              users = [ "freeman.xiong" "user.3" "user.5" ];
-            }
-            {
-              name = "developer";
-              id = 1233;
-            }
-            {
-              name = "owner";
-              id = 1234;
-            }
-          ];
-
           new-group = group: users: gid: ''
             dn: cn=${group},${cd}
             objectClass: groupOfNames
@@ -206,11 +176,12 @@ in {
 
           group-contents = concatImapStringsSep "\n" (pos: x:
             new-group x.name (if (x ? "users") then x.users else [ ])
-            (if (x ? "id") then x.id else (pos + init-gid))) group-dict;
+            (if (x ? "id") then x.id else (pos + init-gid)))
+            profiles.share.group-dict;
 
           user-contents = concatImapStringsSep "\n"
             (pos: x: new-user x.gn x.sn (pos + init-uid) x.gid x.tel x.pk)
-            names;
+            profiles.share.users;
         in {
           ${dbSuffix} = ''
             dn: ${dbSuffix}

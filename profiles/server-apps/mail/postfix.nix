@@ -2,6 +2,13 @@
   services = let
     credsDir = config.security.acme.certs."${config.networking.fqdn}".directory;
   in {
+    prometheus.exporters = {
+      postfix = {
+        enable = true;
+        port = 9008;
+      };
+    };
+
     postfix = {
       inherit (config.networking) domain;
       enable = true;

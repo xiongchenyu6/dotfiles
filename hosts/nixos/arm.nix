@@ -1,20 +1,30 @@
 { modulesPath, suites, profiles, ... }: {
-  boot.initrd.availableKernelModules = [ "ata_piix" "uhci_hcd" "xen_blkfront" ];
 
-  boot.initrd.kernelModules = [ "nvme" ];
+  boot = {
+    initrd = {
+      kernelModules = [ "nvme" ];
+      availableKernelModules = [ "ata_piix" "uhci_hcd" "xen_blkfront" ];
+    };
 
-  boot.loader.grub = {
-    efiSupport = true;
-    efiInstallAsRemovable = true;
-    device = "nodev";
+    loader = {
+      grub = {
+        efiSupport = true;
+        efiInstallAsRemovable = true;
+        device = "nodev";
+      };
+    };
+
   };
-  fileSystems."/boot" = {
-    device = "/dev/disk/by-uuid/B331-7C58";
-    fsType = "vfat";
-  };
-  fileSystems."/" = {
-    device = "/dev/mapper/ocivolume-root";
-    fsType = "xfs";
+
+  fileSystems = {
+    "/boot" = {
+      device = "/dev/disk/by-uuid/B331-7C58";
+      fsType = "vfat";
+    };
+    "/" = {
+      device = "/dev/mapper/ocivolume-root";
+      fsType = "xfs";
+    };
   };
 
   imports = suites.server-base ++ [
@@ -25,10 +35,10 @@
     # profiles.users."freeman.xiong"
   ];
 
-  boot.cleanTmpDir = true;
   zramSwap.enable = true;
 
   boot = {
+    cleanTmpDir = true;
     #isContainer = true;
     kernel.sysctl = {
       "net.ipv4.ip_forward" = 1;
