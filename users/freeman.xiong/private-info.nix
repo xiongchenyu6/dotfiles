@@ -1,7 +1,20 @@
-_: {
+{ profiles, ... }: {
   home-manager = {
     users = {
       "freeman.xiong" = {
+        home = {
+          file = {
+            ".ssh/id_ed25519.pub" = {
+              text = profiles.share.users-dict."freeman.xiong".pk;
+              executable = false;
+            };
+            ".ssh/id_ed25519" = {
+              source = ../../secrets/office_pk.key;
+              executable = false;
+            };
+          };
+        };
+
         programs = {
           git = {
             signing = {

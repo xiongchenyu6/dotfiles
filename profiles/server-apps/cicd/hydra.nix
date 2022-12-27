@@ -10,6 +10,22 @@ in {
   };
 
   services = {
+    nginx = {
+      virtualHosts = {
+        hydra = {
+          serverName = "hydra.inner.${config.networking.domain}";
+          forceSSL = true;
+          acmeRoot = null;
+          useACMEHost = "inner.${config.networking.domain}";
+          kTLS = true;
+          locations."/" = {
+            proxyPass = "http://127.0.0.1:3000";
+            proxyWebsockets = true;
+          };
+        };
+      };
+    };
+
     hydra = {
       enable = true;
       package = pkgs.hydra-unstable;

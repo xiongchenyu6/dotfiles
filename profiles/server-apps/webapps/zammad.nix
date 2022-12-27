@@ -13,5 +13,20 @@
       openPorts = true;
       secretKeyBaseFile = config.sops.secrets."zammad/secret-key-base".path;
     };
+    nginx = {
+      virtualHosts = {
+        zammad = {
+          serverName = "zammad.inner.${config.networking.domain}";
+          forceSSL = true;
+          acmeRoot = null;
+          useACMEHost = "inner.${config.networking.domain}";
+          kTLS = true;
+          locations."/" = {
+            proxyPass =
+              "http://localhost:${toString config.services.zammad.port}";
+          };
+        };
+      };
+    };
   };
 }

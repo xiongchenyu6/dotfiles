@@ -5,6 +5,21 @@
       smtps = { port = 465; };
       imaps = { host = config.networking.fqdn; };
     };
+    nginx = {
+      virtualHosts = {
+        alps = {
+          serverName = "alps.inner.${config.networking.domain}";
+          forceSSL = true;
+          acmeRoot = null;
+          useACMEHost = "inner.${config.networking.domain}";
+          kTLS = true;
+          locations."/" = {
+            proxyPass = "http://127.0.0.1:1323";
+            proxyWebsockets = true;
+          };
+        };
+      };
+    };
   };
   systemd.services.alps = {
     serviceConfig = let cfg = config.services.alps;
