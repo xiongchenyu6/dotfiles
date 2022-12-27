@@ -11,7 +11,7 @@
         description = "freeman.xiong";
         group = "users";
         openssh.authorizedKeys.keys =
-          [ profiles.share.users-dict."freeman.xiong".pk ];
+          [ profiles.share.users-dict."freeman.xiong".public-key ];
         shell = pkgs.zsh;
         passwordFile = config.sops.secrets."user/freeman/pass".path;
         extraGroups = [

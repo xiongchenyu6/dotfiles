@@ -127,7 +127,7 @@
           dns = [ "fe80::100%wg_office" "172.22.240.97" "1.1.1.1" ];
           peers = [{
             endpoint = "freeman.engineer:22616";
-            publicKey = profiles.share.hosts-dict.mail.wg.pk;
+            publicKey = profiles.share.hosts-dict.mail.wg.public-key;
             persistentKeepalive = 30;
             allowedIPs = [
               "10.0.0.0/8"
@@ -144,7 +144,7 @@
           address = [ "172.64.224.2/24" "fe80::102/64" ];
           peers = [{
             endpoint = "vpn.trontech.link:22617";
-            publicKey = profiles.share.hosts-dict.tronlink.wg.pk;
+            publicKey = profiles.share.hosts-dict.tronlink.wg.public-key;
             persistentKeepalive = 5;
             allowedIPs = [
               "172.64.224.1/24"

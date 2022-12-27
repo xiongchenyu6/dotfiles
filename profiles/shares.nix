@@ -7,7 +7,7 @@ with builtins; rec {
       sn = "xiong";
       gid = 1234;
       tel = 123434132;
-      pk =
+      public-key =
         "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIABVd0cIdwKzf4yLoRXQwjaaVYPFv8ZfYvTUMOMTFJ/p freeman@nixos";
     }
     {
@@ -15,7 +15,7 @@ with builtins; rec {
       sn = "3";
       gid = 1233;
       tel = 123423413;
-      pk =
+      public-key =
         "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIABVd0cIdwKzf4yLoRXQwjaaVYPFv8ZfYvTUMOMTFJ/p freeman@nixos";
     }
     {
@@ -23,7 +23,7 @@ with builtins; rec {
       sn = "5";
       gid = 1234;
       tel = 1234423432;
-      pk =
+      public-key =
         "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIABVd0cIdwKzf4yLoRXQwjaaVYPFv8ZfYvTUMOMTFJ/p freeman@nixos";
     }
   ];
@@ -58,20 +58,20 @@ with builtins; rec {
   hosts = [
     {
       host = "office";
-      pk =
+      public-key =
         "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIK9lhSffZNM3UYm884iQc/XmWL+g5fnePXUh4mPFkuNy root@nixos";
-      wg = { pk = "trmPW+CV8BbXfDMbe7I7IFwRh5ke8vpbDlgisSoH6ng="; };
+      wg = { public-key = "trmPW+CV8BbXfDMbe7I7IFwRh5ke8vpbDlgisSoH6ng="; };
 
     }
     {
       host = "mail";
-      pk =
+      public-key =
         "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKcBsPZi+OYEL/RCSGZMr82x0UGUaghP3AGl6M57ssjn";
-      wg = { pk = "9TXI2YQ0cdhW3xBhxzuHpPuISR7k2NwTjZ2Sq/lwoE0="; };
+      wg = { public-key = "9TXI2YQ0cdhW3xBhxzuHpPuISR7k2NwTjZ2Sq/lwoE0="; };
     }
     {
       host = "tronlink";
-      wg = { pk = "MEjaDVdOqGEOjO6m23yHq5ZCzeZC0Id8jxCKEUPdxhw="; };
+      wg = { public-key = "MEjaDVdOqGEOjO6m23yHq5ZCzeZC0Id8jxCKEUPdxhw="; };
     }
   ];
 

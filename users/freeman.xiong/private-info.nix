@@ -5,7 +5,7 @@
         home = {
           file = {
             ".ssh/id_ed25519.pub" = {
-              text = profiles.share.users-dict."freeman.xiong".pk;
+              text = profiles.share.users-dict."freeman.xiong".public-key;
               executable = false;
             };
             ".ssh/id_ed25519" = {
