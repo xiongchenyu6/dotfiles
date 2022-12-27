@@ -258,7 +258,6 @@
             server-base = base ++ common-comps ++ server-comps ++ [
               server-apps.log.promtail
               server-apps.admin.sssd
-
               server-apps.monitor.node-exporter
               common-apps.dn42
               common-apps.kerberos
@@ -345,6 +344,7 @@
         fastConnection = true;
         nodes = digga.lib.mkDeployNodes self.nixosConfigurations {
           mail = { profiles = { system = { sshUser = "root"; }; }; };
+          digital = { profiles = { system = { sshUser = "root"; }; }; };
           arm = { profiles = { system = { sshUser = "root"; }; }; };
         };
       };

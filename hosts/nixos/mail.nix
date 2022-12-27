@@ -120,7 +120,7 @@
           listenPort = 22616;
           table = "off";
           peers = [{
-            publicKey = profiles.share.hosts-dict.office.wg.pk;
+            publicKey = profiles.share.hosts-dict.office.wg.public-key;
             allowedIPs =
               [ "172.22.240.98/32" "fe80::101/128" "fd48:4b4:f3::2/128" ];
           }];

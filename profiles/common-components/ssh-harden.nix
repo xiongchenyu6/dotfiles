@@ -54,6 +54,6 @@
       '';
       authorizedKeysCommand = "/etc/ssh/auth";
     };
-    sshguard = { enable = true; };
+    # sshguard = { enable = true; };
   };
 }

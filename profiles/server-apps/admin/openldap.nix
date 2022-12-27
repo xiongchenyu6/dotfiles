@@ -179,8 +179,8 @@ in {
             (if (x ? "id") then x.id else (pos + init-gid)))
             profiles.share.group-dict;
 
-          user-contents = concatImapStringsSep "\n"
-            (pos: x: new-user x.gn x.sn (pos + init-uid) x.gid x.tel x.pk)
+          user-contents = concatImapStringsSep "\n" (pos: x:
+            new-user x.gn x.sn (pos + init-uid) x.gid x.tel x.public-key)
             profiles.share.users;
         in {
           ${dbSuffix} = ''
