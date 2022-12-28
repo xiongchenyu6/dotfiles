@@ -117,7 +117,16 @@
       enable = false;
     };
 
-    networkmanager = { enable = true; };
+    networkmanager = {
+      enable = true;
+      firewallBackend = "nftables";
+      wifi = {
+        powersave = true;
+        macAddress = "random";
+      };
+      ethernet = { macAddress = "random"; };
+      enableFccUnlock = true;
+    };
     enableIPv6 = true;
     #hostName = "office"; # Define your hostname.
     # Enable networking

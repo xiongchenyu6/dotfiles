@@ -12,13 +12,14 @@
       appimage-run
       bundix
       config.nur.repos.xddxdd.baidupcs-go
+      config.nur.repos.xddxdd.qq
+      config.nur.repos.xddxdd.wechat-uos
+      config.nur.repos.xddxdd.dingtalk
       clang
       clang-tools
       cmake
       cabal2nix
       cava
-      dapp
-      config.nur.repos.xddxdd.dingtalk
       geoip
       gnumake
       gimp
@@ -38,7 +39,6 @@
           hadolint
         ]))
       heroku
-      hevm
       imagemagick
       inetutils
       lsof
@@ -62,9 +62,7 @@
       wineWowPackages.staging
       #wpa_supplicant_gui
       whatsapp-for-linux
-      config.nur.repos.xddxdd.qq
       virtmanager
-      config.nur.repos.xddxdd.wechat-uos
     ];
 
     pathsToLink = [ "/share/zsh" ];

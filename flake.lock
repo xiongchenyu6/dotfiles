@@ -57,26 +57,6 @@
         "type": "github"
       }
     },
-    "dapptools": {
-      "inputs": {
-        "nixpkgs": [
-          "nixpkgs"
-        ]
-      },
-      "locked": {
-        "lastModified": 1672175145,
-        "narHash": "sha256-aOb4BHSAYYASf1FTPH3FH0XnzHyZ3zOdXV8KS96CTRk=",
-        "owner": "dapphub",
-        "repo": "dapptools",
-        "rev": "b4876106a5f4b263f8cf20b24a514a70e2326c86",
-        "type": "github"
-      },
-      "original": {
-        "owner": "dapphub",
-        "repo": "dapptools",
-        "type": "github"
-      }
-    },
     "darwin": {
       "inputs": {
         "nixpkgs": [
@@ -255,23 +235,6 @@
       "original": {
         "owner": "nix-community",
         "repo": "emacs-overlay",
-        "type": "github"
-      }
-    },
-    "ethereum-tests": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1668955227,
-        "narHash": "sha256-t9GV1TUfXr6xwgRvCaf43oGhBLdlYJwNCmaR4rIYV1M=",
-        "owner": "ethereum",
-        "repo": "tests",
-        "rev": "a16217cff68fa587a4a8b8b008e5cf374a6086b5",
-        "type": "github"
-      },
-      "original": {
-        "owner": "ethereum",
-        "ref": "v11.2",
-        "repo": "tests",
         "type": "github"
       }
     },
@@ -542,34 +505,6 @@
       "original": {
         "owner": "vinceliuice",
         "repo": "grub2-themes",
-        "type": "github"
-      }
-    },
-    "hevm": {
-      "inputs": {
-        "ethereum-tests": "ethereum-tests",
-        "flake-compat": [
-          "flake-compat"
-        ],
-        "flake-utils": [
-          "flake-utils"
-        ],
-        "nixpkgs": [
-          "nixpkgs"
-        ],
-        "solidity": "solidity"
-      },
-      "locked": {
-        "lastModified": 1672161828,
-        "narHash": "sha256-f8l9CBMtAL6ZTAn/I2/RvGYL91OLksnGRAgsA6ct0iA=",
-        "owner": "ethereum",
-        "repo": "hevm",
-        "rev": "3c57fc0c4d5e861a63fb3927e85cca3551d91798",
-        "type": "github"
-      },
-      "original": {
-        "owner": "ethereum",
-        "repo": "hevm",
         "type": "github"
       }
     },
@@ -1004,7 +939,6 @@
     },
     "root": {
       "inputs": {
-        "dapptools": "dapptools",
         "darwin": "darwin",
         "deploy-rs": "deploy-rs",
         "devshell": "devshell",
@@ -1015,7 +949,6 @@
         "flake-utils-plus": "flake-utils-plus_2",
         "foundry": "foundry",
         "grub2-themes": "grub2-themes",
-        "hevm": "hevm",
         "home-manager": "home-manager",
         "hyprland": "hyprland",
         "hyprpaper": "hyprpaper",
@@ -1046,23 +979,6 @@
         "owner": "rust-lang",
         "ref": "nightly",
         "repo": "rust-analyzer",
-        "type": "github"
-      }
-    },
-    "solidity": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1670421565,
-        "narHash": "sha256-VCZDKQHnMsXu+ucsT5BLPYQoZ2FYjpyGbDVoDYjr1W8=",
-        "owner": "ethereum",
-        "repo": "solidity",
-        "rev": "1c8745c54a239d20b6fb0f79a8bd2628d779b27e",
-        "type": "github"
-      },
-      "original": {
-        "owner": "ethereum",
-        "repo": "solidity",
-        "rev": "1c8745c54a239d20b6fb0f79a8bd2628d779b27e",
         "type": "github"
       }
     },
