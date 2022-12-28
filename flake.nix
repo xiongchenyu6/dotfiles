@@ -139,7 +139,16 @@
 
     dapptools = {
       url = "github:dapphub/dapptools";
-      flake = false;
+      inputs = { nixpkgs.follows = "nixpkgs"; };
+    };
+
+    hevm = {
+      url = "github:ethereum/hevm";
+      inputs = {
+        nixpkgs.follows = "nixpkgs";
+        flake-utils.follows = "flake-utils";
+        flake-compat.follows = "flake-compat";
+      };
     };
 
     foundry = {
@@ -163,7 +172,7 @@
   outputs = { self, nixpkgs, nur, nixos-hardware, emacs, home-manager, devshell
     , pre-commit-hooks, nix-alien, xiongchenyu6, winklink, digga, sops-nix
     , grub2-themes, hyprland, hyprpaper, hyprpicker, dapptools, foundry
-    , poetry2nix, ... }@inputs:
+    , poetry2nix, hevm, ... }@inputs:
     with nixpkgs;
     with lib;
     let
@@ -179,17 +188,16 @@
         foundry
         poetry2nix
       ] ++ [
-        (_: prev:
-          let dapp = import dapptools { inherit (prev) system; };
-          in {
-            __dontExport = true;
-            winklink = winklink.packages."${prev.system}".default;
-            hyprland =
-              hyprland.packages."${prev.system}".default; # TODO hyprland overlays did not include libdrm in it overlays
-            inherit (dapp) hevm dapp ethsign seth;
-            lib = prev.lib.extend
-              (_lfinal: _lprev: { mine = import ./lib { inherit lib; }; });
-          })
+        (_: prev: {
+          __dontExport = true;
+          winklink = winklink.packages."${prev.system}".default;
+          hyprland =
+            hyprland.packages."${prev.system}".default; # TODO hyprland overlays did not include libdrm in it overlays
+          inherit (dapptools.packages."${prev.system}") dapp ethsign seth;
+          inherit (hevm.packages."${prev.system}") hevm;
+          lib = prev.lib.extend
+            (_lfinal: _lprev: { mine = import ./lib { inherit lib; }; });
+        })
       ];
     in digga.lib.mkFlake {
       inherit self inputs;

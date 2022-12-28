@@ -10,9 +10,7 @@
     profiles.users."freeman.xiong"
   ] ++ suites.client-base;
 
-  sops.secrets."wireguard/office" =
-    builtins.trace (lib.mine.bird2-inner-config "a" "b") { };
-
+  sops.secrets."wireguard/office" = { };
   system.nixos.tags = [ "with-gui" ];
 
   fileSystems = {
@@ -62,7 +60,12 @@
     }];
   };
 
-  nixpkgs.config.permittedInsecurePackages = [ "python3.10-certifi-2022.12.7" ];
+  nixpkgs = {
+    config = {
+      permittedInsecurePackages = [ "python3.10-certifi-2022.12.7" ];
+      allowBroken = true;
+    };
+  };
 
   boot = {
     initrd = {

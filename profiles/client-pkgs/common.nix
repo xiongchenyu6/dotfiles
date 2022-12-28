@@ -51,6 +51,7 @@
           pandas
           python-dotenv
           six
+          virtualenv
         ]))
       metals
       mycli
