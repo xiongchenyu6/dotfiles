@@ -58,13 +58,17 @@
       }
     },
     "dapptools": {
-      "flake": false,
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
       "locked": {
-        "lastModified": 1663083918,
-        "narHash": "sha256-JVRKYeHidAdaqzypn4UZvJ/1WGCt8nK7VUm5W7KDZyA=",
+        "lastModified": 1672175145,
+        "narHash": "sha256-aOb4BHSAYYASf1FTPH3FH0XnzHyZ3zOdXV8KS96CTRk=",
         "owner": "dapphub",
         "repo": "dapptools",
-        "rev": "01ef8ea418c3fe49089a44d56013d8fcc34a1ec2",
+        "rev": "b4876106a5f4b263f8cf20b24a514a70e2326c86",
         "type": "github"
       },
       "original": {
@@ -241,16 +245,33 @@
         ]
       },
       "locked": {
-        "lastModified": 1672110422,
-        "narHash": "sha256-IYR6XGwmgORfSIZYYywZmtRBoWROBjI5rZjgYmQGPJ4=",
+        "lastModified": 1672192965,
+        "narHash": "sha256-g5cux5D6M1ucHGUW1wToIWy/DJzoBsFDcp0j4QxH0y0=",
         "owner": "nix-community",
         "repo": "emacs-overlay",
-        "rev": "06d88ea2a783a7c563ce57e62d794313ae1e4855",
+        "rev": "2052e031a352505b51d4e278c906bf653312a59b",
         "type": "github"
       },
       "original": {
         "owner": "nix-community",
         "repo": "emacs-overlay",
+        "type": "github"
+      }
+    },
+    "ethereum-tests": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1668955227,
+        "narHash": "sha256-t9GV1TUfXr6xwgRvCaf43oGhBLdlYJwNCmaR4rIYV1M=",
+        "owner": "ethereum",
+        "repo": "tests",
+        "rev": "a16217cff68fa587a4a8b8b008e5cf374a6086b5",
+        "type": "github"
+      },
+      "original": {
+        "owner": "ethereum",
+        "ref": "v11.2",
+        "repo": "tests",
         "type": "github"
       }
     },
@@ -524,6 +545,34 @@
         "type": "github"
       }
     },
+    "hevm": {
+      "inputs": {
+        "ethereum-tests": "ethereum-tests",
+        "flake-compat": [
+          "flake-compat"
+        ],
+        "flake-utils": [
+          "flake-utils"
+        ],
+        "nixpkgs": [
+          "nixpkgs"
+        ],
+        "solidity": "solidity"
+      },
+      "locked": {
+        "lastModified": 1672161828,
+        "narHash": "sha256-f8l9CBMtAL6ZTAn/I2/RvGYL91OLksnGRAgsA6ct0iA=",
+        "owner": "ethereum",
+        "repo": "hevm",
+        "rev": "3c57fc0c4d5e861a63fb3927e85cca3551d91798",
+        "type": "github"
+      },
+      "original": {
+        "owner": "ethereum",
+        "repo": "hevm",
+        "type": "github"
+      }
+    },
     "home-manager": {
       "inputs": {
         "nixpkgs": [
@@ -557,11 +606,11 @@
         "xdph": "xdph"
       },
       "locked": {
-        "lastModified": 1672057622,
-        "narHash": "sha256-UCA9ObYOGpZh5cZi9HO0p35RJVD1i2DT/Djgyx1dOPM=",
+        "lastModified": 1672151321,
+        "narHash": "sha256-HB3UKHbhA914eqWbqFyNv48JBTuaELK8aWErRv6PEUU=",
         "owner": "hyprwm",
         "repo": "Hyprland",
-        "rev": "545e63d1dd14c76e9faad7839ad255dc9ead4cd8",
+        "rev": "d64fc7d336a459f497df8f2e0aada989d4ed1e96",
         "type": "github"
       },
       "original": {
@@ -831,11 +880,11 @@
     },
     "nur": {
       "locked": {
-        "lastModified": 1672112878,
-        "narHash": "sha256-2AxFpdjEitnm0/KSkx0NH+9gnWJ3jpnPD+kd3YAdDuQ=",
+        "lastModified": 1672202773,
+        "narHash": "sha256-S/AoF4lM7p5NR6p5EOdzQjcnj5bQC6SYsnMjbrkspKM=",
         "owner": "nix-community",
         "repo": "NUR",
-        "rev": "70fabf5f77e30c1e93631973f56881029423c546",
+        "rev": "db78e77d8a1412a8f65ef29ba56f6bfc7adcc14a",
         "type": "github"
       },
       "original": {
@@ -966,6 +1015,7 @@
         "flake-utils-plus": "flake-utils-plus_2",
         "foundry": "foundry",
         "grub2-themes": "grub2-themes",
+        "hevm": "hevm",
         "home-manager": "home-manager",
         "hyprland": "hyprland",
         "hyprpaper": "hyprpaper",
@@ -996,6 +1046,23 @@
         "owner": "rust-lang",
         "ref": "nightly",
         "repo": "rust-analyzer",
+        "type": "github"
+      }
+    },
+    "solidity": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1670421565,
+        "narHash": "sha256-VCZDKQHnMsXu+ucsT5BLPYQoZ2FYjpyGbDVoDYjr1W8=",
+        "owner": "ethereum",
+        "repo": "solidity",
+        "rev": "1c8745c54a239d20b6fb0f79a8bd2628d779b27e",
+        "type": "github"
+      },
+      "original": {
+        "owner": "ethereum",
+        "repo": "solidity",
+        "rev": "1c8745c54a239d20b6fb0f79a8bd2628d779b27e",
         "type": "github"
       }
     },

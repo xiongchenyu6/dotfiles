@@ -998,7 +998,7 @@ Otherwise, show the default maximum number of recent items."
 #+end_src
 *** python
 #+begin_src emacs-lisp
-(add-hook 'python-mode-hook (lambda () (whitespace-mode +1)))
+;; (add-hook 'python-mode-hook (lambda () (whitespace-mode +1)))
 #+end_src
 *** COMMENT SML
 #+begin_src emacs-lisp
