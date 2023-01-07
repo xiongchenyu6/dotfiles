@@ -79,7 +79,7 @@
     extraModulePackages = with config.boot.kernelPackages; [ v4l2loopback.out ];
 
     extraModprobeConfig = ''
-      options i915 force_probe=46a6
+      # options i915 force_probe=46a6
       options snd-intel-dspcfg dsp_driver=1
     '';
 
@@ -235,6 +235,19 @@
     bird2 = {
       config = lib.mine.bird2-inner-config "172.22.240.98" "fd48:4b4:f3::2";
     };
+    geth = {
+      test-beacon = {
+        enable = true;
+        syncmode = "light";
+        network = "goerli";
+        # extraArgs = [ "--execution-endpoint" ];
+        http = {
+          enable = true;
+          apis = [ "eth" "net" "web3" "debug" ];
+        };
+      };
+    };
+    # restya-board = { enable = true; };
   };
 
   krb5 = {

@@ -145,9 +145,9 @@
           copilot-el
           dockerfile-mode
           direnv
-          format-all
           dap-mode
           doom-modeline
+          format-all
           graphviz-dot-mode
           gnu-apl-mode
           gcmh
@@ -201,7 +201,6 @@
       extraConfig = ''
         (add-to-list 'default-frame-alist
                      '(font . "JetBrains Mono-14"))
-        (setq gnus-init-file "~/.config/emacs/gnus.el")
         (setq custom-file "~/.config/emacs/custom.el")
       '';
     };

@@ -223,10 +223,9 @@
           };
           office = {
             modules = [
-              grub2-themes.nixosModule
+              grub2-themes.nixosModules.default
               hyprland.nixosModules.default
-              nixos-hardware.nixosModules.lenovo-thinkpad-x1-9th-gen
-              nixos-hardware.nixosModules.common-gpu-intel
+              nixos-hardware.nixosModules.lenovo-thinkpad-x1-10th-gen
             ];
           };
         };

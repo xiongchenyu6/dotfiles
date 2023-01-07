@@ -53,6 +53,7 @@
           six
           virtualenv
         ]))
+      lighthouse
       metals
       mycli
       nixfmt

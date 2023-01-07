@@ -1270,8 +1270,6 @@ Bind to lsp mode
   ;; (setq org-latex-listings 'listings)
   )
 
-
-
 (require 'ob-restclient)
 
 (require 'ox-moderncv nil t)
@@ -1369,7 +1367,6 @@ Bind to lsp mode
 
 (define-key lsp-mode-map (kbd "C-c l") lsp-command-map)
 
-
 (define-key addon-map "t" 'vterm)
 (define-key addon-map "g" 'gnus)
 (define-key addon-map "i" 'erc-myself)
@@ -1378,7 +1375,6 @@ Bind to lsp mode
 
 (with-eval-after-load 'lsp-mode
   (add-hook 'lsp-mode-hook #'lsp-enable-which-key-integration))
-
 
 (meow-leader-define-key
  '("i" . lsp-ui-imenu )
@@ -1399,7 +1395,6 @@ Bind to lsp mode
  ;; '("h" . window-left)
  ;; '("l" . window-right)
  '(":" . replace-regexp))
-
 
 (require 'treemacs)
 (setq treemacs-follow-mode t)
@@ -1461,6 +1456,9 @@ Bind to lsp mode
 #+end_src
 ** modeline
 #+begin_src emacs-lisp
+(line-number-mode)
+(column-number-mode)
+;; (display-battery-mode)
 (doom-modeline-mode 1)
 #+end_src
 
