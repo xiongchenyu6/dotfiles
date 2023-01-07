@@ -1,4 +1,6 @@
 { pkgs, ... }: {
+  imports = [ ./wayland.nix ];
+
   services = {
     kmscon = {
       enable = true;

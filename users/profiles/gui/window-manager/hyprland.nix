@@ -9,7 +9,7 @@
       '');
       INPUT_METHOD = "fcitx";
       XIM_SERVERS = "fcitx";
-      LSP_USE_PLISTS = true;
+      LSP_USE_PLISTS = "true";
     };
     file = {
       ".config/hypr/hyprpaper.conf" = {
