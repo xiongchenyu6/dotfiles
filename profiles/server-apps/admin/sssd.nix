@@ -8,6 +8,7 @@ in {
   services = {
     sssd = {
       enable = true;
+      sshAuthorizedKeysIntegration = true;
       config = ''
         [sssd]
         config_file_version = 2
