@@ -1,8 +1,8 @@
 # Edit this configuration file to define what should be installed on
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
-{pkgs, ...}: {
-  imports = [./common.nix];
+{ pkgs, ... }: {
+  imports = [ ./common.nix ];
   environment = {
     systemPackages = with pkgs; [
       postman
@@ -15,23 +15,26 @@
   };
   homebrew = {
     enable = true;
-    brews = [
-      {
-        name = "mysql";
-        restart_service = true;
-        start_service = true;
-        link = true;
-        conflicts_with = ["mysql"];
-      }
-    ];
-    # casks = ["virtualbox"];
+    brews = [{
+      name = "mysql";
+      restart_service = true;
+      start_service = true;
+      link = true;
+      conflicts_with = [ "mysql" ];
+    }];
+    casks = [ "virtualbox" ];
     global = {
       autoUpdate = true;
       brewfile = true;
     };
     # mac app store
     # masApps = { WireGuard = 1451685025; };
-    taps = ["homebrew/services" "homebrew/core" "homebrew/cask" "homebrew/cask-drivers"];
+    taps = [
+      "homebrew/services"
+      "homebrew/core"
+      "homebrew/cask"
+      "homebrew/cask-drivers"
+    ];
     onActivation = {
       autoUpdate = true;
       cleanup = "none";
@@ -59,10 +62,9 @@
         myEditor = "emacsclient -a '' -nc";
         myBrowser = "open /Applications/Safari.app";
         prefix = "${pkgs.yabai}/bin/yabai -m";
-        fstOrSnd = {
-          fst,
-          snd,
-        }: domain: "${prefix} ${domain} --focus ${fst} || ${prefix} ${domain} --focus ${snd}";
+        fstOrSnd = { fst, snd, }:
+        domain:
+        "${prefix} ${domain} --focus ${fst} || ${prefix} ${domain} --focus ${snd}";
         nextOrFirst = fstOrSnd {
           fst = "next";
           snd = "first";
@@ -84,9 +86,9 @@
         ${modMask} - r                            : ${prefix} window --focus smallest && yabai -m window --warp largest && yabai -m window --focus largest
         # increase region
         ${modMask} + ctrl - j		      : ${prefix} window --resize right:-20:0; \
-        		${prefix} window --resize left:-20:0
+        ${prefix} window --resize left:-20:0
         ${modMask} + ctrl - k	 	      : ${prefix} window --resize right:20:0; \
-        		${prefix} window --resize left:20:0
+        ${prefix} window --resize left:20:0
         # spaces ▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁
         # switch
         ${modMask} + alt - j                      : ${prevOrLast "space"}
@@ -192,7 +194,7 @@
         ShowPathbar = true;
         ShowStatusBar = true;
       };
-      trackpad = {Clicking = true;};
+      trackpad = { Clicking = true; };
     };
     keyboard = {
       enableKeyMapping = true;

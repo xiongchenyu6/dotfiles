@@ -1,219 +1,193 @@
 {
-  description = "Flake to manage my laptop, my nur and my hosts on Tencent Cloud";
+  description =
+    "Flake to manage my laptop, my nur and my hosts on Tencent Cloud";
 
-  inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+    inputs = {
+      nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
 
-    nixos-hardware.url = "github:NixOS/nixos-hardware/master";
+      nixos-hardware.url = "github:NixOS/nixos-hardware/master";
 
-    flake-utils.url = "github:numtide/flake-utils";
+      nur.url = "github:nix-community/NUR";
 
-    flake-compat = {
-      url = "github:edolstra/flake-compat";
-      flake = false;
-    };
+      flake-utils.url = "github:numtide/flake-utils";
 
-    home-manager = {
-      url = "github:nix-community/home-manager";
-      inputs = {
-        nixpkgs.follows = "nixpkgs";
-        utils.follows = "flake-utils";
+      flake-compat = {
+        url = "github:edolstra/flake-compat";
+        flake = false;
       };
-    };
 
-    darwin = {
-      url = "github:lnl7/nix-darwin/master";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
-    devshell = {
-      url = "github:numtide/devshell";
-      inputs = {
-        nixpkgs.follows = "nixpkgs";
-        flake-utils.follows = "flake-utils";
+      home-manager = {
+        url = "github:nix-community/home-manager";
+        inputs = {
+          nixpkgs.follows = "nixpkgs";
+          utils.follows = "flake-utils";
+        };
       };
-    };
 
-    emacs = {
-      url = "github:nix-community/emacs-overlay";
-      inputs = {
-        flake-utils.follows = "flake-utils";
-        nixpkgs.follows = "nixpkgs";
+      darwin = {
+        url = "github:lnl7/nix-darwin/master";
+        inputs.nixpkgs.follows = "nixpkgs";
       };
-    };
 
-    xddxdd = {
-      url = "github:xddxdd/nur-packages";
-      inputs = {
-        nixpkgs.follows = "nixpkgs";
-        flake-utils.follows = "flake-utils";
+      devshell = {
+        url = "github:numtide/devshell";
+        inputs = {
+          nixpkgs.follows = "nixpkgs";
+          flake-utils.follows = "flake-utils";
+        };
       };
-    };
 
-    xiongchenyu6 = {
-      url = "github:xiongchenyu6/nur-packages";
-      #url = "/home/freeman/private/nur-packages";
-      inputs = {
-        nixpkgs.follows = "nixpkgs";
-        flake-utils.follows = "flake-utils";
+      emacs = {
+        url = "github:nix-community/emacs-overlay";
+        inputs = {
+          flake-utils.follows = "flake-utils";
+          nixpkgs.follows = "nixpkgs";
+        };
       };
-    };
 
-    nixos-generators = {
-      url = "github:nix-community/nixos-generators";
-      inputs = {nixpkgs.follows = "nixpkgs";};
-    };
-
-    flake-utils-plus = {
-      url = "github:gytis-ivaskevicius/flake-utils-plus";
-      inputs.flake-utils.follows = "flake-utils";
-    };
-
-    pre-commit-hooks = {
-      url = "github:cachix/pre-commit-hooks.nix";
-      inputs = {
-        nixpkgs.follows = "nixpkgs";
-        flake-utils.follows = "flake-utils";
+      xiongchenyu6 = {
+        url = "github:xiongchenyu6/nur-packages";
+        inputs = {
+          nixpkgs.follows = "nixpkgs";
+          flake-utils.follows = "flake-utils";
+        };
       };
-    };
 
-    nix-alien = {
-      url = "github:thiagokokada/nix-alien";
-      inputs = {
-        nixpkgs.follows = "nixpkgs";
-        flake-utils.follows = "flake-utils";
+      nixos-generators = {
+        url = "github:nix-community/nixos-generators";
+        inputs = { nixpkgs.follows = "nixpkgs"; };
       };
-    };
 
-    winklink = {
-      url = "github:xiongchenyu6/winklink";
-      inputs = {
-        nixpkgs.follows = "nixpkgs";
-        flake-utils.follows = "flake-utils";
-        devshell.follows = "devshell";
+      flake-utils-plus = {
+        url = "github:gytis-ivaskevicius/flake-utils-plus";
+        inputs.flake-utils.follows = "flake-utils";
       };
-    };
 
-    deploy-rs = {
-      url = "github:serokell/deploy-rs";
-      inputs = {
-        nixpkgs.follows = "nixpkgs";
-        utils.follows = "flake-utils";
-        flake-compat.follows = "flake-compat";
+      pre-commit-hooks = {
+        url = "github:cachix/pre-commit-hooks.nix";
+        inputs = {
+          nixpkgs.follows = "nixpkgs";
+          flake-utils.follows = "flake-utils";
+        };
       };
-    };
 
-    digga = {
-      url = "github:divnix/digga";
-      inputs = {
-        nixpkgs.follows = "nixpkgs";
-        nixlib.follows = "nixpkgs";
-        nixpkgs-unstable.follows = "nixpkgs";
-        darwin.follows = "darwin";
-        devshell.follows = "devshell";
-        home-manager.follows = "home-manager";
-        deploy.follows = "deploy-rs";
-        flake-compat.follows = "flake-compat";
-        #flake-utils-plus.follows = "flake-utils-plus";
+      nix-alien = {
+        url = "github:thiagokokada/nix-alien";
+        inputs = {
+          nixpkgs.follows = "nixpkgs";
+          flake-utils.follows = "flake-utils";
+        };
       };
-    };
 
-    sops-nix = {
-      url = "github:Mic92/sops-nix";
-      # optional, not necessary for the module
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
-    grub2-themes = {
-      url = "github:vinceliuice/grub2-themes";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
-    hyprland = {
-      url = "github:hyprwm/Hyprland";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
-    hyprpaper = {
-      url = "github:hyprwm/hyprpaper";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
-    hyprpicker = {
-      url = "github:hyprwm/hyprpicker";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
-    dapptools = {
-      url = "github:dapphub/dapptools";
-      flake = false;
-    };
-
-    foundry = {
-      url = "github:xiongchenyu6/foundry.nix";
-      inputs = {
-        nixpkgs.follows = "nixpkgs";
-        flake-utils.follows = "flake-utils";
+      winklink = {
+        url = "github:wink-link/winklink/feature/update-java-and-dependencies";
+        inputs = {
+          nixpkgs.follows = "nixpkgs";
+          flake-utils.follows = "flake-utils";
+          devshell.follows = "devshell";
+        };
       };
-    };
-  };
 
-  outputs = {
-    self,
-    nixpkgs,
-    nixos-hardware,
-    emacs,
-    xddxdd,
-    flake-utils,
-    flake-utils-plus,
-    home-manager,
-    devshell,
-    pre-commit-hooks,
-    nix-alien,
-    xiongchenyu6,
-    winklink,
-    digga,
-    sops-nix,
-    grub2-themes,
-    hyprland,
-    hyprpaper,
-    hyprpicker,
-    dapptools,
-    foundry,
-    ...
-  } @ inputs:
+      deploy-rs = {
+        url = "github:serokell/deploy-rs";
+        inputs = {
+          nixpkgs.follows = "nixpkgs";
+          utils.follows = "flake-utils";
+          flake-compat.follows = "flake-compat";
+        };
+      };
+
+      digga = {
+        url = "github:divnix/digga";
+        inputs = {
+          nixpkgs.follows = "nixpkgs";
+          nixlib.follows = "nixpkgs";
+          nixpkgs-unstable.follows = "nixpkgs";
+          darwin.follows = "darwin";
+          devshell.follows = "devshell";
+          home-manager.follows = "home-manager";
+          deploy.follows = "deploy-rs";
+          flake-compat.follows = "flake-compat";
+        };
+      };
+
+      sops-nix = {
+        url = "github:Mic92/sops-nix";
+        # optional, not necessary for the module
+        inputs.nixpkgs.follows = "nixpkgs";
+      };
+
+      grub2-themes = {
+        url = "github:vinceliuice/grub2-themes";
+        inputs.nixpkgs.follows = "nixpkgs";
+      };
+
+      hyprland = {
+        url = "github:hyprwm/Hyprland";
+        inputs.nixpkgs.follows = "nixpkgs";
+      };
+
+      hyprpaper = {
+        url = "github:hyprwm/hyprpaper";
+        inputs.nixpkgs.follows = "nixpkgs";
+      };
+
+      hyprpicker = {
+        url = "github:hyprwm/hyprpicker";
+        inputs.nixpkgs.follows = "nixpkgs";
+      };
+
+      foundry = {
+        url = "github:xiongchenyu6/foundry.nix";
+        inputs = {
+          nixpkgs.follows = "nixpkgs";
+          flake-utils.follows = "flake-utils";
+        };
+      };
+
+      poetry2nix = {
+        url = "github:nix-community/poetry2nix";
+        inputs = {
+          nixpkgs.follows = "nixpkgs";
+          flake-utils.follows = "flake-utils";
+        };
+      };
+
+    };
+
+    outputs = { self, nixpkgs, nur, nixos-hardware, emacs, home-manager, devshell
+    , pre-commit-hooks, nix-alien, xiongchenyu6, winklink, digga, sops-nix
+    , grub2-themes, hyprland, hyprpaper, hyprpicker, foundry, poetry2nix, ...
+    }@inputs:
     with nixpkgs;
     with lib;
-    with flake-utils.lib;
-    with flake-utils-plus.lib; let
-      overlays =
-        map (x: x.overlays.default or x.overlay) [
-          emacs
-          devshell
-          xiongchenyu6
-          nix-alien
-          sops-nix
-          hyprland
-          hyprpaper
-          hyprpicker
-          foundry
-          xddxdd
-        ]
-        ++ [
-          (_: prev: let
-            dapp = import dapptools {inherit (prev) system;};
-          in {
-            __dontExport = true;
-            winklink = winklink.packages."${prev.system}".default;
-            hyprland = hyprland.packages."${prev.system}".default; #TODO hyprland overlays did not include libdrm in it overlays
-            inherit (dapp) hevm dapp ethsign seth;
-          })
-        ];
-    in
-      digga.lib.mkFlake {
-        inherit self inputs;
+    let
+      overlays = map (x: x.overlays.default or x.overlay) [
+        emacs
+        devshell
+        xiongchenyu6
+        nix-alien
+        sops-nix
+        hyprland
+        hyprpaper
+        hyprpicker
+        foundry
+        poetry2nix
+      ] ++ [
+        (_: prev: {
+          __dontExport = true;
+          winklink = winklink.packages."${prev.system}".default;
+          hyprland =
+            hyprland.packages."${prev.system}".default; # TODO hyprland overlays did not include libdrm in it overlays
+            lib = prev.lib.extend
+            (_lfinal: _lprev: { mine = import ./lib { inherit lib; }; });
+        })
+      ];
+    in digga.lib.mkFlake {
+      inherit self inputs;
 
-        supportedSystems = ["x86_64-linux" "aarch64-linux" "aarch64-darwin" "x86_64-darwin"];
+      supportedSystems =
+        [ "x86_64-linux" "aarch64-linux" "aarch64-darwin" "x86_64-darwin" ];
         #supportedSystems = allSystems;
 
         channelsConfig = {
@@ -223,7 +197,7 @@
         };
 
         channels = {
-          nixpkgs = {imports = [(digga.lib.importOverlays ./overlays)];};
+          nixpkgs = { imports = [ (digga.lib.importOverlays ./overlays) ]; };
         };
 
         sharedOverlays = overlays;
@@ -237,54 +211,48 @@
               sops-nix.nixosModules.sops
               digga.nixosModules.nixConfig
               home-manager.nixosModules.home-manager
+              nur.nixosModules.nur
               # xiongchenyu6.nixosModules.bttc
             ];
           };
-          imports = [(digga.lib.importHosts ./hosts/nixos)];
+          imports = [ (digga.lib.importHosts ./hosts/nixos) ];
           hosts = {
-            arm = {
-              system = "aarch64-linux";
-            };
+            arm = { system = "aarch64-linux"; };
             mail = {
-              modules = [xiongchenyu6.nixosModules.oci-arm-host-capacity];
+              modules = [ xiongchenyu6.nixosModules.oci-arm-host-capacity ];
             };
             office = {
               modules = [
-                grub2-themes.nixosModule
+                grub2-themes.nixosModules.default
                 hyprland.nixosModules.default
-                nixos-hardware.nixosModules.lenovo-thinkpad-x1-9th-gen
-                nixos-hardware.nixosModules.common-gpu-intel
+                nixos-hardware.nixosModules.lenovo-thinkpad-x1-10th-gen
               ];
             };
           };
 
           importables = rec {
-            profiles =
-              digga.lib.rakeLeaves ./profiles
-              // {
-                users = digga.lib.rakeLeaves ./users;
-                share = import ./profiles/shares.nix;
-              };
+            profiles = digga.lib.rakeLeaves ./profiles // {
+              users = digga.lib.rakeLeaves ./users;
+              share = import ./profiles/shares.nix { inherit lib; };
+            };
             suites = with profiles; rec {
-              base = [core.nixos sops];
-              common-components = builtins.attrValues profiles.common-components;
-              common-apps = builtins.attrValues profiles.common-apps;
-              client-components = builtins.attrValues profiles.client-components;
-              server-apps = builtins.attrValues profiles.server-apps;
-              server-components = builtins.attrValues profiles.server-components;
-              client-base =
-                base
-                ++ common-apps
-                ++ common-components
-                ++ [bird2 auto-login.getty]
-                ++ client-components;
-              server-base =
-                base
-                ++ common-apps
-                ++ common-components
-                ++ server-apps
-                ++ [shell-enhance]
-                ++ server-components;
+              base = [ core.nixos sops ];
+              common-comps = builtins.attrValues common-components;
+              client-comps = builtins.attrValues client-components;
+              server-comps = builtins.attrValues server-components;
+              client-base = base ++ common-comps ++ client-comps ++ [
+                auto-login.getty
+                common-apps.dn42
+                common-apps.bird-inner
+                common-apps.kerberos
+              ];
+              server-base = base ++ common-comps ++ server-comps ++ [
+                server-apps.log.promtail
+                server-apps.admin.sssd
+                server-apps.monitor.node-exporter
+                common-apps.dn42
+                common-apps.kerberos
+              ];
             };
           };
         };
@@ -299,36 +267,38 @@
             ];
           };
 
-          imports = [(digga.lib.importHosts ./hosts/darwin)];
-          hosts = {XIONGs-MacBook-Pro = {system = "x86_64-darwin";};};
+          imports = [ (digga.lib.importHosts ./hosts/darwin) ];
+          hosts = { XIONGs-MacBook-Pro = { system = "x86_64-darwin"; }; };
           importables = rec {
-            profiles =
-              digga.lib.rakeLeaves ./profiles
-              // {
-                users = digga.lib.rakeLeaves ./users;
-                share = import ./profiles/shares.nix {};
-              };
+            profiles = digga.lib.rakeLeaves ./profiles // {
+              users = digga.lib.rakeLeaves ./users;
+              share = import ./profiles/shares.nix { inherit lib; };
+            };
             suites = with profiles; {
-              base = [core.darwin];
-              full = [core.darwin client-pkgs.darwin];
+              base = [ core.darwin ];
+              full = [ core.darwin client-pkgs.darwin ];
             };
           };
         };
 
         home = {
-          modules = [hyprland.homeManagerModules.default];
+          modules = [ nur.hmModules.nur hyprland.homeManagerModules.default ];
 
           importables = rec {
-            profiles =
-              digga.lib.rakeLeaves ./users/profiles
-              // {
-                share = import ./profiles/shares.nix;
-              };
+            profiles = digga.lib.rakeLeaves ./users/profiles // {
+              share = import ./profiles/shares.nix { inherit lib; };
+            };
             suites = with profiles; {
-              nix-remote-build = [use-remote-builder];
-              cli = [cli.common cli.shell.zsh];
-              linux-gui = [gui.nixos gui.window-manager.hyprland cli.common gui.mpd cli.shell.zsh];
-              mac-gui = [gui.darwin cli.common cli.shell.zsh];
+              nix-remote-build = [ use-remote-builder ];
+              cli = [ cli.common cli.shell.zsh ];
+              linux-gui = [
+                gui.nixos
+                gui.window-manager.hyprland
+                cli.common
+                gui.mpd
+                cli.shell.zsh
+              ];
+              mac-gui = [ gui.darwin cli.common cli.shell.zsh ];
             };
           };
           users = {
@@ -345,29 +315,30 @@
 
         outputsBuilder = channels: {
           checks = {
-            pre-commit-check = pre-commit-hooks.lib."${channels.nixpkgs.system}".run {
-              src = ./.;
-              hooks = {
-                alejandra.enable = true;
-                statix.enable = true;
-                nix-linter.enable = true;
-                deadnix.enable = true;
-                shellcheck.enable = true;
-                shfmt.enable = true;
+            pre-commit-check =
+              pre-commit-hooks.lib."${channels.nixpkgs.system}".run {
+                src = ./.;
+                hooks = {
+                  #nixfmt.enable = true;
+                  statix.enable = true;
+                  deadnix.enable = true;
+                  shellcheck.enable = true;
+                  shfmt.enable = true;
+                };
               };
-            };
           };
         };
 
         deploy = {
-          sshOpts = ["-Y" "-p" "2222"];
+          sshOpts = [ "-Y" "-p" "2222" ];
           autoRollback = false;
           magicRollback = false;
           fastConnection = true;
           nodes = digga.lib.mkDeployNodes self.nixosConfigurations {
-            mail = {profiles = {system = {sshUser = "root";};};};
-            arm = {profiles = {system = {sshUser = "root";};};};
+            mail = { profiles = { system = { sshUser = "root"; }; }; };
+            digital = { profiles = { system = { sshUser = "root"; }; }; };
+            arm = { profiles = { system = { sshUser = "root"; }; }; };
           };
         };
-      };
+    };
 }

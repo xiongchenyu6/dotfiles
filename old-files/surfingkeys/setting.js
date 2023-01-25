@@ -665,6 +665,8 @@ Front.registerInlineQuery({
   },
 });
 
+chrome.storage.local.set({ "noPdfViewer": 1 })
+
 /* set theme */
 settings.theme = `
 .sk_theme {

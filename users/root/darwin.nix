@@ -1,3 +1,1 @@
-_: {
-  imports = [./common.nix];
-}
+_: { imports = [ ./common.nix ]; }

@@ -12,7 +12,6 @@
 (setenv "XDG_SESSION_TYPE" "wayland")
 (setenv "LSP_USE_PLISTS" "true")
 ;; (setenv "PATH" (concat (getenv "PATH") ":/home/freeman/.npm/bin"))
-
 #+end_src
 ** UI
 *** Font
@@ -22,16 +21,6 @@
 *** Theme
 #+begin_src emacs-lisp
 (load-theme 'modus-vivendi t)
-
-;; Enable flashing mode-line on errors
-(doom-themes-visual-bell-config)
-;; Enable custom neotree theme (all-the-icons must be installed!)
-(doom-themes-neotree-config)
-;; or for treemacs users
-(setq doom-themes-treemacs-theme "doom-atom") ; use "doom-colors" for less minimal icon theme
-;; Corrects (and improves) org-mode's native fontification.
-(doom-themes-org-config)
-;; (load-theme 'material t)
 #+end_src
 *** Ligature
 #+begin_src emacs-lisp
@@ -411,29 +400,29 @@
 #+end_src
 *** Navigation
 #+begin_src emacs-lisp
-  (defun toggle-selective-display (column)
-      (interactive "P")
-      (set-selective-display
-       (or column
-           (unless selective-display
-             (1+ (current-column))))))
+(defun toggle-selective-display (column)
+  (interactive "P")
+  (set-selective-display
+   (or column
+       (unless selective-display
+         (1+ (current-column))))))
 
-    (defun toggle-hiding (column)
-      (interactive "P")
-      (if hs-minor-mode
-          (if (condition-case nil
-                  (hs-toggle-hiding)
-                (error t))
-              (hs-show-all))
-        (toggle-selective-display column)))
+(defun toggle-hiding (column)
+  (interactive "P")
+  (if hs-minor-mode
+      (if (condition-case nil
+              (hs-toggle-hiding)
+            (error t))
+          (hs-show-all))
+    (toggle-selective-display column)))
 
-    (defun display-code-line-counts (ov)
-      (when (eq 'code (overlay-get ov 'hs))
-        (overlay-put ov 'help-echo
-                     (buffer-substring (overlay-start ov)
- 		                      (overlay-end ov)))))
- 
-    (setq hs-set-up-overlay 'display-code-line-counts)
+(defun display-code-line-counts (ov)
+  (when (eq 'code (overlay-get ov 'hs))
+    (overlay-put ov 'help-echo
+                 (buffer-substring (overlay-start ov)
+                                  (overlay-end ov)))))
+
+(setq hs-set-up-overlay 'display-code-line-counts)
 #+end_src
 *** Git
 #+begin_src emacs-lisp
@@ -605,7 +594,7 @@ Otherwise, show the default maximum number of recent items."
 
 (require 'copilot)
 
-(setq copilot-node-executable "/nix/store/iwvpxyzik0mi11qwnmhp0n1nn7c6yh26-nodejs-14.21.1/bin/node")
+(setq copilot-node-executable "/nix/store/cdalbhzm3z4gz07wyg89maprdbjc4yah-nodejs-14.17.0/bin/node")
 
 (add-hook 'prog-mode-hook 'copilot-mode)
 (add-hook 'text-mode-hook 'copilot-mode)
@@ -621,8 +610,6 @@ Otherwise, show the default maximum number of recent items."
 #+begin_src emacs-lisp
 (require 'corfu)
 
-(global-corfu-mode)
-
 (setq corfu-auto t
       corfu-auto-delay 0
       corfu-auto-prefix 2
@@ -630,35 +617,32 @@ Otherwise, show the default maximum number of recent items."
       corfu-preselect-first nil
       corfu-on-exact-match nil
       corfu-preview-current nil
-      corfu-popupinfo-mode t
       corfu-popupinfo-delay t
       corfu-quit-no-match 'separator)
 
+(global-corfu-mode)
+(corfu-popupinfo-mode)
+(corfu-indexed-mode)
+
 (straight-use-package 'lsp-mode)
 (straight-use-package 'lsp-ui)
-(straight-use-package 'tree-sitter-langs)
 
 (add-hook 'meow-insert-exit-hook #'corfu-quit)
 
-;; (global-tree-sitter-mode)
+(define-key corfu-map "\C-q" #'corfu-quick-insert)
 
-;; (add-hook 'tree-sitter-after-on-hook #'tree-sitter-hl-mode)
 
-;; (with-eval-after-load 'tree-sitter-hl
-;;   (add-hook
-;;    'tree-sitter-hl-mode-hook
-;;    (lambda ()
-;;      (when (and lsp-mode lsp--semantic-tokens-teardown
-;;                 (boundp 'tree-sitter-hl-mode) tree-sitter-hl-mode)
-;;        (lsp-warn "It seems you have configured tree-sitter-hl to activate after lsp-mode.
-;; To prevent tree-sitter-hl from overriding lsp-mode's semantic token highlighting, lsp-mode
-;; will now disable both semantic highlighting and tree-sitter-hl mode and subsequently re-enable both,
-;; starting with tree-sitter-hl-mode.
+(setq lsp-java-trace-server "messages")
+
+(setq kind-icon-default-face 'corfu-default)
+
+(setq kind-icon-default-style
+  '(:padding 0 :stroke 0 :margin 0 :radius 0 :height 0.8 :scale 1))
+
+(add-to-list 'corfu-margin-formatters #'kind-icon-margin-formatter)
 
 (require 'lsp)
 (setq lsp-use-plists t)
-
-;; (setq lsp-enable-dap-auto-configure nil)
 
 (direnv-mode t)
 (advice-add 'lsp :before 'direnv-update-environment)
@@ -692,8 +676,6 @@ Otherwise, show the default maximum number of recent items."
                                         ;(setq lsp-bridge-jdtls-worksapce)
 
 
-;; plist only work in mac
-
 (defun my/orderless-dispatch-flex-first (_pattern index _total)
   (and (eq index 0) 'orderless-flex))
 
@@ -724,6 +706,8 @@ Otherwise, show the default maximum number of recent items."
                              cape-dabbrev-min-length 10)
              (add-hook 'before-save-hook #'lsp-format-buffer t t)
              ))
+
+(add-hook 'nix-mode-hook #'(lambda () (add-hook 'before-save-hook #'nix-mode-format t t)))
 
 (add-hook 'text-mode-hook
           #'(lambda ()
@@ -758,10 +742,10 @@ Otherwise, show the default maximum number of recent items."
 )
 
 (add-hook 'emacs-lisp-mode-hook 'tempel-setup-capf)
+
 #+end_src
 
 **** lsp ui
-
 #+begin_src emacs-lisp
 (setq lsp-enable-snippet t)
 (setq lsp-enable-dap-auto-configure t)
@@ -804,9 +788,8 @@ Otherwise, show the default maximum number of recent items."
 (setq acm-candidate-match-function 'orderless-flex)
 #+end_src
 
-*** Format All
+*** COMMENT Format All
 #+begin_src emacs-lisp
-(add-hook 'nix-mode-hook 'format-all-mode)
 (add-hook 'format-all-mode-hook 'format-all-ensure-formatter)
 #+end_src
 *** dap
@@ -879,6 +862,9 @@ Otherwise, show the default maximum number of recent items."
 (add-hook 'occur-hook
           #'(lambda ()
              (switch-to-buffer-other-window "*Occur*")))
+
+(add-hook 'rg-mode-hook #'(lambda ()
+                            (switch-to-buffer-other-window "*rg*")))
 #+end_src
 *** apl
 #+begin_src emacs-lisp
@@ -974,7 +960,7 @@ Otherwise, show the default maximum number of recent items."
 (setq solidity-flycheck-use-project t)
 
 
-(add-to-list 'load-path (expand-file-name "~/.config/emacs"))
+(add-to-list 'load-path (expand-file-name "~/.config/emacs/lisp"))
 
 (require 'lsp-solidity)
 
@@ -993,7 +979,7 @@ Otherwise, show the default maximum number of recent items."
 #+end_src
 *** python
 #+begin_src emacs-lisp
-(add-hook 'python-mode-hook (lambda () (whitespace-mode +1)))
+;; (add-hook 'python-mode-hook (lambda () (whitespace-mode +1)))
 #+end_src
 *** COMMENT SML
 #+begin_src emacs-lisp
@@ -1024,7 +1010,7 @@ Otherwise, show the default maximum number of recent items."
 ;; ;; 
 ;; ;; (setq lsp-java-java-path "/Library/Java/JavaVirtualMachines/openjdk.jdk/Contents/Home/bin/java")
 
-(setq lsp-java-java-path "/etc/profiles/per-user/freeman/bin/java")
+;(setq lsp-java-java-path "/etc/profiles/per-user/freeman/bin/java")
 
 ;; (setq lsp-java-configuration-runtimes '[
 ;;                                         (:name "JavaSE-1.8"
@@ -1083,9 +1069,17 @@ Otherwise, show the default maximum number of recent items."
 (setq sgml-basic-offset 4)
 
 #+end_src
-*** pdf
+
+** input method
 #+begin_src emacs-lisp
-(require 'pdf-tools)
+(use-package rime
+  :config
+  (setq rime-emacs-module-header-root (concat (file-name-directory (directory-file-name (file-name-directory (file-truename (concat invocation-directory invocation-name))))) "include"))
+  (setq rime-share-data-dir (concat (shell-command-to-string "nix eval --impure --raw --expr '(let pkgs = import <nixpkgs> {}; in with pkgs; lib.getLib brise)'") "/share/rime-data"))
+  (setq rime-librime-root (shell-command-to-string "nix eval --impure --raw --expr '(let pkgs = import <nixpkgs> {}; in with pkgs; librime)'"))
+  (setq rime-user-data-dir "~/.local/share/fcitx5/rime")
+  (setq rime--root "~/.config/emacs/rime")
+  )
 #+end_src
 ** Error check
 *** flycheck
@@ -1131,7 +1125,7 @@ Bind to lsp mode
 (add-to-list 'safe-local-variable-values
              '(company-clang-arguments . "-I src"))
 
-(add-to-list 'safe-local-variable-values             '(compile-command . "cmake --build build"))
+(add-to-list 'safe-local-variable-values '(compile-command . "cmake --build build"))
 
 (add-to-list 'safe-local-variable-values '(lsp-rust-analyzer-proc-macro-enable . t))
 
@@ -1144,7 +1138,18 @@ Bind to lsp mode
                                                 nil t))
 #+end_src
 ** Org
-*** Org contrib
+#+begin_src emacs-lisp
+(use-package org-mode
+  :bind (("C-c c" . org-capture)
+         ("C-c l" . org-store-link))
+  )
+#+end_src
+*** Org cite
+#+begin_src emacs-lisp
+(setq org-cite-csl-styles-dir "~/Zotero/styles")
+(setq org-cite-global-bibliography
+      '("~/Dropbox/reference.bib"))
+#+end_src
 *** Org attach
 #+begin_src emacs-lisp
 (require 'org-contrib)
@@ -1162,25 +1167,19 @@ Bind to lsp mode
 #+end_src
 *** Org download
 #+begin_src emacs-lisp
-(require 'org-download)
-
-(setq org-download-image-dir "~/Pictures")
-;; (setq org-download-method 'attach)
-
-(setq org-download-screenshot-method "grim %s")
+  (use-package org-download
+    :ensure t
+    :after org
+    :bind (:map org-mode-map
+                ("C-c y" . org-download-clipboard)
+                ("C-c d" . org-download-screenshot))
+    :config
+    (org-download-image-dir "~/Pictures"
+          setq org-download-method 'attach
+          setq org-download-screenshot-method "grim %s"))
 #+end_src
 *** Org Reveal
 #+begin_src emacs-lisp
-(require 'org-re-reveal)
-
-(setq org-re-reveal-revealjs-version "4"
-      org-re-reveal-root "https://cdn.jsdelivr.net/npm/reveal.js"
-      org-re-reveal-plugins '(markdown highlight zoom notes search math multiplex)
-      org-re-reveal-multiplex-socketio-url "https://reveal-multiplex.glitch.me/socket.io/socket.io.js"
-      org-re-reveal-multiplex-url "https://reveal-multiplex.glitch.me/"
-      org-re-reveal-klipsify-src t
-      )
-
 (org-add-link-type
  "color"
  (lambda (path)
@@ -1199,6 +1198,19 @@ Bind to lsp mode
 		     (truncate r) (truncate g) (truncate b)
 		     (or description color)))
 	 (format "No Color RGB for %s" color)))))))
+
+(use-package org-re-reveal
+  :ensure t
+  :config (setq org-re-reveal-root
+           "https://cdn.jsdelivr.net/npm/reveal.js"
+           org-re-reveal-plugins
+           '(markdown highlight zoom notes search math multiplex)
+           org-re-reveal-multiplex-socketio-url
+           "https://reveal-multiplex.glitch.me/socket.io/socket.io.js"
+           org-re-reveal-multiplex-url "https://reveal-multiplex.glitch.me/"
+           org-re-reveal-klipsify-src t
+           )
+  )
 #+end_src
 *** Org Roam
 #+begin_src emacs-lisp
@@ -1208,6 +1220,9 @@ Bind to lsp mode
          :target (file+head "${slug}.org" "#+title: ${title}\n#+date: %U\n")
          :unnarrowed t
          :immediate-finish t)))
+
+
+(setq org-roam-database-connector 'sqlite-builtin)
 
 (defvar org-roam-keymap
   (let ((keymap (make-keymap)))
@@ -1247,8 +1262,13 @@ Bind to lsp mode
 
 (setq org-confirm-babel-evaluate nil)
 
+;; (require 'ob-mermaid)
 
-(require 'ob-mermaid)
+(setq tex-command "tectonic")
+
+(setq org-latex-compiler "tectonic")
+
+(setq org-latex-pdf-process '("tectonic -Z shell-escape %f"))
 
 
 (setq tex-command "xelatex")
@@ -1256,14 +1276,17 @@ Bind to lsp mode
 (setq org-latex-compiler "xelatex")
 
 (with-eval-after-load "ox-latex"
+  (add-to-list 'org-latex-packages-alist '("" "ctex"))
+  (add-to-list 'org-latex-packages-alist '("" "geometry"))
   (add-to-list 'org-latex-packages-alist '("" "minted"))
   (setq org-latex-listings 'minted)
-  (add-to-list 'org-latex-packages-alist '("" "geometry"))
+  ;; (add-to-list 'org-latex-packages-alist '("" "listings"))
+  ;; (setq org-latex-listings 'listings)
   )
 
-(require 'ob-restclient)
+;; (require 'ob-restclient)
 
-(require 'ox-moderncv nil t)
+;; (require 'ox-moderncv nil t)
 
 (defun resume-export ()
   "Export the resume with moderncv latex module to pdf"
@@ -1306,12 +1329,9 @@ Bind to lsp mode
   (add-to-list 'org-emphasis-alist '("=" (:box (:line-width -2 :color "gray50" :style released-button) :inherit org-verbatim))))
 
 (setq org-directory "~/Dropbox/Org"
-      org-agenda-files
-      (list org-directory)
-      org-agenda-diary-file
-      (concat org-directory "/todo.org")
-      org-default-notes-file
-      (concat org-directory "/notes.org"))
+      org-agenda-files (list org-directory)
+      org-agenda-diary-file (concat org-directory "/diary.org")
+      org-default-notes-file (concat org-directory "/diary.org"))
 
 (setq org-src-preserve-indentation t
       org-src-fontify-natively t
@@ -1321,6 +1341,35 @@ Bind to lsp mode
 *** Org Hugo
 #+begin_src emacs-lisp
 (require 'ox-hugo)
+#+end_src
+*** Org agenda
+#+begin_src emacs-lisp
+;;---------------------------------------------
+;;org-agenda-time-grid
+;;--------------------------------------------
+(setq org-agenda-time-grid (quote ((daily today require-timed)
+                                   (300
+                                    600
+                                    900
+                                    1200
+                                    1500
+                                    1800
+                                    2100
+                                    2400)
+                                   "......"
+                                   "-----------------------------------------------------"
+                                   )))
+
+(defun my/log-todo-creation-date (&rest ignore)
+  "Log TODO creation time in the property drawer under the key 'CREATED'."
+  (when (and (org-get-todo-state)
+             (not (org-entry-get nil "CREATED")))
+    (org-entry-put nil "CREATED" (format-time-string (cdr org-time-stamp-formats)))))
+
+(advice-add 'org-insert-todo-heading :after #'my/log-todo-creation-date)
+(advice-add 'org-insert-todo-heading-respect-content :after #'my/log-todo-creation-date)
+(advice-add 'org-insert-todo-subheading :after #'my/log-todo-creation-date)
+
 #+end_src
 *** Org pandoc
 #+begin_src emacs-lisp
@@ -1358,16 +1407,14 @@ Bind to lsp mode
 
 (define-key lsp-mode-map (kbd "C-c l") lsp-command-map)
 
-
 (define-key addon-map "t" 'vterm)
 (define-key addon-map "g" 'gnus)
 (define-key addon-map "i" 'erc-myself)
+(define-key addon-map "a" 'org-agenda)
+(define-key addon-map "c" 'calendar)
+(define-key addon-map "c" 'dired)
 
 (setq lsp-keymap-prefix "C-c l")
-
-(with-eval-after-load 'lsp-mode
-  (add-hook 'lsp-mode-hook #'lsp-enable-which-key-integration))
-
 
 (meow-leader-define-key
  '("i" . lsp-ui-imenu )
@@ -1392,6 +1439,7 @@ Bind to lsp mode
 
 (require 'treemacs)
 (setq treemacs-follow-mode t)
+
 (require 'treemacs-project-follow-mode)
 (setq treemacs-show-hidden-files nil)
 (setq treemacs-fringe-indicator-mode t)
@@ -1450,7 +1498,173 @@ Bind to lsp mode
 #+end_src
 ** modeline
 #+begin_src emacs-lisp
+(line-number-mode)
+(column-number-mode)
+;; (display-battery-mode)
 (doom-modeline-mode 1)
+(setq completion-auto-help 'always)
+
+#+end_src
+** gnus
+#+begin_src emacs-lisp
+(setq user-full-name "XiongChenYu"
+      user-mail-address "xiongchenyu6@gmail.com")
+
+(setq message-send-mail-function 'smtpmail-send-it
+  smtpmail-stream-type 'starttls
+  smtpmail-default-smtp-server "smtp.gmail.com"
+  smtpmail-smtp-server "smtp.gmail.com"
+  smtpmail-smtp-service 587)
+
+(add-hook 'gnus-group-mode-hook 'gnus-topic-mode)
+
+;;(setq gnus-select-method '(nntp "news.gwene.org"))
+
+(setq gnus-select-method
+      '(nnimap "gmail"
+        (nnimap-address "imap.gmail.com")
+        (nnimap-server-port 993)
+        (nnimap-stream ssl)))
+
+(setq gnus-extra-headers
+      '(To Newsgroups X-GM-LABELS))
+
+;; 使用准确率较高的地址提取函数
+(setq gnus-extract-address-components
+      'mail-extract-address-components)
+
+;; 默认禁用 nnfolder
+(setq gnus-message-archive-group nil)
+
+;; 双窗口布局(水平)
+(gnus-add-configuration
+ '(article
+   (vertical 1.0
+             (summary 0.25 point)
+             (article 1.0))))
+
+;; 设置图片显示方式
+
+(setq mm-inline-large-images t)
+
+;; 设置summary缓冲区的显示格式
+(setq gnus-extra-headers '(To From))
+(setq nnmail-extra-headers gnus-extra-headers)
+(setq gnus-summary-gather-subject-limit 'fuzzy)
+(setq gnus-summary-make-false-root 'adopt)
+(setq gnus-summary-line-format "%U%R%z %&user-date;  %-16,16a %5k%I%B%s\n")
+
+;; 设置 threads 的样式
+(setq gnus-thread-indent-level 0)
+(setq gnus-summary-same-subject "")
+(setq gnus-sum-thread-tree-indent "  ")
+(setq gnus-sum-thread-tree-single-indent "  ")
+(setq gnus-sum-thread-tree-root "  ")
+(setq gnus-sum-thread-tree-false-root "  ")
+(setq gnus-sum-thread-tree-vertical "   |")
+(setq gnus-sum-thread-tree-leaf-with-other "   |-> ")
+(setq gnus-sum-thread-tree-single-leaf "    `-> ")
+
+;; 设置 `gnus-summary-line-format' 中的 %&user-date;
+(setq gnus-user-date-format-alist
+      '(((gnus-seconds-today) . " %H:%M")
+        ((gnus-seconds-month) . "  %d day")
+        ((gnus-seconds-year)  . " %m-%d")
+        (t . "%Y year")))
+
+;; 将邮件的发出时间转换为本地时间
+(add-hook 'gnus-article-prepare-hook #'gnus-article-date-local)
+
+;; 跟踪组的时间轴
+(add-hook 'gnus-select-group-hook #'gnus-group-set-timestamp)
+
+
+;; visual
+(setq gnus-treat-emphasize t
+      gnus-treat-buttonize t
+      gnus-treat-buttonize-head 'head
+      gnus-treat-unsplit-urls 'last
+      gnus-treat-leading-whitespace 'head
+      gnus-treat-highlight-citation t
+      gnus-treat-highlight-signature t
+      gnus-treat-date-lapsed 'head
+      gnus-treat-strip-trailing-blank-lines t
+      gnus-treat-strip-cr t
+      gnus-treat-overstrike nil
+      gnus-treat-display-x-face t
+      gnus-treat-display-face t
+      gnus-treat-display-smileys nil
+      gnus-treat-x-pgp-sig 'head)
+
+;; 设置邮件报头显示的信息
+(setq gnus-visible-headers
+      (mapconcat 'regexp-quote
+                 '("From:" "Newsgroups:" "Subject:" "Date:"
+                   "Organization:" "To:" "Cc:" "Followup-To" "Gnus-Warnings:"
+                   "X-Sent:" "X-URL:" "User-Agent:" "X-Newsreader:"
+                   "X-Mailer:" "Reply-To:" "X-Spam:" "X-Spam-Status:" "X-Now-Playing"
+                   "X-Attachments" "X-Diagnostic" "X-RSS-URL")
+                 "\\|"))
+
+;; 设置邮件日期显示格式,使用两行日期，一行具体日期时间，
+;; 另一行显示article, 距现在多长时间
+(setq gnus-article-date-headers '(user-defined))
+(setq gnus-article-time-format
+      (lambda (time)
+        (concat "X-Sent:   "
+                (format-time-string "%Y年%m月%d日 星期%u %R" time)
+                "\n"
+                "X-Lasped: "
+                (article-lapsed-string time))))
+
+;; 用 Supercite 显示多种多样的引文形式
+(setq sc-attrib-selection-list nil
+      sc-auto-fill-region-p nil
+      sc-blank-lines-after-headers 1
+      sc-citation-delimiter-regexp "[>]+\\|\\(: \\)+"
+      sc-cite-blank-lines-p nil
+      sc-confirm-always-p nil
+      sc-electric-references-p nil
+      sc-fixup-whitespace-p t
+      sc-nested-citation-p nil
+      sc-preferred-header-style 4
+      sc-use-only-preference-p nil)
+
+;; 构建 threads 时抓取旧文章标题,
+;; 注意： 网速不快时不要使用这个选项。
+(setq gnus-fetch-old-headers nil)
+
+;; 聚集 threads 的方式
+(setq gnus-summary-thread-gathering-function
+      'gnus-gather-threads-by-subject)
+
+;; Thread root 排序
+(setq gnus-thread-sort-functions
+      '(gnus-thread-sort-by-most-recent-number
+        gnus-thread-sort-by-most-recent-date))
+
+;; Subthread 排序
+(setq gnus-subthread-sort-functions
+      '(gnus-thread-sort-by-number
+        gnus-thread-sort-by-date))
+
+;; 自动跳到第一个没有阅读的组
+(add-hook 'gnus-switch-on-after-hook
+          #'gnus-group-first-unread-group)
+
+(add-hook 'gnus-summary-exit-hook
+          #'gnus-group-first-unread-group)
+
+
+;; (setq mail-sources
+;;       '((imap :server "imap.gmail.com"
+;;               :user "xiongchenyu6@gmail.com"
+;;               :port 993
+;;               :stream ssl
+;;               :fetchflag "\\Seen")))
+
+
+
 #+end_src
 
 * Conclusion

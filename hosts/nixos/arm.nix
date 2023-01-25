@@ -1,41 +1,44 @@
-{
-  modulesPath,
-  suites,
-  profiles,
-  ...
-}: {
-  boot.initrd.availableKernelModules = ["ata_piix" "uhci_hcd" "xen_blkfront"];
+{ modulesPath, suites, profiles, ... }: {
 
-  boot.initrd.kernelModules = ["nvme"];
+  boot = {
+    initrd = {
+      kernelModules = [ "nvme" ];
+      availableKernelModules = [ "ata_piix" "uhci_hcd" "xen_blkfront" ];
+    };
 
-  boot.loader.grub = {
-    efiSupport = true;
-    efiInstallAsRemovable = true;
-    device = "nodev";
-  };
-  fileSystems."/boot" = {
-    device = "/dev/disk/by-uuid/B331-7C58";
-    fsType = "vfat";
-  };
-  fileSystems."/" = {
-    device = "/dev/mapper/ocivolume-root";
-    fsType = "xfs";
+    loader = {
+      grub = {
+        efiSupport = true;
+        efiInstallAsRemovable = true;
+        device = "nodev";
+      };
+    };
+
   };
 
-  imports =
-    suites.server-base
-    ++ [
-      (modulesPath + "/profiles/qemu-guest.nix")
-      profiles.optional-apps.gotify-server
-      profiles.server-pkgs.nixos
-      profiles.users.root.nixos
-      # profiles.users."freeman.xiong"
-    ];
+  fileSystems = {
+    "/boot" = {
+      device = "/dev/disk/by-uuid/B331-7C58";
+      fsType = "vfat";
+    };
+    "/" = {
+      device = "/dev/mapper/ocivolume-root";
+      fsType = "xfs";
+    };
+  };
 
-  boot.cleanTmpDir = true;
+  imports = suites.server-base ++ [
+    (modulesPath + "/profiles/qemu-guest.nix")
+    profiles.server-apps.webapps.gotify-server
+    profiles.server-pkgs.nixos
+    profiles.users.root.nixos
+    # profiles.users."freeman.xiong"
+  ];
+
   zramSwap.enable = true;
 
   boot = {
+    cleanTmpDir = true;
     #isContainer = true;
     kernel.sysctl = {
       "net.ipv4.ip_forward" = 1;

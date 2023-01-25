@@ -2,9 +2,5 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 {
-  programs = {
-    nushell = {
-      enable = true;
-    };
-  };
+  programs = { nushell = { enable = true; }; };
 }

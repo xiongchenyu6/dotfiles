@@ -1,19 +1,15 @@
 # Edit this configuration file to define what should be installed on
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
-{
-  pkgs,
-  lib,
-  ...
-}: {
+{ pkgs, lib, ... }: {
   home = lib.mkIf pkgs.stdenv.isLinux {
     sessionVariables = {
-      NIX_LD = toString (pkgs.runCommand "ld.so" {} ''
+      NIX_LD = toString (pkgs.runCommand "ld.so" { } ''
         ln -s "$(cat '${pkgs.stdenv.cc}/nix-support/dynamic-linker')" $out
       '');
       INPUT_METHOD = "fcitx";
       XIM_SERVERS = "fcitx";
-      LSP_USE_PLISTS = true;
+      LSP_USE_PLISTS = "true";
     };
     file = {
       ".config/hypr/hyprpaper.conf" = {
@@ -34,7 +30,7 @@
       hyprland = let
         clean-up-after-start = pkgs.writeShellApplication {
           name = "clean-up-after-start.sh";
-          runtimeInputs = [pkgs.hyprland];
+          runtimeInputs = [ pkgs.hyprland ];
           text = ''
             sleep 10
             hyprctl keyword windowrule "workspace unset,brave"
@@ -42,7 +38,7 @@
         };
         screen-shot = pkgs.writeShellApplication {
           name = "screen-shot.sh";
-          runtimeInputs = [pkgs.hyprland];
+          runtimeInputs = [ pkgs.hyprland ];
           text = ''
             grim -g "$(slurp)" - | wl-copy
           '';
@@ -53,6 +49,8 @@
           enable = true;
           hidpi = true;
         };
+        #  monitor=HDMI-A-1,3840x2160@60,1920x0,1.5
+
         extraConfig = ''
           # This is an example Hyprland config file.
           #
@@ -65,8 +63,8 @@
 
           # See https://wiki.hyprland.org/Configuring/Monitors/
 
-          monitor=,preferred,auto,1
-          monitor=HDMI-A-1,3840x2160@60,1920x0,1.5
+          monitor=,preferred,auto,1.5
+          monitor=HDMI-A-1,preferred,auto,1.5
           monitor=HDMI-A-1,transform,1
           workspace=HDMI-A-1,1
 
@@ -75,85 +73,85 @@
 
           # For all categories, see https://wiki.hyprland.org/Configuring/Variables/
           input {
-              kb_layout = us
-              kb_variant =
-              kb_model =
-              kb_options = caps:ctrl_modifier
+          kb_layout = us
+          kb_variant =
+          kb_model =
+          kb_options = caps:ctrl_modifier
 
-              kb_rules =
-              repeat_rate = 60
-              repeat_delay = 180
+          kb_rules =
+          repeat_rate = 60
+          repeat_delay = 180
 
-              follow_mouse = 1
+          follow_mouse = 1
 
-              touchpad {
-                  natural_scroll = no
-              }
+          touchpad {
+          natural_scroll = no
+          }
 
-              sensitivity = 0 # -1.0 - 1.0, 0 means no modification.
+          sensitivity = 0 # -1.0 - 1.0, 0 means no modification.
           }
 
           general {
-              # See https://wiki.hyprland.org/Configuring/Variables/ for more
+          # See https://wiki.hyprland.org/Configuring/Variables/ for more
 
-              gaps_in = 5
-              gaps_out = 15
-              border_size = 2
-              col.active_border = rgba(1affffee)
-              col.inactive_border = rgba(595959aa)
+          gaps_in = 5
+          gaps_out = 15
+          border_size = 2
+          col.active_border = rgba(1affffee)
+          col.inactive_border = rgba(595959aa)
 
-              layout = dwindle
+          layout = dwindle
           }
 
           decoration {
-              # See https://wiki.hyprland.org/Configuring/Variables/ for more
+          # See https://wiki.hyprland.org/Configuring/Variables/ for more
 
-              rounding = 10
-              blur = yes
-              blur_size = 3
-              blur_passes = 1
-              blur_new_optimizations = true
+          rounding = 10
+          blur = yes
+          blur_size = 3
+          blur_passes = 1
+          blur_new_optimizations = true
 
-              drop_shadow = yes
-              shadow_range = 4
-              shadow_render_power = 3
-              col.shadow = rgba(1a1a1aee)
+          drop_shadow = yes
+          shadow_range = 4
+          shadow_render_power = 3
+          col.shadow = rgba(1a1a1aee)
           }
 
           animations {
-              enabled = yes
+          enabled = yes
 
-              # Some default animations, see https://wiki.hyprland.org/Configuring/Animations/ for more
+          # Some default animations, see https://wiki.hyprland.org/Configuring/Animations/ for more
 
-              bezier = myBezier, 0.05, 0.9, 0.1, 1.05
+          bezier = myBezier, 0.05, 0.9, 0.1, 1.05
 
-              animation = windows, 1, 7, myBezier
-              animation = windowsOut, 1, 7, default, popin 80%
-              animation = border, 1, 10, default
-              animation = fade, 1, 7, default
-              animation = workspaces, 1, 6, default
+          animation = windows, 1, 7, myBezier
+          animation = windowsOut, 1, 7, default, popin 80%
+          animation = border, 1, 10, default
+          animation = fade, 1, 7, default
+          animation = workspaces, 1, 6, default
           }
 
           dwindle {
-              # See https://wiki.hyprland.org/Configuring/Dwindle-Layout/ for more
-              pseudotile = yes # master switch for pseudotiling. Enabling is bound to mainMod + P in the keybinds section below
-              preserve_split = yes # you probably want this
+          # See https://wiki.hyprland.org/Configuring/Dwindle-Layout/ for more
+          pseudotile = yes # master switch for pseudotiling. Enabling is bound to mainMod + P in the keybinds section below
+          preserve_split = yes # you probably want this
           }
 
           master {
-              # See https://wiki.hyprland.org/Configuring/Master-Layout/ for more
-              new_is_master = true
+          # See https://wiki.hyprland.org/Configuring/Master-Layout/ for more
+          new_is_master = true
           }
 
           gestures {
-              # See https://wiki.hyprland.org/Configuring/Variables/ for more
-              workspace_swipe = on
+          # See https://wiki.hyprland.org/Configuring/Variables/ for more
+          workspace_swipe = on
           }
 
           # Example per-device config
           # See https://wiki.hyprland.org/Configuring/Keywords/#executing for more
           device:epic mouse V1 {
-              sensitivity = -0.5
+          sensitivity = -0.5
           }
 
           # Example windowrule v1
@@ -268,16 +266,12 @@
     };
   };
   programs = lib.mkIf pkgs.stdenv.isLinux {
-    emacs = {
-      package = pkgs.emacsPgtk;
-    };
+    emacs = { package = pkgs.emacsPgtk; };
 
     waybar = {
       enable = true;
       package = pkgs.waybar-hyprland;
-      systemd = {
-        enable = true;
-      };
+      systemd = { enable = true; };
       style = ./waybar.css;
       settings = {
         mainBar = {
@@ -287,13 +281,22 @@
           spacing = 2;
           margin-bottom = -15;
 
-          output = [
-            "eDP-1"
-            "HDMI-A-1"
+          output = [ "eDP-1" "HDMI-A-1" ];
+          modules-left = [ "wlr/workspaces" ];
+          modules-center = [ "hyprland/window" ];
+          modules-right = [
+            "custom/btc"
+            "mpd"
+            "cpu"
+            "memory"
+            "temperature"
+            "pulseaudio"
+            "network"
+            "backlight"
+            "clock"
+            "battery"
+            "tray"
           ];
-          modules-left = ["wlr/workspaces"];
-          modules-center = ["hyprland/window"];
-          modules-right = ["custom/btc" "mpd" "cpu" "memory" "temperature" "pulseaudio" "network" "backlight" "clock" "battery" "tray"];
 
           "jack" = {
             "format" = "DSP {}%";
@@ -315,23 +318,21 @@
             tooltip-format = "{title}";
             on-click = "activate";
             on-click-middle = "close";
-            ignore-list = [
-              "Alacritty"
-            ];
+            ignore-list = [ "Alacritty" ];
           };
           "clock" = {
-            "tooltip-format" = "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>";
-            "interval" = 60;
-            "format" = "{:%I:%M}";
+            "tooltip-format" = ''
+              <big>{:%Y %B}</big>
+              <tt><small>{calendar}</small></tt>'';
+              "interval" = 60;
+              "format" = "{:%I:%M}";
           };
           "cpu" = {
             "interval" = 1;
             "format" = "{icon0} {icon1} {icon2} {icon3}";
-            "format-icons" = ["▁" "▂" "▃" "▄" "▅" "▆" "▇" "█"];
+            "format-icons" = [ "▁" "▂" "▃" "▄" "▅" "▆" "▇" "█" ];
           };
-          "memory" = {
-            "format" = "{}% ";
-          };
+          "memory" = { "format" = "{}% "; };
           "temperature" = {
             "critical-threshold" = 80;
             "format-critical" = "{temperatureC}°C";
@@ -339,7 +340,7 @@
           };
           backlight = {
             format = "{percent}% {icon}";
-            format-icons = ["" "" "" "" "" "" "" "" ""];
+            format-icons = [ "" "" "" "" "" "" "" "" "" ];
           };
 
           battery = {
@@ -350,11 +351,9 @@
             format = "{icon}";
             format-charging = "";
             format-plugged = "";
-            format-icons = ["" "" "" "" ""];
+            format-icons = [ "" "" "" "" "" ];
           };
-          "battery#bat2" = {
-            bat = "BAT2";
-          };
+          "battery#bat2" = { bat = "BAT2"; };
 
           network = {
             interface = "wlp0s20f3";
@@ -378,36 +377,32 @@
               phone = "";
               portable = "";
               car = "";
-              default = ["" "" ""];
+              default = [ "" "" "" ];
             };
             on-click = "pavucontrol";
           };
 
           mpd = {
-            format = "{stateIcon} {consumeIcon}{randomIcon}{repeatIcon}{singleIcon}{artist} - {album} - {title} ({elapsedTime:%M:%S}/{totalTime:%M:%S}) ⸨{songPosition}|{queueLength}⸩ {volume}% ";
-            format-disconnected = "Disconnected ";
-            format-stopped = "{consumeIcon}{randomIcon}{repeatIcon}{singleIcon}Stopped ";
-            unknown-tag = "N/A";
-            interval = 2;
-            consume-icons = {
-              on = " ";
-            };
-            random-icons = {
-              off = "<span color=\"#f53c3c\"></span> ";
-              on = " ";
-            };
-            repeat-icons = {
-              on = " ";
-            };
-            single-icons = {
-              on = "1 ";
-            };
-            state-icons = {
-              paused = "";
-              playing = "";
-            };
-            tooltip-format = "MPD (connected)";
-            tooltip-format-disconnected = "MPD (disconnected)";
+            format =
+              "{stateIcon} {consumeIcon}{randomIcon}{repeatIcon}{singleIcon}{artist} - {album} - {title} ({elapsedTime:%M:%S}/{totalTime:%M:%S}) ⸨{songPosition}|{queueLength}⸩ {volume}% ";
+              format-disconnected = "Disconnected ";
+              format-stopped =
+                "{consumeIcon}{randomIcon}{repeatIcon}{singleIcon}Stopped ";
+                unknown-tag = "N/A";
+                interval = 2;
+                consume-icons = { on = " "; };
+                random-icons = {
+                  off = ''<span color="#f53c3c"></span> '';
+                  on = " ";
+                };
+                repeat-icons = { on = " "; };
+                single-icons = { on = "1 "; };
+                state-icons = {
+                  paused = "";
+                  playing = "";
+                };
+                tooltip-format = "MPD (connected)";
+                tooltip-format-disconnected = "MPD (disconnected)";
           };
 
           "hyprland/window" = {

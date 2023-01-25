@@ -1,21 +1,20 @@
-{pkgs, ...}: {
+{ pkgs, ... }: {
   # Home Manager needs a bit of information about you and the
   # paths it should manage.
 
   programs = {
     broot = {
       enable = true;
-      settings = {
-      };
+      settings = { };
     };
 
-    nix-index = {enable = true;};
+    nix-index = { enable = true; };
 
-    noti = {enable = true;};
+    noti = { enable = true; };
 
-    sqls = {enable = true;};
+    sqls = { enable = true; };
 
-    octant = {enable = true;};
+    octant = { enable = true; };
 
     alacritty = {
       enable = true;
@@ -23,10 +22,10 @@
         # opacity = 0.9;
         font = {
           size = 12;
-          normal = {family = "Hack Nerd Font";};
-          bold = {family = "Hack Nerd Font";};
-          italic = {family = "Hack Nerd Font";};
-          bold_italic = {family = "Hack Nerd Font";};
+          normal = { family = "Hack Nerd Font"; };
+          bold = { family = "Hack Nerd Font"; };
+          italic = { family = "Hack Nerd Font"; };
+          bold_italic = { family = "Hack Nerd Font"; };
         };
         key_bindings = [
           {
@@ -44,27 +43,28 @@
       };
     };
 
-    java = {enable = false;};
+    java = { enable = true; };
 
     topgrade = {
       enable = true;
       settings = {
         assume_yes = true;
-        disable = ["emacs"];
+        disable = [ "emacs" ];
         set_title = false;
         cleanup = true;
         git = {
           max_concurrency = 10;
-          repos = ["~/workspace/*/" "~/git/*/" "~/private/*/"];
+          repos = [ "~/workspace/*/" "~/git/*/" "~/private/*/" ];
           arguments = "--rebase --autostash";
         };
         commands = {
-          "emacs straight" = "emacs --batch -l ~/.config/emacs/early-init.el -f straight-pull-all";
+          "emacs straight" =
+            "emacs --batch -l ~/.config/emacs/early-init.el -f straight-pull-all";
         };
       };
     };
 
-    yt-dlp = {enable = true;};
+    yt-dlp = { enable = true; };
 
     aria2 = {
       enable = true;
@@ -112,7 +112,7 @@
 
     gh = {
       enable = true;
-      settings = {git_protocal = "ssh";};
+      settings = { git_protocal = "ssh"; };
     };
 
     sbt = {
@@ -133,79 +133,82 @@
     emacs = {
       enable = false;
       extraPackages = epkgs:
-        with pkgs;
-        with epkgs; [
-          ace-link
-          all-the-icons
-          clojure-mode
-          cider
-          cmake-mode
-          cape
-          corfu
-          copilot-el
-          dockerfile-mode
-          direnv
-          format-all
-          dap-mode
-          doom-themes
-          doom-modeline
-          graphviz-dot-mode
-          gnu-apl-mode
-          gcmh
-          go-mode
-          haskell-mode
-          leetcode
-          lispy
-          ligature
-          lsp-haskell
-          lsp-java
-          # lsp-ui
-          # lsp-mode
-          nix-mode
-          meow
-          magit
-          marginalia
-          nov
-          ox-hugo
-          ob-mermaid
-          ob-restclient
-          ox-pandoc
-          org-contrib
-          org-roam
-          org-re-reveal
-          org-download
-          org-cv
-          orderless
-          plantuml-mode
-          pdf-tools
-          posframe
-          protobuf-mode
-          restclient
-          rainbow-delimiters
-          racket-mode
-          rg
-          rust-mode
-          solidity-mode
-          sly
-          solidity-flycheck
-          scala-mode
-          sbt-mode
-          tide
-          tree-sitter
-          tempel
-          vterm
-          wakatime-mode
-          which-key
-          yaml-mode
-        ];
+      with pkgs;
+      with epkgs; [
+        ace-link
+        all-the-icons
+        clojure-mode
+        cider
+        cmake-mode
+        cape
+        corfu
+        copilot-el
+        citeproc
+        dockerfile-mode
+        direnv
+        dap-mode
+        doom-modeline
+        emacsql-sqlite-builtin # for org-roam
+        format-all
+        gradle-mode
+        graphviz-dot-mode
+        gnu-apl-mode
+        gcmh
+        go-mode
+        haskell-mode
+        kind-icon
+        leetcode
+        lispy
+        ligature
+        lsp-haskell
+        lsp-java
+        # lsp-ui
+        # lsp-mode
+        nix-mode
+        meow
+        magit
+        marginalia
+        nov
+        ox-hugo
+        ob-mermaid
+        ob-restclient
+        ox-pandoc
+        org-contrib
+        org-roam
+        org-re-reveal
+        org-download
+        org-cv
+        orderless
+        plantuml-mode
+        pdf-tools
+        posframe
+        protobuf-mode
+        rime
+        restclient
+        rainbow-delimiters
+        racket-mode
+        reformatter
+        rg
+        rust-mode
+        solidity-mode
+        sly
+        solidity-flycheck
+        scala-mode
+        sbt-mode
+        tide
+        tempel
+        vterm
+        wakatime-mode
+        which-key
+        yaml-mode
+      ];
       extraConfig = ''
         (add-to-list 'default-frame-alist
-                     '(font . "JetBrains Mono-14"))
-        (setq gnus-init-file "~/.config/emacs/gnus.el")
+        '(font . "JetBrains Mono-14"))
         (setq custom-file "~/.config/emacs/custom.el")
       '';
     };
 
-    go = {enable = true;};
+    go = { enable = true; };
   };
 }

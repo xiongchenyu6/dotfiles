@@ -1,15 +1,15 @@
-{
+{ pkgs, ... }: {
+  imports = [ ./wayland.nix ];
+
   services = {
     greetd = {
       enable = true;
-      settings = {
-        default_session = {
-          command = "Hyprland";
-        };
+      settings = rec {
         initial_session = {
-          user = "freeman";
-          command = "Hyprland";
+          user = "freeman.xiong";
+          command = "${pkgs.hyprland}/bin/Hyprland";
         };
+        default_session = initial_session;
       };
     };
   };

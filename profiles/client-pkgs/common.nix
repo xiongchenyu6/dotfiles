@@ -1,7 +1,7 @@
 # Edit this configuration file to define what should be installed on
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
-{pkgs, ...}: {
+{ pkgs, ... }: {
   nix = {
     generateNixPathFromInputs = true;
     generateRegistryFromInputs = true;
@@ -14,7 +14,6 @@
 
   environment = {
     systemPackages = with pkgs; [
-      asciinema
       awscli2
       alejandra
       #azure-cli
@@ -24,9 +23,10 @@
       delve
       dig
       deadnix
-      neofetch
       fd
-      jdt-language-server
+      foundry-bin
+      firefox
+      # jdt-language-server
       tealdeer
       tendermint
       socat
@@ -37,24 +37,28 @@
       graphviz
       grpcurl
       (python3.withPackages (_:
-        with python3.pkgs; [
-          cmake-language-server
-          colour
-          epc
-          ipython
-          matplotlib
-          nbformat
-          newsapi-python
-          nltk
-          orjson
-          # python-lsp-server
-          pandas
-          python-dotenv
-          six
-        ]))
+      with python3.pkgs; [
+        cmake-language-server
+        colour
+        epc
+        ipython
+        matplotlib
+        nbformat
+        newsapi-python
+        nltk
+        orjson
+        python-lsp-server
+        pandas
+        python-dotenv
+        six
+        virtualenv
+      ]))
+      # lighthouse
       metals
-      mycli
+      # mycli
       nixfmt
+      nix-du
+      neofetch
       node2nix
       nodejs
       nodePackages."bash-language-server"
@@ -64,7 +68,6 @@
       nodePackages."vscode-langservers-extracted"
       nvfetcher
       nix-index-update
-      nixopsUnstable
       nil
       openssl
       oath-toolkit
@@ -74,7 +77,8 @@
       ripgrep
       terraform
       terranix
-      texlive.combined.scheme-full
+      tectonic
+      #texlive.combined.scheme-full
       tronbox
       unzip
       rust-analyzer
