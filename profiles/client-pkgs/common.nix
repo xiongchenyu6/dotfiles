@@ -26,7 +26,7 @@
       fd
       foundry-bin
       firefox
-      jdt-language-server
+      # jdt-language-server
       tealdeer
       tendermint
       socat
@@ -37,25 +37,25 @@
       graphviz
       grpcurl
       (python3.withPackages (_:
-        with python3.pkgs; [
-          cmake-language-server
-          colour
-          epc
-          ipython
-          matplotlib
-          nbformat
-          newsapi-python
-          nltk
-          orjson
-          python-lsp-server
-          pandas
-          python-dotenv
-          six
-          virtualenv
-        ]))
-      lighthouse
+      with python3.pkgs; [
+        cmake-language-server
+        colour
+        epc
+        ipython
+        matplotlib
+        nbformat
+        newsapi-python
+        nltk
+        orjson
+        python-lsp-server
+        pandas
+        python-dotenv
+        six
+        virtualenv
+      ]))
+      # lighthouse
       metals
-      mycli
+      # mycli
       nixfmt
       nix-du
       neofetch
@@ -68,7 +68,6 @@
       nodePackages."vscode-langservers-extracted"
       nvfetcher
       nix-index-update
-      nixopsUnstable
       nil
       openssl
       oath-toolkit

@@ -133,74 +133,78 @@
     emacs = {
       enable = true;
       extraPackages = epkgs:
-        with pkgs;
-        with epkgs; [
-          ace-link
-          all-the-icons
-          clojure-mode
-          cider
-          cmake-mode
-          cape
-          corfu
-          copilot-el
-          dockerfile-mode
-          direnv
-          dap-mode
-          doom-modeline
-          format-all
-          graphviz-dot-mode
-          gnu-apl-mode
-          gcmh
-          go-mode
-          haskell-mode
-          kind-icon
-          leetcode
-          lispy
-          ligature
-          lsp-haskell
-          lsp-java
-          # lsp-ui
-          # lsp-mode
-          nix-mode
-          meow
-          magit
-          marginalia
-          nov
-          ox-hugo
-          ob-mermaid
-          ob-restclient
-          ox-pandoc
-          org-contrib
-          org-roam
-          org-re-reveal
-          org-download
-          org-cv
-          orderless
-          plantuml-mode
-          pdf-tools
-          posframe
-          protobuf-mode
-          restclient
-          rainbow-delimiters
-          racket-mode
-          rg
-          rust-mode
-          solidity-mode
-          sly
-          solidity-flycheck
-          scala-mode
-          sbt-mode
-          tide
-          tree-sitter
-          tempel
-          vterm
-          wakatime-mode
-          which-key
-          yaml-mode
-        ];
+      with pkgs;
+      with epkgs; [
+        ace-link
+        all-the-icons
+        clojure-mode
+        cider
+        cmake-mode
+        cape
+        corfu
+        copilot-el
+        citeproc
+        dockerfile-mode
+        direnv
+        dap-mode
+        doom-modeline
+        emacsql-sqlite-builtin # for org-roam
+        format-all
+        gradle-mode
+        graphviz-dot-mode
+        gnu-apl-mode
+        gcmh
+        go-mode
+        haskell-mode
+        kind-icon
+        leetcode
+        lispy
+        ligature
+        lsp-haskell
+        lsp-java
+        # lsp-ui
+        # lsp-mode
+        nix-mode
+        meow
+        magit
+        marginalia
+        nov
+        ox-hugo
+        ob-mermaid
+        ob-restclient
+        ox-pandoc
+        org-contrib
+        org-roam
+        org-re-reveal
+        org-download
+        org-cv
+        orderless
+        plantuml-mode
+        pdf-tools
+        posframe
+        protobuf-mode
+        rime
+        restclient
+        rainbow-delimiters
+        racket-mode
+        reformatter
+        rg
+        rust-mode
+        solidity-mode
+        sly
+        solidity-flycheck
+        scala-mode
+        sbt-mode
+        tide
+        tempel
+        vterm
+        wakatime-mode
+        which-key
+        yaml-mode
+      ];
       extraConfig = ''
         (add-to-list 'default-frame-alist
-                     '(font . "JetBrains Mono-14"))
+        '(font . "JetBrains Mono-14"))
         (setq custom-file "~/.config/emacs/custom.el")
       '';
     };

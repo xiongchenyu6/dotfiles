@@ -4,7 +4,7 @@
 { pkgs, lib, ... }: {
   environment.systemPackages = with pkgs; [
     tree
-    litecli
+    # litecli
     ssh-to-age
     imagemagick
   ];

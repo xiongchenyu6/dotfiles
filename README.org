@@ -1,49 +1,49 @@
-* Freeman Settings
+* Dotfiles Settings
 
-  This is my settings use GNU stow to manage the dotfiles, now use nix
+  This is my settings use nix.
   #+CAPTION: Terminal Previews
   #+NAME:   fig:1
   [[./previews/terminal.png]]
 ** Usage
-*** For Mac
+*** For Macos
     To use this simple run the brew.bash installation shell script.
-*** For Ubuntu
+*** For Nixos
     To use the apt.bash installation shell script
-
+*** For arch linux
+   #+BEGIN_SRC shell
+    pacman -S --needed - < pkglist.txt
+   #+END_SRC
 
 ** My daily application list
 
    | Usage              | Application              |
    |--------------------+--------------------------|
-   | Email              | imap:mbsync smtp:msmtp   |
-   | Crypt              | gnu2                     |
+   | Email              | imap:mbsync smtp:msmtp gnus |
+   | Crypt              | gnu2 sops                |
    | Editor             | Emacs, neovim            |
-   | Ide                | Intellij                 |
    | Shell              | Zsh                      |
    | Shell manager      | Oh-my-zsh                |
-   | Searcher           | fasd, pt                 |
-   | Termial            | Iterm2                   |
+   | Searcher           | rg, atuin                |
+   | Termial            | alacritty                |
    | Chat               | QQ, Wechat, Erc          |
    | Presentation       | Reveal.js                |
    | GTD                | Org Agenda               |
-   | Notes              | Onenote -> Org Mode      |
+   | Notes              | Org Roam             |
    | Graph Draw         | Plantuml, Ditaa, Gnuplot |
    | Documentation View | Dash                     |
    | Book Writing       | Gitbook                  |
    | Finance            | Ledger                   |
-   | Auto Deploy        | Pm2, Docker              |
+   | Auto Deploy        | Systemd, Docker          |
    | Academic Writing   | Pandadoc, Org mode       |
-   | Desktop            | Xmonad                   |
+   | Desktop            | Xmonad -> hyprland       |
 
 ** Tips for the Chinese settings problem on Ubuntu
    This is how to set up Chinese input in Ubuntu
    #+BEGIN_SRC shell
      gsettings set org.gnome.desktop.input-sources sources "[('xkb', 'us'), ('ibus', 'Unikey')]"
    #+END_SRC
-
-   #+RESULTS:
-
-   # Update log
+   
+** My roadmap
    I did love and enjoy the key-bindings of vim, from the day I switch from the emacs, but I switch back shortly because of the 2 main reasons.
    1. Emacs plugins works on my windows but the my vim got some problem and I have to dirty my configuration files so much to fixed.
    2. I need to use playframework for development and the emacs support ensime very well.
@@ -55,9 +55,4 @@
      cp /path/to/backups/*.gpg ~/.gnupg/
      #Inport gpg
      gpg --import-ownertrust chrisroos-ownertrust-gpg.txt
-   #+END_SRC
-
-* Install
-   #+BEGIN_SRC shell
-    pacman -S --needed - < pkglist.txt
    #+END_SRC

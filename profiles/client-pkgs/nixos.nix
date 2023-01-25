@@ -10,11 +10,11 @@
       aspell
       aspellDicts.en
       appimage-run
-      bundix
+      # bundix
       config.nur.repos.xddxdd.baidupcs-go
       config.nur.repos.xddxdd.qq
       config.nur.repos.xddxdd.wechat-uos
-      config.nur.repos.xddxdd.dingtalk
+      # config.nur.repos.xddxdd.dingtalk
       clang
       clang-tools
       cmake
@@ -28,22 +28,23 @@
       haskell-language-server
       (python3.withPackages (_: with python3.pkgs; [ my_cookies mutagen ]))
       (haskellPackages.ghcWithPackages (_:
-        with haskellPackages;
-        with pkgs.haskell.lib; [
-          apply-refact
-          cabal-install
-          hlint
-          stylish-haskell
-          hasktags
-          hoogle
-          hadolint
-        ]))
+      with haskellPackages;
+      with pkgs.haskell.lib; [
+        apply-refact
+        cabal-install
+        hlint
+        stylish-haskell
+        hasktags
+        hoogle
+        hadolint
+      ]))
       heroku
       imagemagick
       inetutils
       lsof
       llvm
       lldb
+      ledger-live-desktop
       vscode-extensions.vadimcn.vscode-lldb
       pinentry
       pass
@@ -58,11 +59,12 @@
       unrar-wrapper
       manix
       mpv
-      nix-alien
+      # nix-alien
       wineWowPackages.staging
       #wpa_supplicant_gui
       whatsapp-for-linux
       virtmanager
+      zotero
     ];
 
     pathsToLink = [ "/share/zsh" ];
@@ -83,7 +85,7 @@
   services = {
     fprintd.enable = true;
     usbguard = {
-      enable = true;
+      enable = false;
       IPCAllowedUsers = [ "root" "freeman.xiong" ];
       rules = ''
         allow id 1d6b:0002 serial "0000:00:14.0" name "xHCI Host Controller" hash "jEP/6WzviqdJ5VSeTUY8PatCNBKeaREvo2OqdplND/o=" parent-hash "rV9bfLq7c2eA4tYjVjwO4bxhm+y6GgZpl9J60L0fBkY=" with-interface 09:00:00 with-connect-type ""
@@ -98,6 +100,7 @@
         allow id 043e:9a39 serial "204NTFA6Q531" name "LG Monitor Controls" hash "FCw6Jl2uZDVBhSDdTNRVJZBXKiZRRdRSJMlIGr5Cc0g=" parent-hash "g/+iB1DQ0KhZLxPXGjcKbQj2R3XydzpZT6lp+326KOc=" with-interface { 03:00:00 02:02:00 0a:00:00 } with-connect-type "unknown"
         allow id 043e:9c02 serial "123456789ABCDEFGH" name "BillBoard Device" hash "ulV8+X3UoK+7tQA0dYJJJOxp/djH1O6vI+nIdZmi86U=" parent-hash "g/+iB1DQ0KhZLxPXGjcKbQj2R3XydzpZT6lp+326KOc=" with-interface 11:00:00 with-connect-type "unknown"
         allow id 0853:0100 serial "" name "HHKB Professional" hash "RqDbLlyZQo+I8xpLEjAtlAA1DGq02JiaoUd8lsXt3og=" parent-hash "vUGB8+Dvgr/rRNWxsolEfpt0Jsl38zWjzgMaEOWvVd4=" via-port "1-9.1" with-interface 03:01:01 with-connect-type "unknown"
+        allow id 2c97:4011 serial "0001" name "Nano X" hash "w22Ri9b7zIwfQk+eM8FQ7Kj7DSVMtuwM4ZskmHmaFc4=" parent-hash "vUGB8+Dvgr/rRNWxsolEfpt0Jsl38zWjzgMaEOWvVd4=" with-interface { 03:00:00 ff:ff:ff } with-connect-type "unknown"
         allow id 046d:c548 serial "" name "USB Receiver" hash "y0nMBYvoXYCGsR9c/YuFAQLlt1a63qgUaXo232qnT8Y=" parent-hash "vUGB8+Dvgr/rRNWxsolEfpt0Jsl38zWjzgMaEOWvVd4=" via-port "1-9.3" with-interface { 03:01:01 03:01:02 03:00:00 } with-connect-type "unknown"
       '';
     };
@@ -112,24 +115,24 @@
 
   programs = {
     npm = { enable = true; };
-    atop = {
-      enable = true;
-      netatop = { enable = true; };
-      atopgpu = { enable = true; };
-    };
-    nm-applet = { enable = true; };
-    nix-ld.enable = true;
-    wireshark = { enable = true; };
-    proxychains = {
-      enable = true;
-      proxies = {
-        michael = {
-          type = "socks5";
-          host = "localhost";
-          port = 8888;
-          enable = true;
+    # atop = {
+      #   enable = true;
+      #   netatop = { enable = true; };
+      #   atopgpu = { enable = true; };
+      # };
+      nm-applet = { enable = true; };
+      nix-ld.enable = true;
+      wireshark = { enable = true; };
+      proxychains = {
+        enable = true;
+        proxies = {
+          michael = {
+            type = "socks5";
+            host = "localhost";
+            port = 8888;
+            enable = true;
+          };
         };
       };
-    };
   };
 }

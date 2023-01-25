@@ -232,12 +232,22 @@
     };
   };
   services = {
+    nginx = {
+      enable = true;
+
+    };
+    vikunja = {
+      enable = true;
+      setupNginx = true;
+      frontendScheme = "http";
+      frontendHostname = "localhost";
+    };
     bird2 = {
       config = lib.mine.bird2-inner-config "172.22.240.98" "fd48:4b4:f3::2";
     };
     geth = {
       test-beacon = {
-        enable = true;
+        enable = false;
         syncmode = "light";
         network = "goerli";
         # extraArgs = [ "--execution-endpoint" ];
