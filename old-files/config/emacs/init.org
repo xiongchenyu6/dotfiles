@@ -594,7 +594,7 @@ Otherwise, show the default maximum number of recent items."
 
 (require 'copilot)
 
-(setq copilot-node-executable "/nix/store/cdalbhzm3z4gz07wyg89maprdbjc4yah-nodejs-14.17.0/bin/node")
+;; (setq copilot-node-executable "/nix/store/cdalbhzm3z4gz07wyg89maprdbjc4yah-nodejs-14.17.0/bin/node")
 
 (add-hook 'prog-mode-hook 'copilot-mode)
 (add-hook 'text-mode-hook 'copilot-mode)
@@ -666,7 +666,7 @@ Otherwise, show the default maximum number of recent items."
           json-mode-hook
           yaml-mode-hook
           dockerfile-mode-hook
-          ;; markdown-mode-hook
+          markdown-mode-hook
           ))
 
 ;; (setenv "PATH" (concat (getenv "PATH") ":/home/freeman/.config/emacs/.cache/lsp/eclipse.jdt.ls/bin"))
@@ -1073,13 +1073,37 @@ Otherwise, show the default maximum number of recent items."
 ** input method
 #+begin_src emacs-lisp
 (use-package rime
+  :init
   :config
   (setq rime-emacs-module-header-root (concat (file-name-directory (directory-file-name (file-name-directory (file-truename (concat invocation-directory invocation-name))))) "include"))
   (setq rime-share-data-dir (concat (shell-command-to-string "nix eval --impure --raw --expr '(let pkgs = import <nixpkgs> {}; in with pkgs; lib.getLib brise)'") "/share/rime-data"))
   (setq rime-librime-root (shell-command-to-string "nix eval --impure --raw --expr '(let pkgs = import <nixpkgs> {}; in with pkgs; librime)'"))
   (setq rime-user-data-dir "~/.local/share/fcitx5/rime")
-  (setq rime--root "~/.config/emacs/rime")
+  (setq rime-show-candidate 'posframe)
+  :custom
+  (default-input-method "rime")
   )
+
+(setq rime-disable-predicates
+      '(meow-normal-mode-p
+        rime-predicate-after-alphabet-char-p
+        rime-predicate-hydra-p
+        rime-predicate-prog-in-code-p))
+
+(defvar input-method-cursor-color "Orange"
+  "Default cursor color if using an input method.")
+
+(defvar default-cursor-color (frame-parameter nil 'cursor-color)
+  "Default text cursor color.")
+
+(defun change-cursor-color-on-input-method ()
+  "Set cursor color depending on whether an input method is used or not."
+  (interactive)
+  (set-cursor-color (if current-input-method
+                        input-method-cursor-color
+                      default-cursor-color)))
+
+(add-hook 'post-command-hook 'change-cursor-color-on-input-method)
 #+end_src
 ** Error check
 *** flycheck
@@ -1407,7 +1431,7 @@ Bind to lsp mode
 (define-key addon-map "i" 'erc-myself)
 (define-key addon-map "a" 'org-agenda)
 (define-key addon-map "c" 'calendar)
-(define-key addon-map "c" 'dired)
+(define-key addon-map "d" 'dired)
 
 (setq lsp-keymap-prefix "C-c l")
 
@@ -1478,8 +1502,11 @@ Bind to lsp mode
 (save-place-mode t)
 
 (setq-default abbrev-mode t)
-(winner-mode t)
-(global-tab-line-mode)
+(use-package winner-mode
+  :ensure nil
+  :hook (after-init . winner-mode))
+;; (global-tab-line-mode)
+(tab-bar-mode t)
 (global-prettify-symbols-mode)
 
 (next-error-follow-minor-mode t)
@@ -1490,6 +1517,10 @@ Bind to lsp mode
 
 (auto-insert-mode 1)
 (setq bookmark-save-flag 1)
+
+(use-package ediff
+  :ensure nil
+  :hook (ediff-quit . winner-undo))
 #+end_src
 ** modeline
 #+begin_src emacs-lisp

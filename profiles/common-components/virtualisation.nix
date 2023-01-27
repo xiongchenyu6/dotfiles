@@ -6,6 +6,10 @@
       dockerSocket.enable = true;
       defaultNetwork.settings.dns_enabled = true;
       dockerCompat = true;
+      autoPrune = {
+        enable = true;
+        flags = ["--all" "--force"];
+      };
     };
   };
 

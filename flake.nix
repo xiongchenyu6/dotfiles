@@ -219,10 +219,13 @@
           hosts = {
             arm = { system = "aarch64-linux"; };
             mail = {
-              modules = [ xiongchenyu6.nixosModules.oci-arm-host-capacity ];
+              modules = [
+                xiongchenyu6.nixosModules.oci-arm-host-capacity
+              ];
             };
             office = {
               modules = [
+                xiongchenyu6.nixosModules.phabricator
                 grub2-themes.nixosModules.default
                 hyprland.nixosModules.default
                 nixos-hardware.nixosModules.lenovo-thinkpad-x1-10th-gen

@@ -55,6 +55,7 @@
       ]))
       # lighthouse
       metals
+      marksman
       # mycli
       nixfmt
       nix-du
