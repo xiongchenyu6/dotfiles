@@ -56,14 +56,17 @@
       hostName = "hydra.inner.trontech.link";
       sshUser = "freeman.xiong";
       systems = [ "x86_64-linux" ];
+      sshKey = "/home/freeman.xiong/.ssh/id_ed25519";
       maxJobs = 2;
     }];
   };
 
   nixpkgs = {
     config = {
-      permittedInsecurePackages = [ "python3.10-certifi-2022.12.7" ];
-      allowBroken = true;
+      permittedInsecurePackages = [
+        "python-2.7.18.6"
+        "python3.10-certifi-2022.12.7" ];
+        allowBroken = true;
     };
   };
 
@@ -71,7 +74,7 @@
     initrd = {
       availableKernelModules =
         [ "xhci_pci" "thunderbolt" "nvme" "usb_storage" "usbhid" "sd_mod" ];
-      kernelModules = [ ];
+        kernelModules = [ ];
     };
 
     kernelModules = [ "kvm-intel" "hid-nintendo" "v4l2loopback" ];
@@ -153,7 +156,7 @@
         };
         wg_tronlink = {
           privateKeyFile = config.sops.secrets."wireguard/office".path;
-          address = [ "172.64.224.2/24" "fe80::102/64" ];
+          address = [ "172.64.224.3/24" "fe80::103/64" ];
           peers = [{
             endpoint = "vpn.trontech.link:22617";
             publicKey = profiles.share.hosts-dict.tronlink.wg.public-key;
@@ -180,46 +183,46 @@
         # Check out https://wiki.nftables.org/ for better documentation.
         # Table for both IPv4 and IPv6.
         table inet filter {
-          # Block all incomming connections traffic except SSH and "ping".
-          chain input {
-            type filter hook input priority 0;
+        # Block all incomming connections traffic except SSH and "ping".
+        chain input {
+        type filter hook input priority 0;
 
-            # accept any localhost traffic
-            iifname lo accept
+        # accept any localhost traffic
+        iifname lo accept
 
-            # accept traffic originated from us
-            ct state {established, related} accept
+        # accept traffic originated from us
+        ct state {established, related} accept
 
-            # ICMP
-            # routers may also want: mld-listener-query, nd-router-solicit
-            ip6 nexthdr icmpv6 icmpv6 type { destination-unreachable, packet-too-big, time-exceeded, parameter-problem, nd-router-advert, nd-neighbor-solicit, nd-neighbor-advert } accept
-            ip protocol icmp icmp type { destination-unreachable, router-advertisement, time-exceeded, parameter-problem } accept
+        # ICMP
+        # routers may also want: mld-listener-query, nd-router-solicit
+        ip6 nexthdr icmpv6 icmpv6 type { destination-unreachable, packet-too-big, time-exceeded, parameter-problem, nd-router-advert, nd-neighbor-solicit, nd-neighbor-advert } accept
+        ip protocol icmp icmp type { destination-unreachable, router-advertisement, time-exceeded, parameter-problem } accept
 
-            # allow "ping"
-            ip6 nexthdr icmpv6 icmpv6 type echo-request accept
-            ip protocol icmp icmp type echo-request accept
+        # allow "ping"
+        ip6 nexthdr icmpv6 icmpv6 type echo-request accept
+        ip protocol icmp icmp type echo-request accept
 
-            # accept SSH connections (required for a server)
-            tcp dport 22 accept
-            tcp dport 179 accept
-            tcp dport 8000 accept
-            udp dport 179 accept
-            udp dport 33434 accept
+        # accept SSH connections (required for a server)
+        tcp dport 22 accept
+        tcp dport 179 accept
+        tcp dport 8000 accept
+        udp dport 179 accept
+        udp dport 33434 accept
 
-            # count and drop any other traffic
-            counter drop
-          }
+        # count and drop any other traffic
+        counter drop
+        }
 
-          # Allow all outgoing connections.
-          chain output {
-            type filter hook output priority 0;
-            accept
-          }
+        # Allow all outgoing connections.
+        chain output {
+        type filter hook output priority 0;
+        accept
+        }
 
-          chain forward {
-            type filter hook forward priority 0;
-            accept
-          }
+        chain forward {
+        type filter hook forward priority 0;
+        accept
+        }
         }
       '';
     };
@@ -232,32 +235,33 @@
     };
   };
   services = {
+
     nginx = {
       enable = true;
+    };
 
-    };
-    vikunja = {
-      enable = true;
-      setupNginx = true;
-      frontendScheme = "http";
-      frontendHostname = "localhost";
-    };
-    bird2 = {
-      config = lib.mine.bird2-inner-config "172.22.240.98" "fd48:4b4:f3::2";
-    };
-    geth = {
-      test-beacon = {
-        enable = false;
-        syncmode = "light";
-        network = "goerli";
-        # extraArgs = [ "--execution-endpoint" ];
-        http = {
-          enable = true;
-          apis = [ "eth" "net" "web3" "debug" ];
+    # vikunja = {
+      #   enable = true;
+      #   setupNginx = true;
+      #   frontendScheme = "http";
+      #   frontendHostname = "localhost";
+      # };
+      bird2 = {
+        config = lib.mine.bird2-inner-config "172.22.240.98" "fd48:4b4:f3::2";
+      };
+      geth = {
+        test-beacon = {
+          enable = false;
+          syncmode = "light";
+          network = "goerli";
+          # extraArgs = [ "--execution-endpoint" ];
+          http = {
+            enable = true;
+            apis = [ "eth" "net" "web3" "debug" ];
+          };
         };
       };
-    };
-    # restya-board = { enable = true; };
+      # restya-board = { enable = true; };
   };
 
   krb5 = {
@@ -282,33 +286,33 @@
   };
 
   # containers.nextcloud = {
-  #   autoStart = true;
-  #   privateNetwork = true;
-  #   hostAddress = "192.168.100.10";
-  #   localAddress = "192.168.100.11";
-  #   hostAddress6 = "fc00::1";
-  #   localAddress6 = "fc00::2";
-  #   config = { config, pkgs, ... }: {
+    #   autoStart = true;
+    #   privateNetwork = true;
+    #   hostAddress = "192.168.100.10";
+    #   localAddress = "192.168.100.11";
+    #   hostAddress6 = "fc00::1";
+    #   localAddress6 = "fc00::2";
+    #   config = { config, pkgs, ... }: {
 
-  #     services.nextcloud = {
-  #       enable = true;
-  #       hostName = "localhost";
-  #       config = {
-  #         adminpassFile = toString (pkgs.writeText "adminpass"
-  #           "test123"); # DON'T DO THIS IN PRODUCTION - the password file will be world-readable in the Nix Store!
-  #         extraTrustedDomains = [ "192.168.100.11" ];
-  #       };
-  #     };
+      #     services.nextcloud = {
+        #       enable = true;
+        #       hostName = "localhost";
+        #       config = {
+          #         adminpassFile = toString (pkgs.writeText "adminpass"
+          #           "test123"); # DON'T DO THIS IN PRODUCTION - the password file will be world-readable in the Nix Store!
+          #         extraTrustedDomains = [ "192.168.100.11" ];
+          #       };
+          #     };
 
-  #     system.stateVersion = "22.11";
+          #     system.stateVersion = "22.11";
 
-  #     networking.firewall = {
-  #       enable = true;
-  #       allowedTCPPorts = [ 80 ];
-  #     };
-  #     # Manually configure nameserver. Using resolved inside the container seems to fail
-  #     # currently
-  #     environment.etc."resolv.conf".text = "nameserver 8.8.8.8";
-  #   };
-  # };
+          #     networking.firewall = {
+            #       enable = true;
+            #       allowedTCPPorts = [ 80 ];
+            #     };
+            #     # Manually configure nameserver. Using resolved inside the container seems to fail
+            #     # currently
+            #     environment.etc."resolv.conf".text = "nameserver 8.8.8.8";
+            #   };
+            # };
 }

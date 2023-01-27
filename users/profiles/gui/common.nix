@@ -183,7 +183,7 @@
         pdf-tools
         posframe
         protobuf-mode
-        rime
+        emacsPackages.rime
         restclient
         rainbow-delimiters
         racket-mode

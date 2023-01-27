@@ -87,6 +87,7 @@
         aliases = {
           trash = "!mkdir -p .trash && git ls-files --others --exclude-standard | xargs mv -f -t .trash";
           pushall = "!git remote | xargs -L1 git push --all";
+          rank = "shortlog -s -n --no-merges";
         };
         delta = {
           enable = true;

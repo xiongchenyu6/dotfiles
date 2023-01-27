@@ -8,10 +8,10 @@
               text = profiles.share.users-dict."freeman.xiong".public-key;
               executable = false;
             };
-            ".ssh/id_ed25519" = {
-              source = ../../secrets/office_pk.key;
-              executable = false;
-            };
+            # ".ssh/id_ed25519" = {
+              #   source = ../../secrets/office_pk.key;
+              #   executable = false;
+              # };
           };
         };
 
@@ -32,6 +32,7 @@
               user = {
                 name = "freeman";
                 email = "xiongchenyu6@gmail.com";
+                useConfigOnly = true;
               };
             };
           };
