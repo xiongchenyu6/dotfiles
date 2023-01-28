@@ -9,7 +9,7 @@
       apg
       aspell
       aspellDicts.en
-      appimage-run
+      # appimage-run
       # bundix
       config.nur.repos.xddxdd.baidupcs-go
       config.nur.repos.xddxdd.qq
@@ -38,7 +38,7 @@
         hoogle
         hadolint
       ]))
-      heroku
+      # heroku
       imagemagick
       inetutils
       lsof
@@ -59,9 +59,7 @@
       unrar-wrapper
       manix
       mpv
-      # nix-alien
       wineWowPackages.staging
-      #wpa_supplicant_gui
       whatsapp-for-linux
       virtmanager
       zotero

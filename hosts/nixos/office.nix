@@ -261,7 +261,6 @@
           };
         };
       };
-      # restya-board = { enable = true; };
   };
 
   krb5 = {
