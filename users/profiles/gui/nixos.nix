@@ -63,6 +63,7 @@
         keyid-format = "0xlong";
         list-options = "show-uid-validity";
         cert-digest-algo = "SHA256";
+        personal-digest-preferences =  "SHA256";
       };
     };
 
