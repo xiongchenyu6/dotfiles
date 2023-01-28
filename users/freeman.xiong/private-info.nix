@@ -1,4 +1,9 @@
 { profiles, ... }: {
+  sops.secrets."ssh/id_ed25519" = {
+    path = "/home/freeman.xiong/.ssh/id_ed25519";
+    mode = "400";
+
+  };
   home-manager = {
     users = {
       "freeman.xiong" = {
@@ -8,10 +13,6 @@
               text = profiles.share.users-dict."freeman.xiong".public-key;
               executable = false;
             };
-            # ".ssh/id_ed25519" = {
-              #   source = ../../secrets/office_pk.key;
-              #   executable = false;
-              # };
           };
         };
 
