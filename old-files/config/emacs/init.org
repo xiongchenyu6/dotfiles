@@ -637,12 +637,14 @@ Otherwise, show the default maximum number of recent items."
 (setq kind-icon-default-face 'corfu-default)
 
 (setq kind-icon-default-style
-  '(:padding 0 :stroke 0 :margin 0 :radius 0 :height 0.8 :scale 1))
+      '(:padding 0 :stroke 0 :margin 0 :radius 0 :height 0.8 :scale 1))
 
 (add-to-list 'corfu-margin-formatters #'kind-icon-margin-formatter)
 
-(require 'lsp)
-(setq lsp-use-plists t)
+(use-package 'lsp
+  :config
+  (setq lsp-use-plists t)
+  )
 
 (direnv-mode t)
 (advice-add 'lsp :before 'direnv-update-environment)
@@ -698,29 +700,29 @@ Otherwise, show the default maximum number of recent items."
 ;; Optionally configure the cape-capf-buster.
 (add-hook 'lsp-mode-hook
           #'(lambda () (setq-local completion-at-point-functions
-                             `(,(cape-super-capf
-                                 #'tempel-complete
-                                 (cape-capf-buster #'lsp-completion-at-point)
-                                 #'cape-dabbrev)
-                               cape-file)
-                             cape-dabbrev-min-length 10)
-             (add-hook 'before-save-hook #'lsp-format-buffer t t)
-             ))
+                                   `(,(cape-super-capf
+                                       #'tempel-complete
+                                       (cape-capf-buster #'lsp-completion-at-point)
+                                       #'cape-dabbrev)
+                                     cape-file)
+                                   cape-dabbrev-min-length 10)
+              (add-hook 'before-save-hook #'lsp-format-buffer t t)
+              ))
 
 (add-hook 'nix-mode-hook #'(lambda () (add-hook 'before-save-hook #'nix-mode-format t t)))
 
 (add-hook 'text-mode-hook
           #'(lambda ()
-             (setq-local corfu-auto-prefix 0)
-             (setq-local completion-at-point-functions
-                         `(
-                           tempel-complete
-                           cape-file
-                           cape-dabbrev
-                           corfu-english-helper-search
-                           )
-                             cape-dabbrev-min-length 5)
-             ))
+              (setq-local corfu-auto-prefix 0)
+              (setq-local completion-at-point-functions
+                          `(
+                            tempel-complete
+                            cape-file
+                            cape-dabbrev
+                            corfu-english-helper-search
+                            )
+                          cape-dabbrev-min-length 5)
+              ))
 
 (define-key global-map (kbd "M-*") 'tempel-insert)
 
@@ -739,26 +741,26 @@ Otherwise, show the default maximum number of recent items."
   (setq-local completion-at-point-functions
               (cons #'tempel-complete
                     completion-at-point-functions))
-)
+  )
 
 (add-hook 'emacs-lisp-mode-hook 'tempel-setup-capf)
-
-#+end_src
-
-**** lsp ui
-#+begin_src emacs-lisp
 (setq lsp-enable-snippet t)
 (setq lsp-enable-dap-auto-configure t)
 (setq lsp-enable-relative-indentation t)
 (setq lsp-semantic-tokens-enable t)
+#+end_src
 
-(require 'lsp-ui)
+**** lsp ui
+#+begin_src emacs-lisp
+(use-package lsp-ui
+  :config
+  (setq lsp-ui-doc-include-signature t)
+  (setq lsp-ui-doc-use-webkit t)
+  )
 
 (define-key lsp-ui-mode-map [remap xref-find-definitions] #'lsp-ui-peek-find-definitions)
 (define-key lsp-ui-mode-map [remap xref-find-references] #'lsp-ui-peek-find-references)
 
-(setq lsp-ui-doc-include-signature t)
-(setq lsp-ui-doc-use-webkit t)
 
 (advice-add 'lsp :before 'direnv-update-environment)
 #+end_src
