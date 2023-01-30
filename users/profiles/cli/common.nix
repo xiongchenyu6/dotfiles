@@ -65,9 +65,11 @@
         enable = true;
         hashKnownHosts = false;
         compression = true;
+        # tpm chips limitation
         extraConfig = ''
           GSSAPIAuthentication yes
           PasswordAuthentication yes
+          PubkeyAcceptedKeyTypes rsa-sha2-256,ssh-ed25519,ecdsa-sha2-nistp256,ecdsa-sha2-nistp384,ecdsa-sha2-nistp521,ssh-rsa
         '';
       };
 
