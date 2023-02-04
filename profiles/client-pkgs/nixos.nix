@@ -14,7 +14,7 @@
       config.nur.repos.xddxdd.baidupcs-go
       config.nur.repos.xddxdd.qq
       config.nur.repos.xddxdd.wechat-uos
-      # config.nur.repos.xddxdd.dingtalk
+      config.nur.repos.xddxdd.dingtalk
       clang
       clang-tools
       cmake
@@ -28,16 +28,16 @@
       haskell-language-server
       (python3.withPackages (_: with python3.pkgs; [ my_cookies mutagen ]))
       (haskellPackages.ghcWithPackages (_:
-      with haskellPackages;
-      with pkgs.haskell.lib; [
-        apply-refact
-        cabal-install
-        hlint
-        stylish-haskell
-        hasktags
-        hoogle
-        hadolint
-      ]))
+        with haskellPackages;
+        with pkgs.haskell.lib; [
+          apply-refact
+          cabal-install
+          hlint
+          stylish-haskell
+          hasktags
+          hoogle
+          hadolint
+        ]))
       # heroku
       imagemagick
       inetutils
@@ -114,23 +114,23 @@
   programs = {
     npm = { enable = true; };
     # atop = {
-      #   enable = true;
-      #   netatop = { enable = true; };
-      #   atopgpu = { enable = true; };
-      # };
-      nm-applet = { enable = true; };
-      nix-ld.enable = true;
-      wireshark = { enable = true; };
-      proxychains = {
-        enable = true;
-        proxies = {
-          michael = {
-            type = "socks5";
-            host = "localhost";
-            port = 8888;
-            enable = true;
-          };
+    #   enable = true;
+    #   netatop = { enable = true; };
+    #   atopgpu = { enable = true; };
+    # };
+    nm-applet = { enable = true; };
+    nix-ld.enable = true;
+    wireshark = { enable = true; };
+    proxychains = {
+      enable = true;
+      proxies = {
+        michael = {
+          type = "socks5";
+          host = "localhost";
+          port = 8888;
+          enable = true;
         };
       };
+    };
   };
 }

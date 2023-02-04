@@ -24,13 +24,14 @@ _: prev: {
       --add-flags "--add-opens java.base/java.lang=ALL-UNNAMED"
     '';
   });
-  emacsPackages.rime = prev.emacsPackages.rime.overrideAttrs(old: with prev;{
-    buildInputs = [ librime emacsPgtk ];
-    nativeBuildInputs = [ gnumake pkg-config tree ];
-    postInstall = ''
-      cd source
-      make lib
-      cp librime-emacs.so $out/share/emacs/site-lisp/elpa/rime-${old.version}/
-    '';
-  });
+  emacsPackages.rime = prev.emacsPackages.rime.overrideAttrs (old:
+    with prev; {
+      buildInputs = [ librime emacsPgtk ];
+      nativeBuildInputs = [ gnumake pkg-config tree ];
+      postInstall = ''
+        cd source
+        make lib
+        cp librime-emacs.so $out/share/emacs/site-lisp/elpa/rime-${old.version}/
+      '';
+    });
 }

@@ -1,5 +1,5 @@
 # Edit
-{ config, lib, modulesPath, suites, profiles, ... }: rec {
+{ config, lib, modulesPath, suites, profiles, pkgs, ... }: rec {
   imports = [
     # Include the results of the hardware scan.
     (modulesPath + "/installer/scan/not-detected.nix")
@@ -63,10 +63,9 @@
 
   nixpkgs = {
     config = {
-      permittedInsecurePackages = [
-        "python-2.7.18.6"
-        "python3.10-certifi-2022.12.7" ];
-        allowBroken = true;
+      permittedInsecurePackages =
+        [ "python-2.7.18.6" "python3.10-certifi-2022.12.7" ];
+      allowBroken = true;
     };
   };
 
@@ -74,7 +73,7 @@
     initrd = {
       availableKernelModules =
         [ "xhci_pci" "thunderbolt" "nvme" "usb_storage" "usbhid" "sd_mod" ];
-        kernelModules = [ ];
+      kernelModules = [ ];
     };
 
     kernelModules = [ "kvm-intel" "hid-nintendo" "v4l2loopback" ];
@@ -228,39 +227,70 @@
     };
     nat = {
       enable = true;
-      internalInterfaces = [ "ve-+" ];
+      internalInterfaces = [ "vie-+" ];
       externalInterface = "wlp0s20f3";
       # Lazy IPv6 connectivity for the container
       enableIPv6 = true;
     };
   };
   services = {
-
-    nginx = {
+    postgresql = {
       enable = true;
+      authentication = ''
+        local all all trust
+      '';
+
     };
 
+    java-tron = {
+      enable = false;
+      event-plugin = "mongodb";
+      # db-name = "gitea";
+      # db-user = "gitea";
+      # db-pass = "gitea";
+    };
+    mongodb = {
+      enable = true;
+      bind_ip = "0.0.0.0";
+      enableAuth = true;
+      package = pkgs.my-mongodb;
+      initialRootPassword = "admin";
+      # initialScript = initialScript;
+      extraConfig = ''
+        net:
+          port: 27017
+        systemLog:
+          logAppend: true
+        storage:
+          wiredTiger:
+             engineConfig:
+                cacheSizeGB: 2
+      '';
+    };
+
+    nginx = { enable = true; };
+
     # vikunja = {
-      #   enable = true;
-      #   setupNginx = true;
-      #   frontendScheme = "http";
-      #   frontendHostname = "localhost";
-      # };
-      bird2 = {
-        config = lib.mine.bird2-inner-config "172.22.240.98" "fd48:4b4:f3::2";
-      };
-      geth = {
-        test-beacon = {
-          enable = false;
-          syncmode = "light";
-          network = "goerli";
-          # extraArgs = [ "--execution-endpoint" ];
-          http = {
-            enable = true;
-            apis = [ "eth" "net" "web3" "debug" ];
-          };
+    #   enable = true;
+    #   setupNginx = true;
+    #   frontendScheme = "http";
+    #   frontendHostname = "localhost";
+    # };
+    bird2 = {
+      config = lib.mine.bird2-inner-config "172.22.240.98" "fd48:4b4:f3::2";
+    };
+    geth = {
+      test-beacon = {
+        enable = false;
+        syncmode = "light";
+        network = "goerli";
+        # extraArgs = [ "--execution-endpoint" ];
+        http = {
+          enable = true;
+          apis = [ "eth" "net" "web3" "debug" ];
         };
       };
+    };
   };
 
   krb5 = {
@@ -285,33 +315,33 @@
   };
 
   # containers.nextcloud = {
-    #   autoStart = true;
-    #   privateNetwork = true;
-    #   hostAddress = "192.168.100.10";
-    #   localAddress = "192.168.100.11";
-    #   hostAddress6 = "fc00::1";
-    #   localAddress6 = "fc00::2";
-    #   config = { config, pkgs, ... }: {
+  #   autoStart = true;
+  #   privateNetwork = true;
+  #   hostAddress = "192.168.100.10";
+  #   localAddress = "192.168.100.11";
+  #   hostAddress6 = "fc00::1";
+  #   localAddress6 = "fc00::2";
+  #   config = { config, pkgs, ... }: {
 
-      #     services.nextcloud = {
-        #       enable = true;
-        #       hostName = "localhost";
-        #       config = {
-          #         adminpassFile = toString (pkgs.writeText "adminpass"
-          #           "test123"); # DON'T DO THIS IN PRODUCTION - the password file will be world-readable in the Nix Store!
-          #         extraTrustedDomains = [ "192.168.100.11" ];
-          #       };
-          #     };
+  #     services.nextcloud = {
+  #       enable = true;
+  #       hostName = "localhost";
+  #       config = {
+  #         adminpassFile = toString (pkgs.writeText "adminpass"
+  #           "test123"); # DON'T DO THIS IN PRODUCTION - the password file will be world-readable in the Nix Store!
+  #         extraTrustedDomains = [ "192.168.100.11" ];
+  #       };
+  #     };
 
-          #     system.stateVersion = "22.11";
+  #     system.stateVersion = "22.11";
 
-          #     networking.firewall = {
-            #       enable = true;
-            #       allowedTCPPorts = [ 80 ];
-            #     };
-            #     # Manually configure nameserver. Using resolved inside the container seems to fail
-            #     # currently
-            #     environment.etc."resolv.conf".text = "nameserver 8.8.8.8";
-            #   };
-            # };
+  #     networking.firewall = {
+  #       enable = true;
+  #       allowedTCPPorts = [ 80 ];
+  #     };
+  #     # Manually configure nameserver. Using resolved inside the container seems to fail
+  #     # currently
+  #     environment.etc."resolv.conf".text = "nameserver 8.8.8.8";
+  #   };
+  # };
 }

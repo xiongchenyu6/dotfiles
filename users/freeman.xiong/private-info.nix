@@ -1,8 +1,12 @@
-{ profiles, ... }: {
-  sops.secrets."ssh/id_ed25519" = {
-    path = "/home/freeman.xiong/.ssh/id_ed25519";
-    mode = "600";
-    owner = "freeman.xiong";
+{ profiles, config, ... }: {
+
+  sops.secrets = {
+    "ssh/freeman.xiong/id_ed25519" = {
+      path = "${config.users.users."freeman.xiong".home}/.ssh/id_ed25519";
+      mode = "600";
+      owner = "freeman.xiong";
+    };
+
   };
   home-manager = {
     users = {
