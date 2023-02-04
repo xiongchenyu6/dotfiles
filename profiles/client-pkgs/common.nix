@@ -16,7 +16,6 @@
     systemPackages = with pkgs; [
       awscli2
       alejandra
-      #azure-cli
       cachix
       deploy-rs
       discord
@@ -26,6 +25,7 @@
       fd
       foundry-bin
       firefox
+      my-ferretdb
       # jdt-language-server
       tealdeer
       tendermint
@@ -37,31 +37,31 @@
       graphviz
       grpcurl
       (python3.withPackages (_:
-      with python3.pkgs; [
-        cmake-language-server
-        colour
-        epc
-        ipython
-        matplotlib
-        nbformat
-        newsapi-python
-        nltk
-        orjson
-        python-lsp-server
-        pandas
-        python-dotenv
-        six
-        virtualenv
-      ]))
-      # lighthouse
+        with python3.pkgs; [
+          cmake-language-server
+          colour
+          epc
+          ipython
+          matplotlib
+          nbformat
+          newsapi-python
+          nltk
+          orjson
+          python-lsp-server
+          pandas
+          python-dotenv
+          six
+          virtualenv
+        ]))
       metals
       marksman
+      mongosh
       # mycli
       nixfmt
       nix-du
       neofetch
       node2nix
-      nodejs
+      nodejs_latest
       nodePackages."bash-language-server"
       nodePackages."prettier"
       nodePackages."typescript-language-server"
@@ -82,6 +82,7 @@
       #texlive.combined.scheme-full
       tronbox
       unzip
+      universal-ctags
       rust-analyzer
       rustc
       sbcl

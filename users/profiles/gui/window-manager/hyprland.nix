@@ -237,7 +237,6 @@
           binde=, XF86MonBrightnessUp, exec, brightnessctl s +5%
           binde=, XF86MonBrightnessDown, exec, brightnessctl s 5%-
 
-
           # # See https://wiki.hyprland.org/Configuring/Keywords/ for more
 
           # # Execute your favorite apps at launch
@@ -324,8 +323,8 @@
             "tooltip-format" = ''
               <big>{:%Y %B}</big>
               <tt><small>{calendar}</small></tt>'';
-              "interval" = 60;
-              "format" = "{:%I:%M}";
+            "interval" = 60;
+            "format" = "{:%I:%M}";
           };
           "cpu" = {
             "interval" = 1;
@@ -385,24 +384,24 @@
           mpd = {
             format =
               "{stateIcon} {consumeIcon}{randomIcon}{repeatIcon}{singleIcon}{artist} - {album} - {title} ({elapsedTime:%M:%S}/{totalTime:%M:%S}) ⸨{songPosition}|{queueLength}⸩ {volume}% ";
-              format-disconnected = "Disconnected ";
-              format-stopped =
-                "{consumeIcon}{randomIcon}{repeatIcon}{singleIcon}Stopped ";
-                unknown-tag = "N/A";
-                interval = 2;
-                consume-icons = { on = " "; };
-                random-icons = {
-                  off = ''<span color="#f53c3c"></span> '';
-                  on = " ";
-                };
-                repeat-icons = { on = " "; };
-                single-icons = { on = "1 "; };
-                state-icons = {
-                  paused = "";
-                  playing = "";
-                };
-                tooltip-format = "MPD (connected)";
-                tooltip-format-disconnected = "MPD (disconnected)";
+            format-disconnected = "Disconnected ";
+            format-stopped =
+              "{consumeIcon}{randomIcon}{repeatIcon}{singleIcon}Stopped ";
+            unknown-tag = "N/A";
+            interval = 2;
+            consume-icons = { on = " "; };
+            random-icons = {
+              off = ''<span color="#f53c3c"></span> '';
+              on = " ";
+            };
+            repeat-icons = { on = " "; };
+            single-icons = { on = "1 "; };
+            state-icons = {
+              paused = "";
+              playing = "";
+            };
+            tooltip-format = "MPD (connected)";
+            tooltip-format-disconnected = "MPD (disconnected)";
           };
 
           "hyprland/window" = {

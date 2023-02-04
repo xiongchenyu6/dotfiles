@@ -8,7 +8,7 @@
       dockerCompat = true;
       autoPrune = {
         enable = true;
-        flags = ["--all" "--force"];
+        flags = [ "--all" "--force" ];
       };
     };
   };
