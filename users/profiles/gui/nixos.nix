@@ -3,6 +3,10 @@
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 { config, pkgs, lib, ... }: {
   imports = [ ./common.nix ];
+  qt = {
+    enable = true;
+
+  };
   xdg = {
     enable = true;
     mime = { enable = true; };

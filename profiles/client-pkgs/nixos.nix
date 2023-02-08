@@ -63,6 +63,8 @@
       whatsapp-for-linux
       virtmanager
       zotero
+      zssh
+      lrzsz
     ];
 
     pathsToLink = [ "/share/zsh" ];

@@ -59,6 +59,7 @@
       # mycli
       nixfmt
       nix-du
+      nyxt
       neofetch
       node2nix
       nodejs_latest

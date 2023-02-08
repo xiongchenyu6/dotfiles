@@ -239,7 +239,6 @@
       authentication = ''
         local all all trust
       '';
-
     };
 
     java-tron = {
@@ -249,8 +248,9 @@
       # db-user = "gitea";
       # db-pass = "gitea";
     };
+
     mongodb = {
-      enable = true;
+      enable = false;
       bind_ip = "0.0.0.0";
       enableAuth = true;
       package = pkgs.my-mongodb;

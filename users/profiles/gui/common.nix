@@ -28,12 +28,12 @@
           bold_italic = { family = "Hack Nerd Font"; };
         };
         key_bindings = [
-          {
-            key = "Space";
-            mods = "Control";
-            mode = "~Search";
-            action = "ToggleViMode";
-          }
+          # {
+          #   key = "Space";
+          #   mods = "Control";
+          #   mode = "~Search";
+          #   action = "ToggleViMode";
+          # }
           {
             key = "Return";
             mods = "Command|Shift";
