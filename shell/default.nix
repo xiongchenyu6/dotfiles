@@ -3,8 +3,7 @@ _: {
     let
       inherit (pkgs)
         sops cachix editorconfig-checker mdbook nixUnstable nixfmt statix
-        nvfetcher # nix-linter colmena
-        ssh-to-age;
+        nvfetcher ssh-to-age;
       pkgWithCategory = category: package: { inherit package category; };
       devos = pkgWithCategory "devos";
       linter = pkgWithCategory "linter";
@@ -40,10 +39,8 @@ _: {
         (docs mdbook)
       ] ++ lib.optionals (!pkgs.stdenv.buildPlatform.isi686) [ (devos cachix) ]
         ++ lib.optionals (pkgs.stdenv.hostPlatform.isLinux
-          && !pkgs.stdenv.buildPlatform.isDarwin) [
-            (devos inputs.nixos-generators.defaultPackage.${pkgs.system})
-            (devos inputs.deploy-rs.packages.${pkgs.system}.deploy-rs)
-          ];
+          && !pkgs.stdenv.buildPlatform.isDarwin)
+        [ (devos inputs.nixos-generators.defaultPackage.${pkgs.system}) ];
       services = { postgres = { setupPostgresOnStartup = false; }; };
     };
 }

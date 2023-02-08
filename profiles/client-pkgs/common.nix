@@ -24,7 +24,6 @@
       deadnix
       fd
       foundry-bin
-      firefox
       my-ferretdb
       # jdt-language-server
       tealdeer

@@ -88,15 +88,6 @@
       };
     };
 
-    deploy-rs = {
-      url = "github:serokell/deploy-rs";
-      inputs = {
-        nixpkgs.follows = "nixpkgs";
-        utils.follows = "flake-utils";
-        flake-compat.follows = "flake-compat";
-      };
-    };
-
     digga = {
       url = "github:divnix/digga";
       inputs = {
@@ -106,7 +97,6 @@
         darwin.follows = "darwin";
         devshell.follows = "devshell";
         home-manager.follows = "home-manager";
-        deploy.follows = "deploy-rs";
         flake-compat.follows = "flake-compat";
       };
     };
@@ -214,6 +204,7 @@
             home-manager.nixosModules.home-manager
             nur.nixosModules.nur
             xiongchenyu6.nixosModules.bttc
+            # colmena.nixosModules.deploymentOptions
           ];
         };
         imports = [ (digga.lib.importHosts ./hosts/nixos) ];
@@ -327,18 +318,6 @@
                 shfmt.enable = true;
               };
             };
-        };
-      };
-
-      deploy = {
-        sshOpts = [ "-Y" "-p" "2222" ];
-        autoRollback = false;
-        magicRollback = false;
-        fastConnection = true;
-        nodes = digga.lib.mkDeployNodes self.nixosConfigurations {
-          mail = { profiles = { system = { sshUser = "root"; }; }; };
-          digital = { profiles = { system = { sshUser = "root"; }; }; };
-          arm = { profiles = { system = { sshUser = "root"; }; }; };
         };
       };
     };
