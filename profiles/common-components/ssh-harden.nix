@@ -1,4 +1,4 @@
-_: {
+{ pkgs, ... }: {
 
   # sops.secrets."openldap/adminPass" = {
   #   owner = "nobody";
@@ -6,23 +6,23 @@ _: {
   #   mode = "400";
   # };
 
-  # environment.etc = {
-  #   "ssh/auth" = {
-  #     mode = "0555";
-  #     text = ''
-  #       #!${pkgs.stdenv.shell}
-  #       ${pkgs.openldap}/bin/ldapsearch -x -D cn=admin,dc=freeman,dc=engineer -w $(${pkgs.coreutils-full}/bin/cat ${
-  #         config.sops.secrets."openldap/adminPass".path
-  #       }) -b dc=freeman,dc=engineer '(&(objectClass=posixAccount)(uid='"$1"'))' 'sshPublicKey' | ${pkgs.gnused}/bin/sed -n '/^ /{H;d};/sshPublicKey:/x;$g;s/\n *//g;s/sshPublicKey: //gp'
-  #     '';
-  #   };
-  #   "sudo.conf" = {
-  #     mode = "0400";
-  #     text = ''
-  #       Path askpass ${pkgs.lxqt.lxqt-openssh-askpass}/bin/lxqt-openssh-askpass
-  #     '';
-  #   };
-  # };
+  environment.etc = {
+    # "ssh/auth" = {
+    #   mode = "0555";
+    #   text = ''
+    #           #!${pkgs.stdenv.shell}
+    #     #       ${pkgs.openldap}/bin/ldapsearch -x -D cn=admin,dc=freeman,dc=engineer -w $(${pkgs.coreutils-full}/bin/cat ${
+    #       config.sops.secrets."openldap/adminPass".path
+    #     }) -b dc=freeman,dc=engineer '(&(objectClass=posixAccount)(uid='"$1"'))' 'sshPublicKey' | ${pkgs.gnused}/bin/sed -n '/^ /{H;d};/sshPublicKey:/x;$g;s/\n *//g;s/sshPublicKey: //gp'
+    #   '';
+    # };
+    "sudo.conf" = {
+      mode = "0400";
+      text = ''
+        Path askpass ${pkgs.lxqt.lxqt-openssh-askpass}/bin/lxqt-openssh-askpass
+      '';
+    };
+  };
   services = {
     openssh = {
       enable = true;
