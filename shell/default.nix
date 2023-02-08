@@ -3,7 +3,7 @@ _: {
     let
       inherit (pkgs)
         sops cachix editorconfig-checker mdbook nixUnstable nixfmt statix
-        nvfetcher # nix-linter
+        nvfetcher # nix-linter colmena
         ssh-to-age;
       pkgWithCategory = category: package: { inherit package category; };
       devos = pkgWithCategory "devos";

@@ -225,6 +225,7 @@
           office = {
             modules = [
               xiongchenyu6.nixosModules.java-tron
+
               grub2-themes.nixosModules.default
               hyprland.nixosModules.default
               nixos-hardware.nixosModules.lenovo-thinkpad-x1-10th-gen
