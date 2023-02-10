@@ -10,6 +10,7 @@
       INPUT_METHOD = "fcitx";
       XIM_SERVERS = "fcitx";
       LSP_USE_PLISTS = "true";
+      NIX_SSHOPTS = "-Y";
     };
     file = {
       ".config/hypr/hyprpaper.conf" = {
