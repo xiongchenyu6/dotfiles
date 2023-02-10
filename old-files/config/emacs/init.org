@@ -1246,7 +1246,7 @@ Bind to lsp mode
 #+end_src
 *** Org Roam
 #+begin_src emacs-lisp
-(setq org-roam-directory (expand-file-name "~/Dropbox/Notes")
+(setq org-roam-directory (expand-file-name "~/Private/xiongchenyu6.github.io/content-org/Notes/")
       org-roam-capture-templates
       '(("d" "default" plain "%?"
          :target (file+head "${slug}.org" "#+title: ${title}\n#+date: %U\n")
@@ -1317,14 +1317,18 @@ Bind to lsp mode
       (org-latex-compile (concat name ".tex")))))
 
 ;; (defun resume-hugo-export ()
+
 ;;   "Export the resume with moderncv to hugo md"
 ;;   (interactive)
 ;;   (let ((name (file-name-sans-extension (buffer-name)))
 ;;         (org-export-exclude-tags '("noexport" "latexonly")))
 ;;       (org-export-to-file 'hugocv (concat name ".md")))
 ;;   )
+(require 'ox-hugocv)
 
-(setq org-export-backends '(ascii html icalendar latex man odt))
+(setq org-export-backends '(ascii html icalendar latex man odt hugocv hugo))
+
+
 
 (setq org-directory "~/Dropbox/Org"
       org-agenda-files (list org-directory)
@@ -1464,6 +1468,13 @@ Bind to lsp mode
 
 (setq leetcode-prefer-language "cpp"
       leetcode-prefer-sql "mysql")
+#+end_src
+** Magit
+#+begin_src emacs-lisp
+(use-package magit-gitflow
+  :ensure t
+  :config
+  (add-hook 'magit-mode-hook 'turn-on-magit-gitflow))
 #+end_src
 ** Native Global Mode
 #+begin_src emacs-lisp

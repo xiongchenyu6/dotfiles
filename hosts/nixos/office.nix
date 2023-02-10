@@ -234,8 +234,9 @@
     };
   };
   services = {
+
     postgresql = {
-      enable = true;
+      enable = false;
       authentication = ''
         local all all trust
       '';
@@ -244,9 +245,6 @@
     java-tron = {
       enable = false;
       event-plugin = "mongodb";
-      # db-name = "gitea";
-      # db-user = "gitea";
-      # db-pass = "gitea";
     };
 
     mongodb = {
@@ -268,7 +266,7 @@
       '';
     };
 
-    nginx = { enable = true; };
+    nginx = { enable = false; };
 
     # vikunja = {
     #   enable = true;
@@ -309,7 +307,25 @@
         "${tronDomain}" = tronRealm;
         ".inner.${tronDomain}" = tronRealm;
         ".${tronDomain}" = tronRealm;
+      };
+    };
+  };
 
+  home-manager = {
+    users = {
+      "freeman.xiong" = {
+        services = {
+          git-sync = {
+            enable = true;
+            repositories = {
+              notes = {
+                path = "/home/freeman.xiong/Private/xiongchenyu6.github.io";
+                uri = "git@github.com:xiongchenyu6/xiongchenyu6.github.io.git";
+                interval = 10;
+              };
+            };
+          };
+        };
       };
     };
   };
