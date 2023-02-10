@@ -222,7 +222,7 @@
 (setq auto-save-visited-interval 0.5)
 
 (setq auto-save-visited-predicate (lambda () (eq meow-normal-mode t)))
-#+end_src       
+#+end_src
 *** Indentation
 #+begin_src emacs-lisp
 (setq editorconfig-mode t)
@@ -971,7 +971,7 @@ Otherwise, show the default maximum number of recent items."
 (add-hook 'jave-mode-hook (lambda () (c-toggle-hungry-state) (c-toggle-auto-newline)))
 
 (setq lsp-java-content-provider-preferred "fernflower")
-;; ;; 
+;; ;;
 ;; ;; (setq lsp-java-java-path "/Library/Java/JavaVirtualMachines/openjdk.jdk/Contents/Home/bin/java")
 
 (setq lsp-java-java-path "/nix/store/7fa5bvjrxmcjcxjwidnp231f9j6i1vpz-home-manager-path/bin/java")
@@ -982,7 +982,7 @@ Otherwise, show the default maximum number of recent items."
 ;;                                                )
 ;;                                         (:name "JavaSE-18"
 ;; 					       :path "/Library/Java/JavaVirtualMachines/openjdk.jdk/Contents/Home"
-;;                                          :default t 
+;;                                          :default t
 ;;                                                )
 ;;                                         ])
 ;; (advice-add 'lsp :before (lambda (&rest _args) (eval '(setf (lsp-session-server-id->folders (lsp-session)) (ht)))))
@@ -997,7 +997,7 @@ Otherwise, show the default maximum number of recent items."
 ;; (add-hook 'lsp-mode-hook #'lsp-lens-mode)
 ;; (add-hook 'java-mode-hook #'lsp-java-boot-lens-mode)
 
-;; (setq 
+;; (setq
 ;;  lsp-java-trace-server t)
 ;; (setq
 ;;  lsp-java-progress-report t)
@@ -1055,7 +1055,7 @@ Otherwise, show the default maximum number of recent items."
       (upcase-region p1 p2) (put this-command 'state "all caps"))
      ((string= "all caps" (get this-command 'state))
       (downcase-region p1 p2) (put this-command 'state "all lower")) )
-    ) ) 
+    ) )
 #+end_src
 
 ** input method
@@ -1246,7 +1246,7 @@ Bind to lsp mode
 #+end_src
 *** Org Roam
 #+begin_src emacs-lisp
-(setq org-roam-directory (expand-file-name "~/Dropbox/Notes")
+(setq org-roam-directory (expand-file-name "~/Private/xiongchenyu6.github.io/content-org/Notes/")
       org-roam-capture-templates
       '(("d" "default" plain "%?"
          :target (file+head "${slug}.org" "#+title: ${title}\n#+date: %U\n")
@@ -1317,14 +1317,18 @@ Bind to lsp mode
       (org-latex-compile (concat name ".tex")))))
 
 ;; (defun resume-hugo-export ()
+
 ;;   "Export the resume with moderncv to hugo md"
 ;;   (interactive)
 ;;   (let ((name (file-name-sans-extension (buffer-name)))
 ;;         (org-export-exclude-tags '("noexport" "latexonly")))
 ;;       (org-export-to-file 'hugocv (concat name ".md")))
 ;;   )
+(require 'ox-hugocv)
 
-(setq org-export-backends '(ascii html icalendar latex man odt))
+(setq org-export-backends '(ascii html icalendar latex man odt hugocv hugo))
+
+
 
 (setq org-directory "~/Dropbox/Org"
       org-agenda-files (list org-directory)
@@ -1448,7 +1452,7 @@ Bind to lsp mode
 ;; (treemacs-tag-follow-mode t)
 ;; (setq treemacs-tag-follow-delay 0.1)
                                         ; one beautiful work around to make c+[ works
-(define-key meow-insert-state-keymap 
+(define-key meow-insert-state-keymap
             (kbd "C-g") [escape])
 #+end_src
 *** Ace
@@ -1464,6 +1468,13 @@ Bind to lsp mode
 
 (setq leetcode-prefer-language "cpp"
       leetcode-prefer-sql "mysql")
+#+end_src
+** Magit
+#+begin_src emacs-lisp
+(use-package magit-gitflow
+  :ensure t
+  :config
+  (add-hook 'magit-mode-hook 'turn-on-magit-gitflow))
 #+end_src
 ** Native Global Mode
 #+begin_src emacs-lisp
@@ -1514,7 +1525,7 @@ Bind to lsp mode
   smtpmail-stream-type 'starttls
   smtpmail-default-smtp-server "smtp.gmail.com"
   smtpmail-smtp-server "smtp.gmail.com"
-  
+
   smtpmail-smtp-service 587)
 
 (add-hook 'gnus-group-mode-hook 'gnus-topic-mode)
