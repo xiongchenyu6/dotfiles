@@ -212,9 +212,9 @@ in {
             objectClass: organizationalUnit
             description: Parent object of all UNIX accounts
 
-            ${builtins.trace group-contents group-contents}
+            ${group-contents}
 
-            ${builtins.trace user-contents user-contents}
+            ${user-contents}
 
             dn: ou=SUDOers,${dbSuffix}
             objectClass: top

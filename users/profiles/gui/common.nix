@@ -169,6 +169,7 @@
           meow
           magit
           marginalia
+          magit-gitflow
           nov
           ox-hugo
           ob-mermaid
