@@ -128,7 +128,7 @@
     };
 
     foundry = {
-      url = "github:xiongchenyu6/foundry.nix";
+      url = "github:shazow/foundry.nix/monthly";
       inputs = {
         nixpkgs.follows = "nixpkgs";
         flake-utils.follows = "flake-utils";
@@ -204,7 +204,6 @@
             home-manager.nixosModules.home-manager
             nur.nixosModules.nur
             xiongchenyu6.nixosModules.bttc
-            # colmena.nixosModules.deploymentOptions
           ];
         };
         imports = [ (digga.lib.importHosts ./hosts/nixos) ];
@@ -216,7 +215,7 @@
           office = {
             modules = [
               xiongchenyu6.nixosModules.java-tron
-
+              xiongchenyu6.nixosModules.chainlink
               grub2-themes.nixosModules.default
               hyprland.nixosModules.default
               nixos-hardware.nixosModules.lenovo-thinkpad-x1-10th-gen
@@ -259,6 +258,7 @@
             digga.darwinModules.nixConfig
             home-manager.darwinModules.home-manager
           ];
+
         };
 
         imports = [ (digga.lib.importHosts ./hosts/darwin) ];
@@ -287,7 +287,8 @@
             cli = [ cli.common cli.shell.zsh ];
             linux-gui = [
               gui.nixos
-              gui.window-manager.hyprland
+              gui.window-manager.hyprland.dvorak
+              gui.window-manager.hyprland.nixos
               cli.common
               gui.mpd
               cli.shell.zsh

@@ -52,7 +52,7 @@
         };
         #  monitor=HDMI-A-1,3840x2160@60,1920x0,1.5
 
-        extraConfig = ''
+        extraConfig = lib.mkDefault ''
           # This is an example Hyprland config file.
           #
           # Refer to the wiki for more information.
@@ -75,8 +75,8 @@
           # For all categories, see https://wiki.hyprland.org/Configuring/Variables/
           input {
           kb_layout = us
-          kb_variant =
-          kb_model =
+          # kb_variant = dvp
+          # kb_model = dvorak-programmer
           kb_options = caps:ctrl_modifier
 
           kb_rules =
@@ -89,7 +89,7 @@
           natural_scroll = no
           }
 
-          sensitivity = 0 # -1.0 - 1.0, 0 means no modification.
+          sensitivity = 1.0 # -1.0 - 1.0, 0 means no modification.
           }
 
           general {
@@ -166,7 +166,7 @@
 
           # Example binds, see https://wiki.hyprland.org/Configuring/Binds/ for more
           bind = $mainMod, return, exec, alacritty
-          bind = $mainMod SHIFT, C, killactive,
+          bind = $mainMod, q, killactive,
           bind = $mainMod SHIFT, Q, exit,
           bind = $mainMod, B, exec, brave
           bind = $mainMod, P, exec, wofi --show drun -I -G
@@ -225,7 +225,7 @@
           bind = $mainMod SHIFT, mouse_down, workspace, e+1
           bind = $mainMod SHIFT, mouse_up, workspace, e-1
 
-          # Move/resize windows with mainMod + LMB/RMB and dragging
+          # Move/resize wndows with mainMod + LMBi/RMB and dragging
           bindm = $mainMod SHIFT, mouse:272, movewindow
           bindm = $mainMod, mouse:273, resizewindow
 
@@ -245,6 +245,7 @@
 
           windowrule=workspace 1 silent,alacritty
           windowrule=workspace 3 silent,brave
+          windowrule=float,noblur,noshadow,noborder,pseudo,dimaround,albert
 
           exec-once=alacritty
           exec-once=brave

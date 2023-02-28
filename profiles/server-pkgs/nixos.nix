@@ -7,6 +7,7 @@
       python3
       exa
       calibre
+      cyrus_sasl
       xvfb-run
       figlet
     ];
