@@ -7,6 +7,7 @@
     profiles.core.nixos
     profiles.client-pkgs.nixos
     profiles.users.root.nixos
+    profiles.dvorak
     profiles.users."freeman.xiong"
   ] ++ suites.client-base;
 
@@ -48,6 +49,7 @@
           lib.mkDefault config.hardware.enableRedistributableFirmware;
       };
     };
+    enableRedistributableFirmware = true;
   };
 
   nix = {
@@ -63,13 +65,20 @@
 
   nixpkgs = {
     config = {
-      permittedInsecurePackages =
-        [ "python-2.7.18.6" "python3.10-certifi-2022.12.7" ];
+      permittedInsecurePackages = [
+        "electron-19.0.7"
+        "electron-20.3.11"
+        "python-2.7.18.6"
+        "python3.10-certifi-2022.12.7"
+      ];
       allowBroken = true;
     };
   };
 
   boot = {
+    kernel.sysctl."net.core.rmem_max" = 2500000;
+    kernelPackages = pkgs.linuxPackages_latest;
+
     initrd = {
       availableKernelModules =
         [ "xhci_pci" "thunderbolt" "nvme" "usb_storage" "usbhid" "sd_mod" ];
@@ -138,7 +147,10 @@
         wg_office = {
           privateKeyFile = config.sops.secrets."wireguard/office".path;
           address = [ "172.22.240.98/27" "fe80::101/64" "fd48:4b4:f3::2/48" ];
-          dns = [ "fe80::100%wg_office" "172.22.240.97" "1.1.1.1" ];
+          dns = [ # "fe80::100%wg_office"
+            # "172.22.240.97"
+            "1.1.1.1"
+          ];
           peers = [{
             endpoint = "freeman.engineer:22616";
             publicKey = profiles.share.hosts-dict.mail.wg.public-key;
@@ -150,6 +162,7 @@
               "fd00::/8"
               "fe80::/10"
               "fd48:4b4:f3::/48"
+              "13.212.219.245"
             ];
           }];
         };
@@ -205,8 +218,10 @@
         tcp dport 22 accept
         tcp dport 179 accept
         tcp dport 8000 accept
+        tcp dport 6788 accept
         udp dport 179 accept
         udp dport 33434 accept
+        udp dport 6788 accept
 
         # count and drop any other traffic
         counter drop
@@ -235,11 +250,20 @@
   };
   services = {
 
+    dgraph = { enable = false; };
+
     postgresql = {
-      enable = false;
+      enable = true;
       authentication = ''
         local all all trust
       '';
+    };
+
+    chainlink = {
+      enable = false;
+      apicredentialsFilePath = ./chainlink/apicredentials;
+      configFilePath = ./chainlink/core.toml;
+      secretsFilePath = ./chainlink/secrets.toml;
     };
 
     java-tron = {
@@ -321,7 +345,7 @@
               notes = {
                 path = "/home/freeman.xiong/Private/xiongchenyu6.github.io";
                 uri = "git@github.com:xiongchenyu6/xiongchenyu6.github.io.git";
-                interval = 10;
+                # interval = 10;
               };
             };
           };

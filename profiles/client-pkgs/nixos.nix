@@ -18,7 +18,7 @@
       clang
       clang-tools
       cmake
-      cabal2nix
+      # cabal2nix
       cava
       geoip
       gnumake

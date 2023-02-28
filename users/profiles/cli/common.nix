@@ -57,7 +57,7 @@
       settings = {
         auto_sync = true;
         sync_frequency = "1m";
-        sync_address = "https://api.atuin.sh";
+        sync_address = "https://atuin.inner.freeman.engineer";
       };
     };
 

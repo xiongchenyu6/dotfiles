@@ -3,7 +3,38 @@
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 { pkgs, ... }: {
   programs = {
-    zsh = {
+    zsh = let
+      ohMyZsh2Zplug = builtins.map (p: {
+        name = "plugins/${p}";
+        tags = [ "from:oh-my-zsh" ];
+      });
+      plugins = [
+        "catimg"
+        "colored-man-pages"
+        "copyfile"
+        "copypath"
+        "emacs"
+        "extract"
+        "encode64"
+        "fancy-ctrl-z"
+        "git"
+        "git-hubflow"
+        "gitignore"
+        "pass"
+        "helm"
+        "otp"
+        "redis-cli"
+        "kubectl"
+        "ripgrep"
+        "rsync"
+        "sudo"
+        "systemd"
+        "systemadmin"
+        "scala"
+        "tmux"
+      ];
+
+    in {
       enable = true;
       autocd = true;
       shellAliases = {
@@ -61,59 +92,14 @@
         eval $(${pkgs.rustup}/bin/rustup completions zsh)
         complete -C '${pkgs.awscli2}/bin/aws_completer' aws
       '';
-      zplug = let
-        ohMyZsh2Zplug = builtins.map (p: {
-          name = "plugins/${p}";
-          tags = [ "from:oh-my-zsh" ];
-        });
-      in {
+      zplug = {
         enable = false;
-        plugins = ohMyZsh2Zplug [
-          "catimg"
-          "colored-man-pages"
-          "copyfile"
-          "copypath"
-          "emacs"
-          "extract"
-          "encode64"
-          "fancy-ctrl-z"
-          "git"
-          "git-hubflow"
-          "gitignore"
-          "pass"
-          "ripgrep"
-          "rsync"
-          "sudo"
-          "systemd"
-          "scala"
-          "tmux"
-        ];
+        plugins = ohMyZsh2Zplug plugins;
       };
       oh-my-zsh = {
         enable = true;
-        plugins = [
-          "catimg"
-          "colored-man-pages"
-          "copyfile"
-          "copypath"
-          "emacs"
-          "extract"
-          "encode64"
-          "fancy-ctrl-z"
-          "git"
-          "git-flow-avh"
-          "gitignore"
-          "pass"
-          "ripgrep"
-          "rsync"
-          "rust"
-          "sudo"
-          "systemd"
-          "scala"
-          "tmux"
-        ];
+        inherit plugins;
       };
-
       plugins = let
         source = with pkgs;
           callPackage ./_sources/generated.nix {

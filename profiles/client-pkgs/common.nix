@@ -14,9 +14,10 @@
 
   environment = {
     systemPackages = with pkgs; [
+      # albert
       awscli2
-      alejandra
       cachix
+      chainlink
       deploy-rs
       discord
       delve
@@ -24,11 +25,10 @@
       deadnix
       fd
       foundry-bin
-      my-ferretdb
-      # jdt-language-server
       tealdeer
-      tendermint
+      # tendermint
       socat
+      gotron-sdk
       rustscan
       gitAndTools.gitflow
       git-crypt
@@ -52,13 +52,16 @@
           six
           virtualenv
         ]))
-      metals
+      kubernetes-helm
+      litecli
+      # metals
+      kubectl
       marksman
+      pgadmin4-desktopmode
       mongosh
-      # mycli
+      mycli
       nixfmt
       nix-du
-      nyxt
       neofetch
       node2nix
       nodejs_latest
@@ -87,7 +90,6 @@
       rustc
       sbcl
       slack
-      slither-analyzer
       statix
       shellcheck
       solium
@@ -96,8 +98,7 @@
       scalafmt
       solc-select
       stow
-      wakatime
-      winklink
+      # winklink
       wakatime
       zoom-us
     ];
