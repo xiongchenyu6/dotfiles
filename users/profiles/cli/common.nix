@@ -50,7 +50,6 @@
     # };
 
     readline = { enable = true; };
-    # nushell = { enable = true; };
 
     atuin = {
       enable = true;
@@ -98,7 +97,12 @@
         background = "dark";
       };
 
-      extraConfig = { init = { defaultBranch = "main"; }; };
+      extraConfig = {
+        init = { defaultBranch = "main"; };
+        # [url "ssh://git@github.com/"]
+        # 	insteadOf = https://github.com/
+
+      };
 
       ignores = [
         "tags"
@@ -198,16 +202,16 @@
     starship = {
       enable = true;
       settings = {
-        format = "$directory$character";
         # move the rest of the prompt to the right
-        right_format = "$all";
+        # format = "$character";
+        # right_format = "$all";
         # A continuation prompt that displays two filled in arrows
         continuation_prompt = "▶▶";
         kubernetes = { disabled = false; };
-        directory = {
-          truncation_length = 20;
-          truncation_symbol = "…/";
-        };
+        # directory = {
+        #   truncation_length = 20;
+        #   truncation_symbol = "…/";
+        # };
         status = { disabled = false; };
         time = { disabled = false; };
         git_metrics = { disabled = false; };
