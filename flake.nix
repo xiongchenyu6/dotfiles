@@ -208,7 +208,7 @@
         };
         imports = [ (digga.lib.importHosts ./hosts/nixos) ];
         hosts = {
-          arm = { system = "aarch64-linux"; };
+          # arm = { system = "aarch64-linux"; };
           mail = {
             modules = [ xiongchenyu6.nixosModules.oci-arm-host-capacity ];
           };

@@ -77,8 +77,7 @@
 
   boot = {
     kernel.sysctl."net.core.rmem_max" = 2500000;
-    kernelPackages = pkgs.linuxPackages_latest;
-
+    supportedFilesystems = [ "nfs4" ];
     initrd = {
       availableKernelModules =
         [ "xhci_pci" "thunderbolt" "nvme" "usb_storage" "usbhid" "sd_mod" ];
@@ -90,7 +89,6 @@
     extraModulePackages = with config.boot.kernelPackages; [ v4l2loopback.out ];
 
     extraModprobeConfig = ''
-      # options i915 force_probe=46a6
       options snd-intel-dspcfg dsp_driver=1
     '';
 

@@ -177,7 +177,7 @@
           ox-pandoc
           org-contrib
           org-roam
-          org-re-reveal
+          # org-re-reveal
           org-download
           org-cv
           orderless

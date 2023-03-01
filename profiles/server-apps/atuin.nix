@@ -15,7 +15,8 @@
           useACMEHost = "inner.${config.networking.domain}";
           kTLS = true;
           locations."/" = {
-            proxyPass = "http://127.0.0.1:1323";
+            proxyPass =
+              "http://127.0.0.1:${toString config.services.atuin.port}";
             proxyWebsockets = true;
           };
         };

@@ -15,7 +15,7 @@
   environment = {
     systemPackages = with pkgs; [
       # albert
-      awscli2
+      # awscli2
       cachix
       chainlink
       deploy-rs
@@ -23,6 +23,7 @@
       delve
       dig
       deadnix
+      du-dust
       fd
       foundry-bin
       tealdeer
