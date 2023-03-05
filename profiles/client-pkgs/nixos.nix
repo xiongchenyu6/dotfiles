@@ -38,7 +38,6 @@
           hoogle
           hadolint
         ]))
-      # heroku
       imagemagick
       inetutils
       lsof
@@ -46,12 +45,14 @@
       lldb
       ledger-live-desktop
       vscode-extensions.vadimcn.vscode-lldb
+      openfortivpn
       pinentry
       pass
       procs
       patchelf
       poetry
       poetry2nix.cli
+      qemu_kvm
       jp2a
       linuxPackages.ply
       tdesktop
@@ -64,7 +65,6 @@
       virtmanager
       zotero
       zssh
-      lrzsz
     ];
 
     pathsToLink = [ "/share/zsh" ];

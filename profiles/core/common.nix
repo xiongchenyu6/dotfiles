@@ -7,6 +7,7 @@
     # litecli
     ssh-to-age
     imagemagick
+    lrzsz
   ];
 
   programs = {

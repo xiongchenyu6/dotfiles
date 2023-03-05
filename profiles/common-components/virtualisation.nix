@@ -1,6 +1,9 @@
-{
+{ pkgs, ... }: {
   virtualisation = {
-    # docker = { enable = true; };
+    libvirtd = {
+      enable = true;
+      qemu.package = pkgs.qemu_kvm;
+    };
     podman = {
       enable = true;
       dockerSocket.enable = true;
@@ -12,6 +15,7 @@
       };
     };
   };
+  environment.systemPackages = with pkgs; [ virt-manager ];
 
   networking.firewall.checkReversePath = false;
 }

@@ -1,8 +1,7 @@
 # Edit
-{ config, lib, modulesPath, suites, profiles, pkgs, ... }: rec {
+{ config, lib, suites, profiles, pkgs, ... }: {
   imports = [
-    # Include the results of the hardware scan.
-    (modulesPath + "/installer/scan/not-detected.nix")
+    ./hardware-configuration.nix
     profiles.server-apps.mysql
     profiles.core.nixos
     profiles.client-pkgs.nixos
@@ -12,19 +11,10 @@
   ] ++ suites.client-base;
 
   sops.secrets."wireguard/office" = { };
+
   system.nixos.tags = [ "with-gui" ];
 
   fileSystems = {
-    "/" = {
-      device = "/dev/disk/by-uuid/799ba8ac-87bb-4c4e-b060-1787b4708a90";
-      fsType = "ext4";
-    };
-
-    "/boot/efi" = {
-      device = "/dev/disk/by-uuid/209B-184A";
-      fsType = "vfat";
-    };
-
     "/mnt/hydra" = {
       device = "hydra.inner.trontech.link:/export";
       fsType = "nfs";
@@ -32,25 +22,7 @@
     };
   };
 
-  swapDevices = [ ];
-
-  # Enables DHCP on each ethernet and wireless interface. In case of scripted networking
-  # (the default) this is the recommended approach. When using systemd-networkd it's
-  # still possible to use this option, but it's recommended to use it in conjunction
-  # with explicit per-interface declarations with `networking.interfaces.<interface>.useDHCP`.
-  # networking.interfaces.wlp0s20f3.useDHCP = lib.mkDefault true;
-
-  powerManagement = { cpuFreqGovernor = lib.mkDefault "powersave"; };
-
-  hardware = {
-    cpu = {
-      intel = {
-        updateMicrocode =
-          lib.mkDefault config.hardware.enableRedistributableFirmware;
-      };
-    };
-    enableRedistributableFirmware = true;
-  };
+  hardware = { enableRedistributableFirmware = true; };
 
   nix = {
     distributedBuilds = false;
@@ -76,20 +48,16 @@
   };
 
   boot = {
+    binfmt.emulatedSystems = [ "aarch64-linux" ];
     kernel.sysctl."net.core.rmem_max" = 2500000;
     supportedFilesystems = [ "nfs4" ];
-    initrd = {
-      availableKernelModules =
-        [ "xhci_pci" "thunderbolt" "nvme" "usb_storage" "usbhid" "sd_mod" ];
-      kernelModules = [ ];
-    };
-
-    kernelModules = [ "kvm-intel" "hid-nintendo" "v4l2loopback" ];
+    kernelModules = [ "hid-nintendo" "v4l2loopback" ];
 
     extraModulePackages = with config.boot.kernelPackages; [ v4l2loopback.out ];
 
     extraModprobeConfig = ''
       options snd-intel-dspcfg dsp_driver=1
+      options kvm_intel nested=1
     '';
 
     tmpOnTmpfs = lib.mkDefault true;
@@ -123,12 +91,12 @@
     firewall = {
       allowedTCPPorts = [ 179 ];
       allowedUDPPorts = [ 179 33434 ];
-      enable = false;
+      enable = true;
     };
 
     networkmanager = {
       enable = true;
-      firewallBackend = "nftables";
+      # firewallBackend = "nftables";
       wifi = {
         powersave = true;
         macAddress = "random";
@@ -142,7 +110,7 @@
     #networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
     wg-quick = {
       interfaces = {
-        wg_office = {
+        wg_freeman = {
           privateKeyFile = config.sops.secrets."wireguard/office".path;
           address = [ "172.22.240.98/27" "fe80::101/64" "fd48:4b4:f3::2/48" ];
           dns = [ # "fe80::100%wg_office"
@@ -176,6 +144,7 @@
               "fe80::101/64"
               "172.32.0.0/16"
               "18.218.96.133/32"
+              "13.212.2.33"
             ];
           }];
         };
@@ -188,7 +157,7 @@
     useDHCP = lib.mkDefault true;
 
     nftables = {
-      enable = true;
+      # enable = true;
       ruleset = ''
         # Check out https://wiki.nftables.org/ for better documentation.
         # Table for both IPv4 and IPv6.
@@ -299,6 +268,7 @@
     bird2 = {
       config = lib.mine.bird2-inner-config "172.22.240.98" "fd48:4b4:f3::2";
     };
+
     geth = {
       test-beacon = {
         enable = false;

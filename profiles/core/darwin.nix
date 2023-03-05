@@ -9,7 +9,7 @@
   system = { stateVersion = 4; }; # Did you read the comment?
   nix = {
     settings = { auto-optimise-store = true; };
-    package = pkgs.nix;
+    # package = pkgs.nix;
   };
   security.pam.enableSudoTouchIdAuth = true;
 
