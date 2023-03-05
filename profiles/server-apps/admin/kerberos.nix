@@ -3,7 +3,11 @@ let
   realm = "FREEMAN.ENGINEER";
   dbSuffix = "dc=freeman,dc=engineer";
 in {
-  sops.secrets."openldap/passwordFile" = { mode = "770"; };
+  sops.secrets."openldap/passwordFile" = {
+    mode = "770";
+    owner = "openldap";
+    group = "openldap";
+  };
   krb5 = {
     enable = true;
     appdefaults = {

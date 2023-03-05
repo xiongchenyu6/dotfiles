@@ -143,12 +143,23 @@
       };
     };
 
+    nil = {
+      url = "github:oxalica/nil";
+      inputs = {
+        nixpkgs.follows = "nixpkgs";
+        flake-utils.follows = "flake-utils";
+        rust-overlay.url = "github:oxalica/rust-overlay";
+        rust-overlay.inputs.flake-utils.follows = "flake-utils";
+        rust-overlay.inputs.nixpkgs.follows = "nixpkgs";
+      };
+    };
+
   };
 
   outputs = { self, nixpkgs, nur, nixos-hardware, emacs, home-manager, devshell
     , pre-commit-hooks, nix-alien, xiongchenyu6, winklink, digga, sops-nix
-    , grub2-themes, hyprland, hyprpaper, hyprpicker, foundry, poetry2nix, ...
-    }@inputs:
+    , grub2-themes, hyprland, hyprpaper, hyprpicker, foundry, nil, poetry2nix
+    , ... }@inputs:
     with nixpkgs;
     with lib;
     let
@@ -162,11 +173,11 @@
         hyprpaper
         hyprpicker
         foundry
+        nil
         poetry2nix
       ] ++ [ ];
     in digga.lib.mkFlake {
       inherit self inputs;
-
       supportedSystems =
         [ "x86_64-linux" "aarch64-linux" "aarch64-darwin" "x86_64-darwin" ];
       #supportedSystems = allSystems;
@@ -177,9 +188,7 @@
         # allowUnsupportedSystem = true;
       };
 
-      channels = {
-        nixpkgs = { imports = [ (digga.lib.importOverlays ./overlays) ]; };
-      };
+      channels = { nixpkgs = { }; };
 
       sharedOverlays = overlays ++ [
         (_: prev: {
@@ -258,7 +267,6 @@
             digga.darwinModules.nixConfig
             home-manager.darwinModules.home-manager
           ];
-
         };
 
         imports = [ (digga.lib.importHosts ./hosts/darwin) ];

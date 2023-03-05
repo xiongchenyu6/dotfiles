@@ -28,6 +28,7 @@
           "docker"
           "podman"
           "tss"
+          "libvirtd"
         ];
       };
     };
