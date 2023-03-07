@@ -12,6 +12,7 @@
 
   sops.secrets."wireguard/office" = { };
 
+  # Enable users/freeman gui
   system.nixos.tags = [ "with-gui" ];
 
   fileSystems = {
@@ -37,12 +38,7 @@
 
   nixpkgs = {
     config = {
-      permittedInsecurePackages = [
-        "electron-19.0.7"
-        "electron-20.3.11"
-        "python-2.7.18.6"
-        "python3.10-certifi-2022.12.7"
-      ];
+      permittedInsecurePackages = [ "electron-19.0.7" ];
       allowBroken = true;
     };
   };
@@ -51,7 +47,8 @@
     binfmt.emulatedSystems = [ "aarch64-linux" ];
     kernel.sysctl."net.core.rmem_max" = 2500000;
     supportedFilesystems = [ "nfs4" ];
-    kernelModules = [ "hid-nintendo" "v4l2loopback" ];
+    kernelModules = [ "hid-nintendo" "v4l2loopback" ];    
+    initrd.availableKernelModules =   [ "sd_mod" ];
 
     extraModulePackages = with config.boot.kernelPackages; [ v4l2loopback.out ];
 

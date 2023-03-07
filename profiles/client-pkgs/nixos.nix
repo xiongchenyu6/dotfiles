@@ -43,6 +43,7 @@
       lsof
       llvm
       lldb
+      pciutils
       ledger-live-desktop
       vscode-extensions.vadimcn.vscode-lldb
       openfortivpn

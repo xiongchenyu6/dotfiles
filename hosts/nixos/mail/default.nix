@@ -1,5 +1,4 @@
 { modulesPath, suites, profiles, config, ... }: {
-
   imports = [
     (modulesPath + "/profiles/qemu-guest.nix")
     profiles.server-apps.acme
@@ -49,7 +48,10 @@
       };
     };
   };
+
   sops.secrets."wireguard/mail" = { };
+  # sops.age.keyFile = "/var/lib/sops-nix/key.txt";
+  # sops.age.generateKey = true;
 
   networking = {
     nat = {
