@@ -45,9 +45,7 @@
       };
     };
 
-    # keychain = {
-    #   enable = true;
-    # };
+    keychain = { enable = true; };
 
     readline = { enable = true; };
 
@@ -66,9 +64,10 @@
       compression = true;
       # tpm chips limitation
       extraConfig = ''
-        GSSAPIAuthentication yes
+                GSSAPIAuthentication yes
+
         PasswordAuthentication yes
-        PubkeyAcceptedKeyTypes rsa-sha2-256,ssh-ed25519,ecdsa-sha2-nistp256,ecdsa-sha2-nistp384,ecdsa-sha2-nistp521,ssh-rsa
+                PubkeyAcceptedKeyTypes rsa-sha2-256,ssh-ed25519,ecdsa-sha2-nistp256,ecdsa-sha2-nistp384,ecdsa-sha2-nistp521,ssh-rsa
       '';
     };
 
@@ -185,8 +184,6 @@
     zoxide = { enable = true; };
 
     pandoc = { enable = true; };
-
-    sagemath = { enable = false; };
 
     sqls = { enable = true; };
 

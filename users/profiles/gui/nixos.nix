@@ -81,6 +81,10 @@
       package = pkgs.brave;
       #google-chrome
     };
+
+    password-store = {
+      enable = true;
+    };
   };
 
   services = lib.mkIf pkgs.stdenv.isLinux {

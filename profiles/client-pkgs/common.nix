@@ -35,6 +35,7 @@
       git-crypt
       gopls
       graphviz
+      gptcommit
       grpcurl
       (python3.withPackages (_:
         with python3.pkgs; [
