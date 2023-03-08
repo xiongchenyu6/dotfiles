@@ -609,7 +609,41 @@ Otherwise, show the default maximum number of recent items."
 (define-key copilot-completion-map (kbd "<tab>") 'copilot-accept-completion)
 
 (define-key copilot-completion-map (kbd "C-<tab>") 'copilot-accept-completion-by-word)
+#+end_src
+**** chatgpt-arcana
+#+begin_src emacs-lisp
+(use-package chatgpt-arcana
+  :init (setq chatgpt-arcana-api-key (my-fetch-password :user "xiongchenyu6@gmail" :host "openai.com"))
+  :config
+  (use-package all-the-icons
+    :config
+    (add-to-list 'all-the-icons-mode-icon-alist
+                 '(chatgpt-arcana-chat-mode all-the-icons-octicon "comment-discussion" :height 1.0 :v-adjust -0.1 :face all-the-icons-purple)))
+  (defvar chatgpt-arcana-keymap
+    (let ((keymap (make-keymap)))
+      (define-key keymap "a" 'chatgpt-arcana-query)
+      (define-key keymap "r" 'chatgpt-arcana-replace-region)
+      (define-key keymap "i" 'chatgpt-arcana-insert-at-point-with-context)
+      (define-key keymap "I" 'chatgpt-arcana-insert-at-point)
+      (define-key keymap "c" 'chatgpt-arcana-start-chat)
+      (define-key keymap "C" 'chatgpt-arcana-resume-chat)
+      (define-key keymap "o" 'chatgpt-arcana-insert-after-region )
+      (define-key keymap "O" 'chatgpt-arcana-insert-before-region )
+      keymap))
+  (defalias 'chatgpt-arcana-keymap chatgpt-arcana-keymap)
+  (global-set-key (kbd "C-c .") 'chatgpt-arcana-keymap)
+  (setq chatgpt-arcana-chat-autosave-enabled t)
+  )
+#+end_src
 
+**** org-ai
+#+begin_src emacs-lisp
+(use-package org-ai
+  :commands (org-ai-mode)
+  :custom
+  (org-ai-openai-api-token (my-fetch-password :user "xiongchenyu6@gmail" :host "openai.com"))
+  :init
+  (add-hook 'org-mode-hook #'org-ai-mode))
 #+end_src
 **** COMMENT codeium
 #+begin_src emacs-lisp
@@ -645,9 +679,7 @@ Otherwise, show the default maximum number of recent items."
   ;; (setq use-dialog-box nil) ;; do not use popup boxes
 
   ;; if you don't want to use customize to save the api-key
-  (setq codeium/metadata/api_key "7deba492-a52c-44d1-bd16-b2ed16e97805")
-
-  )
+  (setq codeium/metadata/api_key "7deba492-a52c-44d1-bd16-b2ed16e97805"))
 #+end_src
 ** Lang
 *** lsp & lsp-ui
@@ -1172,6 +1204,8 @@ Bind to lsp mode
 #+end_src
 ** Safe Variable
 #+begin_src emacs-lisp
+(setq enable-local-variables :all)
+
 (add-to-list 'safe-local-variable-values
              '(company-clang-arguments . "-I src"))
 
@@ -1189,7 +1223,7 @@ Bind to lsp mode
 #+end_src
 ** Org
 #+begin_src emacs-lisp
-(use-package org
+
   :ensure org-plus-contrib
   :bind (:map org-mode-map
               ("C-c c" . org-capture)
@@ -1211,6 +1245,7 @@ Bind to lsp mode
      (shell . t)
      (gnuplot . t)
      (sql . t)
+     (go . t)
      (restclient . t)
      (haskell . t)))
   (add-to-list 'org-emphasis-alist '("=" (:box (:line-width -2 :color "gray50" :style released-button) :inherit org-verbatim))))
@@ -1245,9 +1280,9 @@ Bind to lsp mode
               ("C-c y" . org-download-clipboard)
               ("C-c d" . org-download-screenshot))
   :config
-  (org-download-image-dir "~/Pictures"
-                          setq org-download-method 'attach
-                          setq org-download-screenshot-method "grim %s"))
+  (setq org-download-image-dir "~/Pictures"
+        org-download-method 'attach
+        org-download-screenshot-method "grim %s"))
 #+end_src
 *** Org Reveal
 #+begin_src emacs-lisp
@@ -1444,7 +1479,7 @@ Bind to lsp mode
 (define-key addon-map "t" 'vterm)
 (define-key addon-map "g" 'gnus)
 (define-key addon-map "i" 'erc-myself)
-(define-key addon-map "a" 'org-agenda)
+(define-key addon-map "a" 'gpt-dwim)
 (define-key addon-map "c" 'calendar)
 (define-key addon-map "d" 'dired)
 
@@ -1500,6 +1535,7 @@ Bind to lsp mode
         :ensure t
         :config
         (ace-link-setup-default))
+
 #+end_src
 ** Leetcode
 #+begin_src emacs-lisp
@@ -1508,8 +1544,15 @@ Bind to lsp mode
 (setq leetcode-prefer-language "cpp"
       leetcode-prefer-sql "mysql")
 #+end_src
-** Magit
+** Git
+*** blamer
 #+begin_src emacs-lisp
+(global-blamer-mode)
+#+end_src
+*** Magit
+#+begin_src emacs-lisp
+(magit-todos-mode)
+
 (use-package magit-gitflow
   :ensure t
   :config
@@ -1595,7 +1638,6 @@ Bind to lsp mode
              (article 1.0))))
 
 ;; 设置图片显示方式
-
 (setq mm-inline-large-images t)
 
 ;; 设置summary缓冲区的显示格式

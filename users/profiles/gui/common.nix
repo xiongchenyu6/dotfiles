@@ -137,6 +137,7 @@
         with epkgs; [
           ace-link
           all-the-icons
+          blamer
           clojure-mode
           cider
           citre
@@ -144,6 +145,8 @@
           cape
           corfu
           copilot-el
+          chatgpt
+          chatgpt-arcana
           citeproc
           dockerfile-mode
           direnv
@@ -168,6 +171,7 @@
           nix-mode
           meow
           magit
+          magit-todos
           marginalia
           magit-gitflow
           nov
@@ -175,6 +179,7 @@
           ob-mermaid
           ob-restclient
           ox-pandoc
+          org-ai
           org-contrib
           org-roam
           # org-re-reveal

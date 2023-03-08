@@ -27,7 +27,6 @@
       fd
       foundry-bin
       tealdeer
-      # tendermint
       socat
       gotron-sdk
       rustscan
@@ -41,7 +40,7 @@
         with python3.pkgs; [
           cmake-language-server
           colour
-          epc
+          # epc
           ipython
           matplotlib
           nbformat
@@ -53,6 +52,7 @@
           python-dotenv
           six
           virtualenv
+          openai
         ]))
       kubernetes-helm
       litecli
