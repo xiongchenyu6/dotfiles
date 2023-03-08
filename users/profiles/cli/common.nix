@@ -91,10 +91,10 @@
         rank = "shortlog -s -n --no-merges";
       };
 
-      difftastic = {
-        enable = true;
-        background = "dark";
-      };
+      # difftastic = {
+      #   enable = true;
+      #   background = "dark";
+      # };
 
       extraConfig = {
         init = { defaultBranch = "main"; };

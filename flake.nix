@@ -53,6 +53,8 @@
       };
     };
 
+    impermanence.url = "github:nix-community/impermanence";
+
     nixos-generators = {
       url = "github:nix-community/nixos-generators";
       inputs = { nixpkgs.follows = "nixpkgs"; };
@@ -156,10 +158,10 @@
 
   };
 
-  outputs = { self, nixpkgs, nur, nixos-hardware, emacs, home-manager, devshell
-    , pre-commit-hooks, nix-alien, xiongchenyu6, winklink, digga, sops-nix
-    , grub2-themes, hyprland, hyprpaper, hyprpicker, foundry, nil, poetry2nix
-    , ... }@inputs:
+  outputs = { self, nixpkgs, impermanence, nur, nixos-hardware, emacs
+    , home-manager, devshell, pre-commit-hooks, nix-alien, xiongchenyu6
+    , winklink, digga, sops-nix, grub2-themes, hyprland, hyprpaper, hyprpicker
+    , foundry, nil, poetry2nix, ... }@inputs:
     with nixpkgs;
     with lib;
     let
@@ -212,6 +214,7 @@
             digga.nixosModules.nixConfig
             home-manager.nixosModules.home-manager
             nur.nixosModules.nur
+            impermanence.nixosModules.impermanence
             xiongchenyu6.nixosModules.bttc
           ];
         };
@@ -230,6 +233,12 @@
               nixos-hardware.nixosModules.lenovo-thinkpad-x1-10th-gen
             ];
           };
+          game = {
+            modules = [
+              grub2-themes.nixosModules.default
+              hyprland.nixosModules.default
+            ];
+          };
         };
 
         importables = rec {
@@ -240,9 +249,8 @@
           suites = with profiles; rec {
             base = [ core.nixos sops ];
             common-comps = builtins.attrValues common-components;
-            client-comps = builtins.attrValues client-components;
             server-comps = builtins.attrValues server-components;
-            client-base = base ++ common-comps ++ client-comps ++ [
+            client-base = base ++ common-comps ++ [
               auto-login.getty
               common-apps.dn42
               common-apps.bird-inner
@@ -284,7 +292,12 @@
       };
 
       home = {
-        modules = [ nur.hmModules.nur hyprland.homeManagerModules.default ];
+        modules = [
+          nur.hmModules.nur
+          hyprland.homeManagerModules.default
+          sops-nix.homeManagerModules.sops
+          (import ./profiles/sops.nix)
+        ];
 
         importables = rec {
           profiles = digga.lib.rakeLeaves ./users/profiles // {

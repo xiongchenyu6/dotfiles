@@ -1,7 +1,7 @@
 # Edit this configuration file to define what should be installed on
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
-{ hmUsers, pkgs, config, profiles, ... }: {
+{ hmUsers, pkgs, config, profiles, lib, ... }: {
   sops.secrets."user/freeman/pass" = { neededForUsers = true; };
   imports = [ ./private-info.nix ];
   users = {
@@ -13,7 +13,8 @@
         openssh.authorizedKeys.keys =
           [ profiles.share.users-dict."freeman.xiong".public-key ];
         shell = pkgs.zsh;
-        passwordFile = config.sops.secrets."user/freeman/pass".path;
+        passwordFile =
+          lib.mkDefault config.sops.secrets."user/freeman/pass".path;
         extraGroups = [
           "networkmanager"
           "wheel"

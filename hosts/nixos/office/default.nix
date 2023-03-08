@@ -8,6 +8,7 @@
     profiles.users.root.nixos
     profiles.dvorak
     profiles.users."freeman.xiong"
+    profiles.hardwares.misc
   ] ++ suites.client-base;
 
   sops.secrets."wireguard/office" = { };
@@ -47,8 +48,8 @@
     binfmt.emulatedSystems = [ "aarch64-linux" ];
     kernel.sysctl."net.core.rmem_max" = 2500000;
     supportedFilesystems = [ "nfs4" ];
-    kernelModules = [ "hid-nintendo" "v4l2loopback" ];    
-    initrd.availableKernelModules =   [ "sd_mod" ];
+    kernelModules = [ "hid-nintendo" "v4l2loopback" ];
+    initrd.availableKernelModules = [ "sd_mod" ];
 
     extraModulePackages = with config.boot.kernelPackages; [ v4l2loopback.out ];
 
@@ -303,6 +304,18 @@
   home-manager = {
     users = {
       "freeman.xiong" = {
+        sops = {
+          gnupg = { home = "~/.gnupg"; };
+          secrets = {
+            # The path to the file to decrypt.
+            gptcommit = {
+              name = "gptcommit";
+              path = "/home/freeman.xiong/.config/gptcommit/config.toml";
+              mode = "777";
+            };
+          };
+        };
+
         services = {
           git-sync = {
             enable = true;

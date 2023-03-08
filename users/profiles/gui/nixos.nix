@@ -82,9 +82,7 @@
       #google-chrome
     };
 
-    password-store = {
-      enable = true;
-    };
+    password-store = { enable = true; };
   };
 
   services = lib.mkIf pkgs.stdenv.isLinux {
