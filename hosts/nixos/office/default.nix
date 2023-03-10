@@ -61,7 +61,12 @@
     tmpOnTmpfs = lib.mkDefault true;
 
     loader = {
-      systemd-boot = { editor = false; };
+      systemd-boot = {
+        # enable = true;
+        netbootxyz.enable = true;
+        memtest86.enable = true;
+      };
+
       efi = {
         canTouchEfiVariables = true;
         efiSysMountPoint = "/boot/efi";

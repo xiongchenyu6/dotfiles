@@ -1221,10 +1221,10 @@ Bind to lsp mode
 
                                                 nil t))
 #+end_src
-** Org
+** TODO Org
 #+begin_src emacs-lisp
-
-  :ensure org-plus-contrib
+(use-package org
+  ;; :ensure org-plus-contrib
   :bind (:map org-mode-map
               ("C-c c" . org-capture)
               ("C-c l" . org-store-link))
