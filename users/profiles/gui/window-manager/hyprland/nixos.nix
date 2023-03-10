@@ -3,7 +3,7 @@
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 { pkgs, lib, ... }: {
   home = lib.mkIf pkgs.stdenv.isLinux {
-    sessionVariables = {
+    sessionVariables = lib.mkDefault {
       NIX_LD = toString (pkgs.runCommand "ld.so" { } ''
         ln -s "$(cat '${pkgs.stdenv.cc}/nix-support/dynamic-linker')" $out
       '');

@@ -28,7 +28,11 @@
 
   boot = {
     loader = {
-      systemd-boot = { editor = true; };
+      systemd-boot = {
+        enable = true;
+        netbootxyz.enable = true;
+        memtest86.enable = true;
+      };
       efi = {
         canTouchEfiVariables = true;
         efiSysMountPoint = "/boot/efi";
