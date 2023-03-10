@@ -311,6 +311,8 @@
               gui.mpd
               cli.shell.zsh
             ];
+            linux-gui-nvidia = linux-gui
+              ++ [ gui.window-manager.hyprland.nvidia ];
             mac-gui = [ gui.darwin cli.common cli.shell.zsh ];
           };
         };
@@ -318,6 +320,9 @@
           root = { suites, ... }: { imports = suites.nix-remote-build; };
           freeman-cli = { suites, ... }: { imports = suites.cli; };
           freeman-gui = { suites, ... }: { imports = suites.linux-gui; };
+          freeman-gui-nvidia = { suites, ... }: {
+            imports = suites.linux-gui-nvidia;
+          };
           xiongchenyu = { suites, ... }: { imports = suites.mac-gui; };
         };
       };
