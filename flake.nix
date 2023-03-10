@@ -300,7 +300,7 @@
           profiles = digga.lib.rakeLeaves ./users/profiles // {
             share = import ./profiles/shares.nix { inherit lib; };
           };
-          suites = with profiles; {
+          suites = with profiles; rec {
             nix-remote-build = [ use-remote-builder ];
             cli = [ cli.common cli.shell.zsh ];
             linux-gui = [
