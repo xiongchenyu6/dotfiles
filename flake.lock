@@ -1243,11 +1243,11 @@
         "oci-arm-host-capacity-src": "oci-arm-host-capacity-src"
       },
       "locked": {
-        "lastModified": 1678384228,
-        "narHash": "sha256-2yqdPkOBKgDQ6nd0sEHXblcVkz5W4lUIJyKEhzV0cCk=",
+        "lastModified": 1678449971,
+        "narHash": "sha256-zui3povUV5SdAimsm1phsgF/aQocOh3qwACCpv8tOmk=",
         "owner": "xiongchenyu6",
         "repo": "nur-packages",
-        "rev": "138edf18f75edd93460e7b66e29a5ac786f912d0",
+        "rev": "beb7afaab57773df0298e91dc834b4c65199c0f1",
         "type": "github"
       },
       "original": {
