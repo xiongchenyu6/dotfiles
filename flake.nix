@@ -250,12 +250,9 @@
             base = [ core.nixos sops ];
             common-comps = builtins.attrValues common-components;
             server-comps = builtins.attrValues server-components;
-            client-base = base ++ common-comps ++ [
-              auto-login.getty
-              common-apps.dn42
-              common-apps.bird-inner
-              common-apps.kerberos
-            ];
+            client-base = base ++ common-comps ++ [ auto-login.getty ];
+            client-network =
+              [ common-apps.dn42 common-apps.bird-inner common-apps.kerberos ];
             server-base = base ++ common-comps ++ server-comps ++ [
               server-apps.log.promtail
               server-apps.admin.sssd
