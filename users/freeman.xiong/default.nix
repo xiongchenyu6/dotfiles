@@ -37,7 +37,9 @@
   home-manager = {
     users = {
       "freeman.xiong" =
-        if (builtins.elem "with-gui" config.system.nixos.tags) then
+        if (builtins.elem "with-gui-nvidia" config.system.nixos.tags) then
+          hmUsers.freeman-gui-nvidia
+        else if (builtins.elem "with-gui" config.system.nixos.tags) then
           hmUsers.freeman-gui
         else
           hmUsers.freeman-cli;

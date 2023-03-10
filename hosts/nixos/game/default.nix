@@ -15,7 +15,7 @@
   # /nix /var /root /nix/persist
 
   # Enable users/freeman gui
-  system.nixos.tags = [ "with-gui" ];
+  system.nixos.tags = [ "with-gui-nvidia" ];
 
   hardware = { enableRedistributableFirmware = true; };
 
@@ -28,13 +28,13 @@
 
   boot = {
     loader = {
-      systemd-boot = { editor = false; };
+      systemd-boot = { editor = true; };
       efi = {
         canTouchEfiVariables = true;
         efiSysMountPoint = "/boot/efi";
       };
       grub = {
-        enable = true;
+        enable = false;
         efiSupport = true;
         version = 2;
         device = "nodev";
@@ -44,7 +44,7 @@
 
       };
       grub2-theme = {
-        enable = true;
+        enable = false;
         icon = "white";
         theme = "whitesur";
         screen = "1080p";
