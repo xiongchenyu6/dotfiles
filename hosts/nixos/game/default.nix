@@ -40,6 +40,8 @@
         device = "nodev";
         configurationLimit = 5;
         useOSProber = true;
+        enableCryptodisk = true;
+
       };
       grub2-theme = {
         enable = true;
