@@ -300,19 +300,26 @@
           profiles = digga.lib.rakeLeaves ./users/profiles // {
             share = import ./profiles/shares.nix { inherit lib; };
           };
-          suites = with profiles; rec {
+          suites = with profiles; {
             nix-remote-build = [ use-remote-builder ];
             cli = [ cli.common cli.shell.zsh ];
             linux-gui = [
+              cli.common
+              cli.shell.zsh
               gui.nixos
               gui.window-manager.hyprland.dvorak
               gui.window-manager.hyprland.nixos
-              cli.common
               gui.mpd
-              cli.shell.zsh
             ];
-            linux-gui-nvidia = linux-gui
-              ++ [ gui.window-manager.hyprland.nvidia ];
+            linux-gui-nvidia = [
+              cli.common
+              cli.shell.zsh
+              gui.nixos
+              gui.window-manager.hyprland.dvorak
+              gui.window-manager.hyprland.nixos
+              gui.mpd
+              gui.window-manager.hyprland.nvidia
+            ];
             mac-gui = [ gui.darwin cli.common cli.shell.zsh ];
           };
         };
