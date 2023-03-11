@@ -3,6 +3,7 @@
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 { config, pkgs, lib, ... }: {
   imports = [ ./common.nix ];
+
   qt = {
     enable = true;
 
@@ -30,6 +31,7 @@
       x11 = { enable = true; };
       size = 32;
     };
+    sessionVariables = { STARSHIP_LOG = "error"; };
   };
 
   gtk = lib.mkIf pkgs.stdenv.isLinux {

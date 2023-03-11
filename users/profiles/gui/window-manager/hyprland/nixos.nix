@@ -3,7 +3,7 @@
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 { pkgs, lib, ... }: {
   home = lib.mkIf pkgs.stdenv.isLinux {
-    sessionVariables = lib.mkDefault {
+    sessionVariables = {
       NIX_LD = toString (pkgs.runCommand "ld.so" { } ''
         ln -s "$(cat '${pkgs.stdenv.cc}/nix-support/dynamic-linker')" $out
       '');
@@ -44,6 +44,34 @@
             grim -g "$(slurp)" - | wl-copy
           '';
         };
+
+        workspace = pkgs.writeShellApplication {
+          name = "workspace.sh";
+          runtimeInputs = [ pkgs.hyprland pkgs.gnugrep pkgs.gawk ];
+          text = ''
+            monitors=/tmp/hypr/monitors_temp
+            hyprctl monitors > $monitors
+
+            if [[ -z $1 ]]; then
+              workspace=$(grep -B 4 "focused: no" "$monitors" | awk 'NR==1 {print $3}')
+            else
+              workspace=$1
+            fi
+
+
+            activemonitor=$(grep -B 7 "focused: yes" "$monitors" | awk 'NR==1 {print $2}')
+            passivemonitor=$(grep  -B 3 "($workspace)" "$monitors" | awk 'NR==1 {print $2}')
+            #activews=$(grep -A 2 "$activemonitor" "$monitors" | awk 'NR==3 {print $1}' RS='(' FS=')')
+            passivews=$(grep -A 2 "$passivemonitor" "$monitors" | awk 'NR==4 {print $1}' RS='(' FS=')')
+
+            if [[ $workspace -eq $passivews ]] && [[ $activemonitor != "$passivemonitor" ]]; then
+              hyprctl dispatch swapactiveworkspaces "$activemonitor" "$passivemonitor"
+              echo "$activemonitor" "$passivemonitor"
+            else
+              hyprctl dispatch moveworkspacetomonitor "$workspace $activemonitor" && hyprctl dispatch workspace "$workspace"
+            fi
+          '';
+        };
       in {
         enable = true;
         xwayland = {
@@ -67,7 +95,8 @@
           monitor=,preferred,auto,1.5
           monitor=HDMI-A-1,preferred,auto,1.5
           monitor=HDMI-A-1,transform,1
-          workspace=HDMI-A-1,1
+          workspace = eDP-1, 1
+          workspace=HDMI-A-1,10
 
           # Source a file (multi-file configs)
           # source = ~/.config/hypr/myColors.conf
@@ -187,39 +216,23 @@
           bind = $mainMod, K, movefocus, u
           bind = $mainMod, J, movefocus, d
 
-          # Switch workspaces with mainMod + [0-9]
-          bind= $mainMod,1,moveworkspacetomonitor,1 current
-          bind = $mainMod, 1, workspace, 1
-          bind= $mainMod,2,moveworkspacetomonitor,2 current
-          bind = $mainMod, 2, workspace, 2
-          bind= $mainMod,3,moveworkspacetomonitor,3 current
-          bind = $mainMod, 3, workspace, 3
-          bind= $mainMod,4,moveworkspacetomonitor,4 current
-          bind = $mainMod, 4, workspace, 4
-          bind= $mainMod,5,moveworkspacetomonitor,5 current
-          bind = $mainMod, 5, workspace, 5
-          bind= $mainMod,6,moveworkspacetomonitor,6 current
-          bind = $mainMod, 6, workspace, 6
-          bind= $mainMod,7,moveworkspacetomonitor,7 current
-          bind = $mainMod, 7, workspace, 7
-          bind= $mainMod,8,moveworkspacetomonitor,8 current
-          bind = $mainMod, 8, workspace, 8
-          bind= $mainMod,9,moveworkspacetomonitor,9 current
-          bind = $mainMod, 9, workspace, 9
-          bind= $mainMod,0,moveworkspacetomonitor,10 current
-          bind = $mainMod, 0, workspace, 10
+          # workspaces
+          # binds mod + [shift +] {1..10} to [move to] ws {1..10}
+          ${builtins.concatStringsSep "\n" (builtins.genList (x:
+            let
+              ws = let c = (x + 1) / 10;
+              in builtins.toString (x + 1 - (c * 10));
+            in ''
+              # bind = $mainMod, ${ws}, workspace, ${toString (x + 1)}
+              bind=$mainMod,${ws},exec, ${workspace}/bin/workspace.sh ${
+                toString (x + 1)
+              }
+              bind = $mainMod SHIFT, ${ws}, movetoworkspace, ${toString (x + 1)}
+            '') 10)}
+          # cycle monitors
 
-          # Move active window to a workspace with mainMod + SHIFT + [0-9]
-          bind = $mainMod SHIFT, 1, movetoworkspace, 1
-          bind = $mainMod SHIFT, 2, movetoworkspace, 2
-          bind = $mainMod SHIFT, 3, movetoworkspace, 3
-          bind = $mainMod SHIFT, 4, movetoworkspace, 4
-          bind = $mainMod SHIFT, 5, movetoworkspace, 5
-          bind = $mainMod SHIFT, 6, movetoworkspace, 6
-          bind = $mainMod SHIFT, 7, movetoworkspace, 7
-          bind = $mainMod SHIFT, 8, movetoworkspace, 8
-          bind = $mainMod SHIFT, 9, movetoworkspace, 9
-          bind = $mainMod SHIFT, 0, movetoworkspace, 10
+          bind = $mainMod, 25, focusmonitor, l
+          bind = $mainMod, 26, focusmonitor, r
 
           # Scroll through existing workspaces with mainMod + scroll
           bind = $mainMod SHIFT, mouse_down, workspace, e+1
@@ -238,9 +251,16 @@
           binde=, XF86MonBrightnessUp, exec, brightnessctl s +5%
           binde=, XF86MonBrightnessDown, exec, brightnessctl s 5%-
 
-          # # See https://wiki.hyprland.org/Configuring/Keywords/ for more
+          # window resize
+          bind = $mainMod, S, submap, resize
+          submap = resize
+          binde = , right, resizeactive, 10 0
+          binde = , left, resizeactive, -10 0
+          binde = , up, resizeactive, 0 -10
+          binde = , down, resizeactive, 0 10
+          bind = , escape, submap, reset
+          submap = reset
 
-          # # Execute your favorite apps at launch
           exec-once = hyprpaper
 
           windowrule=workspace 1 silent,alacritty
