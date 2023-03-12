@@ -14,6 +14,7 @@ stow-managed/config/.config/emacs/*
 !stow-managed/config/.config/emacs/custom 
 !stow-managed/config/.config/emacs/custom.el
 !stow-managed/config/.config/emacs/templates
+!stow-managed/config/.config/emacs/lisp/
 !stow-managed/config/.config/kitty
 !stow-managed/config/.config/Code/User
 !stow-managed/config/.config/doom
