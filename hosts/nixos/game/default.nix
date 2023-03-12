@@ -98,20 +98,14 @@
   home-manager = {
     users = {
       "freeman.xiong" = {
-        home-manager = {
-          users = {
-            "freeman.xiong" = {
-              sops = {
-                gnupg = { home = "~/.gnupg"; };
-                secrets = {
-                  # The path to the file to decrypt.
-                  gptcommit = {
-                    name = "gptcommit";
-                    path = "/home/freeman.xiong/.config/gptcommit/config.toml";
-                    mode = "777";
-                  };
-                };
-              };
+        sops = {
+          gnupg = { home = "~/.gnupg"; };
+          secrets = {
+            # The path to the file to decrypt.
+            gptcommit = {
+              name = "gptcommit";
+              path = "/home/freeman.xiong/.config/gptcommit/config.toml";
+              mode = "777";
             };
           };
         };
