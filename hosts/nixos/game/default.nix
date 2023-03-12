@@ -12,6 +12,7 @@
     profiles.hardwares.nvidia
   ] ++ suites.client-base ++ suites.client-network;
 
+  sops.secrets."wireguard/office" = { };
   sops.secrets."wireguard/game" = { };
   # /nix /var /root /nix/persist
 
