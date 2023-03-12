@@ -57,19 +57,21 @@ with builtins; rec {
 
   hosts = [
     {
+      host = "game";
+      public-key =
+        "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIK9lhSffZNM3UYm884iQc/XmWL+g5fnePXUh4mPFkuNy root@nixos";
+      wg = { public-key = "pvInS7gtW3H8JN3wzkdK8HM1qqFE/LpRXP36+z5EGEc="; };
+    }
+    {
       host = "office";
       public-key =
         "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIK9lhSffZNM3UYm884iQc/XmWL+g5fnePXUh4mPFkuNy root@nixos";
       wg = { public-key = "trmPW+CV8BbXfDMbe7I7IFwRh5ke8vpbDlgisSoH6ng="; };
-
     }
     {
       host = "mail";
-      public-key = ''
-        ssh-
-
-
-        ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKcBsPZi+OYEL/RCSGZMr82x0UGUaghP3AGl6M57ssjn'';
+      public-key =
+        "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKcBsPZi+OYEL/RCSGZMr82x0UGUaghP3AGl6M57ssjn";
       wg = { public-key = "9TXI2YQ0cdhW3xBhxzuHpPuISR7k2NwTjZ2Sq/lwoE0="; };
     }
     {

@@ -58,7 +58,7 @@
       enable = true;
       enableIPv6 = true;
       externalInterface = "ens5";
-      internalInterfaces = [ "wg_office" ];
+      internalInterfaces = [ "wg_freeman_eng" ];
     };
 
     firewall = {
@@ -116,16 +116,23 @@
     };
     wg-quick = {
       interfaces = {
-        wg_office = {
+        wg_freeman_eng = {
           privateKeyFile = config.sops.secrets."wireguard/mail".path;
           address = [ "172.22.240.97/27" "fe80::100/64" "fd48:4b4:f3::1/48" ];
           listenPort = 22616;
           table = "off";
-          peers = [{
-            publicKey = profiles.share.hosts-dict.office.wg.public-key;
-            allowedIPs =
-              [ "172.22.240.98/32" "fe80::101/128" "fd48:4b4:f3::2/128" ];
-          }];
+          peers = [
+            {
+              publicKey = profiles.share.hosts-dict.office.wg.public-key;
+              allowedIPs =
+                [ "172.22.240.98/32" "fe80::101/128" "fd48:4b4:f3::2/128" ];
+            }
+            {
+              publicKey = profiles.share.hosts-dict.game.wg.public-key;
+              allowedIPs =
+                [ "172.22.240.99/32" "fe80::102/128" "fd48:4b4:f3::3/128" ];
+            }
+          ];
         };
         wg_theresa = {
           privateKeyFile = config.sops.secrets."wireguard/mail".path;

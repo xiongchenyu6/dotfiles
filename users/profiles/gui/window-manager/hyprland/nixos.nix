@@ -286,7 +286,8 @@
       longitude = "103.819839";
     };
   };
-  programs = lib.mkIf pkgs.stdenv.isLinux {
+
+  programs = {
     emacs = { package = pkgs.emacsPgtk; };
 
     waybar = {

@@ -10,8 +10,9 @@
     profiles.users."freeman.xiong"
     profiles.hardwares.misc
     profiles.hardwares.nvidia
-  ] ++ suites.client-base;
+  ] ++ suites.client-base ++ suites.client-network;
 
+  sops.secrets."wireguard/game" = { };
   # /nix /var /root /nix/persist
 
   # Enable users/freeman gui
@@ -37,24 +38,6 @@
         canTouchEfiVariables = true;
         efiSysMountPoint = "/boot/efi";
       };
-      grub = {
-        enable = false;
-        efiSupport = true;
-        version = 2;
-        device = "nodev";
-        configurationLimit = 5;
-        useOSProber = true;
-        enableCryptodisk = true;
-
-      };
-      grub2-theme = {
-        enable = false;
-        icon = "white";
-        theme = "whitesur";
-        screen = "1080p";
-        splashImage = ./grub.jpg;
-        footer = true;
-      };
     };
   };
 
@@ -76,16 +59,63 @@
       enableFccUnlock = true;
     };
     enableIPv6 = true;
-    #hostName = "office"; # Define your hostname.
-    # Enable networking
-    #networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
 
     useDHCP = lib.mkDefault true;
   };
-  users = {
-    mutableUsers = true;
-    users = { "freeman.xiong" = { passwordFile = lib.mkForce null; }; };
+
+  services = {
+    postgresql = {
+      enable = true;
+      authentication = ''
+        local all all trust
+      '';
+    };
+    bird2 = {
+      config = lib.mine.bird2-inner-config "172.22.240.99" "fd48:4b4:f3::3";
+    };
   };
 
-  home-manager = { users = { "freeman.xiong" = { }; }; };
+  krb5 = {
+    realms = let
+      tronRealm = "TRONTECH.LINK";
+      tronDomain = "trontech.link";
+    in {
+      "${tronRealm}" = {
+        admin_server = "admin.inner.${tronDomain}";
+        kdc = [ "admin.inner.${tronDomain}" ];
+        default_domain = "admin.inner.${tronDomain}";
+        kpasswd_server = "admin.inner.${tronDomain}";
+        database_module = "openldap_ldapconf";
+      };
+      domain_realm = {
+        "${tronDomain}" = tronRealm;
+        ".inner.${tronDomain}" = tronRealm;
+        ".${tronDomain}" = tronRealm;
+      };
+    };
+  };
+
+  home-manager = {
+    users = {
+      "freeman.xiong" = {
+        home-manager = {
+          users = {
+            "freeman.xiong" = {
+              sops = {
+                gnupg = { home = "~/.gnupg"; };
+                secrets = {
+                  # The path to the file to decrypt.
+                  gptcommit = {
+                    name = "gptcommit";
+                    path = "/home/freeman.xiong/.config/gptcommit/config.toml";
+                    mode = "777";
+                  };
+                };
+              };
+            };
+          };
+        };
+      };
+    };
+  };
 }
