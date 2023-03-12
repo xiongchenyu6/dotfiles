@@ -144,6 +144,7 @@
           cmake-mode
           cape
           corfu
+          corfu-english-helper
           copilot-el
           chatgpt
           chatgpt-arcana
