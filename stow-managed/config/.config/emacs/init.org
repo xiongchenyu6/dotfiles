@@ -712,7 +712,7 @@ Otherwise, show the default maximum number of recent items."
 (direnv-mode t)
 
 (use-package lsp-mode
-  :straight t
+  ;; :straight t
   :init
   (setq lsp-keymap-prefix "C-c l")
   :config
@@ -751,7 +751,6 @@ Otherwise, show the default maximum number of recent items."
 (add-to-list 'completion-at-point-functions #'cape-dabbrev)
 (add-to-list 'completion-at-point-functions #'cape-file)
 
-(add-to-list 'load-path "~/Git/corfu-english-helper/")
 (require 'corfu-english-helper)
 ;; Optionally configure the cape-capf-buster.
 (add-hook 'lsp-mode-hook
@@ -804,7 +803,7 @@ Otherwise, show the default maximum number of recent items."
 **** lsp ui
 #+begin_src emacs-lisp
 (use-package lsp-ui
-  :straight t
+  ;; :straight t
   :config
   (setq lsp-ui-doc-include-signature t)
   (setq lsp-ui-doc-use-webkit t)
