@@ -8,7 +8,7 @@
       ${pkgs.xorg.xset}/bin/xset -b
       ${pkgs.xorg.xset}/bin/xset r rate 180 60
     '';
-    windowManager = let old-files-path = ../../../../old-files;
+    windowManager = let old-files-path = ../../../../stow-managed;
     in {
       xmonad = {
         enable = true;

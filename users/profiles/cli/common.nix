@@ -1,15 +1,93 @@
 { pkgs, ... }: {
   # Home Manager needs a bit of information about you and the
   # paths it should manage.
-
   home = {
     stateVersion = "22.11";
     keyboard = { options = [ "caps:ctrl_modifier" ]; };
-    file = let old-files-path = ../../../old-files;
-    in {
-      ".wakatime.cfg" = { source = old-files-path + /wakatime/.wakatime.cfg; };
-      ".ldaprc" = { source = old-files-path + /ldap/.ldaprc; };
-      ".curlrc" = { source = old-files-path + /downloader/.curlrc; };
+    file = {
+      ".wakatime.cfg" = {
+        text = ''
+          [settings]
+          debug         = false
+          hidefilenames = false
+          ignore        = """
+              COMMIT_EDITMSG$
+              PULLREQ_EDITMSG$
+              MERGE_MSG$
+              TAG_EDITMSG$"""
+          api_key       = 06fb08d0-68a4-4b39-bbb0-d34d325dc046
+
+          [internal]
+          backoff_retries = 0
+          backoff_at      = 
+        '';
+      };
+      ".ldaprc" = {
+        text = ''
+          URI     ldaps://mail.freeman.engineer
+          BASE    dc=freeman,dc=engineer
+          SASL_MECH GSSAPI
+          SASL_REALM FREEMAN.ENGINEER
+        '';
+      };
+      ".curlrc" = {
+        text = ''
+          connect-timeout = 30
+          referer = ";auto"
+          show-error
+          progress-bar
+          user-agent = "Mozilla/5.0 Gecko"
+        '';
+      };
+      ".clojure/deps.edn" = {
+        text = ''
+          {
+              :aliases
+                 {:new {:extra-deps {seancorfield/clj-new
+                                     {:mvn/version "LATEST"}}
+                        :main-opts ["-m" "clj-new.create"]}}
+        '';
+      };
+      ".clojure/tools/tools.edn" = {
+        text = ''
+          {:lib io.github.clojure/tools.tools
+           :coord {:git/tag "v0.2.5"
+                   :git/sha "76f728dce63f7b881f4e5705ba0d59d795d56f11"}}
+        '';
+      };
+      ".my.conf" = {
+        text = ''
+          [mysql]
+          auto-rehash
+          general_log_file        = /var/log/mysql/mysql.log
+          general_log             = 1
+        '';
+      };
+      ".aspell" = {
+        text = ''
+          lang en_US
+        '';
+      };
+    };
+    persistence."/home/freeman.xiong/dotfiles/stow-managed/" = {
+      removePrefixDirectory = true;
+      allowOther = false;
+      directories = [
+        "config/.empty"
+        {
+          directory = "config/.config/emacs";
+          method = "symlink";
+        }
+        {
+          directory = "config/.config/nvim";
+          method = "symlink";
+        }
+        {
+          directory = "config/.config/xmonad";
+          method = "symlink";
+        }
+      ];
+      files = [ "auth/.authinfo.gpg" ];
     };
   };
 

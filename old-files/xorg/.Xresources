@@ -1,5 +1,0 @@
-#define SOLARIZED_DARK
-#include ".Xresources.d/schemes/molokai"
-#include ".Xresources.d/fonts"
-#include ".Xresources.d/urxvt"
-#include ".Xresources.d/xterm"
