@@ -86,6 +86,10 @@
           directory = "config/.config/xmonad";
           method = "symlink";
         }
+        {
+          directory = "password-store/.password-store";
+          method = "symlink";
+        }
       ];
       files = [ "auth/.authinfo.gpg" ];
     };
