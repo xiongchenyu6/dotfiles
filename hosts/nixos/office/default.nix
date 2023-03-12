@@ -61,12 +61,6 @@
     tmpOnTmpfs = lib.mkDefault true;
 
     loader = {
-      systemd-boot = {
-        # enable = true;
-        netbootxyz.enable = true;
-        memtest86.enable = true;
-      };
-
       efi = {
         canTouchEfiVariables = true;
         efiSysMountPoint = "/boot/efi";
@@ -153,9 +147,6 @@
         };
       };
     };
-    extraHosts = ''
-      #  127.0.0.1 freeman.engineer
-    '';
 
     useDHCP = lib.mkDefault true;
 
@@ -218,6 +209,7 @@
       enableIPv6 = true;
     };
   };
+
   services = {
 
     dgraph = { enable = false; };
