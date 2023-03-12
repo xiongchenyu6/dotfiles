@@ -3,6 +3,7 @@ keys:
   - &office age1uslkhdyuqxn24rhe77v2acfx4tzn6ywyhgqqkalnqxm0y3mkk9rqqsngvf
   - &mail age14z507h9qugzy65rpfgrzlrzkvyvwsqlwv7nguamaw4wx830hsu0qt23vx3
   - &digital age1d9znzzt6zkk4c9tnrqpwl52pdh7u8qte33k244d65rajwku3lulsm2l85p
+  - &game age1pl2sjqa46kh3yl44yq4yldvxgfp7cq3jyhuq7rsedz4eedgrxvyqfka6mz
 
 creation_rules:
   - path_regex: secrets/[^/]+\.yaml$
@@ -11,5 +12,6 @@ creation_rules:
           - *office
           - *mail
           - *digital
+          - *game
         pgp:
           - *freeman
