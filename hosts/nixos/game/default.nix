@@ -1,5 +1,5 @@
 # Edit
-{ lib, suites, profiles, ... }: {
+{ lib, suites, profiles, config, ... }: {
   imports = [
     ./hardware-configuration.nix
     profiles.server-apps.mysql
@@ -59,6 +59,44 @@
       enableFccUnlock = true;
     };
     enableIPv6 = true;
+    wg-quick = {
+      interfaces = {
+        wg_freeman = {
+          privateKeyFile = config.sops.secrets."wireguard/game".path;
+          address = [ "172.22.240.99/27" "fe80::102/64" "fd48:4b4:f3::3/48" ];
+          peers = [{
+            endpoint = "freeman.engineer:22616";
+            publicKey = profiles.share.hosts-dict.mail.wg.public-key;
+            persistentKeepalive = 30;
+            allowedIPs = [
+              "10.0.0.0/8"
+              "172.20.0.0/14"
+              "172.31.0.0/16"
+              "fd00::/8"
+              "fe80::/10"
+              "fd48:4b4:f3::/48"
+              "13.212.219.245"
+            ];
+          }];
+        };
+        wg_tronlink = {
+          privateKeyFile = config.sops.secrets."wireguard/office".path;
+          address = [ "172.64.224.3/24" "fe80::103/64" ];
+          peers = [{
+            endpoint = "vpn.trontech.link:22617";
+            publicKey = profiles.share.hosts-dict.tronlink.wg.public-key;
+            persistentKeepalive = 5;
+            allowedIPs = [
+              "172.64.224.1/24"
+              "fe80::101/64"
+              "172.32.0.0/16"
+              "18.218.96.133/32"
+              "13.212.2.33"
+            ];
+          }];
+        };
+      };
+    };
 
     useDHCP = lib.mkDefault true;
   };
