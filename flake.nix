@@ -293,6 +293,7 @@
           nur.hmModules.nur
           hyprland.homeManagerModules.default
           sops-nix.homeManagerModules.sops
+          impermanence.nixosModules.home-manager.impermanence
           (import ./profiles/sops.nix)
         ];
 
