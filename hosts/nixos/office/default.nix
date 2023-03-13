@@ -129,22 +129,22 @@
             ];
           }];
         };
-        wg_tronlink = {
-          privateKeyFile = config.sops.secrets."wireguard/office".path;
-          address = [ "172.64.224.3/24" "fe80::103/64" ];
-          peers = [{
-            endpoint = "vpn.trontech.link:22617";
-            publicKey = profiles.share.hosts-dict.tronlink.wg.public-key;
-            persistentKeepalive = 5;
-            allowedIPs = [
-              "172.64.224.1/24"
-              "fe80::101/64"
-              "172.32.0.0/16"
-              "18.218.96.133/32"
-              "13.212.2.33"
-            ];
-          }];
-        };
+        # wg_tronlink = {
+        #   privateKeyFile = config.sops.secrets."wireguard/office".path;
+        #   address = [ "172.64.224.3/24" "fe80::103/64" ];
+        #   peers = [{
+        #     endpoint = "vpn.trontech.link:22617";
+        #     publicKey = profiles.share.hosts-dict.tronlink.wg.public-key;
+        #     persistentKeepalive = 5;
+        #     allowedIPs = [
+        #       "172.64.224.1/24"
+        #       "fe80::101/64"
+        #       "172.32.0.0/16"
+        #       "18.218.96.133/32"
+        #       "13.212.2.33"
+        #     ];
+        #   }];
+        # };
       };
     };
 
@@ -324,6 +324,9 @@
               };
             };
           };
+        };
+        programs = {
+          waybar = { settings = { network = { interface = "wlp0s20f3"; }; }; };
         };
       };
     };

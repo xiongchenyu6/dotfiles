@@ -288,8 +288,6 @@
   };
 
   programs = {
-    emacs = { package = pkgs.emacsPgtk; };
-
     waybar = {
       enable = true;
       package = pkgs.waybar-hyprland;
@@ -378,7 +376,6 @@
           "battery#bat2" = { bat = "BAT2"; };
 
           network = {
-            interface = "wlp0s20f3";
             format-wifi = "{essid} ({signalStrength}%) ";
             format-ethernet = "{ipaddr}/{cidr} ";
             tooltip-format = "{ifname} via {gwaddr} ";
@@ -447,5 +444,6 @@
         };
       };
     };
+    emacs = { package = pkgs.emacsPgtk; };
   };
 }

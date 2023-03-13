@@ -12,6 +12,8 @@
 
 ;; ;; Setup straight as package manager
 ;; (defvar bootstrap-version)
+;; (setq straight-repository-branch "rr-fix-renamed-variable")
+
 ;; (let ((bootstrap-file
 ;;        (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
 ;;       (bootstrap-version 5))
@@ -24,8 +26,8 @@
 ;;       (eval-print-last-sexp)))
 ;;   (load bootstrap-file nil 'nomessage))
 
-;; ;; Straight configs
-;; (setq straight-vc-git-default-clone-depth 1)
+;; Straight configs
+(setq straight-vc-git-default-clone-depth 1)
 
 (setq custom-safe-themes t)
 

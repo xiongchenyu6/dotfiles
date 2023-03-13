@@ -19,7 +19,6 @@
             };
           };
         };
-
         programs = {
           git = {
             signing = {
