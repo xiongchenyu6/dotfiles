@@ -235,8 +235,8 @@
           };
           game = {
             modules = [
-              grub2-themes.nixosModules.default
               hyprland.nixosModules.default
+              # nixos-hardware.nixosModules.lenovo-legion-16ach6h-hybrid
             ];
           };
         };

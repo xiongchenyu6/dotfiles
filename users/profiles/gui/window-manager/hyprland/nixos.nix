@@ -9,7 +9,7 @@
       '');
       INPUT_METHOD = "fcitx";
       XIM_SERVERS = "fcitx";
-      LSP_USE_PLISTS = "true";
+      # LSP_USE_PLISTS = "true";
       NIX_SSHOPTS = "-Y";
     };
     file = {
@@ -74,11 +74,11 @@
         };
       in {
         enable = true;
+        package = pkgs.hyprland-nvidia;
         xwayland = {
           enable = true;
           hidpi = true;
         };
-        #  monitor=HDMI-A-1,3840x2160@60,1920x0,1.5
 
         extraConfig = lib.mkDefault ''
           # This is an example Hyprland config file.
@@ -95,8 +95,12 @@
           monitor=,preferred,auto,1.5
           monitor=HDMI-A-1,preferred,auto,1.5
           monitor=HDMI-A-1,transform,1
-          workspace = eDP-1, 1
+          workspace = eDP-2, 1
           workspace=HDMI-A-1,10
+          # monitor=DP-1,3840x2160@60,1920x0,1.5
+          # monitor=DP-1,transform,1
+          # workspace = eDP-2, 1
+          # workspace=DP-1,10
 
           # Source a file (multi-file configs)
           # source = ~/.config/hypr/myColors.conf

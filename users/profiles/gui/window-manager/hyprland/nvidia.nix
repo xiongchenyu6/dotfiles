@@ -9,5 +9,5 @@ _: {
     };
   };
   wayland = { windowManager = { hyprland = { nvidiaPatches = true; }; }; };
-
 }
+
