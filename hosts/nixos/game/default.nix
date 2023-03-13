@@ -13,6 +13,7 @@
   ] ++ suites.client-base ++ suites.client-network;
 
   sops.secrets."wireguard/office" = { };
+
   sops.secrets."wireguard/game" = { };
   # /nix /var /root /nix/persist
 
@@ -40,6 +41,7 @@
         efiSysMountPoint = "/boot/efi";
       };
     };
+    tmpOnTmpfs = lib.mkDefault true;
   };
 
   networking = {
@@ -147,6 +149,21 @@
               mode = "777";
             };
           };
+        };
+        services = {
+          git-sync = {
+            enable = true;
+            repositories = {
+              notes = {
+                path = "/home/freeman.xiong/Private/xiongchenyu6.github.io";
+                uri = "git@github.com:xiongchenyu6/xiongchenyu6.github.io.git";
+                # interval = 10;
+              };
+            };
+          };
+        };
+        programs = {
+          waybar = { settings = { network = { interface = "wlp0s20f3"; }; }; };
         };
       };
     };

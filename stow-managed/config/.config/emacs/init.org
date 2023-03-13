@@ -716,7 +716,7 @@ Otherwise, show the default maximum number of recent items."
   :init
   (setq lsp-keymap-prefix "C-c l")
   :config
-  (setq lsp-use-plists t)
+  ;; (setq lsp-use-plists t)
   (advice-add 'lsp :before 'direnv-update-environment)
   (setq lsp-completion-provider :none)
   (setq lsp-completion-enable nil)
