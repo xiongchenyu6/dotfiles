@@ -163,7 +163,7 @@
           };
         };
         programs = {
-          waybar = { settings = { network = { interface = "wlp0s20f3"; }; }; };
+          waybar = { settings = { network = { interface = "wlp4s0"; }; }; };
         };
       };
     };
