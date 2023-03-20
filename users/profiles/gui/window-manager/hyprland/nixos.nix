@@ -74,7 +74,6 @@
         };
       in {
         enable = true;
-        package = pkgs.hyprland-nvidia;
         xwayland = {
           enable = true;
           hidpi = true;
@@ -95,7 +94,7 @@
           monitor=,preferred,auto,1.5
           monitor=HDMI-A-1,preferred,auto,1.5
           monitor=HDMI-A-1,transform,1
-          workspace = eDP-2, 1
+          workspace = , 1
           workspace=HDMI-A-1,10
           # monitor=DP-1,3840x2160@60,1920x0,1.5
           # monitor=DP-1,transform,1

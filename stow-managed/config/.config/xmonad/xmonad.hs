@@ -1,6 +1,8 @@
 {-# OPTIONS_GHC -fno-warn-type-defaults #-}
 
 -- {-# LANGUAGE TupleSections #-}
+import qualified Data.Map as M
+import qualified XMonad.StackSet as W
 
 import Control.Monad
 import Graphics.X11.ExtraTypes.XF86
@@ -74,7 +76,24 @@ warmWallpaperDir = (++ "/Dropbox/WallPaper/warm") <$> getHomeDirectory
 myWorkplace :: [String]
 myWorkplace =
   ["term", "edit", "web", "chat", "email", "tmp"] ++ (show <$> [7 .. 9])
+  
+myNumRow = [xK_ampersand
+           , xK_bracketleft
+           , xK_braceleft
+           , xK_braceright
+           , xK_parenleft
+           , xK_equal
+           , xK_asterisk
+           , xK_parenright
+           , xK_plus]
 
+
+myKeys :: XConfig Layout -> M.Map (KeyMask, KeySym) (X ())
+myKeys conf =
+  M.fromList $ [((m.|. modm, k), windows $ f i)
+             | (i,k) <- zip (XMonad.workspaces conf) myNumRow
+             , (f,m) <- [(W.greedyView, 0), (W.shift, shiftMask)]]
+  
 mySB = statusBarProp "xmobar -x 0" (pure xmobarPP)
 
 main :: IO ()
@@ -88,6 +107,7 @@ main = do
         terminal = myTerminal,
         logHook = setRandomWallpaper,
         startupHook = myStartupHook,
+        keys = \c -> myKeys c `M.union` (keys def c),
         modMask = modm -- Rebind Mod to the Windows key
       }
       `additionalKeys` customerKeyMaps

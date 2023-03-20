@@ -1,69 +1,90 @@
-{ modulesPath, suites, profiles, lib, ... }: {
+{ suites, profiles, config, modulesPath, lib, pkgs, ... }: {
 
   imports = [
-    (modulesPath + "/profiles/qemu-guest.nix")
+    profiles.core.nixos
     profiles.server-pkgs.nixos
     profiles.users.root.nixos
+    (modulesPath + "/virtualisation/digital-ocean-config.nix")
     profiles.users."freeman.xiong"
-  ] ++ suites.server-base;
+  ] ++ suites.server-base ++ suites.client-network;
 
+  sops.secrets."wireguard/digital" = { };
   boot = {
-    loader.grub.device = "/dev/vda";
-    initrd.availableKernelModules =
-      [ "ata_piix" "uhci_hcd" "xen_blkfront" "vmw_pvscsi" ];
-    initrd.kernelModules = [ "nvme" ];
-  };
-  fileSystems."/" = {
-    device = "/dev/vda1";
-    fsType = "ext4";
-  };
+    kernel = {
+      sysctl = {
+        "net.ipv4.ip_forward" = 1;
+        # "net.ipv4.conf.default.rp_filter" = 0;
+        # "net.ipv4.conf.all.rp_filter" = 0;
+        # "net.ipv4.conf.default.forwarding" = 1;
+        # "net.ipv4.conf.all.forwarding" = 1;
 
-  boot.cleanTmpDir = true;
-  zramSwap.enable = true;
-  services.openssh.enable = true;
-
-  networking = {
-    nameservers = [ "8.8.8.8" ];
-    defaultGateway = "128.199.192.1";
-    defaultGateway6 = "2400:6180:0:d0::1";
-    dhcpcd.enable = false;
-    usePredictableInterfaceNames = lib.mkForce false;
-    interfaces = {
-      eth0 = {
-        ipv4.addresses = [
-          {
-            address = "128.199.202.171";
-            prefixLength = 18;
-          }
-          {
-            address = "10.15.0.5";
-            prefixLength = 16;
-          }
-        ];
-        ipv6.addresses = [
-          {
-            address = "2400:6180:0:d0::13de:f001";
-            prefixLength = 64;
-          }
-          {
-            address = "fe80::546b:b4ff:fe1d:eec1";
-            prefixLength = 64;
-          }
-        ];
-        ipv4.routes = [{
-          address = "128.199.192.1";
-          prefixLength = 32;
-        }];
-        ipv6.routes = [{
-          address = "2400:6180:0:d0::1";
-          prefixLength = 128;
-        }];
+        # "net.ipv6.conf.all.accept_redirects" = 0;
+        # "net.ipv6.conf.default.forwarding" = 1;
+        # "net.ipv6.conf.all.forwarding" = 1;
       };
-
     };
   };
-  services.udev.extraRules = ''
-    ATTR{address}=="56:6b:b4:1d:ee:c1", NAME="eth0"
-    ATTR{address}=="1e:f8:ca:93:78:fa", NAME="eth1"
-  '';
+
+  networking = {
+    # interfaces = {
+    #   lo = {
+    #     ipv4 = {
+    #       addresses = [{
+    #         address = "172.22.240.99";
+    #         prefixLength = 32;
+    #       }];
+    #     };
+    #     ipv6 = {
+    #       addresses = [{
+    #         address = "fd48:4b4:f3::3";
+    #         prefixLength = 128;
+    #       }];
+    #     };
+    #   };
+    # };
+
+    firewall = { enable = false; };
+    nameservers = [ "8.8.8.8" ];
+    wg-quick = {
+      interfaces = {
+        wg_mail = {
+          privateKeyFile = config.sops.secrets."wireguard/digital".path;
+          listenPort = 22616;
+          table = "off";
+          address = [ "fe80::102" ];
+          postUp = ''
+            ${pkgs.iproute2}/bin/ip addr add dev wg_mail 172.22.240.99 peer 172.22.240.97
+            # ${pkgs.iproute2}/bin/ip addr add dev wg_mail fe80::102 peer fd48:4b4:f3::1
+          '';
+
+          peers = [{
+            endpoint = "mail.freeman.engineer:22617";
+            publicKey = profiles.share.hosts-dict.mail.wg.public-key;
+            allowedIPs = [
+              "10.0.0.0/8"
+              "172.20.0.0/14"
+              "172.31.0.0/16"
+              "fd00::/8"
+              "fe80::/10"
+              "fd48:4b4:f3::/48"
+              "ff02::1:6/128"
+            ];
+          }];
+        };
+      };
+    };
+  };
+  services = {
+    babeld.enable = false;
+    babeld.interfaces = { wg_mail = { split-horizon = "auto"; }; };
+    babeld.extraConfig = ''
+      redistribute if ens3 deny
+      redistribute if ens4 deny
+    '';
+
+    bird2 = {
+      # enable = false;
+      config = lib.mine.bird2-inner-config "172.22.240.99" "fd48:4b4:f3::3";
+    };
+  };
 }

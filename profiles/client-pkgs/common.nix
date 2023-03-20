@@ -27,6 +27,8 @@
       fd
       foundry-bin
       tealdeer
+      terraform-ls
+      terraform-lsp
       socat
       gotron-sdk
       rustscan

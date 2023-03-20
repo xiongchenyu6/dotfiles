@@ -2,27 +2,29 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 { pkgs, lib, ... }: {
-  xsession = lib.mkIf pkgs.stdenv.isLinux {
+  xsession = {
     enable = true;
     initExtra = ''
       ${pkgs.xorg.xset}/bin/xset -b
       ${pkgs.xorg.xset}/bin/xset r rate 180 60
+      ${pkgs.xorg.setxkbmap}/bin/setxkbmap -layout us -variant dvp
     '';
-    windowManager = let old-files-path = ../../../../stow-managed;
+    windowManager = let old-files-path = ../../../../../stow-managed;
     in {
       xmonad = {
         enable = true;
         enableContribAndExtras = true;
-        config = old-files-path + "/config/xmonad/xmonad.hs";
+        config = old-files-path + "/config/.config/xmonad/xmonad.hs";
         extraPackages = haskellPackages: [
           haskellPackages.directory
           haskellPackages.X11
+          haskellPackages.containers
         ];
       };
     };
   };
-  programs = lib.mkIf pkgs.stdenv.isLinux {
-    emacs = { package = pkgs.emacsGitNativeComp; };
+  programs = {
+    emacs = { package = pkgs.emacsGit; };
     feh = { enable = true; };
 
     autorandr = {

@@ -31,6 +31,7 @@
         "systemd"
         "systemadmin"
         "scala"
+        "terraform"
         "tmux"
       ];
 

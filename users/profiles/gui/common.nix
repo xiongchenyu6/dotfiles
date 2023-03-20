@@ -205,6 +205,7 @@
           sbt-mode
           tide
           tempel
+          terraform-mode
           vterm
           wakatime-mode
           which-key

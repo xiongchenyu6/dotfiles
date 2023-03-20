@@ -9,7 +9,7 @@
     profiles.dvorak
     profiles.users."freeman.xiong"
     profiles.hardwares.misc
-    profiles.hardwares.nvidia
+    # profiles.hardwares.nvidia
   ] ++ suites.client-base ++ suites.client-network;
 
   sops.secrets."wireguard/office" = { };
@@ -66,6 +66,7 @@
       interfaces = {
         wg_freeman = {
           privateKeyFile = config.sops.secrets."wireguard/game".path;
+          table = "off";
           address = [ "172.22.240.99/27" "fe80::102/64" "fd48:4b4:f3::3/48" ];
           peers = [{
             endpoint = "freeman.engineer:22616";

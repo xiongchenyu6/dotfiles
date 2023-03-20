@@ -24,6 +24,8 @@
             # Dependency overrides go here
           };
 
+        doUnpack = false;
+
         defaultPackage = self.packages.${system}.${packageName};
 
         devShell = pkgs.mkShell {
@@ -31,7 +33,8 @@
             haskellPackages.haskell-language-server # you must build it with your ghc to work
             ghcid
             cabal-install
-            xlibsWrapper
+            # xlibsWrapper
+            xorg.libXext
             alsaLib.dev
             xorg.libXrandr
             xorg.libXScrnSaver

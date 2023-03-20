@@ -41,10 +41,14 @@
     kernel = {
       sysctl = {
         "net.ipv4.ip_forward" = 1;
-        "net.ipv6.conf.all.forwarding" = 1;
-        "net.ipv6.conf.default.forwarding" = 1;
-        "net.ipv4.conf.default.rp_filter" = 0;
-        "net.ipv4.conf.all.rp_filter" = 0;
+        # "net.ipv4.conf.default.rp_filter" = 0;
+        # "net.ipv4.conf.all.rp_filter" = 0;
+        # "net.ipv4.conf.default.forwarding" = 1;
+        # "net.ipv4.conf.all.forwarding" = 1;
+
+        # "net.ipv6.conf.all.accept_redirects" = 0;
+        # "net.ipv6.conf.default.forwarding" = 1;
+        # "net.ipv6.conf.all.forwarding" = 1;
       };
     };
   };
@@ -54,11 +58,28 @@
   # sops.age.generateKey = true;
 
   networking = {
+    # interfaces = {
+    #   lo = {
+    #     ipv4 = {
+    #       addresses = [{
+    #         address = "172.22.240.97";
+    #         prefixLength = 32;
+    #       }];
+    #     };
+    #     ipv6 = {
+    #       addresses = [{
+    #         address = "fd48:4b4:f3::1";
+    #         prefixLength = 128;
+    #       }];
+    #     };
+    #   };
+    # };
+
     nat = {
       enable = true;
       enableIPv6 = true;
       externalInterface = "ens5";
-      internalInterfaces = [ "wg_freeman_eng" ];
+      internalInterfaces = [ "wg_game" "wg_office" ];
     };
 
     firewall = {
@@ -68,6 +89,7 @@
         53
         80 # ui
         88 # kerberos
+        89
         179
         389
         443
@@ -75,16 +97,19 @@
         465 # smpts
         636 # ldaps
         993 # imaps
+        6695
         8000
         8888
       ];
       allowedUDPPorts = [
         53 # dns
         80
+        89
         88 # kerberos
         179 # bird2
         389 # ldap
         636
+        6696
         22616
         22617
         23396
@@ -115,80 +140,102 @@
       };
     };
     wg-quick = {
-      interfaces = {
-        wg_freeman_eng = {
-          privateKeyFile = config.sops.secrets."wireguard/mail".path;
-          address = [ "172.22.240.97/27" "fe80::100/64" "fd48:4b4:f3::1/48" ];
+      interfaces = let
+        privateKeyFile = config.sops.secrets."wireguard/mail".path;
+        address = [ "fe80::100/64" "fd48:4b4:f3::1/48" "172.22.240.97/27" ];
+        # address = [ "fd48:4b4:f3::2" ];
+        table = "off";
+        allowedIPs = [
+          "10.0.0.0/8"
+          "172.20.0.0/14"
+          "172.31.0.0/16"
+          "fd00::/8"
+          "fe80::/64"
+          "ff02::1:6/128"
+        ];
+      in {
+        wg_digital = {
+          inherit privateKeyFile address table;
+          listenPort = 22617;
+          peers = [{
+            publicKey = profiles.share.hosts-dict.digital.wg.public-key;
+            inherit allowedIPs;
+          }];
+        };
+
+        wg_office = {
+          inherit address privateKeyFile table;
           listenPort = 22616;
-          table = "off";
-          peers = [
-            {
-              publicKey = profiles.share.hosts-dict.office.wg.public-key;
-              allowedIPs =
-                [ "172.22.240.98/32" "fe80::101/128" "fd48:4b4:f3::2/128" ];
-            }
-            {
-              publicKey = profiles.share.hosts-dict.game.wg.public-key;
-              allowedIPs =
-                [ "172.22.240.99/32" "fe80::102/128" "fd48:4b4:f3::3/128" ];
-            }
-          ];
+
+          peers = [{
+            publicKey = profiles.share.hosts-dict.office.wg.public-key;
+            inherit allowedIPs;
+          }];
+        };
+        wg_game = {
+          inherit address privateKeyFile table;
+          # postUp = ''
+          #   ${pkgs.iproute2}/bin/ip addr add dev wg_game 172.22.240.97 peer 172.22.240.99
+          #   ${pkgs.iproute2}/bin/ip addr add dev wg_game fe80::100 peer fd48:4b4:f3::3
+          # '';
+
+          peers = [{
+            endpoint = "178.128.82.145:22616";
+            publicKey = profiles.share.hosts-dict.game.wg.public-key;
+            inherit allowedIPs;
+          }];
         };
         wg_theresa = {
-          privateKeyFile = config.sops.secrets."wireguard/mail".path;
-          address = [ "172.22.240.97/27" "fe80::100/64" ];
+          inherit privateKeyFile address table;
           listenPort = 23396;
-          table = "off";
           peers = [{
             endpoint = "cn2.dn42.theresa.cafe:22616";
             publicKey = "MqKkzCwYfOg8Fc/pRRctLW3jS72ACBDQr8ZF10sZ614=";
-            allowedIPs = [
-              "10.0.0.0/8"
-              "172.20.0.0/14"
-              "172.31.0.0/16"
-              "fd00::/8"
-              "fe80::/64"
-            ];
+            inherit allowedIPs;
           }];
         };
         wg_potat0 = {
-          privateKeyFile = config.sops.secrets."wireguard/mail".path;
-          address = [ "172.22.240.97/27" "fe80::100/64" ];
+          inherit privateKeyFile address table;
           listenPort = 21816;
-          table = "off";
           peers = [{
             endpoint = "us1.dn42.potat0.cc:22616";
             publicKey = "LUwqKS6QrCPv510Pwt1eAIiHACYDsbMjrkrbGTJfviU=";
-            allowedIPs = [
-              "10.0.0.0/8"
-              "172.20.0.0/14"
-              "172.31.0.0/16"
-              "fd00::/8"
-              "fe80::/64"
-            ];
+            inherit allowedIPs;
           }];
         };
         wg_tech9 = {
-          privateKeyFile = config.sops.secrets."wireguard/mail".path;
-          address = [ "172.22.240.97/27" "fe80::100/64" ];
+          inherit privateKeyFile address table;
           listenPort = 21588;
-          table = "off";
           peers = [{
             endpoint = "sg-sin01.dn42.tech9.io:52507";
             publicKey = "4qLIJ9zpc/Xgvy+uo90rGso75cSrT2F5tBEv+6aqDkY=";
-            allowedIPs = [
-              "10.0.0.0/8"
-              "172.20.0.0/14"
-              "172.31.0.0/16"
-              "fd00::/8"
-              "fe80::/64"
-            ];
+            inherit allowedIPs;
           }];
         };
       };
     };
   };
   services = {
+    babeld.enable = true;
+    babeld.extraConfig = ''
+      redistribute ip 172.20.0.0/14
+      redistribute if ens5 deny
+    '';
+
+    babeld.interfaces = {
+      wg_game = {
+        hello-interval = 5;
+        split-horizon = "auto";
+        type = "wired";
+
+      };
+      wg_office = {
+        hello-interval = 5;
+        split-horizon = "auto";
+        type = "wired";
+      };
+    };
+
     prometheus.exporters = {
       postgres = {
         enable = true;

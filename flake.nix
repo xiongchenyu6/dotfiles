@@ -236,7 +236,7 @@
           game = {
             modules = [
               hyprland.nixosModules.default
-              # nixos-hardware.nixosModules.lenovo-legion-16ach6h-hybrid
+              nixos-hardware.nixosModules.lenovo-legion-16ach6h-hybrid
             ];
           };
         };
@@ -250,7 +250,10 @@
             base = [ core.nixos sops ];
             common-comps = builtins.attrValues common-components;
             server-comps = builtins.attrValues server-components;
-            client-base = base ++ common-comps ++ [ auto-login.greetd ];
+            client-base = base ++ common-comps ++ [
+              auto-login.lightdm
+              # auto-login.greetd
+            ];
             client-network =
               [ common-apps.dn42 common-apps.bird-inner common-apps.kerberos ];
             server-base = base ++ common-comps ++ server-comps ++ [
@@ -304,32 +307,34 @@
           suites = with profiles; {
             nix-remote-build = [ use-remote-builder ];
             cli = [ cli.common cli.shell.zsh ];
-            linux-gui = [
-              cli.common
-              cli.shell.zsh
-              gui.nixos
-              gui.window-manager.hyprland.dvorak
-              gui.window-manager.hyprland.nixos
-              gui.mpd
-            ];
+            linux-gui = [ gui.nixos gui.mpd ];
             linux-gui-nvidia = [
               cli.common
               cli.shell.zsh
               gui.nixos
-              gui.window-manager.hyprland.dvorak
-              gui.window-manager.hyprland.nixos
               gui.mpd
               gui.window-manager.hyprland.nvidia
             ];
             mac-gui = [ gui.darwin cli.common cli.shell.zsh ];
+            dvorak-hyprland = [
+              gui.window-manager.hyprland.dvorak
+              gui.window-manager.hyprland.nixos
+            ];
+            xmonad = [ gui.window-manager.xmonad ];
           };
         };
         users = {
           root = { suites, ... }: { imports = suites.nix-remote-build; };
           freeman-cli = { suites, ... }: { imports = suites.cli; };
-          freeman-gui = { suites, ... }: { imports = suites.linux-gui; };
-          freeman-gui-nvidia = { suites, ... }: {
-            imports = suites.linux-gui-nvidia;
+          freeman-hyprland = { suites, ... }: {
+            imports = suites.cli ++ suites.linux-gui ++ suites.dvorak-hyprland;
+          };
+          freeman-xmonad = { suites, ... }: {
+            imports = suites.cli ++ suites.linux-gui ++ suites.xmonad;
+          };
+          freeman-hyprland-nvidia = { suites, ... }: {
+            imports = suites.cli ++ suites.linux-gui-nvidia
+              ++ suites.dvorak-hyprland;
           };
           xiongchenyu = { suites, ... }: { imports = suites.mac-gui; };
         };

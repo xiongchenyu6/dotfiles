@@ -54,7 +54,6 @@
         GSSAPIAuthentication yes
         GSSAPICleanupCredentials yes
       '';
-      # authorizedKeysCommand = "/etc/ssh/auth";
     };
     # sshguard = { enable = true; };
   };

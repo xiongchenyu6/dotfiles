@@ -10,8 +10,12 @@
     # };
     pam = {
       makeHomeDir = { skelDirectory = "/etc/skel"; };
-
-      services = { sshd = { makeHomeDir = true; }; };
+      services = {
+        sshd = {
+          makeHomeDir = true;
+          sssdStrictAccess = true;
+        };
+      };
     };
   };
   environment = {
