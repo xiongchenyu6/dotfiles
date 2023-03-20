@@ -7,7 +7,7 @@
         lightdm = { enable = true; };
         autoLogin = {
           enable = true;
-          user = "freeman";
+          user = "freeman.xiong";
         };
         session = [{
           manage = "desktop";
@@ -17,11 +17,15 @@
         defaultSession = "xsession";
       };
       # Configure keymap in X11
+      xkbVariant = "dvorak";
+      xkbModel = "dvorak-programmer";
+
       xkbOptions = "caps:ctrl_modifier";
       autoRepeatDelay = 180;
       autoRepeatInterval = 60;
       # Enable touchpad support (enabled default in most desktopManager).
       libinput = { enable = true; };
+      excludePackages = [ pkgs.xterm ];
       # Enable automatic login for the user.
     };
   };

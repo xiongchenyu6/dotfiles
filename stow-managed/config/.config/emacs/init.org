@@ -10,7 +10,7 @@
 ** Env
 #+begin_src emacs-lisp
 (setenv "XDG_SESSION_TYPE" "wayland")
-(setenv "LSP_USE_PLISTS" "true")
+;; (setenv "LSP_USE_PLISTS" "true")
 ;; (setenv "PATH" (concat (getenv "PATH") ":/home/freeman/.npm/bin"))
 #+end_src
 ** UI
@@ -362,6 +362,11 @@
 (require 'erc-join)
 (erc-autojoin-mode 1)
 
+;; (setq erc-server "irc.libera.chat"
+;;       erc-port 6697
+;;       erc-nick "freemanX"
+;;       )-
+
 (defun erc-myself ()
   (interactive)
   (setq erc-autojoin-channels-alist '((".*" "#emacs" "#haskell" "#clojure" "#scala")))
@@ -633,6 +638,7 @@ Otherwise, show the default maximum number of recent items."
   (defalias 'chatgpt-arcana-keymap chatgpt-arcana-keymap)
   (global-set-key (kbd "C-c .") 'chatgpt-arcana-keymap)
   (setq chatgpt-arcana-chat-autosave-enabled t)
+  (setq chatgpt-arcana-chat-autosave-directory "~/Dropbox/chatgpt/")
   )
 #+end_src
 

@@ -8,6 +8,13 @@ _: {
       "GBM_BACKEND" = "nvidia-drm";
     };
   };
-  wayland = { windowManager = { hyprland = { nvidiaPatches = true; }; }; };
+  wayland = {
+    windowManager = {
+      hyprland = {
+        package = pkgs.hyprland-nvidia;
+        nvidiaPatches = true;
+      };
+    };
+  };
 }
 

@@ -10,6 +10,7 @@
         isNormalUser = true;
         description = "freeman.xiong";
         group = "users";
+
         openssh.authorizedKeys.keys =
           [ profiles.share.users-dict."freeman.xiong".public-key ];
         shell = pkgs.zsh;
@@ -38,9 +39,10 @@
     users = {
       "freeman.xiong" =
         if (builtins.elem "with-gui-nvidia" config.system.nixos.tags) then
-          hmUsers.freeman-gui-nvidia
+          hmUsers.freeman-hyprland-nvidia
         else if (builtins.elem "with-gui" config.system.nixos.tags) then
-          hmUsers.freeman-gui
+        # hmUsers.freeman-hyprland
+          hmUsers.freeman-xmonad
         else
           hmUsers.freeman-cli;
     };
