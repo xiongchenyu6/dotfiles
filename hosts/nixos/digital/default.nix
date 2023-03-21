@@ -13,14 +13,14 @@
     kernel = {
       sysctl = {
         "net.ipv4.ip_forward" = 1;
-        # "net.ipv4.conf.default.rp_filter" = 0;
-        # "net.ipv4.conf.all.rp_filter" = 0;
-        # "net.ipv4.conf.default.forwarding" = 1;
-        # "net.ipv4.conf.all.forwarding" = 1;
+        "net.ipv4.conf.default.rp_filter" = 0;
+        "net.ipv4.conf.all.rp_filter" = 0;
+        "net.ipv4.conf.default.forwarding" = 1;
+        "net.ipv4.conf.all.forwarding" = 1;
 
-        # "net.ipv6.conf.all.accept_redirects" = 0;
-        # "net.ipv6.conf.default.forwarding" = 1;
-        # "net.ipv6.conf.all.forwarding" = 1;
+        "net.ipv6.conf.all.accept_redirects" = 0;
+        "net.ipv6.conf.default.forwarding" = 1;
+        "net.ipv6.conf.all.forwarding" = 1;
       };
     };
   };
@@ -44,21 +44,20 @@
     # };
 
     firewall = { enable = false; };
-    nameservers = [ "8.8.8.8" ];
     wg-quick = {
       interfaces = {
         wg_mail = {
           privateKeyFile = config.sops.secrets."wireguard/digital".path;
           listenPort = 22616;
           table = "off";
-          address = [ "fe80::102" ];
+          address = [ "fe80::103" ];
           postUp = ''
-            ${pkgs.iproute2}/bin/ip addr add dev wg_mail 172.22.240.99 peer 172.22.240.97
-            # ${pkgs.iproute2}/bin/ip addr add dev wg_mail fe80::102 peer fd48:4b4:f3::1
+            ${pkgs.iproute2}/bin/ip addr add dev wg_mail 172.22.240.100 peer 172.22.240.97
+            # ${pkgs.iproute2}/bin/ip addr add dev wg_mail fe80::103 peer fd48:4b4:f3::1
           '';
 
           peers = [{
-            endpoint = "mail.freeman.engineer:22617";
+            endpoint = "mail.freeman.engineer:22618";
             publicKey = profiles.share.hosts-dict.mail.wg.public-key;
             allowedIPs = [
               "10.0.0.0/8"
@@ -75,7 +74,7 @@
     };
   };
   services = {
-    babeld.enable = false;
+    # babeld.enable = true;
     babeld.interfaces = { wg_mail = { split-horizon = "auto"; }; };
     babeld.extraConfig = ''
       redistribute if ens3 deny
@@ -83,8 +82,8 @@
     '';
 
     bird2 = {
-      # enable = false;
-      config = lib.mine.bird2-inner-config "172.22.240.99" "fd48:4b4:f3::3";
+      enable = true;
+      config = lib.mine.bird2-inner-config "172.22.240.100" "fd48:4b4:f3::4";
     };
   };
 }

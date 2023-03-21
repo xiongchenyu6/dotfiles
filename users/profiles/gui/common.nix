@@ -21,7 +21,7 @@
       settings = {
         # opacity = 0.9;
         font = {
-          size = 12;
+          size = 10;
           normal = { family = "Hack Nerd Font"; };
           bold = { family = "Hack Nerd Font"; };
           italic = { family = "Hack Nerd Font"; };

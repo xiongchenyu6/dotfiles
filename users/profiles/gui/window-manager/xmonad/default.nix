@@ -28,7 +28,7 @@
     feh = { enable = true; };
 
     autorandr = {
-      enable = true;
+      enable = false;
       profiles = {
         office = {
           fingerprint = {
@@ -108,7 +108,7 @@
       enable = true;
       extraConfig = ''
         Config {
-                font = "xft:WenQuanYi Zen Hei:size=12"
+                font = "xft:WenQuanYi Zen Hei:size=14"
               , borderColor = "black"
               , border = TopB
               , bgColor = "black"
@@ -202,7 +202,7 @@
           foreground = "\${colors.foreground}";
           modules-left = "date ip pip vpn";
           modules-center = "crypto";
-          font-0 = "Hack Nerd Font:size=16";
+          font-0 = "Hack Nerd Font:size=18";
           tray-position = "right";
           tray-padding = "2";
           tray-background = "\${colors.background}";

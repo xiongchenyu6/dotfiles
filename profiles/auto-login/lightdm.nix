@@ -9,6 +9,7 @@
           enable = true;
           user = "freeman.xiong";
         };
+
         session = [{
           manage = "desktop";
           name = "xsession";
@@ -17,7 +18,7 @@
         defaultSession = "xsession";
       };
       # Configure keymap in X11
-      xkbVariant = "dvorak";
+      xkbVariant = "dvp";
       xkbModel = "dvorak-programmer";
 
       xkbOptions = "caps:ctrl_modifier";
@@ -29,5 +30,5 @@
       # Enable automatic login for the user.
     };
   };
-  environment = { systemPackages = with pkgs; [ conky scrot xclip ]; };
+  environment = { systemPackages = with pkgs; [ arandr conky scrot xclip ]; };
 }

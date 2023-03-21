@@ -96,6 +96,7 @@
       };
     };
   };
+  hardware.video.hidpi.enable = lib.mkForce true;
 
   networking = {
     firewall = {
