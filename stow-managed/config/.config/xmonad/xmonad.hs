@@ -4,6 +4,7 @@
 import qualified Data.Map as M
 import qualified XMonad.StackSet as W
 
+import Data.Functor
 import Control.Monad
 import Graphics.X11.ExtraTypes.XF86
 import System.Directory
@@ -53,15 +54,11 @@ myStartupHook = do
   setWMName "LG3D"
   spawn "xset r rate 180 60"
   spawnOnce "brave"
-  -- spawnOnce "fcitx5"
   spawnOnce "dropbox start"
-  -- spawnOnce "thunderbird"
-  -- spawnOnce "compton --config ~/.xmonad/compton.conf"
   spawnOnce myTerminal
   -- spawnOnce "polybar"
   spawn "polybar-msg cmd restart"
   -- spawnOnce "polybar -r"
-  
   -- spawnOnce "xmobar -x 1"
 
 modm :: KeyMask
@@ -76,7 +73,7 @@ warmWallpaperDir = (++ "/Dropbox/WallPaper/warm") <$> getHomeDirectory
 myWorkplace :: [String]
 myWorkplace =
   ["term", "edit", "web", "chat", "email", "tmp"] ++ (show <$> [7 .. 9])
-  
+
 myNumRow = [xK_ampersand
            , xK_bracketleft
            , xK_braceleft
@@ -92,8 +89,8 @@ myKeys :: XConfig Layout -> M.Map (KeyMask, KeySym) (X ())
 myKeys conf =
   M.fromList $ [((m.|. modm, k), windows $ f i)
              | (i,k) <- zip (XMonad.workspaces conf) myNumRow
-             , (f,m) <- [(W.greedyView, 0), (W.shift, shiftMask)]]
-  
+             , (f,m) <- [(W.greedyView, 0), (W.shift, shiftMask)]] ++ [ ((modm, xK_Return), spawn myTerminal) ]
+
 mySB = statusBarProp "xmobar -x 0" (pure xmobarPP)
 
 main :: IO ()
@@ -107,7 +104,7 @@ main = do
         terminal = myTerminal,
         logHook = setRandomWallpaper,
         startupHook = myStartupHook,
-        keys = \c -> myKeys c `M.union` (keys def c),
+        keys = \c -> myKeys c `M.union` keys def c,
         modMask = modm -- Rebind Mod to the Windows key
       }
       `additionalKeys` customerKeyMaps
@@ -168,7 +165,7 @@ customerKeyMaps =
 
 -- | Update brightness by +100
 increase :: X ()
-increase = liftIO $ change (+1024) *> (pure ())
+increase = liftIO $ (change (+1024) $> ())
 
 -- | Update brightness by -100
 decrease :: X ()

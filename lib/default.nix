@@ -75,11 +75,11 @@ _: {
     protocol babel int_babel{
         ipv4 {
             import all;
-            import all;
+            export all;
         };
         ipv6 {
             import all;
-            import all;
+            export all;
         };
         interface "wg_mail" {
              type wired;

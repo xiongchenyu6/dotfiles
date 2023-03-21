@@ -112,6 +112,7 @@
         6696
         22616
         22617
+        22618
         23396
         21816
         33434
@@ -156,8 +157,9 @@
       in {
         wg_digital = {
           inherit privateKeyFile address table;
-          listenPort = 22617;
+          listenPort = 22618;
           peers = [{
+            endpoint = "178.128.82.145:22616";
             publicKey = profiles.share.hosts-dict.digital.wg.public-key;
             inherit allowedIPs;
           }];
@@ -174,13 +176,13 @@
         };
         wg_game = {
           inherit address privateKeyFile table;
+          listenPort = 22617;
           # postUp = ''
           #   ${pkgs.iproute2}/bin/ip addr add dev wg_game 172.22.240.97 peer 172.22.240.99
           #   ${pkgs.iproute2}/bin/ip addr add dev wg_game fe80::100 peer fd48:4b4:f3::3
           # '';
 
           peers = [{
-            endpoint = "178.128.82.145:22616";
             publicKey = profiles.share.hosts-dict.game.wg.public-key;
             inherit allowedIPs;
           }];
@@ -230,6 +232,11 @@
 
       };
       wg_office = {
+        hello-interval = 5;
+        split-horizon = "auto";
+        type = "wired";
+      };
+      wg_digital = {
         hello-interval = 5;
         split-horizon = "auto";
         type = "wired";
