@@ -7,14 +7,33 @@
   imports = [ (modulesPath + "/installer/scan/not-detected.nix") ];
 
   boot.initrd.availableKernelModules =
-    [ "xhci_pci" "thunderbolt" "nvme" "usbhid" ];
+    [ "xhci_pci" "thunderbolt" "nvme" "usb_storage" "sd_mod" ];
   boot.initrd.kernelModules = [ ];
   boot.kernelModules = [ "kvm-intel" ];
   boot.extraModulePackages = [ ];
 
   fileSystems."/" = {
-    device = "/dev/disk/by-uuid/799ba8ac-87bb-4c4e-b060-1787b4708a90";
-    fsType = "ext4";
+    device = "/dev/disk/by-uuid/78e9f06d-6f91-4d5b-9fa7-865020ffd4b0";
+    fsType = "btrfs";
+    options = [ "subvol=@" ];
+  };
+
+  fileSystems."/home" = {
+    device = "/dev/disk/by-uuid/78e9f06d-6f91-4d5b-9fa7-865020ffd4b0";
+    fsType = "btrfs";
+    options = [ "subvol=@home" ];
+  };
+
+  fileSystems."/nix" = {
+    device = "/dev/disk/by-uuid/78e9f06d-6f91-4d5b-9fa7-865020ffd4b0";
+    fsType = "btrfs";
+    options = [ "subvol=@nix" ];
+  };
+
+  fileSystems."/etc" = {
+    device = "/dev/disk/by-uuid/78e9f06d-6f91-4d5b-9fa7-865020ffd4b0";
+    fsType = "btrfs";
+    options = [ "subvol=@etc" ];
   };
 
   fileSystems."/boot/efi" = {
@@ -29,13 +48,9 @@
   # still possible to use this option, but it's recommended to use it in conjunction
   # with explicit per-interface declarations with `networking.interfaces.<interface>.useDHCP`.
   networking.useDHCP = lib.mkDefault true;
-  # networking.interfaces.wg_office.useDHCP = lib.mkDefault true;
-  # networking.interfaces.wg_tronlink.useDHCP = lib.mkDefault true;
   # networking.interfaces.wlp0s20f3.useDHCP = lib.mkDefault true;
 
-  nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
   powerManagement.cpuFreqGovernor = lib.mkDefault "powersave";
   hardware.cpu.intel.updateMicrocode =
     lib.mkDefault config.hardware.enableRedistributableFirmware;
-
 }
