@@ -236,7 +236,7 @@
           game = {
             modules = [
               hyprland.nixosModules.default
-              nixos-hardware.nixosModules.lenovo-legion-16ach6h-hybrid
+              # nixos-hardware.nixosModules.lenovo-legion-16ach6h-hybrid
             ];
           };
         };
@@ -251,8 +251,8 @@
             common-comps = builtins.attrValues common-components;
             server-comps = builtins.attrValues server-components;
             client-base = base ++ common-comps ++ [
-              auto-login.lightdm
-              # auto-login.greetd
+              # auto-login.lightdm
+              auto-login.greetd
             ];
             client-network =
               [ common-apps.dn42 common-apps.bird-inner common-apps.kerberos ];
