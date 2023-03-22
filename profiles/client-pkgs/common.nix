@@ -15,9 +15,9 @@
   environment = {
     systemPackages = with pkgs; [
       # albert
-      # awscli2
+      aiac
+      awscli2
       cachix
-      chainlink
       deploy-rs
       discord
       delve
