@@ -9,7 +9,7 @@
     profiles.dvorak
     profiles.users."freeman.xiong"
     profiles.hardwares.misc
-    # profiles.hardwares.nvidia
+    profiles.hardwares.nvidia
   ] ++ suites.client-base ++ suites.client-network;
 
   sops.secrets."wireguard/office" = { };

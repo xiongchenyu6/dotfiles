@@ -42,8 +42,8 @@ in {
 
   hardware.nvidia.prime = { amdgpuBusId = lib.mkForce "PCI:5:0:0"; };
   hardware.nvidia.prime = {
-    reverseSync.enable = true;
-    # offload.enable = true;
+    # reverseSync.enable = true;
+    offload.enable = true;
     # sync.enable = true;
     nvidiaBusId = "PCI:1:0:0";
   };
