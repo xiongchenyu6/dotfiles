@@ -731,7 +731,7 @@ Otherwise, show the default maximum number of recent items."
   (setq lsp-semantic-tokens-enable t)
   :hook
   (lsp-mode . lsp-enable-which-key-integration)
-  ((c-mode c++-mode python-mode go-mode go-ts-mode rust-mode sh-mode js-mode js2-mode typescript-mode nix-mode web-mode css-mode scss-mode less-css-mode json-mode yaml-mode dockerfile-mode markdown-mode) . lsp-deferred)
+  ((c-mode c++-mode python-mode go-mode go-ts-mode rust-mode sh-mode js-mode js2-mode typescript-mode nix-mode web-mode css-mode scss-mode less-css-mode json-mode yaml-mode dockerfile-mode markdown-mode terraform-mode) . lsp-deferred)
   )
 
 (setq lsp-java-trace-server "messages")

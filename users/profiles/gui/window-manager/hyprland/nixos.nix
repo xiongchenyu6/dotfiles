@@ -90,12 +90,10 @@
           #
 
           # See https://wiki.hyprland.org/Configuring/Monitors/
-
-          monitor=,preferred,auto,1.5
-          monitor=HDMI-A-1,preferred,auto,1.5
-          monitor=HDMI-A-1,transform,1
+          monitor=,highrr,auto,1.5
+          monitor=HDMI-A-1,preferred,auto,1.5,transform,1
           workspace = , 1
-          workspace=HDMI-A-1,10
+          workspace=HDMI-A-1,1
           # monitor=DP-1,3840x2160@60,1920x0,1.5
           # monitor=DP-1,transform,1
           # workspace = eDP-2, 1
@@ -198,7 +196,7 @@
 
           # Example binds, see https://wiki.hyprland.org/Configuring/Binds/ for more
           bind = $mainMod, return, exec, alacritty
-          bind = $mainMod, q, killactive,
+          bind = $mainMod, c, killactive,
           bind = $mainMod SHIFT, Q, exit,
           bind = $mainMod, B, exec, brave
           bind = $mainMod, P, exec, wofi --show drun -I -G

@@ -91,8 +91,8 @@
         path+="$HOME/.npm/bin"
         eval $(${pkgs.bash-my-aws}/bin/bma-init)
         eval $(${pkgs.rustup}/bin/rustup completions zsh)
+        complete -C '${pkgs.awscli2}/bin/aws_completer' aws
       '';
-      # complete -C '${pkgs.awscli2}/bin/aws_completer' aws
       zplug = {
         enable = false;
         plugins = ohMyZsh2Zplug plugins;
