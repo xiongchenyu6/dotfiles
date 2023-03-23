@@ -16,6 +16,8 @@
     systemPackages = with pkgs; [
       # albert
       aiac
+      ec2_ami_tools
+      ec2-api-tools
       awscli2
       cachix
       deploy-rs
@@ -26,9 +28,13 @@
       du-dust
       fd
       foundry-bin
+      firefox
       tealdeer
       terraform-ls
       terraform-lsp
+      pulumi
+      pulumiPackages.pulumi-aws-native
+      pulumiPackages.pulumi-language-go
       socat
       gotron-sdk
       rustscan
@@ -102,6 +108,7 @@
       scalafmt
       solc-select
       stow
+      yarn2nix
       # winklink
       wakatime
       zoom-us

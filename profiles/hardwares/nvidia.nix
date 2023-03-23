@@ -22,7 +22,7 @@ in {
       kernelParams = [ "amd_pstate=passive" ];
     })
   ];
-  # hardware.nvidia.powerManagement.finegrained = true;
+  hardware.nvidia.powerManagement.finegrained = true;
   hardware.nvidia.modesetting.enable = true;
 
   services.xserver.videoDrivers = [ "nvidia" "amdgpu" "modesetting" ];
