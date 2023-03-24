@@ -1,5 +1,5 @@
 # Edit
-{ lib, suites, profiles, config, ... }: {
+{ lib, suites, profiles, config, pkgs, ... }: {
   imports = [
     ./hardware-configuration.nix
     profiles.server-apps.mysql
@@ -30,6 +30,20 @@
   };
 
   boot = {
+    kernel = {
+      sysctl = {
+        "net.ipv4.ip_forward" = 1;
+        # "net.ipv4.conf.default.rp_filter" = 0;
+        # "net.ipv4.conf.all.rp_filter" = 0;
+        # "net.ipv4.conf.default.forwarding" = 1;
+        # "net.ipv4.conf.all.forwarding" = 1;
+
+        # "net.ipv6.conf.all.accept_redirects" = 0;
+        # "net.ipv6.conf.default.forwarding" = 1;
+        # "net.ipv6.conf.all.forwarding" = 1;
+      };
+    };
+
     loader = {
       systemd-boot = {
         enable = true;
@@ -46,8 +60,8 @@
 
   networking = {
     firewall = {
-      allowedTCPPorts = [ 179 ];
-      allowedUDPPorts = [ 179 33434 ];
+      allowedTCPPorts = [ 89 179 ];
+      allowedUDPPorts = [ 89 179 6696 33434 ];
       enable = true;
     };
 
@@ -64,12 +78,17 @@
     enableIPv6 = true;
     wg-quick = {
       interfaces = {
-        wg_freeman = {
+        wg_mail = {
           privateKeyFile = config.sops.secrets."wireguard/game".path;
           table = "off";
-          address = [ "172.22.240.99/27" "fe80::102/64" "fd48:4b4:f3::3/48" ];
+          address = [ "fe80::102/64" ];
+          postUp = ''
+            ${pkgs.iproute2}/bin/ip addr add dev wg_mail 172.22.240.99 peer 172.22.240.97
+            # ${pkgs.iproute2}/bin/ip addr add dev wg_mail fe80::101 peer fd48:4b4:f3::1
+          '';
+
           peers = [{
-            endpoint = "freeman.engineer:22616";
+            endpoint = "mail.freeman.engineer:22617";
             publicKey = profiles.share.hosts-dict.mail.wg.public-key;
             persistentKeepalive = 30;
             allowedIPs = [
@@ -79,6 +98,7 @@
               "fd00::/8"
               "fe80::/10"
               "fd48:4b4:f3::/48"
+              "ff02::1:6/128"
             ];
           }];
         };
@@ -105,6 +125,16 @@
   };
 
   services = {
+
+    babeld.enable = true;
+    babeld.interfaces = {
+      wg_mail = {
+        hello-interval = 5;
+        split-horizon = "auto";
+        type = "wired";
+      };
+    };
+
     postgresql = {
       enable = true;
       authentication = ''
@@ -112,6 +142,7 @@
       '';
     };
     bird2 = {
+      enable = false;
       config = lib.mine.bird2-inner-config "172.22.240.99" "fd48:4b4:f3::3";
     };
   };
