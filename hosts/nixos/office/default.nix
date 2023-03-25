@@ -261,7 +261,7 @@
 
     netbird.enable = true;
 
-    babeld.enable = false;
+    babeld.enable = true;
     babeld.interfaces = {
       wg_mail = {
         hello-interval = 5;

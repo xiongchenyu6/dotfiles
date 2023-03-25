@@ -187,29 +187,29 @@
         direct;
         }
 
-        # protocol bgp ibgp_freeman  {
+        protocol bgp ibgp_digital  {
 
-        #   local as OWNAS;
-        #   neighbor fd48:4b4:f3::2 as OWNAS;
-        #   direct;
+          local as OWNAS;
+          neighbor fe80::103%wg_digital as OWNAS;
+          direct;
 
-        #   ipv4 {
-        #       next hop self;
-        #       # Optional cost, e.g. based off latency
-        #       cost 50;
+          ipv4 {
+              next hop self;
+              # Optional cost, e.g. based off latency
+              cost 50;
 
-        #       import all;
-        #       export all;
-        #   };
+              import all;
+              export all;
+          };
 
-        #   ipv6 {
-        #       next hop self;
-        #       cost 50;
+          ipv6 {
+              next hop self;
+              cost 50;
 
-        #       import all;
-        #       export all;
-        #   };
-        # }
+              import all;
+              export all;
+          };
+        }
 
         # protocol babel int_babel {
         # ipv4 {
