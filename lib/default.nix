@@ -152,6 +152,31 @@ _: {
     include "/etc/bird/roa_dn42_v6.conf";
     };
 
+    # protocol babel int_babel{
+    #     ipv4 {
+    #         import all;
+    #         export all;
+    #     };
+    #     ipv6 {
+    #         import all;
+    #         export all;
+    #     };
+    #     interface "wg_mail" {
+    #          type wired;
+    #     };
+    #     interface "ens3" {
+    #          type wired;
+    #     };
+    #     interface "ens4" {
+    #          type wired;
+    #     };
+    # };
+    # protocol direct {
+    #     ipv4;
+    #     ipv6;
+    #     interface "lo";
+    # };
+
     protocol bgp ibgp_digital  {
 
       local as OWNAS;
@@ -176,30 +201,5 @@ _: {
       };
     }
 
-
-    protocol babel int_babel{
-        ipv4 {
-            import all;
-            export all;
-        };
-        ipv6 {
-            import all;
-            export all;
-        };
-        interface "wg_mail" {
-             type wired;
-        };
-        interface "ens3" {
-             type wired;
-        };
-        interface "ens4" {
-             type wired;
-        };
-    };
-    protocol direct {
-        ipv4;
-        ipv6;
-        interface "lo";
-    };
   '';
 }

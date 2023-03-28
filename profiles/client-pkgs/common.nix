@@ -16,6 +16,7 @@
     systemPackages = with pkgs; [
       # albert
       aiac
+      appimage-run
       ec2_ami_tools
       ec2-api-tools
       awscli2
@@ -29,6 +30,7 @@
       fd
       foundry-bin
       firefox
+      kompose
       tealdeer
       terraform-ls
       terraform-lsp
