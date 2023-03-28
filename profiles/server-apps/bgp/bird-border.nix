@@ -236,6 +236,14 @@
         #   rxcost 122;
         #   type wired;
         # };
+        # interface "wg_digital" {
+        #   # Note: Babel's cost metric is slightly different from BGP and OSPF.
+        #   # rxcost specifies the cost for the neighbour to send traffic to us,
+        #   # not the cost to send TO that neighbour. Of course, this won't have
+        #   # any impact if you keep costs consistent on both ends.
+        #   rxcost 122;
+        #   type wired;
+        # };
         # };
 
         # protocol direct {

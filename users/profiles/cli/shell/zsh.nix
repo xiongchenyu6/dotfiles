@@ -13,6 +13,7 @@
         "colored-man-pages"
         "copyfile"
         "copypath"
+        "docker"
         "emacs"
         "extract"
         "encode64"

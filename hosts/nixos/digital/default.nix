@@ -26,34 +26,21 @@
   };
 
   networking = {
-    # interfaces = {
-    #   lo = {
-    #     ipv4 = {
-    #       addresses = [{
-    #         address = "172.22.240.99";
-    #         prefixLength = 32;
-    #       }];
-    #     };
-    #     ipv6 = {
-    #       addresses = [{
-    #         address = "fd48:4b4:f3::3";
-    #         prefixLength = 128;
-    #       }];
-    #     };
-    #   };
-    # };
+    firewall = {
+      allowedTCPPorts = [ 89 179 2222 ];
+      allowedUDPPorts = [ 89 179 2222 6696 33434 ];
+      enable = true;
+    };
 
-    firewall = { enable = false; };
     wg-quick = {
       interfaces = {
         wg_mail = {
           privateKeyFile = config.sops.secrets."wireguard/digital".path;
-          listenPort = 22616;
-          table = "off";
+          # table = "off";
           address = [ "fe80::103" ];
           postUp = ''
-            ${pkgs.iproute2}/bin/ip addr add dev wg_mail 172.22.240.100 peer 172.22.240.97
-            # ${pkgs.iproute2}/bin/ip addr add dev wg_mail fe80::103 peer fd48:4b4:f3::1
+            ${pkgs.iproute2}/bin/ip addr add dev wg_mail 172.22.240.100 peer 172.22.240.96/27
+            ${pkgs.iproute2}/bin/ip addr add dev wg_mail fd48:4b4:f3::4 peer fd48:4b4:f3::1
           '';
 
           peers = [{
@@ -74,13 +61,6 @@
     };
   };
   services = {
-    # babeld.enable = true;
-    babeld.interfaces = { wg_mail = { split-horizon = "auto"; }; };
-    babeld.extraConfig = ''
-      redistribute if ens3 deny
-      redistribute if ens4 deny
-    '';
-
     bird2 = {
       enable = true;
       config = lib.mine.bird2-inner-config "172.22.240.100" "fd48:4b4:f3::4";
