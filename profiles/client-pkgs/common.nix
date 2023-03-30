@@ -68,10 +68,12 @@
       litecli
       # metals
       kubectl
+      kubelogin-oidc
       marksman
       pgadmin4-desktopmode
       mongosh
       mycli
+      maven
       nixfmt
       nix-du
       neofetch
