@@ -31,6 +31,8 @@
       };
     };
 
+    k9s = { enable = true; };
+
     keychain = { enable = true; };
 
     readline = { enable = true; };
@@ -271,21 +273,11 @@
       removePrefixDirectory = true;
       allowOther = false;
       directories = [
-        "config/.empty"
+        "config/.config/xmonad"
+        "config/.config/nvim"
+        "password-store/.local/share/password-store"
         {
           directory = "config/.config/emacs";
-          method = "symlink";
-        }
-        {
-          directory = "config/.config/nvim";
-          method = "symlink";
-        }
-        {
-          directory = "config/.config/xmonad";
-          method = "symlink";
-        }
-        {
-          directory = "password-store/.local/share/password-store";
           method = "symlink";
         }
       ];

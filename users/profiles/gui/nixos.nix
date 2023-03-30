@@ -78,6 +78,18 @@
       };
     };
 
+    vscode = {
+      enable = true;
+      extensions = with pkgs.vscode-extensions; [
+        golang.go
+        bbenoist.nix
+        redhat.java
+        github.copilot # AI code completion
+        ms-python.python
+        ms-vscode.cpptools
+      ];
+    };
+
     chromium = {
       enable = true;
       package = pkgs.brave;
