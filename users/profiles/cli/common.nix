@@ -269,20 +269,6 @@
         '';
       };
     };
-    persistence."/home/freeman.xiong/dotfiles/stow-managed/" = {
-      removePrefixDirectory = true;
-      allowOther = false;
-      directories = [
-        "config/.config/xmonad"
-        "config/.config/nvim"
-        "password-store/.local/share/password-store"
-        {
-          directory = "config/.config/emacs";
-          method = "symlink";
-        }
-      ];
-      files = [ "auth/.authinfo.gpg" ];
-    };
     stateVersion = "22.11";
     keyboard = { options = [ "caps:ctrl_modifier" ]; };
   };

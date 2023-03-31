@@ -220,4 +220,22 @@
 
     go = { enable = true; };
   };
+  home = {
+    persistence."/home/freeman.xiong/dotfiles/stow-managed/" = {
+      removePrefixDirectory = true;
+      allowOther = false;
+      directories = [
+        "config/.config/xmonad"
+        "config/.config/nvim"
+        "password-store/.local/share/password-store"
+        "config/.config/emacs"
+        # {
+        #   directory = ;
+        #   method = "symlink";
+        # }
+      ];
+      files = [ "auth/.authinfo.gpg" ];
+    };
+  };
+
 }

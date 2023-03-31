@@ -19,7 +19,7 @@
         "encode64"
         "fancy-ctrl-z"
         "git"
-        "git-hubflow"
+        "git-flow"
         "gitignore"
         "helm"
         "kubectl"
