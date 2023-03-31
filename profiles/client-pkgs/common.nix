@@ -17,8 +17,6 @@
       # albert
       aiac
       appimage-run
-      ec2_ami_tools
-      ec2-api-tools
       awscli2
       cachix
       deploy-rs
@@ -30,10 +28,13 @@
       fd
       foundry-bin
       firefox
+      jetbrains.idea-ultimate
       kompose
       tealdeer
+      wpsoffice
       terraform-ls
       terraform-lsp
+      tf2pulumi
       pulumi
       pulumiPackages.pulumi-aws-native
       pulumiPackages.pulumi-language-go
@@ -97,7 +98,6 @@
       terranix
       tectonic
       terracognita
-
       terraformer
       tf2pulumi
       #texlive.combined.scheme-full

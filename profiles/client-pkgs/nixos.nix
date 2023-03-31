@@ -14,7 +14,7 @@
       config.nur.repos.xddxdd.baidupcs-go
       config.nur.repos.xddxdd.qq
       config.nur.repos.xddxdd.wechat-uos
-      config.nur.repos.xddxdd.dingtalk
+      # config.nur.repos.xddxdd.dingtalk
       clang
       clang-tools
       cmake
