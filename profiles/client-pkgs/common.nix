@@ -96,6 +96,10 @@
       terraform
       terranix
       tectonic
+      terracognita
+
+      terraformer
+      tf2pulumi
       #texlive.combined.scheme-full
       tronbox
       unzip
