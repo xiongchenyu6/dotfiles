@@ -14,13 +14,13 @@ _: {
         "${extraModulesPath}/services/postgres.nix"
       ];
       git = {
-        hooks = {
-          enable = true;
-          pre-commit.text = ''
-            echo "commit hook"
-            nix build .#checks.${pkgs.system}.pre-commit-check
-          '';
-        };
+        # hooks = {
+        #   enable = true;
+        #   pre-commit.text = ''
+        #     echo "commit hook"
+        #     nix build .#checks.${pkgs.system}.pre-commit-check
+        #   '';
+        # };
       };
       env = [{
         name = "NIX_SSHOPTS";
