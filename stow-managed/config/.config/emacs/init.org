@@ -434,7 +434,7 @@
 
 (setq hs-set-up-overlay 'display-code-line-counts)
 #+end_src
-*** Git
+*** COMMENT Git
 #+begin_src emacs-lisp
 (autoload 'magit "magit" nil t)
 
@@ -529,7 +529,7 @@
 (recentf-mode 1)
 (setq recentf-auto-cleanup 'never)
 (setq recentf-max-saved-items 9999)
-(setq recentf-max-menu-items 99)
+(setq recentf-max-menu-items 999)
 (setq recentf-show-file-shortcuts-flag t)
 (setq recentf-exclude
       '("COMMIT" "autoloads" "archive-contents" "eld" ".newsrc"
@@ -702,9 +702,12 @@ Otherwise, show the default maximum number of recent items."
         corfu-popupinfo-delay t
         corfu-quit-no-match 'separator)
   (global-corfu-mode)
+  
   (corfu-indexed-mode)
-  (corfu-popupinfo-mode)
+  ;; (corfu-popupinfo-mode)
+  
   (define-key corfu-map "\C-q" #'corfu-quick-insert)
+  
   (add-to-list 'corfu-margin-formatters #'kind-icon-margin-formatter)
   :hook
   (meow-insert-exit . corfu-quit)
@@ -759,6 +762,7 @@ Otherwise, show the default maximum number of recent items."
 
 (require 'corfu-english-helper)
 ;; Optionally configure the cape-capf-buster.
+
 (add-hook 'lsp-mode-hook
           #'(lambda () (setq-local completion-at-point-functions
                               `(,(cape-super-capf
@@ -1480,7 +1484,7 @@ Bind to lsp mode
   (define-key addon-map "d" 'dired)
 
   (meow-leader-define-key
-   '("i" . lsp-ui-imenu )
+   '("i" . imenu )
    '("<SPC>" . project-find-file)
    ;; '("<SPC>" . switch-to-buffer)
    '("\\" . split-window-right)
@@ -1541,7 +1545,7 @@ Bind to lsp mode
       leetcode-prefer-sql "mysql")
 #+end_src
 ** Git
-*** blamer
+*** COMMENT blamer
 #+begin_src emacs-lisp
 (global-blamer-mode)
 #+end_src
@@ -1743,6 +1747,8 @@ Bind to lsp mode
 (add-hook 'gnus-summary-exit-hook
           #'gnus-group-first-unread-group)
 #+end_src
+** disable warning
+
 
 * Conclusion
 ** Tangle on save

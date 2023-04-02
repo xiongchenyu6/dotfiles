@@ -19,7 +19,8 @@
       appimage-run
       awscli2
       cachix
-      deploy-rs
+      cargo
+      colmena
       discord
       delve
       dig
@@ -35,7 +36,7 @@
       terraform-ls
       terraform-lsp
       tf2pulumi
-      pulumi
+      pulumi-bin
       pulumiPackages.pulumi-aws-native
       pulumiPackages.pulumi-language-go
       socat
@@ -65,12 +66,16 @@
           virtualenv
           openai
         ]))
-      kubernetes-helm
+      (kubernetes-helm-wrapped.override {
+        plugins = [ kubernetes-helmPlugins.helm-diff ];
+      })
+      helmfile
       litecli
       # metals
       kubectl
       kubelogin-oidc
       marksman
+      microsoft-edge-dev
       pgadmin4-desktopmode
       mongosh
       mycli
@@ -99,7 +104,6 @@
       tectonic
       terracognita
       terraformer
-      tf2pulumi
       #texlive.combined.scheme-full
       tronbox
       unzip
