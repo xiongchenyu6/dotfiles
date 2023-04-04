@@ -47,6 +47,7 @@
       ledger-live-desktop
       vscode-extensions.vadimcn.vscode-lldb
       openfortivpn
+      openiscsi
       pinentry
       pass
       procs

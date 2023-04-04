@@ -39,8 +39,7 @@ _: {
         (docs mdbook)
       ] ++ lib.optionals (!pkgs.stdenv.buildPlatform.isi686) [ (devos cachix) ]
         ++ lib.optionals (pkgs.stdenv.hostPlatform.isLinux
-          && !pkgs.stdenv.buildPlatform.isDarwin)
-        [ (devos inputs.nixos-generators.defaultPackage.${pkgs.system}) ];
+          && !pkgs.stdenv.buildPlatform.isDarwin) [ ];
       services = { postgres = { setupPostgresOnStartup = false; }; };
     };
 }

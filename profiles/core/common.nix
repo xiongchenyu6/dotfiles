@@ -2,9 +2,12 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 { pkgs, lib, ... }: {
+
+  imports = [ ../tty.nix ];
+
   environment.systemPackages = with pkgs; [
     tree
-    # litecli
+    litecli
     ssh-to-age
     imagemagick
     lrzsz
