@@ -81,12 +81,14 @@
     vscode = {
       enable = true;
       extensions = with pkgs.vscode-extensions; [
+        mkhl.direnv
         golang.go
         bbenoist.nix
         redhat.java
         github.copilot # AI code completion
         ms-python.python
         ms-vscode.cpptools
+        vscodevim.vim
       ];
     };
 
