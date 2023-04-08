@@ -229,13 +229,11 @@
               xiongchenyu6.nixosModules.java-tron
               xiongchenyu6.nixosModules.chainlink
               grub2-themes.nixosModules.default
-              hyprland.nixosModules.default
               nixos-hardware.nixosModules.lenovo-thinkpad-x1-10th-gen
             ];
           };
           game = {
             modules = [
-              hyprland.nixosModules.default
               # nixos-hardware.nixosModules.lenovo-legion-16ach6h-hybrid
             ];
           };
