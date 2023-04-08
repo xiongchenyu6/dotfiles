@@ -153,6 +153,7 @@
           direnv
           dap-mode
           doom-modeline
+          eglot-java
           emacsql-sqlite-builtin # for org-roam
           format-all
           gradle-mode

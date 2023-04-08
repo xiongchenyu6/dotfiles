@@ -49,6 +49,8 @@
     ssh = {
       enable = true;
       hashKnownHosts = false;
+      controlMaster = "auto";
+      controlPersist = "24h";
       compression = true;
       # tpm chips limitation
       extraConfig = ''

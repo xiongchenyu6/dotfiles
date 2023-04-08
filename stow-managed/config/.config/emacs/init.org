@@ -11,7 +11,7 @@
 #+begin_src emacs-lisp
 (setenv "XDG_SESSION_TYPE" "wayland")
 ;; (setenv "LSP_USE_PLISTS" "true")
-;; (setenv "PATH" (concat (getenv "PATH") ":/home/freeman/.npm/bin"))
+(setenv "PATH" (concat (getenv "PATH") ":/home/freeman.xiong/.config/emacs/.cache/lsp/eclipse.jdt.ls/bin/"))
 #+end_src
 ** UI
 *** Font
@@ -688,7 +688,7 @@ Otherwise, show the default maximum number of recent items."
   (setq codeium/metadata/api_key "7deba492-a52c-44d1-bd16-b2ed16e97805"))
 #+end_src
 ** Lang
-*** lsp & lsp-ui
+*** completion
 #+begin_src emacs-lisp
 (use-package corfu
   :config
@@ -719,61 +719,8 @@ Otherwise, show the default maximum number of recent items."
       '(:padding 0 :stroke 0 :margin 0 :radius 0 :height 0.8 :scale 1))
 
 (direnv-mode t)
-
-(use-package lsp-mode
-  ;; :straight t
-  :init
-  (setq lsp-keymap-prefix "C-c l")
-  :config
-  ;; (setq lsp-use-plists t)
-  (advice-add 'lsp :before 'direnv-update-environment)
-  (setq lsp-completion-provider :none)
-  (setq lsp-completion-enable nil)
-  (setq lsp-enable-dap-auto-configure t)
-  (setq lsp-enable-relative-indentation t)
-  (setq lsp-semantic-tokens-enable t)
-  :hook
-  (lsp-mode . lsp-enable-which-key-integration)
-  ((c-mode c++-mode python-mode go-mode go-ts-mode rust-mode sh-mode js-mode js2-mode typescript-mode nix-mode web-mode css-mode scss-mode less-css-mode json-mode yaml-mode dockerfile-mode markdown-mode terraform-mode) . lsp-deferred)
-  )
-
-(setq lsp-java-trace-server "messages")
-
-;; (setenv "PATH" (concat (getenv "PATH") ":/home/freeman/.config/emacs/.cache/lsp/eclipse.jdt.ls/bin"))
-
-;; (setq exec-path (append exec-path '("/home/freeman/.config/emacs/.cache/lsp/eclipse.jdt.ls/bin")))
-
-                                        ;(setq lsp-bridge-jdtls-worksapce)
-
-(defun my/orderless-dispatch-flex-first (_pattern index _total)
-  (and (eq index 0) 'orderless-flex))
-
-(defun my/lsp-mode-setup-completion ()
-  (setf (alist-get 'styles (alist-get 'lsp-capf completion-category-defaults))
-        '(orderless)))
-
-(add-hook 'lsp-completion-mode-hook #'my/lsp-mode-setup-completion)
-
-;; Optionally configure the first word as flex filtered.
-(add-hook 'orderless-style-dispatchers #'my/orderless-dispatch-flex-first nil 'local)
-
-(add-to-list 'completion-at-point-functions #'cape-dabbrev)
-(add-to-list 'completion-at-point-functions #'cape-file)
-
 (require 'corfu-english-helper)
 ;; Optionally configure the cape-capf-buster.
-
-(add-hook 'lsp-mode-hook
-          #'(lambda () (setq-local completion-at-point-functions
-                              `(,(cape-super-capf
-                                  (cape-capf-buster #'lsp-completion-at-point)
-                                  #'tempel-complete                                 
-                                  )
-                                cape-dabbrev
-                                cape-file)
-                              cape-dabbrev-min-length 10)
-              (add-hook 'before-save-hook #'lsp-format-buffer t t)
-              ))
 
 (add-hook 'nix-mode-hook #'(lambda () (add-hook 'before-save-hook #'nix-format-buffer t t)))
 
@@ -808,6 +755,49 @@ Otherwise, show the default maximum number of recent items."
   )
 
 (add-hook 'emacs-lisp-mode-hook 'tempel-setup-capf)
+
+(add-to-list 'completion-at-point-functions #'cape-dabbrev)
+(add-to-list 'completion-at-point-functions #'cape-file)
+
+(defun my/orderless-dispatch-flex-first (_pattern index _total)
+  (and (eq index 0) 'orderless-flex))
+
+#+end_src
+*** COMMENT lsp & lsp-ui
+#+begin_src emacs-lisp
+(use-package lsp-mode
+  ;; :straight t
+  :init
+  (setq lsp-keymap-prefix "C-c l")
+  :config
+  ;; (setq lsp-use-plists t)
+  (advice-add 'lsp :before 'direnv-update-environment)
+  (setq lsp-completion-provider :none)
+  (setq lsp-completion-enable nil)
+  (setq lsp-enable-dap-auto-configure t)
+  (setq lsp-enable-relative-indentation t)
+  (setq lsp-semantic-tokens-enable t)
+  :hook
+  (lsp-mode . lsp-enable-which-key-integration)
+  ((c-mode c++-mode python-mode go-mode go-ts-mode rust-mode sh-mode js-mode js2-mode typescript-mode nix-mode web-mode css-mode scss-mode less-css-mode json-mode yaml-mode dockerfile-mode markdown-mode terraform-mode) . lsp-deferred)
+  )
+(setq lsp-java-trace-server "messages")
+
+(add-hook 'lsp-mode-hook
+          #'(lambda () (setq-local completion-at-point-functions
+                              `(,(cape-super-capf
+                                  (cape-capf-buster #'lsp-completion-at-point)
+                                  #'tempel-complete                                 
+                                  )
+                                cape-dabbrev
+                                cape-file)
+                              cape-dabbrev-min-length 10)
+              (add-hook 'before-save-hook #'lsp-format-buffer t t)
+              ))
+
+(defun my/lsp-mode-setup-completion ()
+  (setf (alist-get 'styles (alist-get 'lsp-capf completion-category-defaults))
+        '(orderless)))
 #+end_src
 
 **** lsp ui
@@ -830,43 +820,10 @@ Otherwise, show the default maximum number of recent items."
               ("C-c s" . lsp-ui-sideline-mode)
               ("C-c k" . lsp-ui-doc-glance)
               ("C-c f" . lsp-ui-flycheck-list)
-              ("C-c a" . lsp-execute-code-action)))
-#+end_src
-*** eglog
-#+begin_src emacs-lisp
-(use-package eglot
-  :ensure t
-  :hook
-  ((haskell-mode) . eglot-ensure)
+              ("C-c a" . lsp-execute-code-action))
   )
 #+end_src
-
-*** COMMENT lsp-bridge
-#+begin_src emacs-lisp
-(add-to-list 'load-path "/home/freeman.xiong/Git/lsp-bridge")
-(use-package lsp-bridge
-  :config
-  (advice-add 'lsp-bridge-restart-process :before 'direnv-update-environment)
-  (global-lsp-bridge-mode)
-  (featurep 'lsp-bridge)
-  (setq lsp-bridge-auto-format-code t)
-  ;; (setq lsp-bridge-enable-log t)
-  (setq lsp-bridge-tabnine-complete nil)
-  (setq acm-candidate-match-function 'orderless-flex)
-  :bind (:map lsp-bridge-mode-map
-              ([remap xref-find-definitions] #'lsp-bridge-find-def)
-              )
-  (define-key lsp-bridge-mode-map [remap xref-find-definitions] #'lsp-bridge-find-def)
-  (define-key lsp-bridge-mode-map [remap xref-find-references] #'lsp-bridge-find-references)
-  (define-key lsp-bridge-mode-map [remap xref-go-back] #'lsp-bridge-find-def-return)
-  )
-#+end_src
-
-*** COMMENT Format All
-#+begin_src emacs-lisp
-(add-hook 'format-all-mode-hook 'format-all-ensure-formatter)
-#+end_src
-*** COMMENT dap
+**** dap
 #+begin_src emacs-lisp
 (require 'dap-mode)
 
@@ -881,8 +838,65 @@ Otherwise, show the default maximum number of recent items."
 
 (setq dap-lldb-debug-program "/nix/store/b4hid3r3i4alnmfym4jmnqf0wamgia90-lldb-14.0.6/bin/lldb-vscode")
 #+end_src
+
+*** eglog
+#+begin_src emacs-lisp
+(use-package eglot
+  :ensure t
+  :config
+  (setq eglot-sync-connect 0)
+  :hook
+  ((haskell-mode c-mode c++-mode python-mode go-mode go-ts-mode rust-mode sh-mode js-mode js2-mode typescript-mode nix-mode web-mode css-mode scss-mode less-css-mode json-mode yaml-mode dockerfile-mode markdown-mode terraform-mode) . eglot-ensure)
+  :bind (:map eglot-mode-map
+              ("C-c a" . eglot-code-actions)
+              ("C-c r" . eglot-rename)
+              ("C-c f" . eglot-format-buffer)
+              ("C-c d" . eglot-find-declaration)
+              ("C-c i" . eglot-find-implementation)
+              ("C-c t" . eglot-find-typeDefinition)
+              ("C-c R" . eglot-reconnect)
+              ("C-c C-d" . eglot-shutdown)
+              ("C-c C-r" . eglot-reconnect)
+              ("C-c C-f" . eglot-format-buffer)
+              ))
+
+(add-hook 'eglot-managed-mode-hook
+          #'(lambda () (setq-local completion-at-point-functions
+                              `(,(cape-super-capf
+                                  (cape-capf-buster #'eglot-completion-at-point)
+                                  #'tempel-complete
+                                  )
+                                cape-dabbrev
+                                cape-file)
+                              cape-dabbrev-min-length 10)
+              (add-hook 'before-save-hook #'eglot-format-buffer t t)
+              ))
+
+(defun my/lsp-mode-setup-completion ()
+  (setf (alist-get 'styles (alist-get 'eglot-capf completion-category-defaults))
+        '(orderless)))
+
+
+(use-package eglot-java
+  :ensure t
+  :after eglot
+  :config
+  (add-to-list 'eglot-server-programs '(java-mode . ("jdtls")))
+  (add-hook 'java-mode-hook 'eglot-java-mode)
+  )
+#+end_src
+
+*** COMMENT Format All
+#+begin_src emacs-lisp
+(add-hook 'format-all-mode-hook 'format-all-ensure-formatter)
+#+end_src
 *** window
 #+begin_src emacs-lisp
+(add-hook 'lsp-completion-mode-hook #'my/lsp-mode-setup-completion)
+
+;; Optionally configure the first word as flex filtered.
+(add-hook 'orderless-style-dispatchers #'my/orderless-dispatch-flex-first nil 'local)
+
 (add-to-list 'display-buffer-alist
              `(,(rx bos "*Flycheck errors*" eos)
                (display-buffer-reuse-window
@@ -1562,7 +1576,7 @@ Bind to lsp mode
 #+begin_src emacs-lisp
 (global-auto-composition-mode t)
 (global-auto-revert-mode t)
-(global-eldoc-mode t)
+;(global-eldoc-mode t)
 ;; (global-linum-mode +1)
 (global-visual-line-mode t)
 ;; (global-word-wrap-whitespace-mode +1)

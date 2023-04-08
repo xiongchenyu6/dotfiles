@@ -89,6 +89,7 @@
         ms-python.python
         ms-vscode.cpptools
         vscodevim.vim
+        vadimcn.vscode-lldb
       ];
     };
 
@@ -140,6 +141,12 @@
     dropbox = { enable = true; };
     gpg-agent = {
       enable = true;
+      enableExtraSocket = true;
+      extraConfig = ''
+        allow-emacs-pinentry
+        allow-loopback-pinentry
+      '';
+      pinentryFlavor = "emacs";
       enableSshSupport = true;
       sshKeys = [ "6E215C61D97608ED447E9D8BAE448986D75FD8F6" ];
     };

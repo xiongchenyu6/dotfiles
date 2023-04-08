@@ -30,6 +30,7 @@
       foundry-bin
       firefox
       jetbrains.idea-ultimate
+      jdt-language-server
       kompose
       tealdeer
       wpsoffice
