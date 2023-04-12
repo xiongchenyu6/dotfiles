@@ -31,7 +31,78 @@
       };
     };
 
-    k9s = { enable = true; };
+    k9s = {
+      enable = true;
+      settings = {
+        k9s = {
+          refreshRate = 2;
+          maxConnRetry = 5;
+          enableMouse = true;
+          headless = false;
+          crumbsless = false;
+          readOnly = false;
+          noIcons = false;
+          logger = {
+            tail = 200;
+            buffer = 500;
+            sinceSeconds = 300;
+            fullScreenLogs = false;
+            textWrap = true;
+            showTime = false;
+          };
+          clusters = {
+            default = {
+              namespace = {
+                active = "all";
+                favorites = [ "all" "kube-system" "default" ];
+              };
+              view = { active = "po"; };
+              featureGates = { nodeShell = true; };
+              shellPod = {
+                image = "killerAdmin";
+                namespace = "fred";
+                limits = {
+                  cpu = "100m";
+                  memory = "100Mi";
+                };
+              };
+            };
+            test = {
+              namespace = {
+                active = "all";
+                favorites = [ "all" "kube-system" "default" ];
+              };
+              view = { active = "po"; };
+              featureGates = { nodeShell = true; };
+              shellPod = {
+                image = "killerAdmin";
+                namespace = "fred";
+                limits = {
+                  cpu = "100m";
+                  memory = "100Mi";
+                };
+              };
+            };
+            prod = {
+              namespace = {
+                active = "all";
+                favorites = [ "all" "kube-system" "default" ];
+              };
+              view = { active = "po"; };
+              featureGates = { nodeShell = true; };
+              shellPod = {
+                image = "killerAdmin";
+                namespace = "fred";
+                limits = {
+                  cpu = "100m";
+                  memory = "100Mi";
+                };
+              };
+            };
+          };
+        };
+      };
+    };
 
     keychain = { enable = true; };
 

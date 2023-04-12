@@ -4,10 +4,10 @@ vailable everywhere
 
 prog-mode
 
-(fixme (if (derived-mode-p 'emacs-lisp-mode) ";; " comment-start) "FIXME ")
-(todo (if (derived-mode-p 'emacs-lisp-mode) ";; " comment-start) "TODO ")
-(bug (if (derived-mode-p 'emacs-lisp-mode) ";; " comment-start) "BUG ")
-(hack (if (derived-mode-p 'emacs-lisp-mode) ";; " comment-start) "HACK ")
+;; (fixme (if (derived-mode-p 'emacs-lisp-mode) ";; " comment-start) "FIXME ")
+;; (todo (if (derived-mode-p 'emacs-lisp-mode) ";; " comment-start) "TODO ")
+;; (bug (if (derived-mode-p 'emacs-lisp-mode) ";; " comment-start) "BUG ")
+;; (hack (if (derived-mode-p 'emacs-lisp-mode) ";; " comment-start) "HACK ")
 
 latex-mode
 
@@ -55,7 +55,7 @@ emacs-lisp-mode
 
 text-mode
 
-(calc (p "taylor(sin(x),x=0,3)" formula) n "----" n (format "%s" (calc-eval formula)))
+;; (calc (p "taylor(sin(x),x=0,3)" formula) n "----" n (format "%s" (calc-eval formula)))
 ;; (rot13 (p "plain text" text) n "----" n (rot13 text))
 
 rst-mode
