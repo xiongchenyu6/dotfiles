@@ -5,13 +5,13 @@
   imports = [ ./common.nix ];
   environment = {
     systemPackages = with pkgs; [
-      postman
+      dbeaver
+      discord
+      docker
       iterm2
       jetbrains.idea-community
-      dbeaver
+      postman
       vscode
-      docker
-      discord
     ];
   };
   homebrew = {
