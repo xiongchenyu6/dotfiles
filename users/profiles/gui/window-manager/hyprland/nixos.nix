@@ -40,9 +40,7 @@
         screen-shot = pkgs.writeShellApplication {
           name = "screen-shot.sh";
           runtimeInputs = [ pkgs.hyprland ];
-          text = ''
-            grim -g "$(slurp)" - | wl-copy
-          '';
+          text = ''grim -g "$(slurp)" - | wl-copy          '';
         };
 
         workspace = pkgs.writeShellApplication {
@@ -112,7 +110,7 @@
           kb_rules =
           repeat_rate = 60
           repeat_delay = 180
-          left_handed = 1
+          # left_handed = 1
           follow_mouse = 1
 
           touchpad {

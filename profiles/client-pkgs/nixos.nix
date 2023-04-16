@@ -9,24 +9,19 @@
       apg
       aspell
       aspellDicts.en
-      # appimage-run
-      # bundix
+      clang
+      clang-tools
+      cava
+      cmake
       config.nur.repos.xddxdd.baidupcs-go
       config.nur.repos.xddxdd.qq
       config.nur.repos.xddxdd.wechat-uos
-      # config.nur.repos.xddxdd.dingtalk
-      clang
-      clang-tools
-      cmake
-      # cabal2nix
-      cava
-      geoip
-      gnumake
-      gimp
       gcc
       gdb
+      geoip
+      gimp
+      gnumake
       haskell-language-server
-      (python3.withPackages (_: with python3.pkgs; [ my_cookies mutagen ]))
       (haskellPackages.ghcWithPackages (_:
         with haskellPackages;
         with pkgs.haskell.lib; [
@@ -40,30 +35,33 @@
         ]))
       imagemagick
       inetutils
-      lsof
-      llvm
-      lldb
-      pciutils
+      jp2a
       ledger-live-desktop
+      linuxPackages.ply
+      lldb
+      llvm
+      lsof
+      manix
+      mpv
+      my_cookies
+      mutagen
       openfortivpn
       openiscsi
-      pinentry
+      (python3.withPackages (_: with python3.pkgs; [ my_cookies mutagen ]))
       pass
-      procs
+      pciutils
       patchelf
+      pinentry
       poetry
       poetry2nix.cli
+      procs
       qemu_kvm
-      jp2a
-      linuxPackages.ply
       tdesktop
       tpm2-tools
       unrar-wrapper
-      manix
-      mpv
-      wineWowPackages.staging
-      whatsapp-for-linux
       virtmanager
+      whatsapp-for-linux
+      wineWowPackages.staging
       zotero
       zssh
     ];
