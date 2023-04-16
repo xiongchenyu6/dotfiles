@@ -15,7 +15,7 @@
   environment = {
     systemPackages = with pkgs; [
       # albert
-      aiac
+      argocd
       appimage-run
       awscli2
       cachix
@@ -27,8 +27,9 @@
       deadnix
       du-dust
       fd
-      foundry-bin
+      # foundry-bin
       firefox
+      mattermost-desktop
       jetbrains.idea-ultimate
       jdt-language-server
       kompose
@@ -73,8 +74,20 @@
       helmfile
       litecli
       # metals
+
+      dive # docker image analyzer
       kubectl
+      kubespy
+      kubeshark
+      kube-prompt
+      kubectl-tree
+      kube-capacity
+      ktunnel
+      fluxcd
+      kconf
+      krew
       kubelogin-oidc
+
       marksman
       microsoft-edge-dev
       pgadmin4-desktopmode
@@ -124,6 +137,7 @@
       yarn2nix
       # winklink
       wakatime
+      zookeeper
       zoom-us
     ];
   };

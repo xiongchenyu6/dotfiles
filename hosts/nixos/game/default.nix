@@ -30,6 +30,8 @@
   };
 
   boot = {
+    binfmt.emulatedSystems = [ "aarch64-linux" ];
+
     kernel = {
       sysctl = {
         "net.ipv4.ip_forward" = 1;
@@ -55,10 +57,11 @@
         efiSysMountPoint = "/boot/efi";
       };
     };
-    tmpOnTmpfs = lib.mkDefault true;
+    tmp.useTmpfs = lib.mkDefault true;
   };
 
   networking = {
+    extraHosts = "172.32.140.254 gitlab.trontech.link";
     firewall = {
       allowedTCPPorts = [ 89 179 ];
       allowedUDPPorts = [ 89 179 6696 33434 ];
