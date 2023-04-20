@@ -1,5 +1,6 @@
-{ profiles, ... }: {
-  users.mutableUsers = false;
+{ profiles, lib, ... }: {
+
+  users.mutableUsers = lib.mkDefault false;
 
   users.users.root = {
     openssh.authorizedKeys.keys =

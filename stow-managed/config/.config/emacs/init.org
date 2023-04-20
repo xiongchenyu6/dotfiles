@@ -1,0 +1,1776 @@
+#+TITLE: LiteratEmacs
+#+AUTHOR: XIONGCHENYU
+#+EMAIL: xiongchenyu6 at gmail.com
+#+DATE: <2022-01-31 Mon>
+#+CREATED: <2022-01-31 Mon>
+#+STARTUP: hidestars indent
+#+PROPERTY: header-args :results silent :tangle "init.el"
+
+* My Configuration
+** Env
+#+begin_src emacs-lisp
+(setenv "XDG_SESSION_TYPE" "wayland")
+;; (setenv "LSP_USE_PLISTS" "true")
+(setenv "PATH" (concat (getenv "PATH") ":/home/freeman.xiong/.config/emacs/.cache/lsp/eclipse.jdt.ls/bin/"))
+#+end_src
+** UI
+*** Font
+#+begin_src emacs-lisp
+(set-mouse-color "white")
+#+end_src
+*** Theme
+#+begin_src emacs-lisp
+(load-theme 'modus-vivendi t)
+#+end_src
+*** Ligature
+#+begin_src emacs-lisp
+(use-package ligature
+  :config
+  (ligature-set-ligatures 't '("www"))
+  ;; Enable traditional ligature support in eww-mode, if the
+  ;; `variable-pitch' face supports it
+  (ligature-set-ligatures 'eww-mode '("ff" "fi" "ffi"))
+  ;; Enable all Cascadia Code ligatures in programming modes
+  (ligature-set-ligatures 'prog-mode '("|||>" "<|||" "<==>" "<!--" "####" "~~>" "***" "||=" "||>"
+                                       ":::" "::=" "=:=" "===" "==>" "=!=" "=>>" "=<<" "=/=" "!=="
+                                       "!!." ">=>" ">>=" ">>>" ">>-" ">->" "->>" "-->" "---" "-<<"
+                                       "<~~" "<~>" "<*>" "<||" "<|>" "<$>" "<==" "<=>" "<=<" "<->"
+                                       "<--" "<-<" "<<=" "<<-" "<<<" "<+>" "</>" "###" "#_(" "..<"
+                                       "..." "+++" "/==" "///" "_|_" "www" "&&" "^=" "~~" "~@" "~="
+                                       "~>" "~-" "**" "*>" "*/" "||" "|}" "|]" "|=" "|>" "|-" "{|"
+                                       "[|" "]#" "::" ":=" ":>" ":<" "$>" "==" "=>" "!=" "!!" ">:"
+                                       ">=" ">>" ">-" "-~" "-|" "->" "--" "-<" "<~" "<*" "<|" "<:"
+                                       "<$" "<=" "<>" "<-" "<<" "<+" "</" "#{" "#[" "#:" "#=" "#!"
+                                       "##" "#(" "#?" "#_" "%%" ".=" ".-" ".." ".?" "+>" "++" "?:"
+                                       "?=" "?." "??" ";;" "/*" "/=" "/>" "//" "__" "~~" "(*" "*)"
+                                       "\\\\" "://" "=?"))
+  (global-ligature-mode t))
+(add-hook 'prog-mode-hook
+          (lambda ()
+            (setq-local prettify-symbols-alist
+                        '(
+                          ;; Functional
+                          ("def" . "ƒ")
+                          ("composition" . "∘")
+                                        ;("map" . "↦")
+                          ("lambda" . "λ")
+                          ;; Types
+                          ("null" . "∅")
+                          ("true" . "𝕋")
+                          ("false" . "𝔽")
+                          ("int" . "ℤ")
+                          ("float" . "ℝ")
+                          ("str" . "𝕊")
+                          ("bool" . "𝔹")
+                          ("list" . "𝕃")
+                          ;; Flow
+                          )
+                        )
+            )
+          )
+#+end_src
+*** Tranparent
+#+begin_src emacs-lisp
+  (setq default-frame-alist '((width . 90)
+                              (height . 50)
+                              (alpha-background . 90)))
+#+end_src
+** General
+*** Native Setup
+#+begin_src emacs-lisp
+(use-package package
+  :config
+  (package-initialize)
+  (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/")))
+
+;; ** 启动时默认打开的 buffer.
+(setq inhibit-startup-screen t)
+(setq initial-buffer-choice nil)
+(setq initial-major-mode 'emacs-lisp-mode)
+(setq initial-scratch-message "")
+
+;; ** yes-or-no-p
+(defalias 'yes-or-no-p 'y-or-n-p)
+
+;; ** 使用空格缩进
+(setq-default indent-tabs-mode nil)
+
+;; ** 关闭 beep
+(setq visible-bell t)
+
+;; ** 不使用 dialog
+(setq use-dialog-box nil)
+
+(blink-cursor-mode 0)
+
+(tool-bar-mode -1)
+(menu-bar-mode 0)
+
+;; ** 关闭 scroll-bar
+(scroll-bar-mode -1)
+
+;; ** 处理长行
+(global-so-long-mode 1)
+
+;; ** 处理折行
+(toggle-word-wrap 1)
+(setq word-wrap-by-category t)
+
+;; ** save history
+(require 'savehist)
+(savehist-mode 1)
+
+(add-hook 'prog-mode-hook 'electric-pair-local-mode)
+(add-hook 'conf-mode-hook 'electric-pair-local-mode)
+
+(setq electric-pair-pairs '((8216 . 8217) (8220 . 8221)))
+
+;; (with-eval-after-load 'elec-pair
+;;   (setq electric-pair-inhibit-predicate (lambda (c) (message c) (char-equal c ?\")))
+;;   )
+(require 'rainbow-delimiters)
+
+(add-hook 'prog-mode-hook #'rainbow-delimiters-mode)
+
+(add-hook 'conf-mode-hook #'rainbow-delimiters-mode)
+
+(setq compilation-read-command nil)
+
+(setq-default
+
+ ;; browse-url-secondary-browser-function 'xwidget-webkit-browse-url
+
+ ;; browse-url-browser-function 'xwidget-webkit-browse-url
+ ;; Don't create lockfiles
+ create-lockfiles nil
+
+ ;; prefer UTF8
+ buffer-file-coding-system 'utf-8-unix
+ default-file-name-coding-system 'utf-8-unix
+ default-keyboard-coding-system 'utf-8-unix
+
+ default-process-coding-system '(utf-8-unix . utf-8-unix)
+ default-sendmail-coding-system 'utf-8-unix
+ default-terminal-coding-system 'utf-8-unix
+
+ ;; Backup setups
+ ;; We use temporary directory /tmp for backup files
+ ;; More versions should be saved
+ backup-directory-alist `((".*" . ,temporary-file-directory))
+ auto-save-file-name-transforms `((".*" ,temporary-file-directory t))
+ backup-by-copying t
+ delete-old-versions t
+ kept-new-versions 6
+ kept-old-versions 2
+ version-control t
+ ;; Skip prompt for xref find definition
+ xref-prompt-for-identifier nil
+
+ ;; Don't wait for keystrokes display
+ echo-keystrokes 0.01
+
+ ;; Disable margin for overline and underline
+ overline-margin 0
+ underline-minimum-offset 0
+
+ ;; Allow resizing frame by pixels
+ frame-resize-pixelwise t
+
+ ;; Better scroll behavior
+ mouse-wheel-scroll-amount '(1 ((shift) . 1) ((control) . nil))
+ mouse-wheel-progressive-speed nil
+
+ ;; Disable copy region blink
+ copy-region-blink-delay 0
+
+ ;; Use short answer when asking yes or no
+ read-answer-short t
+
+ ;; Always follow link
+ vc-follow-symlinks t
+
+ ;; Disable ring bell
+ ring-bell-function 'ignore
+
+ ;; Mouse yank at current point
+ mouse-yank-at-point t
+
+ ;; DWIM target for dired
+ ;; Automatically use another dired buffer as target for copy/rename
+ dired-dwim-target t)
+
+(global-hl-line-mode t)
+
+(require 'which-key)
+
+(which-key-mode)
+
+(setq read-process-output-max (* (* 1024 1024) 3)) ;; 3mb
+
+(windmove-default-keybindings)
+#+end_src
+*** Native comp
+#+begin_src emacs-lisp
+  ;; (setq native-comp-always-compile t)
+#+end_src
+*** Buffer
+#+begin_src emacs-lisp
+(setq kill-buffer-query-functions nil)
+#+end_src
+*** Auto Save
+#+begin_src emacs-lisp
+(setq auto-save-visited-interval 0.5)
+
+(setq auto-save-visited-predicate (lambda () (eq meow-normal-mode t)))
+#+end_src
+*** Indentation
+#+begin_src emacs-lisp
+(setq editorconfig-mode t)
+#+end_src
+** Structure Editing
+*** Meow
+#+begin_src emacs-lisp
+(use-package meow
+  :config
+  (setq meow-esc-delay 0.001)
+  (defun meow-setup ()
+    (setq meow-cheatsheet-layout meow-cheatsheet-layout-qwerty)
+    (meow-motion-overwrite-define-key
+     '("<escape>" . ignore))
+
+    (meow-leader-define-key
+     ;; SPC j/k will run the original command in MOTION state.
+     '("j" . "H-j")
+     '("k" . "H-k")
+     ;; Use SPC (0-9) for digit arguments.
+     '("1" . meow-digit-argument)
+     '("2" . meow-digit-argument)
+     '("3" . meow-digit-argument)
+     '("4" . meow-digit-argument)
+     '("5" . meow-digit-argument)
+     '("6" . meow-digit-argument)
+     '("7" . meow-digit-argument)
+     '("8" . meow-digit-argument)
+     '("9" . meow-digit-argument)
+
+     '("0" . meow-digit-argument)
+     '("/" . meow-keypad-describe-key)
+     '("?" . meow-cheatsheet))
+    (meow-normal-define-key
+     '("0" . meow-expand-0)
+     '("9" . meow-expand-9)
+     '("8" . meow-expand-8)
+     '("7" . meow-expand-7)
+     '("6" . meow-expand-6)
+     '("5" . meow-expand-5)
+     '("4" . meow-expand-4)
+     '("3" . meow-expand-3)
+     '("2" . meow-expand-2)
+     '("1" . meow-expand-1)
+     '("-" . negative-argument)
+     '(";" . meow-reverse)
+     '("," . meow-inner-of-thing)
+     '("." . meow-bounds-of-thing)
+     '("[" . meow-beginning-of-thing)
+     '("]" . meow-end-of-thing)
+     '("a" . meow-append)
+     '("o" . meow-open-below)
+     '("b" . meow-back-word)
+     '("B" . meow-back-symbol)
+     '("c" . meow-change)
+     '("x" . meow-delete)
+     '("D" . meow-backward-delete)
+     '("e" . meow-next-word)
+     '("E" . meow-next-symbol)
+     '("f" . meow-find)
+     '("g" . meow-cancel-selection)
+
+     '("G" . meow-grab)
+     '("h" . meow-left)
+     '("H" . meow-left-expand)
+     '("i" . meow-insert)
+     '("O" . meow-open-above)
+     '("j" . meow-next)
+     '("J" . meow-next-expand)
+     '("k" . meow-prev)
+     '("K" . meow-prev-expand)
+     '("l" . meow-right)
+     '("L" . meow-right-expand)
+     '("m" . meow-join)
+     '("n" . meow-search)
+
+     '("I" . meow-block)
+     '("A" . meow-to-block)
+     '("p" . meow-yank)
+     '("q" . meow-quit)
+     '("Q" . kill-current-buffer)
+     '("r" . meow-replace)
+     '("R" . meow-swap-grab)
+     '("s" . meow-kill)
+     '("t" . meow-till)
+
+     '("u" . meow-undo)
+
+     '("U" . meow-undo-in-selection)
+     '("/" . meow-visit)
+     '("w" . meow-mark-word)
+     '("W" . meow-mark-symbol)
+     '("d" . meow-line)
+     '("X" . meow-goto-line)
+     '("y" . meow-save)
+     '("Y" . meow-sync-grab)
+     '("z" . meow-pop-selection)
+     '("'" . repeat)
+     '("<escape>" . ignore)))
+
+  (meow-setup)
+
+  (unless (bound-and-true-p meow-global-mode)
+    (meow-setup-indicator)
+    (meow-global-mode 1))
+
+  (with-eval-after-load "meow"
+    (add-to-list 'meow-expand-exclude-mode-list 'wdired-mode))
+
+  (setq meow-use-clipboard t))
+#+end_src
+*** Lispy
+#+begin_src emacs-lisp
+(use-package lispy
+  :config
+  (add-hook 'lisp-mode-hook (lambda () (lispy-mode 1)))
+  (add-hook 'emacs-lisp-mode-hook (lambda () (lispy-mode 1)))
+  (add-hook 'clojure-mode-hook (lambda () (lispy-mode 1)))
+  (add-hook 'racket-mode-hook (lambda () (lispy-mode 1))))
+#+end_src
+** Irc
+#+begin_src emacs-lisp
+(defun my-fetch-password (&rest params)
+  (require 'auth-source)
+  (let ((match (car (apply #'auth-source-search params))))
+    (if match
+        (let ((secret (plist-get match :secret)))
+          (if (functionp secret)
+              (funcall secret)
+            secret))
+      (error "Password not found for %S" params))))
+
+(defun my-nickserv-password ()
+  (my-fetch-password :user "freemanX" :host "irc.libera.chat")
+  )
+
+(require 'erc-join)
+(erc-autojoin-mode 1)
+
+;; (setq erc-server "irc.libera.chat"
+;;       erc-port 6697
+;;       erc-nick "freemanX"
+;;       )-
+
+(defun erc-myself ()
+  (interactive)
+  (setq erc-autojoin-channels-alist '((".*" "#emacs" "#haskell" "#clojure" "#scala")))
+  (erc-tls :server "irc.libera.chat" :port 6697 :nick  "freemanX" :password (my-nickserv-password))
+  )
+#+end_src
+** Coding
+*** Better terminal
+#+begin_src emacs-lisp
+(require 'vterm)
+(setq vterm-kill-buffer-on-exit t)
+
+(add-hook 'vterm-mode-hook
+          (lambda ()
+            (add-hook 'meow-insert-mode-hook (lambda () (if (eq major-mode 'vterm-mode) (vterm-copy-mode -1))) nil 'make-it-local)
+            (add-hook 'meow-normal-mode-hook (lambda () (if (eq major-mode 'vterm-mode) (vterm-copy-mode 1))) nil 'make-it-local)))
+#+end_src
+*** Better Search
+#+begin_src emacs-lisp
+(autoload 'rg-project "wgrep" nil t)
+(autoload 'rg-project "rg" nil t)
+
+(with-eval-after-load "wgrep"
+  (define-key wgrep-mode-map (kbd "C-c C-c") #'wgrep-finish-edit))
+
+(define-key project-prefix-map "r" 'rg-project)
+#+end_src
+*** Fold
+#+begin_src emacs-lisp
+(setq hs-hide-all-non-comment-function #'ignore)
+(add-hook 'hs-minor-mode-hook (lambda () (hs-hide-initial-comment-block) (hs-hide-all)))
+(add-hook 'prog-mode-hook 'hs-minor-mode)
+#+end_src
+*** Motivation
+#+begin_src emacs-lisp
+(require 'wakatime-mode)
+(global-wakatime-mode +1)
+(setq wakatime-api-key "06fb08d0-68a4-4b39-bbb0-d34d325dc046")
+(setq wakatime-noprompt t)
+(setq wakatime-disable-on-error t)
+#+end_src
+*** Navigation
+#+begin_src emacs-lisp
+(defun toggle-selective-display (column)
+  (interactive "P")
+  (set-selective-display
+   (or column
+       (unless selective-display
+         (1+ (current-column))))))
+
+(defun toggle-hiding (column)
+  (interactive "P")
+  (if hs-minor-mode
+      (if (condition-case nil
+              (hs-toggle-hiding)
+            (error t))
+          (hs-show-all))
+    (toggle-selective-display column)))
+
+(defun display-code-line-counts (ov)
+  (when (eq 'code (overlay-get ov 'hs))
+    (overlay-put ov 'help-echo
+                 (buffer-substring (overlay-start ov)
+                                  (overlay-end ov)))))
+
+(setq hs-set-up-overlay 'display-code-line-counts)
+#+end_src
+*** COMMENT Git
+#+begin_src emacs-lisp
+(autoload 'magit "magit" nil t)
+
+(require 'dash)
+
+(defmacro pretty-magit (WORD ICON PROPS &optional NO-PROMPT?)
+  "Replace sanitized WORD with ICON, PROPS and by default add to prompts."
+  `(prog1
+     (add-to-list 'pretty-magit-alist
+                  (list (rx bow (group ,WORD (eval (if ,NO-PROMPT? "" ":"))))
+                        ,ICON ',PROPS))
+     (unless ,NO-PROMPT?
+       (add-to-list 'pretty-magit-prompt (concat ,WORD ": ")))))
+
+(setq pretty-magit-alist nil)
+(setq pretty-magit-prompt nil)
+(pretty-magit "Feature" ? (:foreground "slate gray" :height 1.2))
+(pretty-magit "Add"     ? (:foreground "#375E97" :height 1.2))
+(pretty-magit "Fix"     ? (:foreground "#FB6542" :height 1.2))
+(pretty-magit "Clean"   ? (:foreground "#FFBB00" :height 1.2))
+(pretty-magit "Docs"    ? (:foreground "#3F681C" :height 1.2))
+(pretty-magit "master"  ? (:box t :height 1.2) t)
+(pretty-magit "origin"  ? (:box t :height 1.2) t)
+
+(defun add-magit-faces ()
+  "Add face properties and compose symbols for buffer from pretty-magit."
+  (interactive)
+  (with-silent-modifications
+    (--each pretty-magit-alist
+      (-let (((rgx icon props) it))
+        (save-excursion
+          (goto-char (point-min))
+          (while (search-forward-regexp rgx nil t)
+            (compose-region
+             (match-beginning 1) (match-end 1) icon)
+            (when props
+              (add-face-text-property
+               (match-beginning 1) (match-end 1) props))))))))
+
+(advice-add 'magit-status :after 'add-magit-faces)
+(advice-add 'magit-refresh-buffer :after 'add-magit-faces)
+
+(setq use-magit-commit-prompt-p nil)
+(defun use-magit-commit-prompt (&rest args)
+  (setq use-magit-commit-prompt-p t))
+
+(defun magit-commit-prompt ()
+  "Magit prompt and insert commit header with faces."
+  (interactive)
+  (when use-magit-commit-prompt-p
+    (setq use-magit-commit-prompt-p nil)
+    (insert (ivy-read "Commit Type " pretty-magit-prompt
+                      :require-match t :sort t :preselect "Add: "))
+    ;; Or if you are using Helm...
+    ;; (insert (helm :sources (helm-build-sync-source "Commit Type "
+    ;;                          :candidates pretty-magit-prompt)
+    ;;               :buffer "*magit cmt prompt*"))
+    ;; I haven't tested this but should be simple to get the same behaior
+    (add-magit-faces)
+    ))
+
+(remove-hook 'git-commit-setup-hook 'with-editor-usage-message)
+(add-hook 'git-commit-setup-hook 'magit-commit-prompt)
+(advice-add 'magit-commit :after 'use-magit-commit-prompt)
+#+end_src
+*** Better minibuffer
+#+begin_src emacs-lisp
+(require 'marginalia)
+
+(marginalia-mode)
+
+(fido-mode)
+(fido-vertical-mode)
+
+(require 'orderless)
+
+;; 在设置completion-styles之前，保存Emacs默认的completion-styles
+
+(setq completion-styles '(orderless partial-completion basic)
+      completion-category-defaults nil
+      completion-category-overrides '((file (styles . (partial-completion)))))
+
+
+(define-key minibuffer-local-completion-map " " 'self-insert-command)
+
+(add-hook 'icomplete-minibuffer-setup-hook 'my-flex-styles)
+
+(defun my-flex-styles () (setq-local completion-styles '(orderless partial-completion basic)))
+#+end_src
+*** Better recent file
+#+begin_src emacs-lisp
+(recentf-mode 1)
+(setq recentf-auto-cleanup 'never)
+(setq recentf-max-saved-items 9999)
+(setq recentf-max-menu-items 999)
+(setq recentf-show-file-shortcuts-flag t)
+(setq recentf-exclude
+      '("COMMIT" "autoloads" "archive-contents" "eld" ".newsrc"
+        ".recentf" "emacs-font-size.conf" "eh-scratch"
+        "pyim-dcache-.*"))
+;; 自动保存recentf文件。
+(add-hook 'find-file-hook #'recentf-save-list)
+
+(defun recentf-filtered-list (arg)
+  "Return a filtered list of ARG recentf items."
+    (recentf-apply-menu-filter
+     recentf-menu-filter
+     (mapcar 'recentf-make-default-menu-element
+	     (butlast recentf-list (- (length recentf-list) arg)))))
+
+(defun recentf-list-submenus (arg)
+  "Return a list of the recentf submenu names."
+  (if (listp (cdar (recentf-filtered-list arg))) ; submenues exist
+      (delq nil (mapcar 'car (recentf-filtered-list arg)))))
+
+(defmacro recentf-list-entries (fn arg)
+  "Return a list of ARG recentf menu entries as determined by FN.
+When FN is `'car' return the menu entry names, when FN is `'cdr'
+return the absolute file names."
+  `(mapcar (lambda (x) (mapcar ,fn x))
+	   (if (recentf-list-submenus ,arg)
+	       (mapcar 'cdr (recentf-filtered-list ,arg))
+	     (list (recentf-filtered-list ,arg)))))
+
+;; This function is not specific to recentf mode but is needed by
+;; `recentf-minibuffer-dialog'.  I've also made enough use of it in
+;; other contexts that I'm surprised it's not part of Emacs, and the
+;; fact that it isn't makes me wonder if there's a preferred way of
+;; doing what I use this function for.
+(defun recentf-memindex (mem l)
+  "Return the index of MEM in list L."
+  (let ((mempos -1) ret)
+    (while (eq ret nil)
+      (setq mempos (1+ mempos))
+      (when (equal (car l) mem) (setq ret mempos))
+      (setq l (cdr l)))
+    ret))
+
+(defun recentf-minibuffer-dialog (arg)
+  "Open the recentf menu via the minubuffer, with completion.
+With positive prefix ARG, show the ARG most recent items.
+Otherwise, show the default maximum number of recent items."
+  (interactive "P")
+  (let* ((num (prog1 (if (and (not (null arg))
+			      (> arg 0))
+			 (min arg (length recentf-list))
+		       recentf-max-menu-items)
+		(and (not (null arg))
+		     (> arg (length recentf-list))
+		     (message "There are only %d recent items."
+			      (length recentf-list))
+		     (sit-for 2))))
+	 (menu (if (recentf-list-submenus num)
+		   (completing-read "Open recent: "
+				    (recentf-list-submenus num))))
+	 (i (recentf-memindex menu (recentf-list-submenus num)))
+	 (items (nth i (recentf-list-entries 'car num)))
+	 (files (nth i (recentf-list-entries 'cdr num)))
+	 (item (completing-read "Open recent: " items))
+	 (j (recentf-memindex item items))
+	 (file (nth j files)))
+    (funcall recentf-menu-action file))) ; find-file by default
+#+end_src
+*** AI complete
+**** copilot
+#+begin_src emacs-lisp
+(setq browse-url-browser-function 'browse-url-generic
+      browse-url-generic-program "brave")
+
+(setq completion-cycle-threshold nil)
+
+(require 'copilot)
+
+(add-hook 'prog-mode-hook 'copilot-mode)
+(add-hook 'text-mode-hook 'copilot-mode)
+
+(define-key copilot-completion-map (kbd "<tab>") 'copilot-accept-completion)
+
+(define-key copilot-completion-map (kbd "C-<tab>") 'copilot-accept-completion-by-word)
+#+end_src
+**** chatgpt-arcana
+#+begin_src emacs-lisp
+(use-package chatgpt-arcana
+  :init (setq chatgpt-arcana-api-key (my-fetch-password :user "xiongchenyu6@gmail" :host "openai.com"))
+  :config
+  (use-package all-the-icons
+    :config
+    (add-to-list 'all-the-icons-mode-icon-alist
+                 '(chatgpt-arcana-chat-mode all-the-icons-octicon "comment-discussion" :height 1.0 :v-adjust -0.1 :face all-the-icons-purple)))
+  (defvar chatgpt-arcana-keymap
+    (let ((keymap (make-keymap)))
+      (define-key keymap "a" 'chatgpt-arcana-query)
+      (define-key keymap "r" 'chatgpt-arcana-replace-region)
+      (define-key keymap "i" 'chatgpt-arcana-insert-at-point-with-context)
+      (define-key keymap "I" 'chatgpt-arcana-insert-at-point)
+      (define-key keymap "c" 'chatgpt-arcana-start-chat)
+      (define-key keymap "C" 'chatgpt-arcana-resume-chat)
+      (define-key keymap "o" 'chatgpt-arcana-insert-after-region )
+      (define-key keymap "O" 'chatgpt-arcana-insert-before-region )
+      keymap))
+  (defalias 'chatgpt-arcana-keymap chatgpt-arcana-keymap)
+  (global-set-key (kbd "C-c .") 'chatgpt-arcana-keymap)
+  (setq chatgpt-arcana-chat-autosave-enabled t)
+  (setq chatgpt-arcana-chat-autosave-directory "~/Dropbox/chatgpt/")
+  )
+#+end_src
+
+**** org-ai
+#+begin_src emacs-lisp
+(use-package org-ai
+  :commands (org-ai-mode)
+  :custom
+  (org-ai-openai-api-token (my-fetch-password :user "xiongchenyu6@gmail" :host "openai.com"))
+  :init
+  (add-hook 'org-mode-hook #'org-ai-mode))
+#+end_src
+**** COMMENT codeium
+#+begin_src emacs-lisp
+(add-to-list 'load-path "~/Git/codeium.el/")
+
+(use-package codeium
+  ;; if you use straight
+  ;; :straight '(:type git :host github :repo "Exafunction/codeium.el")
+  ;; otherwise, make sure that the codeium.el file is on load-path
+
+  :init
+  ;; use globally
+  ;; (add-to-list 'completion-at-point-functions #'codeium-completion-at-point)
+  ;; or on a hook
+  ;; (add-hook 'python-mode-hook
+  ;;     (lambda ()
+  ;;         (setq-local completion-at-point-functions '(codeium-completion-at-point))))
+
+  ;; if you want multiple completion backends, use cape (https://github.com/minad/cape):
+  ;; (add-hook 'python-mode-hook
+  ;;     (lambda ()
+  ;;         (setq-local completion-at-point-functions
+  ;;             (list (cape-super-capf #'codeium-completion-at-point #'lsp-completion-at-point)))))
+  ;; an async company-backend is coming soon!
+
+  ;; codeium-completion-at-point is autoloaded, but you can
+  ;; optionally set a timer, which might speed up things as the
+  ;; codeium local language server takes ~0.2s to start up
+  ;; (add-hook 'emacs-startup-hook
+  ;;  (lambda () (run-with-timer 0.1 nil #'codeium-init)))
+
+  :config
+  ;; (setq use-dialog-box nil) ;; do not use popup boxes
+
+  ;; if you don't want to use customize to save the api-key
+  (setq codeium/metadata/api_key "7deba492-a52c-44d1-bd16-b2ed16e97805"))
+#+end_src
+** Lang
+*** completion
+#+begin_src emacs-lisp
+(use-package corfu
+  :config
+  (setq corfu-auto t
+        corfu-auto-delay 0
+        corfu-auto-prefix 2
+        corfu-cycle t
+        corfu-preselect-first nil
+        corfu-on-exact-match nil
+        corfu-preview-current nil
+        corfu-popupinfo-delay t
+        corfu-quit-no-match 'separator)
+  (global-corfu-mode)
+  
+  (corfu-indexed-mode)
+  ;; (corfu-popupinfo-mode)
+  
+  (define-key corfu-map "\C-q" #'corfu-quick-insert)
+  
+  (add-to-list 'corfu-margin-formatters #'kind-icon-margin-formatter)
+  :hook
+  (meow-insert-exit . corfu-quit)
+  )
+
+(setq kind-icon-default-face 'corfu-default)
+
+(setq kind-icon-default-style
+      '(:padding 0 :stroke 0 :margin 0 :radius 0 :height 0.8 :scale 1))
+
+(direnv-mode t)
+(require 'corfu-english-helper)
+;; Optionally configure the cape-capf-buster.
+
+(add-hook 'nix-mode-hook #'(lambda () (add-hook 'before-save-hook #'nix-format-buffer t t)))
+
+(add-hook 'text-mode-hook
+          #'(lambda ()
+              (setq-local corfu-auto-prefix 0)
+              (setq-local completion-at-point-functions
+                          `(
+                            tempel-complete
+                            cape-file
+                            cape-dabbrev
+                            corfu-english-helper-search
+                            )
+                          cape-dabbrev-min-length 5)
+              ))
+
+(define-key global-map (kbd "M-*") 'tempel-insert)
+
+(toggle-corfu-english-helper)
+
+(defun tempel-setup-capf ()
+  ;; Add the Tempel Capf to `completion-at-point-functions'.
+  ;; `tempel-expand' only triggers on exact matches. Alternatively use
+  ;; `tempel-complete' if you want to see all matches, but then you
+  ;; should also configure `tempel-trigger-prefix', such that Tempel
+  ;; does not trigger too often when you don't expect it. NOTE: We add
+  ;; `tempel-expand' *before* the main programming mode Capf, such
+  ;; that it will be tried first.
+  (setq-local completion-at-point-functions
+              (cons #'tempel-complete
+                    completion-at-point-functions))
+  )
+
+(add-hook 'emacs-lisp-mode-hook 'tempel-setup-capf)
+
+(add-to-list 'completion-at-point-functions #'cape-dabbrev)
+(add-to-list 'completion-at-point-functions #'cape-file)
+
+(defun my/orderless-dispatch-flex-first (_pattern index _total)
+  (and (eq index 0) 'orderless-flex))
+
+#+end_src
+*** COMMENT lsp & lsp-ui
+#+begin_src emacs-lisp
+(use-package lsp-mode
+  ;; :straight t
+  :init
+  (setq lsp-keymap-prefix "C-c l")
+  :config
+  ;; (setq lsp-use-plists t)
+  (advice-add 'lsp :before 'direnv-update-environment)
+  (setq lsp-completion-provider :none)
+  (setq lsp-completion-enable nil)
+  (setq lsp-enable-dap-auto-configure t)
+  (setq lsp-enable-relative-indentation t)
+  (setq lsp-semantic-tokens-enable t)
+  :hook
+  (lsp-mode . lsp-enable-which-key-integration)
+  ((c-mode c++-mode python-mode go-mode go-ts-mode rust-mode sh-mode js-mode js2-mode typescript-mode nix-mode web-mode css-mode scss-mode less-css-mode json-mode yaml-mode dockerfile-mode markdown-mode terraform-mode) . lsp-deferred)
+  )
+(setq lsp-java-trace-server "messages")
+
+(add-hook 'lsp-mode-hook
+          #'(lambda () (setq-local completion-at-point-functions
+                              `(,(cape-super-capf
+                                  (cape-capf-buster #'lsp-completion-at-point)
+                                  #'tempel-complete                                 
+                                  )
+                                cape-dabbrev
+                                cape-file)
+                              cape-dabbrev-min-length 10)
+              (add-hook 'before-save-hook #'lsp-format-buffer t t)
+              ))
+
+(defun my/lsp-mode-setup-completion ()
+  (setf (alist-get 'styles (alist-get 'lsp-capf completion-category-defaults))
+        '(orderless)))
+#+end_src
+
+**** lsp ui
+#+begin_src emacs-lisp
+(use-package lsp-ui
+  ;; :straight t
+  :config
+  (setq lsp-ui-doc-include-signature t)
+  (setq lsp-ui-doc-use-webkit t)
+  (setq lsp-ui-sideline-show-code-actions t)
+  (setq lsp-ui-sideline-show-hover t)
+  (setq lsp-ui-sideline-update-mode 'line)
+  (setq lsp-ui-doc-position 'at-point)
+  (setq lsp-enable-snippet nil)
+  :bind (:map lsp-ui-mode-map
+              ([remap xref-find-definitions] . lsp-ui-peek-find-definitions)
+              ([remap xref-find-references] . lsp-ui-peek-find-references)
+              ("C-c i" . lsp-ui-doc-focus-frame)
+              ("C-c u" . lsp-ui-doc-unfocus-frame)
+              ("C-c s" . lsp-ui-sideline-mode)
+              ("C-c k" . lsp-ui-doc-glance)
+              ("C-c f" . lsp-ui-flycheck-list)
+              ("C-c a" . lsp-execute-code-action))
+  )
+#+end_src
+**** dap
+#+begin_src emacs-lisp
+(require 'dap-mode)
+
+(add-hook 'dap-stopped-hook
+          (lambda (arg) (call-interactively #'dap-hydra)))
+
+(require 'dap-lldb)
+
+(require 'dap-dlv-go)
+
+(require 'dap-gdb-lldb)
+
+(setq dap-lldb-debug-program "/nix/store/b4hid3r3i4alnmfym4jmnqf0wamgia90-lldb-14.0.6/bin/lldb-vscode")
+#+end_src
+
+*** eglog
+#+begin_src emacs-lisp
+(use-package eglot
+  :ensure t
+  :config
+  (setq eglot-sync-connect 0)
+  :hook
+  ((haskell-mode c-mode c++-mode python-mode go-mode go-ts-mode rust-mode sh-mode js-mode js2-mode typescript-mode nix-mode web-mode css-mode scss-mode less-css-mode json-mode yaml-mode dockerfile-mode markdown-mode terraform-mode) . eglot-ensure)
+  :bind (:map eglot-mode-map
+              ("C-c a" . eglot-code-actions)
+              ("C-c r" . eglot-rename)
+              ("C-c f" . eglot-format-buffer)
+              ("C-c d" . eglot-find-declaration)
+              ("C-c i" . eglot-find-implementation)
+              ("C-c t" . eglot-find-typeDefinition)
+              ("C-c R" . eglot-reconnect)
+              ("C-c C-d" . eglot-shutdown)
+              ("C-c C-r" . eglot-reconnect)
+              ("C-c C-f" . eglot-format-buffer)
+              ))
+
+(add-hook 'eglot-managed-mode-hook
+          #'(lambda () (setq-local completion-at-point-functions
+                              `(,(cape-super-capf
+                                  (cape-capf-buster #'eglot-completion-at-point)
+                                  #'tempel-complete
+                                  )
+                                cape-dabbrev
+                                cape-file)
+                              cape-dabbrev-min-length 10)
+              (add-hook 'before-save-hook #'eglot-format-buffer t t)
+              ))
+
+(defun my/lsp-mode-setup-completion ()
+  (setf (alist-get 'styles (alist-get 'eglot-capf completion-category-defaults))
+        '(orderless)))
+
+
+(use-package eglot-java
+  :ensure t
+  :after eglot
+  :config
+  (add-to-list 'eglot-server-programs '(java-mode . ("jdtls")))
+  (add-hook 'java-mode-hook 'eglot-java-mode)
+  )
+#+end_src
+
+*** COMMENT Format All
+#+begin_src emacs-lisp
+(add-hook 'format-all-mode-hook 'format-all-ensure-formatter)
+#+end_src
+*** window
+#+begin_src emacs-lisp
+(add-hook 'lsp-completion-mode-hook #'my/lsp-mode-setup-completion)
+
+;; Optionally configure the first word as flex filtered.
+(add-hook 'orderless-style-dispatchers #'my/orderless-dispatch-flex-first nil 'local)
+
+(add-to-list 'display-buffer-alist
+             `(,(rx bos "*Flycheck errors*" eos)
+               (display-buffer-reuse-window
+                display-buffer-in-side-window)
+               (side            . bottom)
+               (reusable-frames . visible)
+               (window-height   . 0.23)))
+
+(add-to-list 'display-buffer-alist
+             `(,(rx bos "*compilation*" eos)
+               (display-buffer-reuse-window
+                display-buffer-in-side-window)
+               (side            . bottom)
+               (reusable-frames . visible)
+               (window-height   . 0.23)))
+
+(add-to-list 'display-buffer-alist
+             `(,(rx bos "*vterm*" eos)
+               (display-buffer-reuse-window
+                display-buffer-in-side-window)
+               (side            . bottom)
+               (reusable-frames . visible)
+               (window-height   . 0.23)))
+
+(add-to-list 'display-buffer-alist
+             `(,(rx bos "*Async Shell Command*" eos)
+               (display-buffer-reuse-window
+                display-buffer-in-side-window)
+               (side            . bottom)
+               (reusable-frames . visible)
+               (window-height   . 0.23)))
+
+(add-to-list 'display-buffer-alist
+             `(,(rx bos "*Occur*" eos)
+               (display-buffer-reuse-window
+                display-buffer-in-side-window)
+               (side            . bottom)
+               (reusable-frames . visible)
+               (window-height   . 0.33)))
+
+(add-to-list 'display-buffer-alist
+             `(,(rx bos "*PLANTUML Preview*" eos)
+               (display-buffer-reuse-window
+                display-buffer-in-side-window)
+               (side            . bottom)
+               (reusable-frames . visible)
+               (window-height   . 0.8)))
+
+(setq org-src-window-setup 'current-window)
+
+(add-hook 'occur-hook
+          #'(lambda ()
+             (switch-to-buffer-other-window "*Occur*")))
+
+(add-hook 'rg-mode-hook #'(lambda ()
+                            (switch-to-buffer-other-window "*rg*")))
+#+end_src
+*** apl
+#+begin_src emacs-lisp
+(defun em-gnu-apl-init ()
+  (setq buffer-face-mode-face 'gnu-apl-default)
+  (buffer-face-mode))
+
+(add-hook 'gnu-apl-interactive-mode-hook 'em-gnu-apl-init)
+(add-hook 'gnu-apl-mode-hook 'em-gnu-apl-init)
+#+end_src
+*** Clojure
+#+begin_src emacs-lisp
+(with-eval-after-load 'dap-mode
+  (require 'dap-chrome))
+#+end_src
+*** C++/C
+#+begin_src emacs-lisp
+(add-hook 'c++-mode-hook (lambda () (c-toggle-hungry-state) (c-toggle-auto-newline)))
+(defun pretty-for-add ()
+  (setq font-lock-keywords nil)
+  (font-lock-add-keywords
+   nil
+   `((,pretty-for-rgx 0 (prog1 nil
+                          (compose-region
+                           (match-beginning 1) (match-end 1)
+                           `(?\∀ (Br . Bl) ?\())
+                          (compose-region
+                           (match-beginning 2) (match-end 2)
+                           ,(concat "\t" (list #x2203))))))))
+
+(add-hook 'c-mode-hook 'pretty-for-add)
+#+end_src
+*** Css
+#+begin_src elisp
+(setq css-indent-offset 2)
+#+end_src
+*** Cmake
+#+begin_src emacs-lisp
+#+end_src
+*** Common Lisp
+#+begin_src emacs-lisp
+(setq inferior-lisp-program "sbcl")
+(add-hook 'lisp-mode-hook (lambda () (sly)))
+#+end_src
+*** Haskell
+#+begin_src emacs-lisp
+(require 'haskell-interactive-mode)
+(require 'haskell-process)
+(add-hook 'haskell-mode-hook 'interactive-haskell-mode)
+
+;; Hooks so haskell and literate haskell major modes trigger LSP setup
+;(require 'lsp-haskell)
+#+end_src
+*** Plantuml
+#+begin_src emacs-lisp
+;; Sample jar configuration
+(setq plantuml-default-exec-mode 'jar)
+(setq plantuml-jar-path "/home/freeman.xiong/plantuml.jar")
+(setq org-plantuml-jar-path "/home/freeman.xiong/plantuml.jar")
+(setq plantuml-output-type "png")
+#+end_src
+*** Solidity
+#+begin_src emacs-lisp
+(require 'solidity-flycheck)
+
+(setq solidity-flycheck-solc-checker-active t)
+(setq solidity-flycheck-solium-checker-active t)
+(setq flycheck-solidity-solc-addstd-contracts t)
+(setq solidity-flycheck-use-project t)
+
+(add-to-list 'load-path (expand-file-name "~/.config/emacs/lisp"))
+
+(require 'lsp-solidity)
+
+(eval-after-load 'solidity
+ (add-to-list 'lsp-language-id-configuration '(solidity-mode . "solidity")))
+
+(eval-after-load 'autoinsert
+  '(define-auto-insert
+     '("\\.\\(sol\\)\\'" . "solidity skeleton")
+     '("Min Solity Version: "
+       "// SPDX-License-Identifier: UNLICENSED" \n
+       "pragma solidity ^" str ";" \n \n
+       "contract " (file-name-sans-extension (file-name-nondirectory (buffer-file-name))) "{" \n
+        > _ \n
+       "}" > \n)))
+#+end_src
+*** python
+#+begin_src emacs-lisp
+;; (add-hook 'python-mode-hook (lambda () (whitespace-mode +1)))
+#+end_src
+*** COMMENT SML
+#+begin_src emacs-lisp
+(autoload 'sml-mode  "sml-mode" "Major mode for editing SML." t)
+
+(setq auto-mode-alist
+      (cons '("\.sml$" . sml-mode)
+            (cons '("\.sig$" . sml-mode)
+                  auto-mode-alist)))
+#+end_src
+*** COMMENT Scala
+#+begin_src emacs-lisp
+(with-eval-after-load 'scala-mode
+  (require 'lsp-metals)
+  (add-hook 'scala-mode-hook 'lsp))
+#+end_src
+*** Java
+#+begin_src emacs-lisp
+(add-hook 'jave-mode-hook (lambda () (c-toggle-hungry-state) (c-toggle-auto-newline)))
+
+(setq lsp-java-content-provider-preferred "fernflower")
+;; ;;
+;; ;; (setq lsp-java-java-path "/Library/Java/JavaVirtualMachines/openjdk.jdk/Contents/Home/bin/java")
+
+(setq lsp-java-java-path "/nix/store/7fa5bvjrxmcjcxjwidnp231f9j6i1vpz-home-manager-path/bin/java")
+
+;; (setq lsp-java-configuration-runtimes '[
+;;                                         (:name "JavaSE-1.8"
+;; 					       :path "/Library/Java/JavaVirtualMachines/zulu-8.jdk/Contents/Home"
+;;                                                )
+;;                                         (:name "JavaSE-18"
+;; 					       :path "/Library/Java/JavaVirtualMachines/openjdk.jdk/Contents/Home"
+;;                                          :default t
+;;                                                )
+;;                                         ])
+;; (advice-add 'lsp :before (lambda (&rest _args) (eval '(setf (lsp-session-server-id->folders (lsp-session)) (ht)))))
+
+;; (setq lsp-java-imports-gradle-wrapper-checksums [(:sha256 "66406bdca09802f8d7e09a344a8474bbb19abd7f7ac1a4d6682910520a11d08d" :allowed t)])
+
+;; (setq lsp-java-import-gradle-java-home "/Library/Java/JavaVirtualMachines/zulu-8.jdk/Contents/Home")
+
+;; (require 'lsp-java-boot)
+
+;; to enable the lenses
+;; (add-hook 'lsp-mode-hook #'lsp-lens-mode)
+;; (add-hook 'java-mode-hook #'lsp-java-boot-lens-mode)
+
+;; (setq
+;;  lsp-java-trace-server t)
+;; (setq
+;;  lsp-java-progress-report t)
+#+end_src
+*** javascript
+#+begin_src emacs-lisp
+(with-eval-after-load 'js
+  (define-key js-mode-map (kbd "M-.") nil)
+)
+(setq js-indent-level 2)
+#+end_src
+*** restapi
+#+begin_src emacs-lisp
+(require 'restclient)
+
+(add-to-list 'auto-mode-alist '("\\.http\\'" . restclient-mode))
+(add-to-list 'auto-mode-alist '("\\.pdf\\'" . pdf-view-mode))
+(add-to-list 'auto-mode-alist '("\\.epub\\'" . nov-mode))
+#+end_src
+*** web
+#+begin_src emacs-lisp
+;; (require 'web-mode)
+
+;; (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
+
+(setq sgml-basic-offset 4)
+
+#+end_src
+
+** Utils
+#+begin_src emacs-lisp
+(defun toggle-letter-case ()
+   "Toggle the letter case of current word or text selection.
+   Toggles between: “all lower”, “Init Caps”, “ALL CAPS”."
+   (interactive)
+   (let (p1 p2 (deactivate-mark nil) (case-fold-search nil))
+    (if (region-active-p)
+        (setq p1 (region-beginning) p2 (region-end))
+      (let ((bds (bounds-of-thing-at-point 'word) ) )
+        (setq p1 (car bds) p2 (cdr bds)) ) )
+    (when (not (eq last-command this-command))
+      (save-excursion
+        (goto-char p1)
+        (cond
+         ((looking-at "[[:lower:]][[:lower:]]") (put this-command 'state "all lower"))
+         ((looking-at "[[:upper:]][[:upper:]]") (put this-command 'state "all caps") )
+         ((looking-at "[[:upper:]][[:lower:]]") (put this-command 'state "init caps") )
+         ((looking-at "[[:lower:]]") (put this-command 'state "all lower"))
+         ((looking-at "[[:upper:]]") (put this-command 'state "all caps") )
+         (t (put this-command 'state "all lower") ) ) ) )
+    (cond
+     ((string= "all lower" (get this-command 'state))
+      (upcase-initials-region p1 p2) (put this-command 'state "init caps"))
+     ((string= "init caps" (get this-command 'state))
+      (upcase-region p1 p2) (put this-command 'state "all caps"))
+     ((string= "all caps" (get this-command 'state))
+      (downcase-region p1 p2) (put this-command 'state "all lower")) )
+    ) )
+#+end_src
+
+** input method
+#+begin_src emacs-lisp
+(use-package rime
+  :init
+  :config
+  (setq rime-emacs-module-header-root (concat (file-name-directory (directory-file-name (file-name-directory (file-truename (concat invocation-directory invocation-name))))) "include"))
+  (setq rime-share-data-dir (concat (shell-command-to-string "nix eval --impure --raw --expr '(let pkgs = import <nixpkgs> {}; in with pkgs; lib.getLib brise)'") "/share/rime-data"))
+  (setq rime-librime-root (shell-command-to-string "nix eval --impure --raw --expr '(let pkgs = import <nixpkgs> {}; in with pkgs; librime)'"))
+  (setq rime-user-data-dir "~/.local/share/fcitx5/rime")
+  (setq rime-show-candidate 'posframe)
+  :custom
+  (default-input-method "rime")
+  )
+
+(setq rime-disable-predicates
+      '(meow-normal-mode-p
+        rime-predicate-after-alphabet-char-p
+        rime-predicate-hydra-p
+        rime-predicate-prog-in-code-p))
+
+(defvar input-method-cursor-color "Orange"
+  "Default cursor color if using an input method.")
+
+(defvar default-cursor-color (frame-parameter nil 'cursor-color)
+  "Default text cursor color.")
+
+(defun change-cursor-color-on-input-method ()
+  "Set cursor color depending on whether an input method is used or not."
+  (interactive)
+  (set-cursor-color (if current-input-method
+                        input-method-cursor-color
+                      default-cursor-color)))
+
+(add-hook 'post-command-hook 'change-cursor-color-on-input-method)
+#+end_src
+** Error check
+*** flycheck
+Bind to lsp mode
+#+begin_src emacs-lisp
+(add-hook 'lsp-bridge-mode-hook #'flycheck-mode)
+#+end_src
+*** flyspell
+#+begin_src emacs-lisp
+(defun flyspell-on-for-buffer-type ()
+  "Enable Flyspell appropriately for the major mode of the current buffer.  Uses `flyspell-prog-mode' for modes derived from `prog-mode', so only strings and comments get checked.  All other buffers get `flyspell-mode' to check all text.  If flyspell is already enabled, does nothing."
+  (interactive)
+  (if (not (symbol-value flyspell-mode)) ; if not already on
+    (progn
+      (if (derived-mode-p 'prog-mode)
+        (progn
+          (message "Flyspell on (code)")
+          (flyspell-prog-mode))
+        ;; else
+        (progn
+          (message "Flyspell on (text)")
+          (flyspell-mode 1)))
+      ;; I tried putting (flyspell-buffer) here but it didn't seem to work
+      )))
+
+(defun flyspell-toggle ()
+  "Turn Flyspell on if it is off, or off if it is on.  When turning on, it uses `flyspell-on-for-buffer-type' so code-vs-text is handled appropriately."
+  (interactive)
+  (if (symbol-value flyspell-mode)
+      (progn ; flyspell is on, turn it off
+        (message "Flyspell off")
+        (flyspell-mode -1))
+      ; else - flyspell is off, turn it on
+      (flyspell-on-for-buffer-type)))
+
+(add-hook 'find-file-hook 'flyspell-on-for-buffer-type)
+(setq ispell-list-command "--list")
+
+;; (add-hook 'after-change-major-mode-hook 'flyspell-on-for-buffer-type)
+#+end_src
+** Safe Variable
+#+begin_src emacs-lisp
+(setq enable-local-variables :all)
+
+(add-to-list 'safe-local-variable-values '(company-clang-arguments . "-I src"))
+
+(add-to-list 'safe-local-variable-values '(compile-command . "cmake --build build"))
+
+(add-to-list 'safe-local-variable-values '(lsp-rust-analyzer-proc-macro-enable . t))
+
+(add-to-list 'safe-local-variable-values '(lsp-rust-analyzer-experimental-proc-attr-macros . t))
+
+(add-to-list 'safe-local-variable-values '(eval add-hook 'after-save-hook (lambda nil (org-babel-tangle)) nil t))
+#+end_src
+** Org
+#+begin_src emacs-lisp
+(use-package org
+  ;; :ensure org-plus-contrib
+  :bind (:map org-mode-map
+              ("C-c c" . org-capture)
+              ("C-c l" . org-store-link))
+  :config
+  (require 'org)
+  (require 'ob)
+  (require 'sql)
+  (require 'ob-sql)
+  (org-babel-do-load-languages
+   'org-babel-load-languages
+   '((dot . t)
+     (C . t)
+     (js . t)
+     (mermaid . t)
+     (emacs-lisp . t)
+     (plantuml . t)
+     (python . t)
+     (shell . t)
+     (gnuplot . t)
+     (sql . t)
+     (restclient . t)
+     (haskell . t)))
+  (add-to-list 'org-emphasis-alist '("=" (:box (:line-width -2 :color "gray50" :style released-button) :inherit org-verbatim))))
+#+end_src
+*** Org cite
+#+begin_src emacs-lisp
+(setq org-cite-csl-styles-dir "~/Zotero/styles")
+(setq org-cite-global-bibliography '("~/Dropbox/reference.bib"))
+#+end_src
+*** Org attach
+#+begin_src emacs-lisp
+(require 'org-contrib)
+
+(require 'ox-confluence)
+
+(setq org-attach-id-dir "~/Dropbox/Org/.attach")
+
+(setq org-image-actual-width nil)
+
+;; (setq org-startup-with-inline-images t)
+
+;; (with-eval-after-load 'org
+;;   (add-hook 'org-babel-after-execute-hook 'org-redisplay-inline-images))
+#+end_src
+*** Org download
+#+begin_src emacs-lisp
+(use-package org-download
+  :ensure t
+  :after org
+  :bind (:map org-mode-map
+              ("C-c y" . org-download-clipboard)
+              ("C-c d" . org-download-screenshot))
+  :config
+  (setq org-download-image-dir "~/Pictures"
+        org-download-method 'attach
+        org-download-screenshot-method "grim %s"))
+#+end_src
+*** Org Reveal
+#+begin_src emacs-lisp
+(org-add-link-type
+ "color"
+ (lambda (path)
+   "No follow action.")
+ (lambda (color description backend)
+   (cond
+    ((eq backend 'html)
+     (let ((rgb (assoc color color-name-rgb-alist))
+	   r g b)
+       (if rgb
+	   (progn
+	     (setq r (* 255 (/ (nth 1 rgb) 65535.0))
+		   g (* 255 (/ (nth 2 rgb) 65535.0))
+		   b (* 255 (/ (nth 3 rgb) 65535.0)))
+	     (format "<span style=\"color: rgb(%s,%s,%s)\">%s</span>"
+		     (truncate r) (truncate g) (truncate b)
+		     (or description color)))
+	 (format "No Color RGB for %s" color)))))))
+
+(use-package org-re-reveal
+  :ensure t
+  :config (setq org-re-reveal-root
+           "https://cdn.jsdelivr.net/npm/reveal.js"
+           org-re-reveal-plugins
+           '(markdown highlight zoom notes search math multiplex)
+           org-re-reveal-multiplex-socketio-url
+           "https://reveal-multiplex.glitch.me/socket.io/socket.io.js"
+           org-re-reveal-multiplex-url "https://reveal-multiplex.glitch.me/"
+           org-re-reveal-klipsify-src t
+           )
+  )
+#+end_src
+*** Org Roam
+#+begin_src emacs-lisp
+(setq org-roam-directory (expand-file-name "~/Private/xiongchenyu6.github.io/content-org/Notes/")
+      org-roam-capture-templates
+      '(("d" "default" plain "%?"
+         :target (file+head "${slug}.org" "#+title: ${title}\n#+date: %U\n")
+         :unnarrowed t
+         :immediate-finish t)))
+
+(setq org-roam-database-connector 'sqlite-builtin)
+
+(defvar org-roam-keymap
+  (let ((keymap (make-keymap)))
+    (define-key keymap "l" 'org-roam-buffer-toggle)
+    (define-key keymap "f" 'org-roam-node-find)
+    (define-key keymap "g" 'org-roam-graph)
+    (define-key keymap "i" 'org-roam-node-insert)
+    (define-key keymap "c" 'org-roam-capture)
+    (define-key keymap "s" 'org-roam-db-sync)
+    keymap))
+
+(defalias 'org-roam-keymap org-roam-keymap)
+
+(global-set-key (kbd "C-c n") 'org-roam-keymap)
+
+(with-eval-after-load "org-roam"
+  (org-roam-setup)
+  (setq +org-roam-open-buffer-on-find-file nil))
+
+(defun meomacs--org-prettify-symbols ()
+  (setq-local prettify-symbols-alist
+              '(("#+begin_src" . "»")
+                ("#+end_src" . "«")
+                ("#+begin_example" . "❯")
+                ("#+end_example" . "❮")
+                ("#+begin_quote" . "‟")
+                ("#+end_quote" . "‟")
+                ("[X]" . "☑")
+                ("[ ]" . "☐"))))
+
+(add-hook 'org-mode-hook 'meomacs--org-prettify-symbols)
+
+(setq org-startup-indented t)
+(setq org-hide-emphasis-markers t)
+(setq org-hide-leading-stars t)
+(setq org-confirm-babel-evaluate nil)
+
+;; (require 'ob-mermaid)
+
+(setq tex-command "tectonic")
+
+(setq org-latex-compiler "tectonic")
+
+(setq org-latex-pdf-process '("tectonic -Z shell-escape %f"))
+
+
+(setq tex-command "xelatex")
+
+(setq org-latex-compiler "xelatex")
+
+(with-eval-after-load "ox-latex"
+  (add-to-list 'org-latex-packages-alist '("" "ctex"))
+  (add-to-list 'org-latex-packages-alist '("" "geometry"))
+  (add-to-list 'org-latex-packages-alist '("" "minted"))
+  (setq org-latex-listings 'minted)
+  ;; (add-to-list 'org-latex-packages-alist '("" "listings"))
+  ;; (setq org-latex-listings 'listings)
+  )
+
+(defun resume-export ()
+  "Export the resume with moderncv latex module to pdf"
+  (interactive)
+  (let ((name (file-name-sans-extension (buffer-name))))
+    (progn
+      (org-export-to-file 'moderncv (concat name ".tex"))
+      (org-latex-compile (concat name ".tex")))))
+
+;; (defun resume-hugo-export ()
+
+;;   "Export the resume with moderncv to hugo md"
+;;   (interactive)
+;;   (let ((name (file-name-sans-extension (buffer-name)))
+;;         (org-export-exclude-tags '("noexport" "latexonly")))
+;;       (org-export-to-file 'hugocv (concat name ".md")))
+;;   )
+(require 'ox-hugocv)
+
+(setq org-export-backends '(ascii html icalendar latex man odt hugocv hugo))
+
+(setq org-directory "~/Dropbox/Org"
+      org-agenda-files (list org-directory)
+      org-agenda-diary-file (concat org-directory "/diary.org")
+      org-default-notes-file (concat org-directory "/diary.org"))
+
+(setq org-src-preserve-indentation t
+      org-src-fontify-natively t
+      org-return-follows-link t)
+;; (with-eval-after-load ox-latex)
+#+end_src
+*** Org Hugo
+#+begin_src emacs-lisp
+(require 'ox-hugo)
+#+end_src
+*** Org agenda
+#+begin_src emacs-lisp
+;;---------------------------------------------
+;;org-agenda-time-grid
+;;--------------------------------------------
+(setq org-agenda-time-grid (quote ((daily today require-timed)
+                                   (300
+                                    600
+                                    900
+                                    1200
+                                    1500
+                                    1800
+                                    2100
+                                    2400)
+                                   "......"
+                                   "-----------------------------------------------------"
+                                   )))
+
+(defun my/log-todo-creation-date (&rest ignore)
+  "Log TODO creation time in the property drawer under the key 'CREATED'."
+  (when (and (org-get-todo-state)
+             (not (org-entry-get nil "CREATED")))
+    (org-entry-put nil "CREATED" (format-time-string (cdr org-time-stamp-formats)))))
+
+(advice-add 'org-insert-todo-heading :after #'my/log-todo-creation-date)
+(advice-add 'org-insert-todo-heading-respect-content :after #'my/log-todo-creation-date)
+(advice-add 'org-insert-todo-subheading :after #'my/log-todo-creation-date)
+#+end_src
+*** Org pandoc
+#+begin_src emacs-lisp
+(require 'ox-pandoc)
+#+end_src
+** Key bindings
+*** TODO open app
+#+begin_src emacs-lisp
+  (define-key global-map (kbd "C-c p") project-prefix-map)
+
+  (with-eval-after-load "sql"
+    (define-key sql-mode-map (kbd "C-c C-c")
+                (lambda () (interactive) (if (bound-and-true-p lsp-mode)
+                                        (lsp-sql-execute-paragraph)
+                                      (sql-send-paragraph)))))
+
+  (with-eval-after-load "project"
+    (define-key project-prefix-map "s" 'vterm)
+    (define-key project-prefix-map "m" 'magit))
+
+  (setq project-switch-commands 'project-find-file)
+
+  (defvar toggle-map (make-keymap))
+  (defalias 'toggle-map toggle-map)
+
+  (defvar addon-map (make-keymap))
+  (defalias 'addon-map addon-map)
+
+  (define-key mode-specific-map "t" (cons "toggle" toggle-map))
+  (define-key mode-specific-map "a" (cons "addon" addon-map))
+
+  (define-key addon-map "t" 'vterm)
+  (define-key addon-map "g" 'gnus)
+  (define-key addon-map "i" 'erc-myself)
+  (define-key addon-map "a" 'gpt-dwim)
+  (define-key addon-map "c" 'calendar)
+  (define-key addon-map "d" 'dired)
+
+  (meow-leader-define-key
+   '("i" . imenu )
+   '("<SPC>" . project-find-file)
+   ;; '("<SPC>" . switch-to-buffer)
+   '("\\" . split-window-right)
+   '("-" . split-window-below)
+   '("s" . mode-line-other-buffer)
+   '("w" . ace-window)
+   '("r" . recentf-minibuffer-dialog)
+   '("q" . treemacs-select-window)
+   '("b" . switch-to-buffer)
+   '("f" . toggle-hiding)
+   '("z" . toggle-selective-display)
+   ;; '("d" . dap-hydra)
+   '("o" . occur)
+   ;; '("*" . rg)
+   ;; '("h" . window-left)
+   ;; '("l" . window-right)
+   '(":" . replace-regexp))
+#+end_src
+
+*** Treemancs
+#+begin_src emacs-lisp
+(use-package treemacs
+  :config
+  (setq treemacs-follow-mode t)
+  (setq treemacs-show-hidden-files nil)
+  (setq treemacs-fringe-indicator-mode t)
+  (setq treemacs-filewatch-mode t)
+  (setq treemacs-file-event-delay 100)
+  (setq treemacs-is-never-other-window t)
+  (setq treemacs-silent-refresh    t)
+  (setq treemacs-file-follow-delay 0.1))
+
+(use-package treemacs-project-follow-mode
+  :config
+  (setq treemacs-project-follow-mode t)
+  (setq treemacs-project-follow-delay 0.1))
+
+;; (require 'treemacs-tag-follow-mode)
+;; (treemacs-tag-follow-mode t)
+;; (setq treemacs-tag-follow-delay 0.1)
+                                        ; one beautiful work around to make c+[ works
+(define-key meow-insert-state-keymap
+            (kbd "C-g") [escape])
+#+end_src
+*** Ace
+#+begin_src emacs-lisp
+(use-package ace-link
+        :ensure t
+        :config
+        (ace-link-setup-default))
+
+#+end_src
+** Leetcode
+#+begin_src emacs-lisp
+(autoload 'leetcode "leetcode" nil t)
+
+(setq leetcode-prefer-language "cpp"
+      leetcode-prefer-sql "mysql")
+#+end_src
+** Git
+*** COMMENT blamer
+#+begin_src emacs-lisp
+(global-blamer-mode)
+#+end_src
+*** Magit
+#+begin_src emacs-lisp
+(magit-todos-mode)
+
+(use-package magit-gitflow
+  :ensure t
+  :config
+  (add-hook 'magit-mode-hook 'turn-on-magit-gitflow))
+#+end_src
+** Native Global Mode
+#+begin_src emacs-lisp
+(global-auto-composition-mode t)
+(global-auto-revert-mode t)
+;(global-eldoc-mode t)
+;; (global-linum-mode +1)
+(global-visual-line-mode t)
+;; (global-word-wrap-whitespace-mode +1)
+(auto-fill-mode t)
+(save-place-mode t)
+
+(setq-default abbrev-mode t)
+(use-package winner-mode
+  :ensure nil
+  :hook (after-init . winner-mode))
+;; (global-tab-line-mode)
+(tab-bar-mode t)
+(global-prettify-symbols-mode)
+
+(next-error-follow-minor-mode t)
+(pixel-scroll-precision-mode t)
+(auto-save-visited-mode t)
+(setq auto-insert-query nil)
+(global-subword-mode t)
+
+(auto-insert-mode 1)
+(setq bookmark-save-flag 1)
+
+(use-package ediff
+  :ensure nil
+  :hook (ediff-quit . winner-undo))
+#+end_src
+** modeline
+#+begin_src emacs-lisp
+(line-number-mode)
+(column-number-mode)
+;; (display-battery-mode)
+(doom-modeline-mode 1)
+(setq completion-auto-help 'always)
+#+end_src
+** gnus
+#+begin_src emacs-lisp
+(setq user-full-name "XiongChenYu"
+      user-mail-address "xiongchenyu6@gmail.com")
+
+(setq message-send-mail-function 'smtpmail-send-it
+  smtpmail-stream-type 'starttls
+  smtpmail-default-smtp-server "smtp.gmail.com"
+  smtpmail-smtp-server "smtp.gmail.com"
+
+  smtpmail-smtp-service 587)
+
+(add-hook 'gnus-group-mode-hook 'gnus-topic-mode)
+
+;; (setq gnus-select-method '(nntp "news.gwene.org"))
+
+(setq gnus-select-method
+      '(nnimap "gmail"
+        (nnimap-address "imap.gmail.com")
+        (nnimap-server-port 993)
+        (nnimap-stream ssl)))
+
+(setq gnus-extra-headers
+      '(To Newsgroups X-GM-LABELS))
+
+;; 使用准确率较高的地址提取函数
+(setq gnus-extract-address-components
+      'mail-extract-address-components)
+
+;; 默认禁用 nnfolder
+(setq gnus-message-archive-group nil)
+
+;; 双窗口布局(水平)
+(gnus-add-configuration
+ '(article
+   (vertical 1.0
+             (summary 0.25 point)
+             (article 1.0))))
+
+;; 设置图片显示方式
+(setq mm-inline-large-images t)
+
+;; 设置summary缓冲区的显示格式
+(setq gnus-extra-headers '(To From))
+(setq nnmail-extra-headers gnus-extra-headers)
+(setq gnus-summary-gather-subject-limit 'fuzzy)
+(setq gnus-summary-make-false-root 'adopt)
+(setq gnus-summary-line-format "%U%R%z %&user-date;  %-16,16a %5k%I%B%s\n")
+
+;; 设置 threads 的样式
+(setq gnus-thread-indent-level 0)
+(setq gnus-summary-same-subject "")
+(setq gnus-sum-thread-tree-indent "  ")
+(setq gnus-sum-thread-tree-single-indent "  ")
+(setq gnus-sum-thread-tree-root "  ")
+(setq gnus-sum-thread-tree-false-root "  ")
+(setq gnus-sum-thread-tree-vertical "   |")
+(setq gnus-sum-thread-tree-leaf-with-other "   |-> ")
+(setq gnus-sum-thread-tree-single-leaf "    `-> ")
+
+;; 设置 `gnus-summary-line-format' 中的 %&user-date;
+(setq gnus-user-date-format-alist
+      '(((gnus-seconds-today) . " %H:%M")
+        ((gnus-seconds-month) . "  %d day")
+        ((gnus-seconds-year)  . " %m-%d")
+        (t . "%Y year")))
+
+;; 将邮件的发出时间转换为本地时间
+(add-hook 'gnus-article-prepare-hook #'gnus-article-date-local)
+
+;; 跟踪组的时间轴
+(add-hook 'gnus-select-group-hook #'gnus-group-set-timestamp)
+
+;; visual
+(setq gnus-treat-emphasize t
+      gnus-treat-buttonize t
+      gnus-treat-buttonize-head 'head
+      gnus-treat-unsplit-urls 'last
+      gnus-treat-leading-whitespace 'head
+      gnus-treat-highlight-citation t
+      gnus-treat-highlight-signature t
+      gnus-treat-date-lapsed 'head
+      gnus-treat-strip-trailing-blank-lines t
+      gnus-treat-strip-cr t
+      gnus-treat-overstrike nil
+      gnus-treat-display-x-face t
+      gnus-treat-display-face t
+      gnus-treat-display-smileys nil
+      gnus-treat-x-pgp-sig 'head)
+
+;; 设置邮件报头显示的信息
+(setq gnus-visible-headers
+      (mapconcat 'regexp-quote
+                 '("From:" "Newsgroups:" "Subject:" "Date:"
+                   "Organization:" "To:" "Cc:" "Followup-To" "Gnus-Warnings:"
+                   "X-Sent:" "X-URL:" "User-Agent:" "X-Newsreader:"
+                   "X-Mailer:" "Reply-To:" "X-Spam:" "X-Spam-Status:" "X-Now-Playing"
+                   "X-Attachments" "X-Diagnostic" "X-RSS-URL")
+                 "\\|"))
+
+;; 设置邮件日期显示格式,使用两行日期，一行具体日期时间，
+;; 另一行显示article, 距现在多长时间
+(setq gnus-article-date-headers '(user-defined))
+(setq gnus-article-time-format
+      (lambda (time)
+        (concat "X-Sent:   "
+                (format-time-string "%Y年%m月%d日 星期%u %R" time)
+                "\n"
+                "X-Lasped: "
+                (article-lapsed-string time))))
+
+;; 用 Supercite 显示多种多样的引文形式
+(setq sc-attrib-selection-list nil
+      sc-auto-fill-region-p nil
+      sc-blank-lines-after-headers 1
+      sc-citation-delimiter-regexp "[>]+\\|\\(: \\)+"
+      sc-cite-blank-lines-p nil
+      sc-confirm-always-p nil
+      sc-electric-references-p nil
+      sc-fixup-whitespace-p t
+      sc-nested-citation-p nil
+      sc-preferred-header-style 4
+      sc-use-only-preference-p nil)
+
+;; 构建 threads 时抓取旧文章标题,
+;; 注意： 网速不快时不要使用这个选项。
+(setq gnus-fetch-old-headers nil)
+
+;; 聚集 threads 的方式
+(setq gnus-summary-thread-gathering-function
+      'gnus-gather-threads-by-subject)
+
+;; Thread root 排序
+(setq gnus-thread-sort-functions
+      '(gnus-thread-sort-by-most-recent-number
+        gnus-thread-sort-by-most-recent-date))
+
+;; Subthread 排序
+(setq gnus-subthread-sort-functions
+      '(gnus-thread-sort-by-number
+        gnus-thread-sort-by-date))
+
+;; 自动跳到第一个没有阅读的组
+(add-hook 'gnus-switch-on-after-hook
+          #'gnus-group-first-unread-group)
+
+(add-hook 'gnus-summary-exit-hook
+          #'gnus-group-first-unread-group)
+#+end_src
+** disable warning
+
+
+* Conclusion
+** Tangle on save
+;; Local Variables:
+;; eval: (add-hook 'after-save-hook (lambda () (org-babel-tangle)) nil t)
+;; End:

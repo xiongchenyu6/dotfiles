@@ -1,0 +1,19 @@
+version = 1
+
+[[analyzers]]
+name = "scala"
+
+[[analyzers]]
+name = "shell"
+
+[[analyzers]]
+name = "javascript"
+
+[[analyzers]]
+name = "ruby"
+
+[[analyzers]]
+name = "python"
+
+[analyzers.meta]
+runtime_version = "3.x.x"

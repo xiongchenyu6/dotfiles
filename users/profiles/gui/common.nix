@@ -21,19 +21,19 @@
       settings = {
         # opacity = 0.9;
         font = {
-          size = 12;
+          size = 10;
           normal = { family = "Hack Nerd Font"; };
           bold = { family = "Hack Nerd Font"; };
           italic = { family = "Hack Nerd Font"; };
           bold_italic = { family = "Hack Nerd Font"; };
         };
         key_bindings = [
-          {
-            key = "Space";
-            mods = "Control";
-            mode = "~Search";
-            action = "ToggleViMode";
-          }
+          # {
+          #   key = "Space";
+          #   mods = "Control";
+          #   mode = "~Search";
+          #   action = "ToggleViMode";
+          # }
           {
             key = "Return";
             mods = "Command|Shift";
@@ -133,75 +133,85 @@
     emacs = {
       enable = false;
       extraPackages = epkgs:
-      with pkgs;
-      with epkgs; [
-        ace-link
-        all-the-icons
-        clojure-mode
-        cider
-        cmake-mode
-        cape
-        corfu
-        copilot-el
-        citeproc
-        dockerfile-mode
-        direnv
-        dap-mode
-        doom-modeline
-        emacsql-sqlite-builtin # for org-roam
-        format-all
-        gradle-mode
-        graphviz-dot-mode
-        gnu-apl-mode
-        gcmh
-        go-mode
-        haskell-mode
-        kind-icon
-        leetcode
-        lispy
-        ligature
-        lsp-haskell
-        lsp-java
-        # lsp-ui
-        # lsp-mode
-        nix-mode
-        meow
-        magit
-        marginalia
-        nov
-        ox-hugo
-        ob-mermaid
-        ob-restclient
-        ox-pandoc
-        org-contrib
-        org-roam
-        org-re-reveal
-        org-download
-        org-cv
-        orderless
-        plantuml-mode
-        pdf-tools
-        posframe
-        protobuf-mode
-        rime
-        restclient
-        rainbow-delimiters
-        racket-mode
-        reformatter
-        rg
-        rust-mode
-        solidity-mode
-        sly
-        solidity-flycheck
-        scala-mode
-        sbt-mode
-        tide
-        tempel
-        vterm
-        wakatime-mode
-        which-key
-        yaml-mode
-      ];
+        with pkgs;
+        with epkgs; [
+          ace-link
+          all-the-icons
+          blamer
+          clojure-mode
+          cider
+          citre
+          cmake-mode
+          cape
+          corfu
+          corfu-english-helper
+          copilot-el
+          chatgpt
+          chatgpt-arcana
+          citeproc
+          dockerfile-mode
+          direnv
+          dap-mode
+          doom-modeline
+          eglot-java
+          emacsql-sqlite-builtin # for org-roam
+          format-all
+          gradle-mode
+          graphviz-dot-mode
+          gnu-apl-mode
+          gcmh
+          go-mode
+          haskell-mode
+          kind-icon
+          leetcode
+          lispy
+          ligature
+          lsp-haskell
+          lsp-java
+          # lsp-ui
+          # lsp-mode
+          nix-mode
+          meow
+          magit
+          magit-todos
+          marginalia
+          magit-gitflow
+          nov
+          ox-hugo
+          ob-mermaid
+          ob-restclient
+          ox-pandoc
+          org-ai
+          org-contrib
+          org-roam
+          # org-re-reveal
+          org-download
+          org-cv
+          orderless
+          plantuml-mode
+          pdf-tools
+          posframe
+          protobuf-mode
+          emacsPackages.rime
+          restclient
+          rainbow-delimiters
+          racket-mode
+          reformatter
+          rg
+          rust-mode
+          solidity-mode
+          sly
+          solidity-flycheck
+          scala-mode
+          sbt-mode
+          tide
+          tempel
+          terraform-mode
+          vterm
+          wakatime-mode
+          which-key
+          yaml-mode
+        ];
       extraConfig = ''
         (add-to-list 'default-frame-alist
         '(font . "JetBrains Mono-14"))
@@ -211,4 +221,22 @@
 
     go = { enable = true; };
   };
+  home = {
+    persistence."/home/freeman.xiong/dotfiles/stow-managed/" = {
+      removePrefixDirectory = true;
+      allowOther = false;
+      directories = [
+        "config/.config/xmonad"
+        "config/.config/nvim"
+        "password-store/.local/share/password-store"
+        "config/.config/emacs"
+        # {
+        #   directory = ;
+        #   method = "symlink";
+        # }
+      ];
+      files = [ "auth/.authinfo.gpg" ];
+    };
+  };
+
 }

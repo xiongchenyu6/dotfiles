@@ -3,8 +3,7 @@ _: {
     let
       inherit (pkgs)
         sops cachix editorconfig-checker mdbook nixUnstable nixfmt statix
-        nvfetcher # nix-linter
-        ssh-to-age;
+        nvfetcher ssh-to-age;
       pkgWithCategory = category: package: { inherit package category; };
       devos = pkgWithCategory "devos";
       linter = pkgWithCategory "linter";
@@ -15,13 +14,13 @@ _: {
         "${extraModulesPath}/services/postgres.nix"
       ];
       git = {
-        hooks = {
-          enable = true;
-          pre-commit.text = ''
-            echo "commit hook"
-            nix build .#checks.${pkgs.system}.pre-commit-check
-          '';
-        };
+        # hooks = {
+        #   enable = true;
+        #   pre-commit.text = ''
+        #     echo "commit hook"
+        #     nix build .#checks.${pkgs.system}.pre-commit-check
+        #   '';
+        # };
       };
       env = [{
         name = "NIX_SSHOPTS";
@@ -40,10 +39,7 @@ _: {
         (docs mdbook)
       ] ++ lib.optionals (!pkgs.stdenv.buildPlatform.isi686) [ (devos cachix) ]
         ++ lib.optionals (pkgs.stdenv.hostPlatform.isLinux
-          && !pkgs.stdenv.buildPlatform.isDarwin) [
-            (devos inputs.nixos-generators.defaultPackage.${pkgs.system})
-            (devos inputs.deploy-rs.packages.${pkgs.system}.deploy-rs)
-          ];
+          && !pkgs.stdenv.buildPlatform.isDarwin) [ ];
       services = { postgres = { setupPostgresOnStartup = false; }; };
     };
 }

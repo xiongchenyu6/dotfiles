@@ -57,23 +57,192 @@ with builtins; rec {
 
   hosts = [
     {
+      host = "game";
+      role = "internal";
+      network = "dn42";
+      public-key =
+        "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIK9lhSffZNM3UYm884iQc/XmWL+g5fnePXUh4mPFkuNy root@nixos";
+      wg = { public-key = "pvInS7gtW3H8JN3wzkdK8HM1qqFE/LpRXP36+z5EGEc="; };
+    }
+    {
+      host = "digital";
+      role = "border";
+      endpoint = "digital.freeman.engineer";
+      network = "dn42";
+      wg = { public-key = "aTfi+nYiVY2dkqS0Z3OqKpQeXIHamf28EQYhwaurhBI="; };
+    }
+    {
       host = "office";
+      role = "internal";
+      network = "dn42";
       public-key =
         "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIK9lhSffZNM3UYm884iQc/XmWL+g5fnePXUh4mPFkuNy root@nixos";
       wg = { public-key = "trmPW+CV8BbXfDMbe7I7IFwRh5ke8vpbDlgisSoH6ng="; };
-
     }
     {
       host = "mail";
+      network = "dn42";
+      role = "vpn";
+      endpoint = "mail.freeman.engineer";
       public-key =
         "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKcBsPZi+OYEL/RCSGZMr82x0UGUaghP3AGl6M57ssjn";
-      wg = { public-key = "9TXI2YQ0cdhW3xBhxzuHpPuISR7k2NwTjZ2Sq/lwoE0="; };
+      wg = {
+        port = 22616;
+        public-key = "9TXI2YQ0cdhW3xBhxzuHpPuISR7k2NwTjZ2Sq/lwoE0=";
+      };
+      connect = [rec {
+        network = "dn42";
+        hosts = [
+          {
+            host = "theresa";
+            listen = 23396;
+          }
+          {
+            host = "potat0";
+            listen = 21816;
+          }
+          {
+            host = "tech9";
+            listen = 21588;
+          }
+        ];
+        connect-dict = listToAttrs (map (h: {
+          name = h.host;
+          value = h;
+        }) hosts);
+
+        address = [ "172.22.240.97/27" "fe80::100/64" ];
+      }];
+    }
+    {
+      host = "theresa";
+      role = "external";
+      network = "dn42";
+      endpoint = "cn2.dn42.theresa.cafe";
+      wg = {
+        port = 22616;
+        public-key = "MqKkzCwYfOg8Fc/pRRctLW3jS72ACBDQr8ZF10sZ614=";
+      };
+    }
+    {
+      host = "potat0";
+      role = "external";
+      network = "dn42";
+      endpoint = "us1.dn42.potat0.cc";
+      wg = {
+        port = 22616;
+        public-key = "LUwqKS6QrCPv510Pwt1eAIiHACYDsbMjrkrbGTJfviU=";
+      };
+    }
+    {
+      host = "tech9";
+      role = "external";
+      network = "dn42";
+      endpoint = "sg-sin01.dn42.tech9.io";
+      wg = {
+        port = 52507;
+        public-key = "4qLIJ9zpc/Xgvy+uo90rGso75cSrT2F5tBEv+6aqDkY=";
+      };
     }
     {
       host = "tronlink";
-      wg = { public-key = "MEjaDVdOqGEOjO6m23yHq5ZCzeZC0Id8jxCKEUPdxhw="; };
+      role = "vpn";
+      network = "tronlink";
+      endpoint = "vpn.trontech.link";
+      wg = {
+        port = 22617;
+        public-key = "MEjaDVdOqGEOjO6m23yHq5ZCzeZC0Id8jxCKEUPdxhw=";
+      };
     }
   ];
+
+  networks = [rec {
+    name = "dn42";
+    OWNAS = "4242422616";
+    OWNNET = "172.22.240.96/27";
+    OWNNETv6 = "fd48:4b4:f3::/48";
+    allowedIPs = [
+      "10.0.0.0/8"
+      "172.20.0.0/14"
+      "172.31.0.0/16"
+      "fd00::/8"
+      "fe80::/10"
+      "fd48:4b4:f3::/48"
+    ];
+    assignedIPs = [
+      rec {
+        host = "mail";
+        ipv4 = "172.22.240.97/32";
+        ipv6linklocal = "fe80::100/128";
+        ipv6global = "fd48:4b4:f3::1/128";
+        address = [ ipv4 ipv6linklocal ipv6global ];
+      }
+      rec {
+        host = "office";
+        ipv4 = "172.22.240.98/32";
+        ipv6linklocal = "fe80::101/128";
+        ipv6global = "fd48:4b4:f3::2/128";
+        address = [ ipv4 ipv6linklocal ipv6global ];
+      }
+      rec {
+        host = "game";
+        ipv4 = "172.22.240.99/32";
+        ipv6linklocal = "fe80::102/128";
+        ipv6global = "fd48:4b4:f3::3/128";
+        address = [ ipv4 ipv6linklocal ipv6global ];
+      }
+    ];
+    assignedIPs-dict = listToAttrs (map (h: {
+      name = h.host;
+      value = h;
+    }) assignedIPs);
+
+    externalInterface = [
+      {
+        host = "theresa";
+        ipv6linklocal = "fe80::3396";
+        as = "4242423396";
+      }
+      {
+        host = "potat0";
+        ipv6linklocal = "fe80::1816";
+        as = "4242421816";
+      }
+      {
+        host = "tech9";
+        ipv6linklocal = "fe80::1588";
+        as = "4242421588";
+      }
+    ];
+    externalInterface-dict = listToAttrs (map (h: {
+      name = h.host;
+      value = h;
+    }) externalInterface);
+  }
+  # rec {
+  #   name = "tronlink";
+  #   allowedIPs = [
+  #     "172.64.224.1/24"
+  #     "fe80::101/64"
+  #     "172.32.0.0/16"
+  #     "18.218.96.133/32"
+  #     "13.212.2.33"
+  #   ];
+  #   assignedIPs = [{
+  #     host = "office";
+  #     address = [ "172.64.224.3/24" "fe80::103/64" ];
+  #   }];
+  #   assignedIPs-dict = listToAttrs (map (h: {
+  #     name = h.host;
+  #     value = h;
+  #   }) assignedIPs);
+  # }
+    ];
+
+  networks-dict = listToAttrs (map (h: {
+    inherit (h) name;
+    value = h;
+  }) networks);
 
   root-cas = [
     {

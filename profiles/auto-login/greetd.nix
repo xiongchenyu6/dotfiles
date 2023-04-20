@@ -1,4 +1,4 @@
-{ pkgs, ... }: {
+{ lib, ... }: {
   imports = [ ./wayland.nix ];
 
   services = {
@@ -7,7 +7,7 @@
       settings = rec {
         initial_session = {
           user = "freeman.xiong";
-          command = "${pkgs.hyprland}/bin/Hyprland";
+          command = lib.mkDefault "Hyprland";
         };
         default_session = initial_session;
       };

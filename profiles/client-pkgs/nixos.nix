@@ -9,7 +9,7 @@
       apg
       aspell
       aspellDicts.en
-      appimage-run
+      # appimage-run
       # bundix
       config.nur.repos.xddxdd.baidupcs-go
       config.nur.repos.xddxdd.qq
@@ -18,7 +18,7 @@
       clang
       clang-tools
       cmake
-      cabal2nix
+      # cabal2nix
       cava
       geoip
       gnumake
@@ -28,30 +28,32 @@
       haskell-language-server
       (python3.withPackages (_: with python3.pkgs; [ my_cookies mutagen ]))
       (haskellPackages.ghcWithPackages (_:
-      with haskellPackages;
-      with pkgs.haskell.lib; [
-        apply-refact
-        cabal-install
-        hlint
-        stylish-haskell
-        hasktags
-        hoogle
-        hadolint
-      ]))
-      heroku
+        with haskellPackages;
+        with pkgs.haskell.lib; [
+          apply-refact
+          cabal-install
+          hlint
+          stylish-haskell
+          hasktags
+          hoogle
+          hadolint
+        ]))
       imagemagick
       inetutils
       lsof
       llvm
       lldb
+      pciutils
       ledger-live-desktop
-      vscode-extensions.vadimcn.vscode-lldb
+      openfortivpn
+      openiscsi
       pinentry
       pass
       procs
       patchelf
       poetry
       poetry2nix.cli
+      qemu_kvm
       jp2a
       linuxPackages.ply
       tdesktop
@@ -59,12 +61,11 @@
       unrar-wrapper
       manix
       mpv
-      # nix-alien
       wineWowPackages.staging
-      #wpa_supplicant_gui
       whatsapp-for-linux
       virtmanager
       zotero
+      zssh
     ];
 
     pathsToLink = [ "/share/zsh" ];
@@ -116,23 +117,23 @@
   programs = {
     npm = { enable = true; };
     # atop = {
-      #   enable = true;
-      #   netatop = { enable = true; };
-      #   atopgpu = { enable = true; };
-      # };
-      nm-applet = { enable = true; };
-      nix-ld.enable = true;
-      wireshark = { enable = true; };
-      proxychains = {
-        enable = true;
-        proxies = {
-          michael = {
-            type = "socks5";
-            host = "localhost";
-            port = 8888;
-            enable = true;
-          };
+    #   enable = true;
+    #   netatop = { enable = true; };
+    #   atopgpu = { enable = true; };
+    # };
+    nm-applet = { enable = true; };
+    nix-ld.enable = true;
+    wireshark = { enable = true; };
+    proxychains = {
+      enable = true;
+      proxies = {
+        michael = {
+          type = "socks5";
+          host = "localhost";
+          port = 8888;
+          enable = true;
         };
       };
+    };
   };
 }

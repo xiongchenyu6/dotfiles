@@ -14,53 +14,91 @@
 
   environment = {
     systemPackages = with pkgs; [
+      # albert
+      argocd
+      appimage-run
       awscli2
-      alejandra
-      #azure-cli
       cachix
-      deploy-rs
+      cargo
+      colmena
       discord
       delve
       dig
       deadnix
+      du-dust
       fd
-      foundry-bin
+      # foundry-bin
       firefox
-      # jdt-language-server
+      mattermost-desktop
+      jetbrains.idea-ultimate
+      jdt-language-server
+      kompose
       tealdeer
-      tendermint
+      wpsoffice
+      terraform-ls
+      terraform-lsp
+      tf2pulumi
+      pulumi-bin
+      pulumiPackages.pulumi-aws-native
+      pulumiPackages.pulumi-language-go
       socat
+      gotron-sdk
       rustscan
       gitAndTools.gitflow
       git-crypt
       gopls
       graphviz
+      gptcommit
       grpcurl
       (python3.withPackages (_:
-      with python3.pkgs; [
-        cmake-language-server
-        colour
-        epc
-        ipython
-        matplotlib
-        nbformat
-        newsapi-python
-        nltk
-        orjson
-        python-lsp-server
-        pandas
-        python-dotenv
-        six
-        virtualenv
-      ]))
-      # lighthouse
-      metals
-      # mycli
+        with python3.pkgs; [
+          cmake-language-server
+          colour
+          # epc
+          ipython
+          matplotlib
+          nbformat
+          newsapi-python
+          nltk
+          orjson
+          python-lsp-server
+          pandas
+          python-dotenv
+          six
+          virtualenv
+          openai
+        ]))
+      (kubernetes-helm-wrapped.override {
+        plugins = [ kubernetes-helmPlugins.helm-diff ];
+      })
+      helmfile
+      litecli
+      # metals
+
+      dive # docker image analyzer
+      kubectl
+      kubespy
+      kubeshark
+      kube-prompt
+      kubectl-tree
+      kube-capacity
+      ktunnel
+      fluxcd
+      kconf
+      krew
+      kubelogin-oidc
+
+      marksman
+      microsoft-edge-dev
+      pgadmin4-desktopmode
+      mongosh
+      mycli
+      maven
       nixfmt
       nix-du
       neofetch
       node2nix
-      nodejs
+      nodejs_latest
       nodePackages."bash-language-server"
       nodePackages."prettier"
       nodePackages."typescript-language-server"
@@ -78,14 +116,16 @@
       terraform
       terranix
       tectonic
+      terracognita
+      terraformer
       #texlive.combined.scheme-full
       tronbox
       unzip
+      universal-ctags
       rust-analyzer
       rustc
       sbcl
       slack
-      slither-analyzer
       statix
       shellcheck
       solium
@@ -94,9 +134,10 @@
       scalafmt
       solc-select
       stow
+      yarn2nix
+      # winklink
       wakatime
-      winklink
-      wakatime
+      zookeeper
       zoom-us
     ];
   };

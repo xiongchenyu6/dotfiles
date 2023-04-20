@@ -5,12 +5,16 @@ _: {
     (builtins.attrNames (builtins.readDir dir));
 
   bird2-inner-config = OWNIP: OWNIPv6: ''
+    log syslog all;
+    # log "/var/log/bird.log" all;
+    log stderr all;
+
     ################################################
     #               Variable header                #
     ################################################
 
     define OWNAS =  4242422616;
-    define OWNIP =  ${OWNIP};
+    define OWNIP = ${OWNIP};
     define OWNIPv6 = ${OWNIPv6};
     define OWNNET = 172.22.240.96/27;
     define OWNNETv6 = fd48:4b4:f3::/48;
@@ -24,133 +28,159 @@ _: {
     router id OWNIP;
 
     protocol device {
-        scan time 10;
+    scan time 10;
     }
 
     /*
-     *  Utility functions
-     */
+    *  Utility functions
+    */
 
     function is_self_net() {
-      return net ~ OWNNETSET;
+    return net ~ OWNNETSET;
     }
 
     function is_self_net_v6() {
-      return net ~ OWNNETSETv6;
+    return net ~ OWNNETSETv6;
     }
 
     function is_valid_network() {
-      return net ~ [
-        172.20.0.0/14{21,29}, # dn42
-        172.20.0.0/24{28,32}, # dn42 Anycast
-        172.21.0.0/24{28,32}, # dn42 Anycast
-        172.22.0.0/24{28,32}, # dn42 Anycast
-        172.23.0.0/24{28,32}, # dn42 Anycast
-        172.31.0.0/16+,       # ChaosVPN
-        10.100.0.0/14+,       # ChaosVPN
-        10.127.0.0/16{16,32}, # neonetwork
-        10.0.0.0/8{15,24}     # Freifunk.net
-      ];
+    return net ~ [
+    172.20.0.0/14{21,29}, # dn42
+    172.20.0.0/24{28,32}, # dn42 Anycast
+    172.21.0.0/24{28,32}, # dn42 Anycast
+    172.22.0.0/24{28,32}, # dn42 Anycast
+    172.23.0.0/24{28,32}, # dn42 Anycast
+    172.31.0.0/16+,       # ChaosVPN
+    10.100.0.0/14+,       # ChaosVPN
+    10.127.0.0/16{16,32}, # neonetwork
+    10.0.0.0/8{15,24}     # Freifunk.net
+    ];
     }
 
     roa4 table dn42_roa;
     roa6 table dn42_roa_v6;
 
     function is_valid_network_v6() {
-      return net ~ [
-        fd00::/8{44,64} # ULA address space as per RFC 4193
-      ];
+    return net ~ [
+    fd00::/8{44,64} # ULA address space as per RFC 4193
+    ];
     }
 
     protocol kernel {
-        scan time 20;
-
-        ipv6 {
-            import none;
-            export filter {
-                if source = RTS_STATIC then reject;
-                krt_prefsrc = OWNIPv6;
-                accept;
-            };
-        };
+    scan time 20;
+    learn;
+    ipv6 {
+      import none;
+      export filter {
+          if source = RTS_STATIC then reject;
+          krt_prefsrc = OWNIPv6;
+          accept;
+      };
+    };
     };
 
     protocol kernel {
-        scan time 20;
+    scan time 20;
+    learn;
 
-        ipv4 {
-            import none;
-            export filter {
-                if source = RTS_STATIC then reject;
-                krt_prefsrc = OWNIP;
-                accept;
-            };
-        };
+    ipv4 {
+      import none;
+      export filter {
+          if source = RTS_STATIC then reject;
+          krt_prefsrc = OWNIP;
+          accept;
+      };
+    };
     }
 
     protocol static {
-        route OWNNET reject;
+    route OWNNET reject;
 
-        ipv4 {
-            import all;
-            export none;
-        };
+    ipv4 {
+      import all;
+      export none;
+    };
     }
 
     protocol static {
-        route OWNNETv6 reject;
+    route OWNNETv6 reject;
 
-        ipv6 {
-            import all;
-            export none;
-        };
+    ipv6 {
+      import all;
+      export none;
+    };
     }
 
     template bgp dnpeers {
-        local as OWNAS;
-        path metric 1;
+    local as OWNAS;
+    path metric 1;
 
-        ipv4 {
-            import filter {
-              if is_valid_network() && !is_self_net() then {
-                if (roa_check(dn42_roa, net, bgp_path.last) != ROA_VALID) then {
-                  print "[dn42] ROA check failed for ", net, " ASN ", bgp_path.last;
-                  reject;
-                } else accept;
-              } else reject;
-            };
+    ipv4 {
+      import filter {
+        if is_valid_network() && !is_self_net() then {
+          if (roa_check(dn42_roa, net, bgp_path.last) != ROA_VALID) then {
+            print "[dn42] ROA check failed for ", net, " ASN ", bgp_path.last;
+            reject;
+          } else accept;
+        } else reject;
+      };
 
-            export filter { if is_valid_network() && source ~ [RTS_STATIC, RTS_BGP] then accept; else reject; };
-            import limit 1000 action block;
-        };
+      export filter { if is_valid_network() && source ~ [RTS_STATIC, RTS_BGP] then accept; else reject; };
+      import limit 1000 action block;
+    };
 
-        ipv6 {
-            import filter {
-              if is_valid_network_v6() && !is_self_net_v6() then {
-                if (roa_check(dn42_roa_v6, net, bgp_path.last) != ROA_VALID) then {
-                  print "[dn42] ROA check failed for ", net, " ASN ", bgp_path.last;
-                  reject;
-                } else accept;
-              } else reject;
-            };
-            export filter { if is_valid_network_v6() && source ~ [RTS_STATIC, RTS_BGP] then accept; else reject; };
-            import limit 1000 action block;
-        };
+    ipv6 {
+      import filter {
+        if is_valid_network_v6() && !is_self_net_v6() then {
+          if (roa_check(dn42_roa_v6, net, bgp_path.last) != ROA_VALID) then {
+            print "[dn42] ROA check failed for ", net, " ASN ", bgp_path.last;
+            reject;
+          } else accept;
+        } else reject;
+      };
+      export filter { if is_valid_network_v6() && source ~ [RTS_STATIC, RTS_BGP] then accept; else reject; };
+      import limit 1000 action block;
+    };
     }
     protocol static {
-        roa4 { table dn42_roa; };
-        include "/etc/bird/roa_dn42.conf";
+    roa4 { table dn42_roa; };
+    include "/etc/bird/roa_dn42.conf";
     };
 
     protocol static {
-        roa6 { table dn42_roa_v6; };
-        include "/etc/bird/roa_dn42_v6.conf";
+    roa6 { table dn42_roa_v6; };
+    include "/etc/bird/roa_dn42_v6.conf";
     };
 
-    protocol bgp ibgp_my  {
+    # protocol babel int_babel{
+    #     ipv4 {
+    #         import all;
+    #         export all;
+    #     };
+    #     ipv6 {
+    #         import all;
+    #         export all;
+    #     };
+    #     interface "wg_mail" {
+    #          type wired;
+    #     };
+    #     interface "ens3" {
+    #          type wired;
+    #     };
+    #     interface "ens4" {
+    #          type wired;
+    #     };
+    # };
+    # protocol direct {
+    #     ipv4;
+    #     ipv6;
+    #     interface "lo";
+    # };
+
+    protocol bgp ibgp_digital  {
 
       local as OWNAS;
-      neighbor fd48:4b4:f3::1 as OWNAS;
+      neighbor fe80::100%wg_mail as OWNAS;
       direct;
 
       ipv4 {
@@ -170,5 +200,6 @@ _: {
           export all;
       };
     }
+
   '';
 }

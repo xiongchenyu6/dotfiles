@@ -3,6 +3,11 @@
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 { config, pkgs, lib, ... }: {
   imports = [ ./common.nix ];
+
+  qt = {
+    enable = true;
+
+  };
   xdg = {
     enable = true;
     mime = { enable = true; };
@@ -26,6 +31,7 @@
       x11 = { enable = true; };
       size = 32;
     };
+    sessionVariables = { STARSHIP_LOG = "error"; };
   };
 
   gtk = lib.mkIf pkgs.stdenv.isLinux {
@@ -42,7 +48,12 @@
     inputMethod = {
       enabled = "fcitx5";
       fcitx5 = {
-        addons = with pkgs; [ fcitx5-mozc fcitx5-gtk fcitx5-chinese-addons fcitx5-rime ];
+        addons = with pkgs; [
+          fcitx5-mozc
+          fcitx5-gtk
+          fcitx5-chinese-addons
+          fcitx5-rime
+        ];
       };
     };
   };
@@ -60,12 +71,28 @@
     gpg = {
       enable = true;
       settings = {
-        keyserver = "hkp://keyserver.ubuntu.com";
+        keyserver = "hkps://keyserver.ubuntu.com";
         fixed-list-mode = true;
         keyid-format = "0xlong";
         list-options = "show-uid-validity";
-        cert-digest-algo = "SHA256";
+        # cert-digest-algo = "SHA256";
+        # personal-digest-preferences = "SHA256";
       };
+    };
+
+    vscode = {
+      enable = true;
+      extensions = with pkgs.vscode-extensions; [
+        mkhl.direnv
+        golang.go
+        bbenoist.nix
+        redhat.java
+        github.copilot # AI code completion
+        ms-python.python
+        ms-vscode.cpptools
+        vscodevim.vim
+        vadimcn.vscode-lldb
+      ];
     };
 
     chromium = {
@@ -73,10 +100,14 @@
       package = pkgs.brave;
       #google-chrome
     };
+
+    password-store = { enable = true; };
   };
 
   services = lib.mkIf pkgs.stdenv.isLinux {
-    safeeyes.enable = true;
+    # safeeyes.enable = true;
+    pasystray = { enable = true; };
+    poweralertd = { enable = true; };
     emacs = {
       enable = true;
       defaultEditor = true;
@@ -112,6 +143,12 @@
     dropbox = { enable = true; };
     gpg-agent = {
       enable = true;
+      enableExtraSocket = true;
+      extraConfig = ''
+        allow-emacs-pinentry
+        allow-loopback-pinentry
+      '';
+      pinentryFlavor = "emacs";
       enableSshSupport = true;
       sshKeys = [ "6E215C61D97608ED447E9D8BAE448986D75FD8F6" ];
     };

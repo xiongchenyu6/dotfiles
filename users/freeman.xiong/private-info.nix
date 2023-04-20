@@ -1,4 +1,13 @@
-{ profiles, ... }: {
+{ profiles, config, ... }: {
+
+  sops.secrets = {
+    "ssh/freeman.xiong/id_ed25519" = {
+      path = "${config.users.users."freeman.xiong".home}/.ssh/id_ed25519";
+      mode = "600";
+      owner = "freeman.xiong";
+    };
+
+  };
   home-manager = {
     users = {
       "freeman.xiong" = {
@@ -8,13 +17,8 @@
               text = profiles.share.users-dict."freeman.xiong".public-key;
               executable = false;
             };
-            ".ssh/id_ed25519" = {
-              source = ../../secrets/office_pk.key;
-              executable = false;
-            };
           };
         };
-
         programs = {
           git = {
             signing = {
@@ -32,6 +36,7 @@
               user = {
                 name = "freeman";
                 email = "xiongchenyu6@gmail.com";
+                useConfigOnly = true;
               };
             };
           };

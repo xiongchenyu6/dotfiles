@@ -1,8 +1,8 @@
-{ profiles, config, ... }: {
+{ profiles, config, lib, ... }: {
   sops.secrets."oath/seed" = { };
   security = {
     audit = {
-      enable = true;
+      enable = lib.mkForce true;
       rules = [
         "-w /var/log/audit/ -k auditlog"
         "-w /etc/audit/ -p wa -k auditconfig"
