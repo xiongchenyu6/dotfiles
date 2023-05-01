@@ -1414,9 +1414,9 @@ Bind to lsp mode
 ;;         (org-export-exclude-tags '("noexport" "latexonly")))
 ;;       (org-export-to-file 'hugocv (concat name ".md")))
 ;;   )
-(require 'ox-hugocv)
+;; (require 'ox-hugocv)
 
-(setq org-export-backends '(ascii html icalendar latex man odt hugocv hugo))
+;; (setq org-export-backends '(ascii html icalendar latex man odt hugocv hugo))
 
 (setq org-directory "~/Dropbox/Org"
       org-agenda-files (list org-directory)
