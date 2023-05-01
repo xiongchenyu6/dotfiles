@@ -40,16 +40,20 @@
       })
       jetbrains.idea-ultimate
       jdt-language-server
+      kots
       kube-capacity
       kube-prompt
       kubectl
       kubectl-tree
       kubespy
       kubeshark
+      kustomize
       krew
       kconf
       kubelogin-oidc
+      kubevirt
       openlens
+      linkerd
       litecli
       maven
       mattermost-desktop
@@ -60,6 +64,7 @@
       nix-du
       nixfmt
       nix-index-update
+      nil
       node2nix
       nodejs_latest
       nodePackages."bash-language-server"
@@ -67,6 +72,7 @@
       nodePackages."typescript-language-server"
       nodePackages."yaml-language-server"
       nodePackages."vscode-langservers-extracted"
+      nodePackages."yarn"
       nvfetcher
       oath-toolkit
       openai
@@ -97,6 +103,7 @@
         ]))
       qrencode
       ripgrep
+      redis
       rust-analyzer
       rustscan
       rustc
@@ -111,6 +118,7 @@
       socat
       statix
       stow
+      step-cli
       tectonic
       terraform
       terraform-ls
