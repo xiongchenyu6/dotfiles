@@ -58,13 +58,10 @@ text-mode
 ;; (calc (p "taylor(sin(x),x=0,3)" formula) n "----" n (format "%s" (calc-eval formula)))
 ;; (rot13 (p "plain text" text) n "----" n (rot13 text))
 
-rst-mode
-
-(title (make-string (length title) ?=) n (p "Title: " title) n (make-string (length title) ?=) n)
 
 java-mode
 
-(class "public class " (p (file-name-base (or (buffer-file-name) (buffer-name)))) " {" n> r> n "}")
+;; (class "public class " (p (file-name-base (or (buffer-file-name) (buffer-name)))) " {" n> r> n "}")
 
 c-mode :when (re-search-backward "^\\S-*$" (line-beginning-position) 'noerror)
 
@@ -73,7 +70,6 @@ c-mode :when (re-search-backward "^\\S-*$" (line-beginning-position) 'noerror)
 
 org-mode
 
-;; (title "#+title: " p n "#+author: Daniel Mendler" n "#+language: en" n n)
 (quote "#+begin_quote" n> r> n> "#+end_quote")
 (example "#+begin_example" n> r> n> "#+end_example")
 (center "#+begin_center" n> r> n> "#+end_center")

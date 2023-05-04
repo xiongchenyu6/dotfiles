@@ -18,10 +18,7 @@
 
     home-manager = {
       url = "github:nix-community/home-manager";
-      inputs = {
-        nixpkgs.follows = "nixpkgs";
-        utils.follows = "flake-utils";
-      };
+      inputs = { nixpkgs.follows = "nixpkgs"; };
     };
 
     darwin = {

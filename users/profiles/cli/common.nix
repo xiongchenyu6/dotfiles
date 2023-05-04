@@ -51,7 +51,7 @@
             showTime = false;
           };
           clusters = {
-            default = {
+            dev = {
               namespace = {
                 active = "all";
                 favorites = [ "all" "kube-system" "default" ];
@@ -59,7 +59,6 @@
               view = { active = "po"; };
               featureGates = { nodeShell = true; };
               shellPod = {
-                image = "killerAdmin";
                 namespace = "fred";
                 limits = {
                   cpu = "100m";
@@ -67,7 +66,7 @@
                 };
               };
             };
-            test = {
+            office = {
               namespace = {
                 active = "all";
                 favorites = [ "all" "kube-system" "default" ];
@@ -75,7 +74,6 @@
               view = { active = "po"; };
               featureGates = { nodeShell = true; };
               shellPod = {
-                image = "killerAdmin";
                 namespace = "fred";
                 limits = {
                   cpu = "100m";

@@ -24,6 +24,7 @@
       discord
       dive # docker image analyzer
       du-dust
+      datree
       fd
       firefox
       fluxcd
@@ -36,8 +37,12 @@
       grpcurl
       gotron-sdk
       (kubernetes-helm-wrapped.override {
-        plugins = [ kubernetes-helmPlugins.helm-diff ];
+        plugins = [
+          kubernetes-helmPlugins.helm-diff
+          kubernetes-helmPlugins.helm-cm-push
+        ];
       })
+      helmify
       jetbrains.idea-ultimate
       jdt-language-server
       kots
@@ -52,6 +57,7 @@
       kconf
       kubelogin-oidc
       kubevirt
+      kube-score
       openlens
       linkerd
       litecli
@@ -77,6 +83,7 @@
       oath-toolkit
       openai
       openssl
+      popeye
       pulumi-bin
       pulumiPackages.pulumi-aws-native
       pulumiPackages.pulumi-language-go
@@ -112,6 +119,7 @@
       shellcheck
       shfmt
       slack
+      s3cmd
       solc-select
       solium
       sops

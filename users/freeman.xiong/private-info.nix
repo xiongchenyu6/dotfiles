@@ -52,7 +52,7 @@
                 user = "root";
               };
               "git-code-commit.*.amazonaws.com" = {
-                user = "APKA6ECL465SUMKZQKLN";
+                user = "APKA6ECL465SWNEVSVPZ";
               };
               "*.trontech.link" = { user = "freeman.xiong"; };
             };
