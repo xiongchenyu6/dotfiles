@@ -109,7 +109,7 @@
 
     openldap = { enable = true; };
 
-    ympd = { enable = true; };
+    # ympd = { enable = true; };
   };
 
   programs = {
