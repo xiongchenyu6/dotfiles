@@ -601,6 +601,7 @@ Otherwise, show the default maximum number of recent items."
 *** AI complete
 **** copilot
 #+begin_src emacs-lisp
+
 (setq browse-url-browser-function 'browse-url-generic
       browse-url-generic-program "brave")
 
@@ -608,14 +609,26 @@ Otherwise, show the default maximum number of recent items."
 
 (require 'copilot)
 
+(defun copilot-complete-or-accept ()
+  "Command that either triggers a completion or accepts one if one
+is available."
+  (interactive)
+  (if (copilot--overlay-visible)
+      (progn
+        (copilot-accept-completion))
+    (copilot-complete)))
 (add-hook 'prog-mode-hook 'copilot-mode)
+
 (add-hook 'text-mode-hook 'copilot-mode)
 
 (define-key copilot-completion-map (kbd "<tab>") 'copilot-accept-completion)
-
 (define-key copilot-completion-map (kbd "C-<tab>") 'copilot-accept-completion-by-word)
+(define-key copilot-mode-map [C-M-right] #'copilot-accept-completion-by-line)
+
+(define-key global-map (kbd "C-<return>") #'copilot-complete-or-accept)
+
 #+end_src
-**** chatgpt-arcana
+**** COMMENT chatgpt-arcana
 #+begin_src emacs-lisp
 (use-package chatgpt-arcana
   :init (setq chatgpt-arcana-api-key (my-fetch-password :user "xiongchenyu6@gmail" :host "openai.com"))
@@ -642,7 +655,7 @@ Otherwise, show the default maximum number of recent items."
   )
 #+end_src
 
-**** org-ai
+**** COMMENT org-ai
 #+begin_src emacs-lisp
 (use-package org-ai
   :commands (org-ai-mode)
@@ -702,9 +715,8 @@ Otherwise, show the default maximum number of recent items."
         corfu-popupinfo-delay t
         corfu-quit-no-match 'separator)
   (global-corfu-mode)
-  
   (corfu-indexed-mode)
-  ;; (corfu-popupinfo-mode)
+  (corfu-popupinfo-mode)
   
   (define-key corfu-map "\C-q" #'corfu-quick-insert)
   
@@ -719,42 +731,41 @@ Otherwise, show the default maximum number of recent items."
       '(:padding 0 :stroke 0 :margin 0 :radius 0 :height 0.8 :scale 1))
 
 (direnv-mode t)
-(require 'corfu-english-helper)
+;; (require 'corfu-english-helper)
 ;; Optionally configure the cape-capf-buster.
 
 (add-hook 'nix-mode-hook #'(lambda () (add-hook 'before-save-hook #'nix-format-buffer t t)))
 
-(add-hook 'text-mode-hook
-          #'(lambda ()
-              (setq-local corfu-auto-prefix 0)
-              (setq-local completion-at-point-functions
-                          `(
-                            tempel-complete
-                            cape-file
-                            cape-dabbrev
-                            corfu-english-helper-search
-                            )
-                          cape-dabbrev-min-length 5)
-              ))
+;; (add-hook 'text-mode-hook
+;;           #'(lambda ()
+;;               (setq-local corfu-auto-prefix 0)
+;;               (setq-local completion-at-point-functions
+;;                           `(
+;;                             cape-file
+;;                             cape-dabbrev
+;;                             ;; corfu-english-helper-search
+;;                             )
+;;                           cape-dabbrev-min-length 5)
+;;               ))
 
 (define-key global-map (kbd "M-*") 'tempel-insert)
 
-(toggle-corfu-english-helper)
+;; (toggle-corfu-english-helper)
 
-(defun tempel-setup-capf ()
-  ;; Add the Tempel Capf to `completion-at-point-functions'.
-  ;; `tempel-expand' only triggers on exact matches. Alternatively use
-  ;; `tempel-complete' if you want to see all matches, but then you
-  ;; should also configure `tempel-trigger-prefix', such that Tempel
-  ;; does not trigger too often when you don't expect it. NOTE: We add
-  ;; `tempel-expand' *before* the main programming mode Capf, such
-  ;; that it will be tried first.
-  (setq-local completion-at-point-functions
-              (cons #'tempel-complete
-                    completion-at-point-functions))
-  )
+;; (defun tempel-setup-capf ()
+;;   ;; Add the Tempel Capf to `completion-at-point-functions'.
+;;   ;; `tempel-expand' only triggers on exact matches. Alternatively use
+;;   ;; `tempel-complete' if you want to see all matches, but then you
+;;   ;; should also configure `tempel-trigger-prefix', such that Tempel
+;;   ;; does not trigger too often when you don't expect it. NOTE: We add
+;;   ;; `tempel-expand' *before* the main programming mode Capf, such
+;;   ;; that it will be tried first.
+;;   (setq-local completion-at-point-functions
+;;               (cons #'tempel-complete
+;;                     completion-at-point-functions))
+;;   )
 
-(add-hook 'emacs-lisp-mode-hook 'tempel-setup-capf)
+;; (add-hook 'emacs-lisp-mode-hook 'tempel-setup-capf)
 
 (add-to-list 'completion-at-point-functions #'cape-dabbrev)
 (add-to-list 'completion-at-point-functions #'cape-file)
@@ -864,11 +875,11 @@ Otherwise, show the default maximum number of recent items."
           #'(lambda () (setq-local completion-at-point-functions
                               `(,(cape-super-capf
                                   (cape-capf-buster #'eglot-completion-at-point)
-                                  #'tempel-complete
+                                  ;; #'tempel-complete
                                   )
-                                cape-dabbrev
-                                cape-file)
-                              cape-dabbrev-min-length 10)
+                                cape-file
+                                cape-dabbrev)
+                              cape-dabbrev-min-length 15)
               (add-hook 'before-save-hook #'eglot-format-buffer t t)
               ))
 
