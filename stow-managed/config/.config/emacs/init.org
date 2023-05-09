@@ -617,16 +617,13 @@ is available."
       (progn
         (copilot-accept-completion))
     (copilot-complete)))
-(add-hook 'prog-mode-hook 'copilot-mode)
 
+(add-hook 'prog-mode-hook 'copilot-mode)
 (add-hook 'text-mode-hook 'copilot-mode)
 
 (define-key copilot-completion-map (kbd "<tab>") 'copilot-accept-completion)
 (define-key copilot-completion-map (kbd "C-<tab>") 'copilot-accept-completion-by-word)
-(define-key copilot-mode-map [C-M-right] #'copilot-accept-completion-by-line)
-
-(define-key global-map (kbd "C-<return>") #'copilot-complete-or-accept)
-
+(define-key copilot-completion-map (kbd "C-<return>") #'copilot-accept-completion-by-line)
 #+end_src
 **** COMMENT chatgpt-arcana
 #+begin_src emacs-lisp
@@ -664,42 +661,6 @@ is available."
   :init
   (add-hook 'org-mode-hook #'org-ai-mode))
 #+end_src
-**** COMMENT codeium
-#+begin_src emacs-lisp
-(add-to-list 'load-path "~/Git/codeium.el/")
-
-(use-package codeium
-  ;; if you use straight
-  ;; :straight '(:type git :host github :repo "Exafunction/codeium.el")
-  ;; otherwise, make sure that the codeium.el file is on load-path
-
-  :init
-  ;; use globally
-  ;; (add-to-list 'completion-at-point-functions #'codeium-completion-at-point)
-  ;; or on a hook
-  ;; (add-hook 'python-mode-hook
-  ;;     (lambda ()
-  ;;         (setq-local completion-at-point-functions '(codeium-completion-at-point))))
-
-  ;; if you want multiple completion backends, use cape (https://github.com/minad/cape):
-  ;; (add-hook 'python-mode-hook
-  ;;     (lambda ()
-  ;;         (setq-local completion-at-point-functions
-  ;;             (list (cape-super-capf #'codeium-completion-at-point #'lsp-completion-at-point)))))
-  ;; an async company-backend is coming soon!
-
-  ;; codeium-completion-at-point is autoloaded, but you can
-  ;; optionally set a timer, which might speed up things as the
-  ;; codeium local language server takes ~0.2s to start up
-  ;; (add-hook 'emacs-startup-hook
-  ;;  (lambda () (run-with-timer 0.1 nil #'codeium-init)))
-
-  :config
-  ;; (setq use-dialog-box nil) ;; do not use popup boxes
-
-  ;; if you don't want to use customize to save the api-key
-  (setq codeium/metadata/api_key "7deba492-a52c-44d1-bd16-b2ed16e97805"))
-#+end_src
 ** Lang
 *** completion
 #+begin_src emacs-lisp
@@ -714,9 +675,10 @@ is available."
         corfu-preview-current nil
         corfu-popupinfo-delay t
         corfu-quit-no-match 'separator)
+  
   (global-corfu-mode)
   (corfu-indexed-mode)
-  (corfu-popupinfo-mode)
+  ;; (corfu-popupinfo-mode)
   
   (define-key corfu-map "\C-q" #'corfu-quick-insert)
   
@@ -731,41 +693,41 @@ is available."
       '(:padding 0 :stroke 0 :margin 0 :radius 0 :height 0.8 :scale 1))
 
 (direnv-mode t)
-;; (require 'corfu-english-helper)
+(require 'corfu-english-helper)
 ;; Optionally configure the cape-capf-buster.
 
 (add-hook 'nix-mode-hook #'(lambda () (add-hook 'before-save-hook #'nix-format-buffer t t)))
 
-;; (add-hook 'text-mode-hook
-;;           #'(lambda ()
-;;               (setq-local corfu-auto-prefix 0)
-;;               (setq-local completion-at-point-functions
-;;                           `(
-;;                             cape-file
-;;                             cape-dabbrev
-;;                             ;; corfu-english-helper-search
-;;                             )
-;;                           cape-dabbrev-min-length 5)
-;;               ))
+(add-hook 'text-mode-hook
+          #'(lambda ()
+              (setq-local corfu-auto-prefix 0)
+              (setq-local completion-at-point-functions
+                          `(
+                            cape-file
+                            cape-dabbrev
+                            ;; corfu-english-helper-search
+                            )
+                          cape-dabbrev-min-length 5)
+              ))
 
 (define-key global-map (kbd "M-*") 'tempel-insert)
 
-;; (toggle-corfu-english-helper)
+(toggle-corfu-english-helper)
 
-;; (defun tempel-setup-capf ()
-;;   ;; Add the Tempel Capf to `completion-at-point-functions'.
-;;   ;; `tempel-expand' only triggers on exact matches. Alternatively use
-;;   ;; `tempel-complete' if you want to see all matches, but then you
-;;   ;; should also configure `tempel-trigger-prefix', such that Tempel
-;;   ;; does not trigger too often when you don't expect it. NOTE: We add
-;;   ;; `tempel-expand' *before* the main programming mode Capf, such
-;;   ;; that it will be tried first.
-;;   (setq-local completion-at-point-functions
-;;               (cons #'tempel-complete
-;;                     completion-at-point-functions))
-;;   )
+(defun tempel-setup-capf ()
+  ;; Add the Tempel Capf to `completion-at-point-functions'.
+  ;; `tempel-expand' only triggers on exact matches. Alternatively use
+  ;; `tempel-complete' if you want to see all matches, but then you
+  ;; should also configure `tempel-trigger-prefix', such that Tempel
+  ;; does not trigger too often when you don't expect it. NOTE: We add
+  ;; `tempel-expand' *before* the main programming mode Capf, such
+  ;; that it will be tried first.
+  (setq-local completion-at-point-functions
+              (cons #'tempel-complete
+                    completion-at-point-functions))
+  )
 
-;; (add-hook 'emacs-lisp-mode-hook 'tempel-setup-capf)
+(add-hook 'emacs-lisp-mode-hook 'tempel-setup-capf)
 
 (add-to-list 'completion-at-point-functions #'cape-dabbrev)
 (add-to-list 'completion-at-point-functions #'cape-file)
@@ -875,7 +837,7 @@ is available."
           #'(lambda () (setq-local completion-at-point-functions
                               `(,(cape-super-capf
                                   (cape-capf-buster #'eglot-completion-at-point)
-                                  ;; #'tempel-complete
+                                  #'tempel-complete
                                   )
                                 cape-file
                                 cape-dabbrev)

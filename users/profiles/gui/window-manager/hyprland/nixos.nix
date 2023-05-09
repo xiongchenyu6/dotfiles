@@ -122,9 +122,6 @@
           general {
           # See https://wiki.hyprland.org/Configuring/Variables/ for more
           # no_cursor_warps = 1
-          env = WLR_NO_HARDWARE_CURSORS,1
-          env = LIBVA_DRIVER_NAME,nvidia
-          env = XDG_SESSION_TYPE,wayland
           gaps_in = 5
           gaps_out = 15
           border_size = 2
