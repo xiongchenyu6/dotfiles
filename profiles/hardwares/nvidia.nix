@@ -9,6 +9,7 @@ let
   '';
   kver = config.boot.kernelPackages.kernel.version;
 in {
+
   # services.fstrim.enable = lib.mkDefault true;
   # hardware.cpu.amd.updateMicrocode =
   #   lib.mkDefault config.hardware.enableRedistributableFirmware;
@@ -40,7 +41,7 @@ in {
   # ];
   # environment.systemPackages = [ nvidia-offload ];
 
-  # hardware.nvidia.prime = { amdgpuBusId = lib.mkForce "PCI:5:0:0"; };
+  hardware.nvidia.prime = { amdgpuBusId = lib.mkForce "PCI:5:0:0"; };
   # hardware.nvidia.prime = {
   #   # reverseSync.enable = true;
   #   offload.enable = true;

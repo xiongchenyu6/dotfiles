@@ -61,6 +61,8 @@
     };
   };
   services = {
+    openssh = { openFirewall = true; };
+
     bird2 = {
       enable = true;
       config = lib.mine.bird2-inner-config "172.22.240.100" "fd48:4b4:f3::4";

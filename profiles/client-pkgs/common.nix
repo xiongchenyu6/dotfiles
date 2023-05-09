@@ -59,6 +59,7 @@
       kubelogin-oidc
       kubevirt
       kube-score
+      killall
       openlens
       linkerd
       litecli
@@ -130,6 +131,7 @@
       statix
       stow
       step-cli
+      spring-boot-cli
       tectonic
       terraform
       terraform-ls

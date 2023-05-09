@@ -25,12 +25,12 @@
     };
   };
   home = lib.mkIf pkgs.stdenv.isLinux {
-    pointerCursor = {
-      name = "Vanilla-DMZ";
-      package = pkgs.vanilla-dmz;
-      x11 = { enable = true; };
-      size = 32;
-    };
+    # pointerCursor = {
+    #   name = "Vanilla-DMZ";
+    #   package = pkgs.vanilla-dmz;
+    #   x11 = { enable = true; };
+    #   size = 32;
+    # };
     sessionVariables = { STARSHIP_LOG = "error"; };
   };
 

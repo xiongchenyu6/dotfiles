@@ -3,19 +3,6 @@
   # paths it should manage.
 
   programs = {
-    broot = {
-      enable = true;
-      settings = { };
-    };
-
-    nix-index = { enable = true; };
-
-    noti = { enable = true; };
-
-    sqls = { enable = true; };
-
-    octant = { enable = true; };
-
     alacritty = {
       enable = true;
       settings = {
@@ -43,7 +30,31 @@
       };
     };
 
-    java = { enable = true; };
+    broot = {
+      enable = true;
+      settings = { };
+    };
+
+    nix-index = { enable = true; };
+
+    noti = { enable = true; };
+
+    sqls = { enable = true; };
+
+    octant = { enable = true; };
+
+    java = {
+      enable = true;
+      # package = pkgs.openjdk17;
+    };
+
+    # helix = {
+    #   enable = true;
+    #   languages = [{
+    #     auto-format = true;
+    #     name = "rust";
+    #   }];
+    # };
 
     topgrade = {
       enable = true;
@@ -153,7 +164,6 @@
           direnv
           dap-mode
           doom-modeline
-          eglot-java
           emacsql-sqlite-builtin # for org-roam
           format-all
           gradle-mode

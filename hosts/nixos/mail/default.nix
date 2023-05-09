@@ -219,6 +219,7 @@
     };
   };
   services = {
+    openssh = { openFirewall = true; };
     babeld.enable = true;
     babeld.extraConfig = ''
       redistribute ip 172.20.0.0/14
