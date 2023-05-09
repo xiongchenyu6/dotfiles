@@ -16,6 +16,7 @@
     systemPackages = with pkgs; [
       appimage-run
       awscli2
+      bundix
       cachix
       cargo
       deadnix
@@ -83,6 +84,7 @@
       oath-toolkit
       openai
       openssl
+      pg-ldap-sync
       popeye
       pulumi-bin
       pulumiPackages.pulumi-aws-native
@@ -114,6 +116,7 @@
       rust-analyzer
       rustscan
       rustc
+      ruby
       sbcl
       scalafmt
       shellcheck
