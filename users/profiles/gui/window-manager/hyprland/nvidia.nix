@@ -1,4 +1,4 @@
-{ pkgs, ... }: {
+{ pkgs, lib, ... }: {
   home = {
     sessionVariables = {
       WLR_NO_HARDWARE_CURSORS = "1";
@@ -14,6 +14,15 @@
       hyprland = {
         package = pkgs.hyprland-nvidia;
         nvidiaPatches = true;
+        extraConfig = lib.mkDefault ''
+          general {
+          # See https://wiki.hyprland.org/Configuring/Variables/ for more
+          # no_cursor_warps = 1
+          env = WLR_NO_HARDWARE_CURSORS,1
+          env = LIBVA_DRIVER_NAME,nvidia
+          env = XDG_SESSION_TYPE,wayland
+          }
+        '';
       };
     };
   };

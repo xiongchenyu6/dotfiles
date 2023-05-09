@@ -102,7 +102,7 @@
       };
     };
 
-    keychain = { enable = true; };
+    # keychain = { enable = true; };
 
     readline = { enable = true; };
 

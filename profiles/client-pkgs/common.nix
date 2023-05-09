@@ -27,7 +27,6 @@
       du-dust
       datree
       fd
-      firefox
       fluxcd
       git-crypt
       gitAndTools.gitflow
@@ -40,10 +39,11 @@
       (kubernetes-helm-wrapped.override {
         plugins = [
           kubernetes-helmPlugins.helm-diff
-          kubernetes-helmPlugins.helm-cm-push
+          # kubernetes-helmPlugins.helm-cm-push
         ];
       })
       helmify
+      hey
       jetbrains.idea-ultimate
       jdt-language-server
       kots
