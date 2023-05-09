@@ -11,7 +11,7 @@
 #+begin_src emacs-lisp
 (setenv "XDG_SESSION_TYPE" "wayland")
 ;; (setenv "LSP_USE_PLISTS" "true")
-(setenv "PATH" (concat (getenv "PATH") ":/home/freeman.xiong/.config/emacs/.cache/lsp/eclipse.jdt.ls/bin/"))
+;; (setenv "PATH" (concat (getenv "PATH") ":/home/freeman.xiong/.config/emacs/.cache/lsp/eclipse.jdt.ls/bin/"))
 #+end_src
 ** UI
 *** Font
@@ -303,7 +303,7 @@
      '("A" . meow-to-block)
      '("p" . meow-yank)
      '("q" . meow-quit)
-     '("Q" . kill-current-buffer)
+     '("Q" . kill-buffer-and-window)
      '("r" . meow-replace)
      '("R" . meow-swap-grab)
      '("s" . meow-kill)
@@ -601,13 +601,14 @@ Otherwise, show the default maximum number of recent items."
 *** AI complete
 **** copilot
 #+begin_src emacs-lisp
-
 (setq browse-url-browser-function 'browse-url-generic
       browse-url-generic-program "brave")
 
 (setq completion-cycle-threshold nil)
 
 (require 'copilot)
+
+(setq copilot-idle-delay 0.4)
 
 (defun copilot-complete-or-accept ()
   "Command that either triggers a completion or accepts one if one
@@ -618,12 +619,16 @@ is available."
         (copilot-accept-completion))
     (copilot-complete)))
 
+;; (setq global-copilot-mode t)
 (add-hook 'prog-mode-hook 'copilot-mode)
 (add-hook 'text-mode-hook 'copilot-mode)
 
-(define-key copilot-completion-map (kbd "<tab>") 'copilot-accept-completion)
-(define-key copilot-completion-map (kbd "C-<tab>") 'copilot-accept-completion-by-word)
+(define-key copilot-completion-map (kbd "<tab>") #'copilot-accept-completion)
+(define-key copilot-completion-map (kbd "C-<tab>") #'copilot-accept-completion-by-word)
 (define-key copilot-completion-map (kbd "C-<return>") #'copilot-accept-completion-by-line)
+(define-key copilot-completion-map (kbd "M-p") #'copilot-previous-completion)
+(define-key copilot-completion-map (kbd "M-n") #'copilot-next-completion)
+
 #+end_src
 **** COMMENT chatgpt-arcana
 #+begin_src emacs-lisp
@@ -670,17 +675,15 @@ is available."
         corfu-auto-delay 0
         corfu-auto-prefix 2
         corfu-cycle t
-        corfu-preselect-first nil
+        corfu-preselect nil
         corfu-on-exact-match nil
         corfu-preview-current nil
-        corfu-popupinfo-delay t
+        corfu-popupinfo-delay 0.2
         corfu-quit-no-match 'separator)
   
   (global-corfu-mode)
   (corfu-indexed-mode)
-  ;; (corfu-popupinfo-mode)
-  
-  (define-key corfu-map "\C-q" #'corfu-quick-insert)
+  (corfu-popupinfo-mode)
   
   (add-to-list 'corfu-margin-formatters #'kind-icon-margin-formatter)
   :hook
@@ -705,7 +708,7 @@ is available."
                           `(
                             cape-file
                             cape-dabbrev
-                            ;; corfu-english-helper-search
+                            corfu-english-helper-search
                             )
                           cape-dabbrev-min-length 5)
               ))
@@ -814,10 +817,22 @@ is available."
 
 *** eglog
 #+begin_src emacs-lisp
+     (defun lsp-java--ls-command ()
+       (list "jdt-language-server"
+             "-configuration" "~/.config/emacs/.cache/lsp/eclipse.jdt.ls/config-linux"
+             "-data" "~/.config/emacs/.cache/lsp/eclipse.jdt.ls/java-workspace"))
 (use-package eglot
   :ensure t
   :config
   (setq eglot-sync-connect 0)
+  (setq eglot-autoshutdown t)
+  (add-to-list 'eglot-server-programs
+               `(java-mode . ("jdt-language-server"
+             "-configuration" "~/.config/emacs/.cache/lsp/eclipse.jdt.ls/config-linux"
+             "-data" "~/.config/emacs/.cache/lsp/eclipse.jdt.ls/java-workspace"       "--jvm-arg=-XX:+UseG1GC"
+             "-noverify"
+            "--jvm-arg=-XX:+UseStringDeduplication")
+                                 ))
   :hook
   ((haskell-mode c-mode c++-mode python-mode go-mode go-ts-mode rust-mode sh-mode js-mode js2-mode typescript-mode nix-mode web-mode css-mode scss-mode less-css-mode json-mode yaml-mode dockerfile-mode markdown-mode terraform-mode) . eglot-ensure)
   :bind (:map eglot-mode-map
@@ -848,15 +863,6 @@ is available."
 (defun my/lsp-mode-setup-completion ()
   (setf (alist-get 'styles (alist-get 'eglot-capf completion-category-defaults))
         '(orderless)))
-
-
-(use-package eglot-java
-  :ensure t
-  :after eglot
-  :config
-  (add-to-list 'eglot-server-programs '(java-mode . ("jdtls")))
-  (add-hook 'java-mode-hook 'eglot-java-mode)
-  )
 #+end_src
 
 *** COMMENT Format All
@@ -1035,39 +1041,8 @@ is available."
 *** Java
 #+begin_src emacs-lisp
 (add-hook 'jave-mode-hook (lambda () (c-toggle-hungry-state) (c-toggle-auto-newline)))
-
-(setq lsp-java-content-provider-preferred "fernflower")
-;; ;;
-;; ;; (setq lsp-java-java-path "/Library/Java/JavaVirtualMachines/openjdk.jdk/Contents/Home/bin/java")
-
-(setq lsp-java-java-path "/nix/store/7fa5bvjrxmcjcxjwidnp231f9j6i1vpz-home-manager-path/bin/java")
-
-;; (setq lsp-java-configuration-runtimes '[
-;;                                         (:name "JavaSE-1.8"
-;; 					       :path "/Library/Java/JavaVirtualMachines/zulu-8.jdk/Contents/Home"
-;;                                                )
-;;                                         (:name "JavaSE-18"
-;; 					       :path "/Library/Java/JavaVirtualMachines/openjdk.jdk/Contents/Home"
-;;                                          :default t
-;;                                                )
-;;                                         ])
-;; (advice-add 'lsp :before (lambda (&rest _args) (eval '(setf (lsp-session-server-id->folders (lsp-session)) (ht)))))
-
-;; (setq lsp-java-imports-gradle-wrapper-checksums [(:sha256 "66406bdca09802f8d7e09a344a8474bbb19abd7f7ac1a4d6682910520a11d08d" :allowed t)])
-
-;; (setq lsp-java-import-gradle-java-home "/Library/Java/JavaVirtualMachines/zulu-8.jdk/Contents/Home")
-
-;; (require 'lsp-java-boot)
-
-;; to enable the lenses
-;; (add-hook 'lsp-mode-hook #'lsp-lens-mode)
-;; (add-hook 'java-mode-hook #'lsp-java-boot-lens-mode)
-
-;; (setq
-;;  lsp-java-trace-server t)
-;; (setq
-;;  lsp-java-progress-report t)
 #+end_src
+
 *** javascript
 #+begin_src emacs-lisp
 (with-eval-after-load 'js

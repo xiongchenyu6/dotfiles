@@ -99,10 +99,13 @@
   # hardware.video.hidpi.enable = lib.mkForce true;
 
   networking = {
+
     firewall = {
       allowedTCPPorts = [ 89 179 ];
       allowedUDPPorts = [ 89 179 6696 33434 ];
       enable = true;
+      interfaces.wg_mail.allowedTCPPorts = [ 2222 ];
+      interfaces.wg_mail.allowedUDPPorts = [ 2222 ];
     };
 
     networkmanager = {

@@ -21,6 +21,7 @@
           env = WLR_NO_HARDWARE_CURSORS,1
           env = LIBVA_DRIVER_NAME,nvidia
           env = XDG_SESSION_TYPE,wayland
+          env = NIXOS_OZONE_WL,1
           }
         '';
       };

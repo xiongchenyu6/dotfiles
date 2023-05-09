@@ -1,4 +1,4 @@
-{ pkgs, ... }: {
+{ pkgs, lib, ... }: {
 
   # sops.secrets."openldap/adminPass" = {
   #   owner = "nobody";
@@ -26,6 +26,7 @@
 
   services = {
     openssh = {
+      openFirewall = lib.mkDefault false;
       enable = true;
       startWhenNeeded = false;
       settings = {
