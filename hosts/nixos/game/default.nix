@@ -48,9 +48,10 @@
 
     loader = {
       systemd-boot = {
+        configurationLimit = 12;
         enable = true;
-        netbootxyz.enable = true;
-        memtest86.enable = true;
+        # netbootxyz.enable = true;
+        # memtest86.enable = true;
       };
       efi = {
         canTouchEfiVariables = true;
@@ -142,6 +143,8 @@
     };
 
     postgresql = {
+      package = pkgs.postgresql_15;
+
       enable = true;
       authentication = ''
         local all all trust

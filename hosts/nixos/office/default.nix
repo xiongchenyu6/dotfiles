@@ -273,6 +273,7 @@
     dgraph = { enable = false; };
 
     postgresql = {
+      package = pkgs.postgresql_15;
       enable = true;
       authentication = ''
         local all all trust

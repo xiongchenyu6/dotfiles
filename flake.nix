@@ -230,9 +230,8 @@
             ];
           };
           game = {
-            modules = [
-              # nixos-hardware.nixosModules.lenovo-legion-16ach6h-hybrid
-            ];
+            modules =
+              [ nixos-hardware.nixosModules.lenovo-legion-16ach6h-hybrid ];
           };
         };
 
