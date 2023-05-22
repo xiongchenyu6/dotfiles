@@ -69,7 +69,7 @@
     gpg = {
       enable = true;
       settings = {
-        keyserver = "hkps://keyserver.ubuntu.com";
+        # keyserver = "hkps://keyserver.ubuntu.com";
         fixed-list-mode = true;
         keyid-format = "0xlong";
         list-options = "show-uid-validity";
