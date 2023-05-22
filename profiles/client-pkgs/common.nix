@@ -147,6 +147,7 @@
       wget
       wpsoffice
       yarn2nix
+      yubikey-manager
       zookeeper
       zoom-us
     ];
