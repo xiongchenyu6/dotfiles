@@ -28,6 +28,7 @@
       datree
       fd
       fluxcd
+      glab
       git-crypt
       gitAndTools.gitflow
       gitleaks
