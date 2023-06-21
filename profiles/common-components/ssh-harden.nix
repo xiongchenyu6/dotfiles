@@ -31,8 +31,8 @@
       startWhenNeeded = false;
       settings = {
         X11Forwarding = true;
-        passwordAuthentication = true;
-        logLevel = "VERBOSE";
+        PasswordAuthentication = true;
+        LogLevel = "VERBOSE";
         Ciphers = [
           "chacha20-poly1305@openssh.com"
           "aes256-gcm@openssh.com"

@@ -12,6 +12,7 @@
       wf-recorder
       xdg_utils
       wev
+      waypipe
     ];
   };
   xdg = {
