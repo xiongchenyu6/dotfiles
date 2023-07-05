@@ -24,7 +24,7 @@
 
   nixpkgs = {
     config = {
-      permittedInsecurePackages = [ "openssl-1.1.1u" "electron-19.0.7"];
+      permittedInsecurePackages = [ "openssl-1.1.1u" "electron-19.0.7" ];
       allowBroken = true;
     };
   };
@@ -62,10 +62,10 @@
   };
 
   networking = {
-    # extraHosts = "172.32.140.254 gitlab.trontech.link";
+    # extraHosts = "13.59.171.215       winklink.org";
     nameservers = [ "8.8.8.8" "10.23.0.10" ];
     firewall = {
-      allowedTCPPorts = [ 89 179];
+      allowedTCPPorts = [ 89 179 ];
       allowedUDPPorts = [ 89 179 6696 33434 ];
       enable = true;
       interfaces.wg_mail.allowedTCPPorts = [ 2222 ];

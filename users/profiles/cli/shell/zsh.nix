@@ -118,7 +118,7 @@
         }) [ "alias-tips" "wakatime-zsh-plugin" ];
       enableCompletion = true;
       enableAutosuggestions = true;
-      enableSyntaxHighlighting = true;
+      syntaxHighlighting.enable = true;
     };
   };
 }

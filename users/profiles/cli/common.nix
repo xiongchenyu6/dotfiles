@@ -59,7 +59,7 @@
               view = { active = "po"; };
               featureGates = { nodeShell = true; };
               shellPod = {
-                namespace = "fred";
+                namespace = "default";
                 limits = {
                   cpu = "100m";
                   memory = "100Mi";
@@ -74,7 +74,7 @@
               view = { active = "po"; };
               featureGates = { nodeShell = true; };
               shellPod = {
-                namespace = "fred";
+                namespace = "default";
                 limits = {
                   cpu = "100m";
                   memory = "100Mi";
@@ -89,8 +89,7 @@
               view = { active = "po"; };
               featureGates = { nodeShell = true; };
               shellPod = {
-                image = "killerAdmin";
-                namespace = "fred";
+                namespace = "default";
                 limits = {
                   cpu = "100m";
                   memory = "100Mi";
