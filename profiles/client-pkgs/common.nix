@@ -69,6 +69,7 @@
       microsoft-edge-dev
       mongosh
       mycli
+      my2sql
       neofetch
       nix-du
       nixfmt
@@ -85,12 +86,12 @@
       nvfetcher
       oath-toolkit
       openai
-     # openssl
+      # openssl
       pg-ldap-sync
       popeye
       pulumi-bin
       pulumiPackages.pulumi-aws-native
-     # pulumiPackages.pulumi-language-go
+      # pulumiPackages.pulumi-language-go
       pgadmin4-desktopmode
       pgcli
       plantuml
