@@ -443,6 +443,6 @@
         };
       };
     };
-    emacs = { package = pkgs.emacsPgtk; };
+    emacs = { package = pkgs.emacs-pgtk; };
   };
 }

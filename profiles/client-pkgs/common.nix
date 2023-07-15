@@ -27,6 +27,7 @@
       du-dust
       datree
       fd
+      ffmpeg-full
       fluxcd
       glab
       git-crypt
@@ -38,10 +39,7 @@
       grpcurl
       gotron-sdk
       (kubernetes-helm-wrapped.override {
-        plugins = [
-          kubernetes-helmPlugins.helm-diff
-          # kubernetes-helmPlugins.helm-cm-push
-        ];
+        plugins = [ kubernetes-helmPlugins.helm-diff ];
       })
       helmify
       hey
