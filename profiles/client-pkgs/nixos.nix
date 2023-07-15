@@ -116,6 +116,7 @@
   };
 
   programs = {
+    steam = { enable = true; };
     npm = { enable = true; };
     # atop = {
     #   enable = true;
