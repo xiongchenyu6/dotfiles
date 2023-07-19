@@ -11,7 +11,6 @@
       keep-derivations = true
     '';
   };
-
   environment = {
     systemPackages = with pkgs; [
       appimage-run
@@ -72,7 +71,8 @@
       nix-du
       nixfmt
       nix-index-update
-      nil
+      nixpacks
+      nixd
       node2nix
       nodejs_latest
       nodePackages."bash-language-server"
