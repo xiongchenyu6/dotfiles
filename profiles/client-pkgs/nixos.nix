@@ -55,8 +55,8 @@
       pciutils
       patchelf
       pinentry
-      poetry
-      poetry2nix.cli
+      # poetry
+      # poetry2nix.cli
       procs
       qemu_kvm
       tdesktop
@@ -76,7 +76,7 @@
     tpm2 = {
       enable = true;
       abrmd.enable = true;
-      pkcs11.enable = true;
+      # pkcs11.enable = true;
       tctiEnvironment = {
         enable = true;
         interface = "tabrmd";

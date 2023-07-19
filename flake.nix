@@ -139,23 +139,12 @@
       };
     };
 
-    nil = {
-      url = "github:oxalica/nil";
-      inputs = {
-        nixpkgs.follows = "nixpkgs";
-        flake-utils.follows = "flake-utils";
-        rust-overlay.url = "github:oxalica/rust-overlay";
-        rust-overlay.inputs.flake-utils.follows = "flake-utils";
-        rust-overlay.inputs.nixpkgs.follows = "nixpkgs";
-      };
-    };
-
   };
 
   outputs = { self, nixpkgs, impermanence, nur, nixos-hardware, emacs
     , home-manager, devshell, pre-commit-hooks, nix-alien, xiongchenyu6
     , winklink, digga, sops-nix, grub2-themes, hyprland, hyprpaper, hyprpicker
-    , foundry, nil, poetry2nix, ... }@inputs:
+    , foundry, poetry2nix, ... }@inputs:
     with nixpkgs;
     with lib;
     let
@@ -169,7 +158,6 @@
         hyprpaper
         hyprpicker
         foundry
-        nil
         poetry2nix
       ] ++ [ ];
     in digga.lib.mkFlake {
