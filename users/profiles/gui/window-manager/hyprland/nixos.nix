@@ -289,7 +289,6 @@
   programs = {
     waybar = {
       enable = true;
-      package = pkgs.waybar-hyprland;
       systemd = { enable = true; };
       style = ./waybar.css;
       settings = {

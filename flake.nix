@@ -108,11 +108,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    hyprland = {
-      url = "github:hyprwm/Hyprland";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
     hyprpaper = {
       url = "github:hyprwm/hyprpaper";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -143,8 +138,8 @@
 
   outputs = { self, nixpkgs, impermanence, nur, nixos-hardware, emacs
     , home-manager, devshell, pre-commit-hooks, nix-alien, xiongchenyu6
-    , winklink, digga, sops-nix, grub2-themes, hyprland, hyprpaper, hyprpicker
-    , foundry, poetry2nix, ... }@inputs:
+    , winklink, digga, sops-nix, grub2-themes, hyprpaper, hyprpicker, foundry
+    , poetry2nix, ... }@inputs:
     with nixpkgs;
     with lib;
     let
@@ -154,7 +149,6 @@
         xiongchenyu6
         nix-alien
         sops-nix
-        hyprland
         hyprpaper
         hyprpicker
         foundry
@@ -178,8 +172,6 @@
         (_: prev: {
           __dontExport = true;
           winklink = winklink.packages."${prev.system}".default;
-          hyprland =
-            hyprland.packages."${prev.system}".default; # TODO hyprland overlays did not include libdrm in it overlays
           lib = prev.lib.extend
             (_lfinal: _lprev: { mine = import ./lib { inherit lib; }; });
         })
@@ -274,7 +266,6 @@
       home = {
         modules = [
           nur.hmModules.nur
-          hyprland.homeManagerModules.default
           sops-nix.homeManagerModules.sops
           impermanence.nixosModules.home-manager.impermanence
           (import ./profiles/sops.nix)
