@@ -130,6 +130,7 @@
       socat
       statix
       stow
+      sshpass
       step-cli
       spring-boot-cli
       tectonic

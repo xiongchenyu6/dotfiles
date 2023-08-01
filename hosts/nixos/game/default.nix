@@ -9,7 +9,7 @@
     profiles.dvorak
     profiles.users."freeman.xiong"
     profiles.hardwares.misc
-    profiles.hardwares.nvidia
+    # profiles.hardwares.nvidia
   ] ++ suites.client-base ++ suites.client-network;
 
   sops.secrets."wireguard/office" = { };
@@ -62,7 +62,7 @@
   };
 
   networking = {
-    # extraHosts = "13.59.171.215       winklink.org";
+    extraHosts = "172.32.134.86       www.huobiwallet.com";
     nameservers = [ "8.8.8.8" "10.23.0.10" ];
     firewall = {
       allowedTCPPorts = [ 89 179 ];
@@ -135,6 +135,7 @@
   };
 
   services = {
+
     netbird = { enable = true; };
     babeld = {
       enable = true;
