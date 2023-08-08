@@ -242,6 +242,7 @@
       darwin = {
         hostDefaults = {
           system = "aarch64-darwin";
+
           channelName = "nixpkgs";
           modules = [
             digga.darwinModules.nixConfig
@@ -297,11 +298,11 @@
         users = {
           root = { suites, ... }: { imports = suites.nix-remote-build; };
           freeman-cli = { suites, ... }: { imports = suites.cli; };
-          freeman-hyprland = { suites, ... }: {
-            imports = suites.cli ++ suites.linux-gui ++ suites.dvorak-hyprland;
-          };
           freeman-xmonad = { suites, ... }: {
             imports = suites.cli ++ suites.linux-gui ++ suites.xmonad;
+          };
+          freeman-hyprland = { suites, ... }: {
+            imports = suites.cli ++ suites.linux-gui ++ suites.dvorak-hyprland;
           };
           freeman-hyprland-nvidia = { suites, ... }: {
             imports = suites.cli ++ suites.linux-gui-nvidia

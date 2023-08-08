@@ -39,7 +39,7 @@
 
   nixpkgs = {
     config = {
-      permittedInsecurePackages = [ "openssl-1.1.1t" "electron-19.0.7"];
+      permittedInsecurePackages = [ "openssl-1.1.1v" "electron-19.0.7" ];
       allowBroken = true;
     };
   };
@@ -48,10 +48,10 @@
     binfmt.emulatedSystems = [ "aarch64-linux" ];
     # kernel.sysctl."net.core.rmem_max" = 2500000;
     supportedFilesystems = [ "nfs4" ];
-    kernelModules = [ "hid-nintendo" "v4l2loopback" "dummy" ];
-    initrd.availableKernelModules = [ "sd_mod" ];
+    # kernelModules = [ "hid-nintendo" "v4l2loopback" "dummy" ];
+    # initrd.availableKernelModules = [ "sd_mod" ];
 
-    extraModulePackages = with config.boot.kernelPackages; [ v4l2loopback.out ];
+    # extraModulePackages = with config.boot.kernelPackages; [ v4l2loopback.out ];
     kernel = {
       sysctl = {
         "net.ipv4.ip_forward" = 1;
@@ -66,12 +66,12 @@
       };
     };
 
-    extraModprobeConfig = ''
-      options snd-intel-dspcfg dsp_driver=1
-      options kvm_intel nested=1
-    '';
+    # extraModprobeConfig = ''
+    #   options snd-intel-dspcfg dsp_driver=1
+    #   options kvm_intel nested=1
+    # '';
 
-    tmpOnTmpfs = lib.mkDefault true;
+    tmp.useTmpfs = lib.mkDefault true;
 
     loader = {
       efi = {
@@ -81,7 +81,6 @@
       grub = {
         enable = true;
         efiSupport = true;
-        version = 2;
         device = "nodev";
         configurationLimit = 5;
         useOSProber = true;
@@ -180,22 +179,22 @@
             ];
           }];
         };
-        wg_tronlink = {
-          inherit privateKeyFile;
-          address = [ "172.64.224.3/24" "fe80::103/64" ];
-          peers = [{
-            endpoint = "vpn.trontech.link:22617";
-            publicKey = profiles.share.hosts-dict.tronlink.wg.public-key;
-            persistentKeepalive = 5;
-            allowedIPs = [
-              "172.64.224.1/24"
-              "fe80::101/64"
-              "172.32.0.0/16"
-              "18.218.96.133/32"
-              "13.212.2.33"
-            ];
-          }];
-        };
+        # wg_tronlink = {
+        #   inherit privateKeyFile;
+        #   address = [ "172.64.224.3/24" "fe80::103/64" ];
+        #   peers = [{
+        #     endpoint = "vpn.trontech.link:22617";
+        #     publicKey = profiles.share.hosts-dict.tronlink.wg.public-key;
+        #     persistentKeepalive = 5;
+        #     allowedIPs = [
+        #       "172.64.224.1/24"
+        #       "fe80::101/64"
+        #       "172.32.0.0/16"
+        #       "18.218.96.133/32"
+        #       "13.212.2.33"
+        #     ];
+        #   }];
+        # };
       };
     };
     useDHCP = lib.mkDefault true;
@@ -262,7 +261,7 @@
 
   services = {
 
-    # netbird.enable = true;
+    netbird.enable = true;
 
     babeld.enable = true;
     babeld.interfaces = {
@@ -272,7 +271,9 @@
         type = "wired";
       };
     };
-
+    openvpn.servers = {
+      serverVPN = { config = "config ${./smartphone-client.ovpn} "; };
+    };
     dgraph = { enable = false; };
 
     postgresql = {

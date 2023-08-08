@@ -31,6 +31,8 @@
           "podman"
           "tss"
           "libvirtd"
+          "pulse"
+          "pipewire"
         ];
       };
     };
