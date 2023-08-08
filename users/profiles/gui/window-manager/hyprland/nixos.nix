@@ -9,6 +9,7 @@
       '');
       INPUT_METHOD = "fcitx";
       XIM_SERVERS = "fcitx";
+      NIXOS_OZONE_WL = "1";
       # LSP_USE_PLISTS = "true";
       NIX_SSHOPTS = "-Y";
     };

@@ -8,6 +8,7 @@
     printing = { enable = true; };
     upower = { enable = true; };
     pipewire = {
+      # systemWide = true;
       enable = true;
       audio.enable = true;
       alsa = {
