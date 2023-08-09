@@ -25,6 +25,8 @@
       dive # docker image analyzer
       du-dust
       datree
+      easyrsa
+      # openvpn
       fd
       ffmpeg-full
       fluxcd

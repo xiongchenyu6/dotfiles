@@ -272,7 +272,7 @@
       };
     };
     openvpn.servers = {
-      serverVPN = { config = "config ${./smartphone-client.ovpn} "; };
+      serverVPN = { config = "config ${./example_config.ovpn} "; };
     };
     dgraph = { enable = false; };
 
