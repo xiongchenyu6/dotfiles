@@ -7,4 +7,6 @@
 id_rsa filter=git-crypt diff=git-crypt
 passwordFile filter=git-crypt diff=git-crypt
 ldap.toml filter=git-crypt diff=git-crypt
+*.pem filter=git-crypt diff=git-crypt
+*.ovpn filter=git-crypt diff=git-crypt
 *.gpg diff=gpg
