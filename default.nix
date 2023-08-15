@@ -84,31 +84,8 @@
       };
     };
 
-    digga = {
-      url = "github:divnix/digga";
-      inputs = {
-        nixpkgs.follows = "nixpkgs";
-        nixlib.follows = "nixpkgs";
-        nixpkgs-unstable.follows = "nixpkgs";
-        darwin.follows = "darwin";
-        devshell.follows = "devshell";
-        home-manager.follows = "home-manager";
-        flake-compat.follows = "flake-compat";
-      };
-    };
-
     sops-nix = {
       url = "github:Mic92/sops-nix";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
-    hyprpaper = {
-      url = "github:hyprwm/hyprpaper";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
-    hyprpicker = {
-      url = "github:hyprwm/hyprpicker";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
@@ -132,8 +109,7 @@
 
   outputs = { self, nixpkgs, impermanence, nur, nixos-hardware, emacs
     , home-manager, devshell, pre-commit-hooks, nix-alien, xiongchenyu6
-    , winklink, digga, sops-nix, hyprpaper, hyprpicker, foundry, poetry2nix, ...
-    }@inputs:
+    , winklink, sops-nix, foundry, poetry2nix, ... }@inputs:
     with nixpkgs;
     with lib;
     let
@@ -143,24 +119,12 @@
         xiongchenyu6
         nix-alien
         sops-nix
-        hyprpaper
-        hyprpicker
         foundry
         poetry2nix
       ] ++ [ ];
-    in digga.lib.mkFlake {
-      inherit self inputs;
-      supportedSystems =
+    in flake-parts.lib.mkFlake { inherit inputs; } {
+      systems =
         [ "x86_64-linux" "aarch64-linux" "aarch64-darwin" "x86_64-darwin" ];
-      #supportedSystems = allSystems;
-
-      channelsConfig = {
-        allowUnfree = true;
-        allowBroken = true;
-        # allowUnsupportedSystem = true;
-      };
-
-      channels = { nixpkgs = { }; };
 
       sharedOverlays = overlays ++ [
         (_: prev: {
