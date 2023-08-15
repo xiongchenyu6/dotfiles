@@ -11,8 +11,8 @@
   wayland = {
     windowManager = {
       hyprland = {
-        package = pkgs.hyprland-nvidia;
-        nvidiaPatches = true;
+        # package = pkgs.hyprland-nvidia;
+        # enableNvidiaPatches = true;
       };
     };
   };

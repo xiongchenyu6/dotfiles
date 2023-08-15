@@ -2,14 +2,20 @@
 { config, lib, suites, profiles, pkgs, ... }: {
   imports = [
     ./hardware-configuration.nix
-    profiles.server-apps.mysql
-    profiles.core.nixos
-    profiles.client-pkgs.nixos
-    profiles.users.root.nixos
-    profiles.dvorak
-    profiles.users."freeman.xiong"
-    profiles.hardwares.misc
-  ] ++ suites.client-base ++ suites.client-network;
+    ../../../profiles/core/nixos.nix
+    ../../../profiles/client-pkgs/nixos.nix
+    ../../../users/root/nixos.nix
+    ../../../profiles/dvorak.nix
+    ../../../users/freeman.xiong
+    ../../../profiles/hardwares/misc.nix
+    ../../../profiles/client-pkgs/nixos.nix
+    ../../../profiles/sops.nix
+    ../../../profiles/common-components
+    ../../../profiles/auto-login/greetd.nix
+    ../../../profiles/common-apps/dn42
+    ../../../profiles/common-apps/bird-inner.nix
+    ../../../profiles/common-apps/kerberos.nix
+  ];
 
   sops.secrets."wireguard/office" = { };
 
@@ -84,8 +90,6 @@
         device = "nodev";
         configurationLimit = 5;
         useOSProber = true;
-        theme = pkgs.nixos-grub2-theme;
-        splashImage = ./grub.jpg;
       };
     };
   };
@@ -275,37 +279,6 @@
       enable = true;
       authentication = ''
         local all all trust
-      '';
-    };
-
-    chainlink = {
-      enable = false;
-      apicredentialsFilePath = ./chainlink/apicredentials;
-      configFilePath = ./chainlink/core.toml;
-      secretsFilePath = ./chainlink/secrets.toml;
-    };
-
-    java-tron = {
-      enable = false;
-      event-plugin = "mongodb";
-    };
-
-    mongodb = {
-      enable = false;
-      bind_ip = "0.0.0.0";
-      enableAuth = true;
-      package = pkgs.my-mongodb;
-      initialRootPassword = "admin";
-      # initialScript = initialScript;
-      extraConfig = ''
-        net:
-          port: 27017
-        systemLog:
-          logAppend: true
-        storage:
-          wiredTiger:
-             engineConfig:
-                cacheSizeGB: 2
       '';
     };
 
