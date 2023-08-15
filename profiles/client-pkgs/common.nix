@@ -26,7 +26,6 @@
       du-dust
       datree
       easyrsa
-      # openvpn
       fd
       ffmpeg-full
       fluxcd
@@ -91,8 +90,6 @@
       popeye
       pulumi-bin
       pulumiPackages.pulumi-aws-native
-      # pulumiPackages.pulumi-language-go
-      pgadmin4-desktopmode
       pgcli
       plantuml
       (python3.withPackages (_:
@@ -150,7 +147,7 @@
       wget
       wpsoffice
       yarn2nix
-      yubikey-manager
+      # yubikey-manager
       zookeeper
       zoom-us
     ];

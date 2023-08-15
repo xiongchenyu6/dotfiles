@@ -84,14 +84,8 @@
         device = "nodev";
         configurationLimit = 5;
         useOSProber = true;
-      };
-      grub2-theme = {
-        enable = true;
-        icon = "white";
-        theme = "whitesur";
-        screen = "1080p";
+        theme = pkgs.nixos-grub2-theme;
         splashImage = ./grub.jpg;
-        footer = true;
       };
     };
   };

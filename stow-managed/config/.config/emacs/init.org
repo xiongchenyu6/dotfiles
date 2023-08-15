@@ -706,6 +706,7 @@ is available."
               (setq-local corfu-auto-prefix 0)
               (setq-local completion-at-point-functions
                           `(
+                            tempel-complete
                             cape-file
                             cape-dabbrev
                             corfu-english-helper-search
@@ -1119,20 +1120,20 @@ is available."
         rime-predicate-hydra-p
         rime-predicate-prog-in-code-p))
 
-(defvar input-method-cursor-color "Orange"
-  "Default cursor color if using an input method.")
+;; (defvar input-method-cursor-color "Orange"
+;;   "Default cursor color if using an input method.")
 
-(defvar default-cursor-color (frame-parameter nil 'cursor-color)
-  "Default text cursor color.")
+;; (defvar default-cursor-color (frame-parameter nil 'cursor-color)
+;;   "Default text cursor color.")
 
-(defun change-cursor-color-on-input-method ()
-  "Set cursor color depending on whether an input method is used or not."
-  (interactive)
-  (set-cursor-color (if current-input-method
-                        input-method-cursor-color
-                      default-cursor-color)))
+;; (defun change-cursor-color-on-input-method ()
+;;   "Set cursor color depending on whether an input method is used or not."
+;;   (interactive)
+;;   (set-cursor-color (if current-input-method
+;;                         input-method-cursor-color
+;;                       default-cursor-color)))
 
-(add-hook 'post-command-hook 'change-cursor-color-on-input-method)
+;; (add-hook 'post-command-hook 'change-cursor-color-on-input-method)
 #+end_src
 ** Error check
 *** flycheck
@@ -1466,7 +1467,7 @@ Bind to lsp mode
    '(":" . replace-regexp))
 #+end_src
 
-*** Treemancs
+*** Treemacs
 #+begin_src emacs-lisp
 (use-package treemacs
   :config
@@ -1475,7 +1476,7 @@ Bind to lsp mode
   (setq treemacs-fringe-indicator-mode t)
   (setq treemacs-filewatch-mode t)
   (setq treemacs-file-event-delay 100)
-  (setq treemacs-is-never-other-window t)
+  (setq treemacs-is-never-other-window nil)
   (setq treemacs-silent-refresh    t)
   (setq treemacs-file-follow-delay 0.1))
 
