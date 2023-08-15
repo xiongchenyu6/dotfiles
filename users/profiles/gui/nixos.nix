@@ -142,11 +142,11 @@
     gpg-agent = {
       enable = true;
       enableExtraSocket = true;
-      extraConfig = ''
-        allow-emacs-pinentry
-        allow-loopback-pinentry
-      '';
-      pinentryFlavor = "emacs";
+      # extraConfig = ''
+      #   allow-emacs-pinentry
+      #   allow-loopback-pinentry
+      # '';
+      # pinentryFlavor = "emacs";
       enableSshSupport = true;
       sshKeys = [ "6E215C61D97608ED447E9D8BAE448986D75FD8F6" ];
     };

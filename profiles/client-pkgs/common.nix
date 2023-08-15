@@ -33,7 +33,7 @@
       git-crypt
       gitAndTools.gitflow
       gitleaks
-      gitops
+      weave-gitops
       gopls
       graphviz
       grpcurl

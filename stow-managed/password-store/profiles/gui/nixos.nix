@@ -69,7 +69,7 @@
     gpg = {
       enable = true;
       settings = {
-        keyserver = "hkps://keyserver.ubuntu.com";
+        # keyserver = "hkps://keyserver.ubuntu.com";
         fixed-list-mode = true;
         keyid-format = "0xlong";
         list-options = "show-uid-validity";
@@ -141,12 +141,11 @@
     dropbox = { enable = true; };
     gpg-agent = {
       enable = true;
-      enableExtraSocket = true;
-      extraConfig = ''
-        allow-emacs-pinentry
-        allow-loopback-pinentry
-      '';
-      pinentryFlavor = "emacs";
+      # enableExtraSocket = true;
+      # extraConfig = ''
+      #   allow-loopback-pinentry
+      # '';
+      pinentryFlavor = "curses";
       enableSshSupport = true;
       sshKeys = [ "6E215C61D97608ED447E9D8BAE448986D75FD8F6" ];
     };

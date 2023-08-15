@@ -2,15 +2,20 @@
 { lib, suites, profiles, config, pkgs, ... }: {
   imports = [
     ./hardware-configuration.nix
-    profiles.server-apps.mysql
-    profiles.core.nixos
-    profiles.client-pkgs.nixos
-    profiles.users.root.nixos
-    profiles.dvorak
-    profiles.users."freeman.xiong"
-    profiles.hardwares.misc
-    # profiles.hardwares.nvidia
-  ] ++ suites.client-base ++ suites.client-network;
+    ../../../profiles/core/nixos.nix
+    ../../../profiles/client-pkgs/nixos.nix
+    ../../../users/root/nixos.nix
+    ../../../profiles/dvorak.nix
+    ../../../users/freeman.xiong
+    ../../../profiles/hardwares/misc.nix
+    ../../../profiles/client-pkgs/nixos.nix
+    ../../../profiles/sops.nix
+    ../../../profiles/common-components
+    ../../../profiles/auto-login/greetd.nix
+    ../../../profiles/common-apps/dn42
+    ../../../profiles/common-apps/bird-inner.nix
+    ../../../profiles/common-apps/kerberos.nix
+  ];
 
   sops.secrets."wireguard/office" = { };
 
@@ -24,7 +29,7 @@
 
   nixpkgs = {
     config = {
-      permittedInsecurePackages = [ "openssl-1.1.1u" "electron-19.0.7" ];
+      permittedInsecurePackages = [ "openssl-1.1.1v" "electron-19.0.7" ];
       allowBroken = true;
     };
   };
@@ -62,7 +67,7 @@
   };
 
   networking = {
-    extraHosts = "172.32.134.86       www.huobiwallet.com";
+    # extraHosts = "54.255.248.117      www.winklink.org";
     nameservers = [ "8.8.8.8" "10.23.0.10" ];
     firewall = {
       allowedTCPPorts = [ 89 179 ];
@@ -98,7 +103,7 @@
           '';
 
           peers = [{
-            endpoint = "mail.freeman.engineer:22617";
+            endpoint = "43.156.66.157:22617";
             publicKey = profiles.share.hosts-dict.mail.wg.public-key;
             persistentKeepalive = 30;
             allowedIPs = [

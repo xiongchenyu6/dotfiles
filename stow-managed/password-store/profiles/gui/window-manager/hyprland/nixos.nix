@@ -74,7 +74,7 @@
         enable = true;
         xwayland = {
           enable = true;
-          hidpi = true;
+          # hidpi = true;
         };
 
         extraConfig = lib.mkDefault ''
@@ -289,7 +289,7 @@
   programs = {
     waybar = {
       enable = true;
-      package = pkgs.waybar-hyprland;
+      # package = pkgs.waybar-hyprland;
       systemd = { enable = true; };
       style = ./waybar.css;
       settings = {

@@ -75,7 +75,7 @@
         enable = true;
         xwayland = {
           enable = true;
-          hidpi = true;
+          # hidpi = true;
         };
 
         extraConfig = lib.mkDefault ''
@@ -137,10 +137,6 @@
           # See https://wiki.hyprland.org/Configuring/Variables/ for more
 
           rounding = 10
-          blur = yes
-          blur_size = 3
-          blur_passes = 1
-          blur_new_optimizations = true
 
           drop_shadow = yes
           shadow_range = 4
@@ -278,6 +274,10 @@
       };
     };
   };
+  # blur_new_optimizations = true
+  # blur_passes = 1
+  # blur_size = 3
+  # blur = yes
 
   services = {
     wlsunset = {

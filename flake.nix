@@ -4,33 +4,22 @@
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
-
     nixos-hardware.url = "github:NixOS/nixos-hardware/master";
-
     nur.url = "github:nix-community/NUR";
-
     flake-utils.url = "github:numtide/flake-utils";
-
     flake-compat = {
       url = "github:edolstra/flake-compat";
       flake = false;
     };
-
     home-manager = {
       url = "github:nix-community/home-manager";
       inputs = { nixpkgs.follows = "nixpkgs"; };
     };
-
     darwin = {
       url = "github:lnl7/nix-darwin/master";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-
-    devshell = {
-      url = "github:numtide/devshell";
-      inputs = { nixpkgs.follows = "nixpkgs"; };
-    };
-
+    devenv.url = "github:cachix/devenv";
     emacs = {
       url = "github:nix-community/emacs-overlay";
       inputs = {
@@ -38,7 +27,6 @@
         nixpkgs.follows = "nixpkgs";
       };
     };
-
     xiongchenyu6 = {
       url = "github:xiongchenyu6/nur-packages";
       inputs = {
@@ -46,19 +34,15 @@
         flake-utils.follows = "flake-utils";
       };
     };
-
     impermanence.url = "github:nix-community/impermanence";
-
     nixos-generators = {
       url = "github:nix-community/nixos-generators";
       inputs = { nixpkgs.follows = "nixpkgs"; };
     };
-
     flake-utils-plus = {
       url = "github:gytis-ivaskevicius/flake-utils-plus";
       inputs.flake-utils.follows = "flake-utils";
     };
-
     pre-commit-hooks = {
       url = "github:cachix/pre-commit-hooks.nix";
       inputs = {
@@ -66,7 +50,6 @@
         flake-utils.follows = "flake-utils";
       };
     };
-
     nix-alien = {
       url = "github:thiagokokada/nix-alien";
       inputs = {
@@ -81,19 +64,6 @@
         nixpkgs.follows = "nixpkgs";
         flake-utils.follows = "flake-utils";
         devshell.follows = "devshell";
-      };
-    };
-
-    digga = {
-      url = "github:divnix/digga";
-      inputs = {
-        nixpkgs.follows = "nixpkgs";
-        nixlib.follows = "nixpkgs";
-        nixpkgs-unstable.follows = "nixpkgs";
-        darwin.follows = "darwin";
-        devshell.follows = "devshell";
-        home-manager.follows = "home-manager";
-        flake-compat.follows = "flake-compat";
       };
     };
 
@@ -157,7 +127,6 @@
       channelsConfig = {
         allowUnfree = true;
         allowBroken = true;
-        # allowUnsupportedSystem = true;
       };
 
       channels = { nixpkgs = { }; };
@@ -169,7 +138,6 @@
           lib = prev.lib.extend
             (_lfinal: _lprev: { mine = import ./lib { inherit lib; }; });
         })
-
       ];
 
       nixos = {
@@ -179,11 +147,9 @@
 
           modules = [
             sops-nix.nixosModules.sops
-            digga.nixosModules.nixConfig
             home-manager.nixosModules.home-manager
             nur.nixosModules.nur
             impermanence.nixosModules.impermanence
-            xiongchenyu6.nixosModules.bttc
           ];
         };
         imports = [ (digga.lib.importHosts ./hosts/nixos) ];
@@ -193,11 +159,8 @@
             modules = [ xiongchenyu6.nixosModules.oci-arm-host-capacity ];
           };
           office = {
-            modules = [
-              xiongchenyu6.nixosModules.java-tron
-              xiongchenyu6.nixosModules.chainlink
-              nixos-hardware.nixosModules.lenovo-thinkpad-x1-10th-gen
-            ];
+            modules =
+              [ nixos-hardware.nixosModules.lenovo-thinkpad-x1-10th-gen ];
           };
           game = {
             modules =

@@ -1,7 +1,7 @@
 { modulesPath, suites, profiles, config, ... }: {
   imports = [
     (modulesPath + "/profiles/qemu-guest.nix")
-    profiles.server-apps.acme
+    ../../../profiles/server-apps/acme
     profiles.server-apps.admin.kerberos
     profiles.server-apps.admin.openldap
     profiles.server-apps.admin.sasl
