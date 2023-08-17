@@ -1,4 +1,3 @@
-_:
 with builtins; rec {
 
   users = [

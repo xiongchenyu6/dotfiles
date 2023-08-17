@@ -1,28 +1,37 @@
-{ modulesPath, suites, profiles, config, ... }: {
+{ modulesPath, profiles, config, lib, ... }: {
   imports = [
     (modulesPath + "/profiles/qemu-guest.nix")
     ../../../profiles/server-apps/acme
-    profiles.server-apps.admin.kerberos
-    profiles.server-apps.admin.openldap
-    profiles.server-apps.admin.sasl
-    profiles.server-apps.admin.sssd
-    profiles.server-apps.bgp.bird-border
-    profiles.server-apps.dns.bind
-    profiles.server-apps.log.loki
-    profiles.server-apps.mail.postfix
-    profiles.server-apps.mail.dovecot2
-    profiles.server-apps.mail.alps
-    profiles.server-apps.monitor.endlessh-go
-    profiles.server-apps.monitor.grafana
-    profiles.server-apps.monitor.prometheus
-    profiles.server-apps.proxy.nginx
-    profiles.server-apps.atuin
-    profiles.server-apps.webapps.keycloak
-    profiles.server-apps.oci-arm-host-capacity
-    profiles.server-pkgs.nixos
-    profiles.users.root.nixos
-    profiles.users."freeman.xiong"
-  ] ++ suites.server-base;
+    ../../../profiles/server-apps/admin/kerberos.nix
+    ../../../profiles/server-apps/admin/openldap.nix
+    ../../../profiles/server-apps/admin/sasl.nix
+    ../../../profiles/server-apps/admin/sssd.nix
+    ../../../profiles/server-apps/bgp/bird-border.nix
+    ../../../profiles/server-apps/dns/bind.nix
+    ../../../profiles/server-apps/log/loki.nix
+    ../../../profiles/server-apps/mail/postfix.nix
+    ../../../profiles/server-apps/mail/dovecot2.nix
+    ../../../profiles/server-apps/mail/alps.nix
+    ../../../profiles/server-apps/monitor/endlessh-go.nix
+    ../../../profiles/server-apps/monitor/grafana.nix
+    ../../../profiles/server-apps/monitor/prometheus.nix
+    ../../../profiles/server-apps/proxy/nginx.nix
+    ../../../profiles/server-apps/atuin.nix
+    ../../../profiles/server-apps/webapps/keycloak.nix
+    ../../../profiles/server-apps/oci-arm-host-capacity.nix
+    ../../../profiles/server-pkgs/nixos.nix
+    ../../../users/root/nixos.nix
+    ../../../users/freeman.xiong
+    ../../../profiles/sops.nix
+    ../../../profiles/common-components
+    ../../../profiles/common-apps/dn42
+    ../../../profiles/common-apps/bird-inner.nix
+    ../../../profiles/common-apps/kerberos.nix
+    ../../../profiles/server-components
+    ../../../profiles/server-apps/log/promtail.nix
+    ../../../profiles/server-apps/admin/sssd.nix
+    ../../../profiles/server-apps/monitor/node-exporter.nix
+  ];
 
   boot.loader.grub.device = "/dev/vda";
   boot.initrd.availableKernelModules = [ "ata_piix" "uhci_hcd" "xen_blkfront" ];
@@ -37,7 +46,7 @@
 
   boot = {
     #isContainer = true;
-    cleanTmpDir = true;
+    tmp.cleanOnBoot = true;
     kernel = {
       sysctl = {
         "net.ipv4.ip_forward" = 1;
@@ -57,7 +66,11 @@
   # sops.age.keyFile = "/var/lib/sops-nix/key.txt";
   # sops.age.generateKey = true;
 
-  networking = {
+  networking = let
+    file-path = builtins.split "/" (toString ./.);
+    hostName = lib.last file-path;
+  in {
+    inherit hostName;
     # interfaces = {
     #   lo = {
     #     ipv4 = {
