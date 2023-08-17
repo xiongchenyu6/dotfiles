@@ -4,22 +4,30 @@
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+
     nixos-hardware.url = "github:NixOS/nixos-hardware/master";
+
     nur.url = "github:nix-community/NUR";
+
     flake-utils.url = "github:numtide/flake-utils";
-    flake-compat = {
-      url = "github:edolstra/flake-compat";
-      flake = false;
-    };
+
     home-manager = {
       url = "github:nix-community/home-manager";
       inputs = { nixpkgs.follows = "nixpkgs"; };
     };
+
     darwin = {
       url = "github:lnl7/nix-darwin/master";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
     devenv.url = "github:cachix/devenv";
+    nix2container = {
+      url = "github:nlewo/nix2container";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    mk-shell-bin.url = "github:rrbutani/nix-mk-shell-bin";
+
     emacs = {
       url = "github:nix-community/emacs-overlay";
       inputs = {
@@ -27,6 +35,9 @@
         nixpkgs.follows = "nixpkgs";
       };
     };
+
+    flake-parts.url = "github:hercules-ci/flake-parts";
+
     xiongchenyu6 = {
       url = "github:xiongchenyu6/nur-packages";
       inputs = {
@@ -34,15 +45,9 @@
         flake-utils.follows = "flake-utils";
       };
     };
+
     impermanence.url = "github:nix-community/impermanence";
-    nixos-generators = {
-      url = "github:nix-community/nixos-generators";
-      inputs = { nixpkgs.follows = "nixpkgs"; };
-    };
-    flake-utils-plus = {
-      url = "github:gytis-ivaskevicius/flake-utils-plus";
-      inputs.flake-utils.follows = "flake-utils";
-    };
+
     pre-commit-hooks = {
       url = "github:cachix/pre-commit-hooks.nix";
       inputs = {
@@ -50,6 +55,7 @@
         flake-utils.follows = "flake-utils";
       };
     };
+
     nix-alien = {
       url = "github:thiagokokada/nix-alien";
       inputs = {
@@ -58,27 +64,8 @@
       };
     };
 
-    winklink = {
-      url = "github:wink-link/winklink/feature/update-java-and-dependencies";
-      inputs = {
-        nixpkgs.follows = "nixpkgs";
-        flake-utils.follows = "flake-utils";
-        devshell.follows = "devshell";
-      };
-    };
-
     sops-nix = {
       url = "github:Mic92/sops-nix";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
-    hyprpaper = {
-      url = "github:hyprwm/hyprpaper";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
-    hyprpicker = {
-      url = "github:hyprwm/hyprpicker";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
@@ -101,188 +88,244 @@
   };
 
   outputs = { self, nixpkgs, impermanence, nur, nixos-hardware, emacs
-    , home-manager, devshell, pre-commit-hooks, nix-alien, xiongchenyu6
-    , winklink, digga, sops-nix, hyprpaper, hyprpicker, foundry, poetry2nix, ...
-    }@inputs:
+    , home-manager, devenv, flake-parts, pre-commit-hooks, nix-alien
+    , xiongchenyu6, sops-nix, foundry, poetry2nix, ... }@inputs:
     with nixpkgs;
     with lib;
     let
       overlays = map (x: x.overlays.default or x.overlay) [
         emacs
-        devshell
         xiongchenyu6
         nix-alien
         sops-nix
-        hyprpaper
-        hyprpicker
         foundry
         poetry2nix
-      ] ++ [ ];
-    in digga.lib.mkFlake {
-      inherit self inputs;
-      supportedSystems =
-        [ "x86_64-linux" "aarch64-linux" "aarch64-darwin" "x86_64-darwin" ];
-      #supportedSystems = allSystems;
-
-      channelsConfig = {
-        allowUnfree = true;
-        allowBroken = true;
-      };
-
-      channels = { nixpkgs = { }; };
-
+      ];
       sharedOverlays = overlays ++ [
         (_: prev: {
           __dontExport = true;
-          winklink = winklink.packages."${prev.system}".default;
           lib = prev.lib.extend
             (_lfinal: _lprev: { mine = import ./lib { inherit lib; }; });
         })
       ];
-
-      nixos = {
-        hostDefaults = {
-          channelName = "nixpkgs";
-          system = "x86_64-linux";
-
-          modules = [
-            sops-nix.nixosModules.sops
-            home-manager.nixosModules.home-manager
-            nur.nixosModules.nur
-            impermanence.nixosModules.impermanence
-          ];
-        };
-        imports = [ (digga.lib.importHosts ./hosts/nixos) ];
-        hosts = {
-          # arm = { system = "aarch64-linux"; };
-          mail = {
-            modules = [ xiongchenyu6.nixosModules.oci-arm-host-capacity ];
-          };
-          office = {
-            modules =
-              [ nixos-hardware.nixosModules.lenovo-thinkpad-x1-10th-gen ];
-          };
-          game = {
-            modules =
-              [ nixos-hardware.nixosModules.lenovo-legion-16ach6h-hybrid ];
-          };
-        };
-
-        importables = rec {
-          profiles = digga.lib.rakeLeaves ./profiles // {
-            users = digga.lib.rakeLeaves ./users;
-
-            share = import ./profiles/shares.nix { inherit lib; };
-          };
-          suites = with profiles; rec {
-            base = [ core.nixos sops ];
-            common-comps = builtins.attrValues common-components;
-            server-comps = builtins.attrValues server-components;
-            client-base = base ++ common-comps ++ [
-              # auto-login.lightdm
-              auto-login.greetd
-            ];
-            client-network =
-              [ common-apps.dn42 common-apps.bird-inner common-apps.kerberos ];
-            server-base = base ++ common-comps ++ server-comps ++ [
-              server-apps.log.promtail
-              server-apps.admin.sssd
-              server-apps.monitor.node-exporter
-              common-apps.dn42
-              common-apps.kerberos
-            ];
-          };
-        };
-      };
-
-      darwin = {
-        hostDefaults = {
-          system = "aarch64-darwin";
-
-          channelName = "nixpkgs";
-          modules = [
-            digga.darwinModules.nixConfig
-            home-manager.darwinModules.home-manager
-          ];
-        };
-
-        imports = [ (digga.lib.importHosts ./hosts/darwin) ];
-        hosts = { XIONGs-MacBook-Pro = { system = "x86_64-darwin"; }; };
-        importables = rec {
-          profiles = digga.lib.rakeLeaves ./profiles // {
-            users = digga.lib.rakeLeaves ./users;
-            share = import ./profiles/shares.nix { inherit lib; };
-          };
-          suites = with profiles; {
-            base = [ core.darwin ];
-            full = [ core.darwin client-pkgs.darwin ];
-          };
-        };
-      };
-
-      home = {
-        modules = [
-          nur.hmModules.nur
-          sops-nix.homeManagerModules.sops
-          impermanence.nixosModules.home-manager.impermanence
-          (import ./profiles/sops.nix)
-        ];
-
-        importables = rec {
-          profiles = digga.lib.rakeLeaves ./users/profiles // {
-            share = import ./profiles/shares.nix { inherit lib; };
-          };
-          suites = with profiles; {
-            nix-remote-build = [ use-remote-builder ];
-            cli = [ cli.common cli.shell.zsh ];
-            linux-gui = [ gui.nixos gui.mpd ];
-            linux-gui-nvidia = [
-              cli.common
-              cli.shell.zsh
-              gui.nixos
-              gui.mpd
-              gui.window-manager.hyprland.nvidia
-            ];
-            mac-gui = [ gui.darwin cli.common cli.shell.zsh ];
-            dvorak-hyprland = [
-              gui.window-manager.hyprland.dvorak
-              gui.window-manager.hyprland.nixos
-            ];
-            xmonad = [ gui.window-manager.xmonad ];
-          };
-        };
-        users = {
-          root = { suites, ... }: { imports = suites.nix-remote-build; };
-          freeman-cli = { suites, ... }: { imports = suites.cli; };
-          freeman-xmonad = { suites, ... }: {
-            imports = suites.cli ++ suites.linux-gui ++ suites.xmonad;
-          };
-          freeman-hyprland = { suites, ... }: {
-            imports = suites.cli ++ suites.linux-gui ++ suites.dvorak-hyprland;
-          };
-          freeman-hyprland-nvidia = { suites, ... }: {
-            imports = suites.cli ++ suites.linux-gui-nvidia
-              ++ suites.dvorak-hyprland;
-          };
-          xiongchenyu = { suites, ... }: { imports = suites.mac-gui; };
-        };
-      };
-
-      devshell = ./shell;
-
-      outputsBuilder = channels: {
-        checks = {
-          pre-commit-check =
-            pre-commit-hooks.lib."${channels.nixpkgs.system}".run {
-              src = ./.;
-              hooks = {
-                nixfmt.enable = true;
-                statix.enable = true;
-                deadnix.enable = true;
-                shellcheck.enable = true;
-                shfmt.enable = true;
-              };
+      darwin-modules = [ home-manager.darwinModules.home-manager ];
+      homemanager-modules = [
+        nur.hmModules.nur
+        sops-nix.homeManagerModules.sops
+        impermanence.nixosModules.home-manager.impermanence
+        (import ./profiles/sops.nix)
+      ];
+      nixos-modules = [
+        sops-nix.nixosModules.sops
+        home-manager.nixosModules.home-manager
+        nur.nixosModules.nur
+        impermanence.nixosModules.impermanence
+        xiongchenyu6.nixosModules.bttc
+        ({ modulesPath, ... }: {
+          nixpkgs = {
+            system = "x86_64-linux";
+            config = {
+              allowUnfree = true;
+              allowBroken = true;
             };
+            overlays = sharedOverlays;
+          };
+          home-manager.sharedModules = homemanager-modules;
+          home-manager.useGlobalPkgs = true;
+          # home-manager.useUserPackages = true;
+        })
+      ];
+
+    in flake-parts.lib.mkFlake { inherit inputs; } {
+      imports =
+        [ inputs.devenv.flakeModule inputs.pre-commit-hooks.flakeModule ];
+      systems =
+        [ "x86_64-linux" "aarch64-linux" "aarch64-darwin" "x86_64-darwin" ];
+
+      perSystem = { config, self', inputs', pkgs, system, ... }: {
+        apps = let
+          type = "app";
+          getip = ''
+            usage() {
+              echo "Usage: $0 [-p] [-u user] hostname" >&2
+              echo "  -p        Get public IP address" >&2
+              echo "  -u user   SSH username (default: root)" >&2
+              exit 1
+            }
+
+            public=false
+            user="root"
+
+            while getopts "pu:" opt; do
+              case ''${opt} in
+                p)
+                  public=true
+                  ;;
+                u)
+                  user=$OPTARG
+                  ;;
+                \?)
+                  echo "Invalid option: -$OPTARG" >&2
+                  usage
+                  ;;
+              esac
+            done
+
+            shift $((OPTIND -1))
+
+            if [ $# -ne 1 ]; then
+              usage
+            fi
+
+            host=$1
+            json_file=pulumi.json
+
+            if [ "$public" = true ]; then
+              ip_type="''${host}-public-ip"
+            else
+              ip_type="''${host}-private-ip"
+            fi
+
+            # Use jq to extract the IP address from the JSON file
+            echo ''${ip_type}
+            ip_address=$(jq -r .\"''${ip_type}\" $json_file)
+
+            if [ -z "$ip_address" ]; then
+              echo "Error: Could not find IP address for host '$host' in file '$json_file'"
+              exit 1
+            fi
+          '';
+        in {
+          ssh-to = {
+            inherit type;
+            program = builtins.toString (pkgs.writeShellScript "ssh-to" ''
+              ${getip}
+              zssh $NIX_SSHOPTS ''${user}@''${ip_address}
+            '');
+          };
+
+          deploy = {
+            inherit type;
+            program = builtins.toString (pkgs.writeShellScript "deploy" ''
+              ${getip}
+              nixos-rebuild --target-host ''${user}@''${ip_address} switch --use-remote-sudo --flake .\#''${host} --verbose
+            '');
+          };
+
+          dry-build = {
+            inherit type;
+            program = builtins.toString (pkgs.writeShellScript "dry-build" ''
+              ${getip}
+              nixos-rebuild --target-host ''${user}@''${ip_address} dry-build --use-remote-sudo --flake .\#''${host} --verbose
+            '');
+          };
+
+          updateHosts = {
+            inherit type;
+            program = builtins.toString (pkgs.writeShellScript "updateHosts" ''
+              set -x
+              hosts=$(jq -r 'keys[] | select(test("-private-ip$|-public-ip$"))' pulumi.json | sed -e 's/-private-ip//' -e 's/-public-ip//' | sort -u)
+
+              # Loop through each host
+              for host in $hosts
+              do
+                # Check if folder exists, if not create it
+                if [ ! -d "./hosts/$host" ]
+                then
+                  mkdir "./hosts/$host"
+                  ip_type="''${host}-private-ip"
+                  ip_address=$(jq -r .\"''${ip_type}\" pulumi.json)
+                  age_key=$(ssh-keyscan -t ed25519 $ip_address | ssh-to-age)
+
+                  # Append the value to the array
+                  yq e ".keys += [\"$age_key\"] | (.keys[-1] anchor=\"$host\")" -i ./.sops.yaml
+
+                  KEY=.creation_rules[0].key_groups[0].age
+                  VALUE="*$host"
+
+                  yq e "$KEY += [\"\"] | ($KEY[-1] alias=\"$host\")" -i ./.sops.yaml
+                  echo "Folder for host $host created"
+                fi
+              done
+            '');
+          };
+        };
+
+        devenv.shells.default = {
+          name = "my-project";
+
+          # This is your devenv configuration
+          env = {
+            NIX_SSHOPTS = "-Y -p 2222";
+            PULUMI_CONFIG_PASSPHRASE = "";
+          };
+          packages = with pkgs; [
+            sops
+            ssh-to-age
+            editorconfig-checker
+            mdbook
+            nixfmt
+            statix
+            nvfetcher
+            yq-go
+            nixos-rebuild
+            pulumi-bin
+            ruby_3_2
+          ];
+          languages = {
+            go = { enable = true; };
+            nix = { enable = true; };
+          };
+        };
+        pre-commit = {
+          check.enable = true;
+          settings = {
+            hooks = {
+              nixfmt.enable = true;
+              statix.enable = true;
+              deadnix.enable = true;
+              shellcheck.enable = true;
+              shfmt.enable = true;
+            };
+          };
+        };
+      };
+
+      flake = {
+        nixosConfigurations = {
+          mail = nixpkgs.lib.nixosSystem {
+            specialArgs = {
+              profiles = { share = import ./profiles/shares.nix; };
+            };
+            modules = [
+              xiongchenyu6.nixosModules.oci-arm-host-capacity
+              ./hosts/nixos/mail
+            ] ++ nixos-modules;
+          };
+          office = nixpkgs.lib.nixosSystem {
+            specialArgs = {
+              profiles = { share = import ./profiles/shares.nix; };
+            };
+            modules = [
+              xiongchenyu6.nixosModules.java-tron
+              xiongchenyu6.nixosModules.chainlink
+              nixos-hardware.nixosModules.lenovo-thinkpad-x1-10th-gen
+              ./hosts/nixos/office
+            ] ++ nixos-modules;
+          };
+          game = nixpkgs.lib.nixosSystem {
+            specialArgs = {
+              profiles = { share = import ./profiles/shares.nix; };
+            };
+            modules = [
+              nixos-hardware.nixosModules.lenovo-legion-16ach6h-hybrid
+              ./hosts/nixos/game
+            ] ++ nixos-modules;
+          };
+        };
+        darwinConfigurations = {
+          XIONGS-MACBOOK-PRO =
+            darwin.lib.darwinSystem { modules = darwin-modules; };
         };
       };
     };
