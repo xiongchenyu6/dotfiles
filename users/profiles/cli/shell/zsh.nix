@@ -3,9 +3,9 @@
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 { pkgs, ... }: {
   home = {
-    sessionVariables = {
-      SSH_AUTH_SOCK = "''$(gpgconf --list-dirs agent-ssh-socket)";
-    };
+    # sessionVariables = {
+    #   SSH_AUTH_SOCK = "$(gpgconf --list-dirs agent-ssh-socket)";
+    # };
   };
   programs = {
     zsh = let

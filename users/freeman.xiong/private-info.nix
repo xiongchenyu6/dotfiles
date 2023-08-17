@@ -42,12 +42,14 @@
           };
           ssh = {
             matchBlocks = {
-              "freeman.engineer" = { port = 2222; };
-              "mail.freeman.engineer" = {
+              "mail" = {
                 port = 2222;
+                hostname = "43.156.66.157";
                 user = "root";
+                forwardX11 = true;
+                forwardX11Trusted = true;
               };
-              "digital.freeman.engineer" = {
+              "digital" = {
                 port = 2222;
                 user = "root";
               };

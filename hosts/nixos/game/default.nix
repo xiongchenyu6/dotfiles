@@ -1,5 +1,5 @@
 # Edit
-{ lib, suites, profiles, config, pkgs, ... }: {
+{ lib, profiles, config, pkgs, ... }: {
   imports = [
     ./hardware-configuration.nix
     ../../../profiles/core/nixos.nix
@@ -66,7 +66,12 @@
     tmp.useTmpfs = lib.mkDefault true;
   };
 
-  networking = {
+  networking = let
+    file-path = builtins.split "/" (toString ./.);
+    hostName = lib.last file-path;
+  in {
+    inherit hostName;
+
     # extraHosts = "54.255.248.117      www.winklink.org";
     nameservers = [ "8.8.8.8" "10.23.0.10" ];
     firewall = {
@@ -190,6 +195,14 @@
   home-manager = {
     users = {
       "freeman.xiong" = {
+        imports = [
+          ../../../users/profiles/gui/nixos.nix
+          ../../../users/profiles/gui/mpd.nix
+          ../../../users/profiles/gui/window-manager/hyprland/dvorak.nix
+          ../../../users/profiles/gui/window-manager/hyprland/nvidia.nix
+          ../../../users/profiles/gui/window-manager/hyprland/nixos.nix
+        ];
+
         sops = {
           gnupg = { home = "~/.gnupg"; };
           secrets = {

@@ -1,5 +1,8 @@
 # Edit this configuration file to define what should be installed on
-{ hmUsers, pkgs, ... }: {
+{ pkgs, ... }: {
   users.users.root = { shell = pkgs.zsh; };
-  home-manager.users = { inherit (hmUsers) root; };
+  programs.zsh.enable = true;
+  home-manager.users = {
+    root = { imports = [ ../profiles/use-remote-builder.nix ]; };
+  };
 }
