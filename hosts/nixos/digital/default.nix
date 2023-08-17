@@ -1,12 +1,6 @@
-{ suites, profiles, config, modulesPath, lib, pkgs, ... }: {
+{ profiles, config, modulesPath, lib, pkgs, ... }: {
 
-  imports = [
-    profiles.core.nixos
-    profiles.server-pkgs.nixos
-    profiles.users.root.nixos
-    (modulesPath + "/virtualisation/digital-ocean-config.nix")
-    profiles.users."freeman.xiong"
-  ] ++ suites.server-base ++ suites.client-network;
+  imports = [ (modulesPath + "/virtualisation/digital-ocean-config.nix") ];
 
   sops.secrets."wireguard/digital" = { };
   boot = {

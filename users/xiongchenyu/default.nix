@@ -1,7 +1,7 @@
 # Edit this configuration file to define what should be installed on
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
-{ hmUsers, pkgs, ... }: {
+{ pkgs, ... }: {
   users = {
     users = {
       xiongchenyu = {
@@ -13,7 +13,13 @@
   };
   home-manager = {
     users = {
-      inherit (hmUsers) xiongchenyu;
+      xiongchenyu = {
+        imports = [
+          ../profiles/gui/darwin.nix
+          ../profiles/cli/common.nix
+          ../profiles/cli/shell/zsh.nix
+        ];
+      };
       root = {
         programs = {
           ssh = {

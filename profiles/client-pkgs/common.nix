@@ -3,9 +3,6 @@
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 { pkgs, ... }: {
   nix = {
-    generateNixPathFromInputs = true;
-    generateRegistryFromInputs = true;
-    linkInputs = true;
     extraOptions = ''
       keep-outputs = true
       keep-derivations = true

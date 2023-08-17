@@ -95,7 +95,11 @@
   };
   # hardware.video.hidpi.enable = lib.mkForce true;
 
-  networking = {
+  networking = let
+    file-path = builtins.split "/" (toString ./.);
+    hostName = lib.last file-path;
+  in {
+    inherit hostName;
 
     firewall = {
       allowedTCPPorts = [ 89 179 ];
@@ -332,6 +336,13 @@
   home-manager = {
     users = {
       "freeman.xiong" = {
+        imports = [
+          ../../../users/profiles/gui/nixos.nix
+          ../../../users/profiles/gui/mpd.nix
+          ../../../users/profiles/gui/window-manager/hyprland/dvorak.nix
+          ../../../users/profiles/gui/window-manager/hyprland/nixos.nix
+        ];
+
         sops = {
           gnupg = { home = "~/.gnupg"; };
           secrets = {

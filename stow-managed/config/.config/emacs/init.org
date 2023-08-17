@@ -24,6 +24,7 @@
 #+end_src
 *** Ligature
 #+begin_src emacs-lisp
+(setq tab-width 2)
 (use-package ligature
   :config
   (ligature-set-ligatures 't '("www"))
