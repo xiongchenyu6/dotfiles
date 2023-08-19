@@ -148,7 +148,11 @@
       # '';
       # pinentryFlavor = "emacs";
       enableSshSupport = true;
-      sshKeys = [ "6E215C61D97608ED447E9D8BAE448986D75FD8F6" ];
+      # gpg2 -K --with-keygrip 
+      sshKeys = [
+        "6E215C61D97608ED447E9D8BAE448986D75FD8F6"
+        "42C87EA7DAAD37765EB1DD0FF53339EFBBF5785C"
+      ];
     };
     udiskie = {
       enable = true;
