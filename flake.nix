@@ -1,4 +1,6 @@
 {
+  nixConfig.extra-experimental-features = "nix-command flakes";
+
   description =
     "Flake to manage my laptop, my nur and my hosts on Tencent Cloud";
 
@@ -84,7 +86,6 @@
         flake-utils.follows = "flake-utils";
       };
     };
-
   };
 
   outputs = { self, nixpkgs, impermanence, nur, nixos-hardware, emacs
@@ -266,7 +267,7 @@
             mdbook
             nixfmt
             statix
-            nvfetcher
+            # nvfetcher
             yq-go
             nixos-rebuild
             pulumi-bin
