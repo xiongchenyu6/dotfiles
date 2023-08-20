@@ -1,5 +1,5 @@
 # Edit
-{ config, lib, suites, profiles, pkgs, ... }: {
+{ config, lib, profiles, pkgs, ... }: {
   imports = [
     ./hardware-configuration.nix
     ../../../profiles/core/nixos.nix
@@ -165,7 +165,7 @@
           #   "1.1.1.1"
           # ];
           peers = [{
-            endpoint = "mail.freeman.engineer:22616";
+            endpoint = "43.156.66.157:22616";
             publicKey = profiles.share.hosts-dict.mail.wg.public-key;
             persistentKeepalive = 30;
             allowedIPs = [
@@ -273,9 +273,9 @@
         type = "wired";
       };
     };
-    openvpn.servers = {
-      serverVPN = { config = "config ${./example_config.ovpn} "; };
-    };
+    # openvpn.servers = {
+    #   serverVPN = { config = "config ${./example_config.ovpn} "; };
+    # };
     dgraph = { enable = false; };
 
     postgresql = {
@@ -373,35 +373,4 @@
       };
     };
   };
-
-  # containers.nextcloud = {
-  #   autoStart = true;
-  #   privateNetwork = true;
-  #   hostAddress = "192.168.100.10";
-  #   localAddress = "192.168.100.11";
-  #   hostAddress6 = "fc00::1";
-  #   localAddress6 = "fc00::2";
-  #   config = { config, pkgs, ... }: {
-
-  #     services.nextcloud = {
-  #       enable = true;
-  #       hostName = "localhost";
-  #       config = {
-  #         adminpassFile = toString (pkgs.writeText "adminpass"
-  #           "test123"); # DON'T DO THIS IN PRODUCTION - the password file will be world-readable in the Nix Store!
-  #         extraTrustedDomains = [ "192.168.100.11" ];
-  #       };
-  #     };
-
-  #     system.stateVersion = "22.11";
-
-  #     networking.firewall = {
-  #       enable = true;
-  #       allowedTCPPorts = [ 80 ];
-  #     };
-  #     # Manually configure nameserver. Using resolved inside the container seems to fail
-  #     # currently
-  #     environment.etc."resolv.conf".text = "nameserver 8.8.8.8";
-  #   };
-  # };
 }

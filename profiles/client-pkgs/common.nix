@@ -66,6 +66,7 @@
       mycli
       my2sql
       neofetch
+      xournal
       nix-du
       nixfmt
       nix-index-update
@@ -79,7 +80,7 @@
       nodePackages."yaml-language-server"
       nodePackages."vscode-langservers-extracted"
       nodePackages."yarn"
-      nvfetcher
+      # nvfetcher
       oath-toolkit
       openai
       # openssl

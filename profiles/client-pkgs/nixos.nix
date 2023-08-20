@@ -25,17 +25,17 @@
       gimp
       gnumake
       haskell-language-server
-      (haskellPackages.ghcWithPackages (_:
-        with haskellPackages;
-        with pkgs.haskell.lib; [
-          apply-refact
-          cabal-install
-          hlint
-          stylish-haskell
-          hasktags
-          hoogle
-          hadolint
-        ]))
+      # (haskellPackages.ghcWithPackages (_:
+      #   with haskellPackages;
+      #   with pkgs.haskell.lib; [
+      #     apply-refact
+      #     cabal-install
+      #     hlint
+      #     stylish-haskell
+      #     hasktags
+      #     hoogle
+      #     hadolint
+      #   ]))
       imagemagick
       inetutils
       jp2a
