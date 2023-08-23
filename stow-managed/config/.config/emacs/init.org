@@ -1515,7 +1515,7 @@ Bind to lsp mode
 #+end_src
 *** Magit
 #+begin_src emacs-lisp
-(magit-todos-mode)
+;; (magit-todos-mode)
 
 (use-package magit-gitflow
   :ensure t
@@ -1559,7 +1559,7 @@ Bind to lsp mode
 (line-number-mode)
 (column-number-mode)
 ;; (display-battery-mode)
-(doom-modeline-mode 1)
+;; (doom-modeline-mode 1)
 (setq completion-auto-help 'always)
 #+end_src
 ** gnus

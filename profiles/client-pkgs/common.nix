@@ -66,6 +66,7 @@
       mycli
       my2sql
       neofetch
+      xournal
       nix-du
       nixfmt
       nix-index-update
@@ -87,7 +88,7 @@
       popeye
       pulumi-bin
       pulumiPackages.pulumi-aws-native
-      pgcli
+      # pgcli
       plantuml
       (python3.withPackages (_:
         with python3.pkgs; [

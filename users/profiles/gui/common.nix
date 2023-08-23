@@ -163,7 +163,7 @@
           dockerfile-mode
           direnv
           dap-mode
-          doom-modeline
+          # doom-modeline
           emacsql-sqlite-builtin # for org-roam
           format-all
           gradle-mode
