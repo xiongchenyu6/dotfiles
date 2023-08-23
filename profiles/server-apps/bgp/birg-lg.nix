@@ -17,7 +17,7 @@
         netSpecificMode = "dn42";
         servers = [ "sg1" ];
         nameFilter = "^ospf";
-        protocolFilter = [ "bgp" "ospf" "static" ];
+        protocolFilter = [ "bgp" "babel" "static" ];
         whois = "whois.burble.dn42";
         # titleBrand = "Freeman dn42 bird-lg";
         dnsInterface = "asn.lantian.dn42";

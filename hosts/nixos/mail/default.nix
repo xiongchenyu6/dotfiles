@@ -1,4 +1,4 @@
-{ modulesPath, profiles, config, lib, ... }: {
+{ modulesPath, profiles, config, lib, pkgs, ... }: {
   imports = [
     (modulesPath + "/profiles/qemu-guest.nix")
     ../../../profiles/server-apps/acme
@@ -156,8 +156,8 @@
     wg-quick = {
       interfaces = let
         privateKeyFile = config.sops.secrets."wireguard/mail".path;
-        address = [ "fe80::100/64" "fd48:4b4:f3::1/48" "172.22.240.97/27" ];
-        # address = [ "fd48:4b4:f3::2" ];
+        # address = [ "fe80::100/64" "fd48:4b4:f3::1/48" "172.22.240.97/27" ];
+        address = [ "fe80::100/64" ];
         table = "off";
         allowedIPs = [
           "10.0.0.0/8"
@@ -182,7 +182,10 @@
         wg_office = {
           inherit address privateKeyFile table;
           listenPort = 22616;
-
+          postUp = ''
+            ${pkgs.iproute2}/bin/ip addr add dev wg_office 172.22.240.97/32 peer 172.22.240.98/32
+            ${pkgs.iproute2}/bin/ip addr add dev wg_office fd48:4b4:f3::1/128 peer fd48:4b4:f3::2/128
+          '';
           peers = [{
             publicKey = profiles.share.hosts-dict.office.wg.public-key;
             inherit allowedIPs;
@@ -191,10 +194,10 @@
         wg_game = {
           inherit address privateKeyFile table;
           listenPort = 22617;
-          # postUp = ''
-          #   ${pkgs.iproute2}/bin/ip addr add dev wg_game 172.22.240.97 peer 172.22.240.99
-          #   ${pkgs.iproute2}/bin/ip addr add dev wg_game fe80::100 peer fd48:4b4:f3::3
-          # '';
+          postUp = ''
+            ${pkgs.iproute2}/bin/ip addr add dev wg_game 172.22.240.97/32 peer 172.22.240.99/32
+            ${pkgs.iproute2}/bin/ip addr add dev wg_game fd48:4b4:f3::1/128 peer fd48:4b4:f3::3/128
+
 
           peers = [{
             publicKey = profiles.share.hosts-dict.game.wg.public-key;
@@ -233,7 +236,7 @@
   };
   services = {
     openssh = { openFirewall = true; };
-    babeld.enable = true;
+    # babeld.enable = true;
     babeld.extraConfig = ''
       redistribute ip 172.20.0.0/14
       redistribute if ens5 deny

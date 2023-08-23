@@ -5,8 +5,6 @@ _: {
     (builtins.attrNames (builtins.readDir dir));
 
   bird2-inner-config = OWNIP: OWNIPv6: ''
-    log syslog all;
-    # log "/var/log/bird.log" all;
     log stderr all;
 
     ################################################
@@ -27,13 +25,17 @@ _: {
 
     router id OWNIP;
 
-    protocol device {
-    scan time 10;
-    }
+    debug protocols all;
+    log syslog { debug, trace, info, remote, warning, error, auth, fatal, bug };
+
+    timeformat protocol     iso long; # neccessary for monitoring
 
     /*
     *  Utility functions
     */
+        protocol device {
+        scan time 10;
+        }
 
     function is_self_net() {
     return net ~ OWNNETSET;
@@ -111,95 +113,39 @@ _: {
     };
     }
 
-    template bgp dnpeers {
-    local as OWNAS;
-    path metric 1;
-
+    protocol babel int_babel {
+    interface "wg_mail" {
+      type wired;
+    };
     ipv4 {
-      import filter {
-        if is_valid_network() && !is_self_net() then {
-          if (roa_check(dn42_roa, net, bgp_path.last) != ROA_VALID) then {
-            print "[dn42] ROA check failed for ", net, " ASN ", bgp_path.last;
-            reject;
-          } else accept;
-        } else reject;
-      };
-
-      export filter { if is_valid_network() && source ~ [RTS_STATIC, RTS_BGP] then accept; else reject; };
-      import limit 1000 action block;
+            export where (source = RTS_DEVICE) || (source = RTS_BABEL);
     };
-
     ipv6 {
-      import filter {
-        if is_valid_network_v6() && !is_self_net_v6() then {
-          if (roa_check(dn42_roa_v6, net, bgp_path.last) != ROA_VALID) then {
-            print "[dn42] ROA check failed for ", net, " ASN ", bgp_path.last;
-            reject;
-          } else accept;
-        } else reject;
-      };
-      export filter { if is_valid_network_v6() && source ~ [RTS_STATIC, RTS_BGP] then accept; else reject; };
-      import limit 1000 action block;
+            import all;
+            export where (source = RTS_DEVICE) || (source = RTS_BABEL);
     };
-    }
-    protocol static {
-    roa4 { table dn42_roa; };
-    include "/etc/bird/roa_dn42.conf";
     };
 
-    protocol static {
-    roa6 { table dn42_roa_v6; };
-    include "/etc/bird/roa_dn42_v6.conf";
-    };
+    #protocol bgp ibgp_digital  {
+    #  local as OWNAS;
+    #  neighbor fe80::100%wg_mail as OWNAS;
+    #  direct;
+    #  ipv4 {
+    #      next hop self;
+    #      # Optional cost, e.g. based off latency
+    #      cost 50;
 
-    # protocol babel int_babel{
-    #     ipv4 {
-    #         import all;
-    #         export all;
-    #     };
-    #     ipv6 {
-    #         import all;
-    #         export all;
-    #     };
-    #     interface "wg_mail" {
-    #          type wired;
-    #     };
-    #     interface "ens3" {
-    #          type wired;
-    #     };
-    #     interface "ens4" {
-    #          type wired;
-    #     };
-    # };
-    # protocol direct {
-    #     ipv4;
-    #     ipv6;
-    #     interface "lo";
-    # };
+    #      import all;
+    #      export all;
+    #  };
+    #  ipv6 {
+    #      next hop self;
+    #      cost 50;
+    #      import all;
+    #      export all;
+    #  };
+    #}
 
-    protocol bgp ibgp_digital  {
-
-      local as OWNAS;
-      neighbor fe80::100%wg_mail as OWNAS;
-      direct;
-
-      ipv4 {
-          next hop self;
-          # Optional cost, e.g. based off latency
-          cost 50;
-
-          import all;
-          export all;
-      };
-
-      ipv6 {
-          next hop self;
-          cost 50;
-
-          import all;
-          export all;
-      };
-    }
 
   '';
 }
