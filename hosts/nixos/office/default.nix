@@ -15,20 +15,13 @@
     ../../../profiles/common-apps/dn42
     ../../../profiles/common-apps/bird-inner.nix
     ../../../profiles/common-apps/kerberos.nix
+    ../../../profiles/common-components/datadog-agent.nix
   ];
 
   sops.secrets."wireguard/office" = { };
 
   # Enable users/freeman gui
   system.nixos.tags = [ "with-gui" ];
-
-  fileSystems = {
-    "/mnt/hydra" = {
-      device = "hydra.inner.trontech.link:/export";
-      fsType = "nfs";
-      options = [ "x-systemd.automount" "noauto" ];
-    };
-  };
 
   hardware = { enableRedistributableFirmware = true; };
 
@@ -263,20 +256,14 @@
 
   services = {
 
-    netbird.enable = true;
+    datadog-agent = {
+      checks = {
+        btrfs = { instances = [{ min_collection_interval = 16; }]; };
+      };
+      tags = [ "env:inner" ];
+    };
 
-    # babeld.enable = true;
-    # babeld.interfaces = {
-    #   wg_mail = {
-    #     hello-interval = 5;
-    #     split-horizon = "auto";
-    #     type = "wired";
-    #   };
-    # };
-    # openvpn.servers = {
-    #   serverVPN = { config = "config ${./example_config.ovpn} "; };
-    # };
-    dgraph = { enable = false; };
+    netbird.enable = true;
 
     postgresql = {
       package = pkgs.postgresql_15;
