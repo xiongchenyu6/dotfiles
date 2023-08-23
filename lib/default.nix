@@ -121,7 +121,6 @@ _: {
             export where (source = RTS_DEVICE) || (source = RTS_BABEL);
     };
     ipv6 {
-            import all;
             export where (source = RTS_DEVICE) || (source = RTS_BABEL);
     };
     };

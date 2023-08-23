@@ -104,7 +104,7 @@
           # address = [ "172.22.240.99" ];
           address = [ "fe80::102/64" ];
           postUp = ''
-            ${pkgs.iproute2}/bin/ip addr add dev wg_mail 172.22.240.99/32 peer 172.22.240.97/32
+            ${pkgs.iproute2}/bin/ip addr add dev wg_mail 172.22.240.99/32 peer 172.22.240.96/27
             ${pkgs.iproute2}/bin/ip addr add dev wg_mail fd48:4b4:f3::3/128 peer fd48:4b4:f3::1/128
           '';
 

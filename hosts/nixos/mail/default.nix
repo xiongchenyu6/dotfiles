@@ -197,7 +197,7 @@
           postUp = ''
             ${pkgs.iproute2}/bin/ip addr add dev wg_game 172.22.240.97/32 peer 172.22.240.99/32
             ${pkgs.iproute2}/bin/ip addr add dev wg_game fd48:4b4:f3::1/128 peer fd48:4b4:f3::3/128
-
+          '';
 
           peers = [{
             publicKey = profiles.share.hosts-dict.game.wg.public-key;
