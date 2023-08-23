@@ -86,7 +86,7 @@
         bbenoist.nix
         redhat.java
         github.copilot # AI code completion
-        ms-python.python
+        # ms-python.pythonyy
         ms-vscode.cpptools
         vscodevim.vim
         vadimcn.vscode-lldb

@@ -1,4 +1,6 @@
 {
+  # nixConfig.extra-experimental-features = "nix-command flakes";
+
   description =
     "Flake to manage my laptop, my nur and my hosts on Tencent Cloud";
 
@@ -84,7 +86,6 @@
         flake-utils.follows = "flake-utils";
       };
     };
-
   };
 
   outputs = { self, nixpkgs, impermanence, nur, nixos-hardware, emacs
@@ -305,6 +306,7 @@
           office = nixpkgs.lib.nixosSystem {
             specialArgs = {
               profiles = { share = import ./profiles/shares.nix; };
+              mylib = import ./lib { inherit lib; };
             };
             modules = [
               xiongchenyu6.nixosModules.java-tron
