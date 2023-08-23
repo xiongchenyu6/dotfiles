@@ -1,5 +1,5 @@
 # Edit
-{ lib, profiles, config, pkgs, ... }: {
+{ lib, profiles, config, pkgs, mylib, ... }: {
   imports = [
     ./hardware-configuration.nix
     ../../../profiles/core/nixos.nix
@@ -101,10 +101,11 @@
         wg_mail = {
           privateKeyFile = config.sops.secrets."wireguard/game".path;
           table = "off";
+          # address = [ "172.22.240.99" ];
           address = [ "fe80::102/64" ];
           postUp = ''
-            ${pkgs.iproute2}/bin/ip addr add dev wg_mail 172.22.240.99 peer 172.22.240.97
-            # ${pkgs.iproute2}/bin/ip addr add dev wg_mail fe80::101 peer fd48:4b4:f3::1
+            ${pkgs.iproute2}/bin/ip addr add dev wg_mail 172.22.240.99/32 peer 172.22.240.97/32
+            ${pkgs.iproute2}/bin/ip addr add dev wg_mail fd48:4b4:f3::3/128 peer fd48:4b4:f3::1/128
           '';
 
           peers = [{
@@ -148,7 +149,7 @@
 
     netbird = { enable = true; };
     babeld = {
-      enable = true;
+      # enable = true;
       interfaces = {
         wg_mail = {
           hello-interval = 5;
@@ -167,8 +168,8 @@
       '';
     };
     bird2 = {
-      enable = false;
-      config = lib.mine.bird2-inner-config "172.22.240.99" "fd48:4b4:f3::3";
+      enable = true;
+      config = mylib.bird2-inner-config "172.22.240.99" "fd48:4b4:f3::3";
     };
   };
 

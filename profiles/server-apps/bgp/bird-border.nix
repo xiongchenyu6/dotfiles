@@ -187,64 +187,53 @@
         direct;
         }
 
-        protocol bgp ibgp_digital  {
+        # protocol bgp ibgp_digital  {
 
-          local as OWNAS;
-          neighbor fe80::103%wg_digital as OWNAS;
-          direct;
+        #   local as OWNAS;
+        #   neighbor fe80::103%wg_digital as OWNAS;
+        #   direct;
 
-          ipv4 {
-              next hop self;
-              # Optional cost, e.g. based off latency
-              cost 50;
+        #   ipv4 {
+        #       next hop self;
+        #       # Optional cost, e.g. based off latency
+        #       cost 50;
 
-              import all;
-              export all;
-          };
+        #       import all;
+        #       export all;
+        #   };
 
-          ipv6 {
-              next hop self;
-              cost 50;
+        #   ipv6 {
+        #       next hop self;
+        #       cost 50;
 
-              import all;
-              export all;
-          };
-        }
+        #       import all;
+        #       export all;
+        #   };
+        # }
 
-        # protocol babel int_babel {
-        # ipv4 {
-        # import all;
-        # import all;
-        # };
-        # ipv6 {
-        # import all;
-        # import all;
-        # };
+        protocol babel int_babel {
+        interface "wg_game" {
+          # Note: Babel's cost metric is slightly different from BGP and OSPF.
+          # rxcost specifies the cost for the neighbour to send traffic to us,
+          # not the cost to send TO that neighbour. Of course, this won't have
+          # any impact if you keep costs consistent on both ends.
+          type wired;
+        };
+        ipv4 {
+               
+                export all;
+        };
+        ipv6 {
+                export all;
+        };
         # interface "wg_office" {
         #   # Note: Babel's cost metric is slightly different from BGP and OSPF.
         #   # rxcost specifies the cost for the neighbour to send traffic to us,
         #   # not the cost to send TO that neighbour. Of course, this won't have
         #   # any impact if you keep costs consistent on both ends.
-        #   rxcost 123;
         #   type wired;
         # };
-        # interface "wg_game" {
-        #   # Note: Babel's cost metric is slightly different from BGP and OSPF.
-        #   # rxcost specifies the cost for the neighbour to send traffic to us,
-        #   # not the cost to send TO that neighbour. Of course, this won't have
-        #   # any impact if you keep costs consistent on both ends.
-        #   rxcost 122;
-        #   type wired;
-        # };
-        # interface "wg_digital" {
-        #   # Note: Babel's cost metric is slightly different from BGP and OSPF.
-        #   # rxcost specifies the cost for the neighbour to send traffic to us,
-        #   # not the cost to send TO that neighbour. Of course, this won't have
-        #   # any impact if you keep costs consistent on both ends.
-        #   rxcost 122;
-        #   type wired;
-        # };
-        # };
+        };
 
         # protocol direct {
         # ipv4;

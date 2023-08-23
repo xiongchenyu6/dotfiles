@@ -157,15 +157,15 @@
           # address = [ "fd48:4b4:f3::2" ];
           address = [ "fe80::101/64" ];
           postUp = ''
-            ${pkgs.iproute2}/bin/ip addr add dev wg_mail 172.22.240.98 peer 172.22.240.97
-            # ${pkgs.iproute2}/bin/ip addr add dev wg_mail fe80::101 peer fd48:4b4:f3::1
+            ${pkgs.iproute2}/bin/ip addr add dev wg_mail 172.22.240.98/32 peer 172.22.240.97/32
+            # ${pkgs.iproute2}/bin/ip addr add dev wg_mail fd48:4b4:f3::3/128 peer fd48:4b4:f3::1/128
           '';
           # dns = [ # "fe80::100%wg_office"
           #   # "172.22.240.97"
           #   "1.1.1.1"
           # ];
           peers = [{
-            endpoint = "mail.freeman.engineer:22616";
+            endpoint = "43.156.66.157:22616";
             publicKey = profiles.share.hosts-dict.mail.wg.public-key;
             persistentKeepalive = 30;
             allowedIPs = [
@@ -265,14 +265,14 @@
 
     netbird.enable = true;
 
-    babeld.enable = true;
-    babeld.interfaces = {
-      wg_mail = {
-        hello-interval = 5;
-        split-horizon = "auto";
-        type = "wired";
-      };
-    };
+    # babeld.enable = true;
+    # babeld.interfaces = {
+    #   wg_mail = {
+    #     hello-interval = 5;
+    #     split-horizon = "auto";
+    #     type = "wired";
+    #   };
+    # };
     openvpn.servers = {
       serverVPN = { config = "config ${./example_config.ovpn} "; };
     };
@@ -295,7 +295,7 @@
     #   frontendHostname = "localhost";
     # };
     bird2 = {
-      enable = false;
+      enable = true;
       config = lib.mine.bird2-inner-config "172.22.240.98" "fd48:4b4:f3::2";
     };
 

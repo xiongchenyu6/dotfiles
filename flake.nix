@@ -103,7 +103,6 @@
       ];
       sharedOverlays = overlays ++ [
         (_: prev: {
-          __dontExport = true;
           lib = prev.lib.extend
             (_lfinal: _lprev: { mine = import ./lib { inherit lib; }; });
         })
@@ -266,7 +265,7 @@
             mdbook
             nixfmt
             statix
-            nvfetcher
+            # nvfetcher
             yq-go
             nixos-rebuild
             pulumi-bin
@@ -296,6 +295,7 @@
           mail = nixpkgs.lib.nixosSystem {
             specialArgs = {
               profiles = { share = import ./profiles/shares.nix; };
+              mylib = import ./lib { inherit lib; };
             };
             modules = [
               xiongchenyu6.nixosModules.oci-arm-host-capacity
@@ -316,6 +316,7 @@
           game = nixpkgs.lib.nixosSystem {
             specialArgs = {
               profiles = { share = import ./profiles/shares.nix; };
+              mylib = import ./lib { inherit lib; };
             };
             modules = [
               nixos-hardware.nixosModules.lenovo-legion-16ach6h-hybrid

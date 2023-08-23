@@ -45,7 +45,6 @@
               "mail" = {
                 port = 2222;
                 hostname = "43.156.66.157";
-                user = "root";
                 forwardX11 = true;
                 forwardX11Trusted = true;
               };
