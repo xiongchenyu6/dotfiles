@@ -8,16 +8,15 @@
     ../../../profiles/server-apps/admin/sssd.nix
     ../../../profiles/server-apps/bgp/bird-border.nix
     ../../../profiles/server-apps/dns/bind.nix
-    ../../../profiles/server-apps/log/loki.nix
+    # ../../../profiles/server-apps/log/loki.nix
     ../../../profiles/server-apps/mail/postfix.nix
     ../../../profiles/server-apps/mail/dovecot2.nix
     ../../../profiles/server-apps/mail/alps.nix
-    ../../../profiles/server-apps/monitor/endlessh-go.nix
-    ../../../profiles/server-apps/monitor/grafana.nix
-    ../../../profiles/server-apps/monitor/prometheus.nix
+    # ../../../profiles/server-apps/monitor/endlessh-go.nix
+    # ../../../profiles/server-apps/monitor/prometheus.nix
     ../../../profiles/server-apps/proxy/nginx.nix
     ../../../profiles/server-apps/atuin.nix
-    ../../../profiles/server-apps/webapps/keycloak.nix
+    # ../../../profiles/server-apps/webapps/keycloak.nix
     ../../../profiles/server-apps/oci-arm-host-capacity.nix
     ../../../profiles/server-pkgs/nixos.nix
     ../../../users/root/nixos.nix
@@ -30,7 +29,7 @@
     ../../../profiles/server-components
     ../../../profiles/server-apps/log/promtail.nix
     ../../../profiles/server-apps/admin/sssd.nix
-    ../../../profiles/server-apps/monitor/node-exporter.nix
+    ../../../profiles/common-components/datadog-agent.nix
   ];
 
   boot.loader.grub.device = "/dev/vda";
@@ -235,6 +234,8 @@
     };
   };
   services = {
+    datadog-agent = { tags = [ "env:outter" ]; };
+
     openssh = { openFirewall = true; };
     # babeld.enable = true;
     babeld.extraConfig = ''
@@ -261,17 +262,17 @@
       };
     };
 
-    prometheus.exporters = {
-      postgres = {
-        enable = true;
-        port = 9009;
-      };
+    # prometheus.exporters = {
+    #   postgres = {
+    #     enable = true;
+    #     port = 9009;
+    #   };
 
-      wireguard = {
-        enable = true;
-        port = 9010;
-      };
-    };
+    #   wireguard = {
+    #     enable = true;
+    #     port = 9010;
+    #   };
+    # };
   };
 
 }
