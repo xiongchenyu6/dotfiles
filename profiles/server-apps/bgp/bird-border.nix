@@ -212,27 +212,17 @@
         # }
 
         protocol babel int_babel {
-        interface "wg_game" {
-          # Note: Babel's cost metric is slightly different from BGP and OSPF.
-          # rxcost specifies the cost for the neighbour to send traffic to us,
-          # not the cost to send TO that neighbour. Of course, this won't have
-          # any impact if you keep costs consistent on both ends.
+        interface "wg_*" {
           type wired;
         };
         ipv4 {
-               
+                import all;
                 export all;
         };
         ipv6 {
+                import all;
                 export all;
         };
-        # interface "wg_office" {
-        #   # Note: Babel's cost metric is slightly different from BGP and OSPF.
-        #   # rxcost specifies the cost for the neighbour to send traffic to us,
-        #   # not the cost to send TO that neighbour. Of course, this won't have
-        #   # any impact if you keep costs consistent on both ends.
-        #   type wired;
-        # };
         };
 
         # protocol direct {
