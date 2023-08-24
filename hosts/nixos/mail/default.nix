@@ -8,6 +8,8 @@
     ../../../profiles/server-apps/admin/sssd.nix
     ../../../profiles/server-apps/bgp/bird-border.nix
     ../../../profiles/server-apps/dns/bind.nix
+    ../../../profiles/core/nixos.nix
+
     # ../../../profiles/server-apps/log/loki.nix
     ../../../profiles/server-apps/mail/postfix.nix
     ../../../profiles/server-apps/mail/dovecot2.nix
@@ -234,6 +236,12 @@
     };
   };
   services = {
+    journald = {
+      extraConfig = ''
+        Storage=volatile
+        RuntimeMaxUse=30M
+      '';
+    };
     datadog-agent = { tags = [ "env:outter" ]; };
 
     openssh = { openFirewall = true; };
