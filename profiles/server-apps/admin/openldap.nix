@@ -256,7 +256,7 @@ in {
             memberURL: ldap:///${cd}??sub?(objectClass=person)
           '';
         };
-      mutableConfig = false;
+      mutableConfig = true;
     };
   };
 }
