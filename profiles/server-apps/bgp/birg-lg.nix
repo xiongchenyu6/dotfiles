@@ -15,7 +15,7 @@
         domain = "inner." + config.networking.domain;
         enable = true;
         netSpecificMode = "dn42";
-        servers = [ "sg1" ];
+        servers = [ "sg1" "office" "game" ];
         nameFilter = "^ospf";
         protocolFilter = [ "bgp" "babel" "static" ];
         whois = "whois.burble.dn42";

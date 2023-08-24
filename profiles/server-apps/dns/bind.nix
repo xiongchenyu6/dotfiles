@@ -54,6 +54,8 @@
           @         IN NS     ns1.inner.freeman.engineer.
           ns1       IN A      43.156.66.157
           *         IN A      43.156.66.157
+          office    IN A      172.22.240.98
+          game      IN A      172.22.240.99
           EOF
           chown named:named /var/db/bind/inner.${config.networking.domain}
         '';

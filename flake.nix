@@ -28,6 +28,7 @@
       url = "github:nlewo/nix2container";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    # nix-ros-overlay = { url = "github:lopsided98/nix-ros-overlay"; };
     mk-shell-bin.url = "github:rrbutani/nix-mk-shell-bin";
 
     emacs = {

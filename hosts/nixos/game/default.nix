@@ -76,12 +76,11 @@
     # extraHosts = "54.255.248.117      www.winklink.org";
     nameservers = [ "8.8.8.8" "10.23.0.10" ];
     firewall = {
+      enable = true;
       allowedTCPPorts = [ 89 179 ];
       allowedUDPPorts = [ 89 179 6696 33434 ];
-      enable = true;
       interfaces.wg_mail.allowedTCPPorts = [ 2222 ];
       interfaces.wg_mail.allowedUDPPorts = [ 2222 ];
-
       interfaces.wt0.allowedTCPPorts = [ 2222 ];
       interfaces.wt0.allowedUDPPorts = [ 2222 ];
     };

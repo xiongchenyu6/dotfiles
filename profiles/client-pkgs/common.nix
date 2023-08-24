@@ -111,6 +111,7 @@
       qrencode
       ripgrep
       redis
+      # rosPackages.rolling.ros-core
       rust-analyzer
       rustscan
       rustc
@@ -150,4 +151,5 @@
       zoom-us
     ];
   };
+
 }
