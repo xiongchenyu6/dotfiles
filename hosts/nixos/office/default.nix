@@ -96,7 +96,7 @@
 
     firewall = {
       allowedTCPPorts = [ 89 179 ];
-      allowedUDPPorts = [ 89 179 6696 33434 ];
+      allowedUDPPorts = [ 89 179 5353 6696 33434 ];
       enable = true;
       interfaces.wg_mail.allowedTCPPorts = [ 2222 ];
       interfaces.wg_mail.allowedUDPPorts = [ 2222 ];
@@ -152,11 +152,10 @@
           postUp = ''
             ${pkgs.iproute2}/bin/ip addr add dev wg_mail 172.22.240.98/32 peer 172.22.240.96/27
             ${pkgs.iproute2}/bin/ip addr add dev wg_mail fd48:4b4:f3::3/128 peer fd48:4b4:f3::1/128
+            ${pkgs.iproute2}/bin/ip link set multicast on dev wg_mail
+            ${pkgs.systemd}/bin/resolvectl domain wg_mail dn42.
           '';
-          # dns = [ # "fe80::100%wg_office"
-          #   # "172.22.240.97"
-          #   "1.1.1.1"
-          # ];
+          dns = [ "172.20.0.53" ];
           peers = [{
             endpoint = "43.156.66.157:22616";
             publicKey = profiles.share.hosts-dict.mail.wg.public-key;
@@ -170,7 +169,9 @@
               "fd00::/8"
               "fe80::/10"
               "fd48:4b4:f3::/48"
-              "ff02::1:6/128"
+              "ff02::1:6/128" # babeld
+              "224.0.0.251/32" # avahi
+              "ff02::fb/128" # avahi
             ];
           }];
         };
@@ -255,6 +256,7 @@
   };
 
   services = {
+    # avahi = { allowInterfaces = [ "wg_mail" ]; };
 
     datadog-agent = {
       checks = {

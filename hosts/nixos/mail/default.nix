@@ -123,6 +123,7 @@
         179 # bird2
         389 # ldap
         636
+        5353 # mdns
         6696
         22616
         22617
@@ -168,6 +169,8 @@
           "fe80::/64"
           "fd48:4b4:f3::/48"
           "ff02::1:6/128"
+          "224.0.0.251/32" # avahi
+          "ff02::fb/128" # avahi
         ];
       in {
         wg_digital = {
@@ -186,6 +189,7 @@
           postUp = ''
             ${pkgs.iproute2}/bin/ip addr add dev wg_office 172.22.240.97/32 peer 172.22.240.98/32
             ${pkgs.iproute2}/bin/ip addr add dev wg_office fd48:4b4:f3::1/128 peer fd48:4b4:f3::2/128
+            ${pkgs.iproute2}/bin/ip link set multicast on dev wg_office
           '';
           peers = [{
             publicKey = profiles.share.hosts-dict.office.wg.public-key;
@@ -236,6 +240,8 @@
     };
   };
   services = {
+    # avahi = { allowInterfaces = [ "wg_office" ]; };
+
     journald = {
       extraConfig = ''
         Storage=volatile
