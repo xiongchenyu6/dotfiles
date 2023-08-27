@@ -112,7 +112,7 @@
         636 # ldaps
         993 # imaps
         6695
-        8000
+        18000
         8888
       ];
       allowedUDPPorts = [
@@ -132,6 +132,12 @@
         21816
         33434
       ];
+
+      interfaces.wg_mail.allowedTCPPorts = [ ];
+      interfaces.wg_mail.allowedUDPPorts = [ 2222 ];
+      interfaces.wg_game.allowedTCPPorts = [ 2222 ];
+      interfaces.wg_game.allowedUDPPorts = [ 2222 ];
+
     };
     sits = {
       he-ipv6 = {
@@ -202,6 +208,7 @@
           postUp = ''
             ${pkgs.iproute2}/bin/ip addr add dev wg_game 172.22.240.97/32 peer 172.22.240.99/32
             ${pkgs.iproute2}/bin/ip addr add dev wg_game fd48:4b4:f3::1/128 peer fd48:4b4:f3::3/128
+            ${pkgs.iproute2}/bin/ip link set multicast on dev wg_game
           '';
 
           peers = [{

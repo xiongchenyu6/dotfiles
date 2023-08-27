@@ -35,10 +35,9 @@
       maxJobs = 2;
     }];
   };
-
   nixpkgs = {
     config = {
-      permittedInsecurePackages = [ "openssl-1.1.1v" "electron-19.0.7" ];
+      permittedInsecurePackages = [ "openssl-1.1.1v" "electron-19.1.9" ];
       allowBroken = true;
     };
   };
@@ -51,19 +50,7 @@
     # initrd.availableKernelModules = [ "sd_mod" ];
 
     # extraModulePackages = with config.boot.kernelPackages; [ v4l2loopback.out ];
-    kernel = {
-      sysctl = {
-        "net.ipv4.ip_forward" = 1;
-        # "net.ipv4.conf.default.rp_filter" = 0;
-        # "net.ipv4.conf.all.rp_filter" = 0;
-        # "net.ipv4.conf.default.forwarding" = 1;
-        # "net.ipv4.conf.all.forwarding" = 1;
-
-        # "net.ipv6.conf.all.accept_redirects" = 0;
-        # "net.ipv6.conf.default.forwarding" = 1;
-        # "net.ipv6.conf.all.forwarding" = 1;
-      };
-    };
+    kernel = { sysctl = { "net.ipv4.ip_forward" = 1; }; };
 
     # extraModprobeConfig = ''
     #   options snd-intel-dspcfg dsp_driver=1
@@ -113,32 +100,6 @@
       enableFccUnlock = true;
     };
     enableIPv6 = true;
-    #hostName = "office"; # Define your hostname.
-    # Enable networking
-    #networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
-    # wg-quick = with builtins;
-    #   with lib; {
-    #     interfaces = let
-    #       generated_wg_config = listToAttrs (map (network:
-    #         nameValuePair "wg_${network.name}" {
-    #           privateKeyFile = config.sops.secrets."wireguard/office".path;
-    #           inherit (network.assignedIPs-dict."${config.networking.hostName}")
-    #             address;
-    #           peers = (map (host: {
-    #             endpoint = "${host.endpoint}:${toString host.wg.port}";
-    #             publicKey =
-    #               profiles.share.hosts-dict."${host.host}".wg.public-key;
-    #             inherit (network) allowedIPs;
-    #             persistentKeepalive = 30;
-    #           }) (filter (x: (x.network == network.name) && (x.role == "vpn"))
-    #             profiles.share.hosts));
-    #         }) profiles.share.networks);
-    #     in generated_wg_config;
-    #     # dns = [ # "fe80::100%wg_office"
-    #     #   # "172.22.240.97"
-    #     #   "1.1.1.1"
-    #     # ];
-    #   };
 
     wg-quick = let
       privateKeyFile = config.sops.secrets."wireguard/office".path;
@@ -151,7 +112,7 @@
           address = [ "fe80::101/64" ];
           postUp = ''
             ${pkgs.iproute2}/bin/ip addr add dev wg_mail 172.22.240.98/32 peer 172.22.240.96/27
-            ${pkgs.iproute2}/bin/ip addr add dev wg_mail fd48:4b4:f3::3/128 peer fd48:4b4:f3::1/128
+            ${pkgs.iproute2}/bin/ip addr add dev wg_mail fd48:4b4:f3::2/128 peer fd48:4b4:f3::1/128
             ${pkgs.iproute2}/bin/ip link set multicast on dev wg_mail
             ${pkgs.systemd}/bin/resolvectl domain wg_mail dn42.
           '';
@@ -256,8 +217,6 @@
   };
 
   services = {
-    # avahi = { allowInterfaces = [ "wg_mail" ]; };
-
     datadog-agent = {
       checks = {
         btrfs = { instances = [{ min_collection_interval = 16; }]; };
