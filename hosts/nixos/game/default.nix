@@ -18,7 +18,7 @@
     ../../../profiles/common-components/datadog-agent.nix
   ];
 
-  sops.secrets."wireguard/office" = { };
+  # sops.secrets."wireguard/office" = { };
 
   sops.secrets."wireguard/game" = { };
   # /nix /var /root /nix/persist
@@ -30,7 +30,7 @@
 
   nixpkgs = {
     config = {
-      permittedInsecurePackages = [ "openssl-1.1.1v" "electron-19.0.7" ];
+      permittedInsecurePackages = [ "openssl-1.1.1v" "electron-19.1.9" ];
       allowBroken = true;
     };
   };
@@ -38,19 +38,7 @@
   boot = {
     binfmt.emulatedSystems = [ "aarch64-linux" ];
 
-    kernel = {
-      sysctl = {
-        "net.ipv4.ip_forward" = 1;
-        # "net.ipv4.conf.default.rp_filter" = 0;
-        # "net.ipv4.conf.all.rp_filter" = 0;
-        # "net.ipv4.conf.default.forwarding" = 1;
-        # "net.ipv4.conf.all.forwarding" = 1;
-
-        # "net.ipv6.conf.all.accept_redirects" = 0;
-        # "net.ipv6.conf.default.forwarding" = 1;
-        # "net.ipv6.conf.all.forwarding" = 1;
-      };
-    };
+    kernel = { sysctl = { "net.ipv4.ip_forward" = 1; }; };
 
     loader = {
       systemd-boot = {
@@ -74,11 +62,10 @@
     inherit hostName;
 
     # extraHosts = "54.255.248.117      www.winklink.org";
-    nameservers = [ "8.8.8.8" "10.23.0.10" ];
     firewall = {
       enable = true;
       allowedTCPPorts = [ 89 179 ];
-      allowedUDPPorts = [ 89 179 6696 33434 ];
+      allowedUDPPorts = [ 89 179 5353 6696 33434 ];
       interfaces.wg_mail.allowedTCPPorts = [ 2222 ];
       interfaces.wg_mail.allowedUDPPorts = [ 2222 ];
       interfaces.wt0.allowedTCPPorts = [ 2222 ];
@@ -101,11 +88,13 @@
         wg_mail = {
           privateKeyFile = config.sops.secrets."wireguard/game".path;
           table = "off";
-          # address = [ "172.22.240.99" ];
           address = [ "fe80::102/64" ];
+          dns = [ "172.20.0.53" ];
           postUp = ''
             ${pkgs.iproute2}/bin/ip addr add dev wg_mail 172.22.240.99/32 peer 172.22.240.96/27
             ${pkgs.iproute2}/bin/ip addr add dev wg_mail fd48:4b4:f3::3/128 peer fd48:4b4:f3::1/128
+            ${pkgs.iproute2}/bin/ip link set multicast on dev wg_mail
+            ${pkgs.systemd}/bin/resolvectl domain wg_mail dn42.
           '';
 
           peers = [{
@@ -120,6 +109,8 @@
               "fe80::/10"
               "fd48:4b4:f3::/48"
               "ff02::1:6/128"
+              "224.0.0.251/32" # avahi
+              "ff02::fb/128" # avahi
             ];
           }];
         };
