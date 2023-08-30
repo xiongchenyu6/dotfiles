@@ -80,7 +80,7 @@
       nodePackages."yaml-language-server"
       nodePackages."vscode-langservers-extracted"
       nodePackages."yarn"
-      # nvfetcher
+      nvfetcher-bin
       oath-toolkit
       openai
       # openssl
