@@ -30,6 +30,13 @@
     };
     # nix-ros-overlay = { url = "github:lopsided98/nix-ros-overlay"; };
     mk-shell-bin.url = "github:rrbutani/nix-mk-shell-bin";
+    nvfetcher = {
+      url = "github:berberman/nvfetcher";
+      inputs = {
+        flake-utils.follows = "flake-utils";
+        nixpkgs.follows = "nixpkgs";
+      };
+    };
 
     emacs = {
       url = "github:nix-community/emacs-overlay";
@@ -38,7 +45,13 @@
         nixpkgs.follows = "nixpkgs";
       };
     };
-
+    nix-vscode-extensions = {
+      url = "github:nix-community/nix-vscode-extensions";
+      inputs = {
+        flake-utils.follows = "flake-utils";
+        nixpkgs.follows = "nixpkgs";
+      };
+    };
     flake-parts.url = "github:hercules-ci/flake-parts";
 
     xiongchenyu6 = {
@@ -91,7 +104,7 @@
 
   outputs = { self, nixpkgs, impermanence, nur, nixos-hardware, emacs
     , home-manager, devenv, flake-parts, pre-commit-hooks, nix-alien
-    , xiongchenyu6, sops-nix, foundry, poetry2nix, ... }@inputs:
+    , xiongchenyu6, sops-nix, foundry, poetry2nix, nvfetcher, ... }@inputs:
     with nixpkgs;
     with lib;
     let
@@ -102,6 +115,7 @@
         sops-nix
         foundry
         poetry2nix
+        nvfetcher
       ];
       sharedOverlays = overlays ++ [
         (_: prev: {

@@ -828,6 +828,7 @@ is available."
   :config
   (setq eglot-sync-connect 0)
   (setq eglot-autoshutdown t)
+  (setq eglot-events-buffer-size 0)
   (add-to-list 'eglot-server-programs
                `(java-mode . ("jdt-language-server"
              "-configuration" "~/.config/emacs/.cache/lsp/eclipse.jdt.ls/config-linux"
