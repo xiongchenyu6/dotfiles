@@ -159,6 +159,7 @@
           copilot-el
           chatgpt
           chatgpt-arcana
+          combobulate
           citeproc
           dockerfile-mode
           direnv
@@ -194,7 +195,7 @@
           org-ai
           org-contrib
           org-roam
-          # org-re-reveal
+          org-re-reveal
           org-download
           # org-cv
           orderless
@@ -217,6 +218,7 @@
           tide
           tempel
           terraform-mode
+          treesit-grammars.with-all-grammars
           vterm
           wakatime-mode
           which-key
