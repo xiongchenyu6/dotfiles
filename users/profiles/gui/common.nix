@@ -14,6 +14,13 @@
           italic = { family = "Hack Nerd Font"; };
           bold_italic = { family = "Hack Nerd Font"; };
         };
+        cursor = {
+          style = {
+            shape = "Beam";
+            blinking = "Always";
+          };
+
+        };
         key_bindings = [
           # {
           #   key = "Space";

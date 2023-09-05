@@ -61,7 +61,7 @@
   in {
     inherit hostName;
 
-    # extraHosts = "54.255.248.117      www.winklink.org";
+    # extraHosts = "54.254.210.117  grafana-oncall.trontech.link";
     firewall = {
       enable = true;
       allowedTCPPorts = [ 89 179 ];
