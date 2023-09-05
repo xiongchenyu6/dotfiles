@@ -88,13 +88,13 @@
       popeye
       pulumi-bin
       pulumiPackages.pulumi-aws-native
-      # pgcli
+      pgcli
       plantuml
       (python3.withPackages (_:
         with python3.pkgs; [
           cmake-language-server
           colour
-          # epc
+          epc
           ipython
           matplotlib
           nbformat

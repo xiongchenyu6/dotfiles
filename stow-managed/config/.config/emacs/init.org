@@ -102,8 +102,8 @@
 ;; ** 不使用 dialog
 (setq use-dialog-box nil)
 
-(blink-cursor-mode 0)
-
+;(blink-cursor-mode 0)
+(setq-default cursor-type #'bar)
 (tool-bar-mode -1)
 (menu-bar-mode 0)
 
@@ -117,14 +117,18 @@
 (toggle-word-wrap 1)
 (setq word-wrap-by-category t)
 
-;; ** save history
 (require 'savehist)
+;; ** save history
 (savehist-mode 1)
 
 (add-hook 'prog-mode-hook 'electric-pair-local-mode)
 (add-hook 'conf-mode-hook 'electric-pair-local-mode)
 
 (setq electric-pair-pairs '((8216 . 8217) (8220 . 8221)))
+(global-set-key (kbd "M-[") 'insert-pair)
+(global-set-key (kbd "M-{") 'insert-pair)
+(global-set-key (kbd "M-\"") 'insert-pair)
+(global-set-key (kbd "M-)") 'delete-pair)
 
 ;; (with-eval-after-load 'elec-pair
 ;;   (setq electric-pair-inhibit-predicate (lambda (c) (message c) (char-equal c ?\")))
@@ -222,7 +226,7 @@
 #+begin_src emacs-lisp
 (setq auto-save-visited-interval 0.5)
 
-(setq auto-save-visited-predicate (lambda () (eq meow-normal-mode t)))
+;(setq auto-save-visited-predicate (lambda () (eq meow-normal-mode t)))
 #+end_src
 *** Indentation
 #+begin_src emacs-lisp
@@ -253,7 +257,7 @@
 
 
 #+end_src
-*** Meow
+*** COMMENT Meow
 #+begin_src emacs-lisp
 (use-package meow
   :config
@@ -404,10 +408,10 @@
 (require 'vterm)
 (setq vterm-kill-buffer-on-exit t)
 
-(add-hook 'vterm-mode-hook
-          (lambda ()
-            (add-hook 'meow-insert-mode-hook (lambda () (if (eq major-mode 'vterm-mode) (vterm-copy-mode -1))) nil 'make-it-local)
-            (add-hook 'meow-normal-mode-hook (lambda () (if (eq major-mode 'vterm-mode) (vterm-copy-mode 1))) nil 'make-it-local)))
+;; (add-hook 'vterm-mode-hook
+;;           (lambda ()
+;;             (add-hook 'meow-insert-mode-hook (lambda () (if (eq major-mode 'vterm-mode) (vterm-copy-mode -1))) nil 'make-it-local)
+;;             (add-hook 'meow-normal-mode-hook (lambda () (if (eq major-mode 'vterm-mode) (vterm-copy-mode 1))) nil 'make-it-local)))
 #+end_src
 *** Better Search
 #+begin_src emacs-lisp
@@ -1438,10 +1442,6 @@ Bind to lsp mode
 *** Org pandoc
 #+begin_src emacs-lisp
 (require 'ox-pandoc)
-#+end_src
-** Key bindings
-*** TODO open app
-#+begin_src emacs-lisp
   (define-key global-map (kbd "C-c p") project-prefix-map)
 
   (with-eval-after-load "sql"
@@ -1452,10 +1452,12 @@ Bind to lsp mode
 
   (with-eval-after-load "project"
     (define-key project-prefix-map "s" 'vterm)
-    (define-key project-prefix-map "m" 'magit))
-
-  (setq project-switch-commands 'project-find-file)
-
+(define-key project-prefix-map "m" 'magit))
+(setq project-switch-commands 'project-find-file)
+#+end_src
+** Key bindings
+*** TODO COMMENT open app
+#+begin_src emacs-lisp
   (defvar toggle-map (make-keymap))
   (defalias 'toggle-map toggle-map)
 
@@ -1493,7 +1495,7 @@ Bind to lsp mode
    '(":" . replace-regexp))
 #+end_src
 
-*** Treemacs
+*** TODO Treemacs
 #+begin_src emacs-lisp
 (use-package treemacs
   :config
@@ -1515,8 +1517,8 @@ Bind to lsp mode
 ;; (treemacs-tag-follow-mode t)
 ;; (setq treemacs-tag-follow-delay 0.1)
                                         ; one beautiful work around to make c+[ works
-(define-key meow-insert-state-keymap
-            (kbd "C-g") [escape])
+;; (define-key meow-insert-state-keymap
+;;             (kbd "C-g") [escape])
 #+end_src
 *** Ace
 #+begin_src emacs-lisp
@@ -1558,6 +1560,7 @@ Bind to lsp mode
 (auto-fill-mode t)
 (save-place-mode t)
 
+(delete-selection-mode 1)
 (setq-default abbrev-mode t)
 (use-package winner-mode
   :ensure nil
