@@ -138,7 +138,7 @@
     };
 
     blueman-applet = { enable = true; };
-    dropbox = { enable = true; };
+    dropbox = { enable = false; };
     gpg-agent = {
       enable = true;
       enableExtraSocket = true;
