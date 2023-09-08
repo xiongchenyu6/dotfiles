@@ -10,17 +10,18 @@
   };
   environment = {
     systemPackages = with pkgs; [
-      appimage-run
+      # appimage-run
       awscli2
-      bundix
+      # bundix # for ruby
+      bootstrap-studio
       cachix
-      cargo
+      # cargo
       deadnix
       delve
       dig
       discord
       dive # docker image analyzer
-      du-dust
+      du-dust # du alternative
       datree
       easyrsa
       fd
@@ -39,7 +40,7 @@
         plugins = [ kubernetes-helmPlugins.helm-diff ];
       })
       helmify
-      hey
+      hey # http load generator
       jetbrains.idea-ultimate
       jdt-language-server
       kots
@@ -66,7 +67,7 @@
       mycli
       my2sql
       neofetch
-      xournal
+      xournal # note taking for pdf
       nix-du
       nixfmt
       nix-index-update
@@ -84,6 +85,7 @@
       oath-toolkit
       openai
       # openssl
+      polypane
       pg-ldap-sync
       popeye
       pulumi-bin
@@ -116,7 +118,6 @@
       rustscan
       rustc
       ruby
-      sbcl
       scalafmt
       shellcheck
       shfmt
@@ -132,13 +133,14 @@
       step-cli
       spring-boot-cli
       tectonic
-      terraform
-      terraform-ls
-      terracognita
-      terranix
-      terraformer
-      tf2pulumi
+      # terraform
+      # terraform-ls
+      # terracognita
+      # terranix
+      # terraformer
+      # tf2pulumi
       tealdeer
+      unityhub
       universal-ctags
       unzip
       virtualenv
@@ -147,7 +149,7 @@
       wpsoffice
       yarn2nix
       # yubikey-manager
-      zookeeper
+      zk-shell
       zoom-us
     ];
   };

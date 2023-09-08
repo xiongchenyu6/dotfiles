@@ -57,7 +57,6 @@
               workspace=$1
             fi
 
-
             activemonitor=$(grep -B 7 "focused: yes" "$monitors" | awk 'NR==1 {print $2}')
             passivemonitor=$(grep  -B 3 "($workspace)" "$monitors" | awk 'NR==1 {print $2}')
             #activews=$(grep -A 2 "$activemonitor" "$monitors" | awk 'NR==3 {print $1}' RS='(' FS=')')
@@ -265,6 +264,7 @@
 
           exec-once=alacritty
           exec-once=brave
+          exec-once=dropbox
 
           exec-once=${clean-up-after-start}/bin/clean-up-after-start.sh
 
