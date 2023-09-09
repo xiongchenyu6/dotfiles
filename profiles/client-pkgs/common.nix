@@ -20,10 +20,12 @@
       delve
       dig
       discord
+      dropbox
       dive # docker image analyzer
       du-dust # du alternative
       datree
       easyrsa
+      electrum
       fd
       ffmpeg-full
       fluxcd

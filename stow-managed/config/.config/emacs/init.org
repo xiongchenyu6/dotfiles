@@ -424,7 +424,7 @@
 *** Fold
 #+begin_src emacs-lisp
 (setq hs-hide-all-non-comment-function #'ignore)
-(add-hook 'hs-minor-mode-hook (lambda () (hs-hide-initial-comment-block) (hs-hide-all)))
+;(add-hook 'hs-minor-mode-hook (lambda () (hs-hide-initial-comment-block) (hs-hide-all)))
 (add-hook 'prog-mode-hook 'hs-minor-mode)
 #+end_src
 *** Motivation

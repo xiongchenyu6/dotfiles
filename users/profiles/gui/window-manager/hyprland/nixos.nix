@@ -300,7 +300,7 @@
           spacing = 2;
           margin-bottom = -15;
 
-          output = [ "eDP-1" "HDMI-A-1" ];
+          output = [ "eDP-1" "eDP-2" "HDMI-A-1" ];
           modules-left = [ "wlr/workspaces" ];
           modules-center = [ "hyprland/window" ];
           modules-right = [

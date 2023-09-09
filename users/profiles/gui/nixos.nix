@@ -80,15 +80,37 @@
 
     vscode = {
       enable = true;
-      extensions = with pkgs.vscode-extensions; [
+      extensions = with pkgs.vscode-marketplace; [
         mkhl.direnv
+        ms-vscode.cpptools-extension-pack
+        ms-vscode.cpptools-themes
+        twxs.cmake
+        ms-vscode.cmake-tools
+        vscjava.vscode-java-debug
+        redhat.fabric8-analytics
+        vscjava.vscode-java-pack
+        github.copilot-chat
+        mkhl.direnv
+        github.copilot-labs
+        github.heygithub
+        gitlab.gitlab-workflow
+        eamodio.gitlens
+        weaveworks.vscode-gitops-tools
         golang.go
+        visualstudioexptteam.vscodeintellicode
+        ms-kubernetes-tools.vscode-kubernetes-tools
+        vscjava.vscode-maven
+        vscjava.vscode-java-dependency
+        ms-python.python
         bbenoist.nix
         redhat.java
         github.copilot # AI code completion
         ms-python.python
+        vscjava.vscode-java-test
+        redhat.vscode-yaml
+        ms-azuretools.vscode-docker
         ms-vscode.cpptools
-        vscodevim.vim
+        vscodeemacs.emacs
         vadimcn.vscode-lldb
       ];
     };
