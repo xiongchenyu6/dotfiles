@@ -45,6 +45,7 @@
         nixpkgs.follows = "nixpkgs";
       };
     };
+
     nix-vscode-extensions = {
       url = "github:nix-community/nix-vscode-extensions";
       inputs = {
@@ -104,7 +105,8 @@
 
   outputs = { self, nixpkgs, impermanence, nur, nixos-hardware, emacs
     , home-manager, devenv, flake-parts, pre-commit-hooks, nix-alien
-    , xiongchenyu6, sops-nix, foundry, poetry2nix, nvfetcher, ... }@inputs:
+    , xiongchenyu6, sops-nix, foundry, poetry2nix, nvfetcher
+    , nix-vscode-extensions, ... }@inputs:
     with nixpkgs;
     with lib;
     let
@@ -116,6 +118,7 @@
         foundry
         poetry2nix
         nvfetcher
+        nix-vscode-extensions
       ];
       sharedOverlays = overlays ++ [
         (_: prev: {

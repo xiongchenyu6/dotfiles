@@ -77,9 +77,9 @@
       # firewallBackend = "nftables";
       wifi = {
         powersave = true;
-        macAddress = "random";
+        #macAddress = "random";
       };
-      ethernet = { macAddress = "random"; };
+      #ethernet = { macAddress = "random"; };
       enableFccUnlock = true;
     };
     enableIPv6 = true;
