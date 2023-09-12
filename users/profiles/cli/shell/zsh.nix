@@ -47,7 +47,7 @@
       shellAliases = {
         vi = "vim";
         o = "xdg-open";
-        ls = "exa --icons";
+        ls = "eza --icons";
         update = "sudo nixos-rebuild switch";
       };
       dirHashes = {
