@@ -5,7 +5,7 @@
     systemPackages = with pkgs; [
       krb5Full
       python3
-      exa
+      eza
       calibre
       cyrus_sasl
       xvfb-run

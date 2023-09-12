@@ -24,6 +24,7 @@
       geoip
       gimp
       gnumake
+      gitkraken
       haskell-language-server
       # (haskellPackages.ghcWithPackages (_:
       #   with haskellPackages;
@@ -59,6 +60,7 @@
       # poetry2nix.cli
       procs
       qemu_kvm
+      termius
       tdesktop
       tpm2-tools
       unrar-wrapper
@@ -118,6 +120,8 @@
   programs = {
     steam = { enable = true; };
     npm = { enable = true; };
+    _1password = { enable = true; };
+    _1password-gui = { enable = true; };
     # atop = {
     #   enable = true;
     #   netatop = { enable = true; };
