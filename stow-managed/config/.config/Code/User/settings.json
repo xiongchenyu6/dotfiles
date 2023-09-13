@@ -1,0 +1,48 @@
+{
+    "editor.inlineSuggest.enabled": true,
+    "redhat.telemetry.enabled": true,
+    "git.autofetch": true,
+    "github.copilot.advanced": {},
+    "vs-kubernetes": {
+        "vs-kubernetes.crd-code-completion": "enabled"
+    },
+    "git.openRepositoryInParentFolders": "never",
+    "explorer.confirmDelete": false,
+    "cmake.configureOnOpen": true,
+    "gocodeo.authToken": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE3MjUzNDY3NzIsImlhdCI6MTY5NDI0Mjc3Miwic3ViIjoiNjRmYzEzOWVjYWNmZTE0MTVmZTY2ZWQ3IiwibmFtZSI6Ilhpb25nIGNoZW55dSIsImlzX3ZlcmlmaWVkIjp0cnVlfQ.nYO5SF18wcAUkT9STO-iNpoU3WqfqFy6wPFty0UTilU",
+    "gocodeo.pythonTestFramework": "pytest",
+    "easycode-canary.userEmail": "xiongchenyu6@gmail.com",
+    "files.autoSave": "afterDelay",
+    "yaml.customTags": [
+        "!And",
+        "!And sequence",
+        "!If",
+        "!If sequence",
+        "!Not",
+        "!Not sequence",
+        "!Equals",
+        "!Equals sequence",
+        "!Or",
+        "!Or sequence",
+        "!FindInMap",
+        "!FindInMap sequence",
+        "!Base64",
+        "!Join",
+        "!Join sequence",
+        "!Cidr",
+        "!Ref",
+        "!Sub",
+        "!Sub sequence",
+        "!GetAtt",
+        "!GetAZs",
+        "!ImportValue",
+        "!ImportValue sequence",
+        "!Select",
+        "!Select sequence",
+        "!Split",
+        "!Split sequence"
+    ],
+    "aws.resources.enabledResources": [
+        "AWS::EC2::Host"
+    ]
+}

@@ -50,6 +50,7 @@
         "auto-allocate-uids"
       ];
       trusted-users = [ "root" "freeman.xiong" ];
+      allowed-users = [ "root" "freeman.xiong" ];
       auto-allocate-uids = true;
       auto-optimise-store = true;
       substituters = [

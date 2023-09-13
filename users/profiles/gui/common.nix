@@ -249,6 +249,7 @@
         "config/.config/nvim"
         "password-store/.local/share/password-store"
         "config/.config/emacs"
+        "config/.config/Code"
         # {
         #   directory = ;
         #   method = "symlink";
