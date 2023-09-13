@@ -10,9 +10,9 @@
   };
   environment = {
     systemPackages = with pkgs; [
-      # appimage-run
+      appimage-run
       awscli2
-      # bundix # for ruby
+      bun
       bootstrap-studio
       cachix
       # cargo
