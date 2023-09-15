@@ -339,6 +339,32 @@
           lang en_US
         '';
       };
+      ".config/electron25-flags.conf" = {
+        text = ''
+          --enable-features=UseOzonePlatform --ozone-platform=wayland
+        '';
+      };
+      ".config/electron24-flags.conf" = {
+        text = ''
+          --enable-features=UseOzonePlatform --ozone-platform=wayland
+        '';
+      };
+      ".config/electron23-flags.conf" = {
+        text = ''
+          --enable-features=UseOzonePlatform --ozone-platform=wayland
+        '';
+      };
+      ".config/electron22-flags.conf" = {
+        text = ''
+          --enable-features=UseOzonePlatform --ozone-platform=wayland
+        '';
+      };
+      ".config/code-flags.conf" = {
+        text = ''
+          --enable-features=UseOzonePlatform --ozone-platform=wayland
+        '';
+      };
+
     };
     stateVersion = "22.11";
     keyboard = { options = [ "caps:ctrl_modifier" ]; };
