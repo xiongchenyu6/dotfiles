@@ -97,7 +97,6 @@
         # macAddress = "random";
       };
       ethernet = { macAddress = "random"; };
-      enableFccUnlock = true;
     };
     enableIPv6 = true;
 
