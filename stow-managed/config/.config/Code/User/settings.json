@@ -44,5 +44,7 @@
     ],
     "aws.resources.enabledResources": [
         "AWS::EC2::Host"
-    ]
+    ],
+    "security.workspace.trust.untrustedFiles": "open",
+    "explorer.confirmDragAndDrop": false
 }

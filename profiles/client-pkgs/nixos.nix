@@ -22,9 +22,11 @@
       gcc
       gdb
       geoip
+      google-chrome-dev
       gimp
       gnumake
       gitkraken
+      grafana-loki
       haskell-language-server
       # (haskellPackages.ghcWithPackages (_:
       #   with haskellPackages;

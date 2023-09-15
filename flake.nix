@@ -5,6 +5,8 @@
     "Flake to manage my laptop, my nur and my hosts on Tencent Cloud";
 
   inputs = {
+    nixpkgs-master.url = "github:NixOS/nixpkgs/master";
+
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
 
     nixos-hardware.url = "github:NixOS/nixos-hardware/master";
@@ -106,7 +108,7 @@
   outputs = { self, nixpkgs, impermanence, nur, nixos-hardware, emacs
     , home-manager, devenv, flake-parts, pre-commit-hooks, nix-alien
     , xiongchenyu6, sops-nix, foundry, poetry2nix, nvfetcher
-    , nix-vscode-extensions, ... }@inputs:
+    , nix-vscode-extensions, nixpkgs-master, ... }@inputs:
     with nixpkgs;
     with lib;
     let
@@ -124,6 +126,11 @@
         (_: prev: {
           lib = prev.lib.extend
             (_lfinal: _lprev: { mine = import ./lib { inherit lib; }; });
+          # overlay to use nixpkgs-master vscode
+          vscode = (import nixpkgs-master {
+            system = "x86_64-linux";
+            config.allowUnfree = true;
+          }).vscode;
         })
       ];
       darwin-modules = [ home-manager.darwinModules.home-manager ];
