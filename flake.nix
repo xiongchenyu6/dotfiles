@@ -127,10 +127,10 @@
           lib = prev.lib.extend
             (_lfinal: _lprev: { mine = import ./lib { inherit lib; }; });
           # overlay to use nixpkgs-master vscode
-          vscode = (import nixpkgs-master {
-            system = "x86_64-linux";
-            config.allowUnfree = true;
-          }).vscode;
+          # vscode = (import nixpkgs-master {
+          #   system = "x86_64-linux";
+          #   config.allowUnfree = true;
+          # }).vscode;
         })
       ];
       darwin-modules = [ home-manager.darwinModules.home-manager ];
