@@ -37,13 +37,13 @@
           runtimeInputs = [ pkgs.hyprland ];
           text = ''
             sleep 10
-            hyprctl keyword windowrule "workspace unset,brave"
+            hyprctl keyword windowrule "workspace unset,microsoft-edge-dev"
           '';
         };
         screen-shot = pkgs.writeShellApplication {
           name = "screen-shot.sh";
           runtimeInputs = [ pkgs.hyprland ];
-          text = ''grim -g "$(slurp)" - | wl-copy          '';
+          text = ''grim -g "$(slurp)" - | wl-copy'';
         };
 
         workspace = pkgs.writeShellApplication {
@@ -194,7 +194,7 @@
           bind = $mainMod, return, exec, alacritty
           bind = $mainMod, c, killactive,
           bind = $mainMod SHIFT, Q, exit,
-          bind = $mainMod, B, exec, brave
+          #  bind = $mainMod, B, exec, microsoft-edge-dev --enable-features=WebRTCPipeWireCapturer --ozone-platform=wayland
           bind = $mainMod, P, exec, wofi --show drun -I -G
           bind = $mainMod, F, togglefloating,
           bind = $mainMod, V, pseudo, # dwindle
@@ -261,11 +261,9 @@
           exec-once = hyprpaper
 
           windowrule=workspace 1 silent,alacritty
-          windowrule=workspace 3 silent,brave
+          # windowrule=workspace 3 silent,brave
           windowrule=float,noblur,noshadow,noborder,pseudo,dimaround,albert
 
-          exec-once=alacritty
-          exec-once=brave
           exec-once=dropbox
 
           exec-once=${clean-up-after-start}/bin/clean-up-after-start.sh

@@ -102,7 +102,6 @@
         vscjava.vscode-maven
         vscjava.vscode-java-dependency
         ms-python.python
-        bbenoist.nix
         redhat.java
         github.copilot # AI code completion
         ms-python.python
@@ -110,14 +109,15 @@
         redhat.vscode-yaml
         ms-azuretools.vscode-docker
         ms-vscode.cpptools
-        vscodeemacs.emacs
+        lfs.vscode-emacs-friendly
         vadimcn.vscode-lldb
+        jnoortheen.nix-ide
       ];
     };
 
     chromium = {
       enable = true;
-      package = pkgs.brave;
+      package = pkgs.microsoft-edge-dev;
       #google-chrome
     };
 

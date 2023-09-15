@@ -9,7 +9,7 @@
       hyprpicker
       gnomeExtensions.zoom-wayland-extension
       wl-clipboard
-      # wl-clipboard-x11
+     # wl-clipboard-x11
       wf-recorder
       xdg_utils
       wev
@@ -19,11 +19,15 @@
   xdg = {
     portal = {
       enable = true;
-      # wlr = { enable = true; };
-      extraPortals = with pkgs; [
-        xdg-desktop-portal-gtk
-        xdg-desktop-portal-hyprland
-      ];
+      wlr = { enable = true; };
+      lxqt = { enable = true; };
+      xdgOpenUsePortal = true;
+      extraPortals = with pkgs;
+
+        [
+          # xdg-desktop-portal-gtk
+          xdg-desktop-portal-hyprland
+        ];
     };
   };
 
