@@ -11,7 +11,16 @@
   xdg = {
     enable = true;
     mime = { enable = true; };
-    mimeApps = { enable = true; };
+    mimeApps = {
+      enable = true;
+      defaultApplications = {
+        "text/html" = "microsoft-edge-dev.desktop";
+        "x-scheme-handler/http" = "microsoft-edge-dev.desktop";
+        "x-scheme-handler/https" = "microsoft-edge-dev.desktop";
+        "x-scheme-handler/about" = "microsoft-edge-dev.desktop";
+        "x-scheme-handler/unknown" = "microsoft-edge-dev.desktop";
+      };
+    };
     userDirs = {
       enable = true;
       createDirectories = true;

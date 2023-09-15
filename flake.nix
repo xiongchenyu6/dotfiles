@@ -122,6 +122,7 @@
         nvfetcher
         nix-vscode-extensions
       ];
+      
       sharedOverlays = overlays ++ [
         (_: prev: {
           lib = prev.lib.extend
