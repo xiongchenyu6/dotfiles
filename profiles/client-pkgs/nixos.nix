@@ -14,11 +14,9 @@
       cava
       cmake
       config.nur.repos.xddxdd.baidupcs-go
-      config.nur.repos.xddxdd.bilibili
       config.nur.repos.xddxdd.qq
       config.nur.repos.xddxdd.wechat-uos
-      config.nur.repos.xddxdd.dingtalk
-      config.nur.repos.xddxdd.wine-wechat
+      firefox
       gcc
       gdb
       geoip
@@ -66,7 +64,7 @@
       tdesktop
       tpm2-tools
       unrar-wrapper
-      virtmanager
+      virt-manager
       whatsapp-for-linux
       wineWowPackages.staging
       zotero

@@ -45,6 +45,13 @@
           runtimeInputs = [ pkgs.hyprland ];
           text = ''grim -g "$(slurp)" - | wl-copy'';
         };
+        # screen shot and save to ~/Pictures
+        screen-shot-and-save = pkgs.writeShellApplication {
+          name = "screen-shot-and-save.sh";
+          runtimeInputs = [ pkgs.hyprland ];
+          # date file named in YYYYMMDD-HHmmss format
+          text = ''grim -g "$(slurp)" ~/Pictures/$(date +%Y%m%d-%H%M%S).png'';
+        };
 
         workspace = pkgs.writeShellApplication {
           name = "workspace.sh";
@@ -194,7 +201,7 @@
           bind = $mainMod, return, exec, alacritty
           bind = $mainMod, c, killactive,
           bind = $mainMod SHIFT, Q, exit,
-          #  bind = $mainMod, B, exec, microsoft-edge-dev --enable-features=WebRTCPipeWireCapturer --ozone-platform=wayland
+          bind = $mainMod, B, exec, microsoft-edge-dev --enable-features=WebRTCPipeWireCapturer --ozone-platform=wayland
           bind = $mainMod, P, exec, wofi --show drun -I -G
           bind = $mainMod, F, togglefloating,
           bind = $mainMod, V, pseudo, # dwindle
