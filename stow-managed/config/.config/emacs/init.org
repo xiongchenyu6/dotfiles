@@ -224,8 +224,7 @@
 #+end_src
 *** Auto Save
 #+begin_src emacs-lisp
-;(setq auto-save-visited-interval 0.5)
-
+(setq auto-save-visited-interval 1)
 ;(setq auto-save-visited-predicate (lambda () (eq meow-normal-mode t)))
 #+end_src
 *** Indentation
