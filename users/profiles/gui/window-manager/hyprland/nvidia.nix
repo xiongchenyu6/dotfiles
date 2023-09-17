@@ -12,8 +12,8 @@
   wayland = {
     windowManager = {
       hyprland = {
-        # enableNvidiaPatches = true;
-        
+        enableNvidiaPatches = true;
+
         extraConfig = lib.mkDefault ''
           general {
           # See https://wiki.hyprland.org/Configuring/Variables/ for more

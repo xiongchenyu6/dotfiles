@@ -10,10 +10,10 @@
       INPUT_METHOD = "fcitx";
       XIM_SERVERS = "fcitx";
       NIXOS_OZONE_WL = "1";
-      WLR_NO_HARDWARE_CURSORS = "1";
-      "XDG_SESSION_TYPE" = "wayland";
+      # WLR_NO_HARDWARE_CURSORS = "1";
+      # "XDG_SESSION_TYPE" = "wayland";
       # LSP_USE_PLISTS = "true";
-      NIX_SSHOPTS = "-Y";
+      # NIX_SSHOPTS = "-Y";
     };
     file = {
       ".config/hypr/hyprpaper.conf" = {
