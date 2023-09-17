@@ -46,7 +46,6 @@
       llvm
       lsof
       manix
-      mpv
       my_cookies
       mutagen
       openfortivpn

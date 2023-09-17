@@ -48,5 +48,7 @@
     "security.workspace.trust.untrustedFiles": "open",
     "explorer.confirmDragAndDrop": false,
     "docker.contexts.showInStatusBar": true,
-    "remote.SSH.logLevel": "trace"
+  "remote.SSH.logLevel": "trace",
+"window.titleBarStyle": "custom",
+"leetcode.endpoint": "leetcode",
 }

@@ -1,7 +1,6 @@
 { pkgs, ... }: {
   environment = {
     systemPackages = with pkgs; [
-      wofi
       grim
       slurp
       brightnessctl
@@ -16,7 +15,7 @@
       waypipe
     ];
   };
-  
+
   xdg = {
     portal = {
       enable = true;
