@@ -16,6 +16,7 @@
       waypipe
     ];
   };
+  
   xdg = {
     portal = {
       enable = true;

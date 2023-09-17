@@ -202,6 +202,7 @@
           bind = $mainMod, c, killactive,
           bind = $mainMod SHIFT, Q, exit,
           bind = $mainMod, B, exec, microsoft-edge-dev --enable-features=WebRTCPipeWireCapturer --ozone-platform=wayland
+          # bind = $mainMod SHIFT, c, exec, code --enable-features=UseOzonePlatform --ozone-platform=wayland
           bind = $mainMod, P, exec, wofi --show drun -I -G
           bind = $mainMod, F, togglefloating,
           bind = $mainMod, V, pseudo, # dwindle
@@ -308,9 +309,10 @@
           margin-bottom = -15;
 
           output = [ "eDP-1" "eDP-2" "HDMI-A-1" ];
-          modules-left = [ "wlr/workspaces" ];
+          modules-left = [ "hyprland/workspaces" ];
           modules-center = [ "hyprland/window" ];
           modules-right = [
+            # "wlr/taskbar"
             "custom/btc"
             "mpd"
             "cpu"
@@ -331,10 +333,12 @@
             "realtime" = true;
           };
 
-          "wlr/workspaces" = {
+          "hpprland/workspaces" = {
             format = "{icon}";
             format-active = " {icon} ";
             on-click = "activate";
+            on-scroll-up = "hyprctl dispatch workspace e+1";
+            on-scroll-down = "hyprctl dispatch workspace e-1";
           };
 
           "wlr/taskbar" = {

@@ -37,7 +37,7 @@
   };
   nixpkgs = {
     config = {
-      permittedInsecurePackages = [ "openssl-1.1.1v" "electron-19.1.9" ];
+      permittedInsecurePackages = [ "openssl-1.1.1w" "electron-19.1.9" ];
       allowBroken = true;
     };
   };

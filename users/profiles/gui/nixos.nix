@@ -121,6 +121,7 @@
         lfs.vscode-emacs-friendly
         vadimcn.vscode-lldb
         jnoortheen.nix-ide
+        mechatroner.rainbow-csv
       ];
     };
 

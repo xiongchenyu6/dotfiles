@@ -46,5 +46,7 @@
         "AWS::EC2::Host"
     ],
     "security.workspace.trust.untrustedFiles": "open",
-    "explorer.confirmDragAndDrop": false
+    "explorer.confirmDragAndDrop": false,
+    "docker.contexts.showInStatusBar": true,
+    "remote.SSH.logLevel": "trace"
 }
