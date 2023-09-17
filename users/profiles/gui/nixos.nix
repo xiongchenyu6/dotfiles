@@ -68,6 +68,11 @@
   };
 
   programs = lib.mkIf pkgs.stdenv.isLinux {
+    wofi = { enable = true; };
+    carapace.enable = true;
+    #  comodoro.enable = true;
+    mpv.enable = true;
+    firefox.enable = true;
     obs-studio = {
       enable = true;
       plugins = with pkgs.obs-studio-plugins; [
@@ -101,7 +106,7 @@
         github.copilot-chat
         mkhl.direnv
         github.copilot-labs
-        github.heygithub
+        # github.heygithub
         gitlab.gitlab-workflow
         eamodio.gitlens
         weaveworks.vscode-gitops-tools

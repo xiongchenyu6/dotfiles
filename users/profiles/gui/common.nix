@@ -189,7 +189,7 @@
           # lsp-ui
           # lsp-mode
           nix-mode
-          meow
+          #meow
           magit
           magit-todos
           marginalia
