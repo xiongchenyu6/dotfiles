@@ -62,6 +62,7 @@
       openlens
       linkerd
       litecli
+      vsc-leetcode-cli
       maven
       mattermost-desktop
       microsoft-edge-dev

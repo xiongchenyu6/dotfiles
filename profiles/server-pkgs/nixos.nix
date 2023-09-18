@@ -32,10 +32,10 @@
         s_s_l_certs = {
           sort_method = "manual";
           certs = {
-            "*.inner.freeman.engineer" =
-              "/var/lib/acme/inner.freeman.engineer/cert.pem";
-            "mail.freeman.engineer" =
-              "/var/lib/acme/mail.freeman.engineer/cert.pem";
+            "*.inner.autolife-robotics.tech" =
+              "/var/lib/acme/inner.autolife-robotics.tech/cert.pem";
+            "mail.autolife-robotics.tech" =
+              "/var/lib/acme/mail.autolife-robotics.tech/cert.pem";
           };
         };
         # weather = { loc = "Singapore,Singapore"; };

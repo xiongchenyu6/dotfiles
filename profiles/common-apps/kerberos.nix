@@ -1,5 +1,5 @@
 { config, ... }:
-let realm = "FREEMAN.ENGINEER";
+let realm = "autolife-robotics.tech";
 in {
   krb5 = {
     enable = true;

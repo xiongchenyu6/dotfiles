@@ -1,6 +1,6 @@
 { config, pkgs, lib, profiles, ... }:
 let
-  realm = "FREEMAN.ENGINEER";
+  realm = "autolife-robotics.tech";
   dbSuffix = "dc=freeman,dc=engineer";
   ldapRootUser = "admin";
   secrets-files-path = ../../../secrets;

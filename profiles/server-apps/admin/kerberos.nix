@@ -1,6 +1,6 @@
 { config, pkgs, ... }:
 let
-  realm = "FREEMAN.ENGINEER";
+  realm = "autolife-robotics.tech";
   dbSuffix = "dc=freeman,dc=engineer";
 in {
   sops.secrets."openldap/passwordFile" = {
