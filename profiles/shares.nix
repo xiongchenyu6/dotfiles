@@ -66,7 +66,7 @@ with builtins; rec {
     {
       host = "digital";
       role = "border";
-      endpoint = "digital.freeman.engineer";
+      endpoint = "digital.autolife-robotics.tech";
       network = "dn42";
       wg = { public-key = "aTfi+nYiVY2dkqS0Z3OqKpQeXIHamf28EQYhwaurhBI="; };
     }
@@ -82,7 +82,7 @@ with builtins; rec {
       host = "mail";
       network = "dn42";
       role = "vpn";
-      endpoint = "mail.freeman.engineer";
+      endpoint = "mail.autolife-robotics.tech";
       public-key =
         "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKcBsPZi+OYEL/RCSGZMr82x0UGUaghP3AGl6M57ssjn";
       wg = {

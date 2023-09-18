@@ -38,7 +38,7 @@
           '';
 
           peers = [{
-            endpoint = "mail.freeman.engineer:22618";
+            endpoint = "mail.autolife-robotics.tech:22618";
             publicKey = profiles.share.hosts-dict.mail.wg.public-key;
             allowedIPs = [
               "10.0.0.0/8"
