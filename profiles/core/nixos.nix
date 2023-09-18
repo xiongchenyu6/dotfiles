@@ -21,7 +21,7 @@
 
   imports = [ ./common.nix ];
 
-  networking = { domain = "freeman.engineer"; };
+  networking = { domain = "work-robotics.tech"; };
 
   # Select internationalisation properties.
   i18n = {

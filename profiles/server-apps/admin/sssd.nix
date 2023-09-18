@@ -1,7 +1,7 @@
 { config, ... }:
 let
-  dbDomain = "freeman.engineer";
-  realm = "FREEMAN.ENGINEER";
+  dbDomain = "work-robotics.tech";
+  realm = "work-robotics.tech";
   dbSuffix = "dc=freeman,dc=engineer";
   ldapRootUser = "admin";
 in {
@@ -42,7 +42,7 @@ in {
 
         use_fully_qualified_names = false
 
-        krb5_realm = FREEMAN.ENGINEER
+        krb5_realm = work-robotics.tech
         krb5_server = ${config.networking.fqdn}
         krb5_validate = true
         debug_level = 0x3ff0

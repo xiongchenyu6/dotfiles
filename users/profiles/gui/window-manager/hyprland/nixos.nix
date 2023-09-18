@@ -11,9 +11,9 @@
       XIM_SERVERS = "fcitx";
       NIXOS_OZONE_WL = "1";
       # WLR_NO_HARDWARE_CURSORS = "1";
-      # "XDG_SESSION_TYPE" = "wayland";
+      XDG_SESSION_TYPE = "wayland";
       # LSP_USE_PLISTS = "true";
-      # NIX_SSHOPTS = "-Y";
+      NIX_SSHOPTS = "-Y";
     };
     file = {
       ".config/hypr/hyprpaper.conf" = {
@@ -50,7 +50,7 @@
           name = "screen-shot-and-save.sh";
           runtimeInputs = [ pkgs.hyprland ];
           # date file named in YYYYMMDD-HHmmss format
-          text = ''grim -g "$(slurp)" ~/Pictures/$(date +%Y%m%d-%H%M%S).png'';
+          text = ''grim -g "$(slurp)" ~/Pictures/"$(date +%Y%m%d-%H%M%S)".png'';
         };
 
         workspace = pkgs.writeShellApplication {
@@ -213,8 +213,8 @@
           bind = $mainMod, M ,layoutmsg, swapwithmaster
           bind = $mainMod SHIFT, M, layoutmsg, focusmaster
           bind = $mainMod, space, fullscreen, # dwindle
-          bind = $mainMod SHIFT, S, exec, ${screen-shot}/bin/screen-shot.sh
-
+          bind = $mainMod, S, exec, ${screen-shot}/bin/screen-shot.sh
+          bind = $mainMod SHIFT, S, exec, ${screen-shot-and-save}/bin/screen-shot.sh
           # Move focus with mainMod + arrow keys
           bind = $mainMod, H, movefocus, l
           bind = $mainMod, L, movefocus, r
@@ -312,9 +312,9 @@
           modules-left = [ "hyprland/workspaces" ];
           modules-center = [ "hyprland/window" ];
           modules-right = [
-            # "wlr/taskbar"
             "custom/btc"
-            "mpd"
+            # "mpd"
+            "wlr/taskbar"
             "cpu"
             "memory"
             "temperature"

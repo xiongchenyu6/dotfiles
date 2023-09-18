@@ -40,7 +40,7 @@
       admin = {
         fullName = "freeman.xiong";
         username = "freeman";
-        email = "freeman@freeman.engineer";
+        email = "freeman@work-robotics.tech";
         passwordFile = config.sops.secrets."django/secret".path;
       };
       mail = {

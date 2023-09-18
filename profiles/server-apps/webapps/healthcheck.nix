@@ -20,11 +20,11 @@
         SECRET_KEY_FILE = config.sops.secrets."django/secret".path;
         COMPRESS_ENABLED = "False";
         REGISTRATION_OPEN = true;
-        EMAIL_HOST = "mail.freeman.engineer";
+        EMAIL_HOST = "mail.work-robotics.tech";
         EMAIL_HOST_PASSWORD = "0";
         EMAIL_HOST_USER = "freeman";
-        DEFAULT_FROM_EMAIL = "healthchecks@mail.freeman.engineer";
-        PING_ENDPOINT = "https://healthchecks.inner.freeman.engineer/";
+        DEFAULT_FROM_EMAIL = "healthchecks@mail.work-robotics.tech";
+        PING_ENDPOINT = "https://healthchecks.inner.work-robotics.tech/";
         SITE_ROOT = "https://healthchekcs.inner.${config.networking.domain}";
       };
     };

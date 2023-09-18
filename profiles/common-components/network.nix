@@ -1,1 +1,1 @@
-{ networking = { domain = "freeman.engineer"; }; }
+{ networking = { domain = "work-robotics.tech"; }; }

@@ -51,4 +51,8 @@
   "remote.SSH.logLevel": "trace",
 "window.titleBarStyle": "custom",
 "leetcode.endpoint": "leetcode",
+"leetcode.hint.configWebviewMarkdown": false,
+"leetcode.workspaceFolder": "/home/freeman.xiong/.leetcode",
+"leetcode.defaultLanguage": "cpp",
+"leetcode.hint.commentDescription": false,
 }
