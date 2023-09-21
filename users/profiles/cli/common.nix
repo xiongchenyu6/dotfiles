@@ -366,7 +366,7 @@
       };
 
     };
-    stateVersion = "22.11";
+    stateVersion = "23.11";
     keyboard = { options = [ "caps:ctrl_modifier" ]; };
   };
 }
