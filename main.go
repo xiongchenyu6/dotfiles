@@ -16,7 +16,7 @@ func main() {
 			return err
 		}
 
-		_, err = cloudflare.NewRecord(ctx, "example", &cloudflare.RecordArgs{
+		_, err = cloudflare.NewRecord(ctx, "wild-card", &cloudflare.RecordArgs{
 			ZoneId:  Zone.ID(),
 			Name:    pulumi.String("*"),
 			Value:   pulumi.String("43.156.66.157"),
