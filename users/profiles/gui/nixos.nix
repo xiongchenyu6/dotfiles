@@ -66,11 +66,10 @@
       };
     };
   };
-
   programs = lib.mkIf pkgs.stdenv.isLinux {
     wofi = { enable = true; };
-    carapace.enable = true;
-    #  comodoro.enable = true;
+    # carapace.enable = true;
+    # comodoro.enable = true;
     mpv.enable = true;
     firefox.enable = true;
     obs-studio = {
