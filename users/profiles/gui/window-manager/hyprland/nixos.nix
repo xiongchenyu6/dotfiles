@@ -122,7 +122,10 @@
           repeat_delay = 180
           # left_handed = 1
           follow_mouse = 1
-
+          # unscale XWayland
+          xwayland {
+            
+          }
           touchpad {
           natural_scroll = no
           }
