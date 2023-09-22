@@ -20,7 +20,7 @@
       gcc
       gdb
       geoip
-      google-chrome-dev
+
       gimp
       gnumake
       gitkraken

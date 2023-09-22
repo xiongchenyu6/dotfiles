@@ -102,7 +102,6 @@
     };
 
     # keychain = { enable = true; };
-
     readline = { enable = true; };
 
     atuin = {
