@@ -826,10 +826,9 @@ is available."
               ("C-c a" . lsp-execute-code-action))
   )
 #+end_src
-**** dap
+**** TODO dapv
 #+begin_src emacs-lisp
 (require 'dap-mode)
-
 (add-hook 'dap-stopped-hook
           (lambda (arg) (call-interactively #'dap-hydra)))
 
@@ -1004,11 +1003,11 @@ is available."
 (setq inferior-lisp-program "sbcl")
 (add-hook 'lisp-mode-hook (lambda () (sly)))
 #+end_src
-*** Haskell
+*** TODO Haskell
 #+begin_src emacs-lisp
-(require 'haskell-interactive-mode)
-(require 'haskell-process)
-(add-hook 'haskell-mode-hook 'interactive-haskell-mode)
+;(require 'haskell-interactive-mode)
+;(require 'haskell-process)
+;;(add-hook 'haskell-mode-hook 'interactive-haskell-mode)
 
 ;; Hooks so haskell and literate haskell major modes trigger LSP setup
 ;(require 'lsp-haskell)
@@ -1263,7 +1262,7 @@ Bind to lsp mode
 ;; (with-eval-after-load 'org
 ;;   (add-hook 'org-babel-after-execute-hook 'org-redisplay-inline-images))
 #+end_src
-*** Org download
+*** COMMENT Org download
 #+begin_src emacs-lisp
 (use-package org-download
   :ensure t
@@ -1273,7 +1272,7 @@ Bind to lsp mode
               ("C-c d" . org-download-screenshot))
   :config
   (setq org-download-image-dir "~/Pictures"
-        org-download-method 'attach
+        org-download-method 'directory
         org-download-screenshot-method "grim %s"))
 #+end_src
 *** Org Reveal
@@ -1404,6 +1403,8 @@ Bind to lsp mode
       org-return-follows-link t)
 ;; (with-eval-after-load ox-latex)
 #+end_src
+
+
 *** Org Hugo
 #+begin_src emacs-lisp
 (require 'ox-hugo)
