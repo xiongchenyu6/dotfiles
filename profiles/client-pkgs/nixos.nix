@@ -117,6 +117,7 @@
   };
 
   programs = {
+    yubikey-touch-detector = { enable = true; };
     steam = { enable = true; };
     npm = { enable = true; };
     _1password = { enable = true; };

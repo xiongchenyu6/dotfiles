@@ -38,6 +38,7 @@
 
   boot = {
     binfmt.emulatedSystems = [ "aarch64-linux" ];
+    kernelParams = [ "psmouse.synaptics_intertouch=0" ];
 
     kernel = { sysctl = { "net.ipv4.ip_forward" = 1; }; };
 
