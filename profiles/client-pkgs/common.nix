@@ -32,6 +32,7 @@
       glab
       git-crypt
       gitAndTools.gitflow
+      github-copilot-cli
       gitleaks
       weave-gitops
       gopls

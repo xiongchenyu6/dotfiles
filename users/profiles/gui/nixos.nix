@@ -79,6 +79,16 @@
         obs-pipewire-audio-capture
       ];
     };
+    thunderbird = {
+      enable = true;
+      profiles = {
+        "xiongchenyu6@gmail.com" = {
+          isDefault = true;
+          withExternalGnupg = true;
+        };
+      };
+    };
+
     gpg = {
       enable = true;
       settings = {
