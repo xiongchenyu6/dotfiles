@@ -48,7 +48,7 @@
 
     sqls = { enable = true; };
 
-    octant = { enable = true; };
+    # octant = { enable = true; };
 
     java = {
       enable = true;
