@@ -1440,17 +1440,18 @@ Bind to lsp mode
 *** Org pandoc
 #+begin_src emacs-lisp
 (require 'ox-pandoc)
-  (define-key global-map (kbd "C-c p") project-prefix-map)
+(define-key global-map (kbd "C-c p") project-prefix-map)
+(define-key global-map (kbd "C-c t") #'treemacs)
 
-  (with-eval-after-load "sql"
-    (define-key sql-mode-map (kbd "C-c C-c")
-                (lambda () (interactive) (if (bound-and-true-p lsp-mode)
-                                        (lsp-sql-execute-paragraph)
-                                      (sql-send-paragraph)))))
+(with-eval-after-load "sql"
+  (define-key sql-mode-map (kbd "C-c C-c")
+              (lambda () (interactive) (if (bound-and-true-p lsp-mode)
+                                      (lsp-sql-execute-paragraph)
+                                    (sql-send-paragraph)))))
 
-  (with-eval-after-load "project"
-    (define-key project-prefix-map "s" 'vterm)
-(define-key project-prefix-map "m" 'magit))
+(with-eval-after-load "project"
+  (define-key project-prefix-map "s" 'vterm)
+  (define-key project-prefix-map "m" 'magit))
 (setq project-switch-commands 'project-find-file)
 #+end_src
 ** Key bindings
