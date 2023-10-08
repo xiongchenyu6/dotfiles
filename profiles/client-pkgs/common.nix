@@ -84,7 +84,7 @@
       nodePackages."typescript-language-server"
       nodePackages."yaml-language-server"
       nodePackages."vscode-langservers-extracted"
-      nodePackages."yarn"
+      #      nodePackages."yarn"
       nvfetcher-bin
       oath-toolkit
       openai
