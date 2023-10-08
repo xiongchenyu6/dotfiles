@@ -90,7 +90,7 @@
                git tag "$NEW_TAG"
                echo "Tagged with $NEW_TAG"
                git push --tags
-           else
+           elsepp
                echo "Already a tag on this commit"
            fi
         }
