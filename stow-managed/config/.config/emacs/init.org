@@ -7,9 +7,10 @@
 #+PROPERTY: header-args :results silent :tangle "init.el"
 
 * My Configuration
-** Env
+** TODO Env
 #+begin_src emacs-lisp
 (setenv "XDG_SESSION_TYPE" "wayland")
+(fset 'epg-wait-for-status 'ignore)
 ;; (setenv "LSP_USE_PLISTS" "true")
 ;; (setenv "PATH" (concat (getenv "PATH") ":/home/freeman.xiong/.config/emacs/.cache/lsp/eclipse.jdt.ls/bin/"))
 #+end_src

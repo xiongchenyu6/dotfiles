@@ -21,6 +21,30 @@
         };
         programs = {
           git = {
+            includes = [
+              {
+                condition = "gitdir:**/Private/**/.git";
+                contents = {
+                  user = {
+                    email = "xiongchenyu6@gmail.com";
+                    name = "xiongchenyu";
+                    signingKey = "5AF7AFBF695E8A5D";
+                  };
+                  commit = { gpgSign = true; };
+                };
+              }
+              {
+                condition = "gitdir:**/Workspace/**/.git";
+                contents = {
+                  user = {
+                    email = "freeman.xiong@tron.network";
+                    name = "freeman.xiong";
+                    signingKey = "03DFD2DEA7AF6693";
+                  };
+                  commit = { gpgSign = true; };
+                };
+              }
+            ];
             signing = {
               key = "5AF7AFBF695E8A5D";
               signByDefault = true;
@@ -34,12 +58,13 @@
               };
               pull = { rebase = false; };
               user = {
-                name = "freeman";
+                name = "xiongchenyu";
                 email = "xiongchenyu6@gmail.com";
                 useConfigOnly = true;
               };
             };
           };
+
           ssh = {
             matchBlocks = {
               "mail" = {
