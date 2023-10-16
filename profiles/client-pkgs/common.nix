@@ -26,9 +26,11 @@
       datree
       easyrsa
       electrum
+      enc
       fd
       ffmpeg-full
       fluxcd
+      freerdp
       glab
       git-crypt
       gitAndTools.gitflow

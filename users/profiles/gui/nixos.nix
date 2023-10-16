@@ -91,6 +91,7 @@
 
     gpg = {
       enable = true;
+      package = pkgs.gnupg240;
       settings = {
         # keyserver = "hkps://keyserver.ubuntu.com";
         fixed-list-mode = true;

@@ -8,6 +8,8 @@
 
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
 
+    nixpkgs-stable.url = "github:NixOS/nixpkgs/nixos-23.05";
+
     nixos-hardware.url = "github:NixOS/nixos-hardware/master";
 
     nur.url = "github:nix-community/NUR";
@@ -104,8 +106,8 @@
     };
   };
 
-  outputs = { self, nixpkgs, impermanence, nur, nixos-hardware, emacs
-    , home-manager, devenv, flake-parts, pre-commit-hooks, nix-alien
+  outputs = { self, nixpkgs, nixpkgs-stable, impermanence, nur, nixos-hardware
+    , emacs, home-manager, devenv, flake-parts, pre-commit-hooks, nix-alien
     , xiongchenyu6, sops-nix, foundry, poetry2nix, nvfetcher
     , nix-vscode-extensions, ... }@inputs:
     with nixpkgs;
@@ -126,6 +128,7 @@
         (_: prev: {
           lib = prev.lib.extend
             (_lfinal: _lprev: { mine = import ./lib { inherit lib; }; });
+          gnupg240 = nixpkgs-stable.legacyPackages.x86_64-linux.gnupg;
         })
       ];
       darwin-modules = [ home-manager.darwinModules.home-manager ];
