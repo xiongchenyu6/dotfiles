@@ -117,7 +117,7 @@
           # kb_model = dvorak-programmer
 
           # kb_options = caps:ctrl_modifier
-          kb_options = ctrljiu:nocaps
+          kb_options = ctrl:nocaps
 
           kb_rules =
           repeat_rate = 60
