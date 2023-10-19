@@ -62,7 +62,7 @@
       kubevirt
       kube-score
       killall
-      openlens
+      opera
       linkerd
       litecli
       vsc-leetcode-cli
@@ -139,6 +139,7 @@
       step-cli
       spring-boot-cli
       tectonic
+      tgpt
       # terraform
       # terraform-ls
       # terracognita

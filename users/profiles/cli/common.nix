@@ -342,27 +342,27 @@
       };
       ".config/electron25-flags.conf" = {
         text = ''
-          --enable-features=UseOzonePlatform --ozone-platform=wayland
+          --enable-features=UseOzonePlatform --ozone-platform=wayland  --enable-wayland-ime 
         '';
       };
       ".config/electron24-flags.conf" = {
         text = ''
-          --enable-features=UseOzonePlatform --ozone-platform=wayland
+          --enable-features=UseOzonePlatform --ozone-platform=wayland  --enable-wayland-ime 
         '';
       };
       ".config/electron23-flags.conf" = {
         text = ''
-          --enable-features=UseOzonePlatform --ozone-platform=wayland
+          --enable-features=UseOzonePlatform --ozone-platform=wayland  --enable-wayland-ime 
         '';
       };
       ".config/electron22-flags.conf" = {
         text = ''
-          --enable-features=UseOzonePlatform --ozone-platform=wayland
+          --enable-features=UseOzonePlatform --ozone-platform=wayland  --enable-wayland-ime 
         '';
       };
       ".config/code-flags.conf" = {
         text = ''
-          --enable-features=UseOzonePlatform --ozone-platform=wayland
+          --enable-features=UseOzonePlatform --ozone-platform=wayland  --enable-wayland-ime 
         '';
       };
 
@@ -371,3 +371,5 @@
     keyboard = { options = [ "caps:ctrl_modifier" ]; };
   };
 }
+
+# ocng
