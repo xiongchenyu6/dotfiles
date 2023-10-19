@@ -154,7 +154,7 @@
       wget
       wpsoffice
       yarn2nix
-      # yubikey-manager
+      yubikey-manager
       zk-shell
       zoom-us
     ];

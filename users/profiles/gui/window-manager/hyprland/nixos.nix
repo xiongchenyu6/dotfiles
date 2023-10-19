@@ -115,7 +115,9 @@
           kb_layout = us
           # kb_variant = dvp
           # kb_model = dvorak-programmer
-          kb_options = caps:ctrl_modifier
+
+          # kb_options = caps:ctrl_modifier
+          kb_options = ctrljiu:nocaps
 
           kb_rules =
           repeat_rate = 60
