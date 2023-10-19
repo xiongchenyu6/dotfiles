@@ -31,6 +31,8 @@ stow-managed/config/.config/Code/*
 !stow-managed/config/.config/fontconfig
 !stow-managed/config/.config/taffybar/
 !stow-managed/config/.config/starship.toml
+stow-managed/rime/.local/share/fcitx5/rime/build
+stow-managed/rime/.local/share/fcitx5/rime/sync
 
  tmux/.tmux/**
 !tmux/.tmux/plugins/tmp
