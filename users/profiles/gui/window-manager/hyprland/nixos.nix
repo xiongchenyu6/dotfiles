@@ -206,10 +206,10 @@
           bind = $mainMod, return, exec, alacritty
           bind = $mainMod, c, killactive,
           bind = $mainMod SHIFT, Q, exit,
-          bind = $mainMod, B, exec, microsoft-edge-dev --enable-features=WebRTCPipeWireCapturer --ozone-platform=wayland
-          # bind = $mainMod SHIFT, c, exec, code --enable-features=UseOzonePlatform --ozone-platform=wayland
-          bind = $mainMod, P, exec, wofi --show drun -I -G
-          bind = $mainMod, F, togglefloating,
+          bind = $mainMod, E, exec, microsoft-edge-dev --enable-features=WebRTCPipeWireCapturer --ozone-platform=wayland  --enable-wayland-ime 
+          # bind = $mainMod SHIFT, c, exec, code --enable-features=UseOzonePlatform --ozone-platform=wayland  --enable-wayland-ime 
+          bind = $mainMod, X, exec, wofi --show drun -I -G
+          bind = $mainMod, L, togglefloating,
           bind = $mainMod, V, pseudo, # dwindle
           bind = $mainMod, W, swapactiveworkspaces, eDP-1 HDMI-A-1
           bind = $mainMod, T, togglesplit, # dwindle
@@ -221,10 +221,10 @@
           bind = $mainMod, S, exec, ${screen-shot}/bin/screen-shot.sh
           bind = $mainMod SHIFT, S, exec, ${screen-shot-and-save}/bin/screen-shot.sh
           # Move focus with mainMod + arrow keys
-          bind = $mainMod, H, movefocus, l
-          bind = $mainMod, L, movefocus, r
-          bind = $mainMod, K, movefocus, u
-          bind = $mainMod, J, movefocus, d
+          bind = $mainMod, B, movefocus, l
+          bind = $mainMod, F, movefocus, r
+          bind = $mainMod, P, movefocus, u
+          bind = $mainMod, N, movefocus, d
 
           # workspaces
           # binds mod + [shift +] {1..10} to [move to] ws {1..10}

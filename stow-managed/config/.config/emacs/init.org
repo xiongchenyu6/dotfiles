@@ -714,7 +714,7 @@ is available."
   
   (add-to-list 'corfu-margin-formatters #'kind-icon-margin-formatter)
   :hook
-  (meow-insert-exit . corfu-quit)
+  ;(meow-insert-exit . corfu-quit)
   )
 
 (setq kind-icon-default-face 'corfu-default)
@@ -1134,7 +1134,7 @@ is available."
   :config
   (setq rime-emacs-module-header-root (concat (file-name-directory (directory-file-name (file-name-directory (file-truename (concat invocation-directory invocation-name))))) "include"))
   (setq rime-share-data-dir (concat (shell-command-to-string "nix eval --impure --raw --expr '(let pkgs = import <nixpkgs> {}; in with pkgs; lib.getLib brise)'") "/share/rime-data"))
-  (setq rime-librime-root (shell-command-to-string "nix eval --impure --raw --expr '(let pkgs = import <nixpkgs> {}; in with pkgs; librime)'"))
+;  (setq rime-librime-root (shell-command-to-string "nix eval --impure github:xiongchenyu6/nur-packages#librime-with-lua"))
   (setq rime-user-data-dir "~/.local/share/fcitx5/rime")
   (setq rime-show-candidate 'posframe)
   :custom
@@ -1142,7 +1142,7 @@ is available."
   )
 
 (setq rime-disable-predicates
-      '(meow-normal-mode-p
+      '(;meow-normal-mode-p
         rime-predicate-after-alphabet-char-p
         rime-predicate-hydra-p
         rime-predicate-prog-in-code-p))
