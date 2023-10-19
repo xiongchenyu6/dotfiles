@@ -210,7 +210,18 @@
           pdf-tools
           posframe
           protobuf-mode
-          emacsPackages.rime
+          (rime.overrideAttrs (old: {
+            recipe = pkgs.writeText "recipe" ''
+              (rime :repo "DogLooksGood/emacs-rime"
+                    :files (:defaults "lib.c" "Makefile" "librime-emacs.so")
+                    :fetcher github)
+            '';
+            postPatch = old.postPatch or "" + ''
+              emacs --batch -Q -L . \
+                  --eval "(progn (require 'rime) (rime-compile-module))"
+            '';
+            buildInputs = old.buildInputs ++ (with pkgs; [ librime-with-lua ]);
+          }))
           restclient
           rainbow-delimiters
           racket-mode

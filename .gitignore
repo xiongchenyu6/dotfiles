@@ -33,7 +33,7 @@ stow-managed/config/.config/Code/*
 !stow-managed/config/.config/starship.toml
 stow-managed/rime/.local/share/fcitx5/rime/build
 stow-managed/rime/.local/share/fcitx5/rime/sync
-
+stow-managed/rime/.local/share/fcitx5/rime/rime_ice.userdb
  tmux/.tmux/**
 !tmux/.tmux/plugins/tmp
 
