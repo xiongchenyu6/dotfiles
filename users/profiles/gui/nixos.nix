@@ -61,7 +61,7 @@
           fcitx5-mozc
           fcitx5-gtk
           fcitx5-chinese-addons
-          fcitx5-rime
+          (fcitx5-rime.override {librime = librime-with-lua;} )
         ];
       };
     };
