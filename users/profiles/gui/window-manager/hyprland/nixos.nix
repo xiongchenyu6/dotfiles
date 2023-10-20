@@ -42,15 +42,18 @@
         };
         screen-shot = pkgs.writeShellApplication {
           name = "screen-shot.sh";
-          runtimeInputs = [ pkgs.hyprland ];
-          text = ''grim -g "$(slurp)" - | wl-copy'';
+          text = ''
+            grim -g "$(slurp)" - | wl-copy -o
+          '';
         };
         # screen shot and save to ~/Pictures
         screen-shot-and-save = pkgs.writeShellApplication {
           name = "screen-shot-and-save.sh";
-          runtimeInputs = [ pkgs.hyprland ];
           # date file named in YYYYMMDD-HHmmss format
-          text = ''grim -g "$(slurp)" ~/Pictures/"$(date +%Y%m%d-%H%M%S)".png'';
+          text = ''
+            TIME=$(date +%Y%m%d-%H%M%S)_screenshot
+            grim -g "$(slurp)" ~/Pictures/"$TIME".png
+          '';
         };
 
         workspace = pkgs.writeShellApplication {
@@ -206,6 +209,8 @@
           bind = $mainMod, return, exec, alacritty
           bind = $mainMod, c, killactive,
           bind = $mainMod SHIFT, Q, exit,
+          bind = $mainMod SHIFT, A, exec, ${screen-shot-and-save}/bin/screen-shot-and-save.sh
+          bind = $mainMod SHIFT, S, exec, ${screen-shot}/bin/screen-shot.sh
           bind = $mainMod, E, exec, microsoft-edge-dev --enable-features=WebRTCPipeWireCapturer --ozone-platform=wayland  --enable-wayland-ime 
           # bind = $mainMod SHIFT, c, exec, code --enable-features=UseOzonePlatform --ozone-platform=wayland  --enable-wayland-ime 
           bind = $mainMod, X, exec, wofi --show drun -I -G
@@ -218,8 +223,7 @@
           bind = $mainMod, M ,layoutmsg, swapwithmaster
           bind = $mainMod SHIFT, M, layoutmsg, focusmaster
           bind = $mainMod, space, fullscreen, # dwindle
-          bind = $mainMod, S, exec, ${screen-shot}/bin/screen-shot.sh
-          bind = $mainMod SHIFT, S, exec, ${screen-shot-and-save}/bin/screen-shot.sh
+
           # Move focus with mainMod + arrow keys
           bind = $mainMod, B, movefocus, l
           bind = $mainMod, F, movefocus, r
@@ -279,7 +283,7 @@
 
           exec-once=dropbox
 
-          exec-once=${clean-up-after-start}/bin/clean-up-after-start.sh
+          # exec-once=${clean-up-after-start}/bin/clean-up-after-start.sh
 
           windowrule = opacity 0.9 0.95,Alacritty
           windowrule = opacity 0.9 0.95,emacs

@@ -340,32 +340,47 @@
           lang en_US
         '';
       };
+      ".config/electron-flags.conf" = {
+        text = ''
+          --enable-wayland-ime
+          --enable-features=WaylandWindowDecorations
+          --ozone-platform-hint=auto        '';
+      };
+
       ".config/electron25-flags.conf" = {
         text = ''
-          --enable-features=UseOzonePlatform --ozone-platform=wayland  --enable-wayland-ime 
-        '';
+          --enable-wayland-ime
+          --enable-features=WaylandWindowDecorations
+          --ozone-platform-hint=auto        '';
       };
       ".config/electron24-flags.conf" = {
         text = ''
-          --enable-features=UseOzonePlatform --ozone-platform=wayland  --enable-wayland-ime 
+          --enable-wayland-ime
+          --enable-features=UseOzonePlatform
+          --ozone-platform=wayland 
         '';
       };
       ".config/electron23-flags.conf" = {
         text = ''
-          --enable-features=UseOzonePlatform --ozone-platform=wayland  --enable-wayland-ime 
+          --enable-wayland-ime
+          --enable-features=UseOzonePlatform
+          --ozone-platform=wayland 
         '';
       };
       ".config/electron22-flags.conf" = {
         text = ''
-          --enable-features=UseOzonePlatform --ozone-platform=wayland  --enable-wayland-ime 
+          --enable-wayland-ime
+          --enable-features=UseOzonePlatform
+          --ozone-platform=wayland 
         '';
       };
       ".config/code-flags.conf" = {
         text = ''
-          --enable-features=UseOzonePlatform --ozone-platform=wayland  --enable-wayland-ime 
+          --enable-wayland-ime
+          --enable-features=WaylandWindowDecorations
+          --ozone-platform-hint=auto
         '';
       };
-
     };
     stateVersion = "23.11";
     keyboard = { options = [ "caps:ctrl_modifier" ]; };

@@ -61,7 +61,7 @@
           fcitx5-mozc
           fcitx5-gtk
           fcitx5-chinese-addons
-          (fcitx5-rime.override {librime = librime-with-lua;} )
+          fcitx5-rime
         ];
       };
     };
@@ -71,7 +71,7 @@
     # carapace.enable = true;
     # comodoro.enable = true;
     mpv.enable = true;
-    firefox.enable = true;
+
     obs-studio = {
       enable = true;
       plugins = with pkgs.obs-studio-plugins; [
