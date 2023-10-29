@@ -235,12 +235,6 @@
 
     nginx = { enable = false; };
 
-    # vikunja = {
-    #   enable = true;
-    #   setupNginx = true;
-    #   frontendScheme = "http";
-    #   frontendHostname = "localhost";
-    # };
     bird2 = {
       enable = true;
       config = mylib.bird2-inner-config "172.22.240.98" "fd48:4b4:f3::2";

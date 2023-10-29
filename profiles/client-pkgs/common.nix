@@ -25,7 +25,6 @@
       du-dust # du alternative
       datree
       easyrsa
-      electrum
       enc
       fd
       ffmpeg-full
