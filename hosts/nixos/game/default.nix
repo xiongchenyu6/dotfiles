@@ -31,7 +31,7 @@
   nixpkgs = {
     config = {
       permittedInsecurePackages =
-        [ "openssl-1.1.1v" "openssl-1.1.1w" "electron-19.1.9" ];
+        [ "openssl-1.1.1v" "openssl-1.1.1w" "electron-19.1.9" "zotero-6.0.27" ];
       allowBroken = true;
     };
   };
