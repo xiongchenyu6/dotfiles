@@ -77,6 +77,9 @@
                 port = 2222;
                 user = "root";
               };
+              "hbwallet-mysql" = {
+                hostname = "hbwallet-mysql.inner.trontech.link";
+              };
               "git-code-commit.*.amazonaws.com" = {
                 user = "APKA6ECL465SWNEVSVPZ";
               };
