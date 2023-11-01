@@ -8,7 +8,6 @@
       hyprpicker
       gnomeExtensions.zoom-wayland-extension
       wl-clipboard
-      # wl-clipboard-x11
       wf-recorder
       xdg_utils
       wev

@@ -20,7 +20,6 @@
       # Configure keymap in X11
       xkbVariant = "dvp";
       xkbModel = "dvorak-programmer";
-
       xkbOptions = "caps:ctrl_modifier";
       autoRepeatDelay = 180;
       autoRepeatInterval = 60;
