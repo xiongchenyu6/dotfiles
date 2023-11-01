@@ -20,7 +20,6 @@
       gcc
       gdb
       geoip
-
       gimp
       gnumake
       gitkraken
@@ -39,6 +38,7 @@
       #   ]))
       imagemagick
       inetutils
+      ifuse
       jp2a
       ledger-live-desktop
       linuxPackages.ply
@@ -47,7 +47,7 @@
       lsof
       manix
       my_cookies
-      mutagen
+      netbird-ui
       openfortivpn
       openiscsi
       (python3.withPackages (_: with python3.pkgs; [ my_cookies mutagen ]))
@@ -86,6 +86,7 @@
   };
 
   services = {
+    usbmuxd.enable = true;
     fprintd.enable = true;
     usbguard = {
       enable = false;
