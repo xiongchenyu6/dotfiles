@@ -694,7 +694,7 @@ is available."
   (add-hook 'org-mode-hook #'org-ai-mode))
 #+end_src
 ** Lang
-*** completion
+*** COMMENT completion
 #+begin_src emacs-lisp
 (use-package corfu
   :config
@@ -709,8 +709,8 @@ is available."
         corfu-quit-no-match 'separator)
   
   (global-corfu-mode)
-  (corfu-indexed-mode)
-  (corfu-popupinfo-mode)
+;  (corfu-indexed-mode)
+ ; (corfu-popupinfo-mode)
   
   (add-to-list 'corfu-margin-formatters #'kind-icon-margin-formatter)
   :hook
