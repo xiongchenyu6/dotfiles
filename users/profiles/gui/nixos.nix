@@ -201,12 +201,12 @@
         "42C87EA7DAAD37765EB1DD0FF53339EFBBF5785C"
       ];
     };
-    # udiskie = {
-    #   enable = true;
-    #   automount = true;
-    #   notify = true;
-    #   tray = "always";
-    # };
+    udiskie = {
+      enable = true;
+      automount = true;
+      notify = true;
+      tray = "always";
+    };
     syncthing = {
       enable = true;
       tray = { enable = true; };
