@@ -5,8 +5,8 @@
     group = "datadog";
   };
 
-  systemd.services.datadog-agent.serviceConfig.User = lib.mkForce "root";
-  systemd.services.datadog-agent.serviceConfig.Group = lib.mkForce "root";
+  # systemd.services.datadog-agent.serviceConfig.User = lib.mkForce "root";
+  # systemd.services.datadog-agent.serviceConfig.Group = lib.mkForce "root";
 
   services = {
     datadog-agent = {

@@ -69,7 +69,7 @@
       mattermost-desktop
       microsoft-edge-dev
       mongosh
-      mycli
+      #mycli
       my2sql
       neofetch
       xournal # note taking for pdf
