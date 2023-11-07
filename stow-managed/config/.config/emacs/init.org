@@ -694,7 +694,7 @@ is available."
   (add-hook 'org-mode-hook #'org-ai-mode))
 #+end_src
 ** Lang
-*** COMMENT completion
+*** completion
 #+begin_src emacs-lisp
 (use-package corfu
   :config
@@ -707,14 +707,12 @@ is available."
         corfu-preview-current nil
         corfu-popupinfo-delay 0.2
         corfu-quit-no-match 'separator)
-  
+
   (global-corfu-mode)
-;  (corfu-indexed-mode)
- ; (corfu-popupinfo-mode)
-  
+  (corfu-indexed-mode)
+  (corfu-popupinfo-mode)
+
   (add-to-list 'corfu-margin-formatters #'kind-icon-margin-formatter)
-  :hook
-  ;(meow-insert-exit . corfu-quit)
   )
 
 (setq kind-icon-default-face 'corfu-default)
@@ -765,7 +763,6 @@ is available."
 
 (defun my/orderless-dispatch-flex-first (_pattern index _total)
   (and (eq index 0) 'orderless-flex))
-
 #+end_src
 *** COMMENT lsp & lsp-ui
 #+begin_src emacs-lisp
