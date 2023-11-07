@@ -16,7 +16,6 @@
       config.nur.repos.xddxdd.baidupcs-go
       config.nur.repos.xddxdd.qq
       config.nur.repos.xddxdd.wechat-uos
-      firefox
       gcc
       gdb
       geoip
@@ -40,6 +39,7 @@
       inetutils
       ifuse
       jp2a
+      vivaldi
       ledger-live-desktop
       linuxPackages.ply
       lldb
