@@ -151,6 +151,7 @@
 
   services = lib.mkIf pkgs.stdenv.isLinux {
     # safeeyes.enable = true;
+    #    ssh-agent.enable = true;
     pasystray = { enable = true; };
     poweralertd = { enable = true; };
     emacs = {
