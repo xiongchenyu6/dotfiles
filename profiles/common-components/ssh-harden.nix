@@ -52,6 +52,7 @@
       };
       ports = [ 2222 ];
       extraConfig = ''
+        StreamLocalBindUnlink yes
         GSSAPIAuthentication yes
         GSSAPICleanupCredentials yes
       '';

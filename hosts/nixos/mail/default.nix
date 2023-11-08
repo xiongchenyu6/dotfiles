@@ -9,7 +9,6 @@
     ../../../profiles/server-apps/bgp/bird-border.nix
     ../../../profiles/server-apps/dns/bind.nix
     ../../../profiles/core/nixos.nix
-
     # ../../../profiles/server-apps/log/loki.nix
     ../../../profiles/server-apps/mail/postfix.nix
     ../../../profiles/server-apps/mail/dovecot2.nix
@@ -257,7 +256,33 @@
     };
     datadog-agent = { tags = [ "env:outter" ]; };
 
-    openssh = { openFirewall = true; };
+    openssh = let
+      file = pkgs.writeText "ca.pub"
+        "ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBEpEaKdRToEGqji1PLnZsP+AaScTYQbcdkLCYYPe+gYX5ILxcuHXL+O5GdHzs+LtC6csdvzzBQBaJEpT7pr/GsM=";
+    in {
+      openFirewall = true;
+      hostKeys = lib.mkAfter [
+        {
+          bits = 4096;
+          path = "/etc/ssh/ssh_host_rsa_key";
+          type = "rsa";
+        }
+        {
+          path = "/etc/ssh/ssh_host_ed25519_key";
+          type = "ed25519";
+        }
+        {
+          path = "/etc/ssh/ssh_host_ecdsa_key";
+          type = "ecdsa-sha2-nistp256";
+        }
+      ];
+      extraConfig = ''
+        HostCertificate /etc/ssh/ssh_host_ecdsa_key-cert.pub
+        TrustedUserCAKeys ${file}
+      '';
+    };
+    # sshguard = { enable = true; };
+
     # babeld.enable = true;
     babeld.extraConfig = ''
       redistribute ip 172.20.0.0/14

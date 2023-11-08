@@ -279,7 +279,7 @@
 
           # This is your devenv configuration
           env = {
-            NIX_SSHOPTS = "-Y -p 2222";
+            NIX_SSHOPTS = "-Y -p 2222 -i ~/.ssh/id_ed25519";
             PULUMI_CONFIG_PASSPHRASE = "";
           };
           packages = with pkgs; [
