@@ -36,6 +36,7 @@
           "pipewire"
         ];
       };
+      "xiongchenyu6" = { isNormalUser = true; };
     };
   };
   programs.zsh.enable = true;
