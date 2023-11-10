@@ -4,10 +4,8 @@
 { config, pkgs, lib, ... }: {
   imports = [ ./common.nix ];
 
-  qt = {
-    enable = true;
+  qt = { enable = true; };
 
-  };
   xdg = {
     enable = true;
     mime = { enable = true; };

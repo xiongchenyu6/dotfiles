@@ -721,7 +721,7 @@ is available."
       '(:padding 0 :stroke 0 :margin 0 :radius 0 :height 0.8 :scale 1))
 
 (direnv-mode t)
-(require 'corfu-english-helper)
+
 ;; Optionally configure the cape-capf-buster.
 
 (add-hook 'nix-mode-hook #'(lambda () (add-hook 'before-save-hook #'nix-format-buffer t t)))
@@ -734,14 +734,11 @@ is available."
                             tempel-complete
                             cape-file
                             cape-dabbrev
-                            corfu-english-helper-search
                             )
                           cape-dabbrev-min-length 5)
               ))
 
 (define-key global-map (kbd "M-*") 'tempel-insert)
-
-(toggle-corfu-english-helper)
 
 (defun tempel-setup-capf ()
   ;; Add the Tempel Capf to `completion-at-point-functions'.
@@ -1583,12 +1580,14 @@ Bind to lsp mode
 #+begin_src emacs-lisp
 (line-number-mode)
 (column-number-mode)
-;; (display-battery-mode)
-;; (doom-modeline-mode 1)
+(display-battery-mode)
+(doom-modeline-mode 1)
 (setq completion-auto-help 'always)
 #+end_src
 ** gnus
 #+begin_src emacs-lisp
+(add-hook 'after-init-hook 'recentf-mode)
+
 (setq user-full-name "XiongChenYu"
       user-mail-address "xiongchenyu6@gmail.com")
 

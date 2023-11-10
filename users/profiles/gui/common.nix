@@ -162,7 +162,6 @@
           cmake-mode
           cape
           corfu
-          corfu-english-helper
           copilot-el
           chatgpt
           chatgpt-arcana
@@ -171,7 +170,7 @@
           dockerfile-mode
           direnv
           dap-mode
-          # dooom-modeline
+          doom-modeline
           emacsql-sqlite-builtin # for org-roam
           format-all
           gradle-mode
