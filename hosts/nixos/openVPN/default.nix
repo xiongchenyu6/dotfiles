@@ -1,4 +1,4 @@
-{ pkgs, config, lib, modulesPath, ... }:
+{ pkgs, config, modulesPath, ... }:
 let
   # generate via openvpn --genkey --secret openvpn-laptop.key
   client-key = "/root/openvpn-laptop.key";

@@ -33,21 +33,6 @@
     };
     # nix-ros-overlay = { url = "github:lopsided98/nix-ros-overlay"; };
     mk-shell-bin.url = "github:rrbutani/nix-mk-shell-bin";
-    nvfetcher = {
-      url = "github:berberman/nvfetcher";
-      inputs = {
-        flake-utils.follows = "flake-utils";
-        nixpkgs.follows = "nixpkgs";
-      };
-    };
-
-    emacs = {
-      url = "github:nix-community/emacs-overlay";
-      inputs = {
-        flake-utils.follows = "flake-utils";
-        nixpkgs.follows = "nixpkgs";
-      };
-    };
 
     nix-vscode-extensions = {
       url = "github:nix-community/nix-vscode-extensions";
@@ -106,21 +91,19 @@
     };
   };
 
-  outputs = { self, nixpkgs, nixpkgs-stable, impermanence, nur, nixos-hardware
-    , emacs, home-manager, devenv, flake-parts, pre-commit-hooks, nix-alien
-    , xiongchenyu6, sops-nix, foundry, poetry2nix, nvfetcher
-    , nix-vscode-extensions, ... }@inputs:
+  outputs = { nixpkgs, nixpkgs-stable, impermanence, nur, nixos-hardware
+    , home-manager, devenv, flake-parts, pre-commit-hooks, nix-alien
+    , xiongchenyu6, sops-nix, foundry, poetry2nix, nix-vscode-extensions, ...
+    }@inputs:
     with nixpkgs;
     with lib;
     let
       overlays = map (x: x.overlays.default or x.overlay) [
-        emacs
         xiongchenyu6
         nix-alien
         sops-nix
         foundry
         poetry2nix
-        nvfetcher
         nix-vscode-extensions
       ];
 
@@ -129,6 +112,8 @@
           lib = prev.lib.extend
             (_lfinal: _lprev: { mine = import ./lib { inherit lib; }; });
           gnupg240 = nixpkgs-stable.legacyPackages.x86_64-linux.gnupg;
+          telegram-desktop =
+            nixpkgs-stable.legacyPackages.x86_64-linux.telegram-desktop;
         })
       ];
       darwin-modules = [ home-manager.darwinModules.home-manager ];
@@ -144,7 +129,7 @@
         nur.nixosModules.nur
         impermanence.nixosModules.impermanence
         xiongchenyu6.nixosModules.bttc
-        ({ modulesPath, ... }: {
+        ({ ... }: {
           nixpkgs = {
             system = "x86_64-linux";
             config = {
@@ -165,7 +150,7 @@
       systems =
         [ "x86_64-linux" "aarch64-linux" "aarch64-darwin" "x86_64-darwin" ];
 
-      perSystem = { config, self', inputs', pkgs, system, ... }: {
+      perSystem = { pkgs, ... }: {
         apps = let
           type = "app";
           getip = ''
@@ -289,7 +274,7 @@
             mdbook
             nixfmt
             statix
-            # nvfetcher
+            dasel
             yq-go
             nixos-rebuild
             pulumi-bin
@@ -318,7 +303,9 @@
         nixosConfigurations = {
           mail = nixpkgs.lib.nixosSystem {
             specialArgs = {
-              profiles = { share = import ./profiles/shares.nix; };
+              profiles = {
+                share = import ./profiles/shares.nix { inherit lib; };
+              };
               mylib = import ./lib { inherit lib; };
             };
             modules = [
@@ -328,7 +315,10 @@
           };
           office = nixpkgs.lib.nixosSystem {
             specialArgs = {
-              profiles = { share = import ./profiles/shares.nix; };
+
+              profiles = {
+                share = import ./profiles/shares.nix { inherit lib; };
+              };
               mylib = import ./lib { inherit lib; };
             };
             modules = [
@@ -340,7 +330,9 @@
           };
           game = nixpkgs.lib.nixosSystem {
             specialArgs = {
-              profiles = { share = import ./profiles/shares.nix; };
+              profiles = {
+                share = import ./profiles/shares.nix { inherit lib; };
+              };
               mylib = import ./lib { inherit lib; };
             };
             modules = [
@@ -356,3 +348,4 @@
       };
     };
 }
+

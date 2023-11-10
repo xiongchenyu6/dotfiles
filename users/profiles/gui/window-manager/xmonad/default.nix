@@ -24,7 +24,7 @@
     };
   };
   programs = {
-    emacs = { package = pkgs.emacsGit; };
+    emacs = { package = pkgs.emacs29; };
     feh = { enable = true; };
 
     autorandr = {

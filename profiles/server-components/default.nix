@@ -1,1 +1,1 @@
-{ pkgs, config, lib, ... }: { imports = [ ./backup ./security.nix ]; }
+{ ... }: { imports = [ ./backup ./security.nix ]; }

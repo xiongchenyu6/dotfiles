@@ -1,11 +1,30 @@
 {
     "nix.enableLanguageServer": true, // Enable LSP.
-    "nix.serverPath": "nixd" // The path to the LSP server executable.
-  
-    // Uncomment these to tweak settings.
-    // "nix.serverSettings": {
-    //   "nil": {
-    //     "formatting": { "command": ["nixpkgs-fmt"] }
-    //   }
-    // }
+    "nix.serverPath": "nil", // The path to the LSP server executable.
+    "nix.serverSettings": {
+        // settings for 'nixd' LSP
+        "nixd": {
+            "eval": {
+                // stuff
+            },
+            "formatting": {
+                "command": "nixpkgs-fmt"
+            },
+            "options": {
+                "enable": true,
+                "target": {
+                    // tweak arguments here
+                    "args": [],
+                    // NixOS options
+                    "installable": "<flakeref>#nixosConfigurations.<name>.options"
+
+                    // Flake-parts options
+                    // "installable": "<flakeref>#debug.options"
+
+                    // Home-manager options
+                    // "installable": "<flakeref>#homeConfigurations.<name>.options"
+                }
+            }
+        }
   }
+}

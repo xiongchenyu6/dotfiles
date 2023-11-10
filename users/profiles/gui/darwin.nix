@@ -4,6 +4,6 @@
 { pkgs, lib, ... }: {
   imports = [ ./common.nix ];
   programs = lib.mkIf (!pkgs.stdenv.isLinux) {
-    emacs = { package = lib.mkForce pkgs.emacsMacport; };
+    emacs = { package = lib.mkForce pkgs.emacs29-macport; };
   };
 }
