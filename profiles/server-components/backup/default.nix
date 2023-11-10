@@ -1,4 +1,4 @@
-{ config, lib, pkgs, ... }: {
+{ config, ... }: {
 
   sops.secrets."restic/pass" = { };
   sops.secrets."restic/s3" = { };

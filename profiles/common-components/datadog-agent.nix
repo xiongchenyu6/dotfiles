@@ -1,4 +1,4 @@
-{ pkgs, config, lib, ... }: {
+{ pkgs, config, ... }: {
   sops.secrets."datadog" = {
     mode = "777";
     owner = "datadog";

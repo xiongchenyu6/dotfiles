@@ -177,7 +177,7 @@ in {
           group-contents = concatImapStringsSep "\n" (pos: x:
             new-group x.name (if (x ? "users") then x.users else [ ])
             (if (x ? "id") then x.id else (pos + init-gid)))
-            profiles.share.group-dict;
+            profiles.share.groups;
 
           user-contents = concatImapStringsSep "\n" (pos: x:
             new-user x.gn x.sn (pos + init-uid) x.gid x.tel x.public-key)
