@@ -11,9 +11,9 @@
     #   mode = "0555";
     #   text = ''
     #           #!${pkgs.stdenv.shell}
-    #     #       ${pkgs.openldap}/bin/ldapsearch -x -D cn=admin,dc=freeman,dc=engineer -w $(${pkgs.coreutils-full}/bin/cat ${
+    #     #       ${pkgs.openldap}/bin/ldapsearch -x -D cn=admin,dc=autolife-robotics,dc=tech -w $(${pkgs.coreutils-full}/bin/cat ${
     #       config.sops.secrets."openldap/adminPass".path
-    #     }) -b dc=freeman,dc=engineer '(&(objectClass=posixAccount)(uid='"$1"'))' 'sshPublicKey' | ${pkgs.gnused}/bin/sed -n '/^ /{H;d};/sshPublicKey:/x;$g;s/\n *//g;s/sshPublicKey: //gp'
+    #     }) -b dc=autolife-robotics,dc=tech '(&(objectClass=posixAccount)(uid='"$1"'))' 'sshPublicKey' | ${pkgs.gnused}/bin/sed -n '/^ /{H;d};/sshPublicKey:/x;$g;s/\n *//g;s/sshPublicKey: //gp'
     #   '';
     # };
     "sudo.conf" = {

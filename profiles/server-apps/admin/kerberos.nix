@@ -1,7 +1,7 @@
 { config, pkgs, ... }:
 let
   realm = "autolife-robotics.tech";
-  dbSuffix = "dc=freeman,dc=engineer";
+  dbSuffix = "dc=autolife-robotics,dc=tech";
 in {
   sops.secrets."openldap/passwordFile" = {
     mode = "770";
