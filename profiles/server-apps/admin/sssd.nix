@@ -2,7 +2,7 @@
 let
   dbDomain = "autolife-robotics.tech";
   realm = "autolife-robotics.tech";
-  dbSuffix = "dc=freeman,dc=engineer";
+  dbSuffix = "dc=autolife-robotics,dc=tech";
   ldapRootUser = "admin";
 in {
   services = {

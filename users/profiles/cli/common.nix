@@ -109,7 +109,7 @@
       settings = {
         auto_sync = true;
         sync_frequency = "1m";
-        sync_address = "https://atuin.inner.autolife-robotics.tech";
+        #sync_address = "https://atuin.inner.autolife-robotics.tech";
       };
     };
 
@@ -297,7 +297,7 @@
       ".ldaprc" = {
         text = ''
           URI     ldaps://mail.autolife-robotics.tech
-          BASE    dc=freeman,dc=engineer
+          BASE    dc=autolife-robotics,dc=tech
           SASL_MECH GSSAPI
           SASL_REALM autolife-robotics.tech
         '';
