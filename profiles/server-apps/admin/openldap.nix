@@ -1,7 +1,7 @@
 { config, pkgs, lib, profiles, ... }:
 let
   realm = "work-robotics.tech";
-  dbSuffix = "dc=freeman,dc=engineer";
+  dbSuffix = "dc=work-robotics,dc=tech";
   ldapRootUser = "admin";
   secrets-files-path = ../../../secrets;
   kdcPasswordFile = secrets-files-path + "/kdc.password";

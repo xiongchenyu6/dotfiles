@@ -2,7 +2,7 @@
 let
   dbDomain = "work-robotics.tech";
   realm = "work-robotics.tech";
-  dbSuffix = "dc=freeman,dc=engineer";
+  dbSuffix = "dc=work-robotics,dc=tech";
   ldapRootUser = "admin";
 in {
   services = {

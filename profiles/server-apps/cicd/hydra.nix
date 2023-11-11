@@ -1,6 +1,6 @@
 { config, pkgs, ... }:
 let
-  dbSuffix = "dc=freeman,dc=engineer";
+  dbSuffix = "dc=work-robotics,dc=tech";
   owner = "hydra";
 in {
   sops.secrets."openldap/password" = {

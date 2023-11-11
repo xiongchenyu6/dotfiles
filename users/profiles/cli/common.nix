@@ -109,7 +109,7 @@
       settings = {
         auto_sync = true;
         sync_frequency = "1m";
-        sync_address = "https://atuin.inner.work-robotics.tech";
+        #sync_address = "https://atuin.inner.work-robotics.tech";
       };
     };
 
@@ -297,7 +297,7 @@
       ".ldaprc" = {
         text = ''
           URI     ldaps://mail.work-robotics.tech
-          BASE    dc=freeman,dc=engineer
+          BASE    dc=work-robotics,dc=tech
           SASL_MECH GSSAPI
           SASL_REALM work-robotics.tech
         '';

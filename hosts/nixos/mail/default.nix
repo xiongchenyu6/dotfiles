@@ -16,7 +16,7 @@
     # ../../../profiles/server-apps/monitor/endlessh-go.nix
     # ../../../profiles/server-apps/monitor/prometheus.nix
     ../../../profiles/server-apps/proxy/nginx.nix
-    ../../../profiles/server-apps/atuin.nix
+    # ../../../profiles/server-apps/atuin.nix
     # ../../../profiles/server-apps/webapps/keycloak.nix
     ../../../profiles/server-apps/oci-arm-host-capacity.nix
     ../../../profiles/server-pkgs/nixos.nix
