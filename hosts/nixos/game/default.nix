@@ -3,7 +3,6 @@
   imports = [
     ./hardware-configuration.nix
     ../../../profiles/core/nixos.nix
-    ../../../profiles/client-pkgs/nixos.nix
     ../../../users/root/nixos.nix
     ../../../profiles/dvorak.nix
     ../../../users/freeman.xiong
