@@ -25,6 +25,13 @@
       url = "github:lnl7/nix-darwin/master";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    nixos-wsl = {
+      url = "github:nix-community/NixOS-WSL/main";
+      inputs = {
+        flake-utils.follows = "flake-utils";
+        nixpkgs.follows = "nixpkgs";
+      };
+    };
 
     devenv.url = "github:cachix/devenv";
     nix2container = {
@@ -93,7 +100,7 @@
 
   outputs = { nixpkgs, nixpkgs-stable, impermanence, nur, nixos-hardware
     , home-manager, devenv, flake-parts, pre-commit-hooks, nix-alien
-    , xiongchenyu6, sops-nix, foundry, poetry2nix, nix-vscode-extensions, ...
+    , xiongchenyu6, sops-nix, foundry, poetry2nix, nix-vscode-extensions, nixos-wsl, ...
     }@inputs:
     with nixpkgs;
     with lib;
@@ -279,6 +286,7 @@
             nixos-rebuild
             pulumi-bin
             ruby_3_2
+            nil
           ];
           languages = {
             go = { enable = true; };
@@ -326,6 +334,19 @@
               xiongchenyu6.nixosModules.chainlink
               nixos-hardware.nixosModules.lenovo-thinkpad-x1-10th-gen
               ./hosts/nixos/office
+            ] ++ nixos-modules;
+          };
+          office-windows = nixpkgs.lib.nixosSystem {
+            specialArgs = {
+
+              profiles = {
+                share = import ./profiles/shares.nix { inherit lib; };
+              };
+              mylib = import ./lib { inherit lib; };
+            };
+            modules = [
+              nixos-wsl.nixosModules.wsl
+              ./hosts/windows/office
             ] ++ nixos-modules;
           };
           game = nixpkgs.lib.nixosSystem {
