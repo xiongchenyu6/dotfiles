@@ -1,5 +1,5 @@
 { config, ... }:
-let realm = "autolife-robotics.tech";
+let realm = "AUTOLIFE.TECH";
 in {
   krb5 = {
     enable = true;
@@ -14,9 +14,9 @@ in {
     };
     libdefaults = {
       default_realm = realm;
-      dns_lookup_realm = true;
-      dns_lookup_kdc = true;
-      dns_fallback = true;
+      dns_lookup_realm = false;
+      dns_lookup_kdc = false;
+      dns_fallback = false;
       rdns = false;
       ignore_acceptor_hostname = true;
     };

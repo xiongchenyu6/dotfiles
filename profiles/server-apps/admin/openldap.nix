@@ -1,6 +1,6 @@
 { config, pkgs, lib, profiles, ... }:
 let
-  realm = "autolife-robotics.tech";
+  realm = "AUTOLIFE.TECH";
   dbSuffix = "dc=autolife-robotics,dc=tech";
   ldapRootUser = "admin";
   secrets-files-path = ../../../secrets;
@@ -33,7 +33,7 @@ in {
     };
     openldap = {
       enable = true;
-      urlList = [ "ldap:///" "ldapi:///" "ldaps:///" ];
+      urlList = [ "ldap:///" "ldapi:///" ];
       package = pkgs.openldap_with_cyrus_sasl;
       settings = {
         attrs = let
@@ -256,7 +256,7 @@ in {
             memberURL: ldap:///${cd}??sub?(objectClass=person)
           '';
         };
-      mutableConfig = true;
+      mutableConfig = false;
     };
   };
 }
