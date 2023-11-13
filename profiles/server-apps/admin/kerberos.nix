@@ -1,6 +1,6 @@
 { config, pkgs, ... }:
 let
-  realm = "autolife-robotics.tech";
+  realm = "AUTOLIFE.TECH";
   dbSuffix = "dc=autolife-robotics,dc=tech";
 in {
   sops.secrets."openldap/passwordFile" = {
@@ -26,7 +26,7 @@ in {
           openldap_ldapconf = {
               db_module_dir = ${pkgs.krb5}/lib/krb5/plugins/kdb/
               db_library = kldap
-              ldap_servers = ldaps://${config.networking.fqdn}
+              ldap_servers = ldapi:///
               ldap_kerberos_container_dn = cn=krbContainer,ou=services,${dbSuffix}
               ldap_kdc_dn = uid=kdc,ou=services,${dbSuffix}
               ldap_kadmind_dn = uid=kadmin,ou=services,${dbSuffix}
@@ -47,6 +47,10 @@ in {
             {
               access = "all";
               principal = "*/admin";
+            }
+            {
+              access = "all";
+              principal = "*/admin@AUTOLIFE.TECH";
             }
             {
               access = "all";

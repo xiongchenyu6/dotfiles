@@ -24,7 +24,6 @@
       dive # docker image analyzer
       du-dust # du alternative
       datree
-      easyrsa
       enc
       fd
       ffmpeg-full
@@ -69,7 +68,7 @@
       mattermost-desktop
       microsoft-edge-dev
       mongosh
-      #mycli
+      mycli
       my2sql
       neofetch
       xournal # note taking for pdf
@@ -85,11 +84,10 @@
       nodePackages."typescript-language-server"
       nodePackages."yaml-language-server"
       nodePackages."vscode-langservers-extracted"
-      #      nodePackages."yarn"
       nvfetcher
       oath-toolkit
       openai
-      # openssl
+      openssl
       polypane
       pg-ldap-sync
       popeye
@@ -118,7 +116,6 @@
       qrencode
       ripgrep
       redis
-      # rosPackages.rolling.ros-core
       rust-analyzer
       rustscan
       rustc
@@ -132,7 +129,6 @@
       solium
       sops
       socat
-      statix
       stow
       sshpass
       step-cli
@@ -146,7 +142,6 @@
       # terraformer
       # tf2pulumi
       tealdeer
-      unityhub
       universal-ctags
       unzip
       virtualenv

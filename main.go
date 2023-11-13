@@ -27,6 +27,18 @@ func main() {
 		if err != nil {
 			return err
 		}
+		_, err = cloudflare.NewRecord(ctx, "mail", &cloudflare.RecordArgs{
+			ZoneId:  Zone.ID(),
+			Name:    pulumi.String("mail"),
+			Value:   pulumi.String("43.156.66.157"),
+			Type:    pulumi.String("A"),
+			Ttl:     pulumi.Int(0),
+			Proxied: pulumi.Bool(false),
+		})
+		if err != nil {
+			return err
+		}
+
 		return nil
 	})
 }

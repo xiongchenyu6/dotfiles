@@ -296,10 +296,10 @@
       };
       ".ldaprc" = {
         text = ''
-          URI     ldaps://mail.autolife-robotics.tech
+          URI     ldap://mail.autolife-robotics.tech
           BASE    dc=autolife-robotics,dc=tech
           SASL_MECH GSSAPI
-          SASL_REALM autolife-robotics.tech
+          SASL_REALM AUTOLIFE.TECH
         '';
       };
       ".curlrc" = {
