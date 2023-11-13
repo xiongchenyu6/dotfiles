@@ -1,7 +1,7 @@
 { config, ... }:
 let
   dbDomain = "work-robotics.tech";
-  realm = "work-robotics.tech";
+  realm = "work.TECH";
   dbSuffix = "dc=work-robotics,dc=tech";
   ldapRootUser = "admin";
 in {
@@ -28,7 +28,7 @@ in {
         access_provider = simple
         chpass_provider = krb5
 
-        ldap_uri = ldaps://${config.networking.fqdn}
+        ldap_uri = ldap://${config.networking.fqdn}
         ldap_search_base = ${dbSuffix}
 
         ldap_default_bind_dn = cn=${ldapRootUser},${dbSuffix}
@@ -42,7 +42,7 @@ in {
 
         use_fully_qualified_names = false
 
-        krb5_realm = work-robotics.tech
+        krb5_realm = work.TECH
         krb5_server = ${config.networking.fqdn}
         krb5_validate = true
         debug_level = 0x3ff0

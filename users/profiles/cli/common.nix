@@ -296,10 +296,10 @@
       };
       ".ldaprc" = {
         text = ''
-          URI     ldaps://mail.work-robotics.tech
+          URI     ldap://mail.work-robotics.tech
           BASE    dc=work-robotics,dc=tech
           SASL_MECH GSSAPI
-          SASL_REALM work-robotics.tech
+          SASL_REALM work.TECH
         '';
       };
       ".curlrc" = {
