@@ -30,15 +30,13 @@
   nixpkgs = {
     config = {
       permittedInsecurePackages =
-        [ "openssl-1.1.1v" "openssl-1.1.1w" "electron-19.1.9" "zotero-6.0.27" ];
-      allowBroken = true;
+        [ "openssl-1.1.1w" "electron-19.1.9" "zotero-6.0.27" ];
     };
   };
 
   boot = {
     binfmt.emulatedSystems = [ "aarch64-linux" ];
-    kernelParams = [ "psmouse.synaptics_intertouch=0" ];
-
+    #    kernelParams = [ "psmouse.synaptics_intertouch=0" ];
     kernel = { sysctl = { "net.ipv4.ip_forward" = 1; }; };
 
     loader = {
