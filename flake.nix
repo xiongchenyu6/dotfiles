@@ -100,8 +100,8 @@
 
   outputs = { nixpkgs, nixpkgs-stable, impermanence, nur, nixos-hardware
     , home-manager, devenv, flake-parts, pre-commit-hooks, nix-alien
-    , xiongchenyu6, sops-nix, foundry, poetry2nix, nix-vscode-extensions, nixos-wsl, ...
-    }@inputs:
+    , xiongchenyu6, sops-nix, foundry, poetry2nix, nix-vscode-extensions
+    , nixos-wsl, ... }@inputs:
     with nixpkgs;
     with lib;
     let
@@ -344,10 +344,8 @@
               };
               mylib = import ./lib { inherit lib; };
             };
-            modules = [
-              nixos-wsl.nixosModules.wsl
-              ./hosts/windows/office
-            ] ++ nixos-modules;
+            modules = [ nixos-wsl.nixosModules.wsl ./hosts/windows/office ]
+              ++ nixos-modules;
           };
           game = nixpkgs.lib.nixosSystem {
             specialArgs = {
@@ -357,7 +355,7 @@
               mylib = import ./lib { inherit lib; };
             };
             modules = [
-              nixos-hardware.nixosModules.lenovo-legion-16ach6h-hybrid
+              #              nixos-hardware.nixosModules.lenovo-legion-16ach6h-hybrid
               ./hosts/nixos/game
             ] ++ nixos-modules;
           };

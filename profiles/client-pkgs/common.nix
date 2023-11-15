@@ -25,6 +25,7 @@
       du-dust # du alternative
       datree
       enc
+      envsubst
       fd
       ffmpeg-full
       fluxcd
