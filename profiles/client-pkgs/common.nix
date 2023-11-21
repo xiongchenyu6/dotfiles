@@ -47,7 +47,6 @@
       hey # http load generator
       jetbrains.idea-ultimate
       jdt-language-server
-      kots
       kube-capacity
       kube-prompt
       kubectl
@@ -93,7 +92,7 @@
       pg-ldap-sync
       popeye
       pulumi-bin
-      pulumiPackages.pulumi-aws-native
+      #pulumiPackages.pulumi-aws-native
       pgcli
       plantuml
       (python3.withPackages (_:

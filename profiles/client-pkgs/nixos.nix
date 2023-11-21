@@ -86,6 +86,11 @@
   };
 
   services = {
+    # clamav = {
+    #   updater = { enable = true; };
+    #   daemon = { enable = true; };
+    # };
+
     usbmuxd.enable = true;
     fprintd.enable = true;
     usbguard = {

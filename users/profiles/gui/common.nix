@@ -163,8 +163,6 @@
           cape
           corfu
           copilot-el
-          chatgpt
-          chatgpt-arcana
           combobulate
           citeproc
           dockerfile-mode
@@ -182,23 +180,19 @@
           kind-icon
           leetcode
           lispy
-          ligature
           lsp-haskell
           lsp-java
-          # lsp-ui
-          # lsp-mode
           nix-mode
-          #meow
           magit
           magit-todos
           marginalia
           magit-gitflow
-          nov
+          # nov
           ox-hugo
           ob-mermaid
           ob-restclient
           ox-pandoc
-          org-ai
+          # org-ai
           org-contrib
           org-roam
           org-re-reveal
@@ -207,7 +201,7 @@
           orderless
           plantuml-mode
           pdf-tools
-          posframe
+          #          posframe
           protobuf-mode
           rime
           restclient
@@ -221,7 +215,7 @@
           solidity-flycheck
           scala-mode
           sbt-mode
-          tide
+          #          tide
           tempel
           terraform-mode
           treesit-grammars.with-all-grammars
