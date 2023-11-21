@@ -153,15 +153,6 @@
         };
       };
     };
-
-    postgresql = {
-      package = pkgs.postgresql_15;
-
-      enable = true;
-      authentication = ''
-        local all all trust
-      '';
-    };
     bird2 = {
       enable = true;
       config = mylib.bird2-inner-config "172.22.240.99" "fd48:4b4:f3::3";

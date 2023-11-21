@@ -36,7 +36,8 @@
   };
   nixpkgs = {
     config = {
-      permittedInsecurePackages = [ "openssl-1.1.1w" "electron-19.1.9" "zotero-6.0.27"];
+      permittedInsecurePackages =
+        [ "openssl-1.1.1w" "electron-19.1.9" "zotero-6.0.27" ];
       allowBroken = true;
     };
   };
@@ -223,16 +224,6 @@
     };
 
     netbird.enable = true;
-
-    postgresql = {
-      package = pkgs.postgresql_15;
-      enable = true;
-      authentication = ''
-        local all all trust
-      '';
-    };
-
-    nginx = { enable = false; };
 
     bird2 = {
       enable = true;
