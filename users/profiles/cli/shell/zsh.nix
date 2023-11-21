@@ -95,12 +95,14 @@
            fi
         }
         path+="$HOME/.npm/bin"
-        eval $(${pkgs.bash-my-aws}/bin/bma-init)
+
         # eval "$(${pkgs.rustup}/bin/rustup completions zsh)"
         # eval "$(${pkgs.grafana-loki}/bin/logcli --completion-script-zsh)"
-        complete -C '${pkgs.awscli2}/bin/aws_completer' aws
+
         eval "$(${pkgs.github-copilot-cli}/bin/github-copilot-cli alias -- "$0")"
       '';
+      # eval $(${pkgs.bash-my-aws}/bin/bma-init)
+      # complete -C '${pkgs.awscli2}/bin/aws_completer' aws
       zplug = {
         enable = false;
         plugins = ohMyZsh2Zplug plugins;

@@ -18,7 +18,7 @@
       ohMyZsh = {
         enable = false;
         plugins = [
-          "aws"
+          #          "aws"
           "cabal"
           "catimg"
           "colored-man-pages"
