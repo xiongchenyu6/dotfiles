@@ -6,7 +6,6 @@
       brightnessctl
       hyprpaper
       hyprpicker
-      gnomeExtensions.zoom-wayland-extension
       wl-clipboard
       wf-recorder
       xdg_utils
@@ -17,6 +16,7 @@
 
   xdg = {
     portal = {
+      config.common.default = "*";
       enable = true;
       wlr = { enable = true; };
       lxqt = { enable = true; };

@@ -56,6 +56,7 @@
       kustomize
       krew
       kconf
+      korb
       kubelogin-oidc
       kubevirt
       kube-score
@@ -91,8 +92,6 @@
       polypane
       pg-ldap-sync
       popeye
-      pulumi-bin
-      #pulumiPackages.pulumi-aws-native
       pgcli
       plantuml
       (python3.withPackages (_:
