@@ -629,7 +629,7 @@ Otherwise, show the default maximum number of recent items."
 **** copilot
 #+begin_src emacs-lisp
 (setq browse-url-browser-function 'browse-url-generic
-      browse-url-generic-program "brave")
+      browse-url-generic-program "microsoft-edge-dev")
 
 (setq completion-cycle-threshold nil)
 
@@ -879,7 +879,7 @@ is available."
                                 cape-file
                                 cape-dabbrev)
                               cape-dabbrev-min-length 15)
-              (add-hook 'before-save-hook #'eglot-format-buffer t t)
+;              (add-hook 'before-save-hook #'eglot-format-buffer t t)
               ))
 
 (defun my/lsp-mode-setup-completion ()
