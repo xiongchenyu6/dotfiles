@@ -4,33 +4,33 @@
 { config, pkgs, lib, ... }: {
   imports = [ ./common.nix ];
 
-  qt = { enable = true; };
+  # qt = { enable = true; };
 
-  xdg = {
-    enable = true;
-    mime = { enable = true; };
-    mimeApps = {
-      enable = true;
-      defaultApplications = {
-        "text/html" = "microsoft-edge-dev.desktop";
-        "x-scheme-handler/http" = "microsoft-edge-dev.desktop";
-        "x-scheme-handler/https" = "microsoft-edge-dev.desktop";
-        "x-scheme-handler/about" = "microsoft-edge-dev.desktop";
-        "x-scheme-handler/unknown" = "microsoft-edge-dev.desktop";
-      };
-    };
-    userDirs = {
-      enable = true;
-      createDirectories = true;
-      extraConfig = {
-        XDG_MISC_DIR = "${config.home.homeDirectory}/Misc";
-        XDG_TEST_DIR = "${config.home.homeDirectory}/Test";
-        XDG_GIT_DIR = "${config.home.homeDirectory}/Git";
-        XDG_PRIVATE_DIR = "${config.home.homeDirectory}/Private";
-        XDG_WORKSPACE_DIR = "${config.home.homeDirectory}/Workspace";
-      };
-    };
-  };
+  # xdg = {
+  #   enable = true;
+  #   mime = { enable = true; };
+  #   mimeApps = {
+  #     enable = true;
+  #     defaultApplications = {
+  #       "text/html" = "microsoft-edge-dev.desktop";
+  #       "x-scheme-handler/http" = "microsoft-edge-dev.desktop";
+  #       "x-scheme-handler/https" = "microsoft-edge-dev.desktop";
+  #       "x-scheme-handler/about" = "microsoft-edge-dev.desktop";
+  #       "x-scheme-handler/unknown" = "microsoft-edge-dev.desktop";
+  #     };
+  #   };
+  #   userDirs = {
+  #     enable = true;
+  #     createDirectories = true;
+  #     extraConfig = {
+  #       XDG_MISC_DIR = "${config.home.homeDirectory}/Misc";
+  #       XDG_TEST_DIR = "${config.home.homeDirectory}/Test";
+  #       XDG_GIT_DIR = "${config.home.homeDirectory}/Git";
+  #       XDG_PRIVATE_DIR = "${config.home.homeDirectory}/Private";
+  #       XDG_WORKSPACE_DIR = "${config.home.homeDirectory}/Workspace";
+  #     };
+  #   };
+  # };
   home = lib.mkIf pkgs.stdenv.isLinux {
     pointerCursor = {
       name = "Vanilla-DMZ";
@@ -41,15 +41,15 @@
     sessionVariables = { STARSHIP_LOG = "error"; };
   };
 
-  gtk = lib.mkIf pkgs.stdenv.isLinux {
-    enable = true;
-    gtk4 = {
-      extraConfig = {
-        gtk-cursor-blink = false;
-        gtk-recent-files-limit = 20;
-      };
-    };
-  };
+  # gtk = lib.mkIf pkgs.stdenv.isLinux {
+  #   enable = true;
+  #   gtk4 = {
+  #     extraConfig = {
+  #       gtk-cursor-blink = false;
+  #       gtk-recent-files-limit = 20;
+  #     };
+  #   };
+  # };
 
   i18n = lib.mkIf pkgs.stdenv.isLinux {
     inputMethod = {
@@ -196,7 +196,7 @@
       enableSshSupport = true;
       # gpg2 -K --with-keygrip 
       sshKeys = [
-        "6E215C61D97608ED447E9D8BAE448986D75FD8F6"
+        "7F799AE1ECC9E828896A5925E8CF69D45DC71164"
         "42C87EA7DAAD37765EB1DD0FF53339EFBBF5785C"
       ];
     };
