@@ -147,7 +147,7 @@
           };
           home-manager.sharedModules = homemanager-modules;
           home-manager.useGlobalPkgs = true;
-          # home-manager.useUserPackages = true;
+          home-manager.useUserPackages = true;
         })
       ];
 

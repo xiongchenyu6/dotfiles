@@ -10,26 +10,18 @@
   };
   environment = {
     systemPackages = with pkgs; [
-      appimage-run
       awscli2
-      bun
-      bootstrap-studio
       cachix
-      # cargo
       deadnix
-      delve
+      delve # go debugger
       dig
-      discord
-      dropbox
       dive # docker image analyzer
       du-dust # du alternative
       datree
-      enc
       envsubst
       fd
       ffmpeg-full
       fluxcd
-      freerdp
       glab
       git-crypt
       gitAndTools.gitflow
@@ -45,8 +37,6 @@
       })
       helmify
       hey # http load generator
-      jetbrains.idea-ultimate
-      jdt-language-server
       kube-capacity
       kube-prompt
       kubectl
@@ -58,21 +48,15 @@
       kconf
       korb
       kubelogin-oidc
-      kubevirt
       kube-score
       killall
-      opera
-      linkerd
       litecli
       vsc-leetcode-cli
       maven
-      mattermost-desktop
-      microsoft-edge-dev
       mongosh
       mycli
       my2sql
       neofetch
-      xournal # note taking for pdf
       nix-du
       nixfmt
       nix-index-update
@@ -89,28 +73,15 @@
       oath-toolkit
       openai
       openssl
-      polypane
       pg-ldap-sync
       popeye
-      pgcli
+      #pgcli
       plantuml
       (python3.withPackages (_:
         with python3.pkgs; [
           cmake-language-server
-          colour
-          epc
-          ipython
-          matplotlib
-          nbformat
-          newsapi-python
-          nltk
           orjson
           python-lsp-server
-          pandas
-          python-dotenv
-          six
-          virtualenv
-          openai
         ]))
       qrencode
       ripgrep
@@ -122,7 +93,6 @@
       scalafmt
       shellcheck
       shfmt
-      slack
       s3cmd
       solc-select
       solium
@@ -132,7 +102,6 @@
       sshpass
       step-cli
       spring-boot-cli
-      tectonic
       tgpt
       # terraform
       # terraform-ls
@@ -143,14 +112,11 @@
       tealdeer
       universal-ctags
       unzip
-      virtualenv
       wakatime
       wget
-      wpsoffice
       yarn2nix
       yubikey-manager
       zk-shell
-      zoom-us
     ];
   };
 
