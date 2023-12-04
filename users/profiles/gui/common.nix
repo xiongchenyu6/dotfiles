@@ -2,6 +2,27 @@
   # Home Manager needs a bit of information about you and the
   # paths it should manage.
 
+  home = {
+    packages = with pkgs; [
+      appimage-run
+      bootstrap-studio
+      discord
+      dropbox
+      freerdp
+      jetbrains.idea-ultimate
+      jdt-language-server
+      opera
+      mattermost-desktop
+      microsoft-edge-dev
+      xournal # note taking for pdf
+      polypane
+      slack
+      tectonic
+      wpsoffice
+      zoom-us
+    ];
+  };
+
   programs = {
     alacritty = {
       enable = true;
@@ -22,12 +43,12 @@
 
         };
         key_bindings = [
-          # {
-          #   key = "Space";
-          #   mods = "Control";
-          #   mode = "~Search";
-          #   action = "ToggleViMode";
-          # }
+          {
+            key = "Space";
+            mods = "Control|Shift";
+            mode = "~Search";
+            action = "ToggleViMode";
+          }
           {
             key = "Return";
             mods = "Command|Shift";
@@ -252,5 +273,4 @@
       files = [ "auth/.authinfo.gpg" ];
     };
   };
-
 }

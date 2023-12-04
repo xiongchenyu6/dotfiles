@@ -7,14 +7,15 @@
     ../../../profiles/dvorak.nix
     ../../../users/freeman.xiong
     ../../../profiles/hardwares/misc.nix
-    ../../../profiles/client-pkgs/nixos.nix
+    ../../../profiles/client/cli/nixos.nix
+    ../../../profiles/client/gui/nixos.nix
     ../../../profiles/sops.nix
-    ../../../profiles/common-components
+    ../../../profiles/common/components
     ../../../profiles/auto-login/greetd.nix
-    ../../../profiles/common-apps/dn42
-    ../../../profiles/common-apps/bird-inner.nix
-    ../../../profiles/common-apps/kerberos.nix
-    ../../../profiles/common-components/datadog-agent.nix
+    ../../../profiles/common/apps/dn42
+    ../../../profiles/common/apps/bird-inner.nix
+    ../../../profiles/common/apps/kerberos.nix
+    ../../../profiles/common/components/datadog-agent.nix
   ];
 
   # sops.secrets."wireguard/office" = { };
@@ -135,12 +136,6 @@
   };
 
   services = {
-    datadog-agent = {
-      checks = {
-        btrfs = { instances = [{ min_collection_interval = 16; }]; };
-      };
-      tags = [ "env:inner" ];
-    };
 
     netbird = { enable = true; };
     babeld = {

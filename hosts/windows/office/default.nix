@@ -6,7 +6,8 @@
     ../../../profiles/dvorak.nix
     ../../../users/freeman.xiong
     ../../../profiles/sops.nix
-    ../../../profiles/common-apps/kerberos.nix
+    ../../../profiles/common/apps/kerberos.nix
+    ../../../profiles/client/cli/nixos.nix
   ];
 
   wsl = {
@@ -19,7 +20,8 @@
 
   nixpkgs = {
     config = {
-      permittedInsecurePackages = [ "openssl-1.1.1w" "electron-19.1.9" "zotero-6.0.27"];
+      permittedInsecurePackages =
+        [ "openssl-1.1.1w" "electron-19.1.9" "zotero-6.0.27" ];
       allowBroken = true;
     };
   };
