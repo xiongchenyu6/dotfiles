@@ -2,76 +2,6 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 { pkgs, config, ... }: {
-  imports = [ ./common.nix ];
-
-  environment = {
-    systemPackages = with pkgs; [
-      apg
-      aspell
-      aspellDicts.en
-      clang
-      clang-tools
-      cava
-      cmake
-      config.nur.repos.xddxdd.baidupcs-go
-      config.nur.repos.xddxdd.qq
-      config.nur.repos.xddxdd.wechat-uos
-      gcc
-      gdb
-      geoip
-      gimp
-      gnumake
-      gitkraken
-      grafana-loki
-      haskell-language-server
-      # (haskellPackages.ghcWithPackages (_:
-      #   with haskellPackages;
-      #   with pkgs.haskell.lib; [
-      #     apply-refact
-      #     cabal-install
-      #     hlint
-      #     stylish-haskell
-      #     hasktags
-      #     hoogle
-      #     hadolint
-      #   ]))
-      imagemagick
-      inetutils
-      ifuse
-      jp2a
-      vivaldi
-      ledger-live-desktop
-      linuxPackages.ply
-      lldb
-      llvm
-      lsof
-      manix
-      my_cookies
-      netbird-ui
-      openfortivpn
-      openiscsi
-      (python3.withPackages (_: with python3.pkgs; [ my_cookies mutagen ]))
-      pass
-      pciutils
-      patchelf
-      pinentry
-      # poetry
-      # poetry2nix.cli
-      procs
-      qemu_kvm
-      termius
-      tdesktop
-      tpm2-tools
-      unrar-wrapper
-      virt-manager
-      whatsapp-for-linux
-      wineWowPackages.staging
-      zotero
-      zssh
-    ];
-
-    pathsToLink = [ "/share/zsh" ];
-  };
 
   security = {
     tpm2 = {
@@ -125,16 +55,9 @@
   programs = {
     yubikey-touch-detector = { enable = true; };
     steam = { enable = true; };
-    npm = { enable = true; };
     _1password = { enable = true; };
     _1password-gui = { enable = true; };
-    # atop = {
-    #   enable = true;
-    #   netatop = { enable = true; };
-    #   atopgpu = { enable = true; };
-    # };
     nm-applet = { enable = true; };
-    nix-ld.enable = true;
     wireshark = { enable = true; };
     proxychains = {
       enable = true;

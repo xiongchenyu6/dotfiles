@@ -1,6 +1,5 @@
-# your system.  Help is available in the configuration.nix(5) man page
-# and in the NixOS manual (accessible by running ‘nixos-help’).
 { pkgs, ... }: {
+  imports = [ ./backup ./security.nix ];
   environment = {
     systemPackages = with pkgs; [
       krb5Full
