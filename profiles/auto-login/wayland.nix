@@ -8,7 +8,6 @@
       hyprpicker
       wl-clipboard
       wf-recorder
-      xdg_utils
       wev
       waypipe
     ];

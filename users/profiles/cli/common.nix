@@ -1,4 +1,22 @@
-{ pkgs, ... }: {
+{ config, pkgs, ... }: {
+
+  xdg = {
+    enable = true;
+    mime = { enable = true; };
+    mimeApps = { enable = true; };
+    userDirs = {
+      enable = true;
+      createDirectories = true;
+      extraConfig = {
+        XDG_MISC_DIR = "${config.home.homeDirectory}/Misc";
+        XDG_TEST_DIR = "${config.home.homeDirectory}/Test";
+        XDG_GIT_DIR = "${config.home.homeDirectory}/Git";
+        XDG_PRIVATE_DIR = "${config.home.homeDirectory}/Private";
+        XDG_WORKSPACE_DIR = "${config.home.homeDirectory}/Workspace";
+      };
+    };
+  };
+
   editorconfig = {
     enable = true;
     settings = {

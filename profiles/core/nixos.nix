@@ -5,6 +5,8 @@
 
   boot = { kernelPackages = pkgs.linuxPackages_latest; };
 
+  environment.systemPackages = with pkgs; [ xdg_utils ];
+
   fonts = {
     enableDefaultPackages = true;
     enableGhostscriptFonts = true;
