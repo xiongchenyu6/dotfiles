@@ -185,6 +185,17 @@
           ../../../users/profiles/gui/window-manager/hyprland/nixos.nix
           ../../../users/profiles/gui/stow-config.nix
         ];
+        xdg = {
+          mimeApps = {
+            defaultApplications = {
+              "text/html" = "microsoft-edge-dev.desktop";
+              "x-scheme-handler/http" = "microsoft-edge-dev.desktop";
+              "x-scheme-handler/https" = "microsoft-edge-dev.desktop";
+              "x-scheme-handler/about" = "microsoft-edge-dev.desktop";
+              "x-scheme-handler/unknown" = "microsoft-edge-dev.desktop";
+            };
+          };
+        };
 
         sops = {
           gnupg = { home = "~/.gnupg"; };
