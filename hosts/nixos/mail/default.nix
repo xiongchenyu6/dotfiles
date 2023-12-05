@@ -320,5 +320,10 @@
     #   };
     # };
   };
+  home-manager = {
+    users = {
+      "freeman.xiong" = { programs = { eza = { enable = true; }; }; };
+    };
+  };
 
 }

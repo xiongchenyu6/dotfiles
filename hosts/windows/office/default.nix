@@ -1,6 +1,7 @@
 # Edit
 { config, lib, profiles, pkgs, mylib, ... }: {
   imports = [
+    ../../../profiles/wsl.nix
     ../../../profiles/core/nixos.nix
     ../../../users/root/nixos.nix
     ../../../profiles/dvorak.nix
@@ -10,14 +11,9 @@
     ../../../profiles/client/cli/nixos.nix
   ];
 
-  wsl = {
-    enable = true;
-    defaultUser = "freeman.xiong";
-  };
-  services.openssh.enable = true;
-
   sops.secrets."wireguard/office" = { };
 
+  services.openssh.enable = true;
   nixpkgs = {
     config = {
       permittedInsecurePackages =
@@ -48,17 +44,8 @@
   home-manager = {
     users = {
       "freeman.xiong" = {
-        sops = {
-          gnupg = { home = "~/.gnupg"; };
-          secrets = {
-            # The path to the file to decrypt.
-            gptcommit = {
-              name = "gptcommit";
-              path = "/home/freeman.xiong/.config/gptcommit/config.toml";
-              mode = "777";
-            };
-          };
-        };
+        imports = [ ../../../users/profiles/gui/stow-config.nix ];
+        sops = { gnupg = { home = "~/.gnupg"; }; };
       };
     };
   };

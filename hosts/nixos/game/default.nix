@@ -183,6 +183,7 @@
           ../../../users/profiles/gui/window-manager/hyprland/dvorak.nix
           ../../../users/profiles/gui/window-manager/hyprland/nvidia.nix
           ../../../users/profiles/gui/window-manager/hyprland/nixos.nix
+          ../../../users/profiles/gui/stow-config.nix
         ];
 
         sops = {
