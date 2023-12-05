@@ -28,7 +28,7 @@
                   user = {
                     email = "xiongchenyu6@gmail.com";
                     name = "xiongchenyu";
-                    signingKey = "5AF7AFBF695E8A5D";
+                    signingKey = "B99B8189C7C153F6";
                   };
                   commit = { gpgSign = true; };
                 };
@@ -46,7 +46,7 @@
               }
             ];
             signing = {
-              key = "5AF7AFBF695E8A5D";
+              key = "B99B8189C7C153F6";
               signByDefault = true;
             };
             extraConfig = {
