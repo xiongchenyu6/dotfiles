@@ -106,19 +106,6 @@
       };
     };
 
-    gpg = {
-      enable = true;
-      package = pkgs.gnupg240;
-      settings = {
-        # keyserver = "hkps://keyserver.ubuntu.com";
-        fixed-list-mode = true;
-        keyid-format = "0xlong";
-        list-options = "show-uid-validity";
-        # cert-digest-algo = "SHA256";
-        # personal-digest-preferences = "SHA256";
-      };
-    };
-
     vscode = {
       enable = true;
       extensions = with pkgs.vscode-marketplace; [
@@ -204,21 +191,6 @@
 
     blueman-applet = { enable = true; };
     dropbox = { enable = false; };
-    gpg-agent = {
-      enable = true;
-      enableExtraSocket = true;
-      # extraConfig = ''
-      #   allow-emacs-pinentry
-      #   allow-loopback-pinentry
-      # '';
-      # pinentryFlavor = "emacs";
-      enableSshSupport = true;
-      # gpg2 -K --with-keygrip 
-      sshKeys = [
-        "7F799AE1ECC9E828896A5925E8CF69D45DC71164"
-        "42C87EA7DAAD37765EB1DD0FF53339EFBBF5785C"
-      ];
-    };
     udiskie = {
       enable = true;
       automount = true;
