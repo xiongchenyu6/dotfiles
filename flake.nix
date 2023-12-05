@@ -96,12 +96,13 @@
         flake-utils.follows = "flake-utils";
       };
     };
+    vscode-server.url = "github:nix-community/nixos-vscode-server";
   };
 
   outputs = { nixpkgs, nixpkgs-stable, impermanence, nur, nixos-hardware
     , home-manager, devenv, flake-parts, pre-commit-hooks, nix-alien
     , xiongchenyu6, sops-nix, foundry, poetry2nix, nix-vscode-extensions
-    , nixos-wsl, ... }@inputs:
+    , nixos-wsl, vscode-server, ... }@inputs:
     with nixpkgs;
     with lib;
     let
@@ -344,8 +345,11 @@
               };
               mylib = import ./lib { inherit lib; };
             };
-            modules = [ nixos-wsl.nixosModules.wsl ./hosts/windows/office ]
-              ++ nixos-modules;
+            modules = [
+              nixos-wsl.nixosModules.wsl
+              vscode-server.nixosModules.default
+              ./hosts/windows/office
+            ] ++ nixos-modules;
           };
           game = nixpkgs.lib.nixosSystem {
             specialArgs = {
