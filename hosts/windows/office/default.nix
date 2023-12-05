@@ -46,6 +46,20 @@
       "freeman.xiong" = {
         imports = [ ../../../users/profiles/gui/stow-config.nix ];
         sops = { gnupg = { home = "~/.gnupg"; }; };
+        xdg = {
+          mimeApps = {
+            defaultApplications = {
+              "text/html" = "wslview";
+              "x-scheme-handler/http" = "wslview";
+              "x-scheme-handler/https" = "wslview";
+              "x-scheme-handler/about" = "wslview";
+              "x-scheme-handler/unknown" = "wslview";
+            };
+          };
+        };
+        home = lib.mkIf pkgs.stdenv.isLinux {
+          sessionVariables = { EDITOR = "code --wait"; };
+        };
       };
     };
   };
