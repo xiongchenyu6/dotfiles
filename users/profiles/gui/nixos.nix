@@ -94,7 +94,7 @@
         vscjava.vscode-java-pack
         github.copilot-chat
         mkhl.direnv
-        github.copilot-labs
+        # github.copilot-labs
         # github.heygithub
         gitlab.gitlab-workflow
         eamodio.gitlens
@@ -178,3 +178,4 @@
     };
   };
 }
+
