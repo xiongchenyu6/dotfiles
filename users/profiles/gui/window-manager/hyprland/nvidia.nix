@@ -12,7 +12,7 @@
   wayland = {
     windowManager = {
       hyprland = {
-        enableNvidiaPatches = true;
+        #        enableNvidiaPatches = true;
 
         extraConfig = lib.mkDefault ''
           general {
