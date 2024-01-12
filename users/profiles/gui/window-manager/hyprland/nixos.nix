@@ -101,7 +101,7 @@
 
           # See https://wiki.hyprland.org/Configuring/Monitors/
           monitor=,highrr,auto,1.5
-          monitor=HDMI-A-1,preferred,auto,1.5,transform,1
+          monitor=HDMI-A-1,preferred,auto,1,transform,1
           workspace = , 1
           workspace=HDMI-A-1,1
 
