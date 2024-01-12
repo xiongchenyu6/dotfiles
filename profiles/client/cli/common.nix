@@ -26,6 +26,7 @@
       git-crypt
       gitAndTools.gitflow
       github-copilot-cli
+      git-standup
       gitleaks
       weave-gitops
       gopls

@@ -2,39 +2,13 @@
   sops.secrets."oath/seed" = { };
   security = {
     audit = {
-      enable = lib.mkForce true;
+      enable = lib.mkForce "lock";
       rules = [
-        "-w /var/log/audit/ -k auditlog"
-        "-w /etc/audit/ -p wa -k auditconfig"
-        "-w /etc/libaudit.conf -p wa -k auditconfig"
-        "-w /etc/audisp/ -p wa -k audispconfig"
-        "-a always,exclude -F msgtype=AVC"
-        "-a always,exclude -F msgtype=CWD"
-        "-a always,exclude -F msgtype=EOE"
-        "-a always,exclude -F msgtype=CRYPTO_KEY_USER"
-        "-a exit,never -F arch=b32 -F dir=/dev/shm -k sharedmemaccess"
-        "-a exit,never -F arch=b64 -F dir=/dev/shm -k sharedmemaccess"
-        "-w /etc/sysctl.conf -p wa -k sysctl"
-        "-a always,exit -F arch=b64 -S finit_module -S init_module -S delete_module -F auid!=-1 -k modules"
-        "-a always,exit -F arch=b32 -S finit_module -S init_module -S delete_module -F auid!=-1 -k modules"
-        "-w /etc/modprobe.conf -p wa -k modprobe"
-        "-a always,exit -F arch=b64 -S kexec_load -k KEXEC"
-        "-a always,exit -F arch=b32 -S sys_kexec_load -k KEXEC"
-        "-a always,exit -F arch=b64 -S open,creat -F exit=-EACCES -k access"
-        "-a always,exit -F arch=b64 -S open,creat -F exit=-EPERM -k access"
-        "-a always,exit -F arch=b32 -S open,creat -F exit=-EACCES -k access"
-        "-a always,exit -F arch=b32 -S open,creat -F exit=-EPERM -k access"
-        "-a always,exit -F arch=b64 -S openat -F exit=-EACCES -k access"
-        "-a always,exit -F arch=b64 -S openat -F exit=-EPERM -k access"
-        "-a always,exit -F arch=b32 -S openat -F exit=-EACCES -k access"
-        "-a always,exit -F arch=b32 -S openat -F exit=-EPERM -k access"
-        "-a always,exit -F arch=b64 -S open_by_handle_at -F exit=-EACCES -k access"
-        "-a always,exit -F arch=b64 -S open_by_handle_at -F exit=-EPERM -k access"
-        "-a always,exit -F arch=b32 -S open_by_handle_at -F exit=-EACCES -k access"
-        "-a always,exit -F arch=b32 -S open_by_handle_at -F exit=-EPERM -k access"
+        "-a exit,always -F arch=b64 -F euid=0 -S execve"
+        "-a exit,always -F arch=b32 -F euid=0 -S execve"
       ];
     };
-    auditd.enable = true;
+    auditd.enable = false;
     rtkit = { enable = true; };
     sudo = {
       enable = true;
@@ -44,6 +18,7 @@
       #   withSssd = true;
       # };
     };
+
     acme = { acceptTerms = true; };
     polkit.enable = true;
     pam = {
