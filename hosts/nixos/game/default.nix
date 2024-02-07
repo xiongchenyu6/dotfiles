@@ -14,7 +14,6 @@
     ../../../profiles/auto-login/greetd.nix
     ../../../profiles/common/apps/dn42
     ../../../profiles/common/apps/bird-inner.nix
-    ../../../profiles/common/apps/kerberos.nix
     ../../../profiles/common/components/datadog-agent.nix
   ];
 
@@ -154,7 +153,7 @@
     };
   };
 
-  krb5 = {
+  security.krb5.settings = {
     realms = let
       tronRealm = "TRONTECH.LINK";
       tronDomain = "trontech.link";
