@@ -2,7 +2,6 @@
 let realm = "work.TECH";
 in {
   krb5 = {
-    enable = true;
     realms = {
       "${realm}" = {
         admin_server = "mail.${config.networking.domain}";

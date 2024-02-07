@@ -42,19 +42,21 @@
           };
 
         };
-        key_bindings = [
-          {
-            key = "Space";
-            mods = "Control|Shift";
-            mode = "~Search";
-            action = "ToggleViMode";
-          }
-          {
-            key = "Return";
-            mods = "Command|Shift";
-            action = "SpawnNewInstance";
-          }
-        ];
+        keyboard = {
+          bindings = [
+            {
+              key = "Space";
+              mods = "Control|Shift";
+              mode = "~Search";
+              action = "ToggleViMode";
+            }
+            {
+              key = "Return";
+              mods = "Command|Shift";
+              action = "SpawnNewInstance";
+            }
+          ];
+        };
       };
     };
 

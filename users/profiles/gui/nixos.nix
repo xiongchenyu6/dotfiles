@@ -21,7 +21,6 @@
       config.nur.repos.xddxdd.wechat-uos
       gimp
       gitkraken
-      vivaldi
       ledger-live-desktop
       netbird-ui
       termius
