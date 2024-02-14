@@ -2,7 +2,7 @@
 let
   # generate via openvpn --genkey --secret openvpn-laptop.key
   client-key = "/root/openvpn-laptop.key";
-  domain = "3.82.157.47";
+  domain = "43.156.66.157";
   vpn-dev = "tun0";
   port = 1194;
 
