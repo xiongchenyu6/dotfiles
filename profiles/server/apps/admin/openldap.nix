@@ -3,7 +3,7 @@ let
   realm = "work.TECH";
   dbSuffix = "dc=work-robotics,dc=tech";
   ldapRootUser = "admin";
-  secrets-files-path = ../../../secrets;
+  secrets-files-path = ../../../../secrets;
   kdcPasswordFile = secrets-files-path + "/kdc.password";
   kadminPasswordFile = secrets-files-path + "/kadmin.password";
 in {
