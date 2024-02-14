@@ -1,38 +1,100 @@
-{ modulesPath, profiles, config, lib, pkgs, ... }: {
+{ modulesPath, profiles, config, lib, pkgs, ... }: 
+let
+  # generate via openvpn --genkey --secret openvpn-laptop.key
+  client-key = "/root/openvpn-laptop.key";
+  domain = "43.156.66.157";
+  vpn-dev = "tun0";
+  port = 1194;
+
+  openvpn = {
+    ca = ./vpn/ca.crt;
+    cert = ./vpn/server.crt;
+    key = ./vpn/server.key;
+    ta = ./vpn/ta.key;
+    dh = ./vpn/dh2048.pem;
+
+    client_subnet = "10.89.98.0";
+    client_mask_bits = 24;
+    client_mask = "255.255.255.0";
+
+    forward_to_subnet = "192.168.4.0";
+    forward_to_mask_bits = 24;
+    forward_to_mask = "255.255.255.0";
+  };
+
+in {
   imports = [
     (modulesPath + "/profiles/qemu-guest.nix")
-    ../../../profiles/server-apps/acme
-    ../../../profiles/server-apps/admin/kerberos.nix
-    ../../../profiles/server-apps/admin/openldap.nix
-    ../../../profiles/server-apps/admin/sasl.nix
-    ../../../profiles/server-apps/admin/sssd.nix
-    ../../../profiles/server-apps/bgp/bird-border.nix
-    ../../../profiles/server-apps/dns/bind.nix
+    ../../../profiles/server/apps/acme
+    ../../../profiles/server/apps/admin/openldap.nix
+    ../../../profiles/server/apps/admin/sasl.nix
+    ../../../profiles/server/apps/admin/sssd.nix
+    ../../../profiles/server/apps/bgp/bird-border.nix
+    ../../../profiles/server/apps/dns/bind.nix
     ../../../profiles/core/nixos.nix
     # ../../../profiles/server-apps/log/loki.nix
-    ../../../profiles/server-apps/mail/postfix.nix
-    ../../../profiles/server-apps/mail/dovecot2.nix
-    ../../../profiles/server-apps/mail/alps.nix
+    ../../../profiles/server/apps/mail/postfix.nix
+    ../../../profiles/server/apps/mail/dovecot2.nix
+    ../../../profiles/server/apps/mail/alps.nix
     # ../../../profiles/server-apps/monitor/endlessh-go.nix
     # ../../../profiles/server-apps/monitor/prometheus.nix
-    ../../../profiles/server-apps/proxy/nginx.nix
+    ../../../profiles/server/apps/proxy/nginx.nix
     # ../../../profiles/server-apps/atuin.nix
     # ../../../profiles/server-apps/webapps/keycloak.nix
-    ../../../profiles/server-apps/oci-arm-host-capacity.nix
-    ../../../profiles/server-pkgs/nixos.nix
+    ../../../profiles/server/apps/oci-arm-host-capacity.nix
+    ../../../profiles/server/components
     ../../../users/root/nixos.nix
     ../../../users/freeman.xiong
     ../../../profiles/sops.nix
-    ../../../profiles/common-components
-    ../../../profiles/common-apps/dn42
-    ../../../profiles/common-apps/bird-inner.nix
-    ../../../profiles/common-apps/kerberos.nix
-    ../../../profiles/server-components
-    ../../../profiles/server-apps/log/promtail.nix
-    ../../../profiles/server-apps/admin/sssd.nix
-    ../../../profiles/common-components/datadog-agent.nix
+    ../../../profiles/common/components
+    ../../../profiles/common/apps/dn42
+    ../../../profiles/common/apps/bird-inner.nix
+    ../../../profiles/server/components
+    ../../../profiles/server/apps/log/promtail.nix
+    ../../../profiles/server/apps/admin/sssd.nix
+    ../../../profiles/common/components/datadog-agent.nix
+
   ];
 
+  environment = {
+
+ systemPackages = [ pkgs.openvpn ]; # for key generation
+ etc."openvpn/peer2peer.ovpn" = {
+    text = ''
+      dev tun
+      remote "${domain}"
+      ifconfig 10.8.0.2 10.8.0.1
+      port ${toString port}
+      redirect-gateway def1
+
+      cipher AES-256-CBC
+      auth-nocache
+
+      comp-lzo
+      keepalive 10 60
+      resolv-retry infinite
+      nobind
+      persist-key
+      persist-tun
+      secret [inline]
+
+    '';
+    mode = "600";
+  };
+  };
+ 
+
+  
+  
+  system.activationScripts.openvpn-addkey = ''
+    f="/etc/openvpn/peer2peer.ovpn"
+    if ! grep -q '<secret>' $f; then
+      echo "appending secret key"
+      echo "<secret>" >> $f
+      cat ${client-key} >> $f
+      echo "</secret>" >> $f
+    fi
+  '';
   boot.loader.grub.device = "/dev/vda";
   boot.initrd.availableKernelModules = [ "ata_piix" "uhci_hcd" "xen_blkfront" ];
   boot.initrd.kernelModules = [ "nvme" ];
@@ -71,32 +133,17 @@
     hostName = lib.last file-path;
   in {
     inherit hostName;
-    # interfaces = {
-    #   lo = {
-    #     ipv4 = {
-    #       addresses = [{
-    #         address = "172.22.240.97";
-    #         prefixLength = 32;
-    #       }];
-    #     };
-    #     ipv6 = {
-    #       addresses = [{
-    #         address = "fd48:4b4:f3::1";
-    #         prefixLength = 128;
-    #       }];
-    #     };
-    #   };
-    # };
 
     nat = {
       enable = true;
       enableIPv6 = true;
       externalInterface = "ens5";
-      internalInterfaces = [ "wg_game" "wg_office" ];
+      internalInterfaces = [ "wg_game" "wg_office" vpn-dev ];
     };
 
     firewall = {
       enable = true;
+      trustedInterfaces = [ vpn-dev ];
       allowedTCPPorts = [
         25 # SMTP
         53
@@ -115,6 +162,7 @@
         8888
       ];
       allowedUDPPorts = [
+        port
         53 # dns
         80
         89
@@ -247,6 +295,50 @@
   };
   services = {
     # avahi = { allowInterfaces = [ "wg_office" ]; };
+
+    
+  openvpn.servers = {
+    # peer2peer.config = ''
+    #   dev ${vpn-dev}
+    #   proto udp
+    #   ifconfig 10.8.0.1 10.8.0.2
+    #   secret ${client-key}
+    #   port ${toString port}
+
+    #   cipher AES-256-CBC
+    #   auth-nocache
+
+    #   comp-lzo
+    #   keepalive 10 60
+    #   ping-timer-rem
+    #   persist-tun
+    #   persist-key
+    # '';
+    server.config = ''
+      port 1194
+      proto udp
+      dev tun
+      ca ${openvpn.ca}
+      cert ${openvpn.cert}
+      key ${openvpn.key}
+      dh ${openvpn.dh}
+      tls-auth ${openvpn.ta} 0
+
+      server ${openvpn.client_subnet} ${openvpn.client_mask}
+      keepalive 10 120
+      comp-lzo
+      max-clients 5
+      user nobody
+      group nogroup
+      persist-key
+      persist-tun
+      verb 6
+      reneg-sec 0
+
+      push "route ${openvpn.forward_to_subnet} ${openvpn.forward_to_mask}"
+      push "redirect-gateway def1" # https://openvpn.net/index.php/open-source/documentation/howto.html#redirect
+    '';
+  };
 
     journald = {
       extraConfig = ''
