@@ -47,7 +47,7 @@
       kustomize
       krew
       kconf
-      korb
+      #korb
       kubelogin-oidc
       kube-score
       killall
@@ -72,7 +72,6 @@
       nodePackages."vscode-langservers-extracted"
       nvfetcher
       oath-toolkit
-      openai
       openssl
       pg-ldap-sync
       popeye
