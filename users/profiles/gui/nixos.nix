@@ -87,7 +87,7 @@
         ms-vscode.cpptools-extension-pack
         ms-vscode.cpptools-themes
         twxs.cmake
-        ms-vscode.cmake-tools
+        # ms-vscode.cmake-tools   
         vscjava.vscode-java-debug
         redhat.fabric8-analytics
         vscjava.vscode-java-pack

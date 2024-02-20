@@ -20,6 +20,8 @@
       tectonic
       wpsoffice
       zoom-us
+      ueberzugpp
+      ytfzf
     ];
   };
 
@@ -129,7 +131,6 @@
           solidity-flycheck
           scala-mode
           sbt-mode
-          #          tide
           tempel
           terraform-mode
           treesit-grammars.with-all-grammars

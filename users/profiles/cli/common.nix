@@ -46,7 +46,7 @@
       #   allow-emacs-pinentry
       #   allow-loopback-pinentry
       # '';
-      # pinentryFlavor = "emacs";
+      pinentryFlavor = "curses";
       enableSshSupport = true;
       # gpg2 -K --with-keygrip 
       sshKeys = [
@@ -250,7 +250,7 @@
     man = { enable = true; };
     gpg = {
       enable = true;
-      package = pkgs.gnupg240;
+      #package = pkgs.gnupg240;
       settings = {
         # keyserver = "hkps://keyserver.ubuntu.com";
         fixed-list-mode = true;
@@ -415,6 +415,7 @@
       ];
     };
     go = { enable = true; };
+    yazi = { enable = true; };
 
   };
   home = {
@@ -524,9 +525,8 @@
         '';
       };
     };
-    stateVersion = "23.11";
+    stateVersion = "24.05";
     keyboard = { options = [ "caps:ctrl_modifier" ]; };
   };
 }
-
 # ocng
