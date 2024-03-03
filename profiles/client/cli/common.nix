@@ -55,7 +55,7 @@
       vsc-leetcode-cli
       maven
       mongosh
-      mycli
+      #mycli
       my2sql
       neofetch
       nix-du
@@ -70,7 +70,8 @@
       nodePackages."typescript-language-server"
       nodePackages."yaml-language-server"
       nodePackages."vscode-langservers-extracted"
-      nvfetcher
+      ngrok
+      # nvfetcher
       oath-toolkit
       openssl
       pg-ldap-sync
@@ -119,5 +120,4 @@
       zk-shell
     ];
   };
-
 }

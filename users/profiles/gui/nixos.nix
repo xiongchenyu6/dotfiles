@@ -121,7 +121,7 @@
     chromium = {
       enable = true;
       package = pkgs.microsoft-edge-dev;
-      #google-chrome
+
     };
 
     password-store = { enable = true; };

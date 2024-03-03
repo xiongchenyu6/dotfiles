@@ -13,15 +13,19 @@
       jdt-language-server
       opera
       mattermost-desktop
-      microsoft-edge-dev
       xournal # note taking for pdf
-      polypane
       slack
       tectonic
       wpsoffice
       zoom-us
       ueberzugpp
       ytfzf
+      usbutils
+      stlink-gui
+      stm32cubemx
+      gcc-arm-embedded
+      microsoft-edge-dev
+      google-chrome
     ];
   };
 
