@@ -1,4 +1,4 @@
-{ modulesPath, profiles, config, lib, pkgs, ... }: 
+{ modulesPath, profiles, config, lib, pkgs, ... }:
 let
   # generate via openvpn --genkey --secret openvpn-laptop.key
   client-key = "/root/openvpn-laptop.key";
@@ -26,22 +26,22 @@ in {
   imports = [
     (modulesPath + "/profiles/qemu-guest.nix")
     ../../../profiles/server/apps/acme
-    ../../../profiles/server/apps/admin/openldap.nix
-    ../../../profiles/server/apps/admin/sasl.nix
-    ../../../profiles/server/apps/admin/sssd.nix
+    # ../../../profiles/server/apps/admin/openldap.nix
+    # ../../../profiles/server/apps/admin/sasl.nix
+    # ../../../profiles/server/apps/admin/sssd.nix
     ../../../profiles/server/apps/bgp/bird-border.nix
-    ../../../profiles/server/apps/dns/bind.nix
+    # ../../../profiles/server/apps/dns/bind.nix
     ../../../profiles/core/nixos.nix
     # ../../../profiles/server-apps/log/loki.nix
-    ../../../profiles/server/apps/mail/postfix.nix
-    ../../../profiles/server/apps/mail/dovecot2.nix
-    ../../../profiles/server/apps/mail/alps.nix
+    # ../../../profiles/server/apps/mail/postfix.nix
+    # ../../../profiles/server/apps/mail/dovecot2.nix
+    # ../../../profiles/server/apps/mail/alps.nix
     # ../../../profiles/server-apps/monitor/endlessh-go.nix
     # ../../../profiles/server-apps/monitor/prometheus.nix
     ../../../profiles/server/apps/proxy/nginx.nix
     # ../../../profiles/server-apps/atuin.nix
     # ../../../profiles/server-apps/webapps/keycloak.nix
-    ../../../profiles/server/apps/oci-arm-host-capacity.nix
+    #    ../../../profiles/server/apps/oci-arm-host-capacity.nix
     ../../../profiles/server/components
     ../../../users/root/nixos.nix
     ../../../users/freeman.xiong
@@ -51,41 +51,37 @@ in {
     ../../../profiles/common/apps/bird-inner.nix
     ../../../profiles/server/components
     ../../../profiles/server/apps/log/promtail.nix
-    ../../../profiles/server/apps/admin/sssd.nix
+    # ../../../profiles/server/apps/admin/sssd.nix
     ../../../profiles/common/components/datadog-agent.nix
-
   ];
 
   environment = {
 
- systemPackages = [ pkgs.openvpn ]; # for key generation
- etc."openvpn/peer2peer.ovpn" = {
-    text = ''
-      dev tun
-      remote "${domain}"
-      ifconfig 10.8.0.2 10.8.0.1
-      port ${toString port}
-      redirect-gateway def1
+    systemPackages = [ pkgs.openvpn ]; # for key generation
+    etc."openvpn/peer2peer.ovpn" = {
+      text = ''
+        dev tun
+        remote "${domain}"
+        ifconfig 10.8.0.2 10.8.0.1
+        port ${toString port}
+        redirect-gateway def1
 
-      cipher AES-256-CBC
-      auth-nocache
+        cipher AES-256-CBC
+        auth-nocache
 
-      comp-lzo
-      keepalive 10 60
-      resolv-retry infinite
-      nobind
-      persist-key
-      persist-tun
-      secret [inline]
+        comp-lzo
+        keepalive 10 60
+        resolv-retry infinite
+        nobind
+        persist-key
+        persist-tun
+        secret [inline]
 
-    '';
-    mode = "600";
+      '';
+      mode = "600";
+    };
   };
-  };
- 
 
-  
-  
   system.activationScripts.openvpn-addkey = ''
     f="/etc/openvpn/peer2peer.ovpn"
     if ! grep -q '<secret>' $f; then
@@ -158,8 +154,8 @@ in {
         636 # ldaps
         993 # imaps
         6695
-        18000
         8888
+        18000
       ];
       allowedUDPPorts = [
         port
@@ -180,7 +176,7 @@ in {
         33434
       ];
 
-      interfaces.wg_mail.allowedTCPPorts = [ ];
+      interfaces.wg_mail.allowedTCPPorts = [ 2222 ];
       interfaces.wg_mail.allowedUDPPorts = [ 2222 ];
       interfaces.wg_game.allowedTCPPorts = [ 2222 ];
       interfaces.wg_game.allowedUDPPorts = [ 2222 ];
@@ -296,49 +292,48 @@ in {
   services = {
     # avahi = { allowInterfaces = [ "wg_office" ]; };
 
-    
-  openvpn.servers = {
-    # peer2peer.config = ''
-    #   dev ${vpn-dev}
-    #   proto udp
-    #   ifconfig 10.8.0.1 10.8.0.2
-    #   secret ${client-key}
-    #   port ${toString port}
+    openvpn.servers = {
+      # peer2peer.config = ''
+      #   dev ${vpn-dev}
+      #   proto udp
+      #   ifconfig 10.8.0.1 10.8.0.2
+      #   secret ${client-key}
+      #   port ${toString port}
 
-    #   cipher AES-256-CBC
-    #   auth-nocache
+      #   cipher AES-256-CBC
+      #   auth-nocache
 
-    #   comp-lzo
-    #   keepalive 10 60
-    #   ping-timer-rem
-    #   persist-tun
-    #   persist-key
-    # '';
-    server.config = ''
-      port 1194
-      proto udp
-      dev tun
-      ca ${openvpn.ca}
-      cert ${openvpn.cert}
-      key ${openvpn.key}
-      dh ${openvpn.dh}
-      tls-auth ${openvpn.ta} 0
+      #   comp-lzo
+      #   keepalive 10 60
+      #   ping-timer-rem
+      #   persist-tun
+      #   persist-key
+      # '';
+      server.config = ''
+        port 1194
+        proto udp
+        dev tun
+        ca ${openvpn.ca}
+        cert ${openvpn.cert}
+        key ${openvpn.key}
+        dh ${openvpn.dh}
+        tls-auth ${openvpn.ta} 0
 
-      server ${openvpn.client_subnet} ${openvpn.client_mask}
-      keepalive 10 120
-      comp-lzo
-      max-clients 5
-      user nobody
-      group nogroup
-      persist-key
-      persist-tun
-      verb 6
-      reneg-sec 0
+        server ${openvpn.client_subnet} ${openvpn.client_mask}
+        keepalive 10 120
+        comp-lzo
+        max-clients 5
+        user nobody
+        group nogroup
+        persist-key
+        persist-tun
+        verb 6
+        reneg-sec 0
 
-      push "route ${openvpn.forward_to_subnet} ${openvpn.forward_to_mask}"
-      push "redirect-gateway def1" # https://openvpn.net/index.php/open-source/documentation/howto.html#redirect
-    '';
-  };
+        push "route ${openvpn.forward_to_subnet} ${openvpn.forward_to_mask}"
+        push "redirect-gateway def1" # https://openvpn.net/index.php/open-source/documentation/howto.html#redirect
+      '';
+    };
 
     journald = {
       extraConfig = ''

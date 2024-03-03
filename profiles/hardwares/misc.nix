@@ -27,6 +27,7 @@
     udev = {
       extraRules = ''
         ACTION=="add", SUBSYSTEM=="backlight", KERNEL=="intel_backlight", MODE="0666", RUN+="${pkgs.coreutils}/bin/chmod a+w /sys/class/backlight/%k/brightness"
+        ACTION=="add", SUBSYSTEMS=="usb", ATTRS{idVendor}=="0483", ATTRS{idProduct}=="3748", MODE="770", GROUP="wheel", SYMLINK+="stlinkv2-1_%n"
       '';
     };
 
