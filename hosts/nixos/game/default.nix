@@ -63,7 +63,7 @@
     # extraHosts = "54.254.210.117  grafana-oncall.trontech.link";
     firewall = {
       enable = true;
-      allowedTCPPorts = [ 89 179 ];
+      allowedTCPPorts = [ 89 179 5002 ];
       allowedUDPPorts = [ 89 179 5353 6696 33434 ];
       interfaces.wg_mail.allowedTCPPorts = [ 2222 ];
       interfaces.wg_mail.allowedUDPPorts = [ 2222 ];
