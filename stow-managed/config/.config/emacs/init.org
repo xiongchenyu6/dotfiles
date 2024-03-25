@@ -629,7 +629,7 @@ Otherwise, show the default maximum number of recent items."
 **** copilot
 #+begin_src emacs-lisp
 (setq browse-url-browser-function 'browse-url-generic
-      browse-url-generic-program "microsoft-edge-dev")
+      browse-url-generic-program "brave")
 
 (setq completion-cycle-threshold nil)
 

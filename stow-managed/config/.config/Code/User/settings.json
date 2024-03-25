@@ -48,25 +48,24 @@
     "security.workspace.trust.untrustedFiles": "open",
     "explorer.confirmDragAndDrop": false,
     "docker.contexts.showInStatusBar": true,
-  "remote.SSH.logLevel": "trace",
-"window.titleBarStyle": "custom",
-"leetcode.endpoint": "leetcode",
-"leetcode.hint.configWebviewMarkdown": false,
-"leetcode.workspaceFolder": "/home/freeman.xiong/.leetcode",
-"leetcode.defaultLanguage": "cpp",
-"leetcode.hint.commentDescription": false,
-"[c]": {
-
-    
-    "editor.wordBasedSuggestions": "off",
-    "editor.suggest.insertMode": "replace",
-    "editor.semanticHighlighting.enabled": true
-},
-"C_Cpp.intelliSenseEngineFallback": "enabled",
-"C_Cpp.experimentalFeatures": "enabled",
-"C_Cpp.autocompleteAddParentheses": true,
-"C_Cpp.default.intelliSenseMode": "linux-clang-x64",
-"stm32-for-vscode.openOCDPath": false,
-"stm32-for-vscode.makePath": "/run/current-system/sw/bin/make",
-"stm32-for-vscode.armToolchainPath": "/etc/profiles/per-user/freeman.xiong/bin",
+    "remote.SSH.logLevel": "trace",
+    "window.titleBarStyle": "custom",
+    "leetcode.endpoint": "leetcode",
+    "leetcode.hint.configWebviewMarkdown": false,
+    "leetcode.workspaceFolder": "/home/freeman.xiong/.leetcode",
+    "leetcode.defaultLanguage": "cpp",
+    "leetcode.hint.commentDescription": false,
+    "[c]": {
+        "editor.wordBasedSuggestions": "off",
+        "editor.suggest.insertMode": "replace",
+        "editor.semanticHighlighting.enabled": true
+    },
+    "C_Cpp.intelliSenseEngineFallback": "enabled",
+    "C_Cpp.experimentalFeatures": "enabled",
+    "C_Cpp.autocompleteAddParentheses": true,
+    "C_Cpp.default.intelliSenseMode": "linux-clang-x64",
+    "stm32-for-vscode.openOCDPath": false,
+    "stm32-for-vscode.makePath": "/run/current-system/sw/bin/make",
+    "stm32-for-vscode.armToolchainPath": "/etc/profiles/per-user/freeman.xiong/bin",
+    "nix.enableLanguageServer": true
 }

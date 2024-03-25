@@ -120,7 +120,7 @@
 
     chromium = {
       enable = true;
-      package = pkgs.microsoft-edge-dev;
+      package = pkgs.brave;
 
     };
 

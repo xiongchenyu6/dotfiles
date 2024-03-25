@@ -37,7 +37,7 @@
           runtimeInputs = [ pkgs.hyprland ];
           text = ''
             sleep 10
-            hyprctl keyword windowrule "workspace unset,microsoft-edge-dev"
+            hyprctl keyword windowrule "workspace unset,brave"
           '';
         };
         screen-shot = pkgs.writeShellApplication {
@@ -105,7 +105,8 @@
           workspace = , 1
           workspace=HDMI-A-1,1
 
-          # monitor=DP-1,3840x2160@60,1920x0,1.5
+          # if not work check monitor driver
+          monitor=DP-1,3840x2160@60,1920x0,1.5
           # monitor=DP-1,transform,1
           # workspace = eDP-2, 1
           # workspace=DP-1,10
@@ -189,13 +190,6 @@
           # See https://wiki.hyprland.org/Configuring/Variables/ for more
           workspace_swipe = on
           }
-
-          # Example per-device config
-          # See https://wiki.hyprland.org/Configuring/Keywords/#executing for more
-          device:epic mouse V1 {
-          sensitivity = -0.5
-          }
-
           # Example windowrule v1
           # windowrule = float, ^(kitty)$
           # Example windowrule v2
@@ -211,7 +205,7 @@
           bind = $mainMod SHIFT, Q, exit,
           bind = $mainMod SHIFT, A, exec, ${screen-shot-and-save}/bin/screen-shot-and-save.sh
           bind = $mainMod SHIFT, S, exec, ${screen-shot}/bin/screen-shot.sh
-          bind = $mainMod, E, exec, microsoft-edge-dev --enable-features=WebRTCPipeWireCapturer --ozone-platform=wayland  --enable-wayland-ime 
+          bind = $mainMod, E, exec, brave --ozone-platform=wayland  --enable-wayland-ime 
           # bind = $mainMod SHIFT, c, exec, code --enable-features=UseOzonePlatform --ozone-platform=wayland  --enable-wayland-ime 
           bind = $mainMod, X, exec, wofi --show drun -I -G
           bind = $mainMod, L, togglefloating,

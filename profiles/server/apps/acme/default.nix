@@ -1,5 +1,5 @@
 { config, ... }: {
-  sops.secrets."acme/namecom" = {
+  sops.secrets."acme/cloudflare" = {
     mode = "770";
     owner = "acme";
     group = "acme";
@@ -17,22 +17,15 @@
         # '';
       };
       certs = {
-        "${config.networking.fqdn}" = {
-          dnsProvider = "namedotcom";
+        "${config.networking.domain}" = {
+          dnsProvider = "cloudflare";
           domain = "*.${config.networking.domain}";
-          credentialsFile = config.sops.secrets."acme/namecom".path;
+          #          extraDomainNames = [ "*.inner.${config.networking.domain}" ];
+          credentialsFile = config.sops.secrets."acme/cloudflare".path;
           # We don't need to wait for propagation since this is a local DNS server
           dnsPropagationCheck = false;
-          reloadServices =
-            [ "openldap.service" "postfix.service" "dovecot2.service" ];
-          group = "openldap";
-        };
-        "inner.${config.networking.domain}" = {
-          domain = "*.inner.${config.networking.domain}";
-          dnsProvider = "rfc2136";
-          credentialsFile = "/var/lib/secrets/certs.secret";
-          # We don't need to wait for propagation since this is a local DNS server
-          dnsPropagationCheck = false;
+          # reloadServices =
+          #   [ "openldap.service" "postfix.service" "dovecot2.service" ];
           group = "nginx";
         };
       };

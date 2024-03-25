@@ -23,7 +23,7 @@
     # };
 
     usbmuxd.enable = true;
-    fprintd.enable = true;
+
     usbguard = {
       enable = false;
       IPCAllowedUsers = [ "root" "freeman.xiong" ];
