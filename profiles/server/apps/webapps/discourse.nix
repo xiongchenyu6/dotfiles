@@ -62,7 +62,7 @@
           # forceSSL = lib.mkForce true;
           onlySSL = true;
           acmeRoot = null;
-          useACMEHost = "inner.${config.networking.domain}";
+          useACMEHost = "${config.networking.domain}";
           kTLS = true;
           serverName = "discourse.inner.${config.networking.domain}";
         };

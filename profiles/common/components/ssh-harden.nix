@@ -53,9 +53,10 @@
       ports = [ 2222 ];
       extraConfig = ''
         StreamLocalBindUnlink yes
-        GSSAPIAuthentication yes
-        GSSAPICleanupCredentials yes
       '';
+      #  GSSAPIAuthentication yes
+      #  GSSAPICleanupCredentials yes
+
     };
     # sshguard = { enable = true; };
   };

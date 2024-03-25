@@ -3,9 +3,9 @@
     services = {
       dns-rfc2136-conf = {
         requiredBy =
-          [ "acme-inner.${config.networking.domain}.service" "bind.service" ];
+          [ "acme-${config.networking.domain}.service" "bind.service" ];
         before =
-          [ "acme-inner.${config.networking.domain}.service" "bind.service" ];
+          [ "acme-${config.networking.domain}.service" "bind.service" ];
         unitConfig = {
           ConditionPathExists = "!/var/lib/secrets/dnskeys.conf";
         };

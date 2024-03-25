@@ -216,6 +216,7 @@
   };
 
   services = {
+    fprintd.enable = true;
     datadog-agent = {
       checks = {
         btrfs = { instances = [{ min_collection_interval = 16; }]; };

@@ -34,6 +34,7 @@
           "libvirtd"
           "pulse"
           "pipewire"
+          "systemd-journal"
         ];
       };
       "xiongchenyu6" = { isNormalUser = true; };
