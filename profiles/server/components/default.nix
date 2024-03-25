@@ -15,7 +15,7 @@
 
   programs = {
     rust-motd = {
-      enable = true;
+      enable = false;
       settings = {
         banner = {
           color = "red";
@@ -33,7 +33,7 @@
           sort_method = "manual";
           certs = {
             "*.inner.autolife-robotics.tech" =
-              "/var/lib/acme/inner.autolife-robotics.tech/cert.pem";
+              "/var/lib/acme/.autolife-robotics.tech/cert.pem";
             "mail.autolife-robotics.tech" =
               "/var/lib/acme/mail.autolife-robotics.tech/cert.pem";
           };
@@ -41,10 +41,7 @@
         # weather = { loc = "Singapore,Singapore"; };
         filesystems = { root = "/"; };
         memory = { swap_pos = "beside"; };
-        last_login = {
-          freeman = 2;
-          user3 = 1;
-        };
+        last_login = { freeman = 2; };
       };
     };
   };

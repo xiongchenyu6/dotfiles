@@ -10,7 +10,7 @@
   };
   environment = {
     systemPackages = with pkgs; [
-      awscli2
+      #awscli2
       cachix
       deadnix
       delve # go debugger
@@ -55,7 +55,7 @@
       vsc-leetcode-cli
       maven
       mongosh
-      #mycli
+      mycli
       my2sql
       neofetch
       nix-du
@@ -71,12 +71,12 @@
       nodePackages."yaml-language-server"
       nodePackages."vscode-langservers-extracted"
       ngrok
-      # nvfetcher
+      nvfetcher
       oath-toolkit
       openssl
       pg-ldap-sync
       popeye
-      #pgcli
+      pgcli
       plantuml
       (python3.withPackages (_:
         with python3.pkgs; [

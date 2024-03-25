@@ -46,7 +46,7 @@
       #   allow-emacs-pinentry
       #   allow-loopback-pinentry
       # '';
-      pinentryFlavor = "curses";
+      # pinentryPackage = "curses";
       enableSshSupport = true;
       # gpg2 -K --with-keygrip 
       sshKeys = [

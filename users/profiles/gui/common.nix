@@ -24,8 +24,10 @@
       stlink-gui
       stm32cubemx
       gcc-arm-embedded
-      microsoft-edge-dev
-      google-chrome
+      brave
+      vault
+      solana-validator
+      expect
     ];
   };
 

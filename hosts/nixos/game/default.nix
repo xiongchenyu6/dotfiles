@@ -30,7 +30,7 @@
   nixpkgs = {
     config = {
       permittedInsecurePackages =
-        [ "openssl-1.1.1w" "electron-19.1.9" "zotero-6.0.27" ];
+        [ "nix-2.16.2" "openssl-1.1.1w" "electron-19.1.9" ];
     };
   };
 
@@ -135,7 +135,7 @@
   };
 
   services = {
-
+    v2raya = { enable = true; };
     netbird = { enable = true; };
     babeld = {
       # enable = true;
@@ -187,11 +187,11 @@
         xdg = {
           mimeApps = {
             defaultApplications = {
-              "text/html" = "microsoft-edge-dev.desktop";
-              "x-scheme-handler/http" = "microsoft-edge-dev.desktop";
-              "x-scheme-handler/https" = "microsoft-edge-dev.desktop";
-              "x-scheme-handler/about" = "microsoft-edge-dev.desktop";
-              "x-scheme-handler/unknown" = "microsoft-edge-dev.desktop";
+              "text/html" = "brave.desktop";
+              "x-scheme-handler/http" = "brave.desktop";
+              "x-scheme-handler/https" = "brave.desktop";
+              "x-scheme-handler/about" = "brave.desktop";
+              "x-scheme-handler/unknown" = "brave.desktop";
             };
           };
         };

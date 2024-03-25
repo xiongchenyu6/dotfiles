@@ -7,6 +7,25 @@
 
   # systemd.services.datadog-agent.serviceConfig.User = lib.mkForce "root";
   # systemd.services.datadog-agent.serviceConfig.Group = lib.mkForce "root";
+  users.users.datadog.extraGroups = [
+    "systemd-journal"
+    "networkmanager"
+    "wheel"
+    "video"
+    "audio"
+    "cdrom"
+    "disk"
+    "floppy"
+    "dialout"
+    "lp"
+    "input"
+    "docker"
+    "podman"
+    "tss"
+    "libvirtd"
+    "pulse"
+    "pipewire"
+  ];
 
   services = {
     datadog-agent = {
@@ -32,5 +51,4 @@
       extraConfig = { logs_enabled = true; };
     };
   };
-
 }

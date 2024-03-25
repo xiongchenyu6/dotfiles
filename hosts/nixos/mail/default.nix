@@ -55,42 +55,6 @@ in {
     ../../../profiles/common/components/datadog-agent.nix
   ];
 
-  environment = {
-
-    systemPackages = [ pkgs.openvpn ]; # for key generation
-    etc."openvpn/peer2peer.ovpn" = {
-      text = ''
-        dev tun
-        remote "${domain}"
-        ifconfig 10.8.0.2 10.8.0.1
-        port ${toString port}
-        redirect-gateway def1
-
-        cipher AES-256-CBC
-        auth-nocache
-
-        comp-lzo
-        keepalive 10 60
-        resolv-retry infinite
-        nobind
-        persist-key
-        persist-tun
-        secret [inline]
-
-      '';
-      mode = "600";
-    };
-  };
-
-  system.activationScripts.openvpn-addkey = ''
-    f="/etc/openvpn/peer2peer.ovpn"
-    if ! grep -q '<secret>' $f; then
-      echo "appending secret key"
-      echo "<secret>" >> $f
-      cat ${client-key} >> $f
-      echo "</secret>" >> $f
-    fi
-  '';
   boot.loader.grub.device = "/dev/vda";
   boot.initrd.availableKernelModules = [ "ata_piix" "uhci_hcd" "xen_blkfront" ];
   boot.initrd.kernelModules = [ "nvme" ];
@@ -155,6 +119,7 @@ in {
         993 # imaps
         6695
         8888
+        10086
         18000
       ];
       allowedUDPPorts = [
@@ -291,48 +256,24 @@ in {
   };
   services = {
     # avahi = { allowInterfaces = [ "wg_office" ]; };
-
-    openvpn.servers = {
-      # peer2peer.config = ''
-      #   dev ${vpn-dev}
-      #   proto udp
-      #   ifconfig 10.8.0.1 10.8.0.2
-      #   secret ${client-key}
-      #   port ${toString port}
-
-      #   cipher AES-256-CBC
-      #   auth-nocache
-
-      #   comp-lzo
-      #   keepalive 10 60
-      #   ping-timer-rem
-      #   persist-tun
-      #   persist-key
-      # '';
-      server.config = ''
-        port 1194
-        proto udp
-        dev tun
-        ca ${openvpn.ca}
-        cert ${openvpn.cert}
-        key ${openvpn.key}
-        dh ${openvpn.dh}
-        tls-auth ${openvpn.ta} 0
-
-        server ${openvpn.client_subnet} ${openvpn.client_mask}
-        keepalive 10 120
-        comp-lzo
-        max-clients 5
-        user nobody
-        group nogroup
-        persist-key
-        persist-tun
-        verb 6
-        reneg-sec 0
-
-        push "route ${openvpn.forward_to_subnet} ${openvpn.forward_to_mask}"
-        push "redirect-gateway def1" # https://openvpn.net/index.php/open-source/documentation/howto.html#redirect
-      '';
+    v2ray = {
+      enable = true;
+      config = {
+        inbounds = [{
+          port = 10086;
+          protocol = "vmess";
+          settings = {
+            clients = [{
+              id = builtins.readFile ../../../secrets/v2ray.password;
+              alterId = 64;
+            }];
+          };
+        }];
+        outbounds = [{
+          protocol = "freedom";
+          settings = { };
+        }];
+      };
     };
 
     journald = {

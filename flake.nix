@@ -10,6 +10,8 @@
 
     nixpkgs-stable.url = "github:NixOS/nixpkgs/nixos-23.05";
 
+    nixpkgs-master.url = "github:NixOS/nixpkgs/master";
+
     nixos-hardware.url = "github:NixOS/nixos-hardware/master";
 
     nur.url = "github:nix-community/NUR";
@@ -102,7 +104,7 @@
   outputs = { nixpkgs, nixpkgs-stable, impermanence, nur, nixos-hardware
     , home-manager, devenv, flake-parts, pre-commit-hooks, nix-alien
     , xiongchenyu6, sops-nix, foundry, poetry2nix, nix-vscode-extensions
-    , nixos-wsl, vscode-server, ... }@inputs:
+    , nixos-wsl, vscode-server, nixpkgs-master, ... }@inputs:
     with nixpkgs;
     with lib;
     let
@@ -120,8 +122,10 @@
           lib = prev.lib.extend
             (_lfinal: _lprev: { mine = import ./lib { inherit lib; }; });
           gnupg240 = nixpkgs-stable.legacyPackages.x86_64-linux.gnupg;
-          telegram-desktop =
-            nixpkgs-stable.legacyPackages.x86_64-linux.telegram-desktop;
+          # telegram-desktop =
+          #   nixpkgs-stable.legacyPackages.x86_64-linux.telegram-desktop;
+
+          waybar = nixpkgs-master.legacyPackages.x86_64-linux.waybar;
         })
       ];
       darwin-modules = [ home-manager.darwinModules.home-manager ];
@@ -359,7 +363,7 @@
               mylib = import ./lib { inherit lib; };
             };
             modules = [
-              #              nixos-hardware.nixosModules.lenovo-legion-16ach6h-hybrid
+              nixos-hardware.nixosModules.lenovo-legion-16ach6h-hybrid
               ./hosts/nixos/game
             ] ++ nixos-modules;
           };

@@ -49,6 +49,7 @@
         o = "xdg-open";
         ls = "eza --icons";
         update = "sudo nixos-rebuild switch";
+        c = "code --enable-wayland-ime=true";
       };
       dirHashes = {
         docs = "$HOME/Documents";
@@ -99,9 +100,10 @@
         # eval "$(${pkgs.rustup}/bin/rustup completions zsh)"
         # eval "$(${pkgs.grafana-loki}/bin/logcli --completion-script-zsh)"
         eval $(${pkgs.bash-my-aws}/bin/bma-init)
-        complete -C '${pkgs.awscli2}/bin/aws_completer' aws
+
         eval "$(${pkgs.github-copilot-cli}/bin/github-copilot-cli alias -- "$0")"
       '';
+      #         complete -C '${pkgs.awscli2}/bin/aws_completer' aws
       zplug = {
         enable = false;
         plugins = ohMyZsh2Zplug plugins;
@@ -120,7 +122,7 @@
           name = "${name}";
         }) [ "alias-tips" "wakatime-zsh-plugin" ];
       enableCompletion = true;
-      enableAutosuggestions = true;
+      autosuggestion.enable = true;
       syntaxHighlighting.enable = true;
     };
   };

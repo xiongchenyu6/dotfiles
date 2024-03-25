@@ -12,7 +12,7 @@
           serverName = "atuin.inner.${config.networking.domain}";
           forceSSL = true;
           acmeRoot = null;
-          useACMEHost = "inner.${config.networking.domain}";
+          useACMEHost = "${config.networking.domain}";
           kTLS = true;
           locations."/" = {
             proxyPass =
