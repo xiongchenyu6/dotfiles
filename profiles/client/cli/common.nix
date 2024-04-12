@@ -10,7 +10,7 @@
   };
   environment = {
     systemPackages = with pkgs; [
-      #awscli2
+      awscli2
       cachix
       deadnix
       delve # go debugger
@@ -32,11 +32,11 @@
       gopls
       graphviz
       grpcurl
-      gotron-sdk
+      #gotron-sdk
       (kubernetes-helm-wrapped.override {
         plugins = [ kubernetes-helmPlugins.helm-diff ];
       })
-      helmify
+      #helmify
       hey # http load generator
       kube-capacity
       kube-prompt
@@ -101,7 +101,6 @@
       socat
       stow
       sshpass
-      step-cli
       spring-boot-cli
       tgpt
       # terraform
