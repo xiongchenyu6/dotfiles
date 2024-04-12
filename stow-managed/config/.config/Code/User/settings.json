@@ -67,5 +67,12 @@
     "stm32-for-vscode.openOCDPath": false,
     "stm32-for-vscode.makePath": "/run/current-system/sw/bin/make",
     "stm32-for-vscode.armToolchainPath": "/etc/profiles/per-user/freeman.xiong/bin",
-    "nix.enableLanguageServer": true
+    "nix.enableLanguageServer": true,
+    "workbench.editorAssociations": {
+        "*.epub": "default"
+    },
+    "editor.largeFileOptimizations": false,
+    "bitoAI.codeCompletion.enableAutoCompletion": true,
+    "bitoAI.codeCompletion.enableCommentToCode": true,
+    "editor.inlineSuggest.showToolbar": "onHover"
 }

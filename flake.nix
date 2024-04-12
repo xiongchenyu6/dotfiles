@@ -124,8 +124,7 @@
           gnupg240 = nixpkgs-stable.legacyPackages.x86_64-linux.gnupg;
           # telegram-desktop =
           #   nixpkgs-stable.legacyPackages.x86_64-linux.telegram-desktop;
-
-          waybar = nixpkgs-master.legacyPackages.x86_64-linux.waybar;
+          #     waybar = nixpkgs-master.legacyPackages.x86_64-linux.waybar;
         })
       ];
       darwin-modules = [ home-manager.darwinModules.home-manager ];
@@ -314,6 +313,8 @@
 
       flake = {
         nixosConfigurations = {
+          iso =
+            nixpkgs.lib.nixosSystem { modules = [ ./hosts/nixos/iso.nix ]; };
           mail = nixpkgs.lib.nixosSystem {
             specialArgs = {
               profiles = {
@@ -328,7 +329,6 @@
           };
           office = nixpkgs.lib.nixosSystem {
             specialArgs = {
-
               profiles = {
                 share = import ./profiles/shares.nix { inherit lib; };
               };

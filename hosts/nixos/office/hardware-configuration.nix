@@ -9,34 +9,17 @@
   boot.initrd.kernelModules = [ ];
   boot.kernelModules = [ "kvm-intel" ];
   boot.extraModulePackages = [ ];
+  boot.supportedFilesystems = { bcachefs = true; };
 
   fileSystems."/" = {
-    device = "/dev/disk/by-uuid/78e9f06d-6f91-4d5b-9fa7-865020ffd4b0";
-    fsType = "btrfs";
-    options = [ "subvol=@" "compress=zstd" ];
+    device = "UUID=cf73630b-267b-4349-8e40-9fda93c4b336";
+    fsType = "bcachefs";
   };
 
-  fileSystems."/home" = {
-    device = "/dev/disk/by-uuid/78e9f06d-6f91-4d5b-9fa7-865020ffd4b0";
-    fsType = "btrfs";
-    options = [ "subvol=@home" "compress=zstd" ];
-  };
-
-  fileSystems."/nix" = {
-    device = "/dev/disk/by-uuid/78e9f06d-6f91-4d5b-9fa7-865020ffd4b0";
-    fsType = "btrfs";
-    options = [ "subvol=@nix" "compress=zstd" "noatime" ];
-  };
-
-  fileSystems."/etc" = {
-    device = "/dev/disk/by-uuid/78e9f06d-6f91-4d5b-9fa7-865020ffd4b0";
-    fsType = "btrfs";
-    options = [ "subvol=@etc" "compress=zstd" ];
-  };
-
-  fileSystems."/boot/efi" = {
-    device = "/dev/disk/by-uuid/209B-184A";
+  fileSystems."/boot" = {
+    device = "/dev/disk/by-uuid/3953-37FB";
     fsType = "vfat";
+    options = [ "fmask=0022" "dmask=0022" ];
   };
 
   swapDevices = [ ];

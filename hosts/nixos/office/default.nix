@@ -7,14 +7,14 @@
     ../../../profiles/dvorak.nix
     ../../../users/freeman.xiong
     ../../../profiles/hardwares/misc.nix
-    ../../../profiles/client-pkgs/nixos.nix
+    ../../../profiles/client/cli/nixos.nix
+    ../../../profiles/client/gui/nixos.nix
     ../../../profiles/sops.nix
-    ../../../profiles/common-components
+    ../../../profiles/common/components
     ../../../profiles/auto-login/greetd.nix
-    ../../../profiles/common-apps/dn42
-    ../../../profiles/common-apps/bird-inner.nix
-    ../../../profiles/common-apps/kerberos.nix
-    ../../../profiles/common-components/datadog-agent.nix
+    ../../../profiles/common/apps/dn42
+    ../../../profiles/common/apps/bird-inner.nix
+    ../../../profiles/common/components/datadog-agent.nix
   ];
 
   sops.secrets."wireguard/office" = { };
@@ -241,26 +241,6 @@
           enable = true;
           apis = [ "eth" "net" "web3" "debug" ];
         };
-      };
-    };
-  };
-
-  krb5 = {
-    realms = let
-      tronRealm = "TRONTECH.LINK";
-      tronDomain = "trontech.link";
-    in {
-      "${tronRealm}" = {
-        admin_server = "admin.inner.${tronDomain}";
-        kdc = [ "admin.inner.${tronDomain}" ];
-        default_domain = "admin.inner.${tronDomain}";
-        kpasswd_server = "admin.inner.${tronDomain}";
-        database_module = "openldap_ldapconf";
-      };
-      domain_realm = {
-        "${tronDomain}" = tronRealm;
-        ".inner.${tronDomain}" = tronRealm;
-        ".${tronDomain}" = tronRealm;
       };
     };
   };
