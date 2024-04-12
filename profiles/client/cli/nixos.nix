@@ -16,6 +16,7 @@
       geoip
       gnumake
       grafana-loki
+      gparted
       haskell-language-server
       # (haskellPackages.ghcWithPackages (_:
       #   with haskellPackages;

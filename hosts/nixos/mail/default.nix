@@ -27,7 +27,7 @@ in {
     (modulesPath + "/profiles/qemu-guest.nix")
     ../../../profiles/server/apps/acme
     # ../../../profiles/server/apps/admin/openldap.nix
-    # ../../../profiles/server/apps/admin/sasl.nix
+    # ../../../profiles/server/apps/adm          in/sasl.nix
     # ../../../profiles/server/apps/admin/sssd.nix
     ../../../profiles/server/apps/bgp/bird-border.nix
     # ../../../profiles/server/apps/dns/bind.nix

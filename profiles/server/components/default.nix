@@ -9,7 +9,7 @@
       cyrus_sasl
       xvfb-run
       figlet
-      step-cli
+      #step-cli
     ];
   };
 

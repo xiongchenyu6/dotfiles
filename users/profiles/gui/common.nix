@@ -28,6 +28,7 @@
       vault
       solana-validator
       expect
+      unityhub
     ];
   };
 

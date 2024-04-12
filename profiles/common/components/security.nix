@@ -2,13 +2,13 @@
   sops.secrets."oath/seed" = { };
   security = {
     audit = {
-#      enable = true;
-      # rules = [
-      #   "-a exit,always -F arch=b64 -F euid=0 -S execve"
-      #   "-a exit,always -F arch=b32 -F euid=0 -S execve"
-      # ];
+      enable = true;
+      rules = [
+        "-a exit,always -F arch=b64 -F euid=0 -S execve"
+        "-a exit,always -F arch=b32 -F euid=0 -S execve"
+      ];
     };
-    auditd.enable = false;
+    auditd.enable = true;
     rtkit = { enable = true; };
     sudo = {
       enable = true;
