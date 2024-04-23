@@ -8,9 +8,8 @@
       bootstrap-studio
       discord
       dropbox
-      azure-cli
-      drive
-      microsoft-edge-dev
+      gdrive
+      brave
       freerdp
       #      jetbrains.idea-ultimate
       jdt-language-server
@@ -27,7 +26,7 @@
       stlink-gui
       stm32cubemx
       gcc-arm-embedded
-      brave
+      microsoft-edge-dev
       vault
       solana-validator
       expect
