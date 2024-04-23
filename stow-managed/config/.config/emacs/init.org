@@ -680,7 +680,7 @@ is available."
   (defalias 'chatgpt-arcana-keymap chatgpt-arcana-keymap)
   (global-set-key (kbd "C-c .") 'chatgpt-arcana-keymap)
   (setq chatgpt-arcana-chat-autosave-enabled t)
-  (setq chatgpt-arcana-chat-autosave-directory "~/Dropbox/chatgpt/")
+  (setq chatgpt-arcana-chat-autosave-directory "~/OneDrive/chatgpt/")
   )
 #+end_src
 
@@ -1240,7 +1240,7 @@ Bind to lsp mode
 *** Org cite
 #+begin_src emacs-lisp
 (setq org-cite-csl-styles-dir "~/Zotero/styles")
-(setq org-cite-global-bibliography '("~/Dropbox/reference.bib"))
+(setq org-cite-global-bibliography '("~/OneDrive/reference.bib"))
 #+end_src
 *** Org attach
 #+begin_src emacs-lisp
@@ -1248,7 +1248,7 @@ Bind to lsp mode
 
 (require 'ox-confluence)
 
-(setq org-attach-id-dir "~/Dropbox/Org/.attach")
+(setq org-attach-id-dir "~/OneDrive/Org/.attach")
 
 (setq org-image-actual-width nil)
 
@@ -1388,7 +1388,7 @@ Bind to lsp mode
 
 ;; (setq org-export-backends '(ascii html icalendar latex man odt hugocv hugo))
 
-(setq org-directory "~/Dropbox/Org"
+(setq org-directory "~/OneDrive/Org"
       org-agenda-files (list org-directory)
       org-agenda-diary-file (concat org-directory "/diary.org")
       org-default-notes-file (concat org-directory "/diary.org"))
