@@ -74,5 +74,6 @@
     "editor.largeFileOptimizations": false,
     "bitoAI.codeCompletion.enableAutoCompletion": true,
     "bitoAI.codeCompletion.enableCommentToCode": true,
-    "editor.inlineSuggest.showToolbar": "onHover"
+    "editor.inlineSuggest.showToolbar": "onHover",
+    "workbench.colorTheme": "Default Dark Modern"
 }

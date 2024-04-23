@@ -164,7 +164,7 @@
     };
 
     blueman-applet = { enable = true; };
-    dropbox = { enable = false; };
+    #    dropbox = { enable = true; };
     udiskie = {
       enable = true;
       automount = true;

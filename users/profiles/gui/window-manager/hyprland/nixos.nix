@@ -90,33 +90,12 @@
         };
 
         extraConfig = lib.mkDefault ''
-          # This is an example Hyprland config file.
-          #
-          # Refer to the wiki for more information.
-
-          #
-          # Please note not all available settings / options are set here.
-          # For a full list, see the wiki
-          #
-
-          # See https://wiki.hyprland.org/Configuring/Monitors/
           monitor=,highrr,auto,auto
-          # if not work check monitor driver
+
           monitor=HDMI-A-1,preferred,auto,1,transform,1
-          workspace = , 1
+
           workspace=HDMI-A-1,1
 
-
-          # monitor=DP-1,3840x2160@60,1920x0,1.5
-          # monitor=DP-1,3840x2160@60,1920x0,1.5
-          # monitor=DP-1,transform,1
-          # workspace = eDP-2, 1
-          # workspace=DP-1,10
-
-          # Source a file (multi-file configs)
-          # source = ~/.config/hypr/myColors.conf
-
-          # For all categories, see https://wiki.hyprland.org/Configuring/Variables/
           input {
           kb_layout = us
           # kb_variant = dvp
