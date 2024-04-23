@@ -37,7 +37,7 @@
           runtimeInputs = [ pkgs.hyprland ];
           text = ''
             sleep 10
-            hyprctl keyword windowrule "workspace unset,brave"
+            hyprctl keyword windowrule "workspace unset,microsoft-edge-dev"
           '';
         };
         screen-shot = pkgs.writeShellApplication {
@@ -186,7 +186,7 @@
           bind = $mainMod SHIFT, Q, exit,
           bind = $mainMod SHIFT, A, exec, ${screen-shot-and-save}/bin/screen-shot-and-save.sh
           bind = $mainMod SHIFT, S, exec, ${screen-shot}/bin/screen-shot.sh
-          bind = $mainMod, E, exec, brave --ozone-platform=wayland  --enable-wayland-ime 
+          bind = $mainMod, E, exec, microsoft-edge-dev --ozone-platform=wayland  --enable-wayland-ime 
           # bind = $mainMod SHIFT, c, exec, code --enable-features=UseOzonePlatform --ozone-platform=wayland  --enable-wayland-ime 
           bind = $mainMod, X, exec, wofi --show drun -I -G
           bind = $mainMod, L, togglefloating,
@@ -253,7 +253,7 @@
           exec-once = hyprpaper
 
           windowrule=workspace 1 silent,alacritty
-          # windowrule=workspace 3 silent,brave
+          # windowrule=workspace 3 silent,microsoft-edge-dev
           windowrule=float,noblur,noshadow,noborder,pseudo,dimaround,albert
 
           exec-once=dropbox
