@@ -57,7 +57,10 @@
     yubikey-touch-detector = { enable = true; };
     steam = { enable = true; };
     _1password = { enable = true; };
-    _1password-gui = { enable = true; };
+    _1password-gui = {
+      enable = true;
+      polkitPolicyOwners = [ "freeman.xiong" ];
+    };
     nm-applet = { enable = true; };
     wireshark = { enable = true; };
     proxychains = {
