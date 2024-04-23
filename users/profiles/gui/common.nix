@@ -8,8 +8,11 @@
       bootstrap-studio
       discord
       dropbox
+      azure-cli
+      drive
+      microsoft-edge-dev
       freerdp
-      jetbrains.idea-ultimate
+      #      jetbrains.idea-ultimate
       jdt-language-server
       opera
       mattermost-desktop

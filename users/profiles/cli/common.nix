@@ -145,6 +145,7 @@
       settings = {
         auto_sync = true;
         sync_frequency = "1m";
+        sync = { records = true; };
         #sync_address = "https://atuin.inner.autolife-robotics.tech";
       };
     };
