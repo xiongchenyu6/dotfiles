@@ -41,6 +41,9 @@
     };
 
     settings = {
+      access-tokens = builtins.readFile ../../secrets/access-key.password;
+
+      accept-flake-config = true;
       allow-import-from-derivation = true;
       experimental-features = [
         "nix-command"
@@ -48,6 +51,9 @@
         "repl-flake"
         "ca-derivations"
         "auto-allocate-uids"
+        "cgroups"
+        "parse-toml-timestamps"
+        "recursive-nix"
       ];
       trusted-users = [ "root" "freeman.xiong" ];
       allowed-users = [ "root" "freeman.xiong" ];
@@ -70,6 +76,7 @@
       ];
     };
     distributedBuilds = lib.mkDefault true;
+
   };
 
   time = { timeZone = "Asia/Singapore"; };
