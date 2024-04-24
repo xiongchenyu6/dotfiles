@@ -37,7 +37,7 @@
       llvm
       lsof
       manix
-      my_cookies
+      #my_cookies
       openfortivpn
       pass
       pciutils

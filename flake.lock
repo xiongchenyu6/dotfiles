@@ -902,11 +902,11 @@
     },
     "nixpkgs-master": {
       "locked": {
-        "lastModified": 1713926177,
-        "narHash": "sha256-AFgpVLDaAgdpNjUtzzUjXJLLv+pXAqJwaSzpyr/5j2Q=",
+        "lastModified": 1713936245,
+        "narHash": "sha256-v4Nawe9YmJUHWp0MRe1EiFWbVQNRUDenGUnUrHy//TU=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "1c108068d22f4e386d0bea43e328890d6dd59228",
+        "rev": "402425418271a56fc0f8d474507de6d2e2607f62",
         "type": "github"
       },
       "original": {
@@ -1059,11 +1059,11 @@
     },
     "nur": {
       "locked": {
-        "lastModified": 1713922938,
-        "narHash": "sha256-f3aDBK2c9D4Kfe59RlbPdiuGbhsQ0tjNYUyCDvx6Bxk=",
+        "lastModified": 1713931794,
+        "narHash": "sha256-W8Si84Fqi/kCPcGh5KnMfHddc39eJ3esmSTzUFL9HEY=",
         "owner": "nix-community",
         "repo": "NUR",
-        "rev": "c716ac543b77c8f3737961ed8a5395ef76bfa29d",
+        "rev": "10344baebd47c199da92973d7f86f77290997412",
         "type": "github"
       },
       "original": {
@@ -1399,11 +1399,11 @@
         "oci-arm-host-capacity-src": "oci-arm-host-capacity-src"
       },
       "locked": {
-        "lastModified": 1710172344,
-        "narHash": "sha256-YTuzV+070Dknf10mw6r2U+pfT52+KnKzvooribhxG+I=",
+        "lastModified": 1713929617,
+        "narHash": "sha256-vGO1pCk6I8zosarEpTiH5hB+De1eY+mE1XljbZk8pYE=",
         "owner": "xiongchenyu6",
         "repo": "nur-packages",
-        "rev": "695fd3d05fb966b12af653e48953c48cc584a06c",
+        "rev": "95f2a0f6c602deea0e68021f8d3b22e5b9fb66bd",
         "type": "github"
       },
       "original": {
