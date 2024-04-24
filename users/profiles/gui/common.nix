@@ -7,7 +7,7 @@
       appimage-run
       bootstrap-studio
       discord
-      dropbox
+      #dropbox
       gdrive
       brave
       freerdp

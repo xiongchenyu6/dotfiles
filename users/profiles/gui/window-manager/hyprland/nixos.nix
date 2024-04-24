@@ -256,7 +256,6 @@
           # windowrule=workspace 3 silent,microsoft-edge-dev
           windowrule=float,noblur,noshadow,noborder,pseudo,dimaround,albert
 
-          exec-once=dropbox
           exec-once=netbird-ui
 
           # exec-once=${clean-up-after-start}/bin/clean-up-after-start.sh
