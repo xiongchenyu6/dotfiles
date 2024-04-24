@@ -120,8 +120,7 @@
 
     chromium = {
       enable = true;
-      package = pkgs.brave;
-
+      package = pkgs.microsoft-edge-dev;
     };
 
     password-store = { enable = true; };
@@ -130,6 +129,8 @@
   services = lib.mkIf pkgs.stdenv.isLinux {
     # safeeyes.enable = true;
     #    ssh-agent.enable = true;
+    volnoti = { enable = true; };
+
     pasystray = { enable = true; };
     poweralertd = { enable = true; };
     emacs = {
