@@ -24,7 +24,7 @@
       ytfzf
       usbutils
       stlink-gui
-      stm32cubemx
+      #stm32cubemx
       gcc-arm-embedded
       microsoft-edge-dev
       vault
