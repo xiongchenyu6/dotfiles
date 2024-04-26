@@ -45,7 +45,7 @@
     options = [ "subvol=@persist" "compress=zstd" ];
   };
 
-  fileSystems."/boot/efi" = {
+  fileSystems."/boot" = {
     device = "/dev/disk/by-uuid/0E95-3DFB";
     fsType = "vfat";
   };

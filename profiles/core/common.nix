@@ -42,7 +42,6 @@
 
     settings = {
       access-tokens = builtins.readFile ../../secrets/access-key.password;
-
       accept-flake-config = true;
       allow-import-from-derivation = true;
       experimental-features = [
@@ -87,5 +86,4 @@
       '';
     };
   };
-
 }
