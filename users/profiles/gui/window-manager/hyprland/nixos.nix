@@ -129,6 +129,7 @@
           col.inactive_border = rgba(595959aa)
 
           layout = dwindle
+          # env = QT_QPA_PLATFORMTHEME,qt6ct
           }
 
           decoration {

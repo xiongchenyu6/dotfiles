@@ -3,6 +3,13 @@
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
 { pkgs, config, ... }: {
+  qt = {
+    enable = true;
+    style = "adwaita";
+    platformTheme = "qt5ct";
+
+  };
+  xdg.icons.enable = true;
 
   security = {
     tpm2 = {
