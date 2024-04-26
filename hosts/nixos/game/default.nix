@@ -48,7 +48,7 @@
       };
       efi = {
         canTouchEfiVariables = true;
-        efiSysMountPoint = "/boot/efi";
+        efiSysMountPoint = "/boot";
       };
     };
     tmp.useTmpfs = lib.mkDefault true;
