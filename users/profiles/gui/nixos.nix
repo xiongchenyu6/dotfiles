@@ -4,7 +4,11 @@
 { config, pkgs, lib, ... }: {
   imports = [ ./common.nix ];
 
-  qt = { enable = true; };
+  qt = {
+    enable = true;
+    platformTheme = "adwaita";
+    style.package = pkgs.adwaita-qt;
+  };
 
   home = lib.mkIf pkgs.stdenv.isLinux {
     pointerCursor = {
@@ -30,6 +34,12 @@
       whatsapp-for-linux
       wineWowPackages.staging
       zotero
+      kdePackages.dolphin
+      kdePackages.qtwayland
+      kdePackages.qt6ct
+      # kdePackages.wayqt
+      # kdePackages.qtstyleplugin-kvantum
+      libsForQt5.oxygen-icons
     ];
     sessionVariables = { STARSHIP_LOG = "error"; };
   };
@@ -84,17 +94,14 @@
       enable = true;
       extensions = with pkgs.vscode-marketplace; [
         mkhl.direnv
+        juanblanco.solidity
         ms-vscode.cpptools-extension-pack
         ms-vscode.cpptools-themes
         twxs.cmake
-        # ms-vscode.cmake-tools   
         vscjava.vscode-java-debug
         redhat.fabric8-analytics
         vscjava.vscode-java-pack
         github.copilot-chat
-        mkhl.direnv
-        # github.copilot-labs
-        # github.heygithub
         gitlab.gitlab-workflow
         eamodio.gitlens
         weaveworks.vscode-gitops-tools
