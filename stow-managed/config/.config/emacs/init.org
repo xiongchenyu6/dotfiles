@@ -231,6 +231,7 @@
 *** Indentation
 #+begin_src emacs-lisp
 (setq editorconfig-mode t)
+(setq-default tab-width 2)
 #+end_src
 ** Structure Editing
 *** combobulate
@@ -1052,7 +1053,8 @@ is available."
 (setq auto-mode-alist
       (cons '("\.sml$" . sml-mode)
             (cons '("\.sig$" . sml-mode)
-                  auto-mode-alist)))
+                  auto-mode-alist)
+            ))
 #+end_src
 *** COMMENT Scala
 #+begin_src emacs-lisp
@@ -1072,13 +1074,17 @@ is available."
 )
 (setq js-indent-level 2)
 #+end_src
+*** typescript
+#+begin_src emacs-lisp
+(add-to-list 'auto-mode-alist '("\\.ts\\'" . typescript-ts-mode))
+(add-to-list 'auto-mode-alist '("\\.tsx\\'" . typescript-ts-mode))
+#+end_src
 *** restapi
 #+begin_src emacs-lisp
 (require 'restclient)
 
 (add-to-list 'auto-mode-alist '("\\.http\\'" . restclient-mode))
 (add-to-list 'auto-mode-alist '("\\.pdf\\'" . pdf-view-mode))
-(add-to-list 'auto-mode-alist '("\\.ts\\'" . typescript-ts-mode))
 #+end_src
 *** web
 #+begin_src emacs-lisp

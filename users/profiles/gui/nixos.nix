@@ -41,6 +41,7 @@
       # kdePackages.qtstyleplugin-kvantum
       libsForQt5.oxygen-icons
       feishu-lark
+      nil
     ];
     sessionVariables = { STARSHIP_LOG = "error"; };
   };
