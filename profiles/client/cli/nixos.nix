@@ -50,6 +50,7 @@
 
     pathsToLink = [ "/share/zsh" ];
   };
+  services.pcscd.enable = true;
 
   programs = {
     npm = { enable = true; };

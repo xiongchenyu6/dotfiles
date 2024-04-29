@@ -46,7 +46,7 @@
       #   allow-emacs-pinentry
       #   allow-loopback-pinentry
       # '';
-      # pinentryPackage = "curses";
+      pinentryPackage = pkgs.pinentry-tty;
       enableSshSupport = true;
       # gpg2 -K --with-keygrip 
       sshKeys = [

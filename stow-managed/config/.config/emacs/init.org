@@ -873,7 +873,7 @@ is available."
 
 (add-hook 'eglot-managed-mode-hook
           #'(lambda () (setq-local completion-at-point-functions
-                              `(,(cape-super-capf
+                              `(,(cape-capf-super
                                   (cape-capf-buster #'eglot-completion-at-point)
                                   #'tempel-complete
                                   )
