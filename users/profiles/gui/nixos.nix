@@ -4,11 +4,7 @@
 { config, pkgs, lib, ... }: {
   imports = [ ./common.nix ];
 
-  qt = {
-    enable = true;
-    platformTheme = "adwaita";
-    style.package = pkgs.adwaita-qt;
-  };
+  qt = { enable = true; };
 
   home = lib.mkIf pkgs.stdenv.isLinux {
     pointerCursor = {
