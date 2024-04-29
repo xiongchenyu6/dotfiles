@@ -105,12 +105,17 @@
       };
     };
     vscode-server.url = "github:nix-community/nixos-vscode-server";
+
+    disko = {
+      url = "github:nix-community/disko";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
-  outputs = { nixpkgs, nixpkgs-stable, impermanence, nur, nixos-hardware
+  outputs = { self, nixpkgs, nixpkgs-stable, impermanence, nur, nixos-hardware
     , home-manager, devenv, flake-parts, pre-commit-hooks, nix-alien
     , xiongchenyu6, sops-nix, foundry, poetry2nix, nix-vscode-extensions
-    , nixos-wsl, vscode-server, nixpkgs-master, ... }@inputs:
+    , nixos-wsl, vscode-server, nixpkgs-master, disko, ... }@inputs:
     with nixpkgs;
     with lib;
     let
@@ -168,6 +173,12 @@
         [ "x86_64-linux" "aarch64-linux" "aarch64-darwin" "x86_64-darwin" ];
 
       perSystem = { pkgs, ... }: {
+        packages = {
+          iso = self.nixosConfigurations.iso.config.system.build.image;
+          bootstrap =
+            self.nixosConfigurations.bootstrap.config.system.build.diskoImagesScript;
+        };
+
         apps = let
           type = "app";
           getip = ''
@@ -321,6 +332,20 @@
         nixosConfigurations = {
           iso =
             nixpkgs.lib.nixosSystem { modules = [ ./hosts/nixos/iso.nix ]; };
+          bootstrap = nixpkgs.lib.nixosSystem {
+            specialArgs = {
+              profiles = {
+                share = import ./profiles/shares.nix { inherit lib; };
+              };
+              mylib = import ./lib { inherit lib; };
+            };
+            modules = [
+              impermanence.nixosModules.impermanence
+              disko.nixosModules.disko
+              ./hosts/nixos/bootstrap.nix
+            ];
+          };
+
           mail = nixpkgs.lib.nixosSystem {
             specialArgs = {
               profiles = {
@@ -329,7 +354,7 @@
               mylib = import ./lib { inherit lib; };
             };
             modules = [
-              xiongchenyu6.nixosModules.oci-arm-host-capacity
+              #xiongchenyu6.nixosModules.oci-arm-host-capacity
               ./hosts/nixos/mail
             ] ++ nixos-modules;
           };

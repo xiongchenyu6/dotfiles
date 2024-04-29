@@ -29,7 +29,7 @@
       microsoft-edge-dev
       vault
       solana-validator
-      expect
+      # expect mkpasswd conflict
       unityhub
     ];
   };
