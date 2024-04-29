@@ -5,9 +5,8 @@
 { pkgs, config, ... }: {
   qt = {
     enable = true;
-    style = "adwaita";
-    platformTheme = "qt5ct";
-
+    # style = "adwaita";
+    # platformTheme = "qt5ct";
   };
   xdg.icons.enable = true;
 
