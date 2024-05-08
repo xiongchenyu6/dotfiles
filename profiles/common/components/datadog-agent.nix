@@ -44,8 +44,8 @@
       };
       enableLiveProcessCollection = true;
       extraIntegrations = {
-        btrfs = (ps: [ ps.psutil ]);
-        journald = (ps: [ ps.psutil ]);
+        btrfs = ps: [ ps.psutil ];
+        journald = ps: [ ps.psutil ];
       };
       checks = { "journald.d" = { logs = [{ type = "journald"; }]; }; };
       extraConfig = { logs_enabled = true; };

@@ -151,7 +151,7 @@
         nur.nixosModules.nur
         impermanence.nixosModules.impermanence
         xiongchenyu6.nixosModules.bttc
-        ({ ... }: {
+        (_: {
           nixpkgs = {
             system = "x86_64-linux";
             config = {
@@ -174,7 +174,7 @@
 
       perSystem = { pkgs, ... }: {
         packages = {
-          iso = self.nixosConfigurations.iso.config.system.build.image;
+          iso = self.nixosConfigurations.iso.config.system.build.isoImage;
           bootstrap =
             self.nixosConfigurations.bootstrap.config.system.build.diskoImagesScript;
         };

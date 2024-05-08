@@ -1,4 +1,4 @@
-{ ... }: {
+_: {
   home = {
     persistence."/home/freeman.xiong/dotfiles/stow-managed/" = {
       removePrefixDirectory = true;
