@@ -35,6 +35,10 @@
   };
 
   nix = {
+    # sshServe = {
+    #   enable = true;
+    #   write = true;
+    # };
     gc = {
       automatic = true;
       options = "--delete-older-than 1d";

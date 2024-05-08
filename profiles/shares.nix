@@ -3,13 +3,13 @@ with builtins;
 let shares = lib.importTOML ./shares.toml;
 in rec {
 
-  users = shares.users;
+  inherit (shares) users;
 
-  groups = shares.groups;
+  inherit (shares) groups;
 
-  hosts = shares.hosts;
+  inherit (shares) hosts;
 
-  root-cas = shares.root-cas;
+  inherit (shares) root-cas;
 
   users-dict = listToAttrs (map (u: {
     name = "${u.gn}.${toString u.sn}";
@@ -17,7 +17,7 @@ in rec {
   }) users);
 
   groups-dict = listToAttrs (map (g: {
-    name = g.name;
+    inherit (g) name;
     value = g;
   }) groups);
 
