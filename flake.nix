@@ -132,7 +132,7 @@
         (_: prev: {
           lib = prev.lib.extend
             (_lfinal: _lprev: { mine = import ./lib { inherit lib; }; });
-          gnupg240 = nixpkgs-stable.legacyPackages.x86_64-linux.gnupg;
+          # gnupg240 = nixpkgs-stable.legacyPackages.x86_64-linux.gnupg;
           # telegram-desktop =
           #   nixpkgs-stable.legacyPackages.x86_64-linux.telegram-desktop;
           #     waybar = nixpkgs-master.legacyPackages.x86_64-linux.waybar;
