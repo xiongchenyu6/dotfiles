@@ -256,6 +256,12 @@ in {
   };
   services = {
     # avahi = { allowInterfaces = [ "wg_office" ]; };
+    frp = {
+      enable = true;
+      role = "server";
+      settings = { bindPort = 7000; };
+
+    };
     v2ray = {
       enable = true;
       config = {
