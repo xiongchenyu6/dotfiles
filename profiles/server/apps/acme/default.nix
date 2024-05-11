@@ -23,7 +23,7 @@
           #          extraDomainNames = [ "*.inner.${config.networking.domain}" ];
           credentialsFile = config.sops.secrets."acme/cloudflare".path;
           # We don't need to wait for propagation since this is a local DNS server
-          dnsPropagationCheck = false;
+          dnsPropagationCheck = true;
           # reloadServices =
           #   [ "openldap.service" "postfix.service" "dovecot2.service" ];
           group = "nginx";
