@@ -256,9 +256,18 @@
         # keyserver = "hkps://keyserver.ubuntu.com";
         fixed-list-mode = true;
         keyid-format = "0xlong";
-        list-options = "show-uid-validity";
         # cert-digest-algo = "SHA256";
         # personal-digest-preferences = "SHA256";
+        no-comments = true;
+        no-emit-version = true;
+        no-greeting = true;
+        list-options = "show-uid-validity";
+        verify-options = "show-uid-validity";
+        with-fingerprint = true;
+        require-cross-certification = true;
+        no-symkey-cache = true;
+        use-agent = true;
+        throw-keyids = true;
       };
     };
 
