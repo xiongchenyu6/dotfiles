@@ -22,6 +22,6 @@
 
   services.resolved = {
     enable = true;
-    llmnr = "resolve";
+    #llmnr = "resolve";
   };
 }

@@ -251,9 +251,8 @@
     man = { enable = true; };
     gpg = {
       enable = true;
-      #package = pkgs.gnupg240;
       settings = {
-        # keyserver = "hkps://keyserver.ubuntu.com";
+        #keyserver = "hkps://keyserver.ubuntu.com";
         fixed-list-mode = true;
         keyid-format = "0xlong";
         # cert-digest-algo = "SHA256";
