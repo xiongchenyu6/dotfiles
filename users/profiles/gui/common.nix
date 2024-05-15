@@ -30,6 +30,17 @@
       vault
       solana-validator
       # expect mkpasswd conflict
+      gpg-tui
+      ncdu
+      lazygit
+      lazydocker
+      #      lazysql
+      kmon
+      termshark
+      mdcat
+      lnav
+      ticker
+      fast-ssh
       unityhub
     ];
   };
