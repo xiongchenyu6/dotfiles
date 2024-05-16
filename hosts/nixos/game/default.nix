@@ -40,16 +40,24 @@
     kernel = { sysctl = { "net.ipv4.ip_forward" = 1; }; };
 
     loader = {
-      systemd-boot = {
-        configurationLimit = 12;
-        enable = true;
-        # netbootxyz.enable = true;
-        # memtest86.enable = true;
-      };
+      # systemd-boot = {
+      #   configurationLimit = 12;
+      #   enable = true;
+      #   # netbootxyz.enable = true;
+      #   # memtest86.enable = true;
+      # };
       efi = {
         canTouchEfiVariables = true;
         efiSysMountPoint = "/boot";
       };
+      grub = {
+        enable = true;
+        efiSupport = true;
+        device = "nodev";
+        configurationLimit = 5;
+        useOSProber = true;
+      };
+
     };
     tmp.useTmpfs = lib.mkDefault true;
   };

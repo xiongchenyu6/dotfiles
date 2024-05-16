@@ -394,7 +394,7 @@
               mylib = import ./lib { inherit lib; };
             };
             modules = [
-              nixos-hardware.nixosModules.lenovo-legion-16ach6h-hybrid
+              nixos-hardware.nixosModules.lenovo-legion-16ach6h
               ./hosts/nixos/game
             ] ++ nixos-modules;
           };
