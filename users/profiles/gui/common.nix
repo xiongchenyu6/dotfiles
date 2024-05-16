@@ -34,7 +34,7 @@
       ncdu
       lazygit
       lazydocker
-      #      lazysql
+      (warp-terminal.override { waylandSupport = true; })
       kmon
       termshark
       mdcat
