@@ -95,7 +95,10 @@
           monitor=HDMI-A-1,preferred,auto,1,transform,1
 
           workspace=HDMI-A-1,1
-
+          # unscale XWayland
+          xwayland {
+            force_zero_scaling = true
+          }
           input {
           kb_layout = us
           # kb_variant = dvp
@@ -130,6 +133,9 @@
 
           layout = dwindle
           # env = QT_QPA_PLATFORMTHEME,qt6ct
+          # toolkit-specific scale
+          env = GDK_SCALE,2
+          env = XCURSOR_SIZE,32
           }
 
           decoration {

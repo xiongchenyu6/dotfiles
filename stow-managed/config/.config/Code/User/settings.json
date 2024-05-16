@@ -78,5 +78,6 @@
     "workbench.colorTheme": "Default Dark Modern",
     "[typescriptreact]": {
         
-    }
+    },
+    "security.promptForLocalFileProtocolHandling": false
 }

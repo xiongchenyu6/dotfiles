@@ -165,11 +165,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1715756862,
-        "narHash": "sha256-cNGZK/RNvb29giR2KtnbwU5lx2Kw+wWqAaeWqfYlPts=",
+        "lastModified": 1715822638,
+        "narHash": "sha256-Z4ZoyK8jYRmBZwMaEZLEmAilrfdpekwwwohliqC14/E=",
         "owner": "nix-community",
         "repo": "disko",
-        "rev": "cb1d6fba694ab3887600d606106f5a044ba1712c",
+        "rev": "476eef8d85aa09389ae7baf6e6b60357f6a01432",
         "type": "github"
       },
       "original": {
@@ -784,11 +784,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1715736128,
-        "narHash": "sha256-NjLDB4uZsJocIhpYWlX0G+iZtGRzCaiqxNVl1TcDv/g=",
+        "lastModified": 1715822547,
+        "narHash": "sha256-2t+GMP23RRDfEel4YgaCb/qo6d432eJEFFM+4Rn+8b4=",
         "owner": "nix-community",
         "repo": "nix-vscode-extensions",
-        "rev": "10946d7273c72c4dcecd0e12d504194e17c30f1f",
+        "rev": "6490ae7fc23e44b455766eb46a90257468596edd",
         "type": "github"
       },
       "original": {
@@ -872,11 +872,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1715612368,
-        "narHash": "sha256-rpXM1gGZY1KacCvKLx5Hnzxp+iLRVVVrt70KiMKvalo=",
+        "lastModified": 1715847440,
+        "narHash": "sha256-a/8+iEMyr2uUsung4G5ge8CKBDe8JoaocOs/DpRIZiA=",
         "owner": "nix-community",
         "repo": "NixOS-WSL",
-        "rev": "0802ef2739396a18d56c2fd088b95006671f6f48",
+        "rev": "d7196ac028136ebd2cd8b50a211b5df2a2a8ff35",
         "type": "github"
       },
       "original": {
@@ -916,11 +916,11 @@
     },
     "nixpkgs-master": {
       "locked": {
-        "lastModified": 1715768689,
-        "narHash": "sha256-bHFbPgRD4pxQH11m/MosjchJiLF/L/tDlfeiHYP9zKE=",
+        "lastModified": 1715860056,
+        "narHash": "sha256-uqzlzTB3X7IqjZw8JcUV3VrVk8oQjrq4aBg2v3MQgrU=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "af979d2d481dc5b93b590e93ca607be193e94694",
+        "rev": "5f656f2ebbab56ea341329cc2ae0bf6c4351444c",
         "type": "github"
       },
       "original": {
@@ -1043,11 +1043,11 @@
     },
     "nixpkgs_3": {
       "locked": {
-        "lastModified": 1715534503,
-        "narHash": "sha256-5ZSVkFadZbFP1THataCaSf0JH2cAH3S29hU9rrxTEqk=",
+        "lastModified": 1715787315,
+        "narHash": "sha256-cYApT0NXJfqBkKcci7D9Kr4CBYZKOQKDYA23q8XNuWg=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "2057814051972fa1453ddfb0d98badbea9b83c06",
+        "rev": "33d1e753c82ffc557b4a585c77de43d4c922ebb5",
         "type": "github"
       },
       "original": {
@@ -1073,11 +1073,11 @@
     },
     "nur": {
       "locked": {
-        "lastModified": 1715763397,
-        "narHash": "sha256-ddCsvmPylwjzJjbe4NTMqZ864HRLYA9iA0zoHGL42rE=",
+        "lastModified": 1715857838,
+        "narHash": "sha256-ilDbhN9fiZVPZhOkUdFmEMV+M6SbxIX6rKpIGb3s8E4=",
         "owner": "nix-community",
         "repo": "NUR",
-        "rev": "0d127bc7b3b780ea0a081ec3b5c72ce62908a160",
+        "rev": "961f66d233d2b9eee9c2f31416f089dcb2655c95",
         "type": "github"
       },
       "original": {
@@ -1183,11 +1183,11 @@
         "nixpkgs-stable": "nixpkgs-stable_2"
       },
       "locked": {
-        "lastModified": 1715609711,
-        "narHash": "sha256-/5u29K0c+4jyQ8x7dUIEUWlz2BoTSZWUP2quPwFCE7M=",
+        "lastModified": 1715850717,
+        "narHash": "sha256-HGY8w2Glb5xe4/l69Auv6R1kxbAQehB1vWFGnvzvSR8=",
         "owner": "cachix",
         "repo": "pre-commit-hooks.nix",
-        "rev": "c182c876690380f8d3b9557c4609472ebfa1b141",
+        "rev": "963646978438e31c0925e16c4eca089fda69bac2",
         "type": "github"
       },
       "original": {
@@ -1414,11 +1414,11 @@
         "oci-arm-host-capacity-src": "oci-arm-host-capacity-src"
       },
       "locked": {
-        "lastModified": 1715159623,
-        "narHash": "sha256-FYWnzIu5TTwybL+qI0rjQOoB5KK6u2vml90kyQJPDl0=",
+        "lastModified": 1715860072,
+        "narHash": "sha256-J00Vwunr8OifLyc41Nmr4I/R3mXu5e9ofYxesKJkjIY=",
         "owner": "xiongchenyu6",
         "repo": "nur-packages",
-        "rev": "2bd15918428b17488e2f5b20eb4560acabb4f471",
+        "rev": "74d642c5d33f38da244884ce11e1c6d4dc683c98",
         "type": "github"
       },
       "original": {
