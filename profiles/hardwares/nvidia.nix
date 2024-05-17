@@ -1,4 +1,4 @@
-{ config, pkgs, lib, ... }: {
+{ pkgs, lib, ... }: {
 
   # services.fstrim.enable = lib.mkDefault true;
   # hardware.cpu.amd.updateMicrocode =

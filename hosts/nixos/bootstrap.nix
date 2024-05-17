@@ -1,4 +1,4 @@
-{ config, pkgs, lib, profiles, ... }: {
+{ config, lib, ... }: {
   # 我用的一些内核参数
   imports = [ ../../users/root/nixos.nix ];
   nixpkgs.system = "x86_64-linux";

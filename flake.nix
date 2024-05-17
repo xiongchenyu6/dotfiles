@@ -35,20 +35,6 @@
       };
     };
 
-    devenv = {
-      url = "github:cachix/devenv";
-      inputs = {
-        nixpkgs.follows = "nixpkgs";
-        pre-commit-hooks.follows = "pre-commit-hooks";
-      };
-    };
-    nix2container = {
-      url = "github:nlewo/nix2container";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-    # nix-ros-overlay = { url = "github:lopsided98/nix-ros-overlay"; };
-    mk-shell-bin.url = "github:rrbutani/nix-mk-shell-bin";
-
     nix-vscode-extensions = {
       url = "github:nix-community/nix-vscode-extensions";
       inputs = {
@@ -112,10 +98,10 @@
     };
   };
 
-  outputs = { self, nixpkgs, nixpkgs-stable, impermanence, nur, nixos-hardware
-    , home-manager, devenv, flake-parts, pre-commit-hooks, nix-alien
-    , xiongchenyu6, sops-nix, foundry, poetry2nix, nix-vscode-extensions
-    , nixos-wsl, vscode-server, nixpkgs-master, disko, ... }@inputs:
+  outputs = { self, nixpkgs, impermanence, nur, nixos-hardware, home-manager
+    , flake-parts, pre-commit-hooks, nix-alien, xiongchenyu6, sops-nix, foundry
+    , poetry2nix, nix-vscode-extensions, nixos-wsl, vscode-server, disko, ...
+    }@inputs:
     with nixpkgs;
     with lib;
     let
@@ -135,7 +121,7 @@
           # gnupg240 = nixpkgs-stable.legacyPackages.x86_64-linux.gnupg;
           # telegram-desktop =
           #   nixpkgs-stable.legacyPackages.x86_64-linux.telegram-desktop;
-          #     waybar = nixpkgs-master.legacyPackages.x86_64-linux.waybar;
+          # waybar = nixpkgs-master.legacyPackages.x86_64-linux.waybar;
         })
       ];
       darwin-modules = [ home-manager.darwinModules.home-manager ];
@@ -167,8 +153,7 @@
       ];
 
     in flake-parts.lib.mkFlake { inherit inputs; } {
-      imports =
-        [ inputs.devenv.flakeModule inputs.pre-commit-hooks.flakeModule ];
+      imports = [ inputs.pre-commit-hooks.flakeModule ];
       systems =
         [ "x86_64-linux" "aarch64-linux" "aarch64-darwin" "x86_64-darwin" ];
 
@@ -286,16 +271,8 @@
             '');
           };
         };
-
-        devenv.shells.default = {
-          name = "my-project";
-
-          # This is your devenv configuration
-          env = {
-            NIX_SSHOPTS = "-Y -p 2222 -i ~/.ssh/id_ed25519";
-            PULUMI_CONFIG_PASSPHRASE = "";
-          };
-          packages = with pkgs; [
+        devShells.default = pkgs.mkShell {
+          buildInputs = with pkgs; [
             sops
             ssh-to-age
             editorconfig-checker
@@ -309,16 +286,17 @@
             ruby_3_2
             nil
           ];
-          languages = {
-            go = { enable = true; };
-            nix = { enable = true; };
-          };
+          shellHook = ''
+            export NIX_SSHOPTS="-Y -p 2222 -i ~/.ssh/id_ed25519"
+            export PULUMI_CONFIG_PASSPHRASE=""
+          '';
         };
+
         pre-commit = {
           check.enable = true;
           settings = {
             hooks = {
-              nixfmt.enable = true;
+              nixfmt.enable = false;
               statix.enable = true;
               deadnix.enable = true;
               shellcheck.enable = true;
