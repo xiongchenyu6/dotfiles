@@ -1,26 +1,8 @@
 { modulesPath, profiles, config, lib, pkgs, ... }:
 let
   # generate via openvpn --genkey --secret openvpn-laptop.key
-  client-key = "/root/openvpn-laptop.key";
-  domain = "43.156.66.157";
   vpn-dev = "tun0";
   port = 1194;
-
-  openvpn = {
-    ca = ./vpn/ca.crt;
-    cert = ./vpn/server.crt;
-    key = ./vpn/server.key;
-    ta = ./vpn/ta.key;
-    dh = ./vpn/dh2048.pem;
-
-    client_subnet = "10.89.98.0";
-    client_mask_bits = 24;
-    client_mask = "255.255.255.0";
-
-    forward_to_subnet = "192.168.4.0";
-    forward_to_mask_bits = 24;
-    forward_to_mask = "255.255.255.0";
-  };
 
 in {
   imports = [

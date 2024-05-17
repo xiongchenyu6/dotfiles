@@ -1,5 +1,5 @@
 # Edit
-{ config, lib, profiles, pkgs, mylib, ... }: {
+{ config, lib, pkgs, ... }: {
   imports = [
     ../../../profiles/wsl.nix
     ../../../profiles/core/nixos.nix
