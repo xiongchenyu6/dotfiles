@@ -1,4 +1,4 @@
-{ profiles, config, lib, ... }: {
+{ profiles, config, ... }: {
   sops.secrets."oath/seed" = { };
   security = {
     audit = {
