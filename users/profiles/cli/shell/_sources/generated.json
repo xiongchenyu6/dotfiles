@@ -20,7 +20,7 @@
     },
     "wakatime-zsh-plugin": {
         "cargoLocks": null,
-        "date": "2022-04-27",
+        "date": "2024-02-12",
         "extract": null,
         "name": "wakatime-zsh-plugin",
         "passthru": null,
@@ -30,11 +30,11 @@
             "fetchSubmodules": false,
             "leaveDotGit": false,
             "name": null,
-            "rev": "69c6028b0c8f72e2afcfa5135b1af29afb49764a",
-            "sha256": "sha256-pA1VOkzbHQjmcI2skzB/OP5pXn8CFUz5Ok/GLC6KKXQ=",
+            "rev": "7b3103d28c89f571111de3586c6ea98f5b26dd70",
+            "sha256": "sha256-6isB3WWn79hKsUOlX/3yg7XeE0ZrigrXO3nVv4O4tl4=",
             "type": "git",
             "url": "https://github.com/sobolevn/wakatime-zsh-plugin.git"
         },
-        "version": "69c6028b0c8f72e2afcfa5135b1af29afb49764a"
+        "version": "7b3103d28c89f571111de3586c6ea98f5b26dd70"
     }
 }
