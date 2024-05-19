@@ -134,7 +134,7 @@
           layout = dwindle
           # env = QT_QPA_PLATFORMTHEME,qt6ct
           # toolkit-specific scale
-          env = GDK_SCALE,2
+          env = GDK_SCALE,1
           env = XCURSOR_SIZE,32
           }
 
