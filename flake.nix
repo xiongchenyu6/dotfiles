@@ -277,13 +277,13 @@
             ssh-to-age
             editorconfig-checker
             mdbook
-            nixfmt
+            nixfmt-rfc-style
             statix
             dasel
             yq-go
             nixos-rebuild
             pulumi-bin
-            ruby_3_2
+            ruby_3_3
             nil
           ];
           shellHook = ''
