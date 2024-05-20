@@ -97,7 +97,7 @@
         ms-vscode.cpptools-themes
         twxs.cmake
         vscjava.vscode-java-debug
-        redhat.fabric8-analytics
+        #        redhat.fabric8-analytics
         vscjava.vscode-java-pack
         github.copilot-chat
         gitlab.gitlab-workflow
