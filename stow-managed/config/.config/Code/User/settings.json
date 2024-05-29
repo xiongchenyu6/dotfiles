@@ -79,5 +79,6 @@
     "security.promptForLocalFileProtocolHandling": false,
     "editor.formatOnSave": true,
     "notebook.formatOnSave.enabled": true,
-    "files.autoSave": "afterDelay"
+    "files.autoSave": "afterDelay",
+    "github.copilot.editor.enableAutoCompletions": true
 }

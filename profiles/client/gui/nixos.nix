@@ -2,7 +2,8 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
-_: {
+{ pkgs, ... }:
+{
   qt = {
     enable = true;
     # style = "adwaita";
@@ -27,12 +28,17 @@ _: {
     #   updater = { enable = true; };
     #   daemon = { enable = true; };
     # };
-    onedrive = { enable = true; };
+    onedrive = {
+      enable = true;
+    };
     usbmuxd.enable = true;
 
     usbguard = {
       enable = false;
-      IPCAllowedUsers = [ "root" "freeman.xiong" ];
+      IPCAllowedUsers = [
+        "root"
+        "freeman.xiong"
+      ];
       rules = ''
         allow id 1d6b:0002 serial "0000:00:14.0" name "xHCI Host Controller" hash "jEP/6WzviqdJ5VSeTUY8PatCNBKeaREvo2OqdplND/o=" parent-hash "rV9bfLq7c2eA4tYjVjwO4bxhm+y6GgZpl9J60L0fBkY=" with-interface 09:00:00 with-connect-type ""
         allow id 1d6b:0003 serial "0000:00:14.0" name "xHCI Host Controller" hash "prM+Jby/bFHCn2lNjQdAMbgc6tse3xVx+hZwjOPHSdQ=" parent-hash "rV9bfLq7c2eA4tYjVjwO4bxhm+y6GgZpl9J60L0fBkY=" with-interface 09:00:00 with-connect-type ""
@@ -50,25 +56,44 @@ _: {
         allow id 046d:c548 serial "" name "USB Receiver" hash "y0nMBYvoXYCGsR9c/YuFAQLlt1a63qgUaXo232qnT8Y=" parent-hash "vUGB8+Dvgr/rRNWxsolEfpt0Jsl38zWjzgMaEOWvVd4=" via-port "1-9.3" with-interface { 03:01:01 03:01:02 03:00:00 } with-connect-type "unknown"
       '';
     };
-    dbus = { enable = true; };
+    dbus = {
+      enable = true;
+    };
 
-    gnome = { gnome-keyring = { enable = true; }; };
+    gnome = {
+      gnome-keyring = {
+        enable = true;
+      };
+    };
 
-    openldap = { enable = true; };
+    openldap = {
+      enable = true;
+    };
 
     # ympd = { enable = true; };
   };
 
   programs = {
-    yubikey-touch-detector = { enable = true; };
-    steam = { enable = true; };
-    _1password = { enable = true; };
+    yubikey-touch-detector = {
+      enable = true;
+    };
+    steam = {
+      enable = true;
+      fontPackages = with pkgs; [ source-han-sans ];
+    };
+    _1password = {
+      enable = true;
+    };
     _1password-gui = {
       enable = true;
       polkitPolicyOwners = [ "freeman.xiong" ];
     };
-    nm-applet = { enable = true; };
-    wireshark = { enable = true; };
+    nm-applet = {
+      enable = true;
+    };
+    wireshark = {
+      enable = true;
+    };
     proxychains = {
       enable = true;
       proxies = {
