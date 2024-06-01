@@ -31,6 +31,8 @@
       solana-validator
       # expect mkpasswd conflict
       gpg-tui
+      sysz
+      qjournalctl
       ncdu
       lazygit
       lazydocker
