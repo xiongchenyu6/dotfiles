@@ -3,6 +3,7 @@
 *.pem filter=git-crypt diff=git-crypt
 *.password filter=git-crypt diff=git-crypt
 *.secret filter=git-crypt diff=git-crypt
+*.token filter=git-crypt diff=git-crypt
 .netrc filter=git-crypt diff=git-crypt
 id_rsa filter=git-crypt diff=git-crypt
 passwordFile filter=git-crypt diff=git-crypt
