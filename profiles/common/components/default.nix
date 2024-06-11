@@ -1,4 +1,5 @@
-{ ... }: {
+{ ... }:
+{
   imports = [
     ./kernel.nix
     ./network.nix
@@ -22,6 +23,7 @@
 
   services.resolved = {
     enable = true;
+    fallbackDns = [ "1.1.1.1" ];
     #llmnr = "resolve";
   };
 }

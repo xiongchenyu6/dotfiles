@@ -1,4 +1,5 @@
-{ pkgs, ... }: {
+{ pkgs, ... }:
+{
   # Home Manager needs a bit of information about you and the
   # paths it should manage.
 
@@ -41,6 +42,7 @@
       termshark
       mdcat
       lnav
+      lego
       ticker
       fast-ssh
       unityhub
@@ -54,17 +56,24 @@
         # opacity = 0.9;
         font = {
           size = 10;
-          normal = { family = "Hack Nerd Font"; };
-          bold = { family = "Hack Nerd Font"; };
-          italic = { family = "Hack Nerd Font"; };
-          bold_italic = { family = "Hack Nerd Font"; };
+          normal = {
+            family = "Hack Nerd Font";
+          };
+          bold = {
+            family = "Hack Nerd Font";
+          };
+          italic = {
+            family = "Hack Nerd Font";
+          };
+          bold_italic = {
+            family = "Hack Nerd Font";
+          };
         };
         cursor = {
           style = {
             shape = "Beam";
             blinking = "Always";
           };
-
         };
         keyboard = {
           bindings = [
@@ -84,13 +93,17 @@
       };
     };
 
-    noti = { enable = true; };
+    noti = {
+      enable = true;
+    };
 
     emacs = {
       enable = true;
-      extraPackages = epkgs:
+      extraPackages =
+        epkgs:
         with pkgs;
-        with epkgs; [
+        with epkgs;
+        [
           ace-link
           all-the-icons
           blamer

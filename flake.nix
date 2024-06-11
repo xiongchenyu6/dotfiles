@@ -1,14 +1,13 @@
 {
   # nixConfig.extra-experimental-features = "nix-command flakes";
 
-  description =
-    "Flake to manage my laptop, my nur and my hosts on Tencent Cloud";
+  description = "Flake to manage my laptop, my nur and my hosts on Tencent Cloud";
 
   inputs = {
 
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
 
-    nixpkgs-stable.url = "github:NixOS/nixpkgs/nixos-23.05";
+    nixpkgs-stable.url = "github:NixOS/nixpkgs/nixos-24.05";
 
     nixpkgs-master.url = "github:NixOS/nixpkgs/master";
 
@@ -20,7 +19,9 @@
 
     home-manager = {
       url = "github:nix-community/home-manager";
-      inputs = { nixpkgs.follows = "nixpkgs"; };
+      inputs = {
+        nixpkgs.follows = "nixpkgs";
+      };
     };
 
     darwin = {
@@ -58,7 +59,6 @@
       url = "github:cachix/pre-commit-hooks.nix";
       inputs = {
         nixpkgs.follows = "nixpkgs";
-        flake-utils.follows = "flake-utils";
       };
     };
 
@@ -90,7 +90,13 @@
         flake-utils.follows = "flake-utils";
       };
     };
-    vscode-server.url = "github:nix-community/nixos-vscode-server";
+    vscode-server = {
+      url = "github:nix-community/nixos-vscode-server";
+      inputs = {
+        nixpkgs.follows = "nixpkgs";
+        flake-utils.follows = "flake-utils";
+      };
+    };
 
     disko = {
       url = "github:nix-community/disko";
@@ -98,9 +104,26 @@
     };
   };
 
-  outputs = { self, nixpkgs, impermanence, nur, nixos-hardware, home-manager
-    , flake-parts, pre-commit-hooks, nix-alien, xiongchenyu6, sops-nix, foundry
-    , poetry2nix, nix-vscode-extensions, nixos-wsl, vscode-server, disko, ...
+  outputs =
+    {
+      self,
+      nixpkgs,
+      impermanence,
+      nur,
+      nixos-hardware,
+      home-manager,
+      flake-parts,
+      pre-commit-hooks,
+      nix-alien,
+      xiongchenyu6,
+      sops-nix,
+      foundry,
+      poetry2nix,
+      nix-vscode-extensions,
+      nixos-wsl,
+      vscode-server,
+      disko,
+      ...
     }@inputs:
     with nixpkgs;
     with lib;
@@ -116,8 +139,7 @@
 
       sharedOverlays = overlays ++ [
         (_: prev: {
-          lib = prev.lib.extend
-            (_lfinal: _lprev: { mine = import ./lib { inherit lib; }; });
+          lib = prev.lib.extend (_lfinal: _lprev: { mine = import ./lib { inherit lib; }; });
           # gnupg240 = nixpkgs-stable.legacyPackages.x86_64-linux.gnupg;
           # telegram-desktop =
           #   nixpkgs-stable.legacyPackages.x86_64-linux.telegram-desktop;
@@ -151,165 +173,179 @@
           home-manager.useUserPackages = true;
         })
       ];
-
-    in flake-parts.lib.mkFlake { inherit inputs; } {
+    in
+    flake-parts.lib.mkFlake { inherit inputs; } {
       imports = [ inputs.pre-commit-hooks.flakeModule ];
-      systems =
-        [ "x86_64-linux" "aarch64-linux" "aarch64-darwin" "x86_64-darwin" ];
+      systems = [
+        "x86_64-linux"
+        "aarch64-linux"
+        "aarch64-darwin"
+        "x86_64-darwin"
+      ];
 
-      perSystem = { pkgs, ... }: {
-        packages = {
-          iso = self.nixosConfigurations.iso.config.system.build.isoImage;
-          bootstrap =
-            self.nixosConfigurations.bootstrap.config.system.build.diskoImagesScript;
-        };
+      perSystem =
+        { pkgs, ... }:
+        {
+          packages = {
+            iso = self.nixosConfigurations.iso.config.system.build.isoImage;
+            bootstrap = self.nixosConfigurations.bootstrap.config.system.build.diskoImagesScript;
+          };
 
-        apps = let
-          type = "app";
-          getip = ''
-            usage() {
-              echo "Usage: $0 [-p] [-u user] hostname" >&2
-              echo "  -p        Get public IP address" >&2
-              echo "  -u user   SSH username (default: root)" >&2
-              exit 1
-            }
+          apps =
+            let
+              type = "app";
+              getip = ''
+                usage() {
+                  echo "Usage: $0 [-p] [-u user] hostname" >&2
+                  echo "  -p        Get public IP address" >&2
+                  echo "  -u user   SSH username (default: root)" >&2
+                  exit 1
+                }
 
-            public=false
-            user="root"
+                public=false
+                user="root"
 
-            while getopts "pu:" opt; do
-              case ''${opt} in
-                p)
-                  public=true
-                  ;;
-                u)
-                  user=$OPTARG
-                  ;;
-                \?)
-                  echo "Invalid option: -$OPTARG" >&2
+                while getopts "pu:" opt; do
+                  case ''${opt} in
+                    p)
+                      public=true
+                      ;;
+                    u)
+                      user=$OPTARG
+                      ;;
+                    \?)
+                      echo "Invalid option: -$OPTARG" >&2
+                      usage
+                      ;;
+                  esac
+                done
+
+                shift $((OPTIND -1))
+
+                if [ $# -ne 1 ]; then
                   usage
-                  ;;
-              esac
-            done
-
-            shift $((OPTIND -1))
-
-            if [ $# -ne 1 ]; then
-              usage
-            fi
-
-            host=$1
-            json_file=pulumi.json
-
-            if [ "$public" = true ]; then
-              ip_type="''${host}-public-ip"
-            else
-              ip_type="''${host}-private-ip"
-            fi
-
-            # Use jq to extract the IP address from the JSON file
-            echo ''${ip_type}
-            ip_address=$(jq -r .\"''${ip_type}\" $json_file)
-
-            if [ -z "$ip_address" ]; then
-              echo "Error: Could not find IP address for host '$host' in file '$json_file'"
-              exit 1
-            fi
-          '';
-        in {
-          ssh-to = {
-            inherit type;
-            program = builtins.toString (pkgs.writeShellScript "ssh-to" ''
-              ${getip}
-              zssh $NIX_SSHOPTS ''${user}@''${ip_address}
-            '');
-          };
-
-          deploy = {
-            inherit type;
-            program = builtins.toString (pkgs.writeShellScript "deploy" ''
-              ${getip}
-              nixos-rebuild --target-host ''${user}@''${ip_address} switch --use-remote-sudo --flake .\#''${host} --verbose
-            '');
-          };
-
-          dry-build = {
-            inherit type;
-            program = builtins.toString (pkgs.writeShellScript "dry-build" ''
-              ${getip}
-              nixos-rebuild --target-host ''${user}@''${ip_address} dry-build --use-remote-sudo --flake .\#''${host} --verbose
-            '');
-          };
-
-          updateHosts = {
-            inherit type;
-            program = builtins.toString (pkgs.writeShellScript "updateHosts" ''
-              set -x
-              hosts=$(jq -r 'keys[] | select(test("-private-ip$|-public-ip$"))' pulumi.json | sed -e 's/-private-ip//' -e 's/-public-ip//' | sort -u)
-
-              # Loop through each host
-              for host in $hosts
-              do
-                # Check if folder exists, if not create it
-                if [ ! -d "./hosts/$host" ]
-                then
-                  mkdir "./hosts/$host"
-                  ip_type="''${host}-private-ip"
-                  ip_address=$(jq -r .\"''${ip_type}\" pulumi.json)
-                  age_key=$(ssh-keyscan -t ed25519 $ip_address | ssh-to-age)
-
-                  # Append the value to the array
-                  yq e ".keys += [\"$age_key\"] | (.keys[-1] anchor=\"$host\")" -i ./.sops.yaml
-
-                  KEY=.creation_rules[0].key_groups[0].age
-                  VALUE="*$host"
-
-                  yq e "$KEY += [\"\"] | ($KEY[-1] alias=\"$host\")" -i ./.sops.yaml
-                  echo "Folder for host $host created"
                 fi
-              done
-            '');
-          };
-        };
-        devShells.default = pkgs.mkShell {
-          buildInputs = with pkgs; [
-            sops
-            ssh-to-age
-            editorconfig-checker
-            mdbook
-            nixfmt-rfc-style
-            statix
-            dasel
-            yq-go
-            nixos-rebuild
-            pulumi-bin
-            ruby_3_3
-            nil
-          ];
-          shellHook = ''
-            export NIX_SSHOPTS="-Y -p 2222 -i ~/.ssh/id_ed25519"
-            export PULUMI_CONFIG_PASSPHRASE=""
-          '';
-        };
 
-        pre-commit = {
-          check.enable = true;
-          settings = {
-            hooks = {
-              nixfmt.enable = false;
-              statix.enable = true;
-              deadnix.enable = true;
-              shellcheck.enable = true;
-              shfmt.enable = true;
+                host=$1
+                json_file=pulumi.json
+
+                if [ "$public" = true ]; then
+                  ip_type="''${host}-public-ip"
+                else
+                  ip_type="''${host}-private-ip"
+                fi
+
+                # Use jq to extract the IP address from the JSON file
+                echo ''${ip_type}
+                ip_address=$(jq -r .\"''${ip_type}\" $json_file)
+
+                if [ -z "$ip_address" ]; then
+                  echo "Error: Could not find IP address for host '$host' in file '$json_file'"
+                  exit 1
+                fi
+              '';
+            in
+            {
+              ssh-to = {
+                inherit type;
+                program = builtins.toString (
+                  pkgs.writeShellScript "ssh-to" ''
+                    ${getip}
+                    zssh $NIX_SSHOPTS ''${user}@''${ip_address}
+                  ''
+                );
+              };
+
+              deploy = {
+                inherit type;
+                program = builtins.toString (
+                  pkgs.writeShellScript "deploy" ''
+                    ${getip}
+                    nixos-rebuild --target-host ''${user}@''${ip_address} switch --use-remote-sudo --flake .\#''${host} --verbose
+                  ''
+                );
+              };
+
+              dry-build = {
+                inherit type;
+                program = builtins.toString (
+                  pkgs.writeShellScript "dry-build" ''
+                    ${getip}
+                    nixos-rebuild --target-host ''${user}@''${ip_address} dry-build --use-remote-sudo --flake .\#''${host} --verbose
+                  ''
+                );
+              };
+
+              updateHosts = {
+                inherit type;
+                program = builtins.toString (
+                  pkgs.writeShellScript "updateHosts" ''
+                    set -x
+                    hosts=$(jq -r 'keys[] | select(test("-private-ip$|-public-ip$"))' pulumi.json | sed -e 's/-private-ip//' -e 's/-public-ip//' | sort -u)
+
+                    # Loop through each host
+                    for host in $hosts
+                    do
+                      # Check if folder exists, if not create it
+                      if [ ! -d "./hosts/$host" ]
+                      then
+                        mkdir "./hosts/$host"
+                        ip_type="''${host}-private-ip"
+                        ip_address=$(jq -r .\"''${ip_type}\" pulumi.json)
+                        age_key=$(ssh-keyscan -t ed25519 $ip_address | ssh-to-age)
+
+                        # Append the value to the array
+                        yq e ".keys += [\"$age_key\"] | (.keys[-1] anchor=\"$host\")" -i ./.sops.yaml
+
+                        KEY=.creation_rules[0].key_groups[0].age
+                        VALUE="*$host"
+
+                        yq e "$KEY += [\"\"] | ($KEY[-1] alias=\"$host\")" -i ./.sops.yaml
+                        echo "Folder for host $host created"
+                      fi
+                    done
+                  ''
+                );
+              };
+            };
+          devShells.default = pkgs.mkShell {
+            buildInputs = with pkgs; [
+              sops
+              ssh-to-age
+              editorconfig-checker
+              mdbook
+              nixfmt-rfc-style
+              statix
+              dasel
+              yq-go
+              nixos-rebuild
+              pulumi-bin
+              ruby_3_3
+              nil
+            ];
+            shellHook = ''
+              export NIX_SSHOPTS="-Y -p 2222 -i ~/.ssh/id_ed25519"
+              export PULUMI_CONFIG_PASSPHRASE=""
+            '';
+          };
+
+          pre-commit = {
+            check.enable = true;
+            settings = {
+              hooks = {
+                nixfmt.enable = false;
+                statix.enable = true;
+                deadnix.enable = true;
+                shellcheck.enable = true;
+                shfmt.enable = true;
+              };
             };
           };
         };
-      };
 
       flake = {
         nixosConfigurations = {
-          iso =
-            nixpkgs.lib.nixosSystem { modules = [ ./hosts/nixos/iso.nix ]; };
+          iso = nixpkgs.lib.nixosSystem { modules = [ ./hosts/nixos/iso.nix ]; };
           bootstrap = nixpkgs.lib.nixosSystem {
             specialArgs = {
               profiles = {
@@ -378,10 +414,8 @@
           };
         };
         darwinConfigurations = {
-          XIONGS-MACBOOK-PRO =
-            darwin.lib.darwinSystem { modules = darwin-modules; };
+          XIONGS-MACBOOK-PRO = darwin.lib.darwinSystem { modules = darwin-modules; };
         };
       };
     };
 }
-
