@@ -1,4 +1,5 @@
-{ config, ... }: {
+{ config, ... }:
+{
   sops.secrets."acme/cloudflare" = {
     mode = "770";
     owner = "acme";
@@ -11,7 +12,7 @@
     acme = {
       acceptTerms = true;
       defaults = {
-        email = "xiongchenyu6@gmail.cam";
+        email = "xiongchenyu6@gmail.com";
         # postRun = ''
         #   ${pkgs.systemd}/bin/systemctl restart openldap
         # '';
@@ -23,7 +24,7 @@
           #          extraDomainNames = [ "*.inner.${config.networking.domain}" ];
           credentialsFile = config.sops.secrets."acme/cloudflare".path;
           # We don't need to wait for propagation since this is a local DNS server
-          dnsPropagationCheck = true;
+          dnsPropagationCheck = false;
           # reloadServices =
           #   [ "openldap.service" "postfix.service" "dovecot2.service" ];
           group = "nginx";
