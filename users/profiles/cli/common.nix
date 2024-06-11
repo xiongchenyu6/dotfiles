@@ -1,9 +1,14 @@
-{ config, pkgs, ... }: {
+{ config, pkgs, ... }:
+{
 
   xdg = {
     enable = true;
-    mime = { enable = true; };
-    mimeApps = { enable = true; };
+    mime = {
+      enable = true;
+    };
+    mimeApps = {
+      enable = true;
+    };
     userDirs = {
       enable = true;
       createDirectories = true;
@@ -25,16 +30,26 @@
         end_of_line = "lf";
         insert_final_newline = true;
       };
-      "*.{js,py}" = { charset = "utf-8"; };
-      "*.css" = { charset = "utf-8"; };
+      "*.{js,py}" = {
+        charset = "utf-8";
+      };
+      "*.css" = {
+        charset = "utf-8";
+      };
       "*.{py,cpp,c,h,proto}" = {
         indent_style = "space";
         indent_size = 4;
       };
 
-      "Makefile" = { indent_style = "tab"; };
-      "lib/**.js" = { indent_style = "space"; };
-      "{package.json,.travis.yml}" = { indent_style = "space"; };
+      "Makefile" = {
+        indent_style = "tab";
+      };
+      "lib/**.js" = {
+        indent_style = "space";
+      };
+      "{package.json,.travis.yml}" = {
+        indent_style = "space";
+      };
     };
   };
 
@@ -90,10 +105,18 @@
             dev = {
               namespace = {
                 active = "all";
-                favorites = [ "all" "kube-system" "default" ];
+                favorites = [
+                  "all"
+                  "kube-system"
+                  "default"
+                ];
               };
-              view = { active = "po"; };
-              featureGates = { nodeShell = true; };
+              view = {
+                active = "po";
+              };
+              featureGates = {
+                nodeShell = true;
+              };
               shellPod = {
                 namespace = "default";
                 limits = {
@@ -105,10 +128,18 @@
             office = {
               namespace = {
                 active = "all";
-                favorites = [ "all" "kube-system" "default" ];
+                favorites = [
+                  "all"
+                  "kube-system"
+                  "default"
+                ];
               };
-              view = { active = "po"; };
-              featureGates = { nodeShell = true; };
+              view = {
+                active = "po";
+              };
+              featureGates = {
+                nodeShell = true;
+              };
               shellPod = {
                 namespace = "default";
                 limits = {
@@ -120,10 +151,18 @@
             prod = {
               namespace = {
                 active = "all";
-                favorites = [ "all" "kube-system" "default" ];
+                favorites = [
+                  "all"
+                  "kube-system"
+                  "default"
+                ];
               };
-              view = { active = "po"; };
-              featureGates = { nodeShell = true; };
+              view = {
+                active = "po";
+              };
+              featureGates = {
+                nodeShell = true;
+              };
               shellPod = {
                 namespace = "default";
                 limits = {
@@ -138,14 +177,18 @@
     };
 
     # keychain = { enable = true; };
-    readline = { enable = true; };
+    readline = {
+      enable = true;
+    };
 
     atuin = {
       enable = true;
       settings = {
         auto_sync = true;
         sync_frequency = "1m";
-        sync = { records = true; };
+        sync = {
+          records = true;
+        };
         #sync_address = "https://atuin.inner.autolife-robotics.tech";
       };
     };
@@ -158,29 +201,37 @@
       compression = true;
       # tpm chips limitation
       extraConfig = ''
-        GSSAPIAuthentication yes
         PasswordAuthentication yes
         # PubkeyAcceptedKeyTypes rsa-sha2-256,ssh-ed25519,ecdsa-sha2-nistp256,ecdsa-sha2-nistp384,ecdsa-sha2-nistp521,ssh-rsa
       '';
     };
 
-    bat = { enable = true; };
+    bat = {
+      enable = true;
+    };
 
-    home-manager = { enable = true; };
+    home-manager = {
+      enable = true;
+    };
 
     direnv = {
       enable = true;
-      nix-direnv = { enable = true; };
+      nix-direnv = {
+        enable = true;
+      };
     };
 
-    git-cliff = { enable = true; };
+    git-cliff = {
+      enable = true;
+    };
 
     git = {
       enable = true;
-      lfs = { enable = true; };
+      lfs = {
+        enable = true;
+      };
       aliases = {
-        trash =
-          "!mkdir -p .trash && git ls-files --others --exclude-standard | xargs mv -f -t .trash";
+        trash = "!mkdir -p .trash && git ls-files --others --exclude-standard | xargs mv -f -t .trash";
         pushall = "!git remote | xargs -L1 git push --all";
         rank = "shortlog -s -n --no-merges";
       };
@@ -191,7 +242,9 @@
       };
 
       extraConfig = {
-        init = { defaultBranch = "main"; };
+        init = {
+          defaultBranch = "main";
+        };
         # [url "ssh://git@github.com/"]
         # 	insteadOf = https://github.com/
       };
@@ -246,9 +299,13 @@
       ];
     };
 
-    jq = { enable = true; };
+    jq = {
+      enable = true;
+    };
 
-    man = { enable = true; };
+    man = {
+      enable = true;
+    };
     gpg = {
       enable = true;
       settings = {
@@ -294,11 +351,17 @@
 
     # navi = { enable = true; };
 
-    zoxide = { enable = true; };
+    zoxide = {
+      enable = true;
+    };
 
-    pandoc = { enable = true; };
+    pandoc = {
+      enable = true;
+    };
 
-    sqls = { enable = true; };
+    sqls = {
+      enable = true;
+    };
 
     tmux = {
       enable = true;
@@ -318,15 +381,25 @@
         # right_format = "$all";
         # A continuation prompt that displays two filled in arrows
         continuation_prompt = "▶▶";
-        kubernetes = { disabled = false; };
+        kubernetes = {
+          disabled = false;
+        };
         # directory = {
         #   truncation_length = 20;
         #   truncation_symbol = "…/";
         # };
-        status = { disabled = false; };
-        time = { disabled = false; };
-        git_metrics = { disabled = false; };
-        sudo = { disabled = false; };
+        status = {
+          disabled = false;
+        };
+        time = {
+          disabled = false;
+        };
+        git_metrics = {
+          disabled = false;
+        };
+        sudo = {
+          disabled = false;
+        };
       };
     };
     broot = {
@@ -334,9 +407,13 @@
       settings = { };
     };
 
-    nix-index = { enable = true; };
+    nix-index = {
+      enable = true;
+    };
 
-    java = { enable = true; };
+    java = {
+      enable = true;
+    };
 
     topgrade = {
       enable = true;
@@ -347,17 +424,22 @@
         cleanup = true;
         git = {
           max_concurrency = 10;
-          repos = [ "~/workspace/*/" "~/git/*/" "~/private/*/" ];
+          repos = [
+            "~/workspace/*/"
+            "~/git/*/"
+            "~/private/*/"
+          ];
           arguments = "--rebase --autostash";
         };
         commands = {
-          "emacs straight" =
-            "emacs --batch -l ~/.config/emacs/early-init.el -f straight-pull-all";
+          "emacs straight" = "emacs --batch -l ~/.config/emacs/early-init.el -f straight-pull-all";
         };
       };
     };
 
-    yt-dlp = { enable = true; };
+    yt-dlp = {
+      enable = true;
+    };
 
     aria2 = {
       enable = true;
@@ -402,10 +484,14 @@
         file-allocation = "prealloc";
       };
     };
-    eza = { enable = true; };
+    eza = {
+      enable = true;
+    };
     gh = {
       enable = true;
-      settings = { git_protocal = "ssh"; };
+      settings = {
+        git_protocal = "ssh";
+      };
     };
 
     sbt = {
@@ -423,8 +509,12 @@
         }
       ];
     };
-    go = { enable = true; };
-    yazi = { enable = true; };
+    go = {
+      enable = true;
+    };
+    yazi = {
+      enable = true;
+    };
 
   };
   home = {
@@ -535,7 +625,9 @@
       };
     };
     stateVersion = "24.05";
-    keyboard = { options = [ "caps:ctrl_modifier" ]; };
+    keyboard = {
+      options = [ "caps:ctrl_modifier" ];
+    };
   };
 }
 # ocng
