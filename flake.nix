@@ -345,7 +345,7 @@
 
       flake = {
         nixosConfigurations = {
-          iso = nixpkgs.lib.nixosSystem { modules = [ ./hosts/nixos/iso.nix ]; };
+          iso = nixpkgs.lib.nixosSystem { modules = [ ./hosts/nixos/iso.nix ] ++ nixos-modules; };
           bootstrap = nixpkgs.lib.nixosSystem {
             specialArgs = {
               profiles = {
@@ -354,10 +354,9 @@
               mylib = import ./lib { inherit lib; };
             };
             modules = [
-              impermanence.nixosModules.impermanence
               disko.nixosModules.disko
               ./hosts/nixos/bootstrap.nix
-            ];
+            ] ++ nixos-modules;
           };
 
           mail = nixpkgs.lib.nixosSystem {
@@ -411,6 +410,16 @@
               nixos-hardware.nixosModules.lenovo-legion-16ach6h
               ./hosts/nixos/game
             ] ++ nixos-modules;
+          };
+          digitalocean = nixpkgs.lib.nixosSystem {
+            specialArgs = {
+              profiles = {
+                share = import ./profiles/shares.nix { inherit lib; };
+              };
+              mylib = import ./lib { inherit lib; };
+            };
+
+            modules = [ ./hosts/nixos/digitalocean.nix ] ++ nixos-modules;
           };
         };
         darwinConfigurations = {

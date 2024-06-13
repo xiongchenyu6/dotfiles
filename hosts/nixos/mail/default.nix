@@ -139,6 +139,13 @@ in
           23396
           21816
           33434
+          3478 # stun
+        ];
+        allowedUDPPortRanges = [
+          {
+            from = 49152;
+            to = 65535;
+          }
         ];
 
         interfaces.wg_mail.allowedTCPPorts = [ 2222 ];
@@ -273,6 +280,18 @@ in
     };
   services = {
     # avahi = { allowInterfaces = [ "wg_office" ]; };
+    coturn = {
+      enable = true;
+      realm = "mail.autolife-robotics.tech";
+      extraConfig = ''
+        user=self:KtcpGDpdkvM0vKrQ7DYtKdXTffJzt33iCGvsD6BA3hM
+        fingerprint
+        no-software-attribute
+      '';
+      lt-cred-mech = true;
+      no-cli = true;
+    };
+
     frp = {
       enable = true;
       role = "server";
