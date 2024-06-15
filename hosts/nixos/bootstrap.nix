@@ -1,7 +1,10 @@
 { config, lib, ... }:
 {
   # 我用的一些内核参数
-  imports = [ ../../users/root/nixos.nix ];
+  imports = [
+    ../../users/root/nixos.nix
+    ../../profiles/common/components/ssh-harden.nix
+  ];
 
   boot.kernelParams = [
     # 关闭内核的操作审计功能
@@ -65,6 +68,11 @@
     "virtio_console"
     "virtio_rng"
   ];
+  services = {
+    openssh = {
+      openFirewall = true;
+    };
+  };
 
   disko = {
     # 不要让 Disko 直接管理 NixOS 的 fileSystems.* 配置。
@@ -157,5 +165,4 @@
       "dmask=0077"
     ];
   };
-
 }

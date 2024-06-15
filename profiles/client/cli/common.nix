@@ -1,7 +1,8 @@
 # Edit this configuration file to define what should be installed on
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
-{ pkgs, ... }: {
+{ pkgs, ... }:
+{
   nix = {
     extraOptions = ''
       keep-outputs = true
@@ -33,9 +34,7 @@
       graphviz
       grpcurl
       #gotron-sdk
-      (kubernetes-helm-wrapped.override {
-        plugins = [ kubernetes-helmPlugins.helm-diff ];
-      })
+      (kubernetes-helm-wrapped.override { plugins = [ kubernetes-helmPlugins.helm-diff ]; })
       #helmify
       hey # http load generator
       kube-capacity
@@ -65,7 +64,7 @@
       nixd
       node2nix
       nodejs_latest
-      nodePackages."bash-language-server"
+      #      nodePackages."bash-language-server"
       nodePackages."prettier"
       nodePackages."typescript-language-server"
       nodePackages."yaml-language-server"
@@ -78,12 +77,13 @@
       popeye
       pgcli
       plantuml
-      (python3.withPackages (_:
-        with python3.pkgs; [
+      (python3.withPackages (
+        _: with python3.pkgs; [
           cmake-language-server
           orjson
           python-lsp-server
-        ]))
+        ]
+      ))
       qrencode
       ripgrep
       redis
