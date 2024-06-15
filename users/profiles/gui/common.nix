@@ -8,11 +8,11 @@
       appimage-run
       bootstrap-studio
       discord
-      #dropbox
+      doctl
       gdrive
       brave
       freerdp
-      #      jetbrains.idea-ultimate
+      # jetbrains.idea-ultimate
       jdt-language-server
       opera
       mattermost-desktop

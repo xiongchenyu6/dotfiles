@@ -40,9 +40,8 @@
   nixpkgs = {
     config = {
       permittedInsecurePackages = [
-        "nix-2.16.2"
         "openssl-1.1.1w"
-        "electron-19.1.9"
+        "electron-28.3.1"
       ];
     };
   };
