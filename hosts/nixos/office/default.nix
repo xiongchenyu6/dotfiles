@@ -50,7 +50,7 @@
     config = {
       permittedInsecurePackages = [
         "openssl-1.1.1w"
-        "electron-19.1.9"
+        "electron-28.3.1"
         "zotero-6.0.27"
       ];
       allowBroken = true;
@@ -117,7 +117,10 @@
           6696
           33434
         ];
-        interfaces.wg_mail.allowedTCPPorts = [ 2222 ];
+        interfaces.wg_mail.allowedTCPPorts = [
+          2222
+          8080
+        ];
         interfaces.wg_mail.allowedUDPPorts = [ 2222 ];
       };
 
