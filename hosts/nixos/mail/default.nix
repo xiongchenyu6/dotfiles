@@ -287,6 +287,7 @@ in
         user=self:KtcpGDpdkvM0vKrQ7DYtKdXTffJzt33iCGvsD6BA3hM
         fingerprint
         no-software-attribute
+        external_ip=43.156.66.157
       '';
       lt-cred-mech = true;
       no-cli = true;
