@@ -39,7 +39,7 @@ in
     ../../../profiles/common/apps/dn42
     ../../../profiles/common/apps/bird-inner.nix
     ../../../profiles/server/components
-    ../../../profiles/server/apps/log/promtail.nix
+    #../../../profiles/server/apps/log/promtail.nix
     # ../../../profiles/server/apps/admin/sssd.nix
     ../../../profiles/common/components/datadog-agent.nix
   ];
@@ -287,7 +287,6 @@ in
         user=self:KtcpGDpdkvM0vKrQ7DYtKdXTffJzt33iCGvsD6BA3hM
         fingerprint
         no-software-attribute
-        external_ip=43.156.66.157
       '';
       lt-cred-mech = true;
       no-cli = true;

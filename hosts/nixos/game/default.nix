@@ -41,7 +41,7 @@
     config = {
       permittedInsecurePackages = [
         "openssl-1.1.1w"
-        "electron-28.3.1"
+        "electron-28.3.3"
       ];
     };
   };
