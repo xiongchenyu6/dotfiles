@@ -18,7 +18,6 @@
       dig
       dive # docker image analyzer
       du-dust # du alternative
-      datree
       envsubst
       fd
       ffmpeg-full
@@ -30,7 +29,6 @@
       git-standup
       gitleaks
       weave-gitops
-      gopls
       graphviz
       grpcurl
       #gotron-sdk
@@ -52,13 +50,11 @@
       killall
       litecli
       vsc-leetcode-cli
-      maven
       mongosh
       mycli
       my2sql
       neofetch
       nix-du
-      nixfmt
       nix-index-update
       nixpacks
       nixd
@@ -75,7 +71,7 @@
       openssl
       pg-ldap-sync
       popeye
-      pgcli
+      #pgcli
       plantuml
       (python3.withPackages (
         _: with python3.pkgs; [
@@ -87,11 +83,8 @@
       qrencode
       ripgrep
       redis
-      rust-analyzer
       rustscan
-      rustc
       ruby
-      scalafmt
       shellcheck
       shfmt
       s3cmd
@@ -110,13 +103,11 @@
       # terraformer
       # tf2pulumi
       tealdeer
-      universal-ctags
       unzip
       wakatime
       wget
       yarn2nix
       yubikey-manager
-      zk-shell
     ];
   };
 }
