@@ -1,4 +1,5 @@
-{ profiles, config, ... }: {
+{ profiles, config, ... }:
+{
 
   sops.secrets = {
     "ssh/freeman.xiong/id_ed25519" = {
@@ -30,7 +31,9 @@
                     name = "xiongchenyu";
                     signingKey = "B99B8189C7C153F6";
                   };
-                  commit = { gpgSign = true; };
+                  commit = {
+                    gpgSign = true;
+                  };
                 };
               }
               {
@@ -41,7 +44,9 @@
                     name = "freeman.xiong";
                     signingKey = "03DFD2DEA7AF6693";
                   };
-                  commit = { gpgSign = true; };
+                  commit = {
+                    gpgSign = true;
+                  };
                 };
               }
             ];
@@ -50,13 +55,19 @@
               signByDefault = true;
             };
             extraConfig = {
-              push = { default = "current"; };
-              color = { ui = "auto"; };
+              push = {
+                default = "current";
+              };
+              color = {
+                ui = "auto";
+              };
               core = {
                 autocrlf = "input";
                 editor = "emacs";
               };
-              pull = { rebase = false; };
+              pull = {
+                rebase = false;
+              };
               user = {
                 name = "xiongchenyu";
                 email = "xiongchenyu6@gmail.com";
@@ -74,7 +85,8 @@
                 forwardX11Trusted = true;
               };
               "digital" = {
-                port = 2222;
+                # port = 2222;
+                hostname = "188.166.181.172";
                 user = "root";
               };
               "hbwallet-mysql" = {
@@ -83,7 +95,9 @@
               "git-code-commit.*.amazonaws.com" = {
                 user = "APKA6ECL465SWNEVSVPZ";
               };
-              "*.trontech.link" = { user = "freeman.xiong"; };
+              "*.trontech.link" = {
+                user = "freeman.xiong";
+              };
             };
           };
         };
