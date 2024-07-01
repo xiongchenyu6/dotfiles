@@ -1,7 +1,6 @@
 {
   profiles,
   config,
-  modulesPath,
   lib,
   pkgs,
   ...
@@ -9,18 +8,19 @@
 {
 
   imports = [
-    (modulesPath + "/virtualisation/digital-ocean-config.nix")
     ../../../users/root/nixos.nix
     ../../../users/freeman.xiong
     ../../../profiles/sops.nix
     ../../../profiles/core/nixos.nix
     ../../../profiles/server/components
+    ../../../profiles/common/components
     ../../../profiles/common/components/datadog-agent.nix
     ./hardware-configuration.nix
     ./networking.nix
   ];
 
   sops.secrets."wireguard/digital" = { };
+
   boot = {
     kernel = {
       sysctl = {

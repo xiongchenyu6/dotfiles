@@ -80,5 +80,6 @@
     "editor.formatOnSave": true,
     "notebook.formatOnSave.enabled": true,
     "files.autoSave": "afterDelay",
-    "github.copilot.editor.enableAutoCompletions": true
+    "github.copilot.editor.enableAutoCompletions": true,
+    "cmake.options.statusBarVisibility": "compact"
 }
