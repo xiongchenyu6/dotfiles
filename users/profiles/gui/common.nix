@@ -43,7 +43,6 @@
       mdcat
       lnav
       lego
-      ticker
       fast-ssh
       unityhub
     ];

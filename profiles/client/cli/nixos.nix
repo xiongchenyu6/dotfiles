@@ -1,7 +1,8 @@
 # Edit this configuration file to define what should be installed on
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
-{ pkgs, ... }: {
+{ pkgs, ... }:
+{
   imports = [ ./common.nix ];
 
   environment = {
@@ -17,18 +18,6 @@
       gnumake
       grafana-loki
       gparted
-      haskell-language-server
-      # (haskellPackages.ghcWithPackages (_:
-      #   with haskellPackages;
-      #   with pkgs.haskell.lib; [
-      #     apply-refact
-      #     cabal-install
-      #     hlint
-      #     stylish-haskell
-      #     hasktags
-      #     hoogle
-      #     hadolint
-      #   ]))
       imagemagick
       inetutils
       ifuse
@@ -53,7 +42,9 @@
   services.pcscd.enable = true;
 
   programs = {
-    npm = { enable = true; };
+    npm = {
+      enable = true;
+    };
     nix-ld.enable = true;
   };
 }
