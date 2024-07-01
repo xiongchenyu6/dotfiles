@@ -1,7 +1,7 @@
 { lib, modulesPath, ... }:
 {
   imports = [
-    ./base.nix
+    #    ./base.nix
     "${modulesPath}/virtualisation/digital-ocean-image.nix"
   ];
   boot.loader.grub.devices = lib.mkForce [ "/dev/vda" ];

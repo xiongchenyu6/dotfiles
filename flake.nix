@@ -324,7 +324,7 @@
               nil
             ];
             shellHook = ''
-              export NIX_SSHOPTS="-Y -p 2222 -i ~/.ssh/id_ed25519"
+              export NIX_SSHOPTS="-Y -p 22 -i ~/.ssh/id_ed25519"
               export PULUMI_CONFIG_PASSPHRASE=""
             '';
           };
@@ -411,6 +411,16 @@
               ./hosts/nixos/game
             ] ++ nixos-modules;
           };
+          digital = nixpkgs.lib.nixosSystem {
+            specialArgs = {
+              profiles = {
+                share = import ./profiles/shares.nix { inherit lib; };
+              };
+              mylib = import ./lib { inherit lib; };
+            };
+            modules = [ ./hosts/nixos/digital ] ++ nixos-modules;
+          };
+
           digitalocean = nixpkgs.lib.nixosSystem {
             specialArgs = {
               profiles = {
