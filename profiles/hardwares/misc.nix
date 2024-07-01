@@ -1,12 +1,17 @@
-{ pkgs, ... }: {
+{ pkgs, ... }:
+{
   services = {
     # Enable CUPS to print documents.
     gnome = {
       gnome-remote-desktop.enable = true;
       at-spi2-core.enable = true;
     };
-    printing = { enable = true; };
-    upower = { enable = true; };
+    printing = {
+      enable = true;
+    };
+    upower = {
+      enable = true;
+    };
     pipewire = {
       # systemWide = true;
       enable = true;
@@ -15,14 +20,22 @@
         enable = true;
         support32Bit = true;
       };
-      jack = { enable = true; };
-      pulse = { enable = true; };
+      jack = {
+        enable = true;
+      };
+      pulse = {
+        enable = true;
+      };
     };
 
     # If you want to use JACK applications, uncomment this
     #jack.enable = true;
-    udisks2 = { enable = true; };
-    blueman = { enable = true; };
+    udisks2 = {
+      enable = true;
+    };
+    blueman = {
+      enable = true;
+    };
 
     udev = {
       extraRules = ''
@@ -37,11 +50,17 @@
   };
 
   hardware = {
-    pulseaudio = { enable = false; };
-    bluetooth = { enable = true; };
-    opengl.enable = true;
+    pulseaudio = {
+      enable = false;
+    };
+    bluetooth = {
+      enable = true;
+    };
+    graphics.enable = true;
     ledger.enable = true;
   };
   # Enable sound with pipewire.
-  sound = { enable = true; };
+  sound = {
+    enable = true;
+  };
 }

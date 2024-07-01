@@ -324,7 +324,7 @@
               nil
             ];
             shellHook = ''
-              export NIX_SSHOPTS="-Y -p 22 -i ~/.ssh/id_ed25519"
+              export NIX_SSHOPTS="-Y -p 2222 -i ~/.ssh/id_ed25519"
               export PULUMI_CONFIG_PASSPHRASE=""
             '';
           };
