@@ -1,16 +1,26 @@
 # Edit this configuration file to define what should be installed on
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
-{ config, pkgs, lib, ... }: {
+{
+  config,
+  pkgs,
+  lib,
+  ...
+}:
+{
   imports = [ ./common.nix ];
 
-  qt = { enable = true; };
+  qt = {
+    enable = true;
+  };
 
   home = lib.mkIf pkgs.stdenv.isLinux {
     pointerCursor = {
       name = "Vanilla-DMZ";
       package = pkgs.vanilla-dmz;
-      x11 = { enable = true; };
+      x11 = {
+        enable = true;
+      };
       size = 32;
     };
     packages = with pkgs; [
@@ -39,7 +49,9 @@
       feishu-lark
       nil
     ];
-    sessionVariables = { STARSHIP_LOG = "error"; };
+    sessionVariables = {
+      STARSHIP_LOG = "error";
+    };
   };
 
   gtk = lib.mkIf pkgs.stdenv.isLinux {
@@ -66,7 +78,9 @@
     };
   };
   programs = lib.mkIf pkgs.stdenv.isLinux {
-    wofi = { enable = true; };
+    wofi = {
+      enable = true;
+    };
     # carapace.enable = true;
     # comodoro.enable = true;
     mpv.enable = true;
@@ -96,8 +110,8 @@
         ms-vscode.cpptools-extension-pack
         ms-vscode.cpptools-themes
         twxs.cmake
-        vscjava.vscode-java-debug
-        #        redhat.fabric8-analytics
+        # vscjava.vscode-java-debug
+        # redhat.fabric8-analytics
         vscjava.vscode-java-pack
         github.copilot-chat
         gitlab.gitlab-workflow
@@ -106,16 +120,17 @@
         golang.go
         visualstudioexptteam.vscodeintellicode
         ms-kubernetes-tools.vscode-kubernetes-tools
-        vscjava.vscode-maven
-        vscjava.vscode-java-dependency
+        # vscjava.vscode-maven
+        # vscjava.vscode-java-dependency
         ms-python.python
         redhat.java
         github.copilot # AI code completion
         ms-python.python
-        vscjava.vscode-java-test
+        # vscjava.vscode-java-test
         redhat.vscode-yaml
         ms-azuretools.vscode-docker
         ms-vscode.cpptools
+        ms-python.vscode-pylance
         lfs.vscode-emacs-friendly
         vadimcn.vscode-lldb
         jnoortheen.nix-ide
@@ -128,21 +143,33 @@
       package = pkgs.microsoft-edge-dev;
     };
 
-    password-store = { enable = true; };
+    password-store = {
+      enable = true;
+    };
   };
 
   services = lib.mkIf pkgs.stdenv.isLinux {
     # safeeyes.enable = true;
     #    ssh-agent.enable = true;
-    volnoti = { enable = true; };
+    volnoti = {
+      enable = true;
+    };
 
-    pasystray = { enable = true; };
-    poweralertd = { enable = true; };
+    pasystray = {
+      enable = true;
+    };
+    poweralertd = {
+      enable = true;
+    };
     emacs = {
       enable = true;
       defaultEditor = true;
-      client = { enable = true; };
-      socketActivation = { enable = false; };
+      client = {
+        enable = true;
+      };
+      socketActivation = {
+        enable = false;
+      };
     };
 
     dunst = {
@@ -169,7 +196,9 @@
       };
     };
 
-    blueman-applet = { enable = true; };
+    blueman-applet = {
+      enable = true;
+    };
     #    dropbox = { enable = true; };
     udiskie = {
       enable = true;
@@ -179,8 +208,9 @@
     };
     syncthing = {
       enable = true;
-      tray = { enable = true; };
+      tray = {
+        enable = true;
+      };
     };
   };
 }
-
