@@ -9,6 +9,15 @@ clojure/.clojure/.cpcache
 stow-managed/config/.config/**
 !stow-managed/config/.config/emacs
 stow-managed/config/.config/emacs/*
+!stow-managed/config/.config/albert/
+stow-managed/config/.config/albert/*
+!stow-managed/config/.config/albert/albert.conf
+!stow-managed/config/.config/albert/config
+!stow-managed/config/.config/albert/websearch/
+!stow-managed/config/.config/albert/websearch/engines.json
+!stow-managed/config/.config/albert/snippets/
+stow-managed/albert/.local/share/albert/
+!stow-managed/albert/.local/share/albert/websearch/
 !stow-managed/config/.config/nvim/
 !stow-managed/config/.config/nvim/**
 !stow-managed/config/.config/emacs/early-init.el 

@@ -26,6 +26,7 @@
     packages = with pkgs; [
       aspell
       aspellDicts.en
+      albert
       config.nur.repos.xddxdd.baidupcs-go
       config.nur.repos.xddxdd.qq
       config.nur.repos.xddxdd.wechat-uos
@@ -176,7 +177,7 @@
       enable = true;
       iconTheme = {
         name = "Adwaita";
-        package = pkgs.gnome.adwaita-icon-theme;
+        package = pkgs.adwaita-icon-theme;
         size = "16x16";
       };
       settings = {

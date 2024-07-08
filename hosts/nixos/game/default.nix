@@ -22,11 +22,10 @@
     ../../../profiles/auto-login/greetd.nix
     ../../../profiles/common/apps/dn42
     ../../../profiles/common/apps/bird-inner.nix
-    ../../../profiles/common/components/datadog-agent.nix
+    # ../../../profiles/common/components/datadog-agent.nix
   ];
 
   # sops.secrets."wireguard/office" = { };
-
   sops.secrets."wireguard/game" = { };
   # /nix /var /root /nix/persist
 
