@@ -41,7 +41,7 @@ in
     ../../../profiles/server/components
     #../../../profiles/server/apps/log/promtail.nix
     # ../../../profiles/server/apps/admin/sssd.nix
-    ../../../profiles/common/components/datadog-agent.nix
+    #    ../../../profiles/common/components/datadog-agent.nix
   ];
 
   boot.loader.grub.device = "/dev/vda";
@@ -78,6 +78,7 @@ in
   };
 
   sops.secrets."wireguard/mail" = { };
+
   # sops.age.keyFile = "/var/lib/sops-nix/key.txt";
   # sops.age.generateKey = true;
 
@@ -291,7 +292,6 @@ in
       lt-cred-mech = true;
       no-cli = true;
     };
-
     frp = {
       enable = true;
       role = "server";

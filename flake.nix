@@ -102,6 +102,11 @@
       url = "github:nix-community/disko";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    authentik-nix = {
+      url = "github:nix-community/authentik-nix/node-22";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.flake-parts.follows = "flake-parts";
+    };
   };
 
   outputs =
@@ -123,6 +128,7 @@
       nixos-wsl,
       vscode-server,
       disko,
+      authentik-nix,
       ...
     }@inputs:
     with nixpkgs;
@@ -368,6 +374,7 @@
             };
             modules = [
               #xiongchenyu6.nixosModules.oci-arm-host-capacity
+
               ./hosts/nixos/mail
             ] ++ nixos-modules;
           };
@@ -418,7 +425,10 @@
               };
               mylib = import ./lib { inherit lib; };
             };
-            modules = [ ./hosts/nixos/digital ] ++ nixos-modules;
+            modules = [
+              ./hosts/nixos/digital
+              authentik-nix.nixosModules.default
+            ] ++ nixos-modules;
           };
 
           digitalocean = nixpkgs.lib.nixosSystem {
