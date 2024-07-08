@@ -1,0 +1,114 @@
+[
+    {
+        "fallback": false,
+        "iconPath": ":amazon",
+        "id": "7403e6c5",
+        "name": "Amazon",
+        "trigger": "ama",
+        "url": "http://www.amazon.com/s/?field-keywords=%s"
+    },
+    {
+        "fallback": true,
+        "iconPath": ":gpt",
+        "id": "d0191431",
+        "name": "Chat GPT",
+        "trigger": "gpt",
+        "url": "https://chat.openai.com/?q=%s"
+    },
+    {
+        "fallback": false,
+        "iconPath": ":duckduckgo",
+        "id": "d9548b19",
+        "name": "DuckDuckGo",
+        "trigger": "dd",
+        "url": "https://duckduckgo.com/?q=%s"
+    },
+    {
+        "fallback": false,
+        "iconPath": ":ebay",
+        "id": "7d1fdfe4",
+        "name": "Ebay",
+        "trigger": "eb",
+        "url": "http://www.ebay.com/sch/i.html?_nkw=%s"
+    },
+    {
+        "fallback": true,
+        "iconPath": ":github",
+        "id": "b0921246",
+        "name": "GitHub",
+        "trigger": "gh",
+        "url": "https://github.com/search?utf8=✓&q=%s"
+    },
+    {
+        "fallback": true,
+        "iconPath": ":google",
+        "id": "38535331",
+        "name": "Google",
+        "trigger": "gg",
+        "url": "https://www.google.com/search?q=%s"
+    },
+    {
+        "fallback": true,
+        "iconPath": ":maps",
+        "id": "84988671",
+        "name": "Google Maps",
+        "trigger": "maps",
+        "url": "https://www.google.com/maps/search/%s/"
+    },
+    {
+        "fallback": false,
+        "iconPath": ":scholar",
+        "id": "ab92c22f",
+        "name": "Google Scholar",
+        "trigger": "scholar",
+        "url": "https://scholar.google.com/scholar?q=%s"
+    },
+    {
+        "fallback": true,
+        "iconPath": ":google_translate",
+        "id": "39546cf5",
+        "name": "Google Translate",
+        "trigger": "gt",
+        "url": "https://translate.google.com/?text=%s"
+    },
+    {
+        "fallback": true,
+        "iconPath": ":wolfram",
+        "id": "edd9629e",
+        "name": "Wolfram Alpha",
+        "trigger": "wa",
+        "url": "https://www.wolframalpha.com/input/?i=%s"
+    },
+    {
+        "fallback": true,
+        "iconPath": ":youtube",
+        "id": "ec81434d",
+        "name": "YouTube",
+        "trigger": "yt",
+        "url": "https://www.youtube.com/results?search_query=%s"
+    },
+    {
+        "fallback": true,
+        "iconPath": "file:/home/freeman.xiong/.local/share/albert/websearch/01c1f7df.png",
+        "id": "01c1f7df",
+        "name": "artifact",
+        "trigger": "af",
+        "url": "https://artifacthub.io/packages/search?ts_query_web=%s&sort=relevance&page=1"
+    },
+    {
+        "fallback": true,
+        "iconPath": "file:/home/freeman.xiong/.local/share/albert/websearch/759b507a.png",
+        "id": "759b507a",
+        "name": "home manager",
+        "trigger": "hm",
+        "url": "https://home-manager-options.extranix.com/?query=%s&release=master"
+    },
+    {
+        "fallback": true,
+        "iconPath": "file:/home/freeman.xiong/.local/share/albert/websearch/0f79e032.png",
+        "id": "0f79e032",
+        "name": "nixos",
+        "trigger": "nx",
+        "url": "https://search.nixos.org/options?channel=unstable&from=0&size=50&sort=relevance&type=packages&query=%s"
+    }
+]

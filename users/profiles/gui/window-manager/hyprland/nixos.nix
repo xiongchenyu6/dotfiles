@@ -199,7 +199,7 @@
             bind = $mainMod SHIFT, S, exec, ${screen-shot}/bin/screen-shot.sh
             bind = $mainMod, E, exec, microsoft-edge-dev --ozone-platform=wayland  --enable-wayland-ime 
             # bind = $mainMod SHIFT, c, exec, code --enable-features=UseOzonePlatform --ozone-platform=wayland  --enable-wayland-ime 
-            bind = $mainMod, X, exec, wofi --show drun -I -G
+            bind = $mainMod, X, exec, albert show
             bind = $mainMod, L, togglefloating,
             bind = $mainMod, V, pseudo, # dwindle
             bind = $mainMod, W, swapactiveworkspaces, eDP-1 HDMI-A-1
@@ -268,6 +268,7 @@
             submap = reset
 
             exec-once = hyprpaper
+            exec-once = albert
 
             windowrule=workspace 1 silent,alacritty
             # windowrule=workspace 3 silent,microsoft-edge-dev
