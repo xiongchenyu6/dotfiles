@@ -1,10 +1,11 @@
-{ pkgs, lib, ... }: {
+{ pkgs, lib, ... }:
+{
   services = {
     nginx = {
       enable = true;
       statusPage = true;
       recommendedProxySettings = true;
-      gitweb = { enable = true; };
+      #      gitweb = { enable = true; };
       additionalModules = [ pkgs.nginxModules.pam ];
     };
     prometheus.exporters = {

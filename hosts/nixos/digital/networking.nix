@@ -4,9 +4,9 @@
   # details gathered from the active system.
   networking = {
     nameservers = [ "8.8.8.8" ];
-    defaultGateway = "159.65.0.1";
+    defaultGateway = "206.189.144.1";
     defaultGateway6 = {
-      address = "";
+      address = "2400:6180:0:d0::1";
       interface = "eth0";
     };
     dhcpcd.enable = false;
@@ -15,7 +15,7 @@
       eth0 = {
         ipv4.addresses = [
           {
-            address = "159.65.8.132";
+            address = "206.189.156.130";
             prefixLength = 20;
           }
           {
@@ -25,19 +25,23 @@
         ];
         ipv6.addresses = [
           {
-            address = "fe80::3846:abff:feda:e04f";
+            address = "2400:6180:0:d0::1028:a001";
+            prefixLength = 64;
+          }
+          {
+            address = "fe80::b6:2dff:fed3:ceca";
             prefixLength = 64;
           }
         ];
         ipv4.routes = [
           {
-            address = "159.65.0.1";
+            address = "206.189.144.1";
             prefixLength = 32;
           }
         ];
         ipv6.routes = [
           {
-            address = "";
+            address = "2400:6180:0:d0::1";
             prefixLength = 128;
           }
         ];
@@ -51,7 +55,7 @@
         ];
         ipv6.addresses = [
           {
-            address = "fe80::3077:a5ff:fe99:bea3";
+            address = "fe80::b8da:96ff:fefa:ea8c";
             prefixLength = 64;
           }
         ];
@@ -59,7 +63,7 @@
     };
   };
   services.udev.extraRules = ''
-    ATTR{address}=="3a:46:ab:da:e0:4f", NAME="eth0"
-    ATTR{address}=="32:77:a5:99:be:a3", NAME="eth1"
+    ATTR{address}=="02:b6:2d:d3:ce:ca", NAME="eth0"
+    ATTR{address}=="ba:da:96:fa:ea:8c", NAME="eth1"
   '';
 }
