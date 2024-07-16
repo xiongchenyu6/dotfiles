@@ -178,7 +178,7 @@
       enable = true;
       role = "client";
       settings = {
-        serverAddr = "mail.work-robotics.tech";
+        serverAddr = "mail.work-robotics.me";
         serverPort = 7000;
         auth = {
           method = "token";

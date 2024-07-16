@@ -189,7 +189,7 @@
         sync = {
           records = true;
         };
-        #sync_address = "https://atuin.inner.work-robotics.tech";
+        #sync_address = "https://atuin.inner.work-robotics.me";
       };
     };
 
@@ -538,7 +538,7 @@
       };
       ".ldaprc" = {
         text = ''
-          URI     ldap://mail.work-robotics.tech
+          URI     ldap://mail.work-robotics.me
           BASE    dc=work-robotics,dc=tech
           SASL_MECH GSSAPI
           SASL_REALM work.TECH
