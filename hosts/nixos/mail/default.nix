@@ -283,7 +283,7 @@ in
     # avahi = { allowInterfaces = [ "wg_office" ]; };
     coturn = {
       enable = true;
-      realm = "mail.autolife-robotics.tech";
+      realm = "mail.autolife-robotics.me";
       extraConfig = ''
         user=self:KtcpGDpdkvM0vKrQ7DYtKdXTffJzt33iCGvsD6BA3hM
         fingerprint

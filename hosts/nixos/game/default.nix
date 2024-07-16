@@ -178,7 +178,7 @@
       enable = true;
       role = "client";
       settings = {
-        serverAddr = "mail.autolife-robotics.tech";
+        serverAddr = "mail.autolife-robotics.me";
         serverPort = 7000;
         auth = {
           method = "token";

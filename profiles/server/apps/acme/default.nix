@@ -1,4 +1,4 @@
-{ config, ... }:
+{ config, lib, ... }:
 {
   sops.secrets."acme/cloudflare" = {
     mode = "770";
@@ -18,13 +18,13 @@
         # '';
       };
       certs = {
-        "${config.networking.domain}" = {
+        "${config.networking.hostName}.autolife-robotics.me" = {
           dnsProvider = "cloudflare";
-          domain = "*.${config.networking.domain}";
-          #          extraDomainNames = [ "*.inner.${config.networking.domain}" ];
+          domain = "*.autolife-robotics.me";
+          # extraDomainNames = [ "*.${config.networking.domain}" ];
           credentialsFile = config.sops.secrets."acme/cloudflare".path;
           # We don't need to wait for propagation since this is a local DNS server
-          dnsPropagationCheck = false;
+          dnsPropagationCheck = true;
           # reloadServices =
           #   [ "openldap.service" "postfix.service" "dovecot2.service" ];
           group = "nginx";

@@ -1,10 +1,16 @@
-{ config, pkgs, ... }: {
+{ config, pkgs, ... }:
+{
   systemd = {
     services = {
       dns-rfc2136-conf = {
-        requiredBy =
-          [ "acme-${config.networking.domain}.service" "bind.service" ];
-        before = [ "acme-${config.networking.domain}.service" "bind.service" ];
+        requiredBy = [
+          "acme-${config.networking.domain}.service"
+          "bind.service"
+        ];
+        before = [
+          "acme-${config.networking.domain}.service"
+          "bind.service"
+        ];
         unitConfig = {
           ConditionPathExists = "!/var/lib/secrets/dnskeys.conf";
         };
@@ -12,7 +18,10 @@
           Type = "oneshot";
           UMask = 77;
         };
-        path = [ pkgs.bind pkgs.gnused ];
+        path = [
+          pkgs.bind
+          pkgs.gnused
+        ];
         script = ''
           mkdir -p /var/lib/secrets
           chown named:root /var/lib/secrets
@@ -48,9 +57,9 @@
           chown named:root /var/db/bind/
           cat > /var/db/bind/inner.${config.networking.domain} << EOF
           \$TTL 3600
-          \$ORIGIN inner.autolife-robotics.tech.
-          @         IN SOA    inner.autolife-robotics.tech. hostmaster.inner.autolife-robotics.tech. ( 1 3h 1h 1w 1d )
-          @         IN NS     ns1.inner.autolife-robotics.tech.
+          \$ORIGIN inner.autolife-robotics.me.
+          @         IN SOA    inner.autolife-robotics.me. hostmaster.inner.autolife-robotics.me. ( 1 3h 1h 1w 1d )
+          @         IN NS     ns1.inner.autolife-robotics.me.
           ns1       IN A      43.156.66.157
           *         IN A      43.156.66.157
           office    IN A      172.22.240.98
@@ -113,8 +122,7 @@
           name = "inner.${config.networking.domain}";
           master = true;
           file = "/var/db/bind/${name}";
-          extraConfig =
-            "allow-update { key rfc2136key.inner.${config.networking.domain}.; };";
+          extraConfig = "allow-update { key rfc2136key.inner.${config.networking.domain}.; };";
         }
         rec {
           name = "157.66.156.43.in-addr.arpa";
