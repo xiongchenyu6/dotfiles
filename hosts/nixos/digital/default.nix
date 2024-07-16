@@ -89,7 +89,7 @@
           enable = true;
           domain = "netbird.work-robotics.me";
           managementServer = "https://netbird.work-robotics.me";
-          #          settings = "{}";
+          settings = "{}";
         };
       };
     };

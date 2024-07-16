@@ -5,6 +5,7 @@ keys:
   - &mail age14z507h9qugzy65rpfgrzlrzkvyvwsqlwv7nguamaw4wx830hsu0qt23vx3
   - &digital age1zny9jmahvgqk5470fqdlemhzl5sx9ehcd8gjljg5cf66pqz7d3rqy7vmgg
   - &game age1pl2sjqa46kh3yl44yq4yldvxgfp7cq3jyhuq7rsedz4eedgrxvyqfka6mz
+  - &netbird age1h0kz88jacmt3zuxzs6p7naykk7zny5svsu595688yw3k8y2fgfvq30kthe
 
 creation_rules:
   - path_regex: secrets/[^/]+\.yaml$
@@ -14,6 +15,7 @@ creation_rules:
           - *mail
           - *digital
           - *game
+          - *netbird
         pgp:
           - *freeman
           - *xiong
