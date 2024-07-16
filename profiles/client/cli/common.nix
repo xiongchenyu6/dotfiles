@@ -53,14 +53,14 @@
       mongosh
       mycli
       my2sql
-      neofetch
+      # neofetch
       nix-du
       nix-index-update
       nixpacks
       nixd
       node2nix
       nodejs_latest
-      #      nodePackages."bash-language-server"
+      # nodePackages."bash-language-server"
       nodePackages."prettier"
       nodePackages."typescript-language-server"
       nodePackages."yaml-language-server"

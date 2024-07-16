@@ -19,8 +19,6 @@
     ./networking.nix
   ];
 
-  sops.secrets."wireguard/digital" = { };
-  sops.secrets."authentik/env" = { };
   boot = {
     kernel = {
       sysctl = {
@@ -66,25 +64,18 @@
     do-agent = {
       enable = true;
     };
-    # redis = {
-    #   servers.authentik = {
-    #     enable = lib.mkForce false;
-    #   };
-    # };
-
-    # authentik = {
-    #   enable = true;
-    #   createDatabase = false;
-    #   # The environmentFile needs to be on the target host!
-    #   # Best use something like sops-nix or agenix to manage it
-    #   environmentFile = config.sops.secrets."authentik/env".path;
-    #   settings = {
-    #     disable_startup_analytics = true;
-    #     avatars = "initials";
-    #   };
-    # };
     netbird = {
       server = {
+        signal = {
+          enable = true;
+          port = 6696;
+          enableNginx = true;
+          domain = "netbird.autolife-robotics.me";
+        };
+        coturn = {
+          enable = true;
+          port = 33434;
+        };
         dashboard = {
           enable = true;
           domain = "netbird.autolife-robotics.me";
