@@ -1,10 +1,11 @@
 { config, ... }:
 let
-  dbDomain = "autolife-robotics.tech";
+  dbDomain = "autolife-robotics.me";
   realm = "AUTOLIFE.TECH";
   dbSuffix = "dc=autolife-robotics,dc=tech";
   ldapRootUser = "admin";
-in {
+in
+{
   services = {
     sssd = {
       enable = true;

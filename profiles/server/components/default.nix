@@ -1,5 +1,9 @@
-{ pkgs, ... }: {
-  imports = [ ./backup ./security.nix ];
+{ pkgs, ... }:
+{
+  imports = [
+    ./backup
+    ./security.nix
+  ];
   environment = {
     systemPackages = with pkgs; [
       krb5Full
@@ -19,10 +23,11 @@
       settings = {
         banner = {
           color = "red";
-          command =
-            "${pkgs.nettools}/bin/hostname | ${pkgs.figlet}/bin/figlet -f slant";
+          command = "${pkgs.nettools}/bin/hostname | ${pkgs.figlet}/bin/figlet -f slant";
         };
-        uptime = { prefix = "Up"; };
+        uptime = {
+          prefix = "Up";
+        };
         last_run = { };
         service_status = {
           kdc = "kdc";
@@ -32,18 +37,26 @@
         s_s_l_certs = {
           sort_method = "manual";
           certs = {
-            "*.inner.autolife-robotics.tech" =
-              "/var/lib/acme/.autolife-robotics.tech/cert.pem";
-            "mail.autolife-robotics.tech" =
-              "/var/lib/acme/mail.autolife-robotics.tech/cert.pem";
+            "*.inner.autolife-robotics.me" = "/var/lib/acme/.autolife-robotics.me/cert.pem";
+            "mail.autolife-robotics.me" = "/var/lib/acme/mail.autolife-robotics.me/cert.pem";
           };
         };
         # weather = { loc = "Singapore,Singapore"; };
-        filesystems = { root = "/"; };
-        memory = { swap_pos = "beside"; };
-        last_login = { freeman = 2; };
+        filesystems = {
+          root = "/";
+        };
+        memory = {
+          swap_pos = "beside";
+        };
+        last_login = {
+          freeman = 2;
+        };
       };
     };
   };
-  systemd.services.rust-motd = { serviceConfig = { User = "acme"; }; };
+  systemd.services.rust-motd = {
+    serviceConfig = {
+      User = "acme";
+    };
+  };
 }

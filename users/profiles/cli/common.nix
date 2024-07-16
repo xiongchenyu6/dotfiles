@@ -189,7 +189,7 @@
         sync = {
           records = true;
         };
-        #sync_address = "https://atuin.inner.autolife-robotics.tech";
+        #sync_address = "https://atuin.inner.autolife-robotics.me";
       };
     };
 
@@ -538,7 +538,7 @@
       };
       ".ldaprc" = {
         text = ''
-          URI     ldap://mail.autolife-robotics.tech
+          URI     ldap://mail.autolife-robotics.me
           BASE    dc=autolife-robotics,dc=tech
           SASL_MECH GSSAPI
           SASL_REALM AUTOLIFE.TECH

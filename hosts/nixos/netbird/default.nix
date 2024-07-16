@@ -16,9 +16,14 @@
     ../../../profiles/common/components
     #../../../profiles/common/components/datadog-agent.nix
     ./hardware-configuration.nix
+    ../../../profiles/server/apps/proxy/nginx.nix
+    ../../../profiles/server/apps/acme
     ./networking.nix
   ];
-
+  sops.secrets."netbird/coturn/password" = {
+    owner = "turnserver";
+    group = "turnserver";
+  };
   boot = {
     kernel = {
       sysctl = {
@@ -43,14 +48,15 @@
       inherit hostName;
       firewall = {
         allowedTCPPorts = [
-          89
-          179
+          80
+          443
           2222
         ];
         allowedUDPPorts = [
           89
           179
           2222
+          3478
           6696
           33434
         ];
@@ -66,21 +72,38 @@
     };
     netbird = {
       server = {
+        enable = true;
+        enableNginx = true;
+        domain = "netbird.autolife-robotics.me";
+        management = {
+          enable = true;
+          domain = "netbird.autolife-robotics.me";
+          enableNginx = true;
+          oidcConfigEndpoint = "https://dev-bcz6ouy6jucjcnut.jp.auth0.com/.well-known/openid-configuration";
+          settings = lib.importJSON ../../../secrets/management.password;
+        };
         signal = {
           enable = true;
-          port = 6696;
           enableNginx = true;
           domain = "netbird.autolife-robotics.me";
         };
         coturn = {
           enable = true;
-          port = 33434;
+          useAcmeCertificates = true;
+          passwordFile = config.sops.secrets."netbird/coturn/password".path;
         };
         dashboard = {
           enable = true;
           domain = "netbird.autolife-robotics.me";
           managementServer = "https://netbird.autolife-robotics.me";
-          settings = "{}";
+          settings = {
+            AUTH_AUDIENCE = "https://dev-bcz6ouy6jucjcnut.jp.auth0.com/api/v2/";
+            AUTH_CLIENT_ID = "QoD48IZw95dyYkn7ZMCCGIDVYwGZ94X3";
+            AUTH_AUTHORITY = "https://dev-bcz6ouy6jucjcnut.jp.auth0.com/";
+            USE_AUTH0 = "true";
+            AUTH_SUPPORTED_SCOPES = "openid profile email offline_access api email_verified";
+            NETBIRD_TOKEN_SOURCE = "accessToken";
+          };
         };
       };
     };

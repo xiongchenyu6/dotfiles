@@ -425,10 +425,16 @@
               };
               mylib = import ./lib { inherit lib; };
             };
-            modules = [
-              ./hosts/nixos/digital
-              authentik-nix.nixosModules.default
-            ] ++ nixos-modules;
+            modules = [ ./hosts/nixos/digital ] ++ nixos-modules;
+          };
+          netbird = nixpkgs.lib.nixosSystem {
+            specialArgs = {
+              profiles = {
+                share = import ./profiles/shares.nix { inherit lib; };
+              };
+              mylib = import ./lib { inherit lib; };
+            };
+            modules = [ ./hosts/nixos/netbird ] ++ nixos-modules;
           };
 
           digitalocean = nixpkgs.lib.nixosSystem {

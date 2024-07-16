@@ -1,1 +1,5 @@
-{ networking = { domain = "autolife-robotics.tech"; }; }
+{
+  networking = {
+    domain = "autolife-robotics.tech";
+  };
+}

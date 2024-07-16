@@ -1,4 +1,5 @@
-{ config, pkgs, ... }: {
+{ config, pkgs, ... }:
+{
   sops.secrets = {
     "database/postgres/discourse" = {
       mode = "770";
@@ -40,7 +41,7 @@
       admin = {
         fullName = "freeman.xiong";
         username = "freeman";
-        email = "freeman@autolife-robotics.tech";
+        email = "freeman@autolife-robotics.me";
         passwordFile = config.sops.secrets."django/secret".path;
       };
       mail = {
