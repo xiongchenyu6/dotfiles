@@ -109,6 +109,7 @@
         allowedTCPPorts = [
           89
           179
+          8080
         ];
         allowedUDPPorts = [
           89
@@ -255,10 +256,10 @@
     };
 
   services = {
-    fprintd = {
-      enable = true;
-      #tod = { enable = true; };
-    };
+    # fprintd = {
+    #   enable = true;
+    #   #tod = { enable = true; };
+    # };
     datadog-agent = {
       checks = {
         btrfs = {
