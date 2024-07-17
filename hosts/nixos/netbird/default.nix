@@ -107,5 +107,15 @@
         };
       };
     };
+    nginx = {
+      virtualHosts = {
+        "${config.services.netbird.server.domain}" = {
+          forceSSL = true;
+          acmeRoot = null;
+          useACMEHost = "netbird.autolife-robotics.me";
+          kTLS = true;
+        };
+      };
+    };
   };
 }
