@@ -321,13 +321,13 @@
               editorconfig-checker
               mdbook
               nixfmt-rfc-style
+              nil
               statix
               dasel
               yq-go
               nixos-rebuild
               pulumi-bin
               ruby_3_3
-              nil
             ];
             shellHook = ''
               export NIX_SSHOPTS="-Y -p 2222 -i ~/.ssh/id_ed25519"
