@@ -14,7 +14,6 @@
       freerdp
       # jetbrains.idea-ultimate
       jdt-language-server
-      opera
       mattermost-desktop
       xournal # note taking for pdf
       slack
@@ -43,7 +42,6 @@
       mdcat
       lnav
       lego
-      fast-ssh
       unityhub
     ];
   };

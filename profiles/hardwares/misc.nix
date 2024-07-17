@@ -59,8 +59,4 @@
     graphics.enable = true;
     ledger.enable = true;
   };
-  # Enable sound with pipewire.
-  sound = {
-    enable = true;
-  };
 }
