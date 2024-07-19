@@ -14,7 +14,7 @@
     ../../../profiles/core/nixos.nix
     ../../../profiles/server/components
     ../../../profiles/common/components
-    #../../../profiles/common/components/datadog-agent.nix
+    ../../../profiles/common/components/datadog-agent.nix
     ./hardware-configuration.nix
     ../../../profiles/server/apps/proxy/nginx.nix
     ../../../profiles/server/apps/acme
@@ -67,10 +67,25 @@
     openssh = {
       openFirewall = true;
     };
+    frp = {
+      enable = true;
+      role = "server";
+      settings = {
+        bindPort = 7000;
+        bindAddr = "0.0.0.0";
+        kcpBindPort = 7000;
+        vhostHTTPPort = 8080;
+        auth = {
+          method = "token";
+          token = builtins.readFile ../../../secrets/frp.token;
+        };
+      };
+    };
     do-agent = {
       enable = true;
     };
     netbird = {
+      enable = true;
       server = {
         enable = true;
         enableNginx = true;
@@ -114,6 +129,17 @@
           acmeRoot = null;
           useACMEHost = "netbird.autolife-robotics.me";
           kTLS = true;
+        };
+        "vr-sg.autolife-robotics.me" = {
+          forceSSL = true;
+          acmeRoot = null;
+          useACMEHost = "netbird.autolife-robotics.me";
+          kTLS = true;
+          locations = {
+            "/" = {
+              proxyPass = "http://localhost:8080";
+            };
+          };
         };
       };
     };

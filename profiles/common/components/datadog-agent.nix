@@ -31,13 +31,6 @@
   services = {
     datadog-agent = {
       enable = true;
-      package = pkgs.datadog-agent.override {
-        buildGoModule = pkgs.buildGo121Module;
-        extraTags = [
-          "docker"
-          "podman"
-        ];
-      };
       hostname = config.networking.hostName;
       site = "datadoghq.com";
       apiKeyFile = config.sops.secrets."datadog".path;

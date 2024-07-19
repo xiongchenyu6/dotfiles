@@ -41,7 +41,7 @@ in
     ../../../profiles/server/components
     #../../../profiles/server/apps/log/promtail.nix
     # ../../../profiles/server/apps/admin/sssd.nix
-    #    ../../../profiles/common/components/datadog-agent.nix
+    ../../../profiles/common/components/datadog-agent.nix
   ];
 
   boot.loader.grub.device = "/dev/vda";
@@ -291,19 +291,6 @@ in
       '';
       lt-cred-mech = true;
       no-cli = true;
-    };
-    frp = {
-      enable = true;
-      role = "server";
-      settings = {
-        bindPort = 7000;
-        bindAddr = "0.0.0.0";
-        kcpBindPort = 7000;
-        auth = {
-          method = "token";
-          token = builtins.readFile ../../../secrets/frp.token;
-        };
-      };
     };
     v2ray = {
       enable = true;

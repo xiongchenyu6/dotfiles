@@ -1,2 +1,5 @@
 var:
-  last_build_time: 1721207258
+  last_build_time: 1721360455
+  previously_selected_schema: rime_ice
+  schema_access_time:
+    rime_ice: 1721320172
