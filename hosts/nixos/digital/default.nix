@@ -83,15 +83,5 @@
     #     avatars = "initials";
     #   };
     # };
-    netbird = {
-      server = {
-        dashboard = {
-          enable = true;
-          domain = "netbird.autolife-robotics.me";
-          managementServer = "https://netbird.autolife-robotics.me";
-          settings = "{}";
-        };
-      };
-    };
   };
 }

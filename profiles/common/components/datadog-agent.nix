@@ -52,8 +52,11 @@
         journald = ps: [ ps.psutil ];
       };
       checks = {
-        "journald.d" = {
+        "journald" = {
           logs = [ { type = "journald"; } ];
+        };
+        "nginx" = {
+          instances = [ { nginx_status_url = "http://localhost/nginx_status"; } ];
         };
       };
       extraConfig = {
