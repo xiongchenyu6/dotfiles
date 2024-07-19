@@ -18,6 +18,18 @@
         # '';
       };
       certs = {
+        ${config.networking.domain} = {
+          dnsProvider = "cloudflare";
+          domain = "*.work-robotics.tech";
+          # extraDomainNames = [ "*.${config.networking.domain}" ];
+          credentialsFile = config.sops.secrets."acme/cloudflare".path;
+          # We don't need to wait for propagation since this is a local DNS server
+          dnsPropagationCheck = true;
+          # reloadServices =
+          #   [ "openldap.service" "postfix.service" "dovecot2.service" ];
+          group = "nginx";
+        };
+
         "${config.networking.hostName}.work-robotics.me" = {
           dnsProvider = "cloudflare";
           domain = "*.work-robotics.me";
