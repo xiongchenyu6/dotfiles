@@ -49,7 +49,7 @@
       url = "github:xiongchenyu6/nur-packages";
       inputs = {
         nixpkgs.follows = "nixpkgs";
-        flake-utils.follows = "flake-utils";
+        flake-parts.follows = "flake-parts";
       };
     };
 

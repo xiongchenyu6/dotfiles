@@ -14,7 +14,7 @@
     ../../../profiles/core/nixos.nix
     ../../../profiles/server/components
     ../../../profiles/common/components
-    #../../../profiles/common/components/datadog-agent.nix
+    ../../../profiles/common/components/datadog-agent.nix
     ./hardware-configuration.nix
     ./networking.nix
   ];
