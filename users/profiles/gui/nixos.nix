@@ -111,23 +111,17 @@
         ms-vscode.cpptools-extension-pack
         ms-vscode.cpptools-themes
         twxs.cmake
-        # vscjava.vscode-java-debug
-        # redhat.fabric8-analytics
         vscjava.vscode-java-pack
-        github.copilot-chat
         gitlab.gitlab-workflow
         eamodio.gitlens
         weaveworks.vscode-gitops-tools
         golang.go
         visualstudioexptteam.vscodeintellicode
         ms-kubernetes-tools.vscode-kubernetes-tools
-        # vscjava.vscode-maven
-        # vscjava.vscode-java-dependency
         ms-python.python
         redhat.java
         github.copilot # AI code completion
         ms-python.python
-        # vscjava.vscode-java-test
         redhat.vscode-yaml
         ms-azuretools.vscode-docker
         ms-vscode.cpptools
@@ -136,6 +130,7 @@
         vadimcn.vscode-lldb
         jnoortheen.nix-ide
         mechatroner.rainbow-csv
+        rust-lang.rust-analyzer
       ];
     };
 

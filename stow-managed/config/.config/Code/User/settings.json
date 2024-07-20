@@ -1,6 +1,5 @@
 {
     "editor.inlineSuggest.enabled": true,
-    "redhat.telemetry.enabled": true,
     "git.autofetch": true,
     "github.copilot.advanced": {},
     "vs-kubernetes": {
@@ -67,9 +66,6 @@
     "stm32-for-vscode.makePath": "/run/current-system/sw/bin/make",
     "stm32-for-vscode.armToolchainPath": "/etc/profiles/per-user/freeman.xiong/bin",
     "nix.enableLanguageServer": true,
-    "workbench.editorAssociations": {
-        "*.epub": "default"
-    },
     "editor.largeFileOptimizations": false,
     "bitoAI.codeCompletion.enableAutoCompletion": true,
     "bitoAI.codeCompletion.enableCommentToCode": true,
@@ -81,5 +77,9 @@
     "notebook.formatOnSave.enabled": true,
     "files.autoSave": "afterDelay",
     "github.copilot.editor.enableAutoCompletions": true,
-    "cmake.options.statusBarVisibility": "compact"
+    "cmake.options.statusBarVisibility": "visible",
+    "nix.formatterPath": "nixfmt",
+    "[nix]": {
+        "editor.defaultFormatter": "brettm12345.nixfmt-vscode"
+    },
 }
