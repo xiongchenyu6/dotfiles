@@ -15,6 +15,7 @@
     ../../../profiles/server/components
     ../../../profiles/common/components
     ../../../profiles/common/components/datadog-agent.nix
+    ../../../profiles/server/apps/proxy/nginx.nix
     ./hardware-configuration.nix
     ./networking.nix
   ];
