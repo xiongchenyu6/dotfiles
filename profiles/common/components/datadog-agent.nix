@@ -1,4 +1,9 @@
-{ pkgs, config, ... }:
+{
+  pkgs,
+  config,
+  lib,
+  ...
+}:
 {
   sops.secrets."datadog" = {
     mode = "777";
@@ -6,8 +11,6 @@
     group = "datadog";
   };
 
-  # systemd.services.datadog-agent.serviceConfig.User = lib.mkForce "root";
-  # systemd.services.datadog-agent.serviceConfig.Group = lib.mkForce "root";
   users.users.datadog.extraGroups = [
     "systemd-journal"
     "networkmanager"
@@ -57,6 +60,20 @@
         };
         "nginx" = {
           instances = [ { nginx_status_url = "http://localhost/nginx_status"; } ];
+          logs = [
+            {
+              type = "file";
+              path = "/var/log/nginx/access.log";
+              service = "nginx";
+              source = "nginx";
+            }
+            {
+              type = "file";
+              path = "/var/log/nginx/error.log";
+              service = "nginx";
+              source = "nginx";
+            }
+          ];
         };
       };
       extraConfig = {
