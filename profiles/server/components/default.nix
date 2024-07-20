@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ pkgs, lib, ... }:
 {
   imports = [
     ./backup
@@ -16,6 +16,8 @@
       #step-cli
     ];
   };
+  systemd.services.datadog-agent.serviceConfig.User = lib.mkForce "root";
+  systemd.services.datadog-agent.serviceConfig.Group = lib.mkForce "root";
 
   programs = {
     rust-motd = {
