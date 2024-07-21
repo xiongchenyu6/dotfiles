@@ -131,6 +131,7 @@
         jnoortheen.nix-ide
         mechatroner.rainbow-csv
         rust-lang.rust-analyzer
+        tamasfe.even-better-toml
       ];
     };
 
