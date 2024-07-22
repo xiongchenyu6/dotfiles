@@ -71,10 +71,9 @@
       };
     };
 
-    # extraModprobeConfig = ''
-    #   options snd-intel-dspcfg dsp_driver=1
-    #   options kvm_intel nested=1
-    # '';
+    extraModprobeConfig = ''
+      options snd-intel-dspcfg dsp_driver=1
+    '';
 
     tmp.useTmpfs = lib.mkDefault true;
 

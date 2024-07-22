@@ -13,9 +13,8 @@
       enable = true;
     };
     pipewire = {
-      # systemWide = true;
+      systemWide = true;
       enable = true;
-      audio.enable = true;
       alsa = {
         enable = true;
         support32Bit = true;
