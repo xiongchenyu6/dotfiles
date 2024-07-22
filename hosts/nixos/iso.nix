@@ -1,6 +1,12 @@
 # This module defines a small NixOS installation CD. It does not
 # contain any graphical stuff.
-{ pkgs, lib, modulesPath, ... }: {
+{
+  pkgs,
+  lib,
+  modulesPath,
+  ...
+}:
+{
   imports = [
     # Currently fails to build due to ZFS incompatibility with bcachefs
     #<nixpkgs/nixos/modules/installer/cd-dvd/installation-cd-minimal.nix>
