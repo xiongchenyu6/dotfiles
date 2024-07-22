@@ -1,8 +1,17 @@
 # Edit this configuration file to define what should be installed on
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
-{ pkgs, config, profiles, lib, ... }: {
-  sops.secrets."user/freeman/pass" = { neededForUsers = true; };
+{
+  pkgs,
+  config,
+  profiles,
+  lib,
+  ...
+}:
+{
+  sops.secrets."user/freeman/pass" = {
+    neededForUsers = true;
+  };
   imports = [ ./private-info.nix ];
   users = {
     users = {
@@ -11,12 +20,10 @@
         description = "freeman.xiong";
         group = "users";
 
-        openssh.authorizedKeys.keys =
-          [ profiles.share.users-dict."freeman.xiong".public-key ];
+        openssh.authorizedKeys.keys = [ profiles.share.users-dict."freeman.xiong".public-key ];
         shell = pkgs.zsh;
 
-        hashedPasswordFile =
-          lib.mkDefault config.sops.secrets."user/freeman/pass".path;
+        hashedPasswordFile = lib.mkDefault config.sops.secrets."user/freeman/pass".path;
         extraGroups = [
           "networkmanager"
           "wheel"
@@ -34,10 +41,12 @@
           "libvirtd"
           "pulse"
           "pipewire"
-          "systemd-journal"
+          ",systemd-journal"
         ];
       };
-      "xiongchenyu6" = { isNormalUser = true; };
+      "xiongchenyu6" = {
+        isNormalUser = true;
+      };
     };
   };
   programs.zsh.enable = true;
@@ -45,7 +54,10 @@
   home-manager = {
     users = {
       "freeman.xiong" = {
-        imports = [ ../profiles/cli/common.nix ../profiles/cli/shell/zsh.nix ];
+        imports = [
+          ../profiles/cli/common.nix
+          ../profiles/cli/shell/zsh.nix
+        ];
       };
     };
   };
