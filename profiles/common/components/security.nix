@@ -1,4 +1,5 @@
-{ profiles, config, ... }: {
+{ profiles, config, ... }:
+{
   sops.secrets."oath/seed" = { };
   security = {
     audit = {
@@ -9,8 +10,8 @@
       ];
     };
     auditd.enable = true;
-    
-    rtkit = { enable = true; };
+
+    #rtkit = { enable = true; };
     sudo = {
       enable = true;
       # wheelNeedsPassword = false;
@@ -20,7 +21,9 @@
       # };
     };
 
-    acme = { acceptTerms = true; };
+    acme = {
+      acceptTerms = true;
+    };
     polkit.enable = true;
     pam = {
       krb5.enable = false;
@@ -30,6 +33,8 @@
         window = 30;
       };
     };
-    pki = { certificates = map (x: x.cert) profiles.share.root-cas; };
+    pki = {
+      certificates = map (x: x.cert) profiles.share.root-cas;
+    };
   };
 }

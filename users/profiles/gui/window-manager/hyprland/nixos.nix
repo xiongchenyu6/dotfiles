@@ -249,9 +249,10 @@
             bindm = $mainMod, mouse:273, resizewindow
 
             # volumn
-            binde=, XF86AudioRaiseVolume, exec, amixer sset Master 5%+
-            binde=, XF86AudioLowerVolume, exec, amixer sset Master 5%-
-            bind=, XF86AudioMute, exec, amixer -D pipewire set Master 1+ toggle
+            binde=, XF86AudioRaiseVolume, exec, wpctl set-volume -l 1.5 @DEFAULT_AUDIO_SINK@ 5%+
+            binde=, XF86AudioLowerVolume, exec, wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-
+            bind=, XF86AudioMute, exec, wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle
+            bind=, XF86AudioMicMute, exec, wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle
 
             # brightness
             binde=, XF86MonBrightnessUp, exec, brightnessctl s +5%
