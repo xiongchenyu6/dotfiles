@@ -9,6 +9,8 @@
 * My Configuration
 ** TODO Env
 #+begin_src emacs-lisp
+(setq warning-minimum-level :emergency)
+
 (setenv "XDG_SESSION_TYPE" "wayland")
 (fset 'epg-wait-for-status 'ignore)
 ;; (setenv "LSP_USE_PLISTS" "true")

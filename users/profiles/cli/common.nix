@@ -56,7 +56,7 @@
   services = {
     gpg-agent = {
       enable = true;
-      enableExtraSocket = true;
+      # enableExtraSocket = true;
       # extraConfig = ''
       #   allow-emacs-pinentry
       #   allow-loopback-pinentry
