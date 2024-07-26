@@ -85,18 +85,18 @@
                 forwardX11Trusted = true;
               };
               "digital" = {
-                # port = 2222;
-                hostname = "188.166.181.172";
+                port = 2222;
+                hostname = "206.189.156.130";
                 user = "root";
+                forwardX11 = true;
+                forwardX11Trusted = true;
               };
-              "hbwallet-mysql" = {
-                hostname = "hbwallet-mysql.inner.trontech.link";
-              };
-              "git-code-commit.*.amazonaws.com" = {
-                user = "APKA6ECL465SWNEVSVPZ";
-              };
-              "*.trontech.link" = {
-                user = "freeman.xiong";
+              "netbird" = {
+                port = 2222;
+                hostname = "167.172.91.53";
+                user = "root";
+                forwardX11 = true;
+                forwardX11Trusted = true;
               };
             };
           };
