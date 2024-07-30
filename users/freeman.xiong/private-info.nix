@@ -98,6 +98,27 @@
                 forwardX11 = true;
                 forwardX11Trusted = true;
               };
+              "heco-nginx" = {
+                hostname = "13.215.208.252";
+                user = "root";
+                forwardX11 = true;
+                forwardX11Trusted = true;
+              };
+              "heco-k3s-office-main" = {
+                hostname = "10.16.1.164";
+                user = "root";
+                forwardX11 = true;
+                forwardX11Trusted = true;
+                proxyJump = "heco-nginx";
+              };
+              "heco-netbird" = {
+                hostname = "10.16.1.159";
+                user = "root";
+                forwardX11 = true;
+                forwardX11Trusted = true;
+                proxyJump = "heco-nginx";
+              };
+
             };
           };
         };
