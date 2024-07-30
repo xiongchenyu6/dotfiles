@@ -75,5 +75,6 @@
     "bitoAI.codeCompletion.enableAutoCompletion": true,
     "bitoAI.codeCompletion.enableCommentToCode": true,
     "editor.inlineSuggest.showToolbar": "onHover",
-    "workbench.colorTheme": "Default Dark Modern"
+    "workbench.colorTheme": "Default Dark Modern",
+    "github.copilot.preferredAccount": "xiongchenyu6"
 }
