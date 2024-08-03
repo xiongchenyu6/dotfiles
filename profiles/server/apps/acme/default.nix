@@ -13,33 +13,21 @@
       acceptTerms = true;
       defaults = {
         email = "xiongchenyu6@gmail.com";
+        dnsProvider = "cloudflare";
+        dnsResolver = "1.1.1.1:53";
+        # dnsPropagationCheck = false;
+        credentialsFile = config.sops.secrets."acme/cloudflare".path;
+        group = "nginx";
         # postRun = ''
         #   ${pkgs.systemd}/bin/systemctl restart openldap
         # '';
       };
       certs = {
         ${config.networking.domain} = {
-          dnsProvider = "cloudflare";
           domain = "*.autolife-robotics.tech";
-          # extraDomainNames = [ "*.${config.networking.domain}" ];
-          credentialsFile = config.sops.secrets."acme/cloudflare".path;
-          # We don't need to wait for propagation since this is a local DNS server
-          dnsPropagationCheck = true;
-          # reloadServices =
-          #   [ "openldap.service" "postfix.service" "dovecot2.service" ];
-          group = "nginx";
         };
-
         "${config.networking.hostName}.autolife-robotics.me" = {
-          dnsProvider = "cloudflare";
           domain = "*.autolife-robotics.me";
-          # extraDomainNames = [ "*.${config.networking.domain}" ];
-          credentialsFile = config.sops.secrets."acme/cloudflare".path;
-          # We don't need to wait for propagation since this is a local DNS server
-          dnsPropagationCheck = true;
-          # reloadServices =
-          #   [ "openldap.service" "postfix.service" "dovecot2.service" ];
-          group = "nginx";
         };
       };
     };

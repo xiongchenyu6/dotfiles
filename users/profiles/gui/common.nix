@@ -111,6 +111,7 @@
           cape
           corfu
           copilot-el
+          copilot-chat
           combobulate
           citeproc
           dockerfile-mode

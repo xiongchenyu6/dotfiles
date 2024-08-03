@@ -47,7 +47,7 @@
       # kdePackages.wayqt
       # kdePackages.qtstyleplugin-kvantum
       libsForQt5.oxygen-icons
-      feishu-lark
+      feishu
       nil
     ];
     sessionVariables = {
@@ -132,6 +132,9 @@
         mechatroner.rainbow-csv
         rust-lang.rust-analyzer
         tamasfe.even-better-toml
+        github.remotehub
+        hediet.vscode-drawio
+        ms-vscode.vscode-speech
       ];
     };
 
