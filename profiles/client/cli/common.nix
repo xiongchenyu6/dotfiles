@@ -53,8 +53,8 @@
       mongosh
       mycli
       my2sql
-      # neofetch
-      nix-du
+      neofetch
+      # nix-du
       nix-index-update
       nixpacks
       nixd
@@ -71,7 +71,7 @@
       openssl
       pg-ldap-sync
       popeye
-      #pgcli
+      pgcli
       plantuml
       (python3.withPackages (
         _: with python3.pkgs; [

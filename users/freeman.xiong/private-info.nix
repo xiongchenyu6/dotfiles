@@ -99,7 +99,7 @@
                 forwardX11Trusted = true;
               };
               "heco-nginx" = {
-                hostname = "13.215.208.252";
+                hostname = "13.215.48.98";
                 user = "root";
                 forwardX11 = true;
                 forwardX11Trusted = true;
@@ -112,7 +112,7 @@
                 proxyJump = "heco-nginx";
               };
               "heco-netbird" = {
-                hostname = "10.16.1.159";
+                hostname = "13.215.48.98";
                 user = "root";
                 forwardX11 = true;
                 forwardX11Trusted = true;
