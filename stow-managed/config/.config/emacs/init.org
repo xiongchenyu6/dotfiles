@@ -696,6 +696,15 @@ is available."
   :init
   (add-hook 'org-mode-hook #'org-ai-mode))
 #+end_src
+
+**** copilot-chat
+#+begin_src emacs-lisp
+(use-package copilot-chat
+  :custom
+  (copilot-chat-frontend 'markdown)
+)
+#+end_src
+
 ** Lang
 *** completion
 #+begin_src emacs-lisp
