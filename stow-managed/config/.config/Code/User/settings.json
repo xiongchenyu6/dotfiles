@@ -76,6 +76,9 @@
     "editor.formatOnSave": true,
     "notebook.formatOnSave.enabled": true,
     "files.autoSave": "afterDelay",
+    "files.associations": {
+        "*.json": "jsonc"
+    },
     "github.copilot.editor.enableAutoCompletions": true,
     "cmake.options.statusBarVisibility": "visible",
     "nix.formatterPath": "nixfmt",
@@ -86,4 +89,5 @@
         "workbench.action.tasks.configureTaskRunner",
         "workbench.action.tasks.runTask"
     ],
+    "cmake.showConfigureWithDebuggerNotification": false,
 }
