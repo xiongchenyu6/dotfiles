@@ -311,7 +311,6 @@
       settings = {
         #keyserver = "hkps://keyserver.ubuntu.com";
         fixed-list-mode = true;
-        keyid-format = "0xlong";
         # cert-digest-algo = "SHA256";
         # personal-digest-preferences = "SHA256";
         no-comments = true;
@@ -319,7 +318,7 @@
         no-greeting = true;
         list-options = "show-uid-validity";
         verify-options = "show-uid-validity";
-        with-fingerprint = true;
+        with-fingerprint = false;
         require-cross-certification = true;
         no-symkey-cache = true;
         use-agent = true;

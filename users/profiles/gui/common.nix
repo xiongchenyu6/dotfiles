@@ -24,7 +24,7 @@
       ytfzf
       usbutils
       stlink-gui
-      #stm32cubemx
+      stm32cubemx
       gcc-arm-embedded
       microsoft-edge-dev
       vault
@@ -32,7 +32,6 @@
       # expect mkpasswd conflict
       gpg-tui
       sysz
-      qjournalctl
       ncdu
       lazygit
       lazydocker
