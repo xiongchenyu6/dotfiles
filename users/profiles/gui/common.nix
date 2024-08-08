@@ -31,6 +31,7 @@
       solana-validator
       # expect mkpasswd conflict
       gpg-tui
+      git-town
       sysz
       qjournalctl
       ncdu

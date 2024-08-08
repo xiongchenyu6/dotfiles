@@ -1,12 +1,17 @@
 # Edit this configuration file to define what should be installed on
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
-{ pkgs, ... }: {
+{ pkgs, ... }:
+{
   programs = {
     zsh = {
       enable = true;
-      autosuggestions = { enable = true; };
-      syntaxHighlighting = { enable = true; };
+      autosuggestions = {
+        enable = true;
+      };
+      syntaxHighlighting = {
+        enable = true;
+      };
       enableBashCompletion = true;
 
       shellAliases = {
@@ -35,7 +40,6 @@
           "git"
           "git-flow"
           "git-auto-fetch"
-          "git-hubflow"
           "github"
           "gitignore"
           "gpg-agent"
@@ -76,7 +80,9 @@
     };
     git = {
       enable = true;
-      lfs = { enable = true; };
+      lfs = {
+        enable = true;
+      };
     };
     tmux = {
       enable = true;
@@ -94,7 +100,9 @@
         right_format = "$all";
         # A continuation prompt that displays two filled in arrows
         continuation_prompt = "▶▶";
-        kubernetes = { disabled = false; };
+        kubernetes = {
+          disabled = false;
+        };
         directory = {
           truncation_length = 20;
           truncation_symbol = "…/";
