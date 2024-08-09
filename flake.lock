@@ -463,11 +463,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1723167111,
-        "narHash": "sha256-Gy1Vg2vinFIpH2vR/FCr1JmwZ7F+BmOdj3pt3R6BhjA=",
+        "lastModified": 1723253488,
+        "narHash": "sha256-VGwyu/8zoCYdB1e4zl0xjHdbp0LISMueC5rmzhD9Fws=",
         "owner": "nix-community",
         "repo": "nix-vscode-extensions",
-        "rev": "f8317703579b49c5cc974b5c32a2c6007a63498a",
+        "rev": "cb5f0076c97bcdd4d0ecdb945f4816784fab4fa7",
         "type": "github"
       },
       "original": {
@@ -519,11 +519,11 @@
     },
     "nixpkgs": {
       "locked": {
-        "lastModified": 1722813957,
-        "narHash": "sha256-IAoYyYnED7P8zrBFMnmp7ydaJfwTnwcnqxUElC1I26Y=",
+        "lastModified": 1722995383,
+        "narHash": "sha256-UzuXo7ZM8ZK0SkWFhHocKkLSGQPHS4JxaE1jvVR4fUo=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "cb9a96f23c491c081b38eab96d22fa958043c9fa",
+        "rev": "957d95fc8b9bf1eb60d43f8d2eba352b71bbf2be",
         "type": "github"
       },
       "original": {
@@ -579,11 +579,11 @@
     },
     "nur": {
       "locked": {
-        "lastModified": 1723174965,
-        "narHash": "sha256-sW52wq91+bqITYQFpJBpEg+zcVosY6MSOb1vuaM1Aok=",
+        "lastModified": 1723258053,
+        "narHash": "sha256-qvy2VOu1x0SvLcFvCAwFLVTIXMYjN/q0apJIPl4phww=",
         "owner": "nix-community",
         "repo": "NUR",
-        "rev": "f40b06b57eb01142d375eb0de1ec2defa0fd0b77",
+        "rev": "fcff105bed3ecf62c170f4c28650e15a887cc9f8",
         "type": "github"
       },
       "original": {
@@ -672,11 +672,11 @@
         "nixpkgs-stable": "nixpkgs-stable"
       },
       "locked": {
-        "lastModified": 1723056346,
-        "narHash": "sha256-YpzywjTAUHRRHcO8zz9x2gYqJ0JmZlcB9+RaUvD89qM=",
+        "lastModified": 1723202784,
+        "narHash": "sha256-qbhjc/NEGaDbyy0ucycubq4N3//gDFFH3DOmp1D3u1Q=",
         "owner": "cachix",
         "repo": "pre-commit-hooks.nix",
-        "rev": "3c977f1c9930f54066c085305b4b2291385e7a73",
+        "rev": "c7012d0c18567c889b948781bc74a501e92275d1",
         "type": "github"
       },
       "original": {
@@ -928,11 +928,11 @@
         "oci-arm-host-capacity-src": "oci-arm-host-capacity-src"
       },
       "locked": {
-        "lastModified": 1722771530,
-        "narHash": "sha256-GFCyQcFm/pWvYEUpu71EwnGU+J6qTZdryibYzgnsZKk=",
+        "lastModified": 1723258378,
+        "narHash": "sha256-lZ+x+klIW+84u8gR30lWT7Do9UKRT1roPcpcmH+j27A=",
         "owner": "xiongchenyu6",
         "repo": "nur-packages",
-        "rev": "76ee82ad87ea0ace536b88fc0e0ce66ad9e93d5a",
+        "rev": "d3aa4a79decb6d4eb36ebfc557edbf558eb50675",
         "type": "github"
       },
       "original": {
