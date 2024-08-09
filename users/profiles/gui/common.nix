@@ -18,7 +18,7 @@
       xournal # note taking for pdf
       slack
       tectonic
-      wpsoffice
+      onlyoffice-bin
       zoom-us
       ueberzugpp
       ytfzf
