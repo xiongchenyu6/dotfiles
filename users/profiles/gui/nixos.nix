@@ -47,7 +47,7 @@
       # kdePackages.wayqt
       # kdePackages.qtstyleplugin-kvantum
       libsForQt5.oxygen-icons
-      feishu
+      feishu-lark
       nil
     ];
     sessionVariables = {
