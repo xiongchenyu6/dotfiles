@@ -11,7 +11,7 @@
   };
   environment = {
     systemPackages = with pkgs; [
-      awscli2
+      #awscli2
       cachix
       deadnix
       delve # go debugger
