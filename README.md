@@ -1,6 +1,6 @@
 # Dotfiles Settings
 
-This is my settings use nix.
+This is my settings use nix and nixos.
 
 <figure id="fig:1">
 <img src="./previews/terminal.png" />
