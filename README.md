@@ -19,14 +19,14 @@ To use the apt.bash installation shell script
 
 ### For arch linux
 
-``` shell
+```shell
 pacman -S --needed - < pkglist.txt
 ```
 
 ## My daily application list
 
 | Usage              | Application                     |
-|--------------------|---------------------------------|
+| ------------------ | ------------------------------- |
 | Email              | <imap:mbsync> <smtp:msmtp> gnus |
 | Crypt              | gnu2 sops                       |
 | Editor             | Emacs, neovim                   |
@@ -50,7 +50,7 @@ pacman -S --needed - < pkglist.txt
 
 This is how to set up Chinese input in Ubuntu
 
-``` shell
+```shell
 gsettings set org.gnome.desktop.input-sources sources "[('xkb', 'us'), ('ibus', 'Unikey')]"
 ```
 
@@ -71,11 +71,10 @@ give the community driven software a try.
 
 ## Gist to immigrate my private keys
 
-``` shell
+```shell
 cp /path/to/backups/*.gpg ~/.gnupg/
 #Inport gpg
 gpg --import-ownertrust chrisroos-ownertrust-gpg.txt
 ```
-
 
 ## Windows Wsl2
