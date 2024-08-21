@@ -52,11 +52,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1723859949,
-        "narHash": "sha256-kiaGz4deGYKMjJPOji/JVvSP/eTefrIA3rAjOnOpXl4=",
+        "lastModified": 1724219898,
+        "narHash": "sha256-7PwlnEQDIbww8+nk0CHLeYTYMA23F/CkynHsX7Mxk+s=",
         "owner": "lnl7",
         "repo": "nix-darwin",
-        "rev": "076b9a905af8a52b866c8db068d6da475839d97b",
+        "rev": "d6703b988728b89456b32bac242c8689902e5a5b",
         "type": "github"
       },
       "original": {
@@ -579,11 +579,11 @@
     },
     "nur": {
       "locked": {
-        "lastModified": 1724197425,
-        "narHash": "sha256-s5ol3/274Qch3wiuoV2XabDYjsjdJIOKko8VAS4mWZc=",
+        "lastModified": 1724244515,
+        "narHash": "sha256-19D0s6C+IAoSbUoNwGprDylDCluTfStp6WCveEaleM8=",
         "owner": "nix-community",
         "repo": "NUR",
-        "rev": "a040447893fabb118b12604b1cbba3c8d2333636",
+        "rev": "0b7ccb08320deb1374ef939bea0b05d7de5f97ad",
         "type": "github"
       },
       "original": {
@@ -595,11 +595,11 @@
     "oci-arm-host-capacity-src": {
       "flake": false,
       "locked": {
-        "lastModified": 1703349394,
-        "narHash": "sha256-2p0jpl2SlyEvZ+xvZMhZz9Mk+dHEfmxgd1Ht5o9cSFo=",
+        "lastModified": 1723563078,
+        "narHash": "sha256-aCo6UDqG+9YVNf3W6pxmx1ml+ApdyyRhtzcVTaPdG/o=",
         "owner": "hitrov",
         "repo": "oci-arm-host-capacity",
-        "rev": "369de7b2851f1b22db34f95ba02001d5c9f839c7",
+        "rev": "ea70acaf92bedcf0900a9209bdd8c31106b0df83",
         "type": "github"
       },
       "original": {
@@ -649,11 +649,11 @@
         "treefmt-nix": "treefmt-nix_2"
       },
       "locked": {
-        "lastModified": 1724134185,
-        "narHash": "sha256-nDqpGjz7cq3ThdC98BPe1ANCNlsJds/LLZ3/MdIXjA0=",
+        "lastModified": 1724208502,
+        "narHash": "sha256-TCRcEPSfgAw/t7kClmlr23s591N06mQCrhzlAO7cyFw=",
         "owner": "nix-community",
         "repo": "poetry2nix",
-        "rev": "5ee730a8752264e463c0eaf06cc060fd07f6dae9",
+        "rev": "884b66152b0c625b8220b570a31dc7acc36749a3",
         "type": "github"
       },
       "original": {
@@ -672,11 +672,11 @@
         "nixpkgs-stable": "nixpkgs-stable"
       },
       "locked": {
-        "lastModified": 1724159077,
-        "narHash": "sha256-AddE0u6WbA5R7uxumw1Ka0oG5dv3cTtN0ppO/M/e0cg=",
+        "lastModified": 1724227338,
+        "narHash": "sha256-TuSaYdhOxeaaE9885mFO1lZHHax33GD5A9dczJrGUjw=",
         "owner": "cachix",
         "repo": "pre-commit-hooks.nix",
-        "rev": "1064a45e81a4e19cda98741b71219d9f4f136900",
+        "rev": "6cedaa7c1b4f82a266e5d30f212273e60d62cb0d",
         "type": "github"
       },
       "original": {
@@ -928,11 +928,11 @@
         "oci-arm-host-capacity-src": "oci-arm-host-capacity-src"
       },
       "locked": {
-        "lastModified": 1723724814,
-        "narHash": "sha256-hYg4FCp+DQmZj5tfa69cRtUXXdWZ+YoTuru4tbGOcqY=",
+        "lastModified": 1724209458,
+        "narHash": "sha256-JvnQ8lW8choFuwgAPtkMTfI8mc9wNDe2qZnnL8Fasr4=",
         "owner": "xiongchenyu6",
         "repo": "nur-packages",
-        "rev": "b8609dd01df268b64fa0e563ec41e10a5e290fb7",
+        "rev": "0d886aae0c39da09cca3c21d051b57405d0dc29a",
         "type": "github"
       },
       "original": {
