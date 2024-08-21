@@ -55,6 +55,9 @@
               signByDefault = true;
             };
             extraConfig = {
+              fetch = {
+                writeCommitMessage = true;
+              };
               push = {
                 default = "current";
               };
@@ -64,6 +67,8 @@
               core = {
                 autocrlf = "input";
                 editor = "emacs";
+                untrackedCache = true;
+                fsmonitor = true;
               };
               pull = {
                 rebase = false;
@@ -72,6 +77,12 @@
                 name = "xiongchenyu";
                 email = "xiongchenyu6@gmail.com";
                 useConfigOnly = true;
+              };
+              rerere = {
+                enabled = true;
+              };
+              column = {
+                ui = "auto";
               };
             };
           };
