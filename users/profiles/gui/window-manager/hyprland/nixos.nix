@@ -123,7 +123,7 @@
             follow_mouse = 1
             # unscale XWayland
             xwayland {
-              
+
             }
             touchpad {
             natural_scroll = no
@@ -197,8 +197,8 @@
             bind = $mainMod SHIFT, Q, exit,
             bind = $mainMod SHIFT, A, exec, ${screen-shot-and-save}/bin/screen-shot-and-save.sh
             bind = $mainMod SHIFT, S, exec, ${screen-shot}/bin/screen-shot.sh
-            bind = $mainMod, E, exec, microsoft-edge-dev --ozone-platform=wayland  --enable-wayland-ime 
-            # bind = $mainMod SHIFT, c, exec, code --enable-features=UseOzonePlatform --ozone-platform=wayland  --enable-wayland-ime 
+            bind = $mainMod, E, exec, microsoft-edge-dev --ozone-platform=wayland  --enable-wayland-ime
+            # bind = $mainMod SHIFT, c, exec, code --enable-features=UseOzonePlatform --ozone-platform=wayland  --enable-wayland-ime
             bind = $mainMod, X, exec, albert show
             bind = $mainMod, L, togglefloating,
             bind = $mainMod, V, pseudo, # dwindle
