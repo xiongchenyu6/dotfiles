@@ -85,7 +85,7 @@ enabled=true
 enabled=false
 
 [python.pomodoro]
-enabled=false
+enabled=true
 
 [python.python_eval]
 enabled=false

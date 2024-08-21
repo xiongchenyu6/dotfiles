@@ -175,7 +175,7 @@
 
   services = {
     frp = {
-      enable = true;
+      enable = false;
       role = "client";
       settings = {
         serverAddr = "mail.autolife-robotics.me";

@@ -64,7 +64,7 @@
       nodePackages."prettier"
       nodePackages."typescript-language-server"
       nodePackages."yaml-language-server"
-      nodePackages."vscode-langservers-extracted"
+      # nodePackages."vscode-langservers-extracted"
       ngrok
       nvfetcher
       oath-toolkit
