@@ -41,6 +41,7 @@
       mdcat
       lnav
       lego
+      gitbutler
       unityhub
     ];
   };

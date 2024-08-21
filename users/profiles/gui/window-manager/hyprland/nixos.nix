@@ -205,7 +205,6 @@
             bind = $mainMod, W, swapactiveworkspaces, eDP-1 HDMI-A-1
             bind = $mainMod, T, togglesplit, # dwindle
             bind = $mainMod, G, togglegroup, # dwindle
-            bind = $mainMod, O, toggleopaque,
             bind = $mainMod, M ,layoutmsg, swapwithmaster
             bind = $mainMod SHIFT, M, layoutmsg, focusmaster
             bind = $mainMod, space, fullscreen, # dwindle
