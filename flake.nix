@@ -103,6 +103,12 @@
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.flake-parts.follows = "flake-parts";
     };
+    robot_signal_dashboard = {
+      url = "git+ssh://git@github.com/AutoLifeRobot/robot_signal_dashboard.git";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.flake-parts.follows = "flake-parts";
+    };
+
   };
 
   outputs =
@@ -125,6 +131,7 @@
       vscode-server,
       disko,
       authentik-nix,
+      robot_signal_dashboard,
       ...
     }@inputs:
     with nixpkgs;
@@ -310,7 +317,10 @@
               };
               mylib = import ./lib { inherit lib; };
             };
-            modules = [ ./hosts/nixos/netbird ] ++ nixos-modules;
+            modules = [
+              ./hosts/nixos/netbird
+              robot_signal_dashboard.nixosModules.robotSignalDashboard
+            ] ++ nixos-modules;
           };
 
           digitalocean = nixpkgs.lib.nixosSystem {

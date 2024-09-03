@@ -29,6 +29,10 @@
         "${config.networking.hostName}.autolife-robotics.me" = {
           domain = "*.autolife-robotics.me";
         };
+        ai = {
+          domain = "autolife.ai";
+          extraDomainNames = [ "*.autolife.ai" ];
+        };
       };
     };
   };

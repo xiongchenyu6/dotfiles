@@ -28,7 +28,7 @@
   sops.secrets."wireguard/office" = { };
 
   # Enable users/freeman gui
-  system.nixos.tags = [ "with-gui" ];
+  # system.nixos.tags = [ "with-gui" ];
 
   hardware = {
     enableRedistributableFirmware = true;

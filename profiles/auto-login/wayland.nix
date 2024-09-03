@@ -1,4 +1,5 @@
-{ pkgs, ... }: {
+{ pkgs, ... }:
+{
   environment = {
     systemPackages = with pkgs; [
       grim
@@ -17,8 +18,12 @@
     portal = {
       config.common.default = "*";
       enable = true;
-      wlr = { enable = true; };
-      lxqt = { enable = true; };
+      wlr = {
+        enable = true;
+      };
+      lxqt = {
+        enable = true;
+      };
       xdgOpenUsePortal = false;
       extraPortals = with pkgs; [
         xdg-desktop-portal-gtk
