@@ -29,6 +29,10 @@
         "${config.networking.hostName}.work-robotics.me" = {
           domain = "*.work-robotics.me";
         };
+        ai = {
+          domain = "work.ai";
+          extraDomainNames = [ "*.work.ai" ];
+        };
       };
     };
   };

@@ -64,6 +64,10 @@
       };
     };
   services = {
+    robotSignalDashboard = {
+      enable = true;
+      configFile = ./config.json;
+    };
     openssh = {
       openFirewall = true;
     };
@@ -131,7 +135,7 @@
           kTLS = true;
         };
         "vr-sg.work-robotics.me" = {
-          forceSSL = true;
+          #          forceSSL = true;
           acmeRoot = null;
           useACMEHost = "netbird.work-robotics.me";
           kTLS = true;
@@ -141,6 +145,62 @@
             };
           };
         };
+        "robot-match.work-robotics.me" = {
+          forceSSL = true;
+          acmeRoot = null;
+          useACMEHost = "netbird.work-robotics.me";
+          kTLS = true;
+          locations = {
+            "/" = {
+              proxyPass = "http://localhost:5555";
+            };
+          };
+        };
+        "www.work-robotics.me" = {
+          #        forceSSL = true;
+          acmeRoot = null;
+          useACMEHost = "netbird.work-robotics.me";
+          kTLS = true;
+          locations = {
+            "/" = {
+              root = "/var/www";
+            };
+          };
+        };
+        "work-robotics.me" = {
+          #       forceSSL = true;
+          acmeRoot = null;
+          useACMEHost = "netbird.work-robotics.me";
+          kTLS = true;
+          locations = {
+            "/" = {
+              root = "/var/www";
+            };
+          };
+        };
+        "work.ai" = {
+          addSSL = true;
+          acmeRoot = null;
+          useACMEHost = "ai";
+          kTLS = true;
+          locations = {
+            "/" = {
+              root = "/var/www";
+            };
+          };
+        };
+        "www.work.ai" = {
+          addSSL = true;
+          acmeRoot = null;
+          useACMEHost = "ai";
+          kTLS = true;
+          locations = {
+            "/" = {
+              root = "/var/www";
+            };
+          };
+        };
+
       };
     };
   };
