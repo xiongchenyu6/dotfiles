@@ -1,13 +1,13 @@
-vailable everywhere
+fundamental-mode ;; Available everywhere
 
 (today (format-time-string "%Y-%m-%d"))
 
 prog-mode
 
-;; (fixme (if (derived-mode-p 'emacs-lisp-mode) ";; " comment-start) "FIXME ")
-;; (todo (if (derived-mode-p 'emacs-lisp-mode) ";; " comment-start) "TODO ")
-;; (bug (if (derived-mode-p 'emacs-lisp-mode) ";; " comment-start) "BUG ")
-;; (hack (if (derived-mode-p 'emacs-lisp-mode) ";; " comment-start) "HACK ")
+(fixme (if (derived-mode-p 'emacs-lisp-mode) ";; " comment-start) "FIXME ")
+(todo (if (derived-mode-p 'emacs-lisp-mode) ";; " comment-start) "TODO ")
+(bug (if (derived-mode-p 'emacs-lisp-mode) ";; " comment-start) "BUG ")
+(hack (if (derived-mode-p 'emacs-lisp-mode) ";; " comment-start) "HACK ")
 
 latex-mode
 
@@ -61,7 +61,7 @@ text-mode
 
 java-mode
 
-;; (class "public class " (p (file-name-base (or (buffer-file-name) (buffer-name)))) " {" n> r> n "}")
+(class "public class " (p (file-name-base (or (buffer-file-name) (buffer-name)))) " {" n> r> n "}")
 
 c-mode;; :when (re-search-backward "^\\S-*$" (line-beginning-position) 'noerror)
 

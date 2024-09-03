@@ -64,6 +64,10 @@
       };
     };
   services = {
+    robotSignalDashboard = {
+      enable = true;
+      configFile = ./config.json;
+    };
     openssh = {
       openFirewall = true;
     };
@@ -131,7 +135,7 @@
           kTLS = true;
         };
         "vr-sg.autolife-robotics.me" = {
-          forceSSL = true;
+          #          forceSSL = true;
           acmeRoot = null;
           useACMEHost = "netbird.autolife-robotics.me";
           kTLS = true;
@@ -141,6 +145,62 @@
             };
           };
         };
+        "robot-match.autolife-robotics.me" = {
+          forceSSL = true;
+          acmeRoot = null;
+          useACMEHost = "netbird.autolife-robotics.me";
+          kTLS = true;
+          locations = {
+            "/" = {
+              proxyPass = "http://localhost:5555";
+            };
+          };
+        };
+        "www.autolife-robotics.me" = {
+          #        forceSSL = true;
+          acmeRoot = null;
+          useACMEHost = "netbird.autolife-robotics.me";
+          kTLS = true;
+          locations = {
+            "/" = {
+              root = "/var/www";
+            };
+          };
+        };
+        "autolife-robotics.me" = {
+          #       forceSSL = true;
+          acmeRoot = null;
+          useACMEHost = "netbird.autolife-robotics.me";
+          kTLS = true;
+          locations = {
+            "/" = {
+              root = "/var/www";
+            };
+          };
+        };
+        "autolife.ai" = {
+          addSSL = true;
+          acmeRoot = null;
+          useACMEHost = "ai";
+          kTLS = true;
+          locations = {
+            "/" = {
+              root = "/var/www";
+            };
+          };
+        };
+        "www.autolife.ai" = {
+          addSSL = true;
+          acmeRoot = null;
+          useACMEHost = "ai";
+          kTLS = true;
+          locations = {
+            "/" = {
+              root = "/var/www";
+            };
+          };
+        };
+
       };
     };
   };

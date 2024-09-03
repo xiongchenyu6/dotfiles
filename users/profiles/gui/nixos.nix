@@ -29,9 +29,9 @@
       albert
       config.nur.repos.xddxdd.baidupcs-go
       config.nur.repos.xddxdd.qq
-      config.nur.repos.xddxdd.wechat-uos
+      config.nur.repos.xddxdd.wine-wechat
       gimp
-      gitkraken
+      #gitkraken
       ledger-live-desktop
       netbird-ui
       termius
@@ -49,6 +49,8 @@
       libsForQt5.oxygen-icons
       feishu-lark
       nil
+      websocat
+      cursor
     ];
     sessionVariables = {
       STARSHIP_LOG = "error";
@@ -109,7 +111,6 @@
         mkhl.direnv
         juanblanco.solidity
         ms-vscode.cpptools-extension-pack
-        ms-vscode.cpptools-themes
         twxs.cmake
         vscjava.vscode-java-pack
         gitlab.gitlab-workflow
@@ -119,12 +120,12 @@
         visualstudioexptteam.vscodeintellicode
         ms-kubernetes-tools.vscode-kubernetes-tools
         ms-python.python
-        redhat.java
+        # redhat.java
         github.copilot # AI code completion
         ms-python.python
         redhat.vscode-yaml
         ms-azuretools.vscode-docker
-        ms-vscode.cpptools
+        #ms-vscode.cpptools
         ms-python.vscode-pylance
         lfs.vscode-emacs-friendly
         vadimcn.vscode-lldb

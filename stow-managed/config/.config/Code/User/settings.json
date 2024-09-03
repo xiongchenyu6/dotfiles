@@ -90,4 +90,5 @@
         "workbench.action.tasks.runTask"
     ],
     "cmake.showConfigureWithDebuggerNotification": false,
+    "redhat.telemetry.enabled": true,
 }

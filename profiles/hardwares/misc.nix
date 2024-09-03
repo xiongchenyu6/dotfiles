@@ -49,6 +49,8 @@
   };
 
   hardware = {
+    nvidia.open = false;
+
     pulseaudio = {
       enable = false;
     };
