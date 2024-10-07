@@ -1,7 +1,8 @@
 # Edit this configuration file to define what should be installed on
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
-{ pkgs, lib, ... }: {
+{ pkgs, lib, ... }:
+{
 
   imports = [ ../tty.nix ];
 
@@ -14,12 +15,18 @@
   ];
 
   programs = {
-    zsh = { enable = true; };
-    tmux = { enable = true; };
+    zsh = {
+      enable = true;
+    };
+    tmux = {
+      enable = true;
+    };
   };
 
   fonts = {
-    fontDir = { enable = true; };
+    fontDir = {
+      enable = true;
+    };
     packages = with pkgs; [
       noto-fonts
       noto-fonts-cjk-sans
@@ -57,8 +64,14 @@
         "parse-toml-timestamps"
         "recursive-nix"
       ];
-      trusted-users = [ "root" "freeman.xiong" ];
-      allowed-users = [ "root" "freeman.xiong" ];
+      trusted-users = [
+        "root"
+        "freeman.xiong"
+      ];
+      allowed-users = [
+        "root"
+        "freeman.xiong"
+      ];
       auto-allocate-uids = true;
       auto-optimise-store = true;
       substituters = [
@@ -81,7 +94,9 @@
 
   };
 
-  time = { timeZone = "Asia/Singapore"; };
+  time = {
+    timeZone = "Asia/Singapore";
+  };
   environment = {
     etc = {
       "ppp/options".text = ''

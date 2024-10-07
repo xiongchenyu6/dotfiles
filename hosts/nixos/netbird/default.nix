@@ -135,7 +135,7 @@
           kTLS = true;
         };
         "vr-sg.autolife-robotics.me" = {
-          #          forceSSL = true;
+          forceSSL = true;
           acmeRoot = null;
           useACMEHost = "netbird.autolife-robotics.me";
           kTLS = true;
@@ -152,6 +152,7 @@
           kTLS = true;
           locations = {
             "/" = {
+              proxyWebsockets = true;
               proxyPass = "http://localhost:5555";
             };
           };
