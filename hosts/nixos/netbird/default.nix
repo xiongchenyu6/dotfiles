@@ -135,7 +135,7 @@
           kTLS = true;
         };
         "vr-sg.work-robotics.me" = {
-          #          forceSSL = true;
+          forceSSL = true;
           acmeRoot = null;
           useACMEHost = "netbird.work-robotics.me";
           kTLS = true;
@@ -152,6 +152,7 @@
           kTLS = true;
           locations = {
             "/" = {
+              proxyWebsockets = true;
               proxyPass = "http://localhost:5555";
             };
           };

@@ -174,6 +174,7 @@
             config = {
               allowUnfree = true;
               allowBroken = true;
+              android_sdk.accept_license = true;
             };
             overlays = sharedOverlays;
           };
@@ -275,6 +276,21 @@
               ./hosts/nixos/office
             ] ++ nixos-modules;
           };
+          office-dell = nixpkgs.lib.nixosSystem {
+            specialArgs = {
+              profiles = {
+                share = import ./profiles/shares.nix { inherit lib; };
+              };
+              mylib = import ./lib { inherit lib; };
+            };
+            modules = [
+              xiongchenyu6.nixosModules.java-tron
+              xiongchenyu6.nixosModules.chainlink
+              nixos-hardware.nixosModules.dell-latitude-5520
+              ./hosts/nixos/office
+            ] ++ nixos-modules;
+          };
+
           office-windows = nixpkgs.lib.nixosSystem {
             specialArgs = {
 
