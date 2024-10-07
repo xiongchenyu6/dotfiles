@@ -48,9 +48,9 @@
       # kdePackages.qtstyleplugin-kvantum
       libsForQt5.oxygen-icons
       feishu-lark
-      nil
       websocat
       cursor
+      android-studio
     ];
     sessionVariables = {
       STARSHIP_LOG = "error";
