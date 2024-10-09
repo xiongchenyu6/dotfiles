@@ -262,7 +262,7 @@
               ./hosts/nixos/mail
             ] ++ nixos-modules;
           };
-          office = nixpkgs.lib.nixosSystem {
+          office-lenovo = nixpkgs.lib.nixosSystem {
             specialArgs = {
               profiles = {
                 share = import ./profiles/shares.nix { inherit lib; };
@@ -276,7 +276,7 @@
               ./hosts/nixos/office
             ] ++ nixos-modules;
           };
-          office-dell = nixpkgs.lib.nixosSystem {
+          office = nixpkgs.lib.nixosSystem {
             specialArgs = {
               profiles = {
                 share = import ./profiles/shares.nix { inherit lib; };
