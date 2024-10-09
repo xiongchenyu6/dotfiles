@@ -96,7 +96,7 @@
       sshpass
       spring-boot-cli
       tgpt
-      terraform
+      # terraform
       terraform-ls
       # terracognita
       # terranix
