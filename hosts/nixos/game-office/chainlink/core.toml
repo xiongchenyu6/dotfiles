@@ -1,0 +1,39 @@
+# ExplorerURL = 'https://goerli.etherscan.io/'
+# RootDir = '/var/lib/chainlink'
+[Feature]
+# FeedsManager enables the experimental feeds manager service.
+FeedsManager = true # Default
+# LogPoller enables the log poller, an experimental approach to processing logs, required if also using Evm.UseForwarders or OCR2.
+LogPoller = true # Default
+# UICSAKeys enables CSA Keys in the UI.
+UICSAKeys = true # Default
+
+[WebServer]
+SecureCookies = false
+
+[WebServer.TLS]
+HTTPSPort = 0
+
+[OCR]
+Enabled = true
+
+[OCR2]
+# Enabled enables OCR2 jobs.
+Enabled = true # Default
+
+
+[P2P]
+TraceLogging = true
+PeerID = '12D3KooWKFkJa3nK6VvdbLJou3myu8xxkfVRtF8b14wdJs8iaVd7' # Example
+
+[P2P.V1]
+DefaultBootstrapPeers = ['/dns4/172.64.224.4/tcp/6788/p2p/12D3KooWPNcwatXbPU1A9DdVCowQjKPBFurGB1LtYJSup6RpZS4w']
+ListenPort = 6788
+
+[[EVM]]
+ChainID = '5'
+
+[[EVM.Nodes]]
+Name = 'primary-0-5'
+WSURL = 'wss://eth-goerli.g.alchemy.com/v2/MTBaxLexebj2toh33cLVyWrOeW2MeGzQ'
+HTTPURL = 'https://eth-goerli.g.alchemy.com/v2/MTBaxLexebj2toh33cLVyWrOeW2MeGzQ'
