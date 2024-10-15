@@ -305,6 +305,18 @@
               ./hosts/windows/office
             ] ++ nixos-modules;
           };
+          game-office = nixpkgs.lib.nixosSystem {
+            specialArgs = {
+              profiles = {
+                share = import ./profiles/shares.nix { inherit lib; };
+              };
+              mylib = import ./lib { inherit lib; };
+            };
+            modules = [
+              nixos-hardware.nixosModules.lenovo-legion-16ach6h
+              ./hosts/nixos/game-office
+            ] ++ nixos-modules;
+          };
           game = nixpkgs.lib.nixosSystem {
             specialArgs = {
               profiles = {
