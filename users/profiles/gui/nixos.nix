@@ -27,7 +27,7 @@
       aspell
       aspellDicts.en
       albert
-      config.nur.repos.xddxdd.baidupcs-go
+      # config.nur.repos.xddxdd.baidupcs-go
       config.nur.repos.xddxdd.qq
       config.nur.repos.xddxdd.wine-wechat
       gimp
@@ -51,6 +51,7 @@
       websocat
       cursor
       android-studio
+      #aider-chat
     ];
     sessionVariables = {
       STARSHIP_LOG = "error";
@@ -200,7 +201,9 @@
     blueman-applet = {
       enable = true;
     };
-    #    dropbox = { enable = true; };
+    dropbox = {
+      enable = false;
+    };
     udiskie = {
       enable = true;
       automount = true;

@@ -51,7 +51,7 @@
       litecli
       vsc-leetcode-cli
       mongosh
-      mycli
+      #mycli
       my2sql
       neofetch
       # nix-du
