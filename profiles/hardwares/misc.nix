@@ -1,6 +1,10 @@
 { pkgs, ... }:
 {
   services = {
+
+    logind = {
+      lidSwitch = "ignore";
+    };
     # Enable CUPS to print documents.
     gnome = {
       gnome-remote-desktop.enable = true;
@@ -11,6 +15,7 @@
     };
     upower = {
       enable = true;
+      ignoreLid = true;
     };
     pipewire = {
       systemWide = true;

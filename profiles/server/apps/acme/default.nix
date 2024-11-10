@@ -24,7 +24,7 @@
       };
       certs = {
         ${config.networking.domain} = {
-          domain = "*.autolife-robotics.tech";
+          domain = "*.auto-life.tech";
         };
         "${config.networking.hostName}.autolife-robotics.me" = {
           domain = "*.autolife-robotics.me";

@@ -23,7 +23,7 @@ enabled=true
 show_date_on_empty_query=true
 
 [debug]
-enabled=false
+enabled=true
 
 [docs]
 enabled=true
@@ -36,7 +36,7 @@ paths=@Invalid()
 enabled=true
 
 [mpris]
-enabled=false
+enabled=true
 
 [path]
 enabled=true
@@ -45,7 +45,7 @@ enabled=true
 fuzzy=false
 
 [python]
-enabled=true
+enabled=false
 
 [python.arch_wiki]
 enabled=true
@@ -122,13 +122,13 @@ poweroff_enabled=false
 reboot_enabled=false
 
 [timer]
-enabled=false
-
-[timezones]
 enabled=true
 
-[urlhandler]
+[timezones]
 enabled=false
+
+[urlhandler]
+enabled=true
 
 [websearch]
 enabled=true

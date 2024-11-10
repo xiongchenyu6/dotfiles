@@ -8,7 +8,7 @@
       hyprpaper
       hyprpicker
       wl-clipboard
-      wf-recorder
+      #wf-recorder
       wev
       waypipe
     ];

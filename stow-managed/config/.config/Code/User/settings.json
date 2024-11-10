@@ -61,7 +61,6 @@
     "C_Cpp.intelliSenseEngineFallback": "enabled",
     "C_Cpp.experimentalFeatures": "enabled",
     "C_Cpp.autocompleteAddParentheses": true,
-    "C_Cpp.default.intelliSenseMode": "linux-clang-x64",
     "stm32-for-vscode.openOCDPath": false,
     "stm32-for-vscode.makePath": "/run/current-system/sw/bin/make",
     "stm32-for-vscode.armToolchainPath": "/etc/profiles/per-user/freeman.xiong/bin",
@@ -91,4 +90,14 @@
     ],
     "cmake.showConfigureWithDebuggerNotification": false,
     "redhat.telemetry.enabled": true,
+    "github.copilot.chat.scopeSelection": true,
+    "github.copilot.chat.search.semanticTextResults": true,
+    "github.copilot.chat.experimental.codeFeedback.enabled": true,
+    "cmake.showOptionsMovedNotification": false,
+    "direnv.restart.automatic": true,
+    "chat.editing.alwaysSaveWithGeneratedChanges": true,
+    "cmake.showNotAllDocumentsSavedQuestion": false,
+    "remote.SSH.remotePlatform": {
+        "10.65.248.6": "linux"
+    },
 }

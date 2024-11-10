@@ -307,11 +307,11 @@
         xdg = {
           mimeApps = {
             defaultApplications = {
-              "text/html" = "microsoft-edge-dev.desktop";
-              "x-scheme-handler/http" = "microsoft-edge-dev.desktop";
-              "x-scheme-handler/https" = "microsoft-edge-dev.desktop";
-              "x-scheme-handler/about" = "microsoft-edge-dev.desktop";
-              "x-scheme-handler/unknown" = "microsoft-edge-dev.desktop";
+              "text/html" = "microsoft-edge.desktop";
+              "x-scheme-handler/http" = "microsoft-edge.desktop";
+              "x-scheme-handler/https" = "microsoft-edge.desktop";
+              "x-scheme-handler/about" = "microsoft-edge.desktop";
+              "x-scheme-handler/unknown" = "microsoft-edge.desktop";
             };
           };
         };
