@@ -18,6 +18,7 @@
     ../../../profiles/client/cli/nixos.nix
     ../../../profiles/client/gui/nixos.nix
     ../../../profiles/sops.nix
+    ../../../profiles/vr.nix
     ../../../profiles/common/components
     ../../../profiles/auto-login/greetd.nix
     ../../../profiles/common/apps/dn42
@@ -245,11 +246,12 @@
         xdg = {
           mimeApps = {
             defaultApplications = {
-              "text/html" = "microsoft-edge-dev.desktop";
-              "x-scheme-handler/http" = "microsoft-edge-dev.desktop";
-              "x-scheme-handler/https" = "microsoft-edge-dev.desktop";
-              "x-scheme-handler/about" = "microsoft-edge-dev.desktop";
-              "x-scheme-handler/unknown" = "microsoft-edge-dev.desktop";
+              "text/html" = "microsoft-edge.desktop";
+              "text/x-csharp" = "microsoft-visual-studio-code.desktop";
+              "x-scheme-handler/http" = "microsoft-edge.desktop";
+              "x-scheme-handler/https" = "microsoft-edge.desktop";
+              "x-scheme-handler/about" = "microsoft-edge.desktop";
+              "x-scheme-handler/unknown" = "microsoft-edge.desktop";
             };
           };
         };

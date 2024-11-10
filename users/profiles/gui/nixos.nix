@@ -49,9 +49,12 @@
       libsForQt5.oxygen-icons
       feishu-lark
       websocat
-      cursor
+      code-cursor
       android-studio
       #aider-chat
+      #opengl-driver
+      libsecret
+      vulkan-loader
     ];
     sessionVariables = {
       STARSHIP_LOG = "error";
@@ -142,7 +145,7 @@
 
     chromium = {
       enable = true;
-      package = pkgs.microsoft-edge-dev;
+      package = pkgs.microsoft-edge;
     };
 
     password-store = {

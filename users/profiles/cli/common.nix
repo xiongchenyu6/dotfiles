@@ -512,7 +512,7 @@
       enable = true;
     };
     yazi = {
-      enable = true;
+      enable = false;
     };
 
   };
