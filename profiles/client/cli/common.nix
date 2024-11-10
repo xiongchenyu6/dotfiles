@@ -58,12 +58,12 @@
       nix-index-update
       nixpacks
       nixd
-      node2nix
+      #node2nix
       nodejs_latest
       # nodePackages."bash-language-server"
-      nodePackages."prettier"
-      nodePackages."typescript-language-server"
-      nodePackages."yaml-language-server"
+      #nodePackages."prettier"
+      #nodePackages."typescript-language-server"
+      #nodePackages."yaml-language-server"
       # nodePackages."vscode-langservers-extracted"
       ngrok
       nvfetcher
@@ -89,7 +89,7 @@
       shfmt
       s3cmd
       solc-select
-      solium
+      #solium
       sops
       socat
       stow
@@ -107,7 +107,7 @@
       wakatime
       wget
       yarn2nix
-      yubikey-manager
+      #yubikey-manager
     ];
   };
 }

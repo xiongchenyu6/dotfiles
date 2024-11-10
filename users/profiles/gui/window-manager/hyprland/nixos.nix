@@ -41,7 +41,7 @@
             runtimeInputs = [ pkgs.hyprland ];
             text = ''
               sleep 10
-              hyprctl keyword windowrule "workspace unset,microsoft-edge-dev"
+              hyprctl keyword windowrule "workspace unset,microsoft-edge"
             '';
           };
           screen-shot = pkgs.writeShellApplication {
@@ -101,7 +101,7 @@
           extraConfig = lib.mkDefault ''
             monitor=,highrr,auto,auto
 
-            monitor=HDMI-A-1,preferred,auto,1,transform,1
+            monitor=HDMI-A-1,preferred,auto,1,transform,0
 
             workspace=HDMI-A-1,1
             # unscale XWayland
@@ -143,7 +143,7 @@
             layout = dwindle
             # env = QT_QPA_PLATFORMTHEME,qt6ct
             # toolkit-specific scale
-            env = GDK_SCALE,1
+            env = GDK_SCALE,1.5
             env = XCURSOR_SIZE,32
             }
 
@@ -197,7 +197,7 @@
             bind = $mainMod SHIFT, Q, exit,
             bind = $mainMod SHIFT, A, exec, ${screen-shot-and-save}/bin/screen-shot-and-save.sh
             bind = $mainMod SHIFT, S, exec, ${screen-shot}/bin/screen-shot.sh
-            bind = $mainMod, E, exec, microsoft-edge-dev --ozone-platform=wayland  --enable-wayland-ime 
+            bind = $mainMod, E, exec, microsoft-edge --ozone-platform=wayland  --enable-wayland-ime --enable-features=Vulkan
             # bind = $mainMod SHIFT, c, exec, code --enable-features=UseOzonePlatform --ozone-platform=wayland  --enable-wayland-ime 
             bind = $mainMod, X, exec, albert show
             bind = $mainMod, L, togglefloating,
@@ -271,7 +271,7 @@
             exec-once = albert
 
             windowrule=workspace 1 silent,alacritty
-            # windowrule=workspace 3 silent,microsoft-edge-dev
+            # windowrule=workspace 3 silent,microsoft-edge 
             windowrule=float,noblur,noshadow,noborder,pseudo,dimaround,albert
 
             exec-once=netbird-ui

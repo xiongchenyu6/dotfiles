@@ -12,8 +12,8 @@
       gdrive
       brave
       freerdp
-      # jetbrains.idea-ultimate
-      jdt-language-server
+      jetbrains.idea-ultimate
+      jetbrains.rider
       mattermost-desktop
       xournal # note taking for pdf
       slack
@@ -26,8 +26,8 @@
       stlink-gui
       stm32cubemx
       gcc-arm-embedded
-      microsoft-edge-dev
-      vault
+      microsoft-edge
+      #vault
       solana-validator
       # expect mkpasswd conflict
       gpg-tui
@@ -43,6 +43,11 @@
       lego
       #gitbutler
       unityhub
+      zed-editor
+      nil
+      v4l-utils
+      dotnetCorePackages.sdk_8_0
+      sui-testnet
     ];
   };
 
@@ -171,6 +176,7 @@
           wakatime-mode
           which-key
           yaml-mode
+
         ];
       extraConfig = ''
         (add-to-list 'default-frame-alist

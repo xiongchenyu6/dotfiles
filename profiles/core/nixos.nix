@@ -8,7 +8,7 @@
     kernelPackages = pkgs.linuxPackages_latest;
   };
 
-  environment.systemPackages = with pkgs; [ xdg_utils ];
+  environment.systemPackages = with pkgs; [ xdg-utils ];
 
   fonts = {
     enableDefaultPackages = true;
