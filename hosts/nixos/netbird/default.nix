@@ -89,6 +89,11 @@
         bindAddr = "0.0.0.0";
         kcpBindPort = 7000;
         vhostHTTPPort = 8080;
+        webserver = {
+          port = 7500;
+          user = "admin";
+          password = "admin";
+        };
         auth = {
           method = "token";
           token = builtins.readFile ../../../secrets/frp.token;
@@ -159,6 +164,18 @@
             };
           };
         };
+        "frp-dashboard.autolife-robotics.me" = {
+          forceSSL = true;
+          acmeRoot = null;
+          useACMEHost = "netbird.autolife-robotics.me";
+          kTLS = true;
+          locations = {
+            "/" = {
+              proxyPass = "http://localhost:7500";
+            };
+          };
+        };
+
         "robot-match.autolife-robotics.me" = {
           forceSSL = true;
           acmeRoot = null;
