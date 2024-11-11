@@ -24,6 +24,7 @@
     ../../../profiles/common/apps/dn42
     ../../../profiles/common/apps/bird-inner.nix
     ../../../profiles/common/components/datadog-agent.nix
+    ../../../profiles/common/components/virtualisation.nix
   ];
 
   # sops.secrets."wireguard/office" = { };

@@ -3,7 +3,9 @@
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 { pkgs, ... }:
 {
-  imports = [ ./common.nix ];
+  imports = [
+    ./common.nix
+  ];
 
   environment = {
     systemPackages = with pkgs; [

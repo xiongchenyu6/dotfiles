@@ -4,7 +4,6 @@
     ./kernel.nix
     ./security.nix
     ./ssh-harden.nix
-    ./virtualisation.nix
   ];
   # services.avahi = {
   #   nssmdns4 = true;

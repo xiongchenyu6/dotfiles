@@ -64,6 +64,84 @@
       };
     };
   services = {
+    homepage-dashboard = {
+      enable = true;
+      services = [
+        {
+          "Network" = [
+            {
+              "Netbird" = {
+                description = "VPN";
+                href = "https://netbird.work-robotics.me";
+              };
+            }
+            {
+              "Frp" = {
+                description = "Frp";
+                href = "https://frp-dashboard.work-robotics.me";
+              };
+            }
+          ];
+        }
+        {
+          "Robot" = [
+            {
+              "Robot Dashboard" = {
+                description = "Robot Dashboard";
+                href = "https://robot-match.work-robotics.me";
+              };
+            }
+            {
+              www = {
+                description = "main page";
+                href = "https://work.ai";
+              };
+            }
+          ];
+        }
+      ];
+      widgets = [
+        {
+          resources = {
+            cpu = true;
+            disk = "/";
+            memory = true;
+          };
+        }
+        {
+          search = {
+            provider = "duckduckgo";
+            target = "_blank";
+          };
+        }
+      ];
+      bookmarks = [
+        {
+          Developer = [
+            {
+              Github = [
+                {
+                  abbr = "GH";
+                  href = "https://github.com/workRobot";
+                }
+              ];
+            }
+          ];
+        }
+        {
+          Entertainment = [
+            {
+              Lark = [
+                {
+                  abbr = "LK";
+                  href = "https://j403tw1dmh4.sg.larksuite.com/wiki";
+                }
+              ];
+            }
+          ];
+        }
+      ];
+    };
     cockpit = {
       enable = true;
       port = 9999;
@@ -190,23 +268,28 @@
         };
         "www.work-robotics.me" = {
           #        forceSSL = true;
+          addSSL = true;
           acmeRoot = null;
           useACMEHost = "netbird.work-robotics.me";
           kTLS = true;
           locations = {
             "/" = {
-              root = "/var/www";
+              proxyWebsockets = true;
+              proxyPass = "http://localhost:8082";
             };
           };
+
         };
         "work-robotics.me" = {
           #       forceSSL = true;
+          addSSL = true;
           acmeRoot = null;
           useACMEHost = "netbird.work-robotics.me";
           kTLS = true;
           locations = {
             "/" = {
-              root = "/var/www";
+              proxyWebsockets = true;
+              proxyPass = "http://localhost:8082";
             };
           };
         };
