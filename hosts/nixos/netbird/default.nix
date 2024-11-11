@@ -64,6 +64,84 @@
       };
     };
   services = {
+    homepage-dashboard = {
+      enable = true;
+      services = [
+        {
+          "Network" = [
+            {
+              "Netbird" = {
+                description = "VPN";
+                href = "https://netbird.autolife-robotics.me";
+              };
+            }
+            {
+              "Frp" = {
+                description = "Frp";
+                href = "https://frp-dashboard.autolife-robotics.me";
+              };
+            }
+          ];
+        }
+        {
+          "Robot" = [
+            {
+              "Robot Dashboard" = {
+                description = "Robot Dashboard";
+                href = "https://robot-match.autolife-robotics.me";
+              };
+            }
+            {
+              www = {
+                description = "main page";
+                href = "https://autolife.ai";
+              };
+            }
+          ];
+        }
+      ];
+      widgets = [
+        {
+          resources = {
+            cpu = true;
+            disk = "/";
+            memory = true;
+          };
+        }
+        {
+          search = {
+            provider = "duckduckgo";
+            target = "_blank";
+          };
+        }
+      ];
+      bookmarks = [
+        {
+          Developer = [
+            {
+              Github = [
+                {
+                  abbr = "GH";
+                  href = "https://github.com/AutoLifeRobot";
+                }
+              ];
+            }
+          ];
+        }
+        {
+          Entertainment = [
+            {
+              Lark = [
+                {
+                  abbr = "LK";
+                  href = "https://j403tw1dmh4.sg.larksuite.com/wiki";
+                }
+              ];
+            }
+          ];
+        }
+      ];
+    };
     cockpit = {
       enable = true;
       port = 9999;
@@ -190,23 +268,28 @@
         };
         "www.autolife-robotics.me" = {
           #        forceSSL = true;
+          addSSL = true;
           acmeRoot = null;
           useACMEHost = "netbird.autolife-robotics.me";
           kTLS = true;
           locations = {
             "/" = {
-              root = "/var/www";
+              proxyWebsockets = true;
+              proxyPass = "http://localhost:8082";
             };
           };
+
         };
         "autolife-robotics.me" = {
           #       forceSSL = true;
+          addSSL = true;
           acmeRoot = null;
           useACMEHost = "netbird.autolife-robotics.me";
           kTLS = true;
           locations = {
             "/" = {
-              root = "/var/www";
+              proxyWebsockets = true;
+              proxyPass = "http://localhost:8082";
             };
           };
         };
