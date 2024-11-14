@@ -7,7 +7,7 @@
   environment = {
     systemPackages = with pkgs; [
       krb5Full
-      python3
+      #python3
       eza
       calibre
       cyrus_sasl

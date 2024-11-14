@@ -1,0 +1,29 @@
+{
+	"folders": [
+		{
+			"path": "."
+		},
+		{
+			"path": "../Private/nur-packages"
+		}
+	],
+	"settings": {
+		"nix.enableLanguageServer": true,
+		"nix.serverPath": "nil",
+		"nix.serverSettings": {
+			"nixd": {
+				"eval": {},
+				"formatting": {
+					"command": "nixpkgs-fmt"
+				},
+				"options": {
+					"enable": true,
+					"target": {
+						"args": [],
+						"installable": "<flakeref>#nixosConfigurations.<name>.options"
+					}
+				}
+			}
+		}
+	}
+}

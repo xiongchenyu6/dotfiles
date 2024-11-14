@@ -199,7 +199,7 @@
             bind = $mainMod SHIFT, S, exec, ${screen-shot}/bin/screen-shot.sh
             bind = $mainMod, E, exec, microsoft-edge --ozone-platform=wayland  --enable-wayland-ime --enable-features=Vulkan
             # bind = $mainMod SHIFT, c, exec, code --enable-features=UseOzonePlatform --ozone-platform=wayland  --enable-wayland-ime 
-            bind = $mainMod, X, exec, albert show
+            bind = $mainMod, X, exec, albert toggle
             bind = $mainMod, L, togglefloating,
             bind = $mainMod, V, pseudo, # dwindle
             bind = $mainMod, W, swapactiveworkspaces, eDP-1 HDMI-A-1

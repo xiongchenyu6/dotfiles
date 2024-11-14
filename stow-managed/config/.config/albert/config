@@ -1,10 +1,14 @@
 [General]
 frontend=widgetsboxmodel
+memoryDecay=0.5
 telemetry=false
 
 [applications]
 enabled=true
 fuzzy=false
+
+[caffeine]
+enabled=false
 
 [calculator_qalculate]
 enabled=true
@@ -30,10 +34,11 @@ enabled=true
 
 [files]
 enabled=true
+index_file_path=true
 paths=@Invalid()
 
 [hash]
-enabled=true
+enabled=false
 
 [mpris]
 enabled=true
@@ -45,7 +50,7 @@ enabled=true
 fuzzy=false
 
 [python]
-enabled=false
+enabled=true
 
 [python.arch_wiki]
 enabled=true
@@ -75,8 +80,11 @@ enabled=false
 enabled=false
 use_derived=true
 
-[python.jetbrains_projects]
+[python.goldendict]
 enabled=false
+
+[python.jetbrains_projects]
+enabled=true
 
 [python.kill]
 enabled=true
@@ -88,12 +96,15 @@ enabled=false
 enabled=true
 
 [python.python_eval]
-enabled=false
+enabled=true
 
 [python.syncthing]
 enabled=false
 
 [python.translators]
+enabled=false
+
+[python.unit_converter]
 enabled=false
 
 [python.virtualbox]
@@ -125,7 +136,7 @@ reboot_enabled=false
 enabled=true
 
 [timezones]
-enabled=false
+enabled=true
 
 [urlhandler]
 enabled=true
@@ -135,7 +146,7 @@ enabled=true
 
 [widgetsboxmodel]
 alwaysOnTop=true
-clearOnHide=false
+clearOnHide=true
 clientShadow=true
 darkTheme=Solarized Bright Magenta
 displayScrollbar=true
