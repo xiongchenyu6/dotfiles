@@ -28,7 +28,7 @@
       aspellDicts.en
       albert
       # config.nur.repos.xddxdd.baidupcs-go
-      config.nur.repos.xddxdd.qq
+      # config.nur.repos.xddxdd.qq
       config.nur.repos.xddxdd.wine-wechat
       gimp
       #gitkraken

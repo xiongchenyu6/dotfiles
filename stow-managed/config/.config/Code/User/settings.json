@@ -100,4 +100,6 @@
     "remote.SSH.remotePlatform": {
         "10.65.248.6": "linux"
     },
+    "chat.editing.confirmEditRequestRetry": false,
+    "git.confirmSync": false,
 }

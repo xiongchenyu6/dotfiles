@@ -75,9 +75,7 @@
       plantuml
       (python3.withPackages (
         _: with python3.pkgs; [
-          cmake-language-server
-          orjson
-          python-lsp-server
+          pip
         ]
       ))
       qrencode
