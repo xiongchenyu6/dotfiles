@@ -12,7 +12,7 @@
       gdrive
       brave
       freerdp
-      jetbrains.idea-ultimate
+      # jetbrains.idea-ultimate
       jetbrains.rider
       mattermost-desktop
       xournal # note taking for pdf
@@ -43,8 +43,8 @@
       lego
       #gitbutler
       unityhub
-      zed-editor
-      nil
+      # zed-editor
+      nixd
       v4l-utils
       dotnetCorePackages.sdk_8_0
       sui-testnet

@@ -237,6 +237,8 @@
     users = {
       "freeman.xiong" = {
         imports = [
+          ../../../users/profiles/cli/nixos.nix
+          ../../../users/profiles/cli/shell/zsh/nixos.nix
           ../../../users/profiles/gui/nixos.nix
           ../../../users/profiles/gui/mpd.nix
           ../../../users/profiles/gui/window-manager/hyprland/dvorak.nix

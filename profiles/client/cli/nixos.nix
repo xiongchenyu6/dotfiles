@@ -12,7 +12,7 @@
       apg
       clang
       clang-tools
-      cava
+      #cava # audio visualizer
       cmake
       gcc
       gdb

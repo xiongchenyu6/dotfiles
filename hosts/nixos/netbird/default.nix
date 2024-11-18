@@ -14,10 +14,10 @@
     ../../../profiles/core/nixos.nix
     ../../../profiles/server/components
     ../../../profiles/common/components
-    ../../../profiles/common/components/datadog-agent.nix
-    ./hardware-configuration.nix
+    #    ../../../profiles/common/components/datadog-agent.nix
     ../../../profiles/server/apps/proxy/nginx.nix
     ../../../profiles/server/apps/acme
+    ./hardware-configuration.nix
     ./networking.nix
   ];
   sops.secrets."netbird/coturn/password" = {
@@ -316,6 +316,21 @@
           };
         };
 
+      };
+    };
+  };
+  home-manager = {
+    users = {
+      "freeman.xiong" = {
+        imports = [
+          ../../../users/profiles/cli/shell/zsh/common.nix
+          ../../../users/profiles/cli/common.nix
+        ];
+        programs = {
+          eza = {
+            enable = true;
+          };
+        };
       };
     };
   };

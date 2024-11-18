@@ -50,15 +50,4 @@
     };
   };
   programs.zsh.enable = true;
-
-  home-manager = {
-    users = {
-      "freeman.xiong" = {
-        imports = [
-          ../profiles/cli/common.nix
-          ../profiles/cli/shell/zsh.nix
-        ];
-      };
-    };
-  };
 }

@@ -46,7 +46,7 @@
   networking.useDHCP = false;
 
   # 首次安装系统时 NixOS 的最新版本，用于在大版本升级时避免发生向前不兼容的情况
-  system.stateVersion = "24.05";
+  system.stateVersion = "24.11";
 
   # QEMU（KVM）虚拟机需要使用的内核模块
   boot.initrd.postDeviceCommands = lib.mkIf (!config.boot.initrd.systemd.enable) ''

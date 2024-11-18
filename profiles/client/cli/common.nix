@@ -95,7 +95,7 @@
       spring-boot-cli
       tgpt
       # terraform
-      terraform-ls
+      # terraform-ls
       # terracognita
       # terranix
       # terraformer
