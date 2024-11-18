@@ -38,7 +38,6 @@ in
     ../../../profiles/common/components
     ../../../profiles/common/apps/dn42
     ../../../profiles/common/apps/bird-inner.nix
-    ../../../profiles/server/components
     #../../../profiles/server/apps/log/promtail.nix
     # ../../../profiles/server/apps/admin/sssd.nix
     ../../../profiles/common/components/datadog-agent.nix
@@ -395,6 +394,10 @@ in
   home-manager = {
     users = {
       "freeman.xiong" = {
+        imports = [
+          ../../../users/profiles/cli/common.nix
+          ../../../users/profiles/cli/shell/zsh/common.nix
+        ];
         programs = {
           eza = {
             enable = true;

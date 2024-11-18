@@ -87,14 +87,12 @@
               "digital" = {
                 port = 2222;
                 hostname = "206.189.156.130";
-                user = "root";
                 forwardX11 = true;
                 forwardX11Trusted = true;
               };
               "netbird" = {
                 port = 2222;
                 hostname = "167.172.91.53";
-                user = "root";
                 forwardX11 = true;
                 forwardX11Trusted = true;
               };

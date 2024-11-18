@@ -12,6 +12,7 @@
     ssh-to-age
     imagemagick
     lrzsz
+    home-manager
   ];
 
   programs = {
@@ -65,7 +66,6 @@
         "recursive-nix"
       ];
       trusted-users = [
-        "root"
         "freeman.xiong"
       ];
       allowed-users = [
@@ -91,7 +91,6 @@
       ];
     };
     distributedBuilds = lib.mkDefault true;
-
   };
 
   time = {

@@ -17,7 +17,7 @@
       shellAliases = {
         vi = "vim";
         yolo = ''git commit -m "$(curl -s whatthecommit.com/index.txt)"'';
-        ls = "exa --icons";
+        #        ls = "exa --icons";
       };
       ohMyZsh = {
         enable = false;
