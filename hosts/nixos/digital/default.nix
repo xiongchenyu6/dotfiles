@@ -85,4 +85,19 @@
     #   };
     # };
   };
+  home-manager = {
+    users = {
+      "freeman.xiong" = {
+        imports = [
+          ../../../users/profiles/cli/shell/zsh/common.nix
+          ../../../users/profiles/cli/common.nix
+        ];
+        programs = {
+          eza = {
+            enable = true;
+          };
+        };
+      };
+    };
+  };
 }

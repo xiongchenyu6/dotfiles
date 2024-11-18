@@ -63,7 +63,7 @@
   };
 
   system = {
-    stateVersion = "24.05";
+    stateVersion = "24.11";
   }; # Did you read the comment?
 
 }

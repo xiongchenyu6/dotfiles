@@ -208,7 +208,7 @@
               ssh-to-age
               editorconfig-checker
               nixfmt-rfc-style
-              nil
+              nixd
               statix
               yq-go
               nixos-rebuild
@@ -259,7 +259,6 @@
             };
             modules = [
               #xiongchenyu6.nixosModules.oci-arm-host-capacity
-
               ./hosts/nixos/mail
             ] ++ nixos-modules;
           };

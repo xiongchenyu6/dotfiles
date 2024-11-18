@@ -102,4 +102,5 @@
     },
     "chat.editing.confirmEditRequestRetry": false,
     "git.confirmSync": false,
+    "nix.serverPath": "nixd",
 }

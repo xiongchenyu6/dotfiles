@@ -13,6 +13,6 @@
     }
   ];
 
-  system.stateVersion = "24.05"; # Never change this
+  system.stateVersion = "24.11"; # Never change this
   # virtualisation.digitalOceanImage.compressionMethod = "bzip2";
 }

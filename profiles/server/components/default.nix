@@ -6,13 +6,13 @@
   ];
   environment = {
     systemPackages = with pkgs; [
-      krb5Full
-      #python3
+      #krb5Full
+      python3
       eza
-      calibre
-      cyrus_sasl
-      xvfb-run
-      figlet
+      #calibre
+      #cyrus_sasl
+      xvfb-run # for running GUI applications in headless mode
+      figlet # for generating ASCII art
       #step-cli
     ];
   };
@@ -21,7 +21,7 @@
 
   programs = {
     rust-motd = {
-      enable = false;
+      enable = true;
       settings = {
         banner = {
           color = "red";
@@ -32,18 +32,19 @@
         };
         last_run = { };
         service_status = {
-          kdc = "kdc";
-          kadmind = "kadmind";
-          openldap = "openldap";
+          nginx = "nginx";
         };
-        s_s_l_certs = {
-          sort_method = "manual";
-          certs = {
-            "*.inner.autolife-robotics.me" = "/var/lib/acme/.autolife-robotics.me/cert.pem";
-            "mail.autolife-robotics.me" = "/var/lib/acme/mail.autolife-robotics.me/cert.pem";
-          };
-        };
-        # weather = { loc = "Singapore,Singapore"; };
+        # s_s_l_certs = {
+        #   sort_method = "manual";
+        #   certs = {
+        #     "*.inner.autolife-robotics.me" = "/var/lib/acme/.autolife-robotics.me/cert.pem";
+        #     "mail.autolife-robotics.me" = "/var/lib/acme/mail.autolife-robotics.me/cert.pem";
+        #   };
+        # };
+        # weather = {
+        #   loc = "Singapore, Singapore";
+        #   args = "--ipv4";
+        # };
         filesystems = {
           root = "/";
         };
@@ -51,14 +52,15 @@
           swap_pos = "beside";
         };
         last_login = {
-          freeman = 2;
+          "freeman.xiong" = 2;
         };
+        last_run = { };
       };
     };
   };
-  systemd.services.rust-motd = {
-    serviceConfig = {
-      User = "acme";
-    };
-  };
+  # systemd.services.rust-motd = {
+  #   serviceConfig = {
+  #     User = "acme";
+  #   };
+  # };
 }

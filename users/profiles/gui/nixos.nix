@@ -29,7 +29,7 @@
       albert
       # config.nur.repos.xddxdd.baidupcs-go
       # config.nur.repos.xddxdd.qq
-      config.nur.repos.xddxdd.wine-wechat
+      # config.nur.repos.xddxdd.wine-wechat
       gimp
       #gitkraken
       ledger-live-desktop
@@ -39,7 +39,7 @@
       unrar-wrapper
       virt-manager
       whatsapp-for-linux
-      wineWowPackages.staging
+      #wineWowPackages.staging
       zotero
       kdePackages.dolphin
       kdePackages.qtwayland
@@ -47,9 +47,9 @@
       # kdePackages.wayqt
       # kdePackages.qtstyleplugin-kvantum
       libsForQt5.oxygen-icons
-      feishu-lark
+      #feishu-lark
       websocat
-      code-cursor
+      # code-cursor
       android-studio
       #aider-chat
       #opengl-driver
@@ -76,7 +76,7 @@
       enabled = "fcitx5";
       fcitx5 = {
         addons = with pkgs; [
-          fcitx5-mozc
+          #fcitx5-mozc
           fcitx5-gtk
           fcitx5-chinese-addons
           fcitx5-rime

@@ -149,13 +149,7 @@
 
             decoration {
             # See https://wiki.hyprland.org/Configuring/Variables/ for more
-
-            rounding = 10
-
-            drop_shadow = yes
-            shadow_range = 4
-            shadow_render_power = 3
-            col.shadow = rgba(1a1a1aee)
+            rounding = 10                        
             }
 
             animations {
@@ -200,6 +194,7 @@
             bind = $mainMod, E, exec, microsoft-edge --ozone-platform=wayland  --enable-wayland-ime --enable-features=Vulkan
             # bind = $mainMod SHIFT, c, exec, code --enable-features=UseOzonePlatform --ozone-platform=wayland  --enable-wayland-ime 
             bind = $mainMod, X, exec, albert toggle
+
             bind = $mainMod, L, togglefloating,
             bind = $mainMod, V, pseudo, # dwindle
             bind = $mainMod, W, swapactiveworkspaces, eDP-1 HDMI-A-1
