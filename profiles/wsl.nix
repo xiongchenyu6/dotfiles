@@ -1,4 +1,5 @@
-{ pkgs, ... }: {
+{ pkgs, ... }:
+{
   wsl = {
     enable = true;
     defaultUser = "freeman.xiong";
@@ -8,7 +9,9 @@
       { src = "${coreutils}/bin/readlink"; }
     ];
   };
-  services = { vscode-server.enable = true; };
+  services = {
+    vscode-server.enable = true;
+  };
 
   environment.systemPackages = with pkgs; [ wslu ];
 

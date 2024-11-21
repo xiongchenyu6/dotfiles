@@ -84,6 +84,18 @@
                 forwardX11 = true;
                 forwardX11Trusted = true;
               };
+              "office" = {
+                port = 2222;
+                hostname = "172.22.240.98";
+                forwardX11 = true;
+                forwardX11Trusted = true;
+              };
+              "game" = {
+                port = 2222;
+                hostname = "172.22.240.99";
+                forwardX11 = true;
+                forwardX11Trusted = true;
+              };
               "digital" = {
                 port = 2222;
                 hostname = "206.189.156.130";

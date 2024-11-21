@@ -325,7 +325,8 @@
               mylib = import ./lib { inherit lib; };
             };
             modules = [
-              nixos-hardware.nixosModules.lenovo-legion-16ach6h
+              #nixos-hardware.nixosModules.lenovo-legion-16ach6h
+              vscode-server.nixosModules.default
               ./hosts/nixos/game
             ] ++ nixos-modules;
           };

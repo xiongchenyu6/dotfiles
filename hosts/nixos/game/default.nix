@@ -176,6 +176,7 @@
     };
 
   services = {
+    vscode-server.enable = true;
     frp = {
       enable = false;
       role = "client";
