@@ -13,9 +13,6 @@
         eval "$(${pkgs.rustup}/bin/rustup completions zsh)"
         eval "$(${pkgs.grafana-loki}/bin/logcli --completion-script-zsh)"
       '';
-      # complete -C '${pkgs.awscli2}/bin/aws_completer' aws
-      # eval "$(${pkgs.rustup}/bin/rustup completions zsh)"
-      # eval "$(${pkgs.grafana-loki}/bin/logcli --completion-script-zsh)"
     };
   };
 }
