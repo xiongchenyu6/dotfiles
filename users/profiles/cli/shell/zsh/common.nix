@@ -39,7 +39,6 @@
           "systemadmin"
           "scala"
           "terraform"
-          "tmux"
         ];
 
       in

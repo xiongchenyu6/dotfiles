@@ -19,9 +19,6 @@
     zsh = {
       enable = true;
     };
-    tmux = {
-      enable = true;
-    };
   };
 
   fonts = {
