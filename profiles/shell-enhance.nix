@@ -57,7 +57,6 @@
           "sbt"
           "scala"
           "systemd"
-          "tmux"
         ];
       };
       setOptions = [
@@ -82,14 +81,6 @@
       lfs = {
         enable = true;
       };
-    };
-    tmux = {
-      enable = true;
-      terminal = "screen-256color";
-      shortcut = "space";
-      plugins = with pkgs.tmuxPlugins; [ yank ];
-      secureSocket = false;
-      keyMode = "vi";
     };
     starship = {
       enable = true;

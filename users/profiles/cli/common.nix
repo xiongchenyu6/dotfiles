@@ -2,6 +2,7 @@
 {
 
   programs = {
+
     btop = {
       enable = true;
       settings = {
@@ -175,16 +176,6 @@
 
     zoxide = {
       enable = true;
-    };
-
-    tmux = {
-      enable = true;
-      terminal = "screen-256color";
-      shortcut = "space";
-      plugins = with pkgs.tmuxPlugins; [ yank ];
-      secureSocket = false;
-      keyMode = "vi";
-      customPaneNavigationAndResize = true;
     };
 
     starship = {
