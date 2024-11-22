@@ -93,8 +93,9 @@
           ../../../users/profiles/cli/common.nix
         ];
         programs = {
-          eza = {
+          zellij = {
             enable = true;
+            enableZshIntegration = true;
           };
         };
       };

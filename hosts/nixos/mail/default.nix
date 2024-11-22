@@ -399,9 +399,11 @@ in
           ../../../users/profiles/cli/shell/zsh/common.nix
         ];
         programs = {
-          eza = {
+          zellij = {
             enable = true;
+            enableZshIntegration = true;
           };
+
         };
       };
     };
