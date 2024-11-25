@@ -91,13 +91,8 @@
         imports = [
           ../../../users/profiles/cli/shell/zsh/common.nix
           ../../../users/profiles/cli/common.nix
+          ../../../users/profiles/cli/tmux.nix
         ];
-        programs = {
-          zellij = {
-            enable = true;
-            enableZshIntegration = true;
-          };
-        };
       };
     };
   };

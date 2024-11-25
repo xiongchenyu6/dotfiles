@@ -39,7 +39,7 @@
   imports = [ ./common.nix ];
 
   networking = {
-    domain = "autolife-robotics.tech";
+    domain = "auto-life.tech";
   };
 
   # Select internationalisation properties.
