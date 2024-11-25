@@ -3,6 +3,7 @@
   config,
   lib,
   pkgs,
+  modulesPath,
   ...
 }:
 {
@@ -17,8 +18,7 @@
     #    ../../../profiles/common/components/datadog-agent.nix
     ../../../profiles/server/apps/proxy/nginx.nix
     ../../../profiles/server/apps/acme
-    ./hardware-configuration.nix
-    ./networking.nix
+    "${modulesPath}/virtualisation/amazon-image.nix"
   ];
   sops.secrets."netbird/coturn/password" = {
     owner = "turnserver";
@@ -57,6 +57,7 @@
           179
           2222
           3478
+          7777
           6696
           33434
         ];

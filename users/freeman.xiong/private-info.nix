@@ -104,7 +104,7 @@
               };
               "netbird" = {
                 port = 2222;
-                hostname = "167.172.91.53";
+                hostname = "43.199.189.188";
                 forwardX11 = true;
                 forwardX11Trusted = true;
               };
