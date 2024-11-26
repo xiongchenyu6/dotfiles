@@ -1,6 +1,28 @@
-# Dotfiles Settings
+# Dotfiles Settings [![built with nix](https://builtwithnix.org/badge.svg)](https://builtwithnix.org)
+This repository contains my personal settings using Nix.
+# Features
+- flakes
+- deploy with nixos-rebuild switch --flake .#mail --use-substitutes --target-host root@mail --use-remote-sudo
+- use the latest Linux kernel
+- use [nixos-hardware](https://github.com/NixOS/nixos-hardware)
+- use [srvos](https://github.com/nix-community/srvos)
+- Full bcachefs disk encryption on laptop
+- wayland hyprland & x11 xmonad
+- dn42 bgp & babel
+- digital ocean & aws cloud host
+- programmer dvorak layout
+- impermanence
+- sops
 
-This is my settings use nix.
+- overlays
+  - emacs-overlay
+  - nur
+  - vscode-plugins-overlay
+
+- split-dns with systemd-resolved
+- netbird
+- vmess
+- openvpn
 
 <figure id="fig:1">
 <img src="./previews/terminal.png" />
@@ -9,15 +31,15 @@ This is my settings use nix.
 
 ## Usage
 
-### For Macos
+### For macOS
 
-To use this simple run the brew.bash installation shell script.
+To use this, simply run the `brew.bash` installation shell script.
 
-### For Nixos
+### For NixOS
 
-To use the apt.bash installation shell script
+To use the `apt.bash` installation shell script.
 
-### For arch linux
+### For Arch Linux
 
 ``` shell
 pacman -S --needed - < pkglist.txt

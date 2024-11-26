@@ -78,43 +78,49 @@
 
           ssh = {
             matchBlocks = {
-              "mail" = {
+              "*-tmux" = {
+                extraOptions = {
+                  RequestTTY = "yes";
+                  RemoteCommand = "tmux new -A -s xiongchenyu";
+                };
+              };
+              "mail*" = {
                 port = 2222;
                 hostname = "43.156.66.157";
                 forwardX11 = true;
                 forwardX11Trusted = true;
               };
-              "office" = {
+              "office*" = {
                 port = 2222;
                 hostname = "172.22.240.98";
                 forwardX11 = true;
                 forwardX11Trusted = true;
               };
-              "game" = {
+              "game*" = {
                 port = 2222;
                 hostname = "172.22.240.99";
                 forwardX11 = true;
                 forwardX11Trusted = true;
               };
-              "digital" = {
+              "digital*" = {
                 port = 2222;
                 hostname = "206.189.156.130";
                 forwardX11 = true;
                 forwardX11Trusted = true;
               };
-              "netbird" = {
+              "netbird*" = {
                 port = 2222;
-                hostname = "43.199.189.188";
+                hostname = "43.198.90.76";
                 forwardX11 = true;
                 forwardX11Trusted = true;
               };
-              "heco-nginx" = {
+              "heco-nginx*" = {
                 hostname = "13.215.48.98";
                 user = "root";
                 forwardX11 = true;
                 forwardX11Trusted = true;
               };
-              "heco-k3s-office-main" = {
+              "heco-k3s-office-main*" = {
                 hostname = "10.16.1.164";
                 user = "root";
                 forwardX11 = true;

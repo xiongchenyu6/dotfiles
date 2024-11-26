@@ -103,4 +103,7 @@
     "chat.editing.confirmEditRequestRetry": false,
     "git.confirmSync": false,
     "nix.serverPath": "nixd",
+    "[move]": {
+        "editor.defaultFormatter": "mysten.prettier-move"
+    },
 }
