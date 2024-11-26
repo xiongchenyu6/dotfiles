@@ -8,11 +8,6 @@
     kernelPackages = pkgs.linuxPackages_latest;
   };
 
-  environment.systemPackages = with pkgs; [
-    vim
-    xdg-utils
-  ];
-
   fonts = {
     enableDefaultPackages = true;
     enableGhostscriptFonts = true;

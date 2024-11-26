@@ -27,7 +27,7 @@ in
     # ../../../profiles/server/apps/mail/alps.nix
     # ../../../profiles/server-apps/monitor/endlessh-go.nix
     # ../../../profiles/server-apps/monitor/prometheus.nix
-    ../../../profiles/server/apps/proxy/nginx.nix
+    # ../../../profiles/server/apps/proxy/nginx.nix
     # ../../../profiles/server-apps/atuin.nix
     # ../../../profiles/server-apps/webapps/keycloak.nix
     #    ../../../profiles/server/apps/oci-arm-host-capacity.nix
@@ -323,9 +323,9 @@ in
         RuntimeMaxUse=30M
       '';
     };
-    datadog-agent = {
-      tags = [ "env:outter" ];
-    };
+    # datadog-agent = {
+    #   tags = [ "env:outter" ];
+    # };
 
     openssh =
       let
@@ -397,14 +397,8 @@ in
         imports = [
           ../../../users/profiles/cli/common.nix
           ../../../users/profiles/cli/shell/zsh/common.nix
+          ../../../users/profiles/cli/tmux.nix
         ];
-        programs = {
-          zellij = {
-            enable = true;
-            enableZshIntegration = true;
-          };
-
-        };
       };
     };
   };

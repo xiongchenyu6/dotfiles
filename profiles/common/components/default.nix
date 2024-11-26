@@ -23,6 +23,6 @@
     enable = true;
     dnssec = "allow-downgrade";
     dnsovertls = "opportunistic";
-    llmnr = "true";
+    llmnr = "false";
   };
 }

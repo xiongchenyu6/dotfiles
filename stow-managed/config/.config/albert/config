@@ -38,7 +38,7 @@ index_file_path=true
 paths=@Invalid()
 
 [hash]
-enabled=false
+enabled=true
 
 [mpris]
 enabled=true
