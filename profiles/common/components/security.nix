@@ -1,4 +1,4 @@
-{ profiles, config, ... }:
+{ profiles, config, lib, ... }:
 {
   sops.secrets."oath/seed" = { };
   security = {
@@ -14,6 +14,7 @@
     #rtkit = { enable = true; };
     sudo = {
       enable = true;
+      execWheelOnly = lib.mkForce false;
       # wheelNeedsPassword = false;
       # package = pkgs.sudo.override {
       #   withInsults = true;

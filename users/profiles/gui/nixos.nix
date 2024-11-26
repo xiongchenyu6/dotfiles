@@ -156,9 +156,6 @@
   services = lib.mkIf pkgs.stdenv.isLinux {
     # safeeyes.enable = true;
     #    ssh-agent.enable = true;
-    volnoti = {
-      enable = true;
-    };
 
     pasystray = {
       enable = true;

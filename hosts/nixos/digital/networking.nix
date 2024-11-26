@@ -4,7 +4,7 @@
   # details gathered from the active system.
   networking = {
     nameservers = [ "8.8.8.8" ];
-    defaultGateway = "206.189.144.1";
+    #defaultGateway = "206.189.144.1";
     defaultGateway6 = {
       address = "2400:6180:0:d0::1";
       interface = "eth0";

@@ -23,7 +23,7 @@
     ../../../profiles/auto-login/greetd.nix
     ../../../profiles/common/apps/dn42
     ../../../profiles/common/apps/bird-inner.nix
-    ../../../profiles/common/components/datadog-agent.nix
+    #../../../profiles/common/components/datadog-agent.nix
     ../../../profiles/common/components/virtualisation.nix
   ];
 
@@ -126,13 +126,15 @@
             privateKeyFile = config.sops.secrets."wireguard/game".path;
             table = "off";
             address = [ "fe80::102/64" ];
-            dns = [ "172.20.0.53" ];
+            #dns = [ "172.20.0.53" ];
             postUp = ''
               ${pkgs.iproute2}/bin/ip addr add dev wg_mail 172.22.240.99/32 peer 172.22.240.96/27
               ${pkgs.iproute2}/bin/ip addr add dev wg_mail fd48:4b4:f3::3/128 peer fd48:4b4:f3::1/128
               ${pkgs.iproute2}/bin/ip link set multicast on dev wg_mail
-              ${pkgs.systemd}/bin/resolvectl domain wg_mail dn42.
             '';
+            # should only enable if blew works
+            # ${pkgs.systemd}/bin/resolvectl dns wg_mail 172.20.0.53
+            # ${pkgs.systemd}/bin/resolvectl domain wg_mail dn42.
 
             peers = [
               {

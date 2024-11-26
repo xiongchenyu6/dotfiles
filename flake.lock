@@ -46,6 +46,29 @@
         "type": "github"
       }
     },
+    "autolife_www": {
+      "inputs": {
+        "flake-parts": [
+          "flake-parts"
+        ],
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1732529620,
+        "narHash": "sha256-3DpVW2AgUacxVs+W85hoWDiAmjSSC77Ao1yKWycfVcA=",
+        "ref": "refs/heads/main",
+        "rev": "4dff310d7bf26376ca2cf49d6bee8685889e07c7",
+        "revCount": 3,
+        "type": "git",
+        "url": "ssh://git@github.com/AutoLifeRobot/www.git"
+      },
+      "original": {
+        "type": "git",
+        "url": "ssh://git@github.com/AutoLifeRobot/www.git"
+      }
+    },
     "darwin": {
       "inputs": {
         "nixpkgs": [
@@ -74,11 +97,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1732482708,
-        "narHash": "sha256-B1MQLiWi4bbeNiRXKxEkpztnKyWae4x0LyK32v3DjLk=",
+        "lastModified": 1732540163,
+        "narHash": "sha256-5EYzmoTpem2IB9JWzd41sL98pz3lyyCSTiCjv08i4Uk=",
         "owner": "nix-community",
         "repo": "disko",
-        "rev": "47bc8dfb6f48d5f66a3cb3a4cece83d8ace1f61a",
+        "rev": "2ed5e30fc7e34adf455db8b02b9151d3922a54ea",
         "type": "github"
       },
       "original": {
@@ -97,11 +120,11 @@
         "pyproject-nix": "pyproject-nix"
       },
       "locked": {
-        "lastModified": 1731915700,
-        "narHash": "sha256-IVhIHdQaY4LU+6wOmXM6IhjKN8k0nbTacedIfxmt0RI=",
+        "lastModified": 1732214960,
+        "narHash": "sha256-ViyEMSYwaza6y55XTDrsRi2K4YKCLsefMTorjWSE27s=",
         "owner": "nix-community",
         "repo": "dream2nix",
-        "rev": "e118d69b142dea7690555fc4502f288030c1d4ed",
+        "rev": "a8dac99db44307fdecead13a39c584b97812d0d4",
         "type": "github"
       },
       "original": {
@@ -484,11 +507,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1732413494,
-        "narHash": "sha256-KcKOpa6da8/9MfGYRqUJhwK9Q2rNrLXxqZMQoojJTvA=",
+        "lastModified": 1732586015,
+        "narHash": "sha256-X4VP8v29isxkdXZ3Pslr2vwmyGhcqp0DEoQM9VJKi78=",
         "owner": "nix-community",
         "repo": "nix-vscode-extensions",
-        "rev": "aa61c826513046837049bca77493ad06dda37012",
+        "rev": "733e320a9cdd8dd2cad073ef9e4f4ceee3bd5976",
         "type": "github"
       },
       "original": {
@@ -598,13 +621,29 @@
         "type": "github"
       }
     },
+    "nixpkgs_2": {
+      "locked": {
+        "lastModified": 1732527064,
+        "narHash": "sha256-7BUwAGmceiPGrIf6guxdO5mQdXkKzM7F1e/fObD/1uw=",
+        "owner": "NixOS",
+        "repo": "nixpkgs",
+        "rev": "61aa4ba718e145c50aa01aa868fe52bf5f34cc29",
+        "type": "github"
+      },
+      "original": {
+        "owner": "NixOS",
+        "ref": "nixos-unstable-small",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
     "nur": {
       "locked": {
-        "lastModified": 1732496706,
-        "narHash": "sha256-ef/uRtD5Tq3PFruH1aP4oNVkqJ6/L+C2+6x1BuQN7IQ=",
+        "lastModified": 1732583284,
+        "narHash": "sha256-/c5kULUlyU5rEIAS/m1hLHtWcVfppzP1xzkUZq+w+7I=",
         "owner": "nix-community",
         "repo": "NUR",
-        "rev": "357f49c348cf978ed40005a05171d4bccd64b13d",
+        "rev": "065287ab2e7c6fb0260da732dd650df7ef4f71a9",
         "type": "github"
       },
       "original": {
@@ -776,6 +815,7 @@
     "root": {
       "inputs": {
         "authentik-nix": "authentik-nix",
+        "autolife_www": "autolife_www",
         "darwin": "darwin",
         "disko": "disko",
         "flake-parts": "flake-parts",
@@ -793,6 +833,7 @@
         "pre-commit-hooks": "pre-commit-hooks",
         "robot_signal_dashboard": "robot_signal_dashboard",
         "sops-nix": "sops-nix",
+        "srvos": "srvos",
         "vscode-server": "vscode-server",
         "xiongchenyu6": "xiongchenyu6"
       }
@@ -839,6 +880,24 @@
         "owner": "Mic92",
         "repo": "sops-nix",
         "rev": "a4c33bfecb93458d90f9eb26f1cf695b47285243",
+        "type": "github"
+      }
+    },
+    "srvos": {
+      "inputs": {
+        "nixpkgs": "nixpkgs_2"
+      },
+      "locked": {
+        "lastModified": 1732570520,
+        "narHash": "sha256-ANPZf+osgErYUs27N7ItYovc0d/TJKwOpMtlpk6W9+M=",
+        "owner": "nix-community",
+        "repo": "srvos",
+        "rev": "0ba8119cd4077eaea0f2406b8e1ec491429b8fc4",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nix-community",
+        "repo": "srvos",
         "type": "github"
       }
     },
@@ -964,11 +1023,11 @@
         "oci-arm-host-capacity-src": "oci-arm-host-capacity-src"
       },
       "locked": {
-        "lastModified": 1732075304,
-        "narHash": "sha256-ptbFqiB3TVJAghrKIQDfw5WP1nkDhEyk1OyMna+arjI=",
+        "lastModified": 1732512975,
+        "narHash": "sha256-LPDLlqCcfzfNYRd5V6o0V2A+nkCHKUGmZqyh+AzEtt8=",
         "owner": "xiongchenyu6",
         "repo": "nur-packages",
-        "rev": "ed416f9a767689d759141380f10d9e70bb9f440f",
+        "rev": "db1b033c3e09767c1e6f8a7bf7467773840bc147",
         "type": "github"
       },
       "original": {

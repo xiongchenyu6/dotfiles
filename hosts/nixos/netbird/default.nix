@@ -16,9 +16,9 @@
     ../../../profiles/server/components
     ../../../profiles/common/components
     #    ../../../profiles/common/components/datadog-agent.nix
-    ../../../profiles/server/apps/proxy/nginx.nix
     ../../../profiles/server/apps/acme
     "${modulesPath}/virtualisation/amazon-image.nix"
+
   ];
   sops.secrets."netbird/coturn/password" = {
     owner = "turnserver";
@@ -48,20 +48,22 @@
       inherit hostName;
       firewall = {
         allowedTCPPorts = [
+          22
           80
           443
           2222
+          7000
         ];
         allowedUDPPorts = [
           89
           179
           2222
           3478
+          7000
           7777
           6696
           33434
         ];
-        enable = false;
       };
     };
   services = {
@@ -178,9 +180,6 @@
           token = builtins.readFile ../../../secrets/frp.token;
         };
       };
-    };
-    do-agent = {
-      enable = true;
     };
     netbird = {
       enable = true;
@@ -300,8 +299,8 @@
           useACMEHost = "ai";
           kTLS = true;
           locations = {
-            "/" = {
-              root = "/var/www";
+            "/" = with pkgs; {
+              root = www_dist;
             };
           };
         };
@@ -311,8 +310,8 @@
           useACMEHost = "ai";
           kTLS = true;
           locations = {
-            "/" = {
-              root = "/var/www";
+            "/" = with pkgs; {
+              root = www_dist;
             };
           };
         };
@@ -326,13 +325,8 @@
         imports = [
           ../../../users/profiles/cli/shell/zsh/common.nix
           ../../../users/profiles/cli/common.nix
+          ../../../users/profiles/cli/tmux.nix
         ];
-        programs = {
-          zellij = {
-            enable = true;
-            enableZshIntegration = true;
-          };
-        };
       };
     };
   };

@@ -22,7 +22,7 @@
     ../../../profiles/auto-login/greetd.nix
     ../../../profiles/common/apps/dn42
     ../../../profiles/common/apps/bird-inner.nix
-    ../../../profiles/common/components/datadog-agent.nix
+    #../../../profiles/common/components/datadog-agent.nix
   ];
 
   sops.secrets."wireguard/office" = { };
@@ -259,14 +259,14 @@
     #   enable = true;
     #   #tod = { enable = true; };
     # };
-    datadog-agent = {
-      checks = {
-        btrfs = {
-          instances = [ { min_collection_interval = 16; } ];
-        };
-      };
-      tags = [ "env:inner" ];
-    };
+    # datadog-agent = {
+    #   checks = {
+    #     btrfs = {
+    #       instances = [ { min_collection_interval = 16; } ];
+    #     };
+    #   };
+    #   tags = [ "env:inner" ];
+    # };
 
     netbird.enable = true;
 
