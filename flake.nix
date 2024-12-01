@@ -117,7 +117,7 @@
     srvos = {
       url = "github:nix-community/srvos";
     };
-
+    nixos-facter-modules.url = "github:numtide/nixos-facter-modules";
   };
 
   outputs =
@@ -143,6 +143,7 @@
       robot_signal_dashboard,
       autolife_www,
       srvos,
+      nixos-facter-modules,
       ...
     }@inputs:
     with nixpkgs;
@@ -156,6 +157,12 @@
         poetry2nix
         nix-vscode-extensions
       ];
+      specialArgs = {
+        profiles = {
+          share = import ./profiles/shares.nix { inherit lib; };
+        };
+        mylib = import ./lib { inherit lib; };
+      };
 
       sharedOverlays = overlays ++ [
         (_: prev: {
@@ -210,7 +217,6 @@
         {
           packages = {
             iso = self.nixosConfigurations.iso.config.system.build.isoImage;
-            bootstrap = self.nixosConfigurations.bootstrap.config.system.build.diskoImagesScript;
           };
 
           devShells.default = pkgs.mkShell {
@@ -222,8 +228,9 @@
               nixd
               statix
               yq-go
-              nixos-rebuild
-              ruby
+              nixos-rebuild-ng
+              nixos-facter
+              nixos-anywhere
             ];
             shellHook = ''
               export NIX_SSHOPTS="-p 2222"
@@ -248,26 +255,9 @@
       flake = {
         nixosConfigurations = {
           iso = nixpkgs.lib.nixosSystem { modules = [ ./hosts/nixos/iso.nix ] ++ nixos-modules; };
-          bootstrap = nixpkgs.lib.nixosSystem {
-            specialArgs = {
-              profiles = {
-                share = import ./profiles/shares.nix { inherit lib; };
-              };
-              mylib = import ./lib { inherit lib; };
-            };
-            modules = [
-              disko.nixosModules.disko
-              ./hosts/nixos/bootstrap.nix
-            ] ++ nixos-modules;
-          };
 
           office-lenovo = nixpkgs.lib.nixosSystem {
-            specialArgs = {
-              profiles = {
-                share = import ./profiles/shares.nix { inherit lib; };
-              };
-              mylib = import ./lib { inherit lib; };
-            };
+            inherit specialArgs;
             modules = [
               xiongchenyu6.nixosModules.java-tron
               xiongchenyu6.nixosModules.chainlink
@@ -276,12 +266,7 @@
             ] ++ nixos-modules;
           };
           office = nixpkgs.lib.nixosSystem {
-            specialArgs = {
-              profiles = {
-                share = import ./profiles/shares.nix { inherit lib; };
-              };
-              mylib = import ./lib { inherit lib; };
-            };
+            inherit specialArgs;
             modules = [
               #srvos.nixosModules.desktop
               xiongchenyu6.nixosModules.java-tron
@@ -292,12 +277,7 @@
           };
 
           office-windows = nixpkgs.lib.nixosSystem {
-            specialArgs = {
-              profiles = {
-                share = import ./profiles/shares.nix { inherit lib; };
-              };
-              mylib = import ./lib { inherit lib; };
-            };
+            inherit specialArgs;
             modules = [
               nixos-wsl.nixosModules.wsl
               vscode-server.nixosModules.default
@@ -306,12 +286,7 @@
           };
 
           game-office = nixpkgs.lib.nixosSystem {
-            specialArgs = {
-              profiles = {
-                share = import ./profiles/shares.nix { inherit lib; };
-              };
-              mylib = import ./lib { inherit lib; };
-            };
+            inherit specialArgs;
             modules = [
               #srvos.nixosModules.desktop
               nixos-hardware.nixosModules.lenovo-legion-16ach6h
@@ -320,28 +295,18 @@
           };
 
           game = nixpkgs.lib.nixosSystem {
-            specialArgs = {
-              profiles = {
-                share = import ./profiles/shares.nix { inherit lib; };
-              };
-              mylib = import ./lib { inherit lib; };
-            };
+            inherit specialArgs;
             modules = [
-              #nixos-hardware.nixosModules.lenovo-legion-16ach6h
+              # nixos-hardware.nixosModules.lenovo-legion-16ach6h
               # srvos.nixosModules.common
-              # srvos.nixosModules.mixins-mdns
+              srvos.nixosModules.mixins-mdns
               vscode-server.nixosModules.default
               ./hosts/nixos/game
             ] ++ nixos-modules;
           };
 
           mail = nixpkgs.lib.nixosSystem {
-            specialArgs = {
-              profiles = {
-                share = import ./profiles/shares.nix { inherit lib; };
-              };
-              mylib = import ./lib { inherit lib; };
-            };
+            inherit specialArgs;
             modules = [
               srvos.nixosModules.server
               srvos.nixosModules.mixins-nginx
@@ -350,26 +315,17 @@
           };
 
           digital = nixpkgs.lib.nixosSystem {
-            specialArgs = {
-              profiles = {
-                share = import ./profiles/shares.nix { inherit lib; };
-              };
-              mylib = import ./lib { inherit lib; };
-            };
+            inherit specialArgs;
             modules = [
-              srvos.nixosModules.hardware-digitalocean-droplet
+              #srvos.nixosModules.hardware-digitalocean-droplet
               srvos.nixosModules.server
+              srvos.nixosModules.mixins-nginx
               ./hosts/nixos/digital
             ] ++ nixos-modules;
           };
 
           netbird = nixpkgs.lib.nixosSystem {
-            specialArgs = {
-              profiles = {
-                share = import ./profiles/shares.nix { inherit lib; };
-              };
-              mylib = import ./lib { inherit lib; };
-            };
+            inherit specialArgs;
             modules = [
               srvos.nixosModules.server
               srvos.nixosModules.hardware-amazon
@@ -380,14 +336,41 @@
           };
 
           digitalocean = nixpkgs.lib.nixosSystem {
-            specialArgs = {
-              profiles = {
-                share = import ./profiles/shares.nix { inherit lib; };
-              };
-              mylib = import ./lib { inherit lib; };
-            };
-
+            inherit specialArgs;
             modules = [ ./hosts/nixos/digitalocean.nix ] ++ nixos-modules;
+          };
+
+          generic-nixos-facter = nixpkgs.lib.nixosSystem {
+            inherit specialArgs;
+            system = "x86_64-linux";
+            modules = [
+              ./hosts/nixos/nixos-anywhere
+              disko.nixosModules.disko
+              (nixos-facter-modules.nixosModules.facter { config.facter.reportPath = ./facter.json; })
+            ];
+          };
+          do = nixpkgs.lib.nixosSystem {
+            system = "x86_64-linux";
+            inherit specialArgs;
+            modules = [
+              # srvos.nixosModules.hardware-digitalocean-droplet
+              srvos.nixosModules.server
+              srvos.nixosModules.mixins-nginx
+              disko.nixosModules.disko
+              ./hosts/nixos/nixos-anywhere
+              { disko.devices.disk.disk1.device = nixpkgs.lib.mkForce "/dev/vda"; }
+              {
+                # do not use DHCP, as DigitalOcean provisions IPs using cloud-init
+                networking.useDHCP = nixpkgs.lib.mkForce false;
+
+                services.cloud-init = {
+                  enable = true;
+                  network.enable = true;
+                  settings.datasource_list = [ "DigitalOcean" ];
+                  settings.datasource.DigitalOcean = { };
+                };
+              }
+            ];
           };
         };
         darwinConfigurations = {

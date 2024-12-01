@@ -13,7 +13,7 @@
       brave
       freerdp
       # jetbrains.idea-ultimate
-      jetbrains.rider
+      # jetbrains.rider
       mattermost-desktop
       xournal # note taking for pdf
       slack

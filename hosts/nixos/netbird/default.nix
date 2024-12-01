@@ -193,10 +193,10 @@
           enableNginx = true;
           oidcConfigEndpoint = "https://dev-bcz6ouy6jucjcnut.jp.auth0.com/.well-known/openid-configuration";
           settings = lib.importJSON ../../../secrets/management.password;
-          extraOptions = [
-            "--metrics-port"
-            "9091"
-          ];
+          # extraOptions = [
+          #   "--metrics-port"
+          #   "9091"
+          # ];
         };
         signal = {
           enable = true;
