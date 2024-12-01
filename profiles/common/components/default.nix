@@ -21,8 +21,8 @@
 
   services.resolved = {
     enable = true;
-    dnssec = "allow-downgrade";
-    dnsovertls = "opportunistic";
-    llmnr = "false";
+    # dnssec = "allow-downgrade";
+    # dnsovertls = "opportunistic";
+    # llmnr = "false";
   };
 }

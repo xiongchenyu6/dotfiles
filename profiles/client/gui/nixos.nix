@@ -11,6 +11,24 @@
   };
   xdg.icons.enable = true;
 
+  fonts = {
+    fontDir = {
+      enable = true;
+    };
+    packages = with pkgs; [
+      noto-fonts
+      noto-fonts-cjk-sans
+      noto-fonts-cjk-serif
+      sarasa-gothic # 更纱黑体
+      wqy_microhei
+      wqy_zenhei
+      nerd-fonts.hack
+      jetbrains-mono
+      emacs-all-the-icons-fonts
+      font-awesome
+    ];
+  };
+
   security = {
     tpm2 = {
       enable = true;
