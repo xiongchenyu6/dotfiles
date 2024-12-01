@@ -104,7 +104,7 @@
               };
               "digital*" = {
                 port = 2222;
-                hostname = "206.189.156.130";
+                hostname = "143.198.87.228";
                 forwardX11 = true;
                 forwardX11Trusted = true;
               };

@@ -1,4 +1,5 @@
 {
+  modulesPath,
   profiles,
   config,
   lib,
@@ -8,6 +9,8 @@
 {
 
   imports = [
+    (modulesPath + "/installer/scan/not-detected.nix")
+    ./hardware-configuration.nix
     ../../../users/root/nixos.nix
     ../../../users/freeman.xiong
     ../../../profiles/sops.nix
@@ -15,12 +18,18 @@
     ../../../profiles/server/components
     ../../../profiles/common/components
     # ../../../profiles/common/components/datadog-agent.nix
-    ../../../profiles/server/apps/proxy/nginx.nix
-    ./networking.nix
+    # ../../../profiles/server/apps/proxy/nginx.nix
   ];
 
   sops.secrets."wireguard/digital" = { };
   sops.secrets."authentik/env" = { };
+  boot.loader.grub = {
+    enable = true;
+    # no need to set devices, disko will add all devices that have a EF02 partition to the list already
+    devices = [ "/dev/vda" ];
+    efiSupport = true;
+    efiInstallAsRemovable = true;
+  };
 
   networking =
     let
@@ -28,6 +37,7 @@
       hostName = lib.last file-path;
     in
     {
+      useDHCP = lib.mkForce false;
       inherit hostName;
       firewall = {
         allowedTCPPorts = [

@@ -21,24 +21,6 @@
     };
   };
 
-  fonts = {
-    fontDir = {
-      enable = true;
-    };
-    packages = with pkgs; [
-      noto-fonts
-      noto-fonts-cjk-sans
-      noto-fonts-cjk-serif
-      sarasa-gothic # 更纱黑体
-      wqy_microhei
-      wqy_zenhei
-      (nerdfonts.override { fonts = [ "Hack" ]; })
-      jetbrains-mono
-      emacs-all-the-icons-fonts
-      font-awesome
-    ];
-  };
-
   nix = {
     # sshServe = {
     #   enable = true;
