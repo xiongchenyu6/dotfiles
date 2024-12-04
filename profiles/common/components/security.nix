@@ -1,4 +1,9 @@
-{ profiles, config, lib, ... }:
+{
+  profiles,
+  config,
+  lib,
+  ...
+}:
 {
   sops.secrets."oath/seed" = { };
   security = {
@@ -36,6 +41,23 @@
     };
     pki = {
       certificates = map (x: x.cert) profiles.share.root-cas;
+    };
+  };
+  services = {
+    logrotate = {
+      settings = {
+        "/var/log/audit/*.log" = {
+          frequency = "daily";
+          rotate = 7;
+          compress = true;
+          delaycompress = true;
+          missingok = true;
+          notifempty = true;
+          postrotate = ''
+            systemctl restart auditd
+          '';
+        };
+      };
     };
   };
 }

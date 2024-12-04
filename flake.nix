@@ -4,14 +4,26 @@
   description = "Flake to manage my laptop, my nur and my hosts on Tencent Cloud";
 
   inputs = {
+    systems.url = "github:nix-systems/default";
 
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+
+    nixpkgs-stable = {
+      url = "github:NixOS/nixpkgs/nixos-24.11";
+    };
 
     nixos-hardware.url = "github:NixOS/nixos-hardware/master";
 
     nur.url = "github:nix-community/NUR";
 
-    flake-utils.url = "github:numtide/flake-utils";
+    flake-compat.url = "github:edolstra/flake-compat";
+
+    flake-utils = {
+      url = "github:numtide/flake-utils";
+      inputs = {
+        systems.follows = "systems";
+      };
+    };
 
     home-manager = {
       url = "github:nix-community/home-manager";
@@ -29,6 +41,7 @@
       inputs = {
         flake-utils.follows = "flake-utils";
         nixpkgs.follows = "nixpkgs";
+        flake-compat.follows = "flake-compat";
       };
     };
 
@@ -37,6 +50,7 @@
       inputs = {
         flake-utils.follows = "flake-utils";
         nixpkgs.follows = "nixpkgs";
+        flake-compat.follows = "flake-compat";
       };
     };
     flake-parts.url = "github:hercules-ci/flake-parts";
@@ -55,6 +69,8 @@
       url = "github:cachix/pre-commit-hooks.nix";
       inputs = {
         nixpkgs.follows = "nixpkgs";
+        nixpkgs-stable.follows = "nixpkgs-stable";
+        flake-compat.follows = "flake-compat";
       };
     };
 
@@ -63,13 +79,17 @@
       inputs = {
         nixpkgs.follows = "nixpkgs";
         flake-utils.follows = "flake-utils";
+        flake-compat.follows = "flake-compat";
       };
     };
 
     sops-nix = {
       #url = "github:Mic92/sops-nix";
       url = "github:Mic92/sops-nix/a4c33bfecb93458d90f9eb26f1cf695b47285243";
-      inputs.nixpkgs.follows = "nixpkgs";
+      inputs = {
+        nixpkgs.follows = "nixpkgs";
+        nixpkgs-stable.follows = "nixpkgs-stable";
+      };
     };
 
     foundry = {
@@ -85,6 +105,7 @@
       inputs = {
         nixpkgs.follows = "nixpkgs";
         flake-utils.follows = "flake-utils";
+        systems.follows = "systems";
       };
     };
     vscode-server = {
@@ -101,8 +122,14 @@
     };
     authentik-nix = {
       url = "github:nix-community/authentik-nix";
-      inputs.nixpkgs.follows = "nixpkgs";
-      inputs.flake-parts.follows = "flake-parts";
+      inputs = {
+        nixpkgs.follows = "nixpkgs";
+        flake-parts.follows = "flake-parts";
+        poetry2nix.follows = "poetry2nix";
+        flake-utils.follows = "flake-utils";
+        systems.follows = "systems";
+        flake-compat.follows = "flake-compat";
+      };
     };
     robot_signal_dashboard = {
       url = "git+ssh://git@github.com/AutoLifeRobot/robot_signal_dashboard.git";
@@ -116,6 +143,7 @@
     };
     srvos = {
       url = "github:nix-community/srvos";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
     nixos-facter-modules.url = "github:numtide/nixos-facter-modules";
   };
@@ -186,7 +214,6 @@
         home-manager.nixosModules.home-manager
         nur.nixosModules.nur
         impermanence.nixosModules.impermanence
-        xiongchenyu6.nixosModules.bttc
         (_: {
           nixpkgs = {
             system = "x86_64-linux";
@@ -259,8 +286,6 @@
           office-lenovo = nixpkgs.lib.nixosSystem {
             inherit specialArgs;
             modules = [
-              xiongchenyu6.nixosModules.java-tron
-              xiongchenyu6.nixosModules.chainlink
               nixos-hardware.nixosModules.lenovo-thinkpad-x1-10th-gen
               ./hosts/nixos/office
             ] ++ nixos-modules;
@@ -269,8 +294,6 @@
             inherit specialArgs;
             modules = [
               #srvos.nixosModules.desktop
-              xiongchenyu6.nixosModules.java-tron
-              xiongchenyu6.nixosModules.chainlink
               nixos-hardware.nixosModules.dell-latitude-5520
               ./hosts/nixos/office
             ] ++ nixos-modules;
@@ -297,10 +320,12 @@
           game = nixpkgs.lib.nixosSystem {
             inherit specialArgs;
             modules = [
-              # nixos-hardware.nixosModules.lenovo-legion-16ach6h
-              # srvos.nixosModules.common
+              nixos-hardware.nixosModules.lenovo-legion-16ach6h
               srvos.nixosModules.mixins-mdns
               vscode-server.nixosModules.default
+              srvos.nixosModules.mixins-trusted-nix-caches
+              srvos.nixosModules.mixins-nix-experimental
+              srvos.nixosModules.mixins-tracing
               ./hosts/nixos/game
             ] ++ nixos-modules;
           };
@@ -353,7 +378,6 @@
             system = "x86_64-linux";
             inherit specialArgs;
             modules = [
-              # srvos.nixosModules.hardware-digitalocean-droplet
               srvos.nixosModules.server
               srvos.nixosModules.mixins-nginx
               disko.nixosModules.disko
