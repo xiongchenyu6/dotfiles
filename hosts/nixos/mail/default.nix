@@ -332,7 +332,6 @@ in
         file = pkgs.writeText "ca.pub" "ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBEpEaKdRToEGqji1PLnZsP+AaScTYQbcdkLCYYPe+gYX5ILxcuHXL+O5GdHzs+LtC6csdvzzBQBaJEpT7pr/GsM=";
       in
       {
-        openFirewall = true;
         hostKeys = lib.mkAfter [
           {
             bits = 4096;

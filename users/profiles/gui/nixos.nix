@@ -55,6 +55,8 @@
       #opengl-driver
       libsecret
       vulkan-loader
+      vulnix
+      nix-melt
     ];
     sessionVariables = {
       STARSHIP_LOG = "error";

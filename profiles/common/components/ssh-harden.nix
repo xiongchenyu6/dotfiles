@@ -27,7 +27,6 @@
 
   services = {
     openssh = {
-      openFirewall = lib.mkDefault false;
       enable = true;
       startWhenNeeded = false;
       settings = {
