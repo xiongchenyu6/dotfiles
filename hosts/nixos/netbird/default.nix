@@ -159,9 +159,7 @@
       enable = true;
       configFile = ./config.json;
     };
-    openssh = {
-      openFirewall = true;
-    };
+
     frp = {
       enable = true;
       role = "server";
@@ -254,7 +252,7 @@
           };
         };
 
-        "robot-match.work-robotics.me" = {
+        "mngt.work-robotics.me" = {
           forceSSL = true;
           acmeRoot = null;
           useACMEHost = "netbird.work-robotics.me";

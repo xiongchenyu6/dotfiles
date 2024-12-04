@@ -56,9 +56,6 @@
       };
     };
   services = {
-    openssh = {
-      openFirewall = true;
-    };
     do-agent = {
       enable = true;
     };
