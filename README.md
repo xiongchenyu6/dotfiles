@@ -24,10 +24,7 @@ This repository contains my personal settings using Nix.
 - vmess
 - openvpn
 
-<figure id="fig:1">
-<img src="./previews/terminal.png" />
-<figcaption>Terminal Previews</figcaption>
-</figure>
+![Terminal Previews](./previews/terminal.png)
 
 ## Usage
 
@@ -101,3 +98,20 @@ gpg --import-ownertrust chrisroos-ownertrust-gpg.txt
 
 
 ## Windows Wsl2
+
+## network topology
+![Main Previews](./previews/main.svg)
+![Network Previews](./previews/network.svg)
+
+```bash
+# Windows WSL2
+wsl --set-version Ubuntu-20.04 2
+wsl --set-default-version 2
+wsl --list --verbose
+wsl --set-version Ubuntu-20.04 2
+
+# Windows Terminal
+# https://docs.microsoft.com/en-us/windows/terminal/tutorials/powerline-setup
+#
+sudo nix-env --list-generations --profile /nix/var/nix/profiles/system
+```

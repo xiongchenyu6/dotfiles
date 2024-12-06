@@ -87,6 +87,10 @@
     };
   };
   programs = lib.mkIf pkgs.stdenv.isLinux {
+    nh = {
+      enable = true;
+      flake = "/home/freeman.xiong/dotfiles";
+    };
     wofi = {
       enable = true;
     };

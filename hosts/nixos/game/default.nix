@@ -76,7 +76,6 @@
         useOSProber = true;
       };
     };
-    tmp.useTmpfs = lib.mkDefault true;
   };
 
   networking =

@@ -120,6 +120,7 @@
       url = "github:nix-community/disko";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
     authentik-nix = {
       url = "github:nix-community/authentik-nix";
       inputs = {
@@ -131,21 +132,31 @@
         flake-compat.follows = "flake-compat";
       };
     };
+
     robot_signal_dashboard = {
       url = "git+ssh://git@github.com/AutoLifeRobot/robot_signal_dashboard.git";
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.flake-parts.follows = "flake-parts";
     };
+
     autolife_www = {
       url = "git+ssh://git@github.com/AutoLifeRobot/www.git";
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.flake-parts.follows = "flake-parts";
     };
+
     srvos = {
       url = "github:nix-community/srvos";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
     nixos-facter-modules.url = "github:numtide/nixos-facter-modules";
+
+    nix-topology = {
+      url = "github:oddlama/nix-topology";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
   };
 
   outputs =
@@ -172,6 +183,7 @@
       autolife_www,
       srvos,
       nixos-facter-modules,
+      nix-topology,
       ...
     }@inputs:
     with nixpkgs;
@@ -184,6 +196,7 @@
         foundry
         poetry2nix
         nix-vscode-extensions
+        nix-topology
       ];
       specialArgs = {
         profiles = {
@@ -214,6 +227,7 @@
         home-manager.nixosModules.home-manager
         nur.nixosModules.nur
         impermanence.nixosModules.impermanence
+        nix-topology.nixosModules.default
         (_: {
           nixpkgs = {
             system = "x86_64-linux";
@@ -231,7 +245,10 @@
       ];
     in
     flake-parts.lib.mkFlake { inherit inputs; } {
-      imports = [ inputs.pre-commit-hooks.flakeModule ];
+      imports = [
+        inputs.pre-commit-hooks.flakeModule
+        inputs.nix-topology.flakeModule
+      ];
       systems = [
         "x86_64-linux"
         "aarch64-linux"
@@ -277,36 +294,78 @@
               };
             };
           };
+          topology = {
+            nixosConfigurations = builtins.removeAttrs self.nixosConfigurations [
+              "do"
+              "generic-nixos-facter"
+            ];
+            modules = [
+              (
+                { config, ... }:
+                let
+                  inherit (config.lib.topology) mkInternet mkRouter mkConnection;
+                in
+                {
+                  networks.home = {
+                    name = "Home";
+                    cidrv4 = "192.168.178.0/24";
+                  };
+                }
+              )
+            ];
+          };
         };
 
       flake = {
+
         nixosConfigurations = {
           iso = nixpkgs.lib.nixosSystem { modules = [ ./hosts/nixos/iso.nix ] ++ nixos-modules; };
 
-          office-lenovo = nixpkgs.lib.nixosSystem {
-            inherit specialArgs;
-            modules = [
-              nixos-hardware.nixosModules.lenovo-thinkpad-x1-10th-gen
-              ./hosts/nixos/office
-            ] ++ nixos-modules;
-          };
+          # office-lenovo = nixpkgs.lib.nixosSystem {
+          #   inherit specialArgs;
+          #   modules = [
+          #     nixos-hardware.nixosModules.lenovo-thinkpad-x1-10th-gen
+          #     ./hosts/nixos/office
+          #     {
+          #       topology.networks.home = {
+          #         name = "Network Made by Lenovo in Office";
+          #         cidrv4 = "192.168.178.1/24";
+          #       };
+          #     }
+          #   ] ++ nixos-modules;
+          # };
           office = nixpkgs.lib.nixosSystem {
             inherit specialArgs;
             modules = [
               #srvos.nixosModules.desktop
               nixos-hardware.nixosModules.dell-latitude-5520
               ./hosts/nixos/office
+              {
+                topology.self.interfaces.home = {
+
+                  type = "wireguard"; # changes the icon
+                  addresses = [ "192.168.178.2/24" ];
+                };
+
+              }
             ] ++ nixos-modules;
           };
 
-          office-windows = nixpkgs.lib.nixosSystem {
-            inherit specialArgs;
-            modules = [
-              nixos-wsl.nixosModules.wsl
-              vscode-server.nixosModules.default
-              ./hosts/windows/office
-            ] ++ nixos-modules;
-          };
+          # office-windows = nixpkgs.lib.nixosSystem {
+          #   inherit specialArgs;
+          #   modules = [
+          #     nixos-wsl.nixosModules.wsl
+          #     vscode-server.nixosModules.default
+          #     ./hosts/windows/office
+          #     {
+          #       topology.interfaces.home = {
+          #         name = "Network Made in Office Windows";
+          #         cidrv4 = "192.168.178.3/24";
+          #       };
+
+          #     }
+          #   ] ++ nixos-modules;
+          # };
 
           game-office = nixpkgs.lib.nixosSystem {
             inherit specialArgs;
@@ -314,6 +373,13 @@
               #srvos.nixosModules.desktop
               nixos-hardware.nixosModules.lenovo-legion-16ach6h
               ./hosts/nixos/game-office
+              {
+                topology.self.interfaces.home = {
+
+                  addresses = [ "192.168.178.4/24" ];
+                };
+
+              }
             ] ++ nixos-modules;
           };
 
@@ -327,6 +393,14 @@
               srvos.nixosModules.mixins-nix-experimental
               srvos.nixosModules.mixins-tracing
               ./hosts/nixos/game
+              {
+                topology.self.interfaces.home = {
+
+                  addresses = [ "192.168.178.4/24" ];
+                };
+
+              }
+
             ] ++ nixos-modules;
           };
 
@@ -336,6 +410,14 @@
               srvos.nixosModules.server
               srvos.nixosModules.mixins-nginx
               ./hosts/nixos/mail
+              {
+                topology.self.interfaces.home = {
+
+                  addresses = [ "192.168.178.5/24" ];
+                };
+
+              }
+
             ] ++ nixos-modules;
           };
 
@@ -346,6 +428,12 @@
               srvos.nixosModules.server
               srvos.nixosModules.mixins-nginx
               ./hosts/nixos/digital
+              {
+                topology.self.interfaces.home = {
+                  addresses = [ "192.168.178.6/24" ];
+                };
+              }
+
             ] ++ nixos-modules;
           };
 
@@ -357,12 +445,26 @@
               srvos.nixosModules.mixins-nginx
               ./hosts/nixos/netbird
               robot_signal_dashboard.nixosModules.robotSignalDashboard
+              {
+                topology.self.interfaces.home = {
+
+                  addresses = [ "192.168.178.7/24" ];
+                };
+              }
             ] ++ nixos-modules;
           };
 
           digitalocean = nixpkgs.lib.nixosSystem {
             inherit specialArgs;
-            modules = [ ./hosts/nixos/digitalocean.nix ] ++ nixos-modules;
+            modules = [
+              ./hosts/nixos/digitalocean.nix
+              {
+                topology.self.interfaces.home = {
+
+                  addresses = [ "192.168.178.8/24" ];
+                };
+              }
+            ] ++ nixos-modules;
           };
 
           generic-nixos-facter = nixpkgs.lib.nixosSystem {
@@ -371,7 +473,6 @@
             modules = [
               ./hosts/nixos/nixos-anywhere
               disko.nixosModules.disko
-              (nixos-facter-modules.nixosModules.facter { config.facter.reportPath = ./facter.json; })
             ];
           };
           do = nixpkgs.lib.nixosSystem {
