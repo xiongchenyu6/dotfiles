@@ -115,13 +115,20 @@
                 forwardX11Trusted = true;
               };
               "heco-nginx*" = {
-                hostname = "13.215.48.98";
+                hostname = "54.255.82.12";
                 user = "root";
                 forwardX11 = true;
                 forwardX11Trusted = true;
               };
-              "heco-k3s-office-main*" = {
-                hostname = "10.16.1.164";
+              "heco-zammad*" = {
+                hostname = "10.16.0.96";
+                user = "root";
+                forwardX11 = true;
+                forwardX11Trusted = true;
+                proxyJump = "heco-nginx";
+              };
+              "heco-mysql*" = {
+                hostname = "10.16.0.230";
                 user = "root";
                 forwardX11 = true;
                 forwardX11Trusted = true;

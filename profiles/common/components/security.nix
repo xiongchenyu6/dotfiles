@@ -50,7 +50,7 @@
           frequency = "daily";
           rotate = 7;
           compress = true;
-          delaycompress = true;
+          #delaycompress = true;
           missingok = true;
           notifempty = true;
           postrotate = ''
