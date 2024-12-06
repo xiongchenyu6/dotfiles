@@ -75,8 +75,6 @@
       options snd-intel-dspcfg dsp_driver=1
     '';
 
-    tmp.useTmpfs = lib.mkDefault true;
-
     loader = {
       efi = {
         canTouchEfiVariables = true;

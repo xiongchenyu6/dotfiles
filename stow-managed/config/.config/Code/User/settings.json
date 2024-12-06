@@ -106,4 +106,7 @@
     "[move]": {
         "editor.defaultFormatter": "mysten.prettier-move"
     },
+    "nix.serverSettings": {
+        
+    },
 }
