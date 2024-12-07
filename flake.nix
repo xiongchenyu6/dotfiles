@@ -216,8 +216,8 @@
         })
       ];
       darwin-modules = [ home-manager.darwinModules.home-manager ];
-      homemanager-modules = [
-        nur.hmModules.nur
+      sharedModules = [
+        #nur.modules.home-manager
         sops-nix.homeManagerModules.sops
         impermanence.nixosModules.home-manager.impermanence
         (import ./profiles/sops.nix)
@@ -225,7 +225,7 @@
       nixos-modules = [
         sops-nix.nixosModules.sops
         home-manager.nixosModules.home-manager
-        nur.nixosModules.nur
+        nur.modules.nixos.default
         impermanence.nixosModules.impermanence
         nix-topology.nixosModules.default
         (_: {
@@ -238,9 +238,11 @@
             };
             overlays = sharedOverlays;
           };
-          home-manager.sharedModules = homemanager-modules;
-          home-manager.useGlobalPkgs = true;
-          home-manager.useUserPackages = true;
+          home-manager = {
+            inherit sharedModules;
+            useGlobalPkgs = true;
+            useUserPackages = true;
+          };
         })
       ];
     in
