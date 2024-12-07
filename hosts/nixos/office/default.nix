@@ -58,6 +58,9 @@
   };
 
   boot = {
+
+    kernelPackages = lib.mkForce pkgs.linuxPackages_latest;
+
     binfmt.emulatedSystems = [ "aarch64-linux" ];
     # kernel.sysctl."net.core.rmem_max" = 2500000;
     supportedFilesystems = [ "nfs4" ];
@@ -148,9 +151,9 @@
                 ${pkgs.iproute2}/bin/ip addr add dev wg_mail 172.22.240.98/32 peer 172.22.240.96/27
                 ${pkgs.iproute2}/bin/ip addr add dev wg_mail fd48:4b4:f3::2/128 peer fd48:4b4:f3::1/128
                 ${pkgs.iproute2}/bin/ip link set multicast on dev wg_mail
-                ${pkgs.systemd}/bin/resolvectl domain wg_mail dn42.
               '';
-              dns = [ "172.20.0.53" ];
+              # ${pkgs.systemd}/bin/resolvectl domain wg_mail dn42.
+              # dns = [ "172.20.0.53" ];
               peers = [
                 {
                   endpoint = "43.156.66.157:22616";
