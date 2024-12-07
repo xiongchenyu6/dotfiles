@@ -4,10 +4,6 @@
 { pkgs, lib, ... }:
 {
 
-  boot = {
-    kernelPackages = lib.mkDefault pkgs.linuxPackages_latest;
-  };
-
   fonts = {
     enableDefaultPackages = true;
     enableGhostscriptFonts = true;

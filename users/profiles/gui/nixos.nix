@@ -47,7 +47,7 @@
       # kdePackages.wayqt
       # kdePackages.qtstyleplugin-kvantum
       libsForQt5.oxygen-icons
-      #feishu-lark
+      feishu-lark
       websocat
       # code-cursor
       android-studio
