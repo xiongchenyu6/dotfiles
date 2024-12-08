@@ -92,6 +92,9 @@
   };
 
   programs = {
+    dconf = {
+      enable = true;
+    };
     yubikey-touch-detector = {
       enable = true;
     };
@@ -107,6 +110,7 @@
       polkitPolicyOwners = [ "freeman.xiong" ];
     };
     nm-applet = {
+
       enable = true;
     };
     wireshark = {
