@@ -39,9 +39,10 @@
           "podman"
           "tss"
           "libvirtd"
+          "kvm"
           "pulse"
           "pipewire"
-          ",systemd-journal"
+          "systemd-journal"
         ];
       };
       "xiongchenyu6" = {

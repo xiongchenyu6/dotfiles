@@ -37,7 +37,6 @@
       termius
       tdesktop
       unrar-wrapper
-      virt-manager
       whatsapp-for-linux
       #wineWowPackages.staging
       zotero
@@ -221,6 +220,12 @@
       tray = {
         enable = true;
       };
+    };
+  };
+  dconf.settings = {
+    "org/virt-manager/virt-manager/connections" = {
+      autoconnect = [ "qemu:///system" ];
+      uris = [ "qemu:///system" ];
     };
   };
 }

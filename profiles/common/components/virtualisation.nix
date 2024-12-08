@@ -1,4 +1,5 @@
-{ pkgs, ... }: {
+{ pkgs, ... }:
+{
   virtualisation = {
     libvirtd = {
       enable = true;
@@ -15,7 +16,10 @@
       enable = true;
       autoPrune = {
         enable = true;
-        flags = [ "--all" "--force" ];
+        flags = [
+          "--all"
+          "--force"
+        ];
       };
       dockerSocket.enable = true;
       defaultNetwork.settings.dns_enabled = true;
@@ -24,9 +28,14 @@
       #   enable = true;
       #   server = "ghostunnel";
       # };
-     };
+    };
   };
-  environment.systemPackages = with pkgs; [ virt-manager ];
 
   networking.firewall.checkReversePath = false;
+
+  programs = {
+    virt-manager = {
+      enable = true;
+    };
+  };
 }
