@@ -51,20 +51,14 @@
       litecli
       vsc-leetcode-cli
       mongosh
-      #mycli
+      mycli
       my2sql
       neofetch
       # nix-du
       nix-index-update
       nixpacks
       nixd
-      #node2nix
-      nodejs_latest
-      # nodePackages."bash-language-server"
-      #nodePackages."prettier"
-      #nodePackages."typescript-language-server"
-      #nodePackages."yaml-language-server"
-      # nodePackages."vscode-langservers-extracted"
+      bun
       ngrok
       nvfetcher
       oath-toolkit

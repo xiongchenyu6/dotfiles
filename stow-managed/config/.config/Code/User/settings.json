@@ -64,7 +64,6 @@
     "stm32-for-vscode.openOCDPath": false,
     "stm32-for-vscode.makePath": "/run/current-system/sw/bin/make",
     "stm32-for-vscode.armToolchainPath": "/etc/profiles/per-user/freeman.xiong/bin",
-    "nix.enableLanguageServer": true,
     "editor.largeFileOptimizations": false,
     "bitoAI.codeCompletion.enableAutoCompletion": true,
     "bitoAI.codeCompletion.enableCommentToCode": true,
@@ -80,10 +79,6 @@
     },
     "github.copilot.editor.enableAutoCompletions": true,
     "cmake.options.statusBarVisibility": "visible",
-    "nix.formatterPath": "nixfmt",
-    "[nix]": {
-        "editor.defaultFormatter": "brettm12345.nixfmt-vscode"
-    },
     "cmake.pinnedCommands": [
         "workbench.action.tasks.configureTaskRunner",
         "workbench.action.tasks.runTask"
@@ -102,11 +97,24 @@
     },
     "chat.editing.confirmEditRequestRetry": false,
     "git.confirmSync": false,
-    "nix.serverPath": "nixd",
     "[move]": {
         "editor.defaultFormatter": "mysten.prettier-move"
     },
+    "nix.serverPath": "nixd",
+    "nix.enableLanguageServer": true,
     "nix.serverSettings": {
-        
-    },
+        "nixd": {
+            "eval": {},
+            "formatting": {
+                "command": "nixfmt"
+            },
+            "options": {
+                "enable": true,
+                "target": {
+                    "args": [],
+                    "installable": "<flakeref>#nixosConfigurations.<name>.options"
+                }
+            }
+        }
+    }
 }
