@@ -181,7 +181,8 @@
     };
     netbird = {
       enable = true;
-      server = {
+      server = 
+      {
         enable = true;
         enableNginx = true;
         domain = "netbird.autolife-robotics.me";
