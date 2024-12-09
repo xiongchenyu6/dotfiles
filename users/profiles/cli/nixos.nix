@@ -64,7 +64,7 @@
       # '';
       pinentryPackage = pkgs.pinentry-tty;
       enableSshSupport = true;
-      # gpg2 -K --with-keygrip 
+      # gpg2 -K --with-keygrip
       sshKeys = [
         "7F799AE1ECC9E828896A5925E8CF69D45DC71164"
         "42C87EA7DAAD37765EB1DD0FF53339EFBBF5785C"
@@ -206,10 +206,31 @@
     topgrade = {
       enable = true;
       settings = {
-        assume_yes = true;
-        disable = [ "emacs" ];
-        set_title = false;
-        cleanup = true;
+        misc = {
+          /*
+            disable = [
+                     "system"
+                     "emacs"
+                     "nix"
+                     "home_manager"
+                     "helm"
+                     "bun"
+                   ];
+          */
+          pre_sudo = false;
+
+          only = [
+            "system"
+            "git_repos"
+            "tldr"
+            "vscode"
+          ];
+
+        };
+        linux = {
+          # nix_arguments = "--flake";
+
+        };
         git = {
           max_concurrency = 10;
           repos = [
