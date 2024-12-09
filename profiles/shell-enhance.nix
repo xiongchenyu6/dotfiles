@@ -48,8 +48,6 @@
           "heroku"
           "jsontools"
           "kubectl"
-          "npm"
-          "node"
           "pass"
           "pipenv"
           "pip"

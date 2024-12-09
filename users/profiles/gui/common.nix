@@ -15,7 +15,7 @@
       # jetbrains.idea-ultimate
       # jetbrains.rider
       mattermost-desktop
-      xournal # note taking for pdf
+      xournalpp
       slack
       tectonic
       onlyoffice-bin
@@ -46,6 +46,7 @@
       # zed-editor
       nixd
       v4l-utils
+      yaml-language-server
       dotnetCorePackages.sdk_8_0
       sui-testnet
       record_screen
