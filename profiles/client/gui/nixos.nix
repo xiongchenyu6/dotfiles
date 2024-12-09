@@ -110,7 +110,6 @@
       polkitPolicyOwners = [ "freeman.xiong" ];
     };
     nm-applet = {
-
       enable = true;
     };
     wireshark = {
