@@ -360,11 +360,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1733873195,
-        "narHash": "sha256-dTosiZ3sZ/NKoLKQ++v8nZdEHya0eTNEsaizNp+MUPM=",
+        "lastModified": 1733951607,
+        "narHash": "sha256-CN6q6iCzxI1gkNyk4xLdwaMKi10r7n+aJkRzWj8PXwQ=",
         "owner": "nix-community",
         "repo": "home-manager",
-        "rev": "f26aa4b76fb7606127032d33ac73d7d507d82758",
+        "rev": "6e5b2d9e8014b5572e3367937a329e7053458d34",
         "type": "github"
       },
       "original": {
@@ -509,11 +509,11 @@
         "pre-commit-hooks": "pre-commit-hooks"
       },
       "locked": {
-        "lastModified": 1733874108,
-        "narHash": "sha256-YledQ+zTHwC9vD6AYQ30FTj21jGf0YfqZIavsTdErq4=",
+        "lastModified": 1733959595,
+        "narHash": "sha256-wf/wOaOHS+LodCg+aNh93J08BNryEgs5V1hrCK6cBxg=",
         "owner": "oddlama",
         "repo": "nix-topology",
-        "rev": "9bfb0ba1c85ed8f818c1b667c1847c55830678d4",
+        "rev": "00731fc2d7c2f7f031e212944ca4afc8f5d8f2d3",
         "type": "github"
       },
       "original": {
@@ -535,31 +535,16 @@
         ]
       },
       "locked": {
-        "lastModified": 1733882180,
-        "narHash": "sha256-KiI6gRWYgV4x5le9ETHWVMH5LBX2vGwamELJG/joiC0=",
+        "lastModified": 1733968579,
+        "narHash": "sha256-Dy/VbXIX/QrZECXDj2nm2aFzxfX9c81v8WTGNqS8a84=",
         "owner": "nix-community",
         "repo": "nix-vscode-extensions",
-        "rev": "b5aa69a2b8c0c31e4e8a23f3dd41b474eeabf4fc",
+        "rev": "bc2bfeeb438600386610c70aa37fb75ba390a569",
         "type": "github"
       },
       "original": {
         "owner": "nix-community",
         "repo": "nix-vscode-extensions",
-        "type": "github"
-      }
-    },
-    "nixos-facter-modules": {
-      "locked": {
-        "lastModified": 1732288619,
-        "narHash": "sha256-zSQ2cR+NRJfHUVfkv+O6Wi53wXfzX8KHiO8fRfnvc0M=",
-        "owner": "numtide",
-        "repo": "nixos-facter-modules",
-        "rev": "862648589993a96480c2255197a28feea712f68f",
-        "type": "github"
-      },
-      "original": {
-        "owner": "numtide",
-        "repo": "nixos-facter-modules",
         "type": "github"
       }
     },
@@ -673,11 +658,11 @@
         "treefmt-nix": "treefmt-nix"
       },
       "locked": {
-        "lastModified": 1733899285,
-        "narHash": "sha256-CKT0tby8kVlfkPOYG7HyvyMh5s93yEEGyT1ZLZJMBdY=",
+        "lastModified": 1733969961,
+        "narHash": "sha256-tp7sFqKXjN8413A40sqmH+WCqbu7U65lNGnmysZXfko=",
         "owner": "nix-community",
         "repo": "NUR",
-        "rev": "9b5a2bf776bf1fa971c27e9f909483b9cee3ff8f",
+        "rev": "30b4c6b4d7d21f619f17335295abfd1cac8580e7",
         "type": "github"
       },
       "original": {
@@ -835,11 +820,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1733905269,
-        "narHash": "sha256-1+J4CxmmxeHVGqF3kryQABzca1vWinrpDQnbhuY4coM=",
+        "lastModified": 1733932109,
+        "narHash": "sha256-q1iV8L+ouptk+5+jZRZP822Jmdg8oWpeR4hTqU2Kz78=",
         "ref": "refs/heads/develop",
-        "rev": "b78204bc6cb1156835cc31171ffb05cb5469e19b",
-        "revCount": 18,
+        "rev": "33903a5dfb02a74b070b5ed6601ce1e87cce2312",
+        "revCount": 19,
         "type": "git",
         "url": "ssh://git@github.com/AutoLifeRobot/robot_signal_dashboard.git"
       },
@@ -863,7 +848,6 @@
         "nix-alien": "nix-alien",
         "nix-topology": "nix-topology",
         "nix-vscode-extensions": "nix-vscode-extensions",
-        "nixos-facter-modules": "nixos-facter-modules",
         "nixos-hardware": "nixos-hardware",
         "nixos-wsl": "nixos-wsl",
         "nixpkgs": "nixpkgs",
@@ -933,11 +917,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1733706349,
-        "narHash": "sha256-+V546s1ivi6epTinVhKhdx8h0r9Oiq2Lx4q+KDDqTTw=",
+        "lastModified": 1733965925,
+        "narHash": "sha256-hPXtCGEna+jerXrednMwjVuBV/AqrSAVida0yTTRMqE=",
         "owner": "nix-community",
         "repo": "srvos",
-        "rev": "aa9ae0b6b140410704e064b88d1f23a285bfd03e",
+        "rev": "04f4200ac3a4eee62f9065b1f35010a382adfc6a",
         "type": "github"
       },
       "original": {

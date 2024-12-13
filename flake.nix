@@ -8,15 +8,17 @@
 
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
 
-    nixpkgs-stable = {
-      url = "github:NixOS/nixpkgs/nixos-24.11";
-    };
+    nixpkgs-stable.url = "github:NixOS/nixpkgs/nixos-24.11";
 
     nixos-hardware.url = "github:NixOS/nixos-hardware/master";
 
     nur.url = "github:nix-community/NUR";
 
     flake-compat.url = "github:edolstra/flake-compat";
+
+    flake-parts.url = "github:hercules-ci/flake-parts";
+
+    impermanence.url = "github:nix-community/impermanence";
 
     flake-utils = {
       url = "github:numtide/flake-utils";
@@ -32,19 +34,6 @@
       };
     };
 
-    darwin = {
-      url = "github:lnl7/nix-darwin/master";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-    nixos-wsl = {
-      url = "github:nix-community/NixOS-WSL/main";
-      inputs = {
-        flake-utils.follows = "flake-utils";
-        nixpkgs.follows = "nixpkgs";
-        flake-compat.follows = "flake-compat";
-      };
-    };
-
     nix-vscode-extensions = {
       url = "github:nix-community/nix-vscode-extensions";
       inputs = {
@@ -53,24 +42,12 @@
         flake-compat.follows = "flake-compat";
       };
     };
-    flake-parts.url = "github:hercules-ci/flake-parts";
 
     xiongchenyu6 = {
       url = "github:xiongchenyu6/nur-packages";
       inputs = {
         nixpkgs.follows = "nixpkgs";
         flake-parts.follows = "flake-parts";
-      };
-    };
-
-    impermanence.url = "github:nix-community/impermanence";
-
-    pre-commit-hooks = {
-      url = "github:cachix/pre-commit-hooks.nix";
-      inputs = {
-        nixpkgs.follows = "nixpkgs";
-        nixpkgs-stable.follows = "nixpkgs-stable";
-        flake-compat.follows = "flake-compat";
       };
     };
 
@@ -92,22 +69,6 @@
       };
     };
 
-    foundry = {
-      url = "github:shazow/foundry.nix/monthly";
-      inputs = {
-        nixpkgs.follows = "nixpkgs";
-        flake-utils.follows = "flake-utils";
-      };
-    };
-
-    poetry2nix = {
-      url = "github:nix-community/poetry2nix";
-      inputs = {
-        nixpkgs.follows = "nixpkgs";
-        flake-utils.follows = "flake-utils";
-        systems.follows = "systems";
-      };
-    };
     vscode-server = {
       url = "github:nix-community/nixos-vscode-server";
       inputs = {
@@ -150,13 +111,49 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    nixos-facter-modules.url = "github:numtide/nixos-facter-modules";
+    pre-commit-hooks = {
+      url = "github:cachix/pre-commit-hooks.nix";
+      inputs = {
+        nixpkgs.follows = "nixpkgs";
+        nixpkgs-stable.follows = "nixpkgs-stable";
+        flake-compat.follows = "flake-compat";
+      };
+    };
 
     nix-topology = {
       url = "github:oddlama/nix-topology";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    darwin = {
+      url = "github:lnl7/nix-darwin/master";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    nixos-wsl = {
+      url = "github:nix-community/NixOS-WSL/main";
+      inputs = {
+        flake-utils.follows = "flake-utils";
+        nixpkgs.follows = "nixpkgs";
+        flake-compat.follows = "flake-compat";
+      };
+    };
+    foundry = {
+      url = "github:shazow/foundry.nix/monthly";
+      inputs = {
+        nixpkgs.follows = "nixpkgs";
+        flake-utils.follows = "flake-utils";
+      };
+    };
+
+    poetry2nix = {
+      url = "github:nix-community/poetry2nix";
+      inputs = {
+        nixpkgs.follows = "nixpkgs";
+        flake-utils.follows = "flake-utils";
+        systems.follows = "systems";
+      };
+    };
   };
 
   outputs =
@@ -182,7 +179,6 @@
       robot_signal_dashboard,
       autolife_www,
       srvos,
-      nixos-facter-modules,
       nix-topology,
       ...
     }@inputs:
@@ -198,6 +194,7 @@
         nix-vscode-extensions
         nix-topology
       ];
+
       specialArgs = {
         profiles = {
           share = import ./profiles/shares.nix { inherit lib; };
@@ -212,7 +209,7 @@
           # telegram-desktop =
           #   nixpkgs-stable.legacyPackages.x86_64-linux.telegram-desktop;
           # waybar = nixpkgs-master.legacyPackages.x86_64-linux.waybar;
-          www_dist = autolife_www.packages.x86_64-linux.dist;
+          # www_dist = autolife_www.packages.x86_64-linux.dist;
         })
       ];
       darwin-modules = [ home-manager.darwinModules.home-manager ];
@@ -278,10 +275,10 @@
               nixos-facter
               nixos-anywhere
             ];
-            shellHook = ''
-              export NIX_SSHOPTS="-p 2222"
-              export PULUMI_CONFIG_PASSPHRASE=""
-            '';
+            # shellHook = ''
+            #   export NIX_SSHOPTS="-p 2222"
+            #   export PULUMI_CONFIG_PASSPHRASE=""
+            # '';
           };
           #export NIX_SSHOPTS="-Y -p 2222"
           pre-commit = {
@@ -469,12 +466,34 @@
             ] ++ nixos-modules;
           };
 
-          generic-nixos-facter = nixpkgs.lib.nixosSystem {
+          huawei-bj-001 = nixpkgs.lib.nixosSystem {
+            inherit specialArgs;
+            modules = [
+              ./hosts/nixos/huawei-bj-001
+              srvos.nixosModules.server
+              srvos.nixosModules.mixins-nginx
+              robot_signal_dashboard.nixosModules.robotSignalDashboard
+            ] ++ nixos-modules;
+          };
+
+          huoshan-bj-001 = nixpkgs.lib.nixosSystem {
+            inherit specialArgs;
+            modules = [
+              ./hosts/nixos/huoshan-bj-001
+              srvos.nixosModules.server
+              srvos.nixosModules.mixins-nginx
+              robot_signal_dashboard.nixosModules.robotSignalDashboard
+            ] ++ nixos-modules;
+          };
+
+          generic-nixos = nixpkgs.lib.nixosSystem {
             inherit specialArgs;
             system = "x86_64-linux";
             modules = [
               ./hosts/nixos/nixos-anywhere
               disko.nixosModules.disko
+              srvos.nixosModules.server
+              ./hardware-configuration.nix
             ];
           };
           do = nixpkgs.lib.nixosSystem {

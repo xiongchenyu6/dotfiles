@@ -50,7 +50,6 @@
           "hmac-sha2-256-etm@openssh.com"
         ];
       };
-      ports = [ 2222 ];
       extraConfig = ''
         StreamLocalBindUnlink yes
       '';

@@ -115,3 +115,7 @@ wsl --set-version Ubuntu-20.04 2
 #
 sudo nix-env --list-generations --profile /nix/var/nix/profiles/system
 ```
+
+```bash
+nixos-rebuild switch --option substituters "https://mirror.sjtu.edu.cn/nix-channels/store" --use-substitutes --flake .#huawei-bj-001 --target-host root@1.94.246.7
+```
