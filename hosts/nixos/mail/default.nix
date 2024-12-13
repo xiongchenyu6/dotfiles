@@ -59,7 +59,7 @@ in
   zramSwap.enable = true;
 
   boot = {
-    #isContainer = true;
+    kernelPackages = lib.mkForce pkgs.linuxPackages_latest;
     tmp.cleanOnBoot = true;
     kernel = {
       sysctl = {
