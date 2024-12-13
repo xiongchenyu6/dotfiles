@@ -58,7 +58,6 @@
   };
 
   boot = {
-
     kernelPackages = lib.mkForce pkgs.linuxPackages_latest;
 
     binfmt.emulatedSystems = [ "aarch64-linux" ];

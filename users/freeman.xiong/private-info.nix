@@ -85,53 +85,34 @@
                 };
               };
               "mail*" = {
-                port = 2222;
                 hostname = "43.156.66.157";
-                forwardX11 = true;
-                forwardX11Trusted = true;
+                # forwardX11 = true;
+                # forwardX11Trusted = true;
               };
               "office*" = {
-                port = 2222;
                 hostname = "172.22.240.98";
-                forwardX11 = true;
-                forwardX11Trusted = true;
               };
               "game*" = {
-                port = 2222;
                 hostname = "172.22.240.99";
-                forwardX11 = true;
-                forwardX11Trusted = true;
               };
               "digital*" = {
-                port = 2222;
                 hostname = "143.198.87.228";
-                forwardX11 = true;
-                forwardX11Trusted = true;
               };
               "netbird*" = {
-                port = 2222;
                 hostname = "43.198.90.76";
-                forwardX11 = true;
-                forwardX11Trusted = true;
               };
               "heco-nginx*" = {
                 hostname = "54.255.82.12";
                 user = "root";
-                forwardX11 = true;
-                forwardX11Trusted = true;
               };
               "heco-zammad*" = {
                 hostname = "10.16.0.96";
                 user = "root";
-                forwardX11 = true;
-                forwardX11Trusted = true;
                 proxyJump = "heco-nginx";
               };
               "heco-mysql*" = {
                 hostname = "10.16.0.230";
                 user = "root";
-                forwardX11 = true;
-                forwardX11Trusted = true;
                 proxyJump = "heco-nginx";
               };
             };

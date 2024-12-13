@@ -6,6 +6,8 @@ keys:
   - &digital age1qfgzhrljhsvq89g9shwfdrwdp4r6723q5qpr83fp60adatjld96qk8ft6a
   - &game age168py740tdddslyqlckekg0qqmf2uhl9suvm785jwtt0u2wj0rdqqt67vnx
   - &netbird age1h3tn6t8cdzgjxk3x8kaxh3qxmr2p3qvsacpgfx5ak87cfl7cpdysg8qcas
+  - &huawei-bj-001 age1ps4yc5vx6ne098pnqc6xw6u6qtah89g6yxz0y8szm54g4untmc4qsgl9me
+  - &huoshan-bj-001 age1pyjsej0wvgu9txgxre0glt8kwfv4ngdrdr5jk7ywy88greexdgdqzrqjek
 
 creation_rules:
   - path_regex: secrets/[^/]+\.yaml$
@@ -16,6 +18,9 @@ creation_rules:
           - *digital
           - *game
           - *netbird
+          - *huawei-bj-001
+          - *huoshan-bj-001
+          
         pgp:
           - *freeman
           - *xiong
