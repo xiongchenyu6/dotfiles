@@ -1,10 +1,12 @@
-{ profiles, lib, ... }: {
+{ profiles, lib, ... }:
+{
 
   users.mutableUsers = lib.mkDefault false;
 
   users.users.root = {
-    openssh.authorizedKeys.keys =
-      [ profiles.share.users-dict."freeman.xiong".public-key ];
+    openssh.authorizedKeys.keys = lib.mkDefault [
+      profiles.share.users-dict."freeman.xiong".public-key
+    ];
 
   };
   imports = [ ./common.nix ];

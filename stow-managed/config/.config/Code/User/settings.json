@@ -117,5 +117,6 @@
             }
         }
     },
-    "nix.formatterPath": "nixfmt"
+    "nix.formatterPath": "nixfmt",
+    "rust-analyzer.workspace.discoverConfig": null
 }
