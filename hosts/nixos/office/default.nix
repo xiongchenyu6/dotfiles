@@ -268,6 +268,20 @@
     #   tags = [ "env:inner" ];
     # };
 
+    postgresql = {
+      enable = true;
+      ensureUsers = [
+        {
+          name = "freeman.xiong";
+          ensureDBOwnership= true;
+          ensureClauses = {
+            superuser = true;
+          };
+        }
+      ];
+      ensureDatabases = [ "freeman.xiong" ];
+    };
+
     netbird.enable = true;
 
     bird2 = {

@@ -109,7 +109,7 @@ in
           80 # ui
           88 # kerberos
           89
-          179
+          179 # bgp
           389
           443
           464 # kerberos change password
