@@ -38,7 +38,7 @@
       tdesktop
       unrar-wrapper
       whatsapp-for-linux
-      #wineWowPackages.staging
+      wineWow64Packages.wayland
       zotero
       kdePackages.dolphin
       kdePackages.qtwayland
