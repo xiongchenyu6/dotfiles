@@ -39,6 +39,7 @@
           "podman"
           "tss"
           "libvirtd"
+          "qemu-libvirtd"
           "kvm"
           "pulse"
           "pipewire"

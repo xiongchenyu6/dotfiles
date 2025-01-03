@@ -48,7 +48,7 @@
   };
 
   boot = {
-    kernelPackages = pkgs.linuxPackages_6_11;
+    kernelPackages = pkgs.linuxPackages_latest;
     binfmt.emulatedSystems = [ "aarch64-linux" ];
     #    kernelParams = [ "psmouse.synaptics_intertouch=0" ];
     kernel = {
@@ -58,23 +58,23 @@
     };
 
     loader = {
-      # systemd-boot = {
-      #   configurationLimit = 12;
-      #   enable = true;
-      #   # netbootxyz.enable = true;
-      #   # memtest86.enable = true;
-      # };
+      systemd-boot = {
+        configurationLimit = 12;
+        enable = true;
+        # netbootxyz.enable = true;
+        # memtest86.enable = true;
+      };
       efi = {
         canTouchEfiVariables = true;
         efiSysMountPoint = "/boot";
       };
-      grub = {
-        enable = true;
-        efiSupport = true;
-        device = "nodev";
-        configurationLimit = 5;
-        useOSProber = true;
-      };
+      # grub = {
+      #   enable = true;
+      #   efiSupport = true;
+      #   device = "nodev";
+      #   configurationLimit = 5;
+      #   useOSProber = true;
+      # };
     };
   };
 
@@ -178,6 +178,20 @@
     };
 
   services = {
+    postgresql = {
+      enable = true;
+      ensureUsers = [
+        {
+          name = "freeman.xiong";
+          ensureDBOwnership = true;
+          ensureClauses = {
+            superuser = true;
+          };
+        }
+      ];
+      ensureDatabases = [ "freeman.xiong" ];
+    };
+
     vscode-server.enable = true;
     frp = {
       enable = false;

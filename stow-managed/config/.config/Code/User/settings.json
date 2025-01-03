@@ -118,5 +118,13 @@
         }
     },
     "nix.formatterPath": "nixfmt",
-    "rust-analyzer.workspace.discoverConfig": null
+    "rust-analyzer.workspace.discoverConfig": null,
+    "git.blame.editorDecoration.enabled": true,
+    "git.blame.statusBarItem.enabled": true,
+    "terminal.integrated.fontLigatures": true,
+    "typescript.experimental.expandableHover": true,
+    "editor.pasteAs.preferences": [
+        "chat.attach.text"
+    ],
+    "terminal.integrated.suggest.enabled": true
 }
