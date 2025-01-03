@@ -34,9 +34,9 @@
       pciutils
       patchelf
       procs
-      qemu_kvm
+      #qemu_kvm
       tpm2-tools
-      zssh
+      #zssh
     ];
 
     pathsToLink = [ "/share/zsh" ];

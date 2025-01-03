@@ -23,12 +23,12 @@
       ueberzugpp
       ytfzf
       usbutils
-      stlink-gui
+      #stlink-gui
       stm32cubemx
       gcc-arm-embedded
       microsoft-edge
       #vault
-      solana-validator
+      solana-cli
       # expect mkpasswd conflict
       gpg-tui
       sysz
@@ -42,7 +42,7 @@
       lnav
       lego
       #gitbutler
-      unityhub
+      #unityhub
       # zed-editor
       nixd
       v4l-utils
@@ -125,7 +125,7 @@
           direnv
           dap-mode
           doom-modeline
-          emacsql-sqlite-builtin # for org-roam
+          #emacsql-sqlite-builtin # for org-roam
           format-all
           gradle-mode
           graphviz-dot-mode
