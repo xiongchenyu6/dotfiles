@@ -71,7 +71,6 @@
     "workbench.colorTheme": "Default Dark Modern",
     "[typescriptreact]": {},
     "security.promptForLocalFileProtocolHandling": false,
-    "editor.formatOnSave": true,
     "notebook.formatOnSave.enabled": true,
     "files.autoSave": "afterDelay",
     "files.associations": {
@@ -126,5 +125,6 @@
     "editor.pasteAs.preferences": [
         "chat.attach.text"
     ],
-    "terminal.integrated.suggest.enabled": true
+    "terminal.integrated.suggest.enabled": true,
+    "editor.formatOnSaveMode": "modificationsIfAvailable"
 }

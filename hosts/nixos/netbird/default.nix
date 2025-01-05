@@ -181,8 +181,7 @@
     };
     netbird = {
       enable = true;
-      server = 
-      {
+      server = {
         enable = true;
         enableNginx = true;
         domain = "netbird.work-robotics.me";
@@ -292,29 +291,6 @@
             };
           };
         };
-        "work.ai" = {
-          addSSL = true;
-          acmeRoot = null;
-          useACMEHost = "ai";
-          kTLS = true;
-          locations = {
-            "/" = with pkgs; {
-              root = www_dist;
-            };
-          };
-        };
-        "www.work.ai" = {
-          addSSL = true;
-          acmeRoot = null;
-          useACMEHost = "ai";
-          kTLS = true;
-          locations = {
-            "/" = with pkgs; {
-              root = www_dist;
-            };
-          };
-        };
-
       };
     };
   };
