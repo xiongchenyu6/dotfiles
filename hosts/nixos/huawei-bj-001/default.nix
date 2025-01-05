@@ -18,7 +18,7 @@
     ../../../profiles/core/nixos.nix
     ../../../profiles/server/components
     ../../../profiles/common/components
-    ../../../profiles/common/components/datadog-agent.nix
+    # ../../../profiles/common/components/datadog-agent.nix
     ../../../profiles/cn.nix
   ];
   # sops.secrets."netbird/coturn/password" = {

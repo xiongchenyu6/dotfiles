@@ -18,7 +18,8 @@
     ../../../profiles/core/nixos.nix
     ../../../profiles/server/components
     ../../../profiles/common/components
-    ../../../profiles/common/components/datadog-agent.nix
+    # ../../../profiles/common/components/datadog-agent.nix
+    ../../../profiles/cn.nix
   ];
   sops.secrets."netbird/coturn/password" = {
     owner = "turnserver";
@@ -117,6 +118,29 @@
             };
           };
         };
+        # "autolife.ai" = {
+        #   addSSL = true;
+        #   acmeRoot = null;
+        #   useACMEHost = "ai";
+        #   kTLS = true;
+        #   locations = {
+        #     "/" = with pkgs; {
+        #       root = www_dist;
+        #     };
+        #   };
+        # };
+        # "www.autolife.ai" = {
+        #   addSSL = true;
+        #   acmeRoot = null;
+        #   useACMEHost = "ai";
+        #   kTLS = true;
+        #   locations = {
+        #     "/" = with pkgs; {
+        #       root = www_dist;
+        #     };
+        #   };
+        # };
+
       };
     };
   };

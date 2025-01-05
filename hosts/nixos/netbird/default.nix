@@ -181,8 +181,7 @@
     };
     netbird = {
       enable = true;
-      server = 
-      {
+      server = {
         enable = true;
         enableNginx = true;
         domain = "netbird.autolife-robotics.me";
@@ -292,29 +291,6 @@
             };
           };
         };
-        "autolife.ai" = {
-          addSSL = true;
-          acmeRoot = null;
-          useACMEHost = "ai";
-          kTLS = true;
-          locations = {
-            "/" = with pkgs; {
-              root = www_dist;
-            };
-          };
-        };
-        "www.autolife.ai" = {
-          addSSL = true;
-          acmeRoot = null;
-          useACMEHost = "ai";
-          kTLS = true;
-          locations = {
-            "/" = with pkgs; {
-              root = www_dist;
-            };
-          };
-        };
-
       };
     };
   };
