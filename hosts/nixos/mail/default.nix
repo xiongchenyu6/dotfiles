@@ -40,7 +40,7 @@ in
     ../../../profiles/common/apps/bird-inner.nix
     #../../../profiles/server/apps/log/promtail.nix
     # ../../../profiles/server/apps/admin/sssd.nix
-    ../../../profiles/common/components/datadog-agent.nix
+    # ../../../profiles/common/components/datadog-agent.nix
   ];
 
   boot.loader.grub.device = "/dev/vda";
