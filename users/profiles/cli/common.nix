@@ -146,7 +146,7 @@
         require-cross-certification = true;
         no-symkey-cache = true;
         use-agent = true;
-        throw-keyids = true;
+        #throw-keyids = true;
       };
     };
 
