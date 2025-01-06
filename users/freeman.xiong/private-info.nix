@@ -24,7 +24,7 @@
           git = {
             includes = [
               {
-                condition = "gitdir:**/Private/**/.git";
+                condition = "gitdir:**/github/**/.git";
                 contents = {
                   user = {
                     email = "xiongchenyu6@gmail.com";
@@ -37,7 +37,7 @@
                 };
               }
               {
-                condition = "gitdir:**/Workspace/**/.git";
+                condition = "gitdir:**/gitlab/tron/**/.git";
                 contents = {
                   user = {
                     email = "freeman.xiong@tron.network";

@@ -66,7 +66,7 @@
       enableSshSupport = true;
       # gpg2 -K --with-keygrip
       sshKeys = [
-        "7F799AE1ECC9E828896A5925E8CF69D45DC71164"
+        "AB721FF9682FF07B88063C8FADEB89B859C7ACB1"
         "42C87EA7DAAD37765EB1DD0FF53339EFBBF5785C"
       ];
     };
