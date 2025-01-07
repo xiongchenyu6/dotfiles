@@ -301,7 +301,7 @@ in
             settings = {
               clients = [
                 {
-                  id = builtins.readFile ../../../secrets/v2ray.password;
+                  id = builtins.getEnv "V2RAY";
                   alterId = 64;
                 }
               ];

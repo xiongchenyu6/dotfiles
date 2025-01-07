@@ -32,7 +32,7 @@
     };
 
     settings = {
-      access-tokens = builtins.readFile ../../secrets/access-key.password;
+      access-tokens = "github.com=${builtins.getEnv "Github_Access_Token"}";
       accept-flake-config = true;
       allow-import-from-derivation = true;
       experimental-features = [

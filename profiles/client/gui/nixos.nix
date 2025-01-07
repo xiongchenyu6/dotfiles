@@ -42,6 +42,9 @@
   };
 
   services = {
+    pulseaudio = {
+      enable = false;
+    };
     # clamav = {
     #   updater = { enable = true; };
     #   daemon = { enable = true; };

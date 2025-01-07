@@ -56,9 +56,6 @@
   hardware = {
     nvidia.open = false;
 
-    pulseaudio = {
-      enable = false;
-    };
     bluetooth = {
       enable = true;
     };

@@ -94,7 +94,7 @@
         };
         auth = {
           method = "token";
-          token = builtins.readFile ../../../secrets/frp.token;
+          token = builtins.getEnv "FRP";
         };
       };
     };
