@@ -21,3 +21,15 @@ creation_rules:
           - *huoshan-bj-001
         pgp:
           - *xiongchenyu
+  - path_regex: secrets/[^/]+\.env$
+    key_groups:
+      - age:
+          - *office
+          - *mail
+          - *digital
+          - *game
+          - *netbird
+          - *huawei-bj-001
+          - *huoshan-bj-001
+        pgp:
+          - *xiongchenyu

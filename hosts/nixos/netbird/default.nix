@@ -175,7 +175,7 @@
         };
         auth = {
           method = "token";
-          token = builtins.readFile ../../../secrets/frp.token;
+          token = builtins.getEnv "FRP";
         };
       };
     };
@@ -190,11 +190,52 @@
           domain = "netbird.autolife-robotics.me";
           enableNginx = true;
           oidcConfigEndpoint = "https://dev-bcz6ouy6jucjcnut.jp.auth0.com/.well-known/openid-configuration";
-          settings = lib.importJSON ../../../secrets/management.password;
-          # extraOptions = [
-          #   "--metrics-port"
-          #   "9091"
-          # ];
+          turnDomain = "netbird.autolife-robotics.me";
+          turnPort = 3478;
+          metricsPort = 9092;
+          settings = {
+            TURNConfig = {
+              Turns = [
+                {
+                  Proto = "udp";
+                  URI = "turn:netbird.autolife-robotics.me:3478";
+                  Username = "netbird";
+                  Password = builtins.getEnv "TRUN_PASSWORD";
+                }
+              ];
+            };
+            DataStoreEncryptionKey = builtins.getEnv "DataStoreEncryptionKey";
+            IdpManagerConfig = {
+              ManagerType = "auth0";
+              ClientConfig = {
+                Issuer = "https://dev-bcz6ouy6jucjcnut.jp.auth0.com";
+                TokenEndpoint = "https://dev-bcz6ouy6jucjcnut.jp.auth0.com/oauth/token";
+                ClientID = "eD2cdw9iyfqEgZWWdCHeQ4xSeT30jYJW";
+                ClientSecret = builtins.getEnv "IDP_ClientSecret";
+              };
+              ExtraConfig = {
+                Audience = "https://dev-bcz6ouy6jucjcnut.jp.auth0.com/api/v2/";
+              };
+            };
+            DeviceAuthorizationFlow = {
+              Provider = "hosted";
+              ProviderConfig = {
+                Audience = "https://dev-bcz6ouy6jucjcnut.jp.auth0.com/api/v2/";
+                Domain = null;
+                ClientID = "EPjADNz97o2MjAEGdGd7cbxjM33PC8ZJ";
+                TokenEndpoint = "https://dev-bcz6ouy6jucjcnut.jp.auth0.com/oauth/token";
+                DeviceAuthEndpoint = "https://dev-bcz6ouy6jucjcnut.jp.auth0.com/oauth/device/code";
+              };
+            };
+            PKCEAuthorizationFlow = {
+              ProviderConfig = {
+                Audience = "https://dev-bcz6ouy6jucjcnut.jp.auth0.com/api/v2/";
+                ClientID = "QoD48IZw95dyYkn7ZMCCGIDVYwGZ94X3";
+                AuthorizationEndpoint = "https://dev-bcz6ouy6jucjcnut.jp.auth0.com/authorize";
+                TokenEndpoint = "https://dev-bcz6ouy6jucjcnut.jp.auth0.com/oauth/token";
+              };
+            };
+          };
         };
         signal = {
           enable = true;
