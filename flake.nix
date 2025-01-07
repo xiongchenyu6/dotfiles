@@ -132,7 +132,6 @@
     nixos-wsl = {
       url = "github:nix-community/NixOS-WSL/main";
       inputs = {
-        flake-utils.follows = "flake-utils";
         nixpkgs.follows = "nixpkgs";
         flake-compat.follows = "flake-compat";
       };
@@ -273,10 +272,9 @@
               nixos-facter
               nixos-anywhere
             ];
-            # shellHook = ''
-            #   export NIX_SSHOPTS="-p 2222"
-            #   export PULUMI_CONFIG_PASSPHRASE=""
-            # '';
+            shellHook = ''
+              export $(sops -d ./secrets/common.env | xargs)
+            '';
           };
           #export NIX_SSHOPTS="-Y -p 2222"
           pre-commit = {
