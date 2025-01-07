@@ -280,6 +280,20 @@ in
     };
   services = {
     # avahi = { allowInterfaces = [ "wg_office" ]; };
+    postgresql = {
+      enable = true;
+      ensureUsers = [
+        {
+          name = "freeman.xiong";
+          ensureDBOwnership = true;
+          ensureClauses = {
+            superuser = true;
+          };
+        }
+      ];
+      ensureDatabases = [ "freeman.xiong" ];
+    };
+
     coturn = {
       enable = true;
       realm = "mail.autolife-robotics.me";
