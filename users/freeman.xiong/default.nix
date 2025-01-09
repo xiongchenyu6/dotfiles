@@ -22,8 +22,8 @@
 
         openssh.authorizedKeys.keys = [ profiles.share.users-dict."freeman.xiong".public-key ];
         shell = pkgs.zsh;
-
         hashedPasswordFile = lib.mkDefault config.sops.secrets."user/freeman/pass".path;
+
         extraGroups = [
           "networkmanager"
           "wheel"

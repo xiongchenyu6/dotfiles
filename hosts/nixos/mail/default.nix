@@ -199,18 +199,6 @@ in
             ];
           in
           {
-            wg_digital = {
-              inherit privateKeyFile address table;
-              listenPort = 22618;
-              peers = [
-                {
-                  endpoint = "178.128.82.145:22616";
-                  publicKey = profiles.share.hosts-dict.digital.wg.public-key;
-                  inherit allowedIPs;
-                }
-              ];
-            };
-
             wg_office = {
               inherit address privateKeyFile table;
               listenPort = 22616;
@@ -242,6 +230,23 @@ in
                 }
               ];
             };
+            wg_game_office = {
+              inherit address privateKeyFile table;
+              listenPort = 22618;
+              postUp = ''
+                ${pkgs.iproute2}/bin/ip addr add dev wg_game_office 172.22.240.97/32 peer 172.22.240.100/32
+                ${pkgs.iproute2}/bin/ip addr add dev wg_game_office fd48:4b4:f3::1/128 peer fd48:4b4:f3::4/128
+                ${pkgs.iproute2}/bin/ip link set multicast on dev wg_game_office
+              '';
+
+              peers = [
+                {
+                  publicKey = "nBEkTpn4kRYXS9r7beXh3uMYJBAq/534byXv8NsB8gM=";
+                  inherit allowedIPs;
+                }
+              ];
+            };
+
             wg_theresa = {
               inherit privateKeyFile address table;
               listenPort = 23396;

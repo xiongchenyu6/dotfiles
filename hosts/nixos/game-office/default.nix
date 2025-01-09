@@ -28,7 +28,7 @@
   ];
 
   # sops.secrets."wireguard/office" = { };
-  sops.secrets."wireguard/game" = { };
+  sops.secrets."wireguard/game-office" = { };
   # /nix /var /root /nix/persist
 
   # Enable users/freeman gui
@@ -48,6 +48,7 @@
   };
 
   boot = {
+    kernelPackages = pkgs.linuxPackages_latest;
     binfmt.emulatedSystems = [ "aarch64-linux" ];
     #    kernelParams = [ "psmouse.synaptics_intertouch=0" ];
     kernel = {
@@ -122,20 +123,19 @@
       wg-quick = {
         interfaces = {
           wg_mail = {
-            privateKeyFile = config.sops.secrets."wireguard/game".path;
+            privateKeyFile = config.sops.secrets."wireguard/game-office".path;
             table = "off";
             address = [ "fe80::102/64" ];
-            dns = [ "172.20.0.53" ];
+            #dns = [ "172.20.0.53" ];
             postUp = ''
-              ${pkgs.iproute2}/bin/ip addr add dev wg_mail 172.22.240.99/32 peer 172.22.240.96/27
-              ${pkgs.iproute2}/bin/ip addr add dev wg_mail fd48:4b4:f3::3/128 peer fd48:4b4:f3::1/128
+              ${pkgs.iproute2}/bin/ip addr add dev wg_mail 172.22.240.100/32 peer 172.22.240.96/27
+              ${pkgs.iproute2}/bin/ip addr add dev wg_mail fd48:4b4:f3::4/128 peer fd48:4b4:f3::1/128
               ${pkgs.iproute2}/bin/ip link set multicast on dev wg_mail
-              ${pkgs.systemd}/bin/resolvectl domain wg_mail dn42.
             '';
 
             peers = [
               {
-                endpoint = "43.156.66.157:22617";
+                endpoint = "43.156.66.157:22618";
                 publicKey = profiles.share.hosts-dict.mail.wg.public-key;
                 persistentKeepalive = 30;
                 allowedIPs = [
@@ -190,7 +190,7 @@
     };
     bird2 = {
       enable = true;
-      config = mylib.bird2-inner-config "172.22.240.99" "fd48:4b4:f3::3";
+      config = mylib.bird2-inner-config "172.22.240.100" "fd48:4b4:f3::4";
     };
   };
 
