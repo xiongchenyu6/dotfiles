@@ -159,6 +159,21 @@
     };
 
   services = {
+
+    postgresql = {
+      enable = true;
+      ensureUsers = [
+        {
+          name = "freeman.xiong";
+          ensureDBOwnership = true;
+          ensureClauses = {
+            superuser = true;
+          };
+        }
+      ];
+      ensureDatabases = [ "freeman.xiong" ];
+    };
+
     frp = {
       enable = false;
       role = "client";
