@@ -99,7 +99,7 @@
                 hostname = "143.198.87.228";
               };
               "netbird*" = {
-                hostname = "43.198.90.76";
+                hostname = "18.163.206.49";
               };
               "heco-nginx*" = {
                 hostname = "54.255.82.12";
