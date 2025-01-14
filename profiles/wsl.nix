@@ -1,8 +1,8 @@
-{ pkgs, ... }:
+{ pkgs, lib, ... }:
 {
   wsl = {
     enable = true;
-    defaultUser = "freeman.xiong";
+    defaultUser = lib.mkDefault "freeman.xiong";
     extraBin = with pkgs; [
       { src = "${coreutils}/bin/uname"; }
       { src = "${coreutils}/bin/dirname"; }

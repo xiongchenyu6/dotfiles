@@ -50,7 +50,16 @@
   boot = {
     kernelPackages = pkgs.linuxPackages_latest;
     binfmt.emulatedSystems = [ "aarch64-linux" ];
-    #    kernelParams = [ "psmouse.synaptics_intertouch=0" ];
+    initrd.kernelModules = [
+      "vfio_pci"
+      "vfio"
+      "vfio_iommu_type1"
+    ];
+    kernelParams = [
+      "iommu=pt"
+      "vfio-pci.ids=10de:24dd,10de:228b"
+    ];
+
     kernel = {
       sysctl = {
         "net.ipv4.ip_forward" = 1;
@@ -68,13 +77,6 @@
         canTouchEfiVariables = true;
         efiSysMountPoint = "/boot";
       };
-      # grub = {
-      #   enable = true;
-      #   efiSupport = true;
-      #   device = "nodev";
-      #   configurationLimit = 5;
-      #   useOSProber = true;
-      # };
     };
   };
 
@@ -178,6 +180,16 @@
     };
 
   services = {
+    # xrdp = {
+    #   enable = true;
+    #   openFirewall = true;
+    #   defaultWindowManager = "exec Hyprland";
+    # };
+    sunshine = {
+      enable = true;
+      openFirewall = true;
+      capSysAdmin = true;
+    };
     postgresql = {
       enable = true;
       ensureUsers = [

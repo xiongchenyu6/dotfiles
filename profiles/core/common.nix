@@ -10,9 +10,9 @@
     tree
     litecli
     ssh-to-age
-    imagemagick
     lrzsz
     home-manager
+    dmidecode
   ];
 
   programs = {

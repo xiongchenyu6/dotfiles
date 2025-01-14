@@ -8,8 +8,8 @@
       hyprpaper
       hyprpicker
       wl-clipboard
-      #wf-recorder
-      wev
+      wf-recorder # screen recording
+      wev # get input events
       waypipe
     ];
   };
@@ -31,5 +31,4 @@
       ];
     };
   };
-
 }

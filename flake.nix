@@ -332,8 +332,10 @@
           office = nixpkgs.lib.nixosSystem {
             inherit specialArgs;
             modules = [
-              #srvos.nixosModules.desktop
               nixos-hardware.nixosModules.dell-latitude-5520
+              srvos.nixosModules.mixins-trusted-nix-caches
+              srvos.nixosModules.mixins-nix-experimental
+              srvos.nixosModules.mixins-tracing
               ./hosts/nixos/office
               {
                 topology.self.interfaces.home = {
@@ -365,8 +367,12 @@
           game-office = nixpkgs.lib.nixosSystem {
             inherit specialArgs;
             modules = [
-              #srvos.nixosModules.desktop
               nixos-hardware.nixosModules.lenovo-legion-16ach6h
+              srvos.nixosModules.desktop
+              vscode-server.nixosModules.default
+              srvos.nixosModules.mixins-trusted-nix-caches
+              srvos.nixosModules.mixins-nix-experimental
+              srvos.nixosModules.mixins-tracing
               ./hosts/nixos/game-office
               {
                 topology.self.interfaces.home = {
@@ -382,7 +388,7 @@
             inherit specialArgs;
             modules = [
               nixos-hardware.nixosModules.lenovo-legion-16ach6h
-              srvos.nixosModules.mixins-mdns
+              srvos.nixosModules.desktop
               vscode-server.nixosModules.default
               srvos.nixosModules.mixins-trusted-nix-caches
               srvos.nixosModules.mixins-nix-experimental

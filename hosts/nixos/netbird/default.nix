@@ -204,6 +204,12 @@
                 }
               ];
             };
+            HttpConfig = {
+              AuthAudience = "https://dev-bcz6ouy6jucjcnut.jp.auth0.com/api/v2/";
+              AuthIssuer = "https://dev-bcz6ouy6jucjcnut.jp.auth0.com/";
+              AuthKeysLocation = "https://dev-bcz6ouy6jucjcnut.jp.auth0.com/.well-known/jwks.json";
+              IdpSignKeyRefreshEnabled = false;
+            };
             DataStoreEncryptionKey = builtins.getEnv "DataStoreEncryptionKey";
             IdpManagerConfig = {
               ManagerType = "auth0";
