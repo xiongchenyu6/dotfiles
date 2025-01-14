@@ -54,8 +54,7 @@
   };
 
   hardware = {
-    nvidia.open = false;
-
+    
     bluetooth = {
       enable = true;
     };

@@ -11,10 +11,6 @@
   programs = {
     zsh =
       let
-        ohMyZsh2Zplug = builtins.map (p: {
-          name = "plugins/${p}";
-          tags = [ "from:oh-my-zsh" ];
-        });
         plugins = [
           "catimg"
           "colored-man-pages"
@@ -128,6 +124,12 @@
         enableCompletion = true;
         autosuggestion.enable = true;
         syntaxHighlighting.enable = true;
+        zsh-abbr = {
+          enable = true;
+          abbreviations = {
+            "ns" = "nixos-rebuild switch";
+          };
+        };
       };
   };
 }

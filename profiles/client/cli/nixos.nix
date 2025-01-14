@@ -10,8 +10,6 @@
   environment = {
     systemPackages = with pkgs; [
       apg
-      clang
-      clang-tools
       #cava # audio visualizer
       cmake
       gcc
@@ -24,8 +22,6 @@
       inetutils
       ifuse
       jp2a
-      lldb
-      llvm
       lsof
       manix
       #my_cookies
