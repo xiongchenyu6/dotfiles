@@ -26,8 +26,13 @@
     #   enable = true;
     #   write = true;
     # };
+    optimise = {
+      automatic = true;
+    };
+
     gc = {
       automatic = true;
+      randomizedDelaySec = "1h";
       options = "--delete-older-than 1d";
     };
 
@@ -74,4 +79,18 @@
       '';
     };
   };
+
+  networking = {
+    domain = "auto-life.tech";
+  };
+
+  # Select internationalisation properties.
+  i18n = {
+    defaultLocale = "en_US.UTF-8";
+    supportedLocales = [
+      "zh_CN.UTF-8/UTF-8"
+      "en_US.UTF-8/UTF-8"
+    ];
+  };
+
 }

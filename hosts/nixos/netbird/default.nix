@@ -195,6 +195,7 @@
           metricsPort = 9092;
           settings = {
             TURNConfig = {
+              Secret = "secret";
               Turns = [
                 {
                   Proto = "udp";
@@ -209,6 +210,9 @@
               AuthIssuer = "https://dev-bcz6ouy6jucjcnut.jp.auth0.com/";
               AuthKeysLocation = "https://dev-bcz6ouy6jucjcnut.jp.auth0.com/.well-known/jwks.json";
               IdpSignKeyRefreshEnabled = false;
+              AuthUserIDClaim = "";
+              CertFile = "";
+              CertKey = "";
             };
             DataStoreEncryptionKey = builtins.getEnv "DataStoreEncryptionKey";
             IdpManagerConfig = {
@@ -228,6 +232,7 @@
               ProviderConfig = {
                 Audience = "https://dev-bcz6ouy6jucjcnut.jp.auth0.com/api/v2/";
                 Domain = null;
+                AuthorizationEndpoint = "";
                 ClientID = "EPjADNz97o2MjAEGdGd7cbxjM33PC8ZJ";
                 TokenEndpoint = "https://dev-bcz6ouy6jucjcnut.jp.auth0.com/oauth/token";
                 DeviceAuthEndpoint = "https://dev-bcz6ouy6jucjcnut.jp.auth0.com/oauth/device/code";
@@ -239,6 +244,7 @@
                 ClientID = "QoD48IZw95dyYkn7ZMCCGIDVYwGZ94X3";
                 AuthorizationEndpoint = "https://dev-bcz6ouy6jucjcnut.jp.auth0.com/authorize";
                 TokenEndpoint = "https://dev-bcz6ouy6jucjcnut.jp.auth0.com/oauth/token";
+                Domain = "";
               };
             };
           };
