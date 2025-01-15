@@ -19,6 +19,7 @@
     ../../../profiles/client/gui/nixos.nix
     ../../../profiles/sops.nix
     ../../../profiles/vr.nix
+    ../../../profiles/wayland.nix
     ../../../profiles/common/components
     ../../../profiles/sddm.nix
     # ../../../profiles/auto-login/greetd.nix
