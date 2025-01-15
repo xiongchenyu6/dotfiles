@@ -20,7 +20,8 @@
     ../../../profiles/sops.nix
     ../../../profiles/vr.nix
     ../../../profiles/common/components
-    ../../../profiles/auto-login/greetd.nix
+    ../../../profiles/sddm.nix
+    # ../../../profiles/auto-login/greetd.nix
     ../../../profiles/common/apps/dn42
     ../../../profiles/common/apps/bird-inner.nix
     #../../../profiles/common/components/datadog-agent.nix
@@ -57,7 +58,7 @@
     ];
     kernelParams = [
       "iommu=pt"
-      "vfio-pci.ids=10de:24dd,10de:228b"
+      #"vfio-pci.ids=10de:24dd,10de:228b"
     ];
 
     kernel = {
@@ -180,11 +181,13 @@
     };
 
   services = {
+
     # xrdp = {
     #   enable = true;
     #   openFirewall = true;
     #   defaultWindowManager = "exec Hyprland";
     # };
+
     sunshine = {
       enable = true;
       openFirewall = true;
