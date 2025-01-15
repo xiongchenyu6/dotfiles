@@ -3,6 +3,7 @@
   environment.systemPackages = with pkgs; [
     virt-viewer
     swtpm
+    virt-top
   ];
   boot.extraModprobeConfig = ''
     options kvm_intel nested=1
