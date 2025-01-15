@@ -17,19 +17,7 @@
       XDG_SESSION_TYPE = "wayland";
       # LSP_USE_PLISTS = "true";
       NIX_SSHOPTS = "-Y";
-    };
-    file = {
-      ".config/hypr/hyprpaper.conf" = {
-        text = ''
-          preload = ~/Dropbox/WallPaper/dark/girls_with_guns_anime_girl_butterfly_101109_1920x1080.jpg
-          preload = ~/Dropbox/WallPaper/dark/vertical/1.jpg
-          preload = ~/Dropbox/WallPaper/dark/vertical/2.jpg
-          wallpaper = eDP-1,~/Dropbox/WallPaper/dark/girls_with_guns_anime_girl_butterfly_101109_1920x1080.jpg
-          wallpaper = HDMI-A-1,~/Dropbox/WallPaper/dark/vertical/1.jpg
-          ipc = on
-        '';
-        executable = false;
-      };
+      XDG_SESSION_DESKTOP = "Hyprland";
     };
   };
   wayland = {
@@ -262,7 +250,6 @@
             bind = , escape, submap, reset
             submap = reset
 
-            exec-once = hyprpaper
             exec-once = albert
 
             windowrule=workspace 1 silent,alacritty
@@ -285,14 +272,91 @@
   # blur = yes
 
   services = {
+    hypridle = {
+      enable = true;
+      settings = {
+        general = {
+          after_sleep_cmd = "hyprctl dispatch dpms on";
+          ignore_dbus_inhibit = false;
+          lock_cmd = "hyprlock";
+        };
+
+        listener = [
+          {
+            timeout = 900;
+            on-timeout = "hyprlock";
+          }
+          {
+            timeout = 1200;
+            on-timeout = "hyprctl dispatch dpms off";
+            on-resume = "hyprctl dispatch dpms on";
+          }
+        ];
+      };
+    };
     wlsunset = {
       enable = true;
       latitude = "1.352083";
       longitude = "103.819839";
     };
+    hyprpaper = {
+      enable = true;
+      settings = {
+        ipc = "on";
+        splash = false;
+        splash_offset = 2.0;
+
+        preload = [
+          "~/Dropbox/WallPaper/dark/girls_with_guns_anime_girl_butterfly_101109_1920x1080.jpg"
+          "~/Dropbox/WallPaper/dark/vertical/1.jpg"
+          "~/Dropbox/WallPaper/dark/vertical/2.jpg"
+        ];
+
+        wallpaper = [
+          "eDP-1,~/Dropbox/WallPaper/dark/girls_with_guns_anime_girl_butterfly_101109_1920x1080.jpg"
+          "HDMI-A-1,~/Dropbox/WallPaper/dark/vertical/1.jpg"
+        ];
+      };
+    };
+
   };
 
   programs = {
+    hyprlock = {
+      enable = true;
+      settings = {
+        general = {
+          disable_loading_bar = true;
+          grace = 300;
+          hide_cursor = true;
+          no_fade_in = false;
+        };
+
+        background = [
+          {
+            path = "screenshot";
+            blur_passes = 3;
+            blur_size = 8;
+          }
+        ];
+
+        input-field = [
+          {
+            size = "200, 50";
+            position = "0, -80";
+            monitor = "";
+            dots_center = true;
+            fade_on_empty = false;
+            font_color = "rgb(202, 211, 245)";
+            inner_color = "rgb(91, 96, 120)";
+            outer_color = "rgb(24, 25, 38)";
+            outline_thickness = 5;
+            placeholder_text = "Password...";
+            shadow_passes = 2;
+          }
+        ];
+      };
+    };
     waybar = {
       enable = true;
       systemd = {

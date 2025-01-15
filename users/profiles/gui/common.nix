@@ -42,7 +42,7 @@
       lnav
       lego
       #gitbutler
-      #unityhub
+      unityhub
       # zed-editor
       nixd
       v4l-utils

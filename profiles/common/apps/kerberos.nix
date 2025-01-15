@@ -1,6 +1,8 @@
 { config, ... }:
-let realm = "AUTOLIFE.TECH";
-in {
+let
+  realm = "AUTOLIFE.TECH";
+in
+{
   krb5 = {
     realms = {
       "${realm}" = {
