@@ -21,8 +21,8 @@
     ../../../profiles/vr.nix
     ../../../profiles/wayland.nix
     ../../../profiles/common/components
-    ../../../profiles/sddm.nix
-    # ../../../profiles/auto-login/greetd.nix
+    #../../../profiles/sddm.nix
+    ../../../profiles/auto-login/greetd.nix
     ../../../profiles/common/apps/dn42
     ../../../profiles/common/apps/bird-inner.nix
     #../../../profiles/common/components/datadog-agent.nix

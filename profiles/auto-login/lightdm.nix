@@ -1,20 +1,25 @@
-{ pkgs, ... }: {
+{ pkgs, ... }:
+{
   services = {
     xserver = {
       enable = true;
       layout = "us";
       displayManager = {
-        lightdm = { enable = true; };
+        lightdm = {
+          enable = true;
+        };
         autoLogin = {
           enable = true;
           user = "freeman.xiong";
         };
 
-        session = [{
-          manage = "desktop";
-          name = "xsession";
-          start = "exec $HOME/.xsession";
-        }];
+        session = [
+          {
+            manage = "desktop";
+            name = "xsession";
+            start = "exec $HOME/.xsession";
+          }
+        ];
         defaultSession = "xsession";
       };
       # Configure keymap in X11
@@ -24,10 +29,19 @@
       autoRepeatDelay = 180;
       autoRepeatInterval = 60;
       # Enable touchpad support (enabled default in most desktopManager).
-      libinput = { enable = true; };
+      libinput = {
+        enable = true;
+      };
       excludePackages = [ pkgs.xterm ];
       # Enable automatic login for the user.
     };
   };
-  environment = { systemPackages = with pkgs; [ arandr conky scrot xclip ]; };
+  environment = {
+    systemPackages = with pkgs; [
+      arandr
+      conky
+      scrot
+      xclip
+    ];
+  };
 }
