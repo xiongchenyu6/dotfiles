@@ -207,6 +207,7 @@
           # telegram-desktop =
           #   nixpkgs-stable.legacyPackages.x86_64-linux.telegram-desktop;
           # waybar = nixpkgs-master.legacyPackages.x86_64-linux.waybar;
+          www_dist = autolife_www.packages.x86_64-linux.dist;
         })
       ];
       darwin-modules = [ home-manager.darwinModules.home-manager ];

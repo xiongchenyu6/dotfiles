@@ -15,9 +15,10 @@
       };
     };
   };
-  programs.regreet.enable = true;
-  services = {
 
+  programs.regreet.enable = true;
+
+  services = {
     greetd = {
       enable = true;
       settings = {
@@ -31,16 +32,5 @@
         };
       };
     };
-
-    # greetd = {
-    #   enable = true;
-    #   settings = rec {
-    #     initial_session = {
-    #       user = "freeman.xiong";
-    #       command = lib.mkDefault "Hyprland";
-    #     };
-    #     default_session = initial_session;
-    #   };
-    # };
   };
 }

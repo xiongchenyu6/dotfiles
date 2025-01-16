@@ -118,29 +118,20 @@
             };
           };
         };
-        # "autolife.ai" = {
-        #   addSSL = true;
-        #   acmeRoot = null;
-        #   useACMEHost = "ai";
-        #   kTLS = true;
-        #   locations = {
-        #     "/" = with pkgs; {
-        #       root = www_dist;
-        #     };
-        #   };
-        # };
-        # "www.autolife.ai" = {
-        #   addSSL = true;
-        #   acmeRoot = null;
-        #   useACMEHost = "ai";
-        #   kTLS = true;
-        #   locations = {
-        #     "/" = with pkgs; {
-        #       root = www_dist;
-        #     };
-        #   };
-        # };
-
+        "autolife-robotics.com" = {
+          locations = {
+            "/" = with pkgs; {
+              root = www_dist;
+            };
+          };
+        };
+        "www.autolife-robotics.com" = {
+          locations = {
+            "/" = with pkgs; {
+              root = www_dist;
+            };
+          };
+        };
       };
     };
   };
