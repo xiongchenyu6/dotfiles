@@ -118,29 +118,20 @@
             };
           };
         };
-        # "work.ai" = {
-        #   addSSL = true;
-        #   acmeRoot = null;
-        #   useACMEHost = "ai";
-        #   kTLS = true;
-        #   locations = {
-        #     "/" = with pkgs; {
-        #       root = www_dist;
-        #     };
-        #   };
-        # };
-        # "www.work.ai" = {
-        #   addSSL = true;
-        #   acmeRoot = null;
-        #   useACMEHost = "ai";
-        #   kTLS = true;
-        #   locations = {
-        #     "/" = with pkgs; {
-        #       root = www_dist;
-        #     };
-        #   };
-        # };
-
+        "work-robotics.com" = {
+          locations = {
+            "/" = with pkgs; {
+              root = www_dist;
+            };
+          };
+        };
+        "www.work-robotics.com" = {
+          locations = {
+            "/" = with pkgs; {
+              root = www_dist;
+            };
+          };
+        };
       };
     };
   };
