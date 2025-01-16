@@ -1,19 +1,5 @@
 { pkgs, ... }:
 {
-  environment = {
-    systemPackages = with pkgs; [
-      grim
-      slurp
-      brightnessctl
-      hyprpaper
-      hyprpicker
-      wl-clipboard
-      wf-recorder # screen recording
-      wev # get input events
-      waypipe
-    ];
-  };
-
   xdg = {
     portal = {
       config.common.default = "*";
