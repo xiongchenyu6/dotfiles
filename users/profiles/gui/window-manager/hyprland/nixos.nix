@@ -4,6 +4,17 @@
 { pkgs, lib, ... }:
 {
   home = lib.mkIf pkgs.stdenv.isLinux {
+    packages = with pkgs; [
+      grim
+      slurp
+      brightnessctl
+      hyprpicker
+      wl-clipboard
+      wf-recorder # screen recording
+      wev # get input events
+      waypipe
+    ];
+
     sessionVariables = {
       NIX_LD = toString (
         pkgs.runCommand "ld.so" { } ''
@@ -266,10 +277,6 @@
         };
     };
   };
-  # blur_new_optimizations = true
-  # blur_passes = 1
-  # blur_size = 3
-  # blur = yes
 
   services = {
     hypridle = {
