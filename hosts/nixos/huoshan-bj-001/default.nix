@@ -21,10 +21,10 @@
     # ../../../profiles/common/components/datadog-agent.nix
     ../../../profiles/cn.nix
   ];
-  sops.secrets."netbird/coturn/password" = {
-    owner = "turnserver";
-    group = "turnserver";
-  };
+  # sops.secrets."netbird/coturn/password" = {
+  #   owner = "turnserver";
+  #   group = "turnserver";
+  # };
   boot = {
     kernelPackages = lib.mkForce pkgs.linuxPackages_latest;
     tmp.cleanOnBoot = true;
