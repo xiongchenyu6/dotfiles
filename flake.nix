@@ -101,7 +101,7 @@
     };
 
     work_www = {
-      url = "git+ssh://git@github.com/workRobot/www.git";
+      url = "git+ssh://git@github.com/workRobot/www.git?ref=cn";
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.flake-parts.follows = "flake-parts";
     };
