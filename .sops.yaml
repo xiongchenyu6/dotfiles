@@ -6,7 +6,7 @@ keys:
   - &game age107w29mcnleyvvza8r9p3pkq6v7pqg8y3uvn9vp0pa55yrrwa757ss3xg5x
   - &netbird age1h3tn6t8cdzgjxk3x8kaxh3qxmr2p3qvsacpgfx5ak87cfl7cpdysg8qcas
   - &huawei-bj-001 age1ps4yc5vx6ne098pnqc6xw6u6qtah89g6yxz0y8szm54g4untmc4qsgl9me
-  - &huoshan-bj-001 age1pyjsej0wvgu9txgxre0glt8kwfv4ngdrdr5jk7ywy88greexdgdqzrqjek
+  - &huoshan-bj-001 age13sanuad3fazmechnpya64v7cc4swy4v5u6wks09cqxk45lvlhg9seztxzp
 
 creation_rules:
   - path_regex: secrets/[^/]+\.yaml$
