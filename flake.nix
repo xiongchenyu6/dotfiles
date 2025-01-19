@@ -101,7 +101,7 @@
     };
 
     autolife_www = {
-      url = "git+ssh://git@github.com/AutoLifeRobot/www.git";
+      url = "git+ssh://git@github.com/AutoLifeRobot/www.git?ref=cn";
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.flake-parts.follows = "flake-parts";
     };

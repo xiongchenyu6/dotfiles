@@ -64,15 +64,16 @@
         ]
       },
       "locked": {
-        "lastModified": 1732529620,
-        "narHash": "sha256-3DpVW2AgUacxVs+W85hoWDiAmjSSC77Ao1yKWycfVcA=",
-        "ref": "refs/heads/main",
-        "rev": "4dff310d7bf26376ca2cf49d6bee8685889e07c7",
-        "revCount": 3,
+        "lastModified": 1737019462,
+        "narHash": "sha256-JK7QnneNKSxuW34Q7AwqFRXUIfCBpc89NC3BJRUhU0I=",
+        "ref": "cn",
+        "rev": "04f32aac15f5f773949fa509ba4e0fc4e581d57e",
+        "revCount": 4,
         "type": "git",
         "url": "ssh://git@github.com/AutoLifeRobot/www.git"
       },
       "original": {
+        "ref": "cn",
         "type": "git",
         "url": "ssh://git@github.com/AutoLifeRobot/www.git"
       }
