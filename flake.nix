@@ -100,6 +100,13 @@
       inputs.flake-parts.follows = "flake-parts";
     };
 
+    rust-web-server = {
+      url = "git+ssh://git@github.com/AutoLifeRobot/rust-web-server.git";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.flake-parts.follows = "flake-parts";
+    };
+
+
     autolife_www = {
       url = "git+ssh://git@github.com/AutoLifeRobot/www.git?ref=cn";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -177,6 +184,7 @@
       robot_signal_dashboard,
       autolife_www,
       srvos,
+      rust-web-server,
       nix-topology,
       ...
     }@inputs:
@@ -447,6 +455,7 @@
               srvos.nixosModules.mixins-nginx
               ./hosts/nixos/netbird
               robot_signal_dashboard.nixosModules.robotSignalDashboard
+              rust-web-server.nixosModules.rust-web-server
               {
                 topology.self.interfaces.home = {
 
