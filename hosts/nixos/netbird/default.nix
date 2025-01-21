@@ -145,16 +145,13 @@
         }
       ];
     };
-    cockpit = {
+
+    postgresql = {
       enable = true;
-      port = 9999;
-      openFirewall = true;
-      settings = {
-        "AccountsService" = {
-          "PermitRootLogin" = "yes";
-        };
-      };
+      package = pkgs.postgresql_17_jit;
+      ensureDatabases =[ "freeman.xiong" ];
     };
+    
     robotSignalDashboard = {
       enable = true;
       configFile = ./config.json;
