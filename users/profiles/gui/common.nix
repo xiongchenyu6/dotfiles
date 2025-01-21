@@ -10,7 +10,7 @@
       discord
       doctl
       gdrive
-      brave
+      google-chrome
       freerdp
       # jetbrains.idea-ultimate
       # jetbrains.rider
