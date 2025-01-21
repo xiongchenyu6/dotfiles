@@ -249,6 +249,24 @@
         "type": "github"
       }
     },
+    "flake-pparts": {
+      "inputs": {
+        "nixpkgs-lib": "nixpkgs-lib_2"
+      },
+      "locked": {
+        "lastModified": 1736143030,
+        "narHash": "sha256-+hu54pAoLDEZT9pjHlqL9DNzWz0NbUn8NEAHP7PQPzU=",
+        "owner": "hercules-ci",
+        "repo": "flake-parts",
+        "rev": "b905f6fc23a9051a6e1b741e1438dbfc0634c6de",
+        "type": "github"
+      },
+      "original": {
+        "owner": "hercules-ci",
+        "repo": "flake-parts",
+        "type": "github"
+      }
+    },
     "flake-utils": {
       "inputs": {
         "systems": [
@@ -617,6 +635,18 @@
         "url": "https://github.com/NixOS/nixpkgs/archive/e9b51731911566bbf7e4895475a87fe06961de0b.tar.gz"
       }
     },
+    "nixpkgs-lib_2": {
+      "locked": {
+        "lastModified": 1735774519,
+        "narHash": "sha256-CewEm1o2eVAnoqb6Ml+Qi9Gg/EfNAxbRx1lANGVyoLI=",
+        "type": "tarball",
+        "url": "https://github.com/NixOS/nixpkgs/archive/e9b51731911566bbf7e4895475a87fe06961de0b.tar.gz"
+      },
+      "original": {
+        "type": "tarball",
+        "url": "https://github.com/NixOS/nixpkgs/archive/e9b51731911566bbf7e4895475a87fe06961de0b.tar.gz"
+      }
+    },
     "nixpkgs-stable": {
       "locked": {
         "lastModified": 1737299813,
@@ -851,11 +881,36 @@
         "poetry2nix": "poetry2nix",
         "pre-commit-hooks": "pre-commit-hooks_2",
         "robot_signal_dashboard": "robot_signal_dashboard",
+        "rust-web-server": "rust-web-server",
         "sops-nix": "sops-nix",
         "srvos": "srvos",
         "systems": "systems_2",
         "vscode-server": "vscode-server",
         "xiongchenyu6": "xiongchenyu6"
+      }
+    },
+    "rust-web-server": {
+      "inputs": {
+        "flake-parts": [
+          "flake-parts"
+        ],
+        "flake-pparts": "flake-pparts",
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1737455434,
+        "narHash": "sha256-68z/fjMam8hMG3MpsSjDhQCQmYa8fK7zzabyPKd5yAw=",
+        "ref": "refs/heads/main",
+        "rev": "14369fb5545f5b3a8c1b482c87be3ea9bfb169c1",
+        "revCount": 21,
+        "type": "git",
+        "url": "ssh://git@github.com/AutoLifeRobot/rust-web-server.git"
+      },
+      "original": {
+        "type": "git",
+        "url": "ssh://git@github.com/AutoLifeRobot/rust-web-server.git"
       }
     },
     "slimlock": {
