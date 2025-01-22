@@ -85,11 +85,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1737423230,
-        "narHash": "sha256-WEOiNmkcmlaeXy2HGW1PYxYmCPiHdsI7a7SpjhBYxRg=",
+        "lastModified": 1737504076,
+        "narHash": "sha256-/B4XJnzYU/6K1ZZOBIgsa3K4pqDJrnC2579c44c+4rI=",
         "owner": "lnl7",
         "repo": "nix-darwin",
-        "rev": "46d0fa4ded0a7532f19870f9bbedaf62269fe3f7",
+        "rev": "65cc1fa8e36ceff067daf6cfb142331f02f524d3",
         "type": "github"
       },
       "original": {
@@ -379,11 +379,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1737461688,
-        "narHash": "sha256-zQCFe5FcSSGzY3qauAAHZcPt7Ej4WSGo78ShSTCSBvU=",
+        "lastModified": 1737480538,
+        "narHash": "sha256-rk/cmrvq3In0TegW9qaAxw+5YpJhRWt2p74/6JStrw0=",
         "owner": "nix-community",
         "repo": "home-manager",
-        "rev": "bb14224f51ae4caed12a7b26f245d042c8cf8553",
+        "rev": "4481a16d1ac5bff4a77c608cefe08c9b9efe840d",
         "type": "github"
       },
       "original": {
@@ -554,11 +554,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1737423901,
-        "narHash": "sha256-QAMOzKHM5QzlEN99HT6Q/qgQE+uUANuQ/pLK1WNCfKs=",
+        "lastModified": 1737510513,
+        "narHash": "sha256-8dHvINAotk7qQ8BfQ6ZAewyuhs0tUx2MwqgvMK9zkBk=",
         "owner": "nix-community",
         "repo": "nix-vscode-extensions",
-        "rev": "078a7738a3411392937c70ea9be84c6cb3c32c54",
+        "rev": "5af3e00a29d0eb68fc7478548d732f355ac0c381",
         "type": "github"
       },
       "original": {
@@ -609,11 +609,11 @@
     },
     "nixpkgs": {
       "locked": {
-        "lastModified": 1737062831,
-        "narHash": "sha256-Tbk1MZbtV2s5aG+iM99U8FqwxU/YNArMcWAv6clcsBc=",
+        "lastModified": 1737469691,
+        "narHash": "sha256-nmKOgAU48S41dTPIXAq0AHZSehWUn6ZPrUKijHAMmIk=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "5df43628fdf08d642be8ba5b3625a6c70731c19c",
+        "rev": "9e4d5190a9482a1fb9d18adf0bdb83c6e506eaab",
         "type": "github"
       },
       "original": {
@@ -665,11 +665,11 @@
     },
     "nixpkgs_2": {
       "locked": {
-        "lastModified": 1737062831,
-        "narHash": "sha256-Tbk1MZbtV2s5aG+iM99U8FqwxU/YNArMcWAv6clcsBc=",
+        "lastModified": 1737469691,
+        "narHash": "sha256-nmKOgAU48S41dTPIXAq0AHZSehWUn6ZPrUKijHAMmIk=",
         "owner": "nixos",
         "repo": "nixpkgs",
-        "rev": "5df43628fdf08d642be8ba5b3625a6c70731c19c",
+        "rev": "9e4d5190a9482a1fb9d18adf0bdb83c6e506eaab",
         "type": "github"
       },
       "original": {
@@ -686,11 +686,11 @@
         "treefmt-nix": "treefmt-nix"
       },
       "locked": {
-        "lastModified": 1737463458,
-        "narHash": "sha256-eNyC5FpyE445ezq2yQugXVm05kBUnwKS+8nSZVuIV/w=",
+        "lastModified": 1737522473,
+        "narHash": "sha256-WxGH8tw42muGji2Q7plhBjDeZ9lp6jANWL5uQhxvsYE=",
         "owner": "nix-community",
         "repo": "NUR",
-        "rev": "b9cb7e4fd39eca55fb3484c3860de5f161710381",
+        "rev": "12b99d964292665ae893d208de483c810fdc938a",
         "type": "github"
       },
       "original": {
@@ -781,11 +781,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1737301351,
-        "narHash": "sha256-2UNmLCKORvdBRhPGI8Vx0b6l7M8/QBey/nHLIxOl4jE=",
+        "lastModified": 1737465171,
+        "narHash": "sha256-R10v2hoJRLq8jcL4syVFag7nIGE7m13qO48wRIukWNg=",
         "owner": "cachix",
         "repo": "pre-commit-hooks.nix",
-        "rev": "15a87cedeb67e3dbc8d2f7b9831990dffcf4e69f",
+        "rev": "9364dc02281ce2d37a1f55b6e51f7c0f65a75f17",
         "type": "github"
       },
       "original": {
@@ -845,11 +845,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1733932109,
-        "narHash": "sha256-q1iV8L+ouptk+5+jZRZP822Jmdg8oWpeR4hTqU2Kz78=",
+        "lastModified": 1737530177,
+        "narHash": "sha256-YlrPOdTcDNxCnTfPsumeHEJtRJm1P7n/7a2NttARNBk=",
         "ref": "refs/heads/develop",
-        "rev": "33903a5dfb02a74b070b5ed6601ce1e87cce2312",
-        "revCount": 19,
+        "rev": "3bccb8ee34e00becd8de543ff07d36f9741828a7",
+        "revCount": 20,
         "type": "git",
         "url": "ssh://git@github.com/AutoLifeRobot/robot_signal_dashboard.git"
       },
@@ -900,11 +900,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1737455434,
-        "narHash": "sha256-68z/fjMam8hMG3MpsSjDhQCQmYa8fK7zzabyPKd5yAw=",
+        "lastModified": 1737529794,
+        "narHash": "sha256-vH6ct/JTtsjkSc5isgZuVD+Fhep5xohftXw2Pp369lE=",
         "ref": "refs/heads/main",
-        "rev": "14369fb5545f5b3a8c1b482c87be3ea9bfb169c1",
-        "revCount": 21,
+        "rev": "1bee5ec7d622dac182dee10284f7a3ebc5e9caac",
+        "revCount": 22,
         "type": "git",
         "url": "ssh://git@github.com/AutoLifeRobot/rust-web-server.git"
       },
