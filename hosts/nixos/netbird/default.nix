@@ -24,6 +24,11 @@
     owner = "turnserver";
     group = "turnserver";
   };
+
+  sops.secrets."rust-web-server/config" = {
+    
+  };
+  
   boot = {
     kernel = {
       sysctl = {
@@ -155,6 +160,11 @@
     robotSignalDashboard = {
       enable = true;
       configFile = ./config.json;
+    };
+
+    rust-web-server = {
+      enable = true;
+      configFile = config.sops.secrets."rust-web-server/config".path;
     };
 
     frp = {
