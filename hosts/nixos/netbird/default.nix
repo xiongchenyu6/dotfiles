@@ -57,6 +57,7 @@
           80
           443
           2222
+          5432
           7000
         ];
         allowedUDPPorts = [
@@ -64,6 +65,7 @@
           179
           2222
           3478
+          5432
           7000
           7777
           6696
@@ -154,6 +156,11 @@
     postgresql = {
       enable = true;
       package = pkgs.postgresql_17_jit;
+      authentication = ''
+        local all all trust
+        host  all  all 0.0.0.0/0 scram-sha-256
+      '';
+      enableTCPIP = true;
       ensureDatabases =[ "freeman.xiong" ];
     };
     
@@ -288,6 +295,17 @@
           acmeRoot = null;
           useACMEHost = "netbird.autolife-robotics.me";
           kTLS = true;
+        };
+       "rust-server.autolife-robotics.me" = {
+          forceSSL = true;
+          acmeRoot = null;
+          useACMEHost = "netbird.autolife-robotics.me";
+          kTLS = true;
+          locations = {
+            "/" = {
+              proxyPass = "http://localhost:3000";
+            };
+          };
         };
         "vr-sg.autolife-robotics.me" = {
           forceSSL = true;
