@@ -99,10 +99,10 @@
                 hostname = "143.198.87.228";
               };
               "netbird*" = {
-                hostname = "18.163.206.49";
+                hostname = "18.141.239.27";
               };
               "heco-nginx*" = {
-                hostname = "54.255.82.12";
+                hostname = "54.169.128.26";
                 user = "root";
               };
               "heco-zammad*" = {
