@@ -15,7 +15,7 @@
     ../../../profiles/core/nixos.nix
     ../../../profiles/server/components
     ../../../profiles/common/components
-    #    ../../../profiles/common/components/datadog-agent.nix
+    ../../../profiles/common/components/datadog-agent.nix
     ../../../profiles/server/apps/acme
     "${modulesPath}/virtualisation/amazon-image.nix"
 
@@ -28,6 +28,8 @@
   sops.secrets."rust-web-server/config" = {
     
   };
+  
+  zramSwap.enable = true;
   
   boot = {
     kernel = {
