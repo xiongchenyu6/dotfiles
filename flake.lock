@@ -686,11 +686,11 @@
         "treefmt-nix": "treefmt-nix"
       },
       "locked": {
-        "lastModified": 1737770193,
-        "narHash": "sha256-ETCmtb/yyMPore4j+/10VhrBYeGeJ0F8hHmLnkVMToc=",
+        "lastModified": 1737805563,
+        "narHash": "sha256-FeO6Gxl9XaWq4Ys/bc1VeWOlhrhep1U9MZmOeGc8+v8=",
         "owner": "nix-community",
         "repo": "NUR",
-        "rev": "75843579756b6fdc0e89c6e3e58b38aa44915ddc",
+        "rev": "5a9dbaee1ccf4ca6dca5e3c32ac0f2d33455a8b3",
         "type": "github"
       },
       "original": {
@@ -1087,11 +1087,11 @@
         "oci-arm-host-capacity-src": "oci-arm-host-capacity-src"
       },
       "locked": {
-        "lastModified": 1737772263,
-        "narHash": "sha256-yG7S8YF4sX0jiCfUc10XP4D4r5+mcuAqf1b+jm+thWo=",
+        "lastModified": 1737783836,
+        "narHash": "sha256-XDKSG33L+h4Fd8Esn1vi3Cmiu1w5j1uuAYxo92OBSy8=",
         "owner": "xiongchenyu6",
         "repo": "nur-packages",
-        "rev": "60d7d6c99d38c8fba2813241989e84cf0464f6ff",
+        "rev": "58cf5150c7f70ea8d24629c7dd464718eef2bcbc",
         "type": "github"
       },
       "original": {
