@@ -6,14 +6,23 @@
 
   imports = [ ../tty.nix ];
 
-  environment.systemPackages = with pkgs; [
-    tree
-    litecli
-    ssh-to-age
-    lrzsz
-    home-manager
-    dmidecode
-  ];
+  environment = {
+    systemPackages = with pkgs; [
+      tree
+      litecli
+      ssh-to-age
+      lrzsz
+      home-manager
+      dmidecode
+    ];
+
+    etc = {
+      "ppp/options".text = ''
+        ipcp-accept-remote
+      '';
+
+    };
+  };
 
   programs = {
     zsh = {
@@ -71,14 +80,6 @@
 
   time = {
     timeZone = "Asia/Singapore";
-  };
-
-  environment = {
-    etc = {
-      "ppp/options".text = ''
-        ipcp-accept-remote
-      '';
-    };
   };
 
   networking = {
