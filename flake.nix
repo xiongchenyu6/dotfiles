@@ -299,10 +299,14 @@
             };
           };
           topology = {
-            nixosConfigurations = builtins.removeAttrs self.nixosConfigurations [
-              "do"
-              "generic-nixos-facter"
-            ];
+            nixosConfigurations = lib.filterAttrs
+              (name: _: builtins.elem name [
+                "mail"
+                "office"
+                "game"
+                "game-office"
+              ])
+              self.nixosConfigurations;
             modules = [
               (
                 { config, ... }:
@@ -310,9 +314,61 @@
                   inherit (config.lib.topology) mkInternet mkRouter mkConnection;
                 in
                 {
+                  inherit (self) nixosConfigurations;
+
                   networks.home = {
-                    name = "Home";
-                    cidrv4 = "192.168.178.0/24";
+                    name = "Home WireGuard Network";
+                    cidrv4 = "172.22.240.96/27";
+                  };
+
+                  # Define mail as central WireGuard server
+                  nodes.mail = mkRouter "Mail Server" {
+                    info = "Tencent Cloud";
+                    interfaces.wg0 = {
+                      addresses = [ "172.22.240.97/27" ];
+                      network = "home";
+                      virtual = true;
+                      type = "wireguard";
+                    };
+                    connections = {
+                      wg0_office = mkConnection "office" "wg0";
+                      wg0_game = mkConnection "game" "wg0";
+                      wg0_game_office = mkConnection "game-office" "wg0";
+                    };
+                  };
+
+                  # Define client nodes
+                  nodes.office = mkRouter "Office" {
+                    info = "Dell Latitude";
+                    interfaces.wg0 = {
+                      addresses = [ "172.22.240.98/27" ];
+                      network = "home";
+                      virtual = true;
+                      type = "wireguard";
+                      renderer.hidePhysicalConnections = true;
+                    };
+                  };
+
+                  nodes.game = mkRouter "Game PC" {
+                    info = "Lenovo Legion";
+                    interfaces.wg0 = {
+                      addresses = [ "172.22.240.99/27" ];
+                      network = "home";
+                      virtual = true;
+                      type = "wireguard";
+                      renderer.hidePhysicalConnections = true;
+                    };
+                  };
+
+                  nodes."game-office" = mkRouter "Game Office" {
+                    info = "Lenovo Legion";
+                    interfaces.wg0 = {
+                      addresses = [ "172.22.240.100/27" ];
+                      network = "home";
+                      virtual = true;
+                      type = "wireguard";
+                      renderer.hidePhysicalConnections = true;
+                    };
                   };
                 }
               )
@@ -348,11 +404,9 @@
               ./hosts/nixos/office
               {
                 topology.self.interfaces.home = {
-
-                  type = "wireguard"; # changes the icon
-                  addresses = [ "192.168.178.2/24" ];
+                  type = "wireguard";
+                  addresses = [ "172.22.240.98/27" ];
                 };
-
               }
             ] ++ nixos-modules;
           };
@@ -385,10 +439,9 @@
               ./hosts/nixos/game-office
               {
                 topology.self.interfaces.home = {
-
-                  addresses = [ "192.168.178.4/24" ];
+                  type = "wireguard"; 
+                  addresses = [ "172.22.240.100/27" ];
                 };
-
               }
             ] ++ nixos-modules;
           };
@@ -405,8 +458,8 @@
               ./hosts/nixos/game
               {
                 topology.self.interfaces.home = {
-
-                  addresses = [ "192.168.178.4/24" ];
+                  type = "wireguard";
+                  addresses = [ "172.22.240.99/27" ];
                 };
 
               }
@@ -422,8 +475,8 @@
               ./hosts/nixos/mail
               {
                 topology.self.interfaces.home = {
-
-                  addresses = [ "192.168.178.5/24" ];
+                  type = "wireguard";
+                  addresses = [ "172.22.240.97/27" ];
                 };
 
               }
@@ -458,7 +511,6 @@
               rust-web-server.nixosModules.rust-web-server
               {
                 topology.self.interfaces.home = {
-
                   addresses = [ "192.168.178.7/24" ];
                 };
               }
@@ -471,7 +523,6 @@
               ./hosts/nixos/digitalocean.nix
               {
                 topology.self.interfaces.home = {
-
                   addresses = [ "192.168.178.8/24" ];
                 };
               }
@@ -505,7 +556,6 @@
               ./hosts/nixos/nixos-anywhere
               disko.nixosModules.disko
               srvos.nixosModules.server
-              ./hardware-configuration.nix
             ];
           };
           do = nixpkgs.lib.nixosSystem {
