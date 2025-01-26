@@ -117,9 +117,9 @@
           cmake-mode
           cape
           corfu
-          copilot-el
-          copilot-chat
-          combobulate
+          emacs-copilot-el
+          emacs-copilot-chat
+          emacs-combobulate
           citeproc
           dockerfile-mode
           direnv
