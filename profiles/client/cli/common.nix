@@ -62,7 +62,7 @@
       nvfetcher
       oath-toolkit
       openssl
-      pg-ldap-sync
+      #pg-ldap-sync
       popeye
       pgcli
       plantuml
