@@ -119,9 +119,7 @@
       extensions = with pkgs.vscode-marketplace; [
         mkhl.direnv
         juanblanco.solidity
-        ms-vscode.cpptools-extension-pack
         twxs.cmake
-        vscjava.vscode-java-pack
         gitlab.gitlab-workflow
         eamodio.gitlens
         weaveworks.vscode-gitops-tools
@@ -129,15 +127,9 @@
         visualstudioexptteam.vscodeintellicode
         ms-kubernetes-tools.vscode-kubernetes-tools
         ms-python.python
-        # redhat.java
         github.copilot # AI code completion
-        ms-python.python
         redhat.vscode-yaml
         ms-azuretools.vscode-docker
-        #ms-vscode.cpptools
-        ms-python.vscode-pylance
-        lfs.vscode-emacs-friendly
-        vadimcn.vscode-lldb
         jnoortheen.nix-ide
         mechatroner.rainbow-csv
         rust-lang.rust-analyzer

@@ -73,3 +73,5 @@ result
 
 .data/
 .aider*
+
+stow-managed/rime/.local/share/fcitx5/rime/user.yaml
