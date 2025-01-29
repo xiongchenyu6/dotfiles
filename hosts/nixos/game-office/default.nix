@@ -160,6 +160,10 @@
 
   services = {
 
+    # cloudflare-warp = {
+    #   enable = true;
+    # };
+
     postgresql = {
       enable = true;
       ensureUsers = [
