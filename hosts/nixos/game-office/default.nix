@@ -102,12 +102,12 @@
           33434
         ];
         interfaces.wg_mail.allowedTCPPorts = [
-          2222
+          22
           8080
         ];
-        interfaces.wg_mail.allowedUDPPorts = [ 2222 ];
-        interfaces.wt0.allowedTCPPorts = [ 2222 ];
-        interfaces.wt0.allowedUDPPorts = [ 2222 ];
+        interfaces.wg_mail.allowedUDPPorts = [ 22 ];
+        interfaces.wt0.allowedTCPPorts = [ 22 ];
+        interfaces.wt0.allowedUDPPorts = [ 22 ];
       };
 
       networkmanager = {
