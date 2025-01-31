@@ -61,8 +61,8 @@
     };
 
     sops-nix = {
-      #url = "github:Mic92/sops-nix";
-      url = "github:Mic92/sops-nix/a4c33bfecb93458d90f9eb26f1cf695b47285243";
+      url = "github:Mic92/sops-nix";
+      #url = "github:Mic92/sops-nix/a4c33bfecb93458d90f9eb26f1cf695b47285243";
       inputs = {
         nixpkgs.follows = "nixpkgs";
         nixpkgs-stable.follows = "nixpkgs-stable";
@@ -164,102 +164,28 @@
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.flake-parts.follows = "flake-parts";
     };
-    
+
   };
 
   outputs =
     {
       self,
       nixpkgs,
-      impermanence,
-      nur,
-      nixos-hardware,
-      home-manager,
       flake-parts,
-      pre-commit-hooks,
-      nix-alien,
-      xiongchenyu6,
-      sops-nix,
-      foundry,
-      poetry2nix,
-      nix-vscode-extensions,
-      nixos-wsl,
-      vscode-server,
-      disko,
-      authentik-nix,
-      robot_signal_dashboard,
-      autolife_www,
-      srvos,
-      rust-web-server,
-      nix-topology,
-      ez-configs,
       ...
     }@inputs:
     with nixpkgs;
     with lib;
     let
-      overlays = map (x: x.overlays.default or x.overlay) [
-        xiongchenyu6
-        nix-alien
-        sops-nix
-        foundry
-        poetry2nix
-        nix-vscode-extensions
-        nix-topology
-      ];
 
-      specialArgs = {
-        profiles = {
-          share = import ./profiles/shares.nix { inherit lib; };
-        };
-        mylib = import ./lib { inherit lib; };
-      };
-
-      sharedOverlays = overlays ++ [
-        (_: prev: {
-          lib = prev.lib.extend (_lfinal: _lprev: { mine = import ./lib { inherit lib; }; });
-          # gnupg240 = nixpkgs-stable.legacyPackages.x86_64-linux.gnupg;
-          # telegram-desktop =
-          #   nixpkgs-stable.legacyPackages.x86_64-linux.telegram-desktop;
-          # waybar = nixpkgs-master.legacyPackages.x86_64-linux.waybar;
-          www_dist = autolife_www.packages.x86_64-linux.dist;
-        })
-      ];
-      darwin-modules = [ home-manager.darwinModules.home-manager ];
-      sharedModules = [
-        #nur.modules.home-manager
-        sops-nix.homeManagerModules.sops
-        impermanence.nixosModules.home-manager.impermanence
-        (import ./profiles/sops.nix)
-      ];
-      nixos-modules = [
-        sops-nix.nixosModules.sops
-        home-manager.nixosModules.home-manager
-        nur.modules.nixos.default
-        impermanence.nixosModules.impermanence
-        nix-topology.nixosModules.default
-        (_: {
-          nixpkgs = {
-            system = "x86_64-linux";
-            config = {
-              allowUnfree = true;
-              allowBroken = true;
-              android_sdk.accept_license = true;
-            };
-            overlays = sharedOverlays;
-          };
-          home-manager = {
-            inherit sharedModules;
-            useGlobalPkgs = true;
-            useUserPackages = true;
-          };
-        })
-      ];
+      mylib = import ./lib { inherit lib; };
+      shares = import ./shares.nix { inherit lib; };
     in
     flake-parts.lib.mkFlake { inherit inputs; } {
       imports = [
         inputs.pre-commit-hooks.flakeModule
         inputs.nix-topology.flakeModule
+        inputs.ez-configs.flakeModule
       ];
       systems = [
         "x86_64-linux"
@@ -267,6 +193,43 @@
         "aarch64-darwin"
         "x86_64-darwin"
       ];
+
+      ezConfigs = {
+        globalArgs = { inherit inputs shares mylib; };
+        root = ./.;
+        nixos.hosts = {
+          game-office = {
+            userHomeModules = [
+              "root"
+              "freeman.xiong"
+            ];
+          };
+          game = {
+            userHomeModules = [
+              "root"
+              "freeman.xiong"
+            ];
+          };
+          office = {
+            userHomeModules = [
+              "root"
+              "freeman.xiong"
+            ];
+          };
+          mail = {
+            userHomeModules = [
+              "root"
+              "freeman.xiong"
+            ];
+          };
+          netbird = {
+            userHomeModules = [
+              "root"
+              "freeman.xiong"
+            ];
+          };
+        };
+      };
 
       perSystem =
         { pkgs, ... }:
@@ -305,288 +268,6 @@
               };
             };
           };
-          topology = {
-            nixosConfigurations = lib.filterAttrs (
-              name: _:
-              builtins.elem name [
-                "mail"
-                "office"
-                "game"
-                "game-office"
-              ]
-            ) self.nixosConfigurations;
-            modules = [
-              (
-                { config, ... }:
-                let
-                  inherit (config.lib.topology) mkInternet mkRouter mkConnection;
-                in
-                {
-                  inherit (self) nixosConfigurations;
-
-                  networks.home = {
-                    name = "Home WireGuard Network";
-                    cidrv4 = "172.22.240.96/27";
-                  };
-
-                  # Define mail as central WireGuard server
-                  nodes.mail = mkRouter "Mail Server" {
-                    info = "Tencent Cloud";
-                    interfaces.wg0 = {
-                      addresses = [ "172.22.240.97/27" ];
-                      network = "home";
-                      virtual = true;
-                      type = "wireguard";
-                    };
-                    connections = {
-                      wg0_office = mkConnection "office" "wg0";
-                      wg0_game = mkConnection "game" "wg0";
-                      wg0_game_office = mkConnection "game-office" "wg0";
-                    };
-                  };
-
-                  # Define client nodes
-                  nodes.office = mkRouter "Office" {
-                    info = "Dell Latitude";
-                    interfaces.wg0 = {
-                      addresses = [ "172.22.240.98/27" ];
-                      network = "home";
-                      virtual = true;
-                      type = "wireguard";
-                      renderer.hidePhysicalConnections = true;
-                    };
-                  };
-
-                  nodes.game = mkRouter "Game PC" {
-                    info = "Lenovo Legion";
-                    interfaces.wg0 = {
-                      addresses = [ "172.22.240.99/27" ];
-                      network = "home";
-                      virtual = true;
-                      type = "wireguard";
-                      renderer.hidePhysicalConnections = true;
-                    };
-                  };
-
-                  nodes."game-office" = mkRouter "Game Office" {
-                    info = "Lenovo Legion";
-                    interfaces.wg0 = {
-                      addresses = [ "172.22.240.100/27" ];
-                      network = "home";
-                      virtual = true;
-                      type = "wireguard";
-                      renderer.hidePhysicalConnections = true;
-                    };
-                  };
-                }
-              )
-            ];
-          };
         };
-
-      flake = {
-
-        nixosConfigurations = {
-          iso = nixpkgs.lib.nixosSystem { modules = [ ./hosts/nixos/iso.nix ] ++ nixos-modules; };
-
-          # office-lenovo = nixpkgs.lib.nixosSystem {
-          #   inherit specialArgs;
-          #   modules = [
-          #     nixos-hardware.nixosModules.lenovo-thinkpad-x1-10th-gen
-          #     ./hosts/nixos/office
-          #     {
-          #       topology.networks.home = {
-          #         name = "Network Made by Lenovo in Office";
-          #         cidrv4 = "192.168.178.1/24";
-          #       };
-          #     }
-          #   ] ++ nixos-modules;
-          # };
-          office = nixpkgs.lib.nixosSystem {
-            inherit specialArgs;
-            modules = [
-              nixos-hardware.nixosModules.dell-latitude-5520
-              srvos.nixosModules.mixins-trusted-nix-caches
-              srvos.nixosModules.mixins-nix-experimental
-              srvos.nixosModules.mixins-tracing
-              ./hosts/nixos/office
-              {
-                topology.self.interfaces.home = {
-                  type = "wireguard";
-                  addresses = [ "172.22.240.98/27" ];
-                };
-              }
-            ] ++ nixos-modules;
-          };
-
-          # office-windows = nixpkgs.lib.nixosSystem {
-          #   inherit specialArgs;
-          #   modules = [
-          #     nixos-wsl.nixosModules.wsl
-          #     vscode-server.nixosModules.default
-          #     ./hosts/windows/office
-          #     {
-          #       topology.interfaces.home = {
-          #         name = "Network Made in Office Windows";
-          #         cidrv4 = "192.168.178.3/24";
-          #       };
-
-          #     }
-          #   ] ++ nixos-modules;
-          # };
-
-          game-office = nixpkgs.lib.nixosSystem {
-            inherit specialArgs;
-            modules = [
-              nixos-hardware.nixosModules.lenovo-legion-16ach6h
-              srvos.nixosModules.desktop
-              vscode-server.nixosModules.default
-              srvos.nixosModules.mixins-trusted-nix-caches
-              srvos.nixosModules.mixins-nix-experimental
-              srvos.nixosModules.mixins-tracing
-              ./hosts/nixos/game-office
-              {
-                topology.self.interfaces.home = {
-                  type = "wireguard";
-                  addresses = [ "172.22.240.100/27" ];
-                };
-              }
-            ] ++ nixos-modules;
-          };
-
-          game = nixpkgs.lib.nixosSystem {
-            inherit specialArgs;
-            modules = [
-              nixos-hardware.nixosModules.lenovo-legion-16ach6h
-              srvos.nixosModules.desktop
-              vscode-server.nixosModules.default
-              srvos.nixosModules.mixins-trusted-nix-caches
-              srvos.nixosModules.mixins-nix-experimental
-              srvos.nixosModules.mixins-tracing
-              ./hosts/nixos/game
-              {
-                topology.self.interfaces.home = {
-                  type = "wireguard";
-                  addresses = [ "172.22.240.99/27" ];
-                };
-              }
-            ] ++ nixos-modules;
-          };
-
-          mail = nixpkgs.lib.nixosSystem {
-            inherit specialArgs;
-            modules = [
-              srvos.nixosModules.server
-              srvos.nixosModules.mixins-nginx
-              ./hosts/nixos/mail
-              {
-                topology.self.interfaces.home = {
-                  type = "wireguard";
-                  addresses = [ "172.22.240.97/27" ];
-                };
-              }
-            ] ++ nixos-modules;
-          };
-
-          digital = nixpkgs.lib.nixosSystem {
-            inherit specialArgs;
-            modules = [
-              #srvos.nixosModules.hardware-digitalocean-droplet
-              srvos.nixosModules.server
-              srvos.nixosModules.mixins-nginx
-              ./hosts/nixos/digital
-              {
-                topology.self.interfaces.home = {
-                  addresses = [ "192.168.178.6/24" ];
-                };
-              }
-            ] ++ nixos-modules;
-          };
-
-          netbird = nixpkgs.lib.nixosSystem {
-            inherit specialArgs;
-            modules = [
-              srvos.nixosModules.server
-              srvos.nixosModules.hardware-amazon
-              srvos.nixosModules.mixins-nginx
-              ./hosts/nixos/netbird
-              robot_signal_dashboard.nixosModules.robotSignalDashboard
-              rust-web-server.nixosModules.rust-web-server
-              {
-                topology.self.interfaces.home = {
-                  addresses = [ "192.168.178.7/24" ];
-                };
-              }
-            ] ++ nixos-modules;
-          };
-
-          digitalocean = nixpkgs.lib.nixosSystem {
-            inherit specialArgs;
-            modules = [
-              ./hosts/nixos/digitalocean.nix
-              {
-                topology.self.interfaces.home = {
-                  addresses = [ "192.168.178.8/24" ];
-                };
-              }
-            ] ++ nixos-modules;
-          };
-
-          huawei-bj-001 = nixpkgs.lib.nixosSystem {
-            inherit specialArgs;
-            modules = [
-              ./hosts/nixos/huawei-bj-001
-              srvos.nixosModules.server
-              srvos.nixosModules.mixins-nginx
-              robot_signal_dashboard.nixosModules.robotSignalDashboard
-            ] ++ nixos-modules;
-          };
-
-          huoshan-bj-001 = nixpkgs.lib.nixosSystem {
-            inherit specialArgs;
-            modules = [
-              ./hosts/nixos/huoshan-bj-001
-              srvos.nixosModules.server
-              srvos.nixosModules.mixins-nginx
-              robot_signal_dashboard.nixosModules.robotSignalDashboard
-            ] ++ nixos-modules;
-          };
-
-          generic-nixos = nixpkgs.lib.nixosSystem {
-            inherit specialArgs;
-            system = "x86_64-linux";
-            modules = [
-              ./hosts/nixos/nixos-anywhere
-              disko.nixosModules.disko
-              srvos.nixosModules.server
-            ];
-          };
-          do = nixpkgs.lib.nixosSystem {
-            system = "x86_64-linux";
-            inherit specialArgs;
-            modules = [
-              srvos.nixosModules.server
-              srvos.nixosModules.mixins-nginx
-              disko.nixosModules.disko
-              ./hosts/nixos/nixos-anywhere
-              { disko.devices.disk.disk1.device = nixpkgs.lib.mkForce "/dev/vda"; }
-              {
-                # do not use DHCP, as DigitalOcean provisions IPs using cloud-init
-                networking.useDHCP = nixpkgs.lib.mkForce false;
-
-                services.cloud-init = {
-                  enable = true;
-                  network.enable = true;
-                  settings.datasource_list = [ "DigitalOcean" ];
-                  settings.datasource.DigitalOcean = { };
-                };
-              }
-            ];
-          };
-        };
-        darwinConfigurations = {
-          XIONGS-MACBOOK-PRO = darwin.lib.darwinSystem { modules = darwin-modules; };
-        };
-      };
     };
 }

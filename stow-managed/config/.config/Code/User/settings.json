@@ -126,6 +126,14 @@
         "chat.attach.text"
     ],
     "terminal.integrated.suggest.enabled": true,
-    "editor.formatOnSaveMode": "modificationsIfAvailable",
-    "editor.formatOnSave": true
+    "editor.formatOnSave": true,
+    "files.autoSaveDelay": 100,
+    "roo-cline.allowedCommands": [
+        "npm test",
+        "npm install",
+        "tsc",
+        "git log",
+        "git diff",
+        "git show"
+    ]
 }
