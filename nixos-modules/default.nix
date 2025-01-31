@@ -1,0 +1,60 @@
+{ inputs, ezModules, ... }:
+let
+  overlays =
+    with inputs;
+    map (x: x.overlays.default or x.overlay) [
+      xiongchenyu6
+      nix-alien
+      sops-nix
+      foundry
+      poetry2nix
+      nix-vscode-extensions
+      nix-topology
+    ];
+
+  sharedOverlays = overlays ++ [
+    (_: prev: {
+      # gnupg240 = nixpkgs-stable.legacyPackages.x86_64-linux.gnupg;
+      # telegram-desktop =
+      #   nixpkgs-stable.legacyPackages.x86_64-linux.telegram-desktop;
+      # waybar = nixpkgs-master.legacyPackages.x86_64-linux.waybar;
+      www_dist = inputs.autolife_www.packages.x86_64-linux.dist;
+    })
+  ];
+
+  nixos-modules = with inputs; [
+    sops-nix.nixosModules.sops
+    home-manager.nixosModules.home-manager
+    nur.modules.nixos.default
+    impermanence.nixosModules.impermanence
+    nix-topology.nixosModules.default
+    (import ../shared-modules/sops.nix)
+    (_: {
+      nixpkgs = {
+        system = "x86_64-linux";
+        overlays = sharedOverlays;
+      };
+    })
+  ];
+in
+{
+  imports = [
+    ezModules.kernel
+    ezModules.security
+    ezModules.ssh-harden
+  ] ++ nixos-modules;
+
+  nixpkgs.config = import ../nixpkgs-config.nix;
+
+  home-manager = {
+    useGlobalPkgs = true;
+    useUserPackages = true;
+  };
+
+  services.resolved = {
+    enable = true;
+    # dnssec = "allow-downgrade";
+    # dnsovertls = "opportunistic";
+    # llmnr = "false";
+  };
+}
