@@ -126,5 +126,6 @@
         "chat.attach.text"
     ],
     "terminal.integrated.suggest.enabled": true,
-    "editor.formatOnSaveMode": "modificationsIfAvailable"
+    "editor.formatOnSaveMode": "modificationsIfAvailable",
+    "editor.formatOnSave": true
 }

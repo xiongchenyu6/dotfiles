@@ -45,36 +45,42 @@
       options = "--delete-older-than 1d";
     };
 
-    settings = {
-      access-tokens = "github.com=${builtins.getEnv "Github_Access_Token"}";
-      accept-flake-config = true;
-      allow-import-from-derivation = true;
-      experimental-features = [
-        "nix-command"
-        "flakes"
-        "ca-derivations"
-        "parse-toml-timestamps"
-      ];
-      trusted-users = [
-        "freeman.xiong"
-      ];
-      allowed-users = [
-        "root"
-        "freeman.xiong"
-      ];
-      auto-optimise-store = true;
-      substituters = [
-        # "https://cache.nixos.org"
-        "https://xddxdd.cachix.org"
-        "https://xiongchenyu6.cachix.org"
-        "https://hyprland.cachix.org"
-      ];
-      trusted-public-keys = [
-        "xddxdd.cachix.org-1:ay1HJyNDYmlSwj5NXQG065C8LfoqqKaTNCyzeixGjf8="
-        "xiongchenyu6.cachix.org-1:mpOGlINmMwc2gb3xb1BjVmhzR8BYWzWYlg4xlTiBr7Q="
-        "hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc="
-      ];
-    };
+    settings = let
+      githubAccessToken = builtins.getEnv "Github_Access_Token";
+    in
+      if githubAccessToken == "" then
+        throw "Github_Access_Token environment variable is not set"
+      else
+        {
+          access-tokens = "github.com=${githubAccessToken}";
+          accept-flake-config = true;
+          allow-import-from-derivation = true;
+          experimental-features = [
+            "nix-command"
+            "flakes"
+            "ca-derivations"
+            "parse-toml-timestamps"
+          ];
+          trusted-users = [
+            "freeman.xiong"
+          ];
+          allowed-users = [
+            "root"
+            "freeman.xiong"
+          ];
+          auto-optimise-store = true;
+          substituters = [
+            # "https://cache.nixos.org"
+            "https://xddxdd.cachix.org"
+            "https://xiongchenyu6.cachix.org"
+            "https://hyprland.cachix.org"
+          ];
+          trusted-public-keys = [
+            "xddxdd.cachix.org-1:ay1HJyNDYmlSwj5NXQG065C8LfoqqKaTNCyzeixGjf8="
+            "xiongchenyu6.cachix.org-1:mpOGlINmMwc2gb3xb1BjVmhzR8BYWzWYlg4xlTiBr7Q="
+            "hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc="
+          ];
+        };
     distributedBuilds = lib.mkDefault true;
   };
 
