@@ -106,7 +106,6 @@
       inputs.flake-parts.follows = "flake-parts";
     };
 
-
     autolife_www = {
       url = "git+ssh://git@github.com/AutoLifeRobot/www.git?ref=cn";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -159,6 +158,13 @@
         systems.follows = "systems";
       };
     };
+
+    ez-configs = {
+      url = "github:ehllie/ez-configs";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.flake-parts.follows = "flake-parts";
+    };
+    
   };
 
   outputs =
@@ -186,6 +192,7 @@
       srvos,
       rust-web-server,
       nix-topology,
+      ez-configs,
       ...
     }@inputs:
     with nixpkgs;
@@ -299,14 +306,15 @@
             };
           };
           topology = {
-            nixosConfigurations = lib.filterAttrs
-              (name: _: builtins.elem name [
+            nixosConfigurations = lib.filterAttrs (
+              name: _:
+              builtins.elem name [
                 "mail"
                 "office"
                 "game"
                 "game-office"
-              ])
-              self.nixosConfigurations;
+              ]
+            ) self.nixosConfigurations;
             modules = [
               (
                 { config, ... }:
@@ -439,7 +447,7 @@
               ./hosts/nixos/game-office
               {
                 topology.self.interfaces.home = {
-                  type = "wireguard"; 
+                  type = "wireguard";
                   addresses = [ "172.22.240.100/27" ];
                 };
               }
@@ -461,9 +469,7 @@
                   type = "wireguard";
                   addresses = [ "172.22.240.99/27" ];
                 };
-
               }
-
             ] ++ nixos-modules;
           };
 
@@ -478,9 +484,7 @@
                   type = "wireguard";
                   addresses = [ "172.22.240.97/27" ];
                 };
-
               }
-
             ] ++ nixos-modules;
           };
 
@@ -496,7 +500,6 @@
                   addresses = [ "192.168.178.6/24" ];
                 };
               }
-
             ] ++ nixos-modules;
           };
 
