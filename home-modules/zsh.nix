@@ -3,7 +3,7 @@
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 { pkgs, ... }:
 {
-  imports = [ ./common.nix ];
+
   programs = {
     zsh = {
       initExtra = ''

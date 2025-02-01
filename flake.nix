@@ -226,6 +226,18 @@
               "freeman.xiong"
             ];
           };
+          huawei-bj-001 = {
+            userHomeModules = [
+              "root"
+              "freeman.xiong"
+            ];
+          };
+          huoshan-bj-001 = {
+            userHomeModules = [
+              "root"
+              "freeman.xiong"
+            ];
+          };
         };
       };
 

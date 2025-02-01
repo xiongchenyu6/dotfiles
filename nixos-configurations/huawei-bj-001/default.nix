@@ -15,11 +15,10 @@
     ezModules."freeman.xiong"
     ezModules.core
     ezModules.server
-    ezModules.sops
     ezModules.cn
+    srvos.nixosModules.server
     srvos.nixosModules.mixins-trusted-nix-caches
     srvos.nixosModules.mixins-nix-experimental
-    vscode-server.nixosModules.default
   ];
 
   boot = {
@@ -70,11 +69,6 @@
     };
 
   services = {
-    robotSignalDashboard = {
-      enable = true;
-      configFile = ./config.json;
-    };
-
     coturn = {
       enable = true;
     };
@@ -149,16 +143,6 @@
               proxyWebsockets = true;
             };
           };
-        };
-      };
-    };
-  };
-
-  home-manager = {
-    users = {
-      "freeman.xiong" = {
-        programs = {
-          tmux.enable = true;
         };
       };
     };

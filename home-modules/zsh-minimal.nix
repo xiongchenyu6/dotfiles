@@ -12,14 +12,19 @@
     zsh =
       let
         plugins = [
+          "aliases"
+          "alias-finder"
+          "1password"
           "catimg"
           "colored-man-pages"
-          "copyfile"
           "copypath"
+          "copybuffer"
+          "cp"
           "docker"
           "emacs"
           "extract"
           "encode64"
+          "eza"
           "fancy-ctrl-z"
           "git"
           "git-flow"
@@ -32,8 +37,6 @@
           "rsync"
           "sudo"
           "systemd"
-          "systemadmin"
-          "scala"
           "terraform"
         ];
 
@@ -92,7 +95,11 @@
                  echo "Already a tag on this commit"
              fi
           }
-          path+="$HOME/.npm/bin"
+
+          zstyle ':omz:plugins:alias-finder' autoload yes # disabled by default
+          zstyle ':omz:plugins:alias-finder' longer yes # disabled by default
+          zstyle ':o mz:plugins:alias-finder' exact yes # disabled by default
+          zstyle ':omz:plugins:alias-finder' cheaper yes # disabled by default
         '';
 
         oh-my-zsh = {
@@ -118,7 +125,6 @@
               }
             )
             [
-              "alias-tips"
               "wakatime-zsh-plugin"
             ];
         enableCompletion = true;

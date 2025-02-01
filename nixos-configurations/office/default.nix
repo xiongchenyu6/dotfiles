@@ -22,6 +22,9 @@
     ezModules.greetd
     ezModules.dn42
     ezModules.bird-inner
+    srvos.nixosModules.mixins-trusted-nix-caches
+    srvos.nixosModules.mixins-nix-experimental
+    srvos.nixosModules.mixins-tracing
     {
       topology.self.interfaces.home = {
         type = "wireguard";
