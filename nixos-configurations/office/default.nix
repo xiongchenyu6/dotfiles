@@ -30,6 +30,11 @@
     }
   ];
 
+  # Enable users/freeman gui
+  system.nixos.tags = [
+    "gui"
+  ];
+
   sops.secrets."wireguard/office" = { };
 
   hardware = {
