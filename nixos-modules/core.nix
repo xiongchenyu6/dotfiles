@@ -3,7 +3,7 @@
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 { pkgs, lib, ... }:
 {
-  
+
   imports = [ ../shared-modules/core.nix ];
 
   networking = {
@@ -33,5 +33,4 @@
   system = {
     stateVersion = "25.05";
   }; # Did you read the comment?
-
 }

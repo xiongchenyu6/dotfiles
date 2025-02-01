@@ -26,7 +26,7 @@ in
           ezModules.hyprland
         ]
       else
-        [ ]
+        [ ezModules.tmux ]
     )
     ++ (
       if (builtins.elem "nvidia" osConfig.system.nixos.tags) then
@@ -37,12 +37,13 @@ in
         [ ]
     );
 
-  sops.secrets = {
+  sops.secrets = lib.mkIf (builtins.elem "gui" osConfig.system.nixos.tags) {
     "ssh/freeman.xiong/id_ed25519" = {
       path = "${osConfig.users.users."freeman.xiong".home}/.ssh/id_ed25519";
       mode = "600";
     };
   };
+
   home = {
     file = {
       ".ssh/id_ed25519.pub" = {

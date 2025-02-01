@@ -9,14 +9,14 @@
     lib.attrValues {
       inherit (ezModules)
         # alacritty
-        zsh
+        zsh-minimal
         cli-minimal
         ;
     }
     ++ [
       inputs.impermanence.nixosModules.home-manager.impermanence
       inputs.sops-nix.homeManagerModules.sops
-       (import ../shared-modules/sops.nix)
+      (import ../shared-modules/sops.nix)
     ];
 
   sops = {
