@@ -12,17 +12,18 @@
   imports = with inputs; [
     "${modulesPath}/installer/scan/not-detected.nix"
     "${modulesPath}/profiles/qemu-guest.nix"
-    ./disk-config.nix
     ezModules.root
     ezModules."freeman.xiong"
     ezModules.core
     ezModules.server
-    ezModules.sops
     ezModules.acme
-    inputs.srvos.nixosModules.hardware-amazon
+    srvos.nixosModules.server
+    srvos.nixosModules.hardware-amazon
     srvos.nixosModules.mixins-trusted-nix-caches
     srvos.nixosModules.mixins-nix-experimental
     srvos.nixosModules.mixins-tracing
+    robot_signal_dashboard.nixosModules.robotSignalDashboard
+    rust-web-server.nixosModules.rust-web-server
     vscode-server.nixosModules.default
   ];
 

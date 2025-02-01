@@ -62,14 +62,4 @@
       enable = true;
     };
   };
-
-  home-manager = {
-    users = {
-      "freeman.xiong" = {
-        programs = {
-          tmux.enable = true;
-        };
-      };
-    };
-  };
 }
