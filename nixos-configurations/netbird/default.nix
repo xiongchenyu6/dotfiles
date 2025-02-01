@@ -19,6 +19,7 @@
     ezModules.server
     ezModules.sops
     ezModules.acme
+    inputs.srvos.nixosModules.hardware-amazon
     srvos.nixosModules.mixins-trusted-nix-caches
     srvos.nixosModules.mixins-nix-experimental
     srvos.nixosModules.mixins-tracing

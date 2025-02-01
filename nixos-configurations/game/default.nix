@@ -41,23 +41,17 @@
 
   sops.secrets."wireguard/game" = { };
 
-  system.nixos.tags = [ "with-gui-nvidia" ];
+  system.nixos.tags = [
+    "nvidia"
+    "gui"
+  ];
 
   hardware = {
     enableRedistributableFirmware = true;
   };
 
-  nixpkgs = {
-    config = {
-      permittedInsecurePackages = [
-        "openssl-1.1.1w"
-        "electron-28.3.3"
-      ];
-    };
-  };
-
   boot = {
-    kernelPackages = pkgs.linuxPackages_6_12;
+    kernelPackages = pkgs.linuxPackages_latest;
     binfmt.emulatedSystems = [ "aarch64-linux" ];
     initrd.kernelModules = [
       "vfio_pci"
