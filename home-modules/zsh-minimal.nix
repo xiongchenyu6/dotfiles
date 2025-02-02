@@ -64,12 +64,12 @@
            fi
         }
       '';
-      completionInit = ''
-        autoload -Uz compinit
-        compinit
-        autoload -Uz bashcompinit
-        bashcompinit
-      '';
+      # completionInit = ''
+      #   autoload -Uz compinit
+      #   compinit
+      #   autoload -Uz bashcompinit
+      #   bashcompinit
+      # ''; #TODO since we use oh-my-zsh library, we don't need to do this https://github.com/ohmyzsh/ohmyzsh/blob/master/lib/completion.zsh
       enableCompletion = true;
       autosuggestion.enable = true;
       syntaxHighlighting.enable = true;
@@ -83,6 +83,7 @@
       antidote = {
         enable = true;
         plugins = [
+          "ohmyzsh/ohmyzsh path:lib"
           "ohmyzsh/ohmyzsh path:plugins/aliases"
           "ohmyzsh/ohmyzsh path:plugins/alias-finder"
           "ohmyzsh/ohmyzsh path:plugins/colored-man-pages"
