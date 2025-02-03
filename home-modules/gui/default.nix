@@ -69,6 +69,8 @@
       vulkan-loader
       vulnix
       nix-melt
+      code-cursor
+      godot_4
     ];
     sessionVariables = {
       STARSHIP_LOG = "error";

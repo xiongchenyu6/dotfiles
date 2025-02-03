@@ -97,7 +97,9 @@
           "ohmyzsh/ohmyzsh path:plugins/gitignore"
           "ohmyzsh/ohmyzsh path:plugins/rsync"
           "ohmyzsh/ohmyzsh path:plugins/sudo"
+          "ohmyzsh/ohmyzsh path:plugins/systemadmin"
           "ohmyzsh/ohmyzsh path:plugins/kubectl"
+          "ohmyzsh/ohmyzsh path:plugins/emacs"
         ];
       };
     };
