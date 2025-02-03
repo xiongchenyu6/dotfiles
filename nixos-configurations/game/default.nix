@@ -36,7 +36,6 @@
         addresses = [ "172.22.240.99/27" ];
       };
     }
-
   ];
 
   sops.secrets."wireguard/game" = { };

@@ -51,6 +51,10 @@ in
         executable = false;
       };
     };
+    sessionVariables = {
+      OPENAI_API_BASE = "https://api.siliconflow.cn/v1";
+      OPENAI_API_KEY = builtins.getEnv "SILICON_FLOW";
+    };
   };
   programs = {
     git = {
