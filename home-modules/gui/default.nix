@@ -45,6 +45,7 @@
       # config.nur.repos.xddxdd.wine-wechat
       gimp
       #gitkraken
+      cmctl
       ledger-live-desktop
       netbird-ui
       termius
@@ -56,6 +57,18 @@
       kdePackages.dolphin
       kdePackages.qtwayland
       kdePackages.qt6ct
+      kube-capacity
+      kube-prompt
+      kubectl
+      kubectl-tree
+      kubespy
+      kubeshark
+      kustomize
+      krew
+      kconf
+      #korb
+      kube-score
+      kubelogin-oidc
       # kdePackages.wayqt
       # kdePackages.qtstyleplugin-kvantum
       libsForQt5.oxygen-icons
@@ -100,7 +113,7 @@
       };
     };
   };
-  programs = lib.mkIf pkgs.stdenv.isLinux {
+  programs = {
     nh = {
       enable = true;
       flake = "/home/freeman.xiong/dotfiles";
