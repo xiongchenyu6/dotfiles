@@ -178,7 +178,6 @@
           wakatime-mode
           which-key
           yaml-mode
-
         ];
       extraConfig = ''
         (add-to-list 'default-frame-alist

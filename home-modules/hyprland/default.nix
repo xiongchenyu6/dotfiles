@@ -100,7 +100,7 @@
           extraConfig = lib.mkDefault ''
             monitor=,highrr,auto,auto
 
-            monitor=HDMI-A-1,preferred,auto,1,transform,0
+            monitor=HDMI-A-1,preferred,auto,1,transform,1
 
             workspace=HDMI-A-1,1
             # unscale XWayland

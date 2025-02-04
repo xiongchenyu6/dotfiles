@@ -633,9 +633,9 @@
       enable = true;
     };
 
-    java = {
-      enable = true;
-    };
+    # java = {
+    #   enable = true;
+    # };
 
     topgrade = {
       enable = true;

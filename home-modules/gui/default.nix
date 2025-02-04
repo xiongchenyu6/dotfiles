@@ -69,10 +69,11 @@
       #korb
       kube-score
       kubelogin-oidc
+      calicoctl
       # kdePackages.wayqt
       # kdePackages.qtstyleplugin-kvantum
       libsForQt5.oxygen-icons
-      feishu-lark
+      #feishu-lark
       websocat
       # code-cursor
       android-studio
@@ -80,10 +81,12 @@
       #opengl-driver
       libsecret
       vulkan-loader
-      vulnix
+      #vulnix
       nix-melt
       code-cursor
       godot_4
+      file
+      #blender
     ];
     sessionVariables = {
       STARSHIP_LOG = "error";
@@ -144,28 +147,6 @@
 
     vscode = {
       enable = true;
-      extensions = with pkgs.vscode-marketplace; [
-        mkhl.direnv
-        juanblanco.solidity
-        twxs.cmake
-        gitlab.gitlab-workflow
-        eamodio.gitlens
-        weaveworks.vscode-gitops-tools
-        golang.go
-        visualstudioexptteam.vscodeintellicode
-        ms-kubernetes-tools.vscode-kubernetes-tools
-        ms-python.python
-        github.copilot # AI code completion
-        redhat.vscode-yaml
-        ms-azuretools.vscode-docker
-        jnoortheen.nix-ide
-        mechatroner.rainbow-csv
-        rust-lang.rust-analyzer
-        tamasfe.even-better-toml
-        github.remotehub
-        hediet.vscode-drawio
-        ms-vscode.vscode-speech
-      ];
     };
 
     chromium = {
