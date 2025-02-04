@@ -199,7 +199,7 @@
         };
       };
     };
-    bird2 = {
+    bird = {
       enable = true;
       config = mylib.bird2-inner-config "172.22.240.99" "fd48:4b4:f3::3";
     };
@@ -225,6 +225,12 @@
           ".${tronDomain}" = tronRealm;
         };
       };
+  };
+
+  programs = {
+    adb = {
+      enable = true;
+    };
   };
 
   home-manager = {

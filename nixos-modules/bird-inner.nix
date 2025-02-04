@@ -1,6 +1,7 @@
-{ lib, ... }: {
+{ lib, ... }:
+{
   services = {
-    bird2 = {
+    bird = {
       enable = lib.mkDefault true;
       checkConfig = false;
     };

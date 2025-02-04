@@ -35,7 +35,7 @@
       hey # http load generator
       killall
       litecli
-      vsc-leetcode-cli
+      #vsc-leetcode-cli
       mongosh
       mycli
       my2sql

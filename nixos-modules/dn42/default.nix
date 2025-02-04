@@ -1,6 +1,8 @@
 { pkgs, ... }:
-let script = import ./update-roa.nix { inherit pkgs; };
-in {
+let
+  script = import ./update-roa.nix { inherit pkgs; };
+in
+{
   systemd = {
     timers = {
       dn42-roa = {
@@ -13,7 +15,7 @@ in {
         };
 
         wantedBy = [ "timers.target" ];
-        before = [ "bird2.service" ];
+        before = [ "bird.service" ];
       };
     };
     services = {

@@ -44,6 +44,7 @@
           "pulse"
           "pipewire"
           "systemd-journal"
+          "adbusers"
         ];
       };
       "xiongchenyu6" = {

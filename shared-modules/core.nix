@@ -43,9 +43,10 @@
       options = "--delete-older-than 1d";
     };
 
-    settings = let
-      githubAccessToken = builtins.getEnv "Github_Access_Token";
-    in
+    settings =
+      let
+        githubAccessToken = builtins.getEnv "Github_Access_Token";
+      in
       if githubAccessToken == "" then
         throw "Github_Access_Token environment variable is not set"
       else
@@ -88,6 +89,9 @@
 
   networking = {
     domain = "auto-life.tech";
+    nftables = {
+      enable = true;
+    };
   };
 
   # Select internationalisation properties.

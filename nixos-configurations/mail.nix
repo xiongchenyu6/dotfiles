@@ -106,7 +106,7 @@ in
         80
         89
         88 # kerberos
-        179 # bird2
+        179 # bird
         389 # ldap
         636
         5353 # mdns
@@ -215,7 +215,6 @@ in
               ${pkgs.iproute2}/bin/ip addr add dev wg_game_office fd48:4b4:f3::1/128 peer fd48:4b4:f3::4/128
               ${pkgs.iproute2}/bin/ip link set multicast on dev wg_game_office
             '';
-
             peers = [
               {
                 publicKey = "nBEkTpn4kRYXS9r7beXh3uMYJBAq/534byXv8NsB8gM=";
@@ -223,36 +222,12 @@ in
               }
             ];
           };
-
-          wg_theresa = {
+          wg_kioubit = {
             inherit privateKeyFile address table;
-            listenPort = 23396;
             peers = [
               {
-                endpoint = "cn2.dn42.theresa.cafe:22616";
-                publicKey = "MqKkzCwYfOg8Fc/pRRctLW3jS72ACBDQr8ZF10sZ614=";
-                inherit allowedIPs;
-              }
-            ];
-          };
-          wg_potat0 = {
-            inherit privateKeyFile address table;
-            listenPort = 21816;
-            peers = [
-              {
-                endpoint = "us1.dn42.potat0.cc:22616";
-                publicKey = "LUwqKS6QrCPv510Pwt1eAIiHACYDsbMjrkrbGTJfviU=";
-                inherit allowedIPs;
-              }
-            ];
-          };
-          wg_tech9 = {
-            inherit privateKeyFile address table;
-            listenPort = 21588;
-            peers = [
-              {
-                endpoint = "sg-sin01.dn42.tech9.io:52507";
-                publicKey = "4qLIJ9zpc/Xgvy+uo90rGso75cSrT2F5tBEv+6aqDkY=";
+                endpoint = "hk1.g-load.eu:22616";
+                publicKey = "sLbzTRr2gfLFb24NPzDOpy8j09Y6zI+a7NkeVMdVSR8=";
                 inherit allowedIPs;
               }
             ];
@@ -262,6 +237,7 @@ in
   };
 
   services = {
+
     postgresql = {
       enable = true;
       ensureUsers = [
