@@ -11,7 +11,6 @@
   };
   environment = {
     systemPackages = with pkgs; [
-      awscli2
       cachix
       deadnix
       delve # go debugger
@@ -34,18 +33,6 @@
       (kubernetes-helm-wrapped.override { plugins = [ kubernetes-helmPlugins.helm-diff ]; })
       #helmify
       hey # http load generator
-      kube-capacity
-      kube-prompt
-      kubectl
-      kubectl-tree
-      kubespy
-      kubeshark
-      kustomize
-      krew
-      kconf
-      #korb
-      kubelogin-oidc
-      kube-score
       killall
       litecli
       vsc-leetcode-cli
