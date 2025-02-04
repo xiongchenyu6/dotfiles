@@ -34,15 +34,6 @@
       };
     };
 
-    nix-vscode-extensions = {
-      url = "github:nix-community/nix-vscode-extensions";
-      inputs = {
-        flake-utils.follows = "flake-utils";
-        nixpkgs.follows = "nixpkgs";
-        flake-compat.follows = "flake-compat";
-      };
-    };
-
     xiongchenyu6 = {
       url = "github:xiongchenyu6/nur-packages";
       inputs = {

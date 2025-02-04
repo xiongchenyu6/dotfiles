@@ -339,6 +339,24 @@
             };
           };
         };
+        "ollama.autolife-robotics.me" = {
+          forceSSL = true;
+          acmeRoot = null;
+          useACMEHost = "netbird.autolife-robotics.me";
+          kTLS = true;
+          locations = {
+            "/api/" = {
+              proxyPass = "http://100.81.206.175:11434/api/";
+              extraConfig = ''
+                proxy_buffering off;
+                proxy_request_buffering off;
+              '';
+            };
+            "/" = {
+              proxyPass = "http://100.81.206.175:3000";
+            };
+          };
+        };
         "mngt.autolife-robotics.me" = {
           forceSSL = true;
           acmeRoot = null;

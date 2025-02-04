@@ -8,7 +8,7 @@
         "url": "http://www.amazon.com/s/?field-keywords=%s"
     },
     {
-        "fallback": true,
+        "fallback": false,
         "iconPath": ":gpt",
         "id": "d0191431",
         "name": "Chat GPT",
@@ -32,7 +32,7 @@
         "url": "http://www.ebay.com/sch/i.html?_nkw=%s"
     },
     {
-        "fallback": true,
+        "fallback": false,
         "iconPath": ":github",
         "id": "b0921246",
         "name": "GitHub",
@@ -44,11 +44,11 @@
         "iconPath": ":google",
         "id": "38535331",
         "name": "Google",
-        "trigger": "gg",
+        "trigger": "g",
         "url": "https://www.google.com/search?q=%s"
     },
     {
-        "fallback": true,
+        "fallback": false,
         "iconPath": ":maps",
         "id": "84988671",
         "name": "Google Maps",
@@ -64,7 +64,7 @@
         "url": "https://scholar.google.com/scholar?q=%s"
     },
     {
-        "fallback": true,
+        "fallback": false,
         "iconPath": ":google_translate",
         "id": "39546cf5",
         "name": "Google Translate",
@@ -72,7 +72,7 @@
         "url": "https://translate.google.com/?text=%s"
     },
     {
-        "fallback": true,
+        "fallback": false,
         "iconPath": ":wolfram",
         "id": "edd9629e",
         "name": "Wolfram Alpha",
@@ -80,7 +80,7 @@
         "url": "https://www.wolframalpha.com/input/?i=%s"
     },
     {
-        "fallback": true,
+        "fallback": false,
         "iconPath": ":youtube",
         "id": "ec81434d",
         "name": "YouTube",
@@ -88,7 +88,7 @@
         "url": "https://www.youtube.com/results?search_query=%s"
     },
     {
-        "fallback": true,
+        "fallback": false,
         "iconPath": "file:/home/freeman.xiong/.local/share/albert/websearch/01c1f7df.png",
         "id": "01c1f7df",
         "name": "artifact",
@@ -96,7 +96,7 @@
         "url": "https://artifacthub.io/packages/search?ts_query_web=%s&sort=relevance&page=1"
     },
     {
-        "fallback": true,
+        "fallback": false,
         "iconPath": "file:/home/freeman.xiong/.local/share/albert/websearch/759b507a.png",
         "id": "759b507a",
         "name": "home manager",
@@ -104,7 +104,7 @@
         "url": "https://home-manager-options.extranix.com/?query=%s&release=master"
     },
     {
-        "fallback": true,
+        "fallback": false,
         "iconPath": "file:/home/freeman.xiong/.local/share/albert/websearch/0f79e032.png",
         "id": "0f79e032",
         "name": "nixos",

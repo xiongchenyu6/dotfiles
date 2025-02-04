@@ -134,7 +134,8 @@
         "tsc",
         "git log",
         "git diff",
-        "git show"
+        "git show",
+        "*"
     ],
     "coolcline.allowedCommands": [
         "npm test",
@@ -143,5 +144,15 @@
         "git log",
         "git diff",
         "git show"
-    ]
+    ],
+    "github.copilot.chat.completionContext.typescript.mode": "on",
+    "github.copilot.chat.generateTests.codeLens": true,
+    "github.copilot.enable": {
+        "markdown": true,
+        "plaintext": true
+    },
+    "python.analysis.aiCodeActions": {
+        
+    },
+    "github.copilot.chat.editor.temporalContext.enabled": true
 }
