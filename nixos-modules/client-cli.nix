@@ -3,10 +3,6 @@
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 { pkgs, ... }:
 {
-  imports = [
-    ../shared-modules/client-cli.nix
-  ];
-
   environment = {
     systemPackages = with pkgs; [
       apg
