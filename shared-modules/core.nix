@@ -5,20 +5,11 @@
 {
 
   environment = {
-    systemPackages = with pkgs; [
-      tree
-      litecli
-      ssh-to-age
-      lrzsz
-      home-manager
-      dmidecode
-    ];
 
     etc = {
       "ppp/options".text = ''
         ipcp-accept-remote
       '';
-
     };
   };
 
@@ -69,7 +60,6 @@
           ];
           auto-optimise-store = true;
           substituters = [
-            # "https://cache.nixos.org"
             "https://xddxdd.cachix.org"
             "https://xiongchenyu6.cachix.org"
             "https://hyprland.cachix.org"
@@ -102,5 +92,4 @@
       "en_US.UTF-8/UTF-8"
     ];
   };
-
 }

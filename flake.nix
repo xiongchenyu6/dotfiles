@@ -46,7 +46,6 @@
       url = "github:thiagokokada/nix-alien";
       inputs = {
         nixpkgs.follows = "nixpkgs";
-        flake-utils.follows = "flake-utils";
         flake-compat.follows = "flake-compat";
       };
     };
@@ -166,7 +165,6 @@
     with nixpkgs;
     with lib;
     let
-
       mylib = import ./lib { inherit lib; };
       shares = import ./shares.nix { inherit lib; };
     in
