@@ -151,8 +151,11 @@
         "markdown": true,
         "plaintext": true
     },
-    "python.analysis.aiCodeActions": {
-        
-    },
-    "github.copilot.chat.editor.temporalContext.enabled": true
+    "python.analysis.aiCodeActions": {},
+    "github.copilot.chat.editor.temporalContext.enabled": true,
+    "rust-analyzer.restartServerOnConfigChange": true,
+    "rust-analyzer.showSyntaxTree": true,
+    "rust-analyzer.testExplorer": true,
+    "rust-analyzer.diagnostics.experimental.enable": true,
+    "rust-analyzer.runnables.command": null
 }

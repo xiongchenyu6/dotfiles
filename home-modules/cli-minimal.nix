@@ -46,6 +46,7 @@
 
     git = {
       enable = true;
+
       lfs = {
         enable = true;
       };
@@ -54,7 +55,7 @@
         pushall = "!git remote | xargs -L1 git push --all";
         rank = "shortlog -s -n --no-merges";
       };
-
+      signing.format = "openpgp";
       difftastic = {
         enable = true;
         background = "dark";

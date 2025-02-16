@@ -73,20 +73,90 @@
       # kdePackages.wayqt
       # kdePackages.qtstyleplugin-kvantum
       libsForQt5.oxygen-icons
-      #feishu-lark
+      feishu-lark
       websocat
-      # code-cursor
+      code-cursor
       android-studio
-      #aider-chat
       #opengl-driver
       libsecret
       vulkan-loader
-      #vulnix
+      vulnix
       nix-melt
       code-cursor
       godot_4
       file
-      #blender
+      blender
+      delve # go debugger
+      dig
+      dive # docker image analyzer
+      du-dust # du alternative
+      envsubst
+      fd
+      ffmpeg-full
+      fluxcd
+      glab
+      github-copilot-cli
+      gitleaks
+      weave-gitops
+      graphviz
+      grpcurl
+      #gotron-sdk
+      (kubernetes-helm-wrapped.override { plugins = [ kubernetes-helmPlugins.helm-diff ]; })
+      #helmify
+      hey # http load generator
+      killall
+      litecli
+      #vsc-leetcode-cli
+      mongosh
+      mycli
+      my2sql
+      neofetch
+      # nix-du
+      nix-index-update
+      nixpacks
+      nixd
+      bun
+      ngrok
+      nvfetcher
+      oath-toolkit
+      openssl
+      #pg-ldap-sync
+      popeye
+      pgcli
+      plantuml
+      (python3.withPackages (
+        _: with python3.pkgs; [
+          pip
+          aider-chat
+        ]
+      ))
+      qrencode
+      ripgrep
+      redis
+      rustscan
+      ruby
+      shellcheck
+      shfmt
+      s3cmd
+      solc-select
+      #solium
+      sops
+      socat
+      #stow
+      sshpass
+      tgpt
+      # terraform
+      # terraform-ls
+      # terracognita
+      # terranix
+      # terraformer
+      # tf2pulumi
+      tealdeer
+      unzip
+      wakatime
+      wget
+      yarn2nix
+      yubikey-manager
     ];
     sessionVariables = {
       STARSHIP_LOG = "error";

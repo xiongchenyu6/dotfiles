@@ -1,27 +1,3 @@
-[[groups]]
-name = 'test1'
-users = ['user.3']
-
-[[groups]]
-name = 'test2'
-users = ['user.5']
-
-[[groups]]
-name = 'test3'
-users = ['user.3', 'user.5']
-
-[[groups]]
-name = 'podman'
-users = ['freeman.xiong', 'user.3', 'user.5']
-
-[[groups]]
-id = 1233
-name = 'developer'
-
-[[groups]]
-id = 1234
-name = 'owner'
-
 [[hosts]]
 host = 'game'
 network = 'dn42'
