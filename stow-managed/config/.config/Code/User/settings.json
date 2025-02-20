@@ -157,5 +157,7 @@
     "rust-analyzer.showSyntaxTree": true,
     "rust-analyzer.testExplorer": true,
     "rust-analyzer.diagnostics.experimental.enable": true,
-    "rust-analyzer.runnables.command": null
+    "rust-analyzer.runnables.command": null,
+    "godotTools.editorPath.godot4": "godot4",
+    "godotTools.inlayHints.gdscript": true
 }
