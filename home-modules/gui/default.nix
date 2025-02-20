@@ -46,6 +46,7 @@
       gimp
       #gitkraken
       cmctl
+      cloudflared
       ledger-live-desktop
       netbird-ui
       termius
@@ -116,7 +117,6 @@
       nixpacks
       nixd
       bun
-      ngrok
       nvfetcher
       oath-toolkit
       openssl
