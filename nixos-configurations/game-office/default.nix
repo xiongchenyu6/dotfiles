@@ -41,7 +41,7 @@
   ];
 
   # sops.secrets."wireguard/office" = { };
-  sops.secrets."wireguard/game-office" = { };
+
   # /nix /var /root /nix/persist
 
   # Enable users/freeman gui
