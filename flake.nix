@@ -185,12 +185,6 @@
         globalArgs = { inherit inputs shares mylib; };
         root = ./.;
         nixos.hosts = {
-          game-office = {
-            userHomeModules = [
-              "root"
-              "freeman.xiong"
-            ];
-          };
           game = {
             userHomeModules = [
               "root"
@@ -210,12 +204,6 @@
             ];
           };
           netbird = {
-            userHomeModules = [
-              "root"
-              "freeman.xiong"
-            ];
-          };
-          huawei-bj-001 = {
             userHomeModules = [
               "root"
               "freeman.xiong"
