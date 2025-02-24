@@ -1,4 +1,9 @@
-{ inputs, ezModules, ... }:
+{
+  inputs,
+  ezModules,
+  lib,
+  ...
+}:
 let
   overlays =
     with inputs;
@@ -50,7 +55,7 @@ let
     (import ../shared-modules/sops.nix)
     (_: {
       nixpkgs = {
-        system = "x86_64-linux";
+        system = lib.mkDefault "x86_64-linux";
         overlays = sharedOverlays;
       };
     })

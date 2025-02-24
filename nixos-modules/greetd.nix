@@ -23,7 +23,7 @@
       enable = true;
       settings = {
         initial_session = {
-          user = "freeman.xiong";
+          user = lib.mkDefault "freeman.xiong";
           command = lib.mkDefault "Hyprland";
         };
         defualt_session = {

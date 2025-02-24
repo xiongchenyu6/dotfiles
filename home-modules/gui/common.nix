@@ -17,7 +17,7 @@
       mattermost-desktop
       xournalpp
       slack
-      tectonic
+      #tectonic
       onlyoffice-bin
       zoom-us
       ueberzugpp
