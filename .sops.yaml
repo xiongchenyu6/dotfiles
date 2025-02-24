@@ -1,10 +1,8 @@
 keys:
   - &xiongchenyu 4EDE451FC10722D0C6662C6FB99B8189C7C153F6
-  - &seanhxx A6C7A7F918A57D077BF5E43957B83C0B2B9C5E3F
   - &office age1e4kp9y32sy4t3pumy8e4xrn09m3ga4d38s22jnrrxm5ym75x3eps9rg794
   - &oracle-001 age1xm5qgvpmy6whs5jqrdzde0l33qktg4azst3zpyr7lgg5qh9cqfjs56e7d5
   - &mail age14z507h9qugzy65rpfgrzlrzkvyvwsqlwv7nguamaw4wx830hsu0qt23vx3
-  - &game-office age17cz5tfj48gx44ku3j97ptpe4jtrwjtjshwah5uscmg03xv082vas2lhgc8
   - &game age107w29mcnleyvvza8r9p3pkq6v7pqg8y3uvn9vp0pa55yrrwa757ss3xg5x
   - &netbird age19eapwgdt8ufhzztcs84jtqyyymh5ypld39mq3kc48aruz7jmu3gqgysyle
   - &huoshan-bj-001 age13sanuad3fazmechnpya64v7cc4swy4v5u6wks09cqxk45lvlhg9seztxzp
@@ -15,24 +13,20 @@ creation_rules:
       - age:
           - *office
           - *mail
-          - *game-office
           - *game
           - *netbird
           - *huoshan-bj-001
           - *oracle-001
         pgp:
           - *xiongchenyu
-          - *seanhxx
   - path_regex: secrets/[^/]+\.env$
     key_groups:
       - age:
           - *office
           - *mail
-          - *game-office
           - *game
           - *netbird
           - *huoshan-bj-001
           - *oracle-001
         pgp:
           - *xiongchenyu
-          - *seanhxx

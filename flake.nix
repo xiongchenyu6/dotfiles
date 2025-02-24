@@ -191,12 +191,6 @@
               "freeman.xiong"
             ];
           };
-          htx-work = {
-            userHomeModules = [
-              "root"
-              "seanhxx"
-            ];
-          };
           office = {
             userHomeModules = [
               "root"
