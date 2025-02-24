@@ -189,7 +189,7 @@
   programs = {
     nh = {
       enable = true;
-      flake = "/home/freeman.xiong/dotfiles";
+      flake = "/home/seanhxx/dotfiles";
     };
     wofi = {
       enable = true;
