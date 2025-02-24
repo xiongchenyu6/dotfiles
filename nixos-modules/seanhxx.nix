@@ -9,7 +9,7 @@
   ...
 }:
 {
-  sops.secrets."user/freeman/pass" = {
+  sops.secrets."user/seanhxx/pass" = {
     neededForUsers = true;
   };
 
@@ -24,7 +24,7 @@
 
         shell = pkgs.zsh;
 
-        hashedPasswordFile = lib.mkDefault config.sops.secrets."user/freeman/pass".path;
+        hashedPasswordFile = lib.mkDefault config.sops.secrets."user/seanhxx/pass".path;
 
         extraGroups = [
           "networkmanager"
