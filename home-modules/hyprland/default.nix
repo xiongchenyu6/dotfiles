@@ -174,6 +174,26 @@
             #binds mod + [shift +] {1..10} to [move to] ws {1..10}
             bind = $mainMod, c, killactive,
             bind = $mainMod SHIFT, Q, exit,
+            bind = $mainMod, L, togglefloating,
+            bind = $mainMod, V, pseudo, # dwindle
+            bind = $mainMod, W, swapactiveworkspaces, eDP-1 HDMI-A-1
+            bind = $mainMod, T, togglesplit, # dwindle
+            bind = $mainMod, G, togglegroup, # dwindle
+            bind = $mainMod, M ,layoutmsg, swapwithmaster
+            bind = $mainMod SHIFT, M, layoutmsg, focusmaster
+            bind = $mainMod, space, fullscreen, # dwindle
+
+            # Move focus with mainMod + arrow keys
+            bind = $mainMod, B, movefocus, l
+            bind = $mainMod, F, movefocus, r
+            bind = $mainMod, P, movefocus, u
+            bind = $mainMod, N, movefocus, d
+            bind = $mainMod, 25, focusmonitor, l
+            bind = $mainMod, 26, focusmonitor, r
+
+            # Scroll through existing workspaces with mainMod + scroll
+            bind = $mainMod SHIFT, mouse_down, workspace, e+1
+            bind = $mainMod SHIFT, mouse_up, workspace, e-1
 
             ${builtins.concatStringsSep "\n" (
               builtins.genList (
