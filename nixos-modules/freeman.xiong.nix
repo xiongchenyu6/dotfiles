@@ -52,5 +52,4 @@
       };
     };
   };
-  programs.zsh.enable = true;
 }

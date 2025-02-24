@@ -73,12 +73,12 @@
       enableCompletion = true;
       autosuggestion.enable = true;
       syntaxHighlighting.enable = true;
-      zsh-abbr = {
-        enable = true;
-        abbreviations = {
-          "--global ns" = "nixos-rebuild switch";
-        };
-      };
+      # zsh-abbr = {
+      #   enable = true;
+      #   abbreviations = {
+      #     "--global ns" = "nixos-rebuild switch";
+      #   };
+      # };
 
       antidote = {
         enable = true;

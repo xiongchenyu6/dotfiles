@@ -120,7 +120,7 @@ in
             RemoteCommand = "tmux new -A -s xiongchenyu";
           };
         };
-        "mail*" = {
+        "tcloud*" = {
           hostname = "43.156.66.157";
           # forwardX11 = true;
           # forwardX11Trusted = true;
