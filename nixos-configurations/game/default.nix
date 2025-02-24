@@ -206,8 +206,8 @@
       };
     };
 
-    v2raya.enable = true;
-    netbird.enable = true;
+    #v2raya.enable = true;
+    #netbird.enable = true;
     babeld = {
       interfaces = {
         wg_mail = {

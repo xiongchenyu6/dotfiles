@@ -159,5 +159,9 @@
     "rust-analyzer.diagnostics.experimental.enable": true,
     "rust-analyzer.runnables.command": null,
     "godotTools.editorPath.godot4": "godot4",
-    "godotTools.inlayHints.gdscript": true
+    "godotTools.inlayHints.gdscript": true,
+    "github.copilot.chat.edits.codesearch.enabled": true,
+    "github.copilot.chat.edits.temporalContext.enabled": true,
+    "github.copilot.nextEditSuggestions.enabled": true,
+    "github.copilot.chat.languageContext.typescript.enabled": true
 }

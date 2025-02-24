@@ -76,14 +76,13 @@
       libsForQt5.oxygen-icons
       feishu-lark
       websocat
-      code-cursor
       android-studio
       #opengl-driver
       libsecret
       vulkan-loader
       vulnix
       nix-melt
-      code-cursor
+      #code-cursor
       godot_4
       file
       blender
@@ -189,7 +188,7 @@
   programs = {
     nh = {
       enable = true;
-      flake = "/home/seanhxx/dotfiles";
+      flake = "/home/freeman.xiong/dotfiles";
     };
     wofi = {
       enable = true;
