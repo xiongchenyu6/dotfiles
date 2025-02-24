@@ -191,13 +191,25 @@
               "freeman.xiong"
             ];
           };
+          htx-work = {
+            userHomeModules = [
+              "root"
+              "seanhxx"
+            ];
+          };
           office = {
             userHomeModules = [
               "root"
               "freeman.xiong"
             ];
           };
-          mail = {
+          tcloud = {
+            userHomeModules = [
+              "root"
+              "freeman.xiong"
+            ];
+          };
+          oracle-001 = {
             userHomeModules = [
               "root"
               "freeman.xiong"

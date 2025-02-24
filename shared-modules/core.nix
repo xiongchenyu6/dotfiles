@@ -53,10 +53,12 @@
           ];
           trusted-users = [
             "freeman.xiong"
+            "seanhxx"
           ];
           allowed-users = [
             "root"
             "freeman.xiong"
+            "seanhxx"
           ];
           auto-optimise-store = true;
           substituters = [

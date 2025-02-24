@@ -27,7 +27,7 @@
       # WLR_NO_HARDWARE_CURSORS = "1";
       XDG_SESSION_TYPE = "wayland";
       # LSP_USE_PLISTS = "true";
-      NIX_SSHOPTS = "-Y";
+      #NIX_SSHOPTS = "-Y";
       XDG_SESSION_DESKTOP = "Hyprland";
     };
   };
@@ -41,21 +41,6 @@
             text = ''
               sleep 10
               hyprctl keyword windowrule "workspace unset,microsoft-edge"
-            '';
-          };
-          screen-shot = pkgs.writeShellApplication {
-            name = "screen-shot.sh";
-            text = ''
-              grim -g "$(slurp)" - | wl-copy -o
-            '';
-          };
-          # screen shot and save to ~/Pictures
-          screen-shot-and-save = pkgs.writeShellApplication {
-            name = "screen-shot-and-save.sh";
-            # date file named in YYYYMMDD-HHmmss format
-            text = ''
-              TIME=$(date +%Y%m%d-%H%M%S)_screenshot
-              grim -g "$(slurp)" ~/Pictures/"$TIME".png
             '';
           };
 
@@ -109,10 +94,7 @@
             }
             input {
             kb_layout = us
-            # kb_variant = dvp
-            # kb_model = dvorak-programmer
 
-            # kb_options = caps:ctrl_modifier
             kb_options = ctrl:nocaps
 
             kb_rules =
@@ -186,31 +168,13 @@
 
             # Example binds, see https://wiki.hyprland.org/Configuring/Binds/ for more
             bind = $mainMod, return, exec, alacritty
-            bind = $mainMod, c, killactive,
-            bind = $mainMod SHIFT, Q, exit,
-            bind = $mainMod SHIFT, A, exec, ${screen-shot-and-save}/bin/screen-shot-and-save.sh
-            bind = $mainMod SHIFT, S, exec, ${screen-shot}/bin/screen-shot.sh
-            bind = $mainMod, E, exec, microsoft-edge --ozone-platform=wayland  --enable-wayland-ime --enable-features=Vulkan
-            # bind = $mainMod SHIFT, c, exec, code --enable-features=UseOzonePlatform --ozone-platform=wayland  --enable-wayland-ime 
             bind = $mainMod, X, exec, albert toggle
 
-            bind = $mainMod, L, togglefloating,
-            bind = $mainMod, V, pseudo, # dwindle
-            bind = $mainMod, W, swapactiveworkspaces, eDP-1 HDMI-A-1
-            bind = $mainMod, T, togglesplit, # dwindle
-            bind = $mainMod, G, togglegroup, # dwindle
-            bind = $mainMod, M ,layoutmsg, swapwithmaster
-            bind = $mainMod SHIFT, M, layoutmsg, focusmaster
-            bind = $mainMod, space, fullscreen, # dwindle
-
-            # Move focus with mainMod + arrow keys
-            bind = $mainMod, B, movefocus, l
-            bind = $mainMod, F, movefocus, r
-            bind = $mainMod, P, movefocus, u
-            bind = $mainMod, N, movefocus, d
-
             # workspaces
-            # binds mod + [shift +] {1..10} to [move to] ws {1..10}
+            #binds mod + [shift +] {1..10} to [move to] ws {1..10}
+            bind = $mainMod, c, killactive,
+            bind = $mainMod SHIFT, Q, exit,
+
             ${builtins.concatStringsSep "\n" (
               builtins.genList (
                 x:
@@ -229,13 +193,6 @@
               ) 10
             )}
             # cycle monitors
-
-            bind = $mainMod, 25, focusmonitor, l
-            bind = $mainMod, 26, focusmonitor, r
-
-            # Scroll through existing workspaces with mainMod + scroll
-            bind = $mainMod SHIFT, mouse_down, workspace, e+1
-            bind = $mainMod SHIFT, mouse_up, workspace, e-1
 
             # Move/resize wndows with mainMod + LMBi/RMB and dragging
             bindm = $mainMod SHIFT, mouse:272, movewindow
@@ -264,7 +221,6 @@
             exec-once = albert
 
             windowrule=workspace 1 silent,alacritty
-            # windowrule=workspace 3 silent,microsoft-edge 
             windowrule=float,noblur,noshadow,noborder,pseudo,dimaround,albert
 
             exec-once=netbird-ui

@@ -15,13 +15,15 @@
 
   users = {
     users = {
-      "freeman.xiong" = {
+      "seanhxx" = {
         isNormalUser = true;
-        description = "freeman.xiong";
+        description = "seanhxx";
         group = "users";
 
         openssh.authorizedKeys.keys = [ shares.users-dict."freeman.xiong".public-key ];
+
         shell = pkgs.zsh;
+
         hashedPasswordFile = lib.mkDefault config.sops.secrets."user/freeman/pass".path;
 
         extraGroups = [
@@ -46,9 +48,6 @@
           "systemd-journal"
           "adbusers"
         ];
-      };
-      "xiongchenyu6" = {
-        isNormalUser = true;
       };
     };
   };
