@@ -98,8 +98,8 @@
       "$mod" = "SUPER";
 
       bind = [
-        "$mod, return, exec, alacritty"
-        "$mod, X, exec, albert toggle"
+        "$mod, return, exec, ${pkgs.alacritty}/bin/alacritty"
+        "$mod, X, exec, ${pkgs.albert}/bin/albert toggle"
         "$mod, c, killactive"
         "$mod SHIFT, Q, exit"
         "$mod, L, togglefloating"
@@ -119,10 +119,10 @@
       ];
 
       binde = [
-        ", XF86AudioRaiseVolume, exec, wpctl set-volume -l 1.5 @DEFAULT_AUDIO_SINK@ 5%+"
-        ", XF86AudioLowerVolume, exec, wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-"
-        ", XF86MonBrightnessUp, exec, brightnessctl s +5%"
-        ", XF86MonBrightnessDown, exec, brightnessctl s 5%-"
+        ", XF86AudioRaiseVolume, exec, ${pkgs.wireplumber}/bin/wpctl set-volume -l 1.5 @DEFAULT_AUDIO_SINK@ 5%+"
+        ", XF86AudioLowerVolume, exec, ${pkgs.wireplumber}/bin/wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-"
+        ", XF86MonBrightnessUp, exec, ${pkgs.brightnessctl}/bin/brightnessctl s +5%"
+        ", XF86MonBrightnessDown, exec, ${pkgs.brightnessctl}/bin/brightnessctl s 5%-"
       ];
 
       bindm = [
