@@ -31,7 +31,6 @@
     efiSupport = true;
     efiInstallAsRemovable = true;
   };
-  services.openssh.enable = true;
 
   environment.systemPackages = map lib.lowPrio [
     pkgs.curl

@@ -1,5 +1,7 @@
+{ pkgs, lib, ... }:
 {
   boot = {
+    kernelPackages = lib.mkDefault pkgs.linuxPackages_latest;
     kernelModules = [ "tcp_bbr" ];
     kernel = {
       sysctl = {
