@@ -125,6 +125,15 @@ in
           # forwardX11 = true;
           # forwardX11Trusted = true;
         };
+        "oracle-arm*" = {
+          hostname = "138.2.95.174";
+        };
+        "oracle-amd-001*" = {
+          hostname = "213.35.97.233";
+        };
+        "oracle-amd-002*" = {
+          hostname = "213.35.117.232";
+        };
         "office*" = {
           hostname = "172.22.240.98";
         };

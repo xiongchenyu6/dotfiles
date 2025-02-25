@@ -50,7 +50,7 @@
   };
 
   boot = {
-    kernelPackages = pkgs.linuxPackages_latest;
+    
     binfmt.emulatedSystems = [ "aarch64-linux" ];
     initrd.kernelModules = [
       "vfio_pci"

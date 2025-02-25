@@ -1,7 +1,9 @@
 keys:
   - &xiongchenyu 4EDE451FC10722D0C6662C6FB99B8189C7C153F6
   - &office age1e4kp9y32sy4t3pumy8e4xrn09m3ga4d38s22jnrrxm5ym75x3eps9rg794
-  - &oracle-001 age1xm5qgvpmy6whs5jqrdzde0l33qktg4azst3zpyr7lgg5qh9cqfjs56e7d5
+  - &oracle-arm age1xm5qgvpmy6whs5jqrdzde0l33qktg4azst3zpyr7lgg5qh9cqfjs56e7d5
+  - &oracle-amd-001 age1gzyuqqta5820q5ve2udpuf9ccdqd3le7rgtcxz8zxa92cv66qp6s46ukq5
+  - &oracle-amd-002 age1e705lmnt4g006qpflm8wyefr23papuz3cq5z4dyctjp6u7qz2y0qzmmh5x
   - &mail age14z507h9qugzy65rpfgrzlrzkvyvwsqlwv7nguamaw4wx830hsu0qt23vx3
   - &game age107w29mcnleyvvza8r9p3pkq6v7pqg8y3uvn9vp0pa55yrrwa757ss3xg5x
   - &netbird age19eapwgdt8ufhzztcs84jtqyyymh5ypld39mq3kc48aruz7jmu3gqgysyle
@@ -16,7 +18,9 @@ creation_rules:
           - *game
           - *netbird
           - *huoshan-bj-001
-          - *oracle-001
+          - *oracle-arm
+          - *oracle-amd-001
+          - *oracle-amd-002
         pgp:
           - *xiongchenyu
   - path_regex: secrets/[^/]+\.env$
@@ -27,6 +31,8 @@ creation_rules:
           - *game
           - *netbird
           - *huoshan-bj-001
-          - *oracle-001
+          - *oracle-arm
+          - *oracle-amd-001
+          - *oracle-amd-002
         pgp:
           - *xiongchenyu
