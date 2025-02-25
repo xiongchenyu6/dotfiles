@@ -203,7 +203,19 @@
               "freeman.xiong"
             ];
           };
-          oracle-001 = {
+          oracle-arm = {
+            userHomeModules = [
+              "root"
+              "freeman.xiong"
+            ];
+          };
+          oracle-amd-001 = {
+            userHomeModules = [
+              "root"
+              "freeman.xiong"
+            ];
+          };
+          oracle-amd-002 = {
             userHomeModules = [
               "root"
               "freeman.xiong"
