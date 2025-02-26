@@ -27,6 +27,7 @@
     nixos-hardware.nixosModules.lenovo-legion-16ach6h
     srvos.nixosModules.desktop
     vscode-server.nixosModules.default
+    xiongchenyu6.nixosModules.falcon-sensor
     srvos.nixosModules.mixins-trusted-nix-caches
     srvos.nixosModules.mixins-nix-experimental
     srvos.nixosModules.mixins-tracing
@@ -40,6 +41,8 @@
 
   sops.secrets."wireguard/game" = { };
 
+  sops.secrets."falcon/cid" = { };
+
   system.nixos.tags = [
     "nvidia"
     "gui"
@@ -50,7 +53,7 @@
   };
 
   boot = {
-    
+
     binfmt.emulatedSystems = [ "aarch64-linux" ];
     initrd.kernelModules = [
       "vfio_pci"
@@ -155,11 +158,18 @@
     };
 
   services = {
+
+    falcon-sensor = {
+      enable = true;
+      cidFile = config.sops.secrets."falcon/cid".path;
+      traceLevel = "debug";
+    };
     sunshine = {
       enable = true;
       openFirewall = true;
       capSysAdmin = true;
     };
+
     postgresql = {
       enable = true;
       package = pkgs.postgresql_17_jit;

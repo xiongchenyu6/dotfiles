@@ -36,7 +36,7 @@
     fontDir = {
       enable = true;
     };
-    
+
     packages = with pkgs; [
       noto-fonts
       noto-fonts-cjk-sans
@@ -140,16 +140,16 @@
     wireshark = {
       enable = true;
     };
-    proxychains = {
-      enable = true;
-      proxies = {
-        michael = {
-          type = "socks5";
-          host = "localhost";
-          port = 8888;
-          enable = true;
-        };
-      };
-    };
+    # proxychains = {
+    #   enable = true;
+    #   proxies = {
+    #     michael = {
+    #       type = "socks5";
+    #       host = "localhost";
+    #       port = 8888;
+    #       enable = true;
+    #     };
+    #   };
+    # };
   };
 }
