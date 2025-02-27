@@ -12,6 +12,7 @@
       gdrive
       google-chrome
       freerdp
+      dmidecode
       # jetbrains.idea-ultimate
       # jetbrains.rider
       mattermost-desktop
