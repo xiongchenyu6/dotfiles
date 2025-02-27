@@ -159,6 +159,7 @@
     ];
     sessionVariables = {
       STARSHIP_LOG = "error";
+      NIXPKGS_ALLOW_UNFREE = "true";
     };
   };
 
