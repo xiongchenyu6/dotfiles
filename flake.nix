@@ -4,59 +4,59 @@
   description = "Flake to manage my laptop, my nur and my hosts on Tencent Cloud";
 
   inputs = {
+    # Core inputs
     systems.url = "github:nix-systems/default";
-
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
-
     nixpkgs-stable.url = "github:NixOS/nixpkgs/nixos-24.11";
-
     nixos-hardware.url = "github:NixOS/nixos-hardware/master";
-
     nur.url = "github:nix-community/NUR";
 
+    # Flake utilities
     flake-compat.url = "github:edolstra/flake-compat";
-
     flake-parts.url = "github:hercules-ci/flake-parts";
-
-    impermanence.url = "github:nix-community/impermanence";
-
     flake-utils = {
       url = "github:numtide/flake-utils";
-      inputs = {
-        systems.follows = "systems";
-      };
+      inputs.systems.follows = "systems";
     };
 
+    # System management
+    impermanence.url = "github:nix-community/impermanence";
     home-manager = {
       url = "github:nix-community/home-manager";
-      inputs = {
-        nixpkgs.follows = "nixpkgs";
-      };
+      inputs.nixpkgs.follows = "nixpkgs";
     };
-
-    xiongchenyu6 = {
-      url = "github:xiongchenyu6/nur-packages";
-      inputs = {
-        nixpkgs.follows = "nixpkgs";
-        flake-parts.follows = "flake-parts";
-      };
+    sops-nix = {
+      url = "github:Mic92/sops-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
-
-    nix-alien = {
-      url = "github:thiagokokada/nix-alien";
+    disko = {
+      url = "github:nix-community/disko";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    srvos = {
+      url = "github:nix-community/srvos";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    darwin = {
+      url = "github:lnl7/nix-darwin/master";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    nixos-wsl = {
+      url = "github:nix-community/NixOS-WSL/main";
       inputs = {
         nixpkgs.follows = "nixpkgs";
         flake-compat.follows = "flake-compat";
       };
     };
 
-    sops-nix = {
-      url = "github:Mic92/sops-nix";
+    # Development tools
+    pre-commit-hooks = {
+      url = "github:cachix/pre-commit-hooks.nix";
       inputs = {
         nixpkgs.follows = "nixpkgs";
+        flake-compat.follows = "flake-compat";
       };
     };
-
     vscode-server = {
       url = "github:nix-community/nixos-vscode-server";
       inputs = {
@@ -64,12 +64,50 @@
         flake-utils.follows = "flake-utils";
       };
     };
-
-    disko = {
-      url = "github:nix-community/disko";
-      inputs.nixpkgs.follows = "nixpkgs";
+    nix-alien = {
+      url = "github:thiagokokada/nix-alien";
+      inputs = {
+        nixpkgs.follows = "nixpkgs";
+        flake-compat.follows = "flake-compat";
+      };
+    };
+    poetry2nix = {
+      url = "github:nix-community/poetry2nix";
+      inputs = {
+        nixpkgs.follows = "nixpkgs";
+        flake-utils.follows = "flake-utils";
+        systems.follows = "systems";
+      };
+    };
+    foundry = {
+      url = "github:shazow/foundry.nix/monthly";
+      inputs = {
+        nixpkgs.follows = "nixpkgs";
+        flake-utils.follows = "flake-utils";
+      };
     };
 
+    # Personal and project packages
+    xiongchenyu6 = {
+      url = "github:xiongchenyu6/nur-packages";
+      inputs = {
+        nixpkgs.follows = "nixpkgs";
+        flake-parts.follows = "flake-parts";
+      };
+    };
+    nix-topology = {
+      url = "github:oddlama/nix-topology";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    ez-configs = {
+      url = "github:ehllie/ez-configs";
+      inputs = {
+        nixpkgs.follows = "nixpkgs";
+        flake-parts.follows = "flake-parts";
+      };
+    };
+
+    # Authentication
     authentik-nix = {
       url = "github:nix-community/authentik-nix";
       inputs = {
@@ -82,77 +120,28 @@
       };
     };
 
+    # Project repositories
     robot_signal_dashboard = {
       url = "git+ssh://git@github.com/AutoLifeRobot/robot_signal_dashboard.git";
-      inputs.nixpkgs.follows = "nixpkgs";
-      inputs.flake-parts.follows = "flake-parts";
+      inputs = {
+        nixpkgs.follows = "nixpkgs";
+        flake-parts.follows = "flake-parts";
+      };
     };
-
     rust-web-server = {
       url = "git+ssh://git@github.com/AutoLifeRobot/rust-web-server.git";
-      inputs.nixpkgs.follows = "nixpkgs";
-      inputs.flake-parts.follows = "flake-parts";
+      inputs = {
+        nixpkgs.follows = "nixpkgs";
+        flake-parts.follows = "flake-parts";
+      };
     };
-
     autolife_www = {
       url = "git+ssh://git@github.com/AutoLifeRobot/www.git?ref=cn";
-      inputs.nixpkgs.follows = "nixpkgs";
-      inputs.flake-parts.follows = "flake-parts";
-    };
-
-    srvos = {
-      url = "github:nix-community/srvos";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
-    pre-commit-hooks = {
-      url = "github:cachix/pre-commit-hooks.nix";
       inputs = {
         nixpkgs.follows = "nixpkgs";
-        flake-compat.follows = "flake-compat";
+        flake-parts.follows = "flake-parts";
       };
     };
-
-    nix-topology = {
-      url = "github:oddlama/nix-topology";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
-    darwin = {
-      url = "github:lnl7/nix-darwin/master";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
-    nixos-wsl = {
-      url = "github:nix-community/NixOS-WSL/main";
-      inputs = {
-        nixpkgs.follows = "nixpkgs";
-        flake-compat.follows = "flake-compat";
-      };
-    };
-    foundry = {
-      url = "github:shazow/foundry.nix/monthly";
-      inputs = {
-        nixpkgs.follows = "nixpkgs";
-        flake-utils.follows = "flake-utils";
-      };
-    };
-
-    poetry2nix = {
-      url = "github:nix-community/poetry2nix";
-      inputs = {
-        nixpkgs.follows = "nixpkgs";
-        flake-utils.follows = "flake-utils";
-        systems.follows = "systems";
-      };
-    };
-
-    ez-configs = {
-      url = "github:ehllie/ez-configs";
-      inputs.nixpkgs.follows = "nixpkgs";
-      inputs.flake-parts.follows = "flake-parts";
-    };
-
   };
 
   outputs =
@@ -184,56 +173,24 @@
       ezConfigs = {
         globalArgs = { inherit inputs shares mylib; };
         root = ./.;
-        nixos.hosts = {
-          game = {
+        nixos.hosts =
+          let
             userHomeModules = [
               "root"
               "freeman.xiong"
             ];
+            hostConfig = { inherit userHomeModules; };
+          in
+          {
+            game = hostConfig;
+            office = hostConfig;
+            tcloud = hostConfig;
+            oracle-arm = hostConfig;
+            oracle-amd-001 = hostConfig;
+            oracle-amd-002 = hostConfig;
+            netbird = hostConfig;
+            huoshan-bj-001 = hostConfig;
           };
-          office = {
-            userHomeModules = [
-              "root"
-              "freeman.xiong"
-            ];
-          };
-          tcloud = {
-            userHomeModules = [
-              "root"
-              "freeman.xiong"
-            ];
-          };
-          oracle-arm = {
-            userHomeModules = [
-              "root"
-              "freeman.xiong"
-            ];
-          };
-          oracle-amd-001 = {
-            userHomeModules = [
-              "root"
-              "freeman.xiong"
-            ];
-          };
-          oracle-amd-002 = {
-            userHomeModules = [
-              "root"
-              "freeman.xiong"
-            ];
-          };
-          netbird = {
-            userHomeModules = [
-              "root"
-              "freeman.xiong"
-            ];
-          };
-          huoshan-bj-001 = {
-            userHomeModules = [
-              "root"
-              "freeman.xiong"
-            ];
-          };
-        };
       };
 
       perSystem =
