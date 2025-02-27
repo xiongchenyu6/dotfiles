@@ -184,6 +184,7 @@
           {
             game = hostConfig;
             office = hostConfig;
+            office-office = hostConfig;
             tcloud = hostConfig;
             oracle-arm = hostConfig;
             oracle-amd-001 = hostConfig;
