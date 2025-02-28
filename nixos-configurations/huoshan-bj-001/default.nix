@@ -19,9 +19,12 @@
     srvos.nixosModules.server
     srvos.nixosModules.mixins-trusted-nix-caches
     srvos.nixosModules.mixins-nix-experimental
+    rust-web-server.nixosModules.rust-web-server
   ];
 
   zramSwap.enable = true;
+
+  sops.secrets."rust-web-server/config" = { };
 
   boot = {
     kernelPackages = lib.mkForce pkgs.linuxPackages_latest;
@@ -60,6 +63,9 @@
           179
           2222
           3478
+          4000
+          4001
+          4002
           7000
           7777
           6696
@@ -69,66 +75,20 @@
     };
 
   services = {
-
-    frp = {
+    postgresql = {
       enable = true;
-      role = "server";
-      settings = {
-        bindPort = 7000;
-        bindAddr = "0.0.0.0";
-        kcpBindPort = 7000;
-        vhostHTTPPort = 8080;
-        webserver = {
-          port = 7500;
-          user = "admin";
-          password = "admin";
-        };
-        auth = {
-          method = "token";
-          token = builtins.getEnv "FRP";
-        };
-      };
+      package = pkgs.postgresql_17_jit;
+      authentication = ''
+        local all all trust
+        host  all  all 0.0.0.0/0 scram-sha-256
+      '';
+      enableTCPIP = true;
+      ensureDatabases = [ "rustWebServer" ];
     };
 
-    nginx = {
-      virtualHosts = {
-        "vr-sg.autolife-robotics.me" = {
-          locations = {
-            "/" = {
-              proxyPass = "http://localhost:8080";
-            };
-          };
-        };
-        "frp-dashboard.autolife-robotics.me" = {
-          locations = {
-            "/" = {
-              proxyPass = "http://localhost:7500";
-            };
-          };
-        };
-        "mngt.autolife-robotics.me" = {
-          locations = {
-            "/" = {
-              proxyWebsockets = true;
-              proxyPass = "http://localhost:5555";
-            };
-          };
-        };
-        "autolife-robotics.com" = {
-          locations = {
-            "/" = with pkgs; {
-              root = www_dist;
-            };
-          };
-        };
-        "www.autolife-robotics.com" = {
-          locations = {
-            "/" = with pkgs; {
-              root = www_dist;
-            };
-          };
-        };
-      };
+    rust-web-server = {
+      enable = true;
+      configFile = config.sops.secrets."rust-web-server/config".path;
     };
   };
 }
