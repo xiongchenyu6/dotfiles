@@ -39,6 +39,8 @@
     "gui"
   ];
 
+  zramSwap.enable = true;
+
   sops.secrets."wireguard/office" = { };
 
   hardware = {
