@@ -11,7 +11,6 @@ let
       xiongchenyu6
       nix-alien
       sops-nix
-      foundry
       poetry2nix
       nix-topology
     ];

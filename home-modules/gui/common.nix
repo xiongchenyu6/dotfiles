@@ -6,16 +6,15 @@
   home = {
     packages = with pkgs; [
       appimage-run
-      bootstrap-studio
       discord
       doctl
       gdrive
+      gtrash
       google-chrome
       freerdp
       dmidecode
       # jetbrains.idea-ultimate
       # jetbrains.rider
-      mattermost-desktop
       xournalpp
       slack
       #tectonic
@@ -47,9 +46,9 @@
       # zed-editor
       nixd
       v4l-utils
-      yaml-language-server
       dotnetCorePackages.sdk_8_0
-      sui-testnet
+      sui
+      foundry
       record_screen
     ];
   };

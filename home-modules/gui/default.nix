@@ -229,9 +229,10 @@
     };
   };
 
-  services = lib.mkIf pkgs.stdenv.isLinux {
-    # safeeyes.enable = true;
-    #    ssh-agent.enable = true;
+  services = {
+    dropbox = {
+      enable = true;
+    };
 
     pasystray = {
       enable = true;
@@ -276,9 +277,6 @@
 
     blueman-applet = {
       enable = true;
-    };
-    dropbox = {
-      enable = false;
     };
     udiskie = {
       enable = true;
