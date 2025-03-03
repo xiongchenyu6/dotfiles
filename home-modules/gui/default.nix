@@ -154,7 +154,8 @@
       unzip
       wakatime
       wget
-      yarn2nix
+      wrangler
+      bun
       yubikey-manager
     ];
     sessionVariables = {
