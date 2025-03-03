@@ -79,14 +79,6 @@
         systems.follows = "systems";
       };
     };
-    foundry = {
-      url = "github:shazow/foundry.nix/monthly";
-      inputs = {
-        nixpkgs.follows = "nixpkgs";
-        flake-utils.follows = "flake-utils";
-      };
-    };
-
     # Personal and project packages
     xiongchenyu6 = {
       url = "github:xiongchenyu6/nur-packages";
@@ -213,6 +205,7 @@
               nixos-rebuild-ng
               nixos-facter
               nixos-anywhere
+              yaml-language-server
             ];
             shellHook = ''
               export $(sops -d ./secrets/common.env | xargs)
