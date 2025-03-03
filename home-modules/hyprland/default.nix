@@ -336,7 +336,7 @@
           };
 
           battery = {
-            states = {
+            states ={
               warning = 50;
               critical = 20;
             };
@@ -433,7 +433,7 @@
       };
     };
     emacs = {
-      package = pkgs.emacs29-pgtk;
+      package = pkgs.emacs30-pgtk;
     };
   };
 }
