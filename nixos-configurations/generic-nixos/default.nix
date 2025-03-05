@@ -29,4 +29,10 @@
   ];
 
   system.stateVersion = "24.11";
+
+  disko.devices.disk = {
+    disk1 = {
+      device = "/dev/mmcblk0";
+    };
+  };
 }

@@ -1,6 +1,7 @@
 keys:
   - &xiongchenyu 4EDE451FC10722D0C6662C6FB99B8189C7C153F6
   - &office age1e4kp9y32sy4t3pumy8e4xrn09m3ga4d38s22jnrrxm5ym75x3eps9rg794
+  - &office-mac age1n8dtlw45h5gh4zp0l53tcasffzgqflyx623ppypasrukyt8kv3vqljflr3
   - &oracle-arm age1xm5qgvpmy6whs5jqrdzde0l33qktg4azst3zpyr7lgg5qh9cqfjs56e7d5
   - &oracle-amd-001 age1gzyuqqta5820q5ve2udpuf9ccdqd3le7rgtcxz8zxa92cv66qp6s46ukq5
   - &oracle-amd-002 age1e705lmnt4g006qpflm8wyefr23papuz3cq5z4dyctjp6u7qz2y0qzmmh5x
@@ -21,6 +22,7 @@ creation_rules:
           - *oracle-arm
           - *oracle-amd-001
           - *oracle-amd-002
+          - *office-mac
         pgp:
           - *xiongchenyu
   - path_regex: secrets/[^/]+\.env$
@@ -34,5 +36,6 @@ creation_rules:
           - *oracle-arm
           - *oracle-amd-001
           - *oracle-amd-002
+          - *office-mac
         pgp:
           - *xiongchenyu

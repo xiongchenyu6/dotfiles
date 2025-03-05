@@ -3,7 +3,6 @@
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 { ... }:
 {
-  imports = [ ./common.nix ];
   system = {
     defaults = {
       NSGlobalDomain = {
