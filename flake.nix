@@ -165,6 +165,13 @@
       ezConfigs = {
         globalArgs = { inherit inputs shares mylib; };
         root = ./.;
+        darwin.hosts = {
+          office-mac = {
+            userHomeModules = [
+              "root"
+            ];
+          };
+        };
         nixos.hosts =
           let
             userHomeModules = [

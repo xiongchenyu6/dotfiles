@@ -2,17 +2,8 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 { inputs, pkgs, ... }:
-let
-  darwin-modules = [ inputs.home-manager.darwinModules.home-manager ];
-in
 {
-
-  environment.systemPackages = with pkgs; [
-    krb5
-    openssh_gssapi
-  ];
-
-  imports = [ ./common.nix ] ++ darwin-modules;
+  imports = [ inputs.home-manager.darwinModules.home-manager ];
   services.nix-daemon.enable = true;
   system = {
     stateVersion = 4;
