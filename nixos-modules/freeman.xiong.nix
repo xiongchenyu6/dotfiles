@@ -26,7 +26,7 @@
         ];
         shell = pkgs.zsh;
         hashedPasswordFile = lib.mkDefault config.sops.secrets."user/freeman/pass".path;
-
+        home = "/home/freeman.xiong";
         extraGroups = [
           "networkmanager"
           "wheel"

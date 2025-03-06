@@ -10,7 +10,7 @@
 {
   imports = [
     inputs.home-manager.darwinModules.home-manager
-    inputs.sops.darwinModules.default
+    inputs.sops-nix.darwinModules.default
     ezModules.client-cli
     ezModules.client-gui
     ../shared-modules/core.nix
@@ -37,16 +37,4 @@
     # Enable and configure services here
   };
 
-  users = {
-    users.freeman = {
-      isNormalUser = true;
-      extraGroups = [
-        "wheel"
-        "network"
-      ];
-      packages = with pkgs; [
-        # User-specific packages
-      ];
-    };
-  };
 }
