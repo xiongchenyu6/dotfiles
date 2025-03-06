@@ -8,36 +8,42 @@
   ...
 }:
 let
-  inherit (pkgs.stdenv) isDarwin;
+  isDarwin = builtins.currentSystem == "x86_64-darwin" || builtins.currentSystem == "aarch64-darwin";
 in
 {
-
   imports =
-    lib.debug.traceSeq osConfig.system.nixos.tags (
-      if (builtins.elem "gui" osConfig.system.nixos.tags) then
-        [
-          ezModules.zsh
-          ezModules.cli
-          ezModules.gui
-          ezModules.mpd
-          ezModules.stow-config
-          ezModules.dvorak
-          ezModules.nvidia
-          ezModules.hyprland
-        ]
-      else
-        [ ezModules.tmux ]
-    )
-    ++ (
-      if (builtins.elem "nvidia" osConfig.system.nixos.tags) then
-        [
-          ezModules.nvidia
-        ]
-      else
-        [ ]
-    );
+    if isDarwin then
+      [
+        ezModules.zsh
+        ezModules.cli
+        ezModules.gui
+      ]
+    else
+      (
+        if (builtins.elem "gui" osConfig.system.nixos.tags) then
+          [
+            ezModules.zsh
+            ezModules.cli
+            ezModules.gui
+            ezModules.mpd
+            ezModules.stow-config
+            ezModules.dvorak
+            ezModules.nvidia
+            ezModules.hyprland
+          ]
+        else
+          [ ezModules.tmux ]
+      )
+      ++ (
+        if (builtins.elem "nvidia" osConfig.system.nixos.tags) then
+          [
+            ezModules.nvidia
+          ]
+        else
+          [ ]
+      );
 
-  sops.secrets = lib.mkIf (builtins.elem "gui" osConfig.system.nixos.tags) {
+  sops.secrets = lib.mkIf (isDarwin || (builtins.elem "gui" osConfig.system.nixos.tags)) {
     "ssh/freeman.xiong/id_ed25519" = {
       path = "${osConfig.users.users."freeman.xiong".home}/.ssh/id_ed25519";
       mode = "600";
@@ -56,6 +62,7 @@ in
       OPENAI_API_BASE = "https://api.siliconflow.cn/v1";
       OPENAI_API_KEY = builtins.getEnv "SILICON_FLOW";
     };
+    homeDirectory = osConfig.users.users."freeman.xiong".home;
   };
   programs = {
     git = {

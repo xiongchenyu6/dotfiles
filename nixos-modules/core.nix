@@ -25,8 +25,8 @@
     gc = {
       randomizedDelaySec = "1h";
     };
-    optimise = {
-      automatic = true;
+    settings = {
+      auto-optimise-store = true;
     };
   };
 
