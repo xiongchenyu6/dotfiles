@@ -20,7 +20,10 @@
         description = "freeman.xiong";
         group = "users";
 
-        openssh.authorizedKeys.keys = [ shares.users-dict."freeman.xiong".public-key ];
+        openssh.authorizedKeys.keys = [
+          shares.users-dict."freeman.xiong".public-key
+          shares.users-dict."freeman.xiong".yubikey
+        ];
         shell = pkgs.zsh;
         hashedPasswordFile = lib.mkDefault config.sops.secrets."user/freeman/pass".path;
 

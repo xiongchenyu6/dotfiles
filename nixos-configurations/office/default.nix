@@ -41,35 +41,14 @@
 
   zramSwap.enable = true;
 
+  boot.kernelParams = [ "intel_pstate=disable" ];
+
   sops.secrets."wireguard/office" = { };
 
   hardware = {
     enableRedistributableFirmware = true;
   };
-
-  nix = {
-    distributedBuilds = false;
-    buildMachines = [
-      {
-        hostName = "hydra.inner.trontech.link";
-        sshUser = "freeman.xiong";
-        systems = [ "x86_64-linux" ];
-        sshKey = "/home/freeman.xiong/.ssh/id_ed25519";
-        maxJobs = 2;
-      }
-    ];
-  };
-
-  nixpkgs = {
-    config = {
-      permittedInsecurePackages = [
-        "openssl-1.1.1w"
-        "electron-19.1.9"
-        "zotero-6.0.27"
-      ];
-      allowBroken = true;
-    };
-  };
+  powerManagement.cpuFreqGovernor = "performance";
 
   boot = {
     kernelPackages = lib.mkForce pkgs.linuxPackages_latest;
