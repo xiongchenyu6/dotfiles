@@ -168,7 +168,6 @@
         darwin.hosts = {
           office-mac = {
             userHomeModules = [
-              "root"
             ];
           };
         };

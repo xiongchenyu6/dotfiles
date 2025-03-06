@@ -4,17 +4,16 @@
 { inputs, pkgs, ... }:
 {
   imports = [ inputs.home-manager.darwinModules.home-manager ];
-  services.nix-daemon.enable = true;
   system = {
     stateVersion = 4;
   }; # Did you read the comment?
   nix = {
     settings = {
-      auto-optimise-store = true;
     };
     # package = pkgs.nix;
   };
-  security.pam.enableSudoTouchIdAuth = true;
-
+  security.pam.services.sudo_local.touchIdAuth = true;
   system.darwinLabel = "gui";
+  nixpkgs.hostPlatform = "x86_64-darwin";
+  nix.optimise.automatic = true;
 }
