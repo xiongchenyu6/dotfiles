@@ -168,6 +168,7 @@
         darwin.hosts = {
           office-mac = {
             userHomeModules = [
+              "freeman.xiong"
             ];
           };
         };

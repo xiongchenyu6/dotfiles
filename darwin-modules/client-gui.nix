@@ -5,7 +5,6 @@
 {
   environment = {
     systemPackages = with pkgs; [
-      dbeaver
       docker
       iterm2
       postman
@@ -31,9 +30,6 @@
     # masApps = { WireGuard = 1451685025; };
     taps = [
       "homebrew/services"
-      "homebrew/core"
-      "homebrew/cask"
-      "homebrew/cask-drivers"
     ];
     onActivation = {
       autoUpdate = true;
@@ -55,8 +51,6 @@
       enable = true;
       bind = "127.0.0.1";
     };
-
-    activate-system.enable = true;
 
     spacebar = {
       enable = true;

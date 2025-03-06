@@ -67,15 +67,6 @@ in
     ezModules.ssh-harden
   ] ++ nixos-modules;
 
-  nixpkgs.config = {
-    allowUnfree = true;
-    allowBroken = true;
-    android_sdk.accept_license = true;
-    permittedInsecurePackages = [
-      "dotnet-sdk-6.0.428"
-    ];
-  };
-
   home-manager = {
     useGlobalPkgs = true;
     useUserPackages = true;
