@@ -26,6 +26,7 @@
     srvos.nixosModules.mixins-trusted-nix-caches
     srvos.nixosModules.mixins-nix-experimental
     srvos.nixosModules.mixins-tracing
+    nixos-hardware.nixosModules.dell-latitude-5520
     {
       topology.self.interfaces.home = {
         type = "wireguard";
@@ -40,8 +41,6 @@
   ];
 
   zramSwap.enable = true;
-
-  boot.kernelParams = [ "intel_pstate=disable" ];
 
   sops.secrets."wireguard/office" = { };
 
