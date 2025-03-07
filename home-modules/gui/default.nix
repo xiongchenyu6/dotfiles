@@ -10,19 +10,6 @@
 {
   imports = [ ./common.nix ];
 
-  xdg = {
-    mimeApps = {
-      defaultApplications = {
-        "text/html" = "microsoft-edge.desktop";
-        "text/x-csharp" = [ "rider.desktop" ];
-        "x-scheme-handler/http" = "microsoft-edge.desktop";
-        "x-scheme-handler/https" = "microsoft-edge.desktop";
-        "x-scheme-handler/about" = "microsoft-edge.desktop";
-        "x-scheme-handler/unknown" = "microsoft-edge.desktop";
-      };
-    };
-  };
-
   qt = {
     enable = true;
   };
@@ -192,9 +179,6 @@
       enable = true;
       flake = "/home/freeman.xiong/dotfiles";
     };
-    wofi = {
-      enable = true;
-    };
     # carapace.enable = true;
     # comodoro.enable = true;
     mpv.enable = true;
@@ -231,16 +215,6 @@
   };
 
   services = {
-    dropbox = {
-      enable = true;
-    };
-
-    pasystray = {
-      enable = true;
-    };
-    poweralertd = {
-      enable = true;
-    };
     emacs = {
       enable = true;
       defaultEditor = true;
@@ -249,46 +223,6 @@
       };
       socketActivation = {
         enable = false;
-      };
-    };
-
-    dunst = {
-      enable = true;
-      iconTheme = {
-        name = "Adwaita";
-        package = pkgs.adwaita-icon-theme;
-        size = "16x16";
-      };
-      settings = {
-        global = {
-          monitor = 0;
-          geometry = "600x50-50+65";
-          shrink = "yes";
-          transparency = 10;
-          padding = 16;
-          horizontal_padding = 16;
-          font = "JetBrainsMono Nerd Font 10";
-          line_height = 4;
-          format = "<b>%s</b>\\n%b";
-          browser = "${pkgs.xdg-utils}/bin/xdg-open";
-          dmenu = "${pkgs.rofi}/bin/rofi -dmenu -i -p dunst";
-        };
-      };
-    };
-
-    blueman-applet = {
-      enable = true;
-    };
-    udiskie = {
-      enable = true;
-      automount = true;
-      notify = true;
-      tray = "always";
-    };
-    syncthing = {
-      enable = true;
-      tray = {
-        enable = true;
       };
     };
   };

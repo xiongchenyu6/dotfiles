@@ -134,6 +134,7 @@
       exec-once = [
         "albert"
         "netbird-ui"
+        "dropbox start"
       ];
 
       windowrule = [
@@ -336,7 +337,7 @@
           };
 
           battery = {
-            states ={
+            states = {
               warning = 50;
               critical = 20;
             };
