@@ -150,7 +150,6 @@
           };
         };
       };
-
       useDHCP = lib.mkDefault true;
     };
 
