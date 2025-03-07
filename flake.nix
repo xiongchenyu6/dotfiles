@@ -210,7 +210,6 @@
               statix
               yq-go
               nixos-rebuild-ng
-              nixos-facter
               nixos-anywhere
               yaml-language-server
             ];
