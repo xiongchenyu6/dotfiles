@@ -16,33 +16,6 @@ let
     ];
 
   sharedOverlays = overlays ++ [
-    (_: prev: {
-      # gnupg240 = nixpkgs-stable.legacyPackages.x86_64-linux.gnupg;
-      # telegram-desktop =
-      #   nixpkgs-stable.legacyPackages.x86_64-linux.telegram-desktop;
-      # waybar = nixpkgs-master.legacyPackages.x86_64-linux.waybar;
-      www_dist = inputs.autolife_www.packages.x86_64-linux.dist;
-    })
-    (self: super: {
-      coturn = super.coturn.overrideAttrs (oldAttrs: rec {
-        postFixup =
-          ''
-            # Remove dangling symlinks in the examples directory.
-            find $out/share/examples/turnserver/etc -xtype l -delete || true
-          ''
-          + (oldAttrs.postFixup or "");
-      });
-    })
-    (self: super: {
-      pythonPackages = super.pythonPackages // {
-        duckduckgo-search = super.pythonPackages.duckduckgo-search.overrideAttrs (oldAttrs: {
-          nativeBuildInputs = (oldAttrs.nativeBuildInputs or [ ]) ++ [
-            (super.runCommand "disable-deps-check" { } "echo 'Disabling pythonRuntimeDepsCheckHook'")
-          ];
-          dontCheckRuntimeDeps = true;
-        });
-      };
-    })
   ];
 
   nixos-modules = with inputs; [
