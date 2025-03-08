@@ -13,13 +13,6 @@
   homebrew = {
     enable = true;
     brews = [
-      {
-        name = "mysql";
-        restart_service = true;
-        start_service = true;
-        link = true;
-        conflicts_with = [ "mysql" ];
-      }
     ];
     casks = [ "virtualbox" ];
     global = {

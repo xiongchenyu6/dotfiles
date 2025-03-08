@@ -184,7 +184,7 @@
     mpv.enable = true;
 
     obs-studio = {
-      enable = true;
+      enable = false;
       plugins = with pkgs.obs-studio-plugins; [
         wlrobs
         obs-pipewire-audio-capture
@@ -205,7 +205,7 @@
     };
 
     chromium = {
-      enable = true;
+      enable = false;
       package = pkgs.microsoft-edge;
     };
 
