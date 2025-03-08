@@ -5,28 +5,28 @@
 
   home = {
     packages = with pkgs; [
-      appimage-run
-      discord
+      #appimage-run
+      #discord
       doctl
       gdrive
       gtrash
       google-chrome
-      freerdp
-      dmidecode
+      #freerdp
+      #dmidecode
       # jetbrains.idea-ultimate
       # jetbrains.rider
       xournalpp
       slack
       #tectonic
-      onlyoffice-bin
+      #onlyoffice-bin
       zoom-us
       ueberzugpp
       ytfzf
       usbutils
       #stlink-gui
-      stm32cubemx
-      gcc-arm-embedded
-      microsoft-edge
+      #stm32cubemx
+      #gcc-arm-embedded
+      #microsoft-edge
       #vault
       solana-cli
       # expect mkpasswd conflict
@@ -36,20 +36,20 @@
       lazygit
       lazydocker
       (warp-terminal.override { waylandSupport = true; })
-      kmon
+      #kmon
       termshark
       mdcat
       lnav
       lego
       #gitbutler
-      unityhub
+      #unityhub
       # zed-editor
       nixd
-      v4l-utils
+      #v4l-utils
       dotnetCorePackages.sdk_8_0
-      sui
+      #sui
       foundry
-      record_screen
+      #record_screen
     ];
   };
 
@@ -117,9 +117,9 @@
           cmake-mode
           cape
           corfu
-          emacs-copilot-el
-          emacs-copilot-chat
-          emacs-combobulate
+          #emacs-copilot-el
+          #emacs-copilot-chat
+          #emacs-combobulate
           citeproc
           dockerfile-mode
           direnv
