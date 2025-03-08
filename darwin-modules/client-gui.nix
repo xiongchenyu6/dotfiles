@@ -14,7 +14,7 @@
     enable = true;
     brews = [
     ];
-    casks = [ "virtualbox" ];
+    casks = [ "dropbox" "1password" "microsoft-edge"];
     global = {
       autoUpdate = true;
       brewfile = true;
