@@ -11,11 +11,17 @@ let
       xiongchenyu6
       nix-alien
       sops-nix
-      poetry2nix
       nix-topology
     ];
 
   sharedOverlays = overlays ++ [
+    (_: prev: {
+      # gnupg240 = nixpkgs-stable.legacyPackages.x86_64-linux.gnupg;
+      # telegram-desktop =
+      #   nixpkgs-stable.legacyPackages.x86_64-linux.telegram-desktop;
+      # waybar = nixpkgs-master.legacyPackages.x86_64-linux.waybar;
+      godot_4-mono = inputs.nixpkgs-master.legacyPackages.x86_64-linux.godot_4-mono;
+    })
   ];
 
   nixos-modules = with inputs; [

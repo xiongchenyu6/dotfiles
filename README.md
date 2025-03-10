@@ -2,6 +2,18 @@
 
 A comprehensive NixOS configuration system using [ez-configs](https://github.com/ehllie/ez-configs) for maintainable and modular system management.
 
+## Hosts
+
+| Host | Description | Role | Form Factor | Architecture | GPU | Networking |
+| ---- | ----------- | ---- | ----------- | ------------ | --- | ---------- |
+| `mail` | Primary mail server | Server | Rack Server | x86_64 | - | Wireguard, DN42, BGP |
+| `game` | Gaming workstation | Desktop/Workstation | Tower | x86_64 | NVIDIA | VPN Client |
+| `heco-zammad` | Zammad instance | Server | Virtual Machine | x86_64 | - | Internal (10.16.0.96) |
+| `digital` | DigitalOcean VPS | Server | Virtual Machine | x86_64 | - | Public IP (206.189.156.130) |
+| `iso` | Installation Media | Installer | ISO Image | x86_64 | - | - |
+| `oracle` | Oracle Cloud VM | Server | Virtual Machine | aarch64 | - | Public IP |
+| `office-mac` | Work MacBook | Desktop/Workstation | Laptop | aarch64 | Apple M1 | Corporate Network |
+
 ## Features
 
 ### 🔧 Core System Management

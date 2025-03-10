@@ -49,7 +49,7 @@ in
       mode = "600";
     };
   };
-                                                                                                                                                                                  
+
   home = {
     username = "freeman.xiong";
     file = {
@@ -122,48 +122,45 @@ in
 
     ssh = {
       matchBlocks = {
-        "*-tmux" = {
-          extraOptions = {
-            RequestTTY = "yes";
-            RemoteCommand = "tmux new -A -s xiongchenyu";
-          };
-        };
-        "tcloud*" = {
+        # "*-tmux" = {
+        #   extraOptions = {
+        #     RequestTTY = "yes";
+        #     RemoteCommand = "tmux new -A -s xiongchenyu";
+        #   };
+        # };
+        "tcloud" = {
           hostname = "43.156.66.157";
           # forwardX11 = true;
           # forwardX11Trusted = true;
         };
-        "oracle-arm*" = {
+        "oracle-arm" = {
           hostname = "138.2.95.174";
         };
-        "oracle-amd-001*" = {
+        "oracle-amd-001" = {
           hostname = "213.35.97.233";
         };
-        "oracle-amd-002*" = {
+        "oracle-amd-002" = {
           hostname = "213.35.117.232";
         };
-        "office*" = {
+        "office" = {
           hostname = "172.22.240.98";
         };
-        "game*" = {
+        "game" = {
           hostname = "172.22.240.99";
         };
-        "digital*" = {
-          hostname = "143.198.87.228";
-        };
-        "netbird*" = {
+        "netbird" = {
           hostname = "47.128.253.85";
         };
-        "heco-nginx*" = {
+        "heco-nginx" = {
           hostname = "13.229.128.55";
           user = "root";
         };
-        "heco-zammad*" = {
+        "heco-zammad" = {
           hostname = "10.16.0.96";
           user = "root";
           proxyJump = "heco-nginx";
         };
-        "heco-mysql*" = {
+        "heco-mysql" = {
           hostname = "10.16.0.230";
           user = "root";
           proxyJump = "heco-nginx";
