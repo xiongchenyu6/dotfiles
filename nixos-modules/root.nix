@@ -11,7 +11,7 @@
   programs.zsh.enable = true;
   users.users.root = {
     shell = pkgs.zsh;
-    openssh.authorizedKeys.keys = lib.mkDefault [
+    openssh.authorizedKeys.keys = [
       shares.users-dict."freeman.xiong".public-key
     ];
   };

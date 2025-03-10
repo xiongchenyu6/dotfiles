@@ -70,7 +70,7 @@
       vulnix
       nix-melt
       #code-cursor
-      godot_4
+      godot_4-mono
       file
       blender
       delve # go debugger
@@ -208,7 +208,6 @@
       enable = true;
     };
   };
-
   services = {
     emacs = {
       enable = true;
@@ -221,10 +220,5 @@
       };
     };
   };
-  dconf.settings = {
-    "org/virt-manager/virt-manager/connections" = {
-      autoconnect = [ "qemu:///system" ];
-      uris = [ "qemu:///system" ];
-    };
-  };
+
 }

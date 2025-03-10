@@ -161,6 +161,26 @@
   services = {
     postgresql = {
       enable = true;
+      package = pkgs.postgresql_17_jit;
+      enableJIT = true;
+      enableTCPIP = true;
+      extensions =
+        ps: with ps; [
+          postgis
+          pg_repack
+          pg_cron
+        ];
+      settings = {
+        log_connections = true;
+        log_statement = "all";
+        logging_collector = true;
+        log_disconnections = true;
+        log_destination = lib.mkForce "syslog";
+        shared_preload_libraries = "pg_cron";
+        "cron.database_name" = "api";
+        "cron.use_background_workers" = "on";
+        max_worker_processes = 20;
+      };
       ensureUsers = [
         {
           name = "freeman.xiong";
@@ -214,3 +234,7 @@
     };
   };
 }
+
+
+
+

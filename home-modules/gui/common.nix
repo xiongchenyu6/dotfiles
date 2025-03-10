@@ -11,6 +11,7 @@
       gdrive
       gtrash
       google-chrome
+      home-manager
       #freerdp
       #dmidecode
       # jetbrains.idea-ultimate
@@ -167,7 +168,7 @@
           scala-mode
           sbt-mode
           tempel
-          terraform-mode
+          #terraform-mode
           treesit-grammars.with-all-grammars
           vterm
           wakatime-mode
