@@ -2,6 +2,7 @@
   inputs,
   ezModules,
   lib,
+  osConfig,
   ...
 }:
 let
@@ -23,7 +24,7 @@ in
       (import ../shared-modules/sops.nix)
     ]
     ++ (
-      if isLinux then
+      if isLinux && (builtins.elem "gui" osConfig.system.nixos.tags) then
         [
           ezModules.nixos-desktop
         ]
