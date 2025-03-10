@@ -117,15 +117,14 @@
           cmake-mode
           cape
           corfu
-          #emacs-copilot-el
-          #emacs-copilot-chat
-          #emacs-combobulate
+          emacs-copilot-el
+          emacs-copilot-chat
+          emacs-combobulate
           citeproc
           dockerfile-mode
           direnv
           dap-mode
           doom-modeline
-          #emacsql-sqlite-builtin # for org-roam
           format-all
           gradle-mode
           graphviz-dot-mode
@@ -143,21 +142,17 @@
           magit-todos
           marginalia
           magit-gitflow
-          # nov
           ox-hugo
           ob-mermaid
           ob-restclient
           ox-pandoc
-          # org-ai
           org-contrib
           org-roam
           org-re-reveal
           org-download
-          # org-cv
           orderless
           plantuml-mode
           pdf-tools
-          #          posframe
           protobuf-mode
           rime
           restclient

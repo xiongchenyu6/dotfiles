@@ -49,7 +49,7 @@ in
       mode = "600";
     };
   };
-
+                                                                                                                                                                                  
   home = {
     username = "freeman.xiong";
     file = {

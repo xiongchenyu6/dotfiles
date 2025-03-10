@@ -36,4 +36,7 @@
     pkgs.curl
     pkgs.gitMinimal
   ];
+  nixpkgs = {
+    hostPlatform = "aarch64-linux";
+  };
 }

@@ -204,11 +204,6 @@
       enable = true;
     };
 
-    chromium = {
-      enable = false;
-      package = pkgs.microsoft-edge;
-    };
-
     password-store = {
       enable = true;
     };
