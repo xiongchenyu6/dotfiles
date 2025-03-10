@@ -5,6 +5,31 @@
   ...
 }:
 {
+
+  home = {
+    packages = with pkgs; [
+      appimage-run
+      discord
+      freerdp
+      dmidecode
+      # jetbrains.idea-ultimate
+      # jetbrains.rider
+      tectonic
+      onlyoffice-bin
+      #stlink-gui
+      #stm32cubemx
+      #gcc-arm-embedded
+      microsoft-edge
+      vault
+      kmon
+      #gitbutler
+      unityhub
+      v4l-utils
+      sui
+      record_screen
+    ];
+  };
+
   xdg = {
     enable = true;
     mime = {
@@ -35,6 +60,12 @@
   };
 
   programs = {
+
+    chromium = {
+      enable = true;
+      package = pkgs.microsoft-edge;
+    };
+
     wofi = {
       enable = true;
     };

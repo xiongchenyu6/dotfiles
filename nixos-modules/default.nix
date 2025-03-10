@@ -27,7 +27,7 @@ let
     (import ../shared-modules/sops.nix)
     (_: {
       nixpkgs = {
-        system = lib.mkDefault "x86_64-linux";
+        hostPlatform = lib.mkDefault "x86_64-linux";
         overlays = sharedOverlays;
       };
     })
