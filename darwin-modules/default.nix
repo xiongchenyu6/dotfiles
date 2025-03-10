@@ -14,7 +14,6 @@ let
       xiongchenyu6
       nix-alien
       sops-nix
-      poetry2nix
       nix-topology
     ];
   darwin-modules = with inputs; [

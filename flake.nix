@@ -8,6 +8,7 @@
     systems.url = "github:nix-systems/default";
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     nixpkgs-stable.url = "github:NixOS/nixpkgs/nixos-24.11";
+    nixpkgs-master.url = "github:NixOS/nixpkgs/master";
     nixos-hardware.url = "github:NixOS/nixos-hardware/master";
     nur.url = "github:nix-community/NUR";
 
@@ -71,14 +72,6 @@
         flake-compat.follows = "flake-compat";
       };
     };
-    poetry2nix = {
-      url = "github:nix-community/poetry2nix";
-      inputs = {
-        nixpkgs.follows = "nixpkgs";
-        flake-utils.follows = "flake-utils";
-        systems.follows = "systems";
-      };
-    };
     # Personal and project packages
     xiongchenyu6 = {
       url = "github:xiongchenyu6/nur-packages";
@@ -96,19 +89,6 @@
       inputs = {
         nixpkgs.follows = "nixpkgs";
         flake-parts.follows = "flake-parts";
-      };
-    };
-
-    # Authentication
-    authentik-nix = {
-      url = "github:nix-community/authentik-nix";
-      inputs = {
-        nixpkgs.follows = "nixpkgs";
-        flake-parts.follows = "flake-parts";
-        poetry2nix.follows = "poetry2nix";
-        flake-utils.follows = "flake-utils";
-        systems.follows = "systems";
-        flake-compat.follows = "flake-compat";
       };
     };
 

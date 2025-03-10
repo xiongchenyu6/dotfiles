@@ -27,6 +27,18 @@
     vscode-server.nixosModules.default
   ];
 
+  users = {
+    users = {
+      root = {
+        openssh = {
+          authorizedKeys.keys = [
+            "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHI7o9MTDU81RCkqhKbnXHqJgdhal7adqUZDhKUAWxLc server-benjamintan"
+          ];
+        };
+      };
+    };
+  };
+
   sops.secrets."netbird/coturn/password" = {
     owner = "turnserver";
     group = "turnserver";
@@ -72,6 +84,9 @@
           179
           2222
           3478
+          4000
+          4001
+          4002
           5432
           7000
           7777
@@ -172,10 +187,10 @@
       ensureDatabases = [ "freeman.xiong" ];
     };
 
-    robotSignalDashboard = {
-      enable = true;
-      configFile = ./config.json;
-    };
+    # robotSignalDashboard = {
+    #   enable = true;
+    #   configFile = ./config.json;
+    # };
 
     rust-web-server = {
       enable = true;
@@ -277,11 +292,11 @@
           enableNginx = true;
           domain = "netbird.autolife-robotics.me";
         };
-        # coturn = {
-        #   enable = true;
-        #   useAcmeCertificates = true;
-        #   passwordFile = config.sops.secrets."netbird/coturn/password".path;
-        # };
+        coturn = {
+          enable = true;
+          useAcmeCertificates = true;
+          passwordFile = config.sops.secrets."netbird/coturn/password".path;
+        };
         dashboard = {
           enable = true;
           domain = "netbird.autolife-robotics.me";
