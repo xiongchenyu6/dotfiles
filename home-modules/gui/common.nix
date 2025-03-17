@@ -11,7 +11,6 @@
       gdrive
       gtrash
       google-chrome
-      home-manager
       #freerdp
       #dmidecode
       # jetbrains.idea-ultimate
@@ -27,7 +26,7 @@
       #stlink-gui
       #stm32cubemx
       #gcc-arm-embedded
-      #microsoft-edge
+      microsoft-edge
       #vault
       solana-cli
       # expect mkpasswd conflict
@@ -39,7 +38,8 @@
       (warp-terminal.override { waylandSupport = true; })
       #kmon
       termshark
-      mdcat
+      glow
+      lm_sensors
       lnav
       lego
       #gitbutler
@@ -51,6 +51,30 @@
       #sui
       foundry
       #record_screen
+      apg
+      #cava # audio visualizer
+      cmake
+      gcc
+      gdb
+      openfortivpn
+      gnumake
+      geoip
+      manix
+      grafana-loki
+      gparted
+      imagemagick
+      inetutils
+      ifuse
+      jp2a
+      lsof
+      #my_cookies
+
+      pass
+      pciutils
+      patchelf
+      procs
+      #qemu_kvm
+      tpm2-tools
     ];
   };
 

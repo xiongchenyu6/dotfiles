@@ -24,4 +24,34 @@
     srvos.nixosModules.mixins-tracing
     ./hardware-configuration.nix
   ];
+  security.wrappers.kanidm_ssh_authorizedkeys = {
+    owner = "root";
+    group = "root";
+    source = "${pkgs.kanidm}/bin/kanidm_ssh_authorizedkeys";
+  };
+
+  services = {
+    kanidm = {
+      enablePam = true;
+      clientSettings = {
+        uri = "https://kanidm.auto-life.tech";
+      };
+      unixSettings = {
+        default_shell = "${pkgs.zsh}/bin/zsh";
+        home_alias = "name";
+        home_attr = "uuid";
+        pam_allowed_login_groups = [ "devops" ]; # Updated group to match changes in groups
+      };
+    };
+
+    openssh = {
+      enable = true;
+      authorizedKeysCommand = "/run/wrappers/bin/kanidm_ssh_authorizedkeys %u";
+      authorizedKeysCommandUser = "nobody";
+      settings = {
+        UsePAM = true;
+      };
+    };
+  };
+
 }
