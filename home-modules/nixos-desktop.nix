@@ -26,6 +26,7 @@
       unityhub
       v4l-utils
       sui
+      zssh
       record_screen
     ];
   };

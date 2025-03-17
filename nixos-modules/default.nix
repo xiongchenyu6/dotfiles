@@ -1,6 +1,7 @@
 {
   inputs,
   ezModules,
+  pkgs,
   lib,
   ...
 }:
@@ -20,7 +21,7 @@ let
       # telegram-desktop =
       #   nixpkgs-stable.legacyPackages.x86_64-linux.telegram-desktop;
       # waybar = nixpkgs-master.legacyPackages.x86_64-linux.waybar;
-      godot_4-mono = inputs.nixpkgs-master.legacyPackages.x86_64-linux.godot_4-mono;
+      # godot_4-mono = inputs.nixpkgs-master.legacyPackages.x86_64-linux.godot_4-mono;
     })
   ];
 
@@ -51,10 +52,25 @@ in
     useUserPackages = true;
   };
 
-  services.resolved = {
-    enable = true;
-    # dnssec = "allow-downgrade";
-    # dnsovertls = "opportunistic";
-    # llmnr = "false";
+  zramSwap.enable = true;
+
+  environment = {
+    systemPackages = with pkgs; [
+      lrzsz
+    ];
   };
+  services = {
+
+    resolved = {
+      enable = true;
+      # dnssec = "allow-downgrade";
+      # dnsovertls = "opportunistic";
+      # llmnr = "false";
+    };
+
+    kanidm = {
+      package = pkgs.kanidm_1_5;
+    };
+  };
+  networking.nftables.enable = true;
 }

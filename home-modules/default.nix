@@ -1,13 +1,15 @@
 {
   inputs,
   ezModules,
+  pkgs,
   lib,
   osConfig,
   ...
 }:
 let
   isDarwin = builtins.currentSystem == "x86_64-darwin" || builtins.currentSystem == "aarch64-darwin";
-  isLinux = builtins.currentSystem == "x86_64-linux" || builtins.currentSystem == "aarch64-linux";
+  #isLinux = builtins.currentSystem == "x86_64-linux" || builtins.currentSystem == "aarch64-linux";
+  isLinux = false;
 in
 {
   imports =
@@ -39,5 +41,10 @@ in
   };
 
   #xdg.configFile."nixpkgs/config.nix".source = ../nixpkgs-config.nix;
-  programs.home-manager.enable = true;
+  home = {
+    packages = with pkgs; [
+      home-manager
+    ];
+
+  };
 }

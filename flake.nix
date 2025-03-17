@@ -92,6 +92,15 @@
       };
     };
 
+    #claude
+    claude-desktop = {
+      url = "github:k3d3/claude-desktop-linux-flake";
+      inputs = {
+        nixpkgs.follows = "nixpkgs";
+        flake-utils.follows = "flake-utils";
+      };
+    };
+
     # Project repositories
     robot_signal_dashboard = {
       url = "git+ssh://git@github.com/AutoLifeRobot/robot_signal_dashboard.git";
@@ -102,13 +111,6 @@
     };
     rust-web-server = {
       url = "git+ssh://git@github.com/AutoLifeRobot/rust-web-server.git";
-      inputs = {
-        nixpkgs.follows = "nixpkgs";
-        flake-parts.follows = "flake-parts";
-      };
-    };
-    autolife_www = {
-      url = "git+ssh://git@github.com/AutoLifeRobot/www.git?ref=cn";
       inputs = {
         nixpkgs.follows = "nixpkgs";
         flake-parts.follows = "flake-parts";
@@ -165,7 +167,8 @@
             office = hostConfig;
             office-office = hostConfig;
             tcloud = hostConfig;
-            oracle-arm = hostConfig;
+            oracle-arm-001 = hostConfig;
+            oracle-arm-002 = hostConfig;
             oracle-amd-001 = hostConfig;
             oracle-amd-002 = hostConfig;
             netbird = hostConfig;

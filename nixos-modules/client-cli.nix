@@ -5,30 +5,6 @@
 {
   environment = {
     systemPackages = with pkgs; [
-      apg
-      #cava # audio visualizer
-      cmake
-      gcc
-      gdb
-      geoip
-      gnumake
-      grafana-loki
-      gparted
-      imagemagick
-      inetutils
-      ifuse
-      jp2a
-      lsof
-      manix
-      #my_cookies
-      openfortivpn
-      pass
-      pciutils
-      patchelf
-      procs
-      #qemu_kvm
-      tpm2-tools
-      #zssh
     ];
 
     pathsToLink = [ "/share/zsh" ];

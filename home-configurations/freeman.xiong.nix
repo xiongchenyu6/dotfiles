@@ -8,7 +8,8 @@
   ...
 }:
 let
-  isDarwin = builtins.currentSystem == "x86_64-darwin" || builtins.currentSystem == "aarch64-darwin";
+  #isDarwin = builtins.currentSystem == "x86_64-darwin" || builtins.currentSystem == "aarch64-darwin";
+  isDarwin = false;
 in
 {
   imports =
@@ -133,9 +134,13 @@ in
           # forwardX11 = true;
           # forwardX11Trusted = true;
         };
-        "oracle-arm" = {
+        "oracle-arm-001" = {
           hostname = "138.2.95.174";
         };
+        "oracle-arm-002" = {
+          hostname = "138.2.76.211";
+        };
+
         "oracle-amd-001" = {
           hostname = "213.35.97.233";
         };
@@ -149,7 +154,7 @@ in
           hostname = "172.22.240.99";
         };
         "netbird" = {
-          hostname = "47.128.253.85";
+          hostname = "52.221.229.198";
         };
         "heco-nginx" = {
           hostname = "13.229.128.55";

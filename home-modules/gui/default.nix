@@ -2,6 +2,7 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 {
+  inputs,
   config,
   pkgs,
   lib,
@@ -29,7 +30,7 @@
       albert
       # config.nur.repos.xddxdd.baidupcs-go
       # config.nur.repos.xddxdd.qq
-      # config.nur.repos.xddxdd.wine-wechat
+      #xddxdd.wine-wechat
       gimp
       #gitkraken
       cmctl
@@ -74,7 +75,6 @@
       file
       blender
       delve # go debugger
-      dig
       dive # docker image analyzer
       du-dust # du alternative
       envsubst
@@ -123,7 +123,12 @@
       ruby
       shellcheck
       shfmt
-      s3cmd
+      ldns
+      nmap # A utility for network discovery and security auditing
+      ipcalc
+
+      nix-fast-build
+      mtr
       solc-select
       #solium
       sops
@@ -144,6 +149,8 @@
       wrangler
       bun
       yubikey-manager
+      desktop-file-utils
+      inputs.claude-desktop.packages.${system}.claude-desktop-with-fhs
     ];
     sessionVariables = {
       STARSHIP_LOG = "error";
