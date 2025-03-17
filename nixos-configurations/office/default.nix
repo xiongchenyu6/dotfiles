@@ -47,6 +47,7 @@
   hardware = {
     enableRedistributableFirmware = true;
   };
+
   powerManagement.cpuFreqGovernor = "performance";
 
   boot = {
@@ -159,6 +160,22 @@
     };
 
   services = {
+    kanidm = {
+      enableClient = true;
+      clientSettings = {
+        uri = "https://kanidm.auto-life.tech";
+      };
+      enablePam = true;
+      unixSettings = {
+        default_shell = "${pkgs.bashInteractive}/bin/bash";
+        home_alias = "name";
+        home_attr = "uuid";
+        home_prefix = "/mnt/disk1/";
+        pam_allowed_login_groups = [ "admin" ];
+      };
+
+    };
+
     postgresql = {
       enable = true;
       package = pkgs.postgresql_17_jit;
@@ -234,7 +251,3 @@
     };
   };
 }
-
-
-
-

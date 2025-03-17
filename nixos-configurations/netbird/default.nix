@@ -19,11 +19,13 @@
     ezModules.acme
     srvos.nixosModules.server
     srvos.nixosModules.hardware-amazon
+    srvos.nixosModules.mixins-nginx
     srvos.nixosModules.mixins-trusted-nix-caches
     srvos.nixosModules.mixins-nix-experimental
     srvos.nixosModules.mixins-tracing
     robot_signal_dashboard.nixosModules.robotSignalDashboard
     rust-web-server.nixosModules.rust-web-server
+    xiongchenyu6.nixosModules.postgrest
     vscode-server.nixosModules.default
   ];
 
@@ -45,6 +47,10 @@
   };
 
   sops.secrets."rust-web-server/config" = { };
+
+  environment = {
+    systemPackages = [ pkgs.pgcli ];
+  };
 
   zramSwap.enable = true;
 
@@ -95,6 +101,15 @@
         ];
       };
     };
+
+  security = {
+    acme = {
+      defaults = {
+        group = "nginx";
+
+      };
+    };
+  };
 
   services = {
     homepage-dashboard = {
@@ -175,7 +190,14 @@
         }
       ];
     };
-
+    postgrest = {
+      enable = true;
+      db-anon-role = "api_user";
+      db-uri = "postgres://api_authenticator:api_authenticator@localhost:5432/api";
+      server-port = 3333;
+      openapi-server-proxy-uri = "https://api.autolife-robotics.me";
+      openapi-security-active = true;
+    };
     postgresql = {
       enable = true;
       package = pkgs.postgresql_17_jit;
@@ -183,7 +205,33 @@
         local all all trust
         host  all  all 0.0.0.0/0 scram-sha-256
       '';
+
+      enableJIT = true;
       enableTCPIP = true;
+      extensions =
+        ps: with ps; [
+          pg_cron
+        ];
+      settings = {
+        log_connections = true;
+        log_statement = "all";
+        logging_collector = true;
+        log_disconnections = true;
+        log_destination = lib.mkForce "syslog";
+        shared_preload_libraries = "pg_cron";
+        "cron.database_name" = "api";
+        "cron.use_background_workers" = "on";
+        max_worker_processes = 20;
+      };
+      ensureUsers = [
+        {
+          name = "freeman.xiong";
+          ensureDBOwnership = true;
+          ensureClauses = {
+            superuser = true;
+          };
+        }
+      ];
       ensureDatabases = [ "freeman.xiong" ];
     };
 
@@ -218,10 +266,7 @@
     };
 
     netbird = {
-      enable = true;
       server = {
-        enable = true;
-        enableNginx = true;
         domain = "netbird.autolife-robotics.me";
         management = {
           enable = true;
@@ -296,6 +341,7 @@
           enable = true;
           useAcmeCertificates = true;
           passwordFile = config.sops.secrets."netbird/coturn/password".path;
+          domain = "netbird.autolife-robotics.me";
         };
         dashboard = {
           enable = true;
@@ -401,6 +447,18 @@
             "/" = {
               proxyWebsockets = true;
               proxyPass = "http://localhost:8082";
+            };
+          };
+        };
+        "api.autolife-robotics.me" = {
+          addSSL = true;
+          acmeRoot = null;
+          useACMEHost = "netbird.autolife-robotics.me";
+          kTLS = true;
+          locations = {
+            "/" = {
+              proxyWebsockets = true;
+              proxyPass = "http://localhost:3333";
             };
           };
         };
