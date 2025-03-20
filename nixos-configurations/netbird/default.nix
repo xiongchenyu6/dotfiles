@@ -346,6 +346,7 @@
         dashboard = {
           enable = true;
           domain = "netbird.work-robotics.me";
+          enableNginx = true;
           managementServer = "https://netbird.work-robotics.me";
           settings = {
             AUTH_AUDIENCE = "https://dev-bcz6ouy6jucjcnut.jp.auth0.com/api/v2/";

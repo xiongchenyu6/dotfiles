@@ -19,7 +19,7 @@
       ignoreLid = true;
     };
     pipewire = {
-      systemWide = true;
+      #systemWide = true;
       enable = true;
       alsa = {
         enable = true;

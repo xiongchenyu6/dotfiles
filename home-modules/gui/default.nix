@@ -70,7 +70,7 @@
       vulkan-loader
       vulnix
       nix-melt
-      #code-cursor
+      code-cursor
       godot_4-mono
       file
       blender
@@ -191,7 +191,7 @@
     mpv.enable = true;
 
     obs-studio = {
-      enable = false;
+      enable = true;
       plugins = with pkgs.obs-studio-plugins; [
         wlrobs
         obs-pipewire-audio-capture

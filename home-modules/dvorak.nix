@@ -33,7 +33,7 @@
               }
             }/bin/screen-shot"
 
-            "$mod, E, exec, microsoft-edge --ozone-platform=wayland --enable-wayland-ime --enable-features=Vulkan"
+            "$mod, E, exec, ${pkgs.microsoft-edge}/bin/microsoft-edge"
 
             "$mod, 14, moveworkspacetomonitor, 1 current"
             "$mod, 14, workspace, 1"

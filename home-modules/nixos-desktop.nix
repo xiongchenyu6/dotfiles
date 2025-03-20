@@ -33,6 +33,19 @@
 
   xdg = {
     enable = true;
+    portal = {
+      enable = true;
+      xdgOpenUsePortal = true;
+      extraPortals = with pkgs; [
+        xdg-desktop-portal-hyprland
+      ];
+      # Add this configuration to address the warning about xdg-desktop-portal 1.17+
+      config = {
+        common = {
+          default = "*";
+        };
+      };
+    };
     mime = {
       enable = true;
     };

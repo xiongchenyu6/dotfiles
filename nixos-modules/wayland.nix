@@ -2,7 +2,15 @@
 {
   xdg = {
     portal = {
-      config.common.default = "*";
+      config = {
+        # common = {
+        #   default = "*";
+        # };
+        hyprland = {
+          "org.freedesktop.impl.portal.ScreenCast" = "hyprland";
+        };
+      };
+
       enable = true;
       wlr = {
         enable = true;
@@ -11,10 +19,9 @@
         enable = true;
       };
       xdgOpenUsePortal = true;
-        extraPortals = with pkgs; [
-          xdg-desktop-portal-gtk
-          xdg-desktop-portal-hyprland
-        ];
-      };
+      extraPortals = with pkgs; [
+        xdg-desktop-portal-hyprland
+      ];
+    };
   };
 }

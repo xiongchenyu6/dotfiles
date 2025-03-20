@@ -8,8 +8,8 @@
   ...
 }:
 let
-  #isDarwin = builtins.currentSystem == "x86_64-darwin" || builtins.currentSystem == "aarch64-darwin";
-  isDarwin = false;
+  isDarwin = builtins.currentSystem == "x86_64-darwin" || builtins.currentSystem == "aarch64-darwin";
+  #isDarwin = false;
 in
 {
   imports =
