@@ -17,7 +17,7 @@
         dnsResolver = "1.1.1.1:53";
         # dnsPropagationCheck = false;
         credentialsFile = config.sops.secrets."acme/cloudflare".path;
-        group = "nginx";
+        #group = "nginx";
         # postRun = ''
         #   ${pkgs.systemd}/bin/systemctl restart openldap
         # '';

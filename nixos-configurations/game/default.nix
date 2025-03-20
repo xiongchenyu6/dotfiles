@@ -52,6 +52,12 @@
     enableRedistributableFirmware = true;
   };
 
+  environment = {
+    systemPackages = [
+      pkgs.cloudflare-warp
+    ];
+  };
+
   boot = {
 
     binfmt.emulatedSystems = [ "aarch64-linux" ];
@@ -158,6 +164,10 @@
 
   services = {
 
+    cloudflare-warp = {
+      enable = true;
+    };
+
     sunshine = {
       enable = true;
       openFirewall = true;
@@ -211,7 +221,7 @@
     };
 
     #v2raya.enable = true;
-    #netbird.enable = true;
+    netbird.enable = true;
     babeld = {
       interfaces = {
         wg_mail = {

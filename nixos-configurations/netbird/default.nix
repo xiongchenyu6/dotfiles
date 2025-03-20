@@ -346,6 +346,7 @@
         dashboard = {
           enable = true;
           domain = "netbird.autolife-robotics.me";
+          enableNginx = true;
           managementServer = "https://netbird.autolife-robotics.me";
           settings = {
             AUTH_AUDIENCE = "https://dev-bcz6ouy6jucjcnut.jp.auth0.com/api/v2/";
