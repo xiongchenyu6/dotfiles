@@ -26,9 +26,12 @@
     ./hardware-configuration.nix
   ];
 
+  sops.secrets."cloudflared/tunnel-credentials" = { };
+
   environment = {
     systemPackages = with pkgs; [
       kanidm
+      cloudflared
     ];
   };
 
@@ -56,6 +59,23 @@
   };
 
   services = {
+    cloudflared = {
+      enable = true;
+      tunnels = {
+        "31881776-71bc-4c81-b206-b579ca61ffd2" = {
+          credentialsFile = config.sops.secrets."cloudflared/tunnel-credentials".path;
+          # Default route for unmatched requests
+          warp-routing = {
+            enabled = true;
+          };
+          default = "http_status:404";
+          # Add specific routes here as needed, for example:
+          # "kanidm.auto-life.tech" = "localhost:443";
+
+        };
+      };
+    };
+
     kanidm =
       let
         credsDir = config.security.acme.certs."${config.networking.domain}".directory;
@@ -99,5 +119,4 @@
         };
       };
   };
-
 }

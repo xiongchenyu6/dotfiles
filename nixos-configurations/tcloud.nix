@@ -238,6 +238,12 @@ in
 
   services = {
 
+    owncast = {
+      enable = true;
+      openFirewall = true;
+      listen = "0.0.0.0";
+    };
+
     postgresql = {
       enable = true;
       ensureUsers = [

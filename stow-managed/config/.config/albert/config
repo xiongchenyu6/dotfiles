@@ -6,6 +6,8 @@ telemetry=false
 [applications]
 enabled=true
 fuzzy=false
+ignore_show_in_keys=true
+terminal=Alacritty
 
 [caffeine]
 enabled=false
@@ -14,7 +16,7 @@ enabled=false
 enabled=true
 
 [chromium]
-bookmarks_path=/home/freeman.xiong/.config/microsoft-edge-dev/Default/Bookmarks
+bookmarks_path=/home/freeman.xiong/.config/microsoft-edge/Default/Bookmarks
 enabled=true
 indexHostname=true
 
