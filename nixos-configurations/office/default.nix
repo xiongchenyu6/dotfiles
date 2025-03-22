@@ -23,6 +23,7 @@
     ezModules.dn42
     ezModules.bird-inner
     ezModules.falcon-sensor
+    ezModules.wayland
     srvos.nixosModules.mixins-trusted-nix-caches
     srvos.nixosModules.mixins-nix-experimental
     srvos.nixosModules.mixins-tracing

@@ -25,6 +25,7 @@
     ezModules.bird-inner
     ezModules.virtualisation
     ezModules.falcon-sensor
+    ezModules.wayland
     nixos-hardware.nixosModules.lenovo-legion-16ach6h
     srvos.nixosModules.desktop
     vscode-server.nixosModules.default

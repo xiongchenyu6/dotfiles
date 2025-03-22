@@ -1,6 +1,9 @@
 { pkgs, ... }:
 {
   services = {
+    fwupd = {
+      enable = true;
+    };
     gpm.enable = true;
 
     logind = {

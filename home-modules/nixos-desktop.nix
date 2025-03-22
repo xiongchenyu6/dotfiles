@@ -33,10 +33,12 @@
 
   xdg = {
     enable = true;
+    #TODO screen capture seems only works in nixos modules, but here for xdg-open
     portal = {
       enable = true;
       xdgOpenUsePortal = true;
       extraPortals = with pkgs; [
+        xdg-desktop-portal-gtk
         xdg-desktop-portal-hyprland
       ];
       # Add this configuration to address the warning about xdg-desktop-portal 1.17+

@@ -40,6 +40,7 @@
       termshark
       glow
       lm_sensors
+      fwupd
       lnav
       lego
       #gitbutler
@@ -68,7 +69,7 @@
       jp2a
       lsof
       #my_cookies
-
+      glib
       pass
       pciutils
       patchelf
