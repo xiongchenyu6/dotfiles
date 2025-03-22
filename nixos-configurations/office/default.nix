@@ -174,7 +174,6 @@
         home_prefix = "/mnt/disk1/";
         pam_allowed_login_groups = [ "admin" ];
       };
-
     };
 
     postgresql = {
