@@ -169,10 +169,16 @@
       enable = true;
     };
 
-    sunshine = {
-      enable = true;
-      openFirewall = true;
-      capSysAdmin = true;
+    # sunshine = {
+    #   enable = true;
+    #   openFirewall = true;
+    #   capSysAdmin = true;
+    # };
+    kanidm = {
+      enableClient = true;
+      clientSettings = {
+        uri = "https://kanidm.auto-life.tech";
+      };
     };
 
     postgresql = {
