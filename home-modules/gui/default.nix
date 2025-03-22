@@ -30,7 +30,8 @@
       albert
       # config.nur.repos.xddxdd.baidupcs-go
       # config.nur.repos.xddxdd.qq
-      #xddxdd.wine-wechat
+      nur.repos.xddxdd.wine-wechat
+      nur.repos.xddxdd.dingtalk
       gimp
       #gitkraken
       cmctl
@@ -41,7 +42,8 @@
       tdesktop
       unrar-wrapper
       whatsapp-for-linux
-      wineWow64Packages.wayland
+      winetricks
+      wineWow64Packages.waylandFull
       zotero
       kdePackages.dolphin
       kdePackages.qtwayland

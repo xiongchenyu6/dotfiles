@@ -13,6 +13,7 @@ let
       nix-alien
       sops-nix
       nix-topology
+      nur
     ];
 
   sharedOverlays = overlays ++ [
