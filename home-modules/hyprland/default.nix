@@ -132,8 +132,8 @@
       ];
 
       exec-once = [
-        "albert"
-        "netbird-ui"
+        "${pkgs.albert}/bin/albert"
+        "${pkgs.netbird}/bin/netbird-ui"
         "dropbox start"
       ];
 
