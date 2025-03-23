@@ -110,9 +110,9 @@
       };
     };
 
-    openldap = {
-      enable = true;
-    };
+    # openldap = {
+    #   enable = true;
+    # };
 
     # ympd = { enable = true; };
   };

@@ -43,7 +43,8 @@
       unrar-wrapper
       whatsapp-for-linux
       winetricks
-      wineWow64Packages.waylandFull
+      wineWow64Packages.unstableFull
+      bottles
       zotero
       kdePackages.dolphin
       kdePackages.qtwayland

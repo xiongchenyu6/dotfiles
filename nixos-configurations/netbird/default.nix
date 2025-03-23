@@ -106,7 +106,6 @@
     acme = {
       defaults = {
         group = "nginx";
-
       };
     };
   };
