@@ -38,6 +38,13 @@ in
     }
 
   ];
+  security = {
+    acme = {
+      defaults = {
+        group = "nginx";
+      };
+    };
+  };
 
   boot.loader.grub.device = "/dev/vda";
   boot.initrd.availableKernelModules = [
@@ -64,7 +71,7 @@ in
     };
   };
 
-  sops.secrets."wireguard/mail" = { };
+  sops.secrets."wireguard/tcloud" = { };
 
   networking = {
     nat = {
@@ -126,10 +133,10 @@ in
         }
       ];
 
-      interfaces.wg_mail.allowedTCPPorts = [ 2222 ];
-      interfaces.wg_mail.allowedUDPPorts = [ 2222 ];
-      interfaces.wg_game.allowedTCPPorts = [ 2222 ];
-      interfaces.wg_game.allowedUDPPorts = [ 2222 ];
+      interfaces.wg_office.allowedTCPPorts = [ 22 ];
+      interfaces.wg_office.allowedUDPPorts = [ 22 ];
+      interfaces.wg_game.allowedTCPPorts = [ 22 ];
+      interfaces.wg_game.allowedUDPPorts = [ 22 ];
     };
     sits = {
       he-ipv6 = {
@@ -160,7 +167,7 @@ in
     wg-quick = {
       interfaces =
         let
-          privateKeyFile = config.sops.secrets."wireguard/mail".path;
+          privateKeyFile = config.sops.secrets."wireguard/tcloud".path;
           address = [ "fe80::100/64" ];
           table = "off";
           allowedIPs = [
@@ -260,7 +267,7 @@ in
 
     coturn = {
       enable = true;
-      realm = "mail.autolife-robotics.me";
+      realm = "tcloud.autolife-robotics.me";
       extraConfig = ''
         user=self:KtcpGDpdkvM0vKrQ7DYtKdXTffJzt33iCGvsD6BA3hM
         fingerprint

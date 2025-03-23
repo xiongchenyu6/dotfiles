@@ -71,6 +71,10 @@
       "iommu=pt"
     ];
 
+    extraModulePackages = with pkgs; [
+      linuxKernel.packages.linux_6_13.cryptodev
+    ];
+
     kernel = {
       sysctl = {
         "net.ipv4.ip_forward" = 1;
@@ -111,11 +115,11 @@
           6696
           33434
         ];
-        interfaces.wg_mail.allowedTCPPorts = [
+        interfaces.wg_tcloud.allowedTCPPorts = [
           2222
           8080
         ];
-        interfaces.wg_mail.allowedUDPPorts = [ 2222 ];
+        interfaces.wg_tcloud.allowedUDPPorts = [ 2222 ];
         interfaces.wt0.allowedTCPPorts = [ 2222 ];
         interfaces.wt0.allowedUDPPorts = [ 2222 ];
       };
@@ -129,20 +133,20 @@
       enableIPv6 = true;
       wg-quick = {
         interfaces = {
-          wg_mail = {
+          wg_tcloud = {
             privateKeyFile = config.sops.secrets."wireguard/game".path;
             table = "off";
             address = [ "fe80::102/64" ];
             postUp = ''
-              ${pkgs.iproute2}/bin/ip addr add dev wg_mail 172.22.240.99/32 peer 172.22.240.96/27
-              ${pkgs.iproute2}/bin/ip addr add dev wg_mail fd48:4b4:f3::3/128 peer fd48:4b4:f3::1/128
-              ${pkgs.iproute2}/bin/ip link set multicast on dev wg_mail
+              ${pkgs.iproute2}/bin/ip addr add dev wg_tcloud 172.22.240.99/32 peer 172.22.240.96/27
+              ${pkgs.iproute2}/bin/ip addr add dev wg_tcloud fd48:4b4:f3::3/128 peer fd48:4b4:f3::1/128
+              ${pkgs.iproute2}/bin/ip link set multicast on dev wg_tcloud
             '';
 
             peers = [
               {
                 endpoint = "43.156.66.157:22617";
-                publicKey = shares.hosts-dict.mail.wg.public-key;
+                publicKey = shares.hosts-dict.tcloud.wg.public-key;
                 persistentKeepalive = 30;
                 allowedIPs = [
                   "10.0.0.0/8"
@@ -218,7 +222,7 @@
       enable = false;
       role = "client";
       settings = {
-        serverAddr = "mail.autolife-robotics.me";
+        serverAddr = "tcloud.autolife-robotics.me";
         serverPort = 7000;
         auth = {
           method = "token";
@@ -231,7 +235,7 @@
     netbird.enable = true;
     babeld = {
       interfaces = {
-        wg_mail = {
+        wg_tcloud = {
           hello-interval = 5;
           split-horizon = "auto";
           type = "wired";
@@ -242,28 +246,6 @@
       enable = true;
       config = mylib.bird2-inner-config "172.22.240.99" "fd48:4b4:f3::3";
     };
-  };
-
-  security.krb5.settings = {
-    realms =
-      let
-        tronRealm = "TRONTECH.LINK";
-        tronDomain = "trontech.link";
-      in
-      {
-        "${tronRealm}" = {
-          admin_server = "admin.inner.${tronDomain}";
-          kdc = [ "admin.inner.${tronDomain}" ];
-          default_domain = "admin.inner.${tronDomain}";
-          kpasswd_server = "admin.inner.${tronDomain}";
-          database_module = "openldap_ldapconf";
-        };
-        domain_realm = {
-          "${tronDomain}" = tronRealm;
-          ".inner.${tronDomain}" = tronRealm;
-          ".${tronDomain}" = tronRealm;
-        };
-      };
   };
 
   programs = {
