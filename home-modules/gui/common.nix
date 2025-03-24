@@ -17,7 +17,6 @@
       # jetbrains.rider
       xournalpp
       slack
-      #tectonic
       #onlyoffice-bin
       zoom-us
       ueberzugpp
