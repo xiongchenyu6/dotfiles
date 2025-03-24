@@ -14,7 +14,7 @@
       dmidecode
       # jetbrains.idea-ultimate
       # jetbrains.rider
-      tectonic
+      #tectonic
       onlyoffice-bin
       #stlink-gui
       #stm32cubemx
