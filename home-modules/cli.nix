@@ -35,17 +35,18 @@
   services = {
     gpg-agent = {
       enable = true;
-      # enableExtraSocket = true;
+      enableExtraSocket = true;
       # extraConfig = ''
+
       #   allow-emacs-pinentry
       #   allow-loopback-pinentry
       # '';
-      pinentryPackage = pkgs.pinentry-tty;
+      pinentryPackage = pkgs.pinentry-gnome3;
       enableSshSupport = true;
       # gpg2 -K --with-keygrip
       sshKeys = [
         "AB721FF9682FF07B88063C8FADEB89B859C7ACB1"
-        "42C87EA7DAAD37765EB1DD0FF53339EFBBF5785C"
+        # "14226143F299FAFBDF90BE806430B42391554668"
       ];
     };
   };
