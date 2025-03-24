@@ -122,6 +122,7 @@ in
     };
 
     ssh = {
+      forwardAgent = true;
       matchBlocks = {
         # "*-tmux" = {
         #   extraOptions = {
@@ -131,8 +132,9 @@ in
         # };
         "tcloud" = {
           hostname = "43.156.66.157";
-          # forwardX11 = true;
-          # forwardX11Trusted = true;
+          # extraOptions = {
+          #   RemoteForward = "/run/user/1000/gnupg/S.gpg-agent /run/user/1000/gnupg/S.gpg-agent.extra";
+          # };
         };
         "oracle-arm-001" = {
           hostname = "138.2.95.174";
@@ -157,7 +159,7 @@ in
           hostname = "52.221.229.198";
         };
         "heco-nginx" = {
-          hostname = "13.229.128.55";
+          hostname = "18.142.238.159";
           user = "root";
         };
         "heco-zammad" = {

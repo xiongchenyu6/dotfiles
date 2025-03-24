@@ -31,6 +31,13 @@
       controlMaster = "auto";
       controlPersist = "24h";
       compression = true;
+      forwardAgent = true;
+      addKeysToAgent = "yes";
+      extraConfig = ''
+        RemoteForward /run/user/1000/gnupg/S.gpg-agent /run/user/1000/gnupg/S.gpg-agent.extra
+      '';
+      # forwardX11 = true;
+      # forwardX11Trusted = true;
     };
 
     home-manager = {
