@@ -28,8 +28,9 @@
       aspell
       aspellDicts.en
       albert
-      # config.nur.repos.xddxdd.baidupcs-go
-      # config.nur.repos.xddxdd.qq
+      baidupcs-go
+      nur.repos.xddxdd.qq
+      nur.repos.xddxdd.bilibili
       nur.repos.xddxdd.wine-wechat
       nur.repos.xddxdd.dingtalk
       gimp
