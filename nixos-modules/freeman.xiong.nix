@@ -19,7 +19,7 @@
         isNormalUser = true;
         description = "freeman.xiong";
         group = "users";
-
+        uid = 1000;
         openssh.authorizedKeys.keys = [
           shares.users-dict."freeman.xiong".public-key
           shares.users-dict."freeman.xiong".yubikey
@@ -49,9 +49,6 @@
           "systemd-journal"
           "adbusers"
         ];
-      };
-      "xiongchenyu6" = {
-        isNormalUser = true;
       };
     };
   };

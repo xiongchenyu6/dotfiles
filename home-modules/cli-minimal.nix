@@ -135,6 +135,10 @@
     };
     gpg = {
       enable = true;
+      scdaemonSettings = {
+        debug-level = "guru";
+        log-file = "/tmp/scdaemon.log";
+      };
       settings = {
         #keyserver = "hkps://keyserver.ubuntu.com";
         fixed-list-mode = true;

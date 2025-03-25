@@ -16,15 +16,17 @@
       # jetbrains.rider
       #tectonic
       onlyoffice-bin
-      #stlink-gui
-      #stm32cubemx
-      #gcc-arm-embedded
+      stlink-gui
+      stm32cubemx
+      glib
+      gcc-arm-embedded
       microsoft-edge
       vault
       kmon
       #gitbutler
       unityhub
       v4l-utils
+      pcsc-tools
       sui
       zssh
       record_screen
