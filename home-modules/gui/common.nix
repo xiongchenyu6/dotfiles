@@ -22,9 +22,6 @@
       ueberzugpp
       ytfzf
       usbutils
-      #stlink-gui
-      #stm32cubemx
-      #gcc-arm-embedded
       microsoft-edge
       #vault
       solana-cli
@@ -55,7 +52,6 @@
       #cava # audio visualizer
       cmake
       gcc
-      gdb
       openfortivpn
       gnumake
       geoip
