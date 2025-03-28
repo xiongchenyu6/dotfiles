@@ -138,6 +138,7 @@
       scdaemonSettings = {
         debug-level = "guru";
         log-file = "/tmp/scdaemon.log";
+        disable-ccid = true;
       };
       settings = {
         #keyserver = "hkps://keyserver.ubuntu.com";
