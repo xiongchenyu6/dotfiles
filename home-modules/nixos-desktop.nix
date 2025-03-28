@@ -27,6 +27,7 @@
       unityhub
       v4l-utils
       pcsc-tools
+      opensc
       sui
       zssh
       record_screen
