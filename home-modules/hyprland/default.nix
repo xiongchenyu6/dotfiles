@@ -137,12 +137,12 @@
         "dropbox start"
       ];
 
-      windowrule = [
-        "workspace 1 silent, alacritty"
-        "float,noblur,noshadow,noborder,pseudo,dimaround,albert"
-        "opacity 0.9 0.95,Alacritty"
-        "opacity 0.9 0.95,emacs"
-      ];
+      # windowrule = [
+      #   "workspace 1 silent, alacritty"
+      #   "float,noblur,noshadow,noborder,pseudo,dimaround,albert"
+      #   "opacity 0.9 0.95,Alacritty"
+      #   "opacity 0.9 0.95,emacs"
+      # ];
     };
   };
 
