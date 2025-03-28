@@ -60,7 +60,7 @@
   };
 
   boot = {
-
+    kernelPackages = lib.mkForce pkgs.linuxPackages_6_13;
     binfmt.emulatedSystems = [ "aarch64-linux" ];
     initrd.kernelModules = [
       "vfio_pci"
