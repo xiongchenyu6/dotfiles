@@ -103,6 +103,7 @@ in
         993 # imaps
         6695
         7000 # frp
+        8000
         8888
         10086
         18000
@@ -240,6 +241,22 @@ in
             ];
           };
         };
+    };
+  };
+  
+  virtualisation = {
+    oci-containers = {
+      containers = let
+        image = "vinlic/deepseek-free-api:latest";
+        environment = {
+          TZ="Asia/Shanghai";
+        };
+      in {
+        deepseek-free-api = {
+          inherit environment image;
+          ports = [ "8000:8000" ];
+        };
+      };
     };
   };
 
