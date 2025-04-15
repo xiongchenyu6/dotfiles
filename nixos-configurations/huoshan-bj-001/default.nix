@@ -16,6 +16,8 @@
     ezModules.core
     ezModules.server
     ezModules.cn
+    ezModules.v2ray
+    #ezModules.kanidm
     srvos.nixosModules.server
     srvos.nixosModules.mixins-trusted-nix-caches
     srvos.nixosModules.mixins-nix-experimental
@@ -57,6 +59,7 @@
           443
           2222
           7000
+          10086
         ];
         allowedUDPPorts = [
           89
