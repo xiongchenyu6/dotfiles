@@ -46,7 +46,6 @@
       winetricks
       wineWow64Packages.unstableFull
       bottles
-      lutris
       zotero
       kdePackages.dolphin
       kdePackages.qtwayland

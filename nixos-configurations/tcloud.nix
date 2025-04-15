@@ -243,20 +243,22 @@ in
         };
     };
   };
-  
+
   virtualisation = {
     oci-containers = {
-      containers = let
-        image = "vinlic/deepseek-free-api:latest";
-        environment = {
-          TZ="Asia/Shanghai";
+      containers =
+        let
+          image = "vinlic/deepseek-free-api:latest";
+          environment = {
+            TZ = "Asia/Shanghai";
+          };
+        in
+        {
+          deepseek-free-api = {
+            inherit environment image;
+            ports = [ "8000:8000" ];
+          };
         };
-      in {
-        deepseek-free-api = {
-          inherit environment image;
-          ports = [ "8000:8000" ];
-        };
-      };
     };
   };
 
@@ -292,32 +294,6 @@ in
       '';
       lt-cred-mech = true;
       no-cli = true;
-    };
-
-    v2ray = {
-      enable = true;
-      config = {
-        inbounds = [
-          {
-            port = 10086;
-            protocol = "vmess";
-            settings = {
-              clients = [
-                {
-                  id = builtins.getEnv "V2RAY";
-                  alterId = 64;
-                }
-              ];
-            };
-          }
-        ];
-        outbounds = [
-          {
-            protocol = "freedom";
-            settings = { };
-          }
-        ];
-      };
     };
 
     journald = {
