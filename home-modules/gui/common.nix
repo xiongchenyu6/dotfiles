@@ -34,7 +34,7 @@
       (warp-terminal.override { waylandSupport = true; })
       #kmon
       termshark
-      glow
+      glow # markdown viewer
       lm_sensors
       fwupd
       lnav

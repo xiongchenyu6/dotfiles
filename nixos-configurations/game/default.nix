@@ -60,7 +60,7 @@
   };
 
   boot = {
-    kernelPackages = lib.mkForce pkgs.linuxPackages_6_13;
+    #kernelPackages = lib.mkForce pkgs.linuxPackages_6_13;
     binfmt.emulatedSystems = [ "aarch64-linux" ];
     initrd.kernelModules = [
       "vfio_pci"
@@ -72,7 +72,7 @@
     ];
 
     extraModulePackages = with pkgs; [
-      linuxKernel.packages.linux_6_13.cryptodev
+      linuxKernel.packages.linux_6_14.cryptodev
     ];
 
     kernel = {
@@ -103,6 +103,7 @@
 
       firewall = {
         enable = true;
+
         allowedTCPPorts = [
           89
           179
@@ -115,13 +116,14 @@
           6696
           33434
         ];
+        trustedInterfaces = [ "virbr0" ]; # for libvirt
         interfaces.wg_tcloud.allowedTCPPorts = [
-          2222
+          22
           8080
         ];
-        interfaces.wg_tcloud.allowedUDPPorts = [ 2222 ];
-        interfaces.wt0.allowedTCPPorts = [ 2222 ];
-        interfaces.wt0.allowedUDPPorts = [ 2222 ];
+        interfaces.wg_tcloud.allowedUDPPorts = [ 22 ];
+        interfaces.wt0.allowedTCPPorts = [ 22 ];
+        interfaces.wt0.allowedUDPPorts = [ 22 ];
       };
 
       networkmanager = {
@@ -232,6 +234,7 @@
     };
 
     #v2raya.enable = true;
+
     netbird.enable = true;
     babeld = {
       interfaces = {
@@ -250,6 +253,9 @@
 
   programs = {
     adb = {
+      enable = true;
+    };
+    clash-verge = {
       enable = true;
     };
   };
