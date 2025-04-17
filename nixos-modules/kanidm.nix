@@ -34,7 +34,10 @@
           enable = true;
           groups = {
             devops = {
-              members = [ "xiongchenyu" ];
+              members = [
+                "xiongchenyu"
+                "chensiwei"
+              ];
             };
           };
           persons = {
@@ -43,6 +46,32 @@
               legalName = "Xiong Chenyu";
               displayName = "Xiong Chenyu";
               groups = [ "devops" ]; # Updated group to match changes in groups
+            };
+            chensiwei = {
+              mailAddresses = [ "chensiwei@autolife.ai" ];
+              legalName = "Chen Siwei";
+              displayName = "Chen Siwei";
+              groups = [ "devops" ]; # Updated group to match changes in groups
+            };
+          };
+          systems = {
+            oauth2 = {
+              robot-management-system = {
+                public = true;
+                enableLocalhostRedirects = true;
+                preferShortUsername = true;
+                displayName = "Robot Management System";
+                originLanding = "https://robot-management-system.autolife-robotics.me/";
+                originUrl = "https://robot-management-system.autolife-robotics.me/callback";
+                scopeMaps = {
+                  devops = [
+                    "openid"
+                    "profile"
+                    "email"
+                    "groups"
+                  ];
+                };
+              };
             };
           };
         };

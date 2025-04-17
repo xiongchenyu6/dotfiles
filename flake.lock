@@ -507,11 +507,11 @@
     },
     "nixpkgs-master": {
       "locked": {
-        "lastModified": 1744888775,
-        "narHash": "sha256-bVcJBNpz1od8qXD77SeH9oHKtArx/UfHJndUrYazY6Q=",
+        "lastModified": 1744890423,
+        "narHash": "sha256-JRFuccpWr8bN3dIizofKGwf8esdOSekevPteLKhlCls=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "1316aee16bf479356a94e336dafc18d2cd7b1097",
+        "rev": "d5b441b83fb5dfa4a2830ff792d4f56a3e6eba47",
         "type": "github"
       },
       "original": {
@@ -560,11 +560,11 @@
         "treefmt-nix": "treefmt-nix"
       },
       "locked": {
-        "lastModified": 1744885614,
-        "narHash": "sha256-zARDYqGVlUaW2s6kn3l9fP4MIcyVrfYqbrlc/aV9s6s=",
+        "lastModified": 1744892030,
+        "narHash": "sha256-jcIXcgvY3KkHIifG2SshvmLaxbH4b7rjydhvX8StgGE=",
         "owner": "nix-community",
         "repo": "NUR",
-        "rev": "2a0d560406c69f1c4d8f89a66be95b194eda9b25",
+        "rev": "4ad14df91d7987b4d160f7d6a9b38ab839728770",
         "type": "github"
       },
       "original": {
@@ -743,15 +743,16 @@
         ]
       },
       "locked": {
-        "lastModified": 1743142443,
-        "narHash": "sha256-b1o9PRWJpgRk5mr5rqcLLtRIUoA9/SCfyG8MyhFuudI=",
-        "ref": "refs/heads/main",
-        "rev": "340157ad93a5081b8f18c8fdcc901591417c98c5",
-        "revCount": 38,
+        "lastModified": 1744774686,
+        "narHash": "sha256-CcR5Cym/lKtx49DoUrMaDQPwJDF6iNQu9AJpI2CZzLw=",
+        "ref": "chen/code_review",
+        "rev": "49726386c576d87b70a76372aadcc6ef916d2227",
+        "revCount": 59,
         "type": "git",
         "url": "ssh://git@github.com/AutoLifeRobot/rust-web-server.git"
       },
       "original": {
+        "ref": "chen/code_review",
         "type": "git",
         "url": "ssh://git@github.com/AutoLifeRobot/rust-web-server.git"
       }
