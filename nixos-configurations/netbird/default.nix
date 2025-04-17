@@ -25,7 +25,6 @@
     srvos.nixosModules.mixins-tracing
     robot_signal_dashboard.nixosModules.robotSignalDashboard
     rust-web-server.nixosModules.rust-web-server
-    xiongchenyu6.nixosModules.postgrest
     vscode-server.nixosModules.default
   ];
 
@@ -47,6 +46,11 @@
   };
 
   sops.secrets."rust-web-server/config" = { };
+
+  sops.secrets."postgrest/pass" = {
+    owner = "postgrest";
+    group = "postgrest";
+  };
 
   environment = {
     systemPackages = [ pkgs.pgcli ];
@@ -191,11 +195,19 @@
     };
     postgrest = {
       enable = true;
-      db-anon-role = "api_user";
-      db-uri = "postgres://api_authenticator:api_authenticator@localhost:5432/api";
-      server-port = 3333;
-      openapi-server-proxy-uri = "https://api.autolife-robotics.me";
-      openapi-security-active = true;
+      pgpassFile = config.sops.secrets."postgrest/pass".path;
+      settings = {
+        db-uri = {
+          host = "localhost";
+          port = "5432";
+          user = "postgres";
+          dbname = "rustWebServer";
+        };
+        db-anon-role = "rustwebserver";
+        #server-port = 3333; # use unix socket
+        openapi-server-proxy-uri = "https://api.autolife-robotics.me";
+        openapi-security-active = true;
+      };
     };
     postgresql = {
       enable = true;
@@ -360,6 +372,7 @@
     };
 
     nginx = {
+
       virtualHosts = {
         "${config.services.netbird.server.domain}" = {
           forceSSL = true;
@@ -458,7 +471,7 @@
           locations = {
             "/" = {
               proxyWebsockets = true;
-              proxyPass = "http://localhost:3333";
+              proxyPass = "http://unix:/run/postgrest/postgrest.sock";
             };
           };
         };
