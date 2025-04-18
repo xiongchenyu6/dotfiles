@@ -32,6 +32,8 @@ let
     nur.modules.nixos.default
     impermanence.nixosModules.impermanence
     nix-topology.nixosModules.default
+    srvos.nixosModules.mixins-trusted-nix-caches
+    srvos.nixosModules.mixins-nix-experimental
     (import ../shared-modules/sops.nix)
     (_: {
       nixpkgs = {

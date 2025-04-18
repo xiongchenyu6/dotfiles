@@ -29,8 +29,6 @@
     nixos-hardware.nixosModules.lenovo-legion-16ach6h
     srvos.nixosModules.desktop
     vscode-server.nixosModules.default
-    srvos.nixosModules.mixins-trusted-nix-caches
-    srvos.nixosModules.mixins-nix-experimental
     srvos.nixosModules.mixins-tracing
     {
       topology.self.interfaces.home = {
