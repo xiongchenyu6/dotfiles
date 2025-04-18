@@ -37,6 +37,7 @@
               members = [
                 "xiongchenyu"
                 "chensiwei"
+                "benjaming"
               ];
             };
           };
@@ -51,6 +52,12 @@
               mailAddresses = [ "chensiwei@work.ai" ];
               legalName = "Chen Siwei";
               displayName = "Chen Siwei";
+              groups = [ "devops" ]; # Updated group to match changes in groups
+            };
+            benjaming = {
+              mailAddresses = [ "benjaming@work.ai" ]; # Updated email address
+              legalName = "Benjaming"; # Updated legal name
+              displayName = "Benjaming"; # Updated display name
               groups = [ "devops" ]; # Updated group to match changes in groups
             };
           };
