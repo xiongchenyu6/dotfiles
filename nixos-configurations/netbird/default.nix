@@ -48,8 +48,6 @@
   sops.secrets."rust-web-server/config" = { };
 
   sops.secrets."postgrest/pass" = {
-    owner = "postgrest";
-    group = "postgrest";
   };
 
   environment = {
