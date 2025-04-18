@@ -26,6 +26,18 @@
       sops
     ];
   };
+
+  programs = {
+    gnupg = {
+      agent = {
+        enable = true;
+        enableSSHSupport = true;
+        enableExtraSocket = true;
+        enableBrowserSocket = true;
+
+      };
+    };
+  };
   nix = {
     settings = {
       accept-flake-config = true;

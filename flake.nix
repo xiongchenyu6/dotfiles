@@ -109,6 +109,7 @@
         flake-parts.follows = "flake-parts";
       };
     };
+
     rust-web-server = {
       url = "git+ssh://git@github.com/AutoLifeRobot/rust-web-server.git?ref=ben/service_controller";
       inputs = {
