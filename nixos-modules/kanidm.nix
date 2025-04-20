@@ -38,6 +38,8 @@
                 "xiongchenyu"
                 "chensiwei"
                 "benjaming"
+                "yongyigan"
+                "huxiaoxiang" # Added huxiaoxiang to the devops group
               ];
             };
           };
@@ -59,6 +61,18 @@
               legalName = "Benjaming"; # Updated legal name
               displayName = "Benjaming"; # Updated display name
               groups = [ "devops" ]; # Updated group to match changes in groups
+            };
+            yongyigan = {
+              mailAddresses = [ "yongyigan@gmail.com" ]; # Updated email address
+              legalName = "Yong Yigan"; # Updated legal name
+              displayName = "Yong Yigan"; # Updated display name
+              groups = [ "devops" ]; # Updated group to match changes in groups
+            };
+            huxiaoxiang = {
+              mailAddresses = [ "xiaoxiang.hu@autolife.ai" ]; # Added email address for huxiaoxiang
+              legalName = "Huxiaoxiang"; # Added legal name for huxiaoxiang
+              displayName = "Huxiaoxiang"; # Added display name for huxiaoxiang
+              groups = [ "devops" ]; # Added group for huxiaoxiang
             };
           };
           systems = {
