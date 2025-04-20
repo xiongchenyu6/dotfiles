@@ -34,6 +34,8 @@
         openssh = {
           authorizedKeys.keys = [
             "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHI7o9MTDU81RCkqhKbnXHqJgdhal7adqUZDhKUAWxLc server-benjamintan"
+            "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBQBxWE+A+8sO3oszjEiNSAjsoEUfltBJMqpRRO3ieUp cardno:32_087_478"
+            "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDc+zRGg+dTUqo0XAbCGuyGZiRlZwY0MdjOCrpZpcNDBAIk940/epjlkKh/2WTz4hC4hkv4Ms30cCbcbAByATNDXyVKwUrxkAJnFsXU4dgrYZJ0WR+67AeKRb+41daEFhmSQQztji5KmyF0uCMkBGNPC3jF63ybPj0UAS59g761t25P21IeS6zOf5IjBDIxp7JvtgOnIoOT4qQDTJijdCqjJJ/vP8bWmvS8mCMS5HDAKHgfEk5a3eJGFR8AngFSp1DkH5Q9y+YkM42IVrU2UkT8a4Qi/J2BCUKUCDBSeEmmgoBd8NOpkwvjcm6HY92sVZLSjeIyuZrEy9luNMC38PZ1SLNhDDiESIYiFpBWDKrOH8TkZStwpwwIb6hcm/+Tew5kYQlyAeCu2ZT97TRp7978cJP9Isz2kSdLRiLp57T4462feYEOvEJrBxultnCdYk6h/B9KJ81XDGG6Zt9i4A6jUBA26a7TEA6RAr8YLRKzUtr5BHpkYcAfVYTysDklU00= summer@summers-MacBook-Pro.local"
           ];
         };
       };
@@ -198,11 +200,12 @@
         db-uri = {
           host = "localhost";
           port = "5432";
-          user = "postgres";
+          user = "rustwebserver";
           dbname = "rustWebServer";
         };
         db-anon-role = "rustwebserver";
-        #server-port = 3333; # use unix socket
+        server-port = 3333; # use unix socket
+        server-unix-socket = null;
         openapi-server-proxy-uri = "https://api.autolife-robotics.me";
         openapi-security-active = true;
       };
@@ -469,7 +472,7 @@
           locations = {
             "/" = {
               proxyWebsockets = true;
-              proxyPass = "http://unix:/run/postgrest/postgrest.sock";
+              proxyPass = "http://localhost:3333";
             };
           };
         };

@@ -164,5 +164,9 @@
     "github.copilot.chat.edits.temporalContext.enabled": true,
     "github.copilot.nextEditSuggestions.enabled": true,
     "github.copilot.chat.languageContext.typescript.enabled": true,
-    "github.copilot.selectedCompletionModel": "gpt-4o-copilot"
+    "github.copilot.selectedCompletionModel": "",
+    "github.copilot.chat.codesearch.enabled": true,
+    "github.copilot.chat.agent.thinkingTool": true,
+    "github.copilot.chat.languageContext.fix.typescript.enabled": true,
+    "github.copilot.chat.languageContext.inline.typescript.enabled": true
 }
