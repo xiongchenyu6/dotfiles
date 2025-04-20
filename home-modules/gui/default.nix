@@ -75,7 +75,7 @@
       vulnix
       nix-melt
       code-cursor
-      godot_4-mono
+      #godot_4
       file
       blender
       delve # go debugger
@@ -105,7 +105,7 @@
       # nix-du
       nix-index-update
       nixpacks
-      nixd
+      nix
       bun
       nvfetcher
       oath-toolkit
@@ -120,6 +120,7 @@
           aider-chat
         ]
       ))
+      github-mcp-server
       qrencode
       ripgrep
       redis
@@ -130,7 +131,6 @@
       ldns
       nmap # A utility for network discovery and security auditing
       ipcalc
-
       nix-fast-build
       mtr
       solc-select
