@@ -5,7 +5,7 @@
 {
   programs = {
     zsh = {
-      initExtra = ''
+      initContent = ''
         complete -C '${pkgs.awscli2}/bin/aws_completer' aws
         eval $(${pkgs.bash-my-aws}/bin/bma-init)
         eval "$(${pkgs.github-copilot-cli}/bin/github-copilot-cli alias -- "$0")"

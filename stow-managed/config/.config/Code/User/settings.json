@@ -171,7 +171,7 @@
     "github.copilot.chat.languageContext.inline.typescript.enabled": true,
     "mcp": {
         "servers": {
-            " github-mcp-server stdio": {
+            "github-mcp-server stdio": {
                 "type": "stdio",
                 "command": "github-mcp-server",
                 "args": [

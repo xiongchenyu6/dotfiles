@@ -40,6 +40,7 @@
                 "benjaming"
                 "yongyigan"
                 "huxiaoxiang" # Added huxiaoxiang to the devops group
+                "liwenkai" # Added liwenkai to the devops group
               ];
             };
           };
@@ -73,6 +74,12 @@
               legalName = "Huxiaoxiang"; # Added legal name for huxiaoxiang
               displayName = "Huxiaoxiang"; # Added display name for huxiaoxiang
               groups = [ "devops" ]; # Added group for huxiaoxiang
+            };
+            liwenkai = {
+              mailAddresses = [ "liwenkai@example.com" ]; # Added email address for liwenkai
+              legalName = "Liwenkai"; # Added legal name for liwenkai
+              displayName = "Liwenkai"; # Added display name for liwenkai
+              groups = [ "devops" ]; # Added group for liwenkai
             };
           };
           systems = {
