@@ -1,31 +1,39 @@
 # Edit this configuration file to define what should be installed on
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
-{ pkgs, lib, ... }: {
+{ pkgs, lib, ... }:
+{
   xsession = {
     enable = true;
-    initExtra = ''
+    initContent = ''
       ${pkgs.xorg.xset}/bin/xset -b
       ${pkgs.xorg.xset}/bin/xset r rate 180 60
       ${pkgs.xorg.setxkbmap}/bin/setxkbmap -layout us -variant dvp
     '';
-    windowManager = let old-files-path = ../../../../../stow-managed;
-    in {
-      xmonad = {
-        enable = true;
-        enableContribAndExtras = true;
-        config = old-files-path + "/config/.config/xmonad/xmonad.hs";
-        extraPackages = haskellPackages: [
-          haskellPackages.directory
-          haskellPackages.X11
-          haskellPackages.containers
-        ];
+    windowManager =
+      let
+        old-files-path = ../../../../../stow-managed;
+      in
+      {
+        xmonad = {
+          enable = true;
+          enableContribAndExtras = true;
+          config = old-files-path + "/config/.config/xmonad/xmonad.hs";
+          extraPackages = haskellPackages: [
+            haskellPackages.directory
+            haskellPackages.X11
+            haskellPackages.containers
+          ];
+        };
       };
-    };
   };
   programs = {
-    emacs = { package = pkgs.emacs29; };
-    feh = { enable = true; };
+    emacs = {
+      package = pkgs.emacs29;
+    };
+    feh = {
+      enable = true;
+    };
 
     autorandr = {
       enable = false;
@@ -219,8 +227,7 @@
         };
         "module/crypto" = {
           type = "custom/script";
-          exec =
-            "${pkgs.curl}/bin/curl https://blockchain.info/ticker --silent | ${pkgs.jq}/bin/jq .USD.last";
+          exec = "${pkgs.curl}/bin/curl https://blockchain.info/ticker --silent | ${pkgs.jq}/bin/jq .USD.last";
           interval = 60;
           format-prefix = " ";
           format-prefix-foreground = "#e06c75";
@@ -236,8 +243,7 @@
         };
         "module/ip" = {
           type = "custom/script";
-          exec =
-            "${pkgs.iproute2}/bin/ip a show wlp0s20f3 | ${pkgs.gnugrep}/bin/grep inet | ${pkgs.gawk}/bin/awk '{print $2}' | ${pkgs.coreutils}/bin/head -n 1";
+          exec = "${pkgs.iproute2}/bin/ip a show wlp0s20f3 | ${pkgs.gnugrep}/bin/grep inet | ${pkgs.gawk}/bin/awk '{print $2}' | ${pkgs.coreutils}/bin/head -n 1";
           interval = 60;
           format-prefix = " אַ ";
           format-prefix-foreground = "#e06c75";
@@ -245,8 +251,7 @@
         };
         "module/vpn" = {
           type = "custom/script";
-          exec =
-            "${pkgs.iproute2}/bin/ip a show tun0 | ${pkgs.gnugrep}/bin/grep inet | ${pkgs.gawk}/bin/awk '{print $2}' | ${pkgs.coreutils}/bin/head -n 1";
+          exec = "${pkgs.iproute2}/bin/ip a show tun0 | ${pkgs.gnugrep}/bin/grep inet | ${pkgs.gawk}/bin/awk '{print $2}' | ${pkgs.coreutils}/bin/head -n 1";
           interval = 60;
           format-prefix = "  ";
           format-prefix-foreground = "#e06c75";
@@ -293,7 +298,10 @@
       ];
 
       fadeDelta = 2;
-      fadeSteps = [ 1.8e-2 1.8e-2 ];
+      fadeSteps = [
+        1.8e-2
+        1.8e-2
+      ];
 
       settings = {
         blur = {
