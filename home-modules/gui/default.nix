@@ -114,10 +114,11 @@
       popeye
       pgcli
       plantuml
+      aider-chat-with-playwright
       (python3.withPackages (
         _: with python3.pkgs; [
           pip
-          aider-chat
+
         ]
       ))
       github-mcp-server

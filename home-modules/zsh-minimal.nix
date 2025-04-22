@@ -31,7 +31,7 @@
       #   ignorePatterns = [ "rm -rf *" ];
       # };
 
-      initExtra = ''
+      initContent = ''
         function gre {
            VERSION=$(git describe --abbrev=0 --tags)
 
