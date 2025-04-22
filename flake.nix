@@ -103,7 +103,7 @@
 
     # Project repositories
     robot_signal_dashboard = {
-      url = "git+ssh://git@github.com/AutoLifeRobot/robot_signal_dashboard.git";
+      url = "git+ssh://git@github.com/AutoLifeRobot/robot_signal_dashboard.git?shallow=1";
       inputs = {
         nixpkgs.follows = "nixpkgs";
         flake-parts.follows = "flake-parts";
@@ -111,7 +111,7 @@
     };
 
     rust-web-server = {
-      url = "git+ssh://git@github.com/AutoLifeRobot/rust-web-server.git?ref=ben/service_controller";
+      url = "git+ssh://git@github.com/AutoLifeRobot/rust-web-server.git?shallow=1&ref=ben/service_controller";
       inputs = {
         nixpkgs.follows = "nixpkgs";
         flake-parts.follows = "flake-parts";

@@ -66,6 +66,8 @@ in
       OPENAI_API_KEY = builtins.getEnv "SILICON_FLOW";
       XAI_API_KEY = builtins.getEnv "XAI_API_KEY";
       OPENROUTER_API_KEY = builtins.getEnv "OPENROUTER_API_KEY";
+      GEMINI_API_KEY = builtins.getEnv "GEMINI_API_KEY";
+      GITHUB_PERSONAL_ACCESS_TOKEN = builtins.getEnv "Github_Access_Token";
     };
     homeDirectory = osConfig.users.users."freeman.xiong".home;
   };
