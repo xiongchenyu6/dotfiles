@@ -168,5 +168,16 @@
     "github.copilot.chat.codesearch.enabled": true,
     "github.copilot.chat.agent.thinkingTool": true,
     "github.copilot.chat.languageContext.fix.typescript.enabled": true,
-    "github.copilot.chat.languageContext.inline.typescript.enabled": true
+    "github.copilot.chat.languageContext.inline.typescript.enabled": true,
+    "mcp": {
+        "servers": {
+            " github-mcp-server stdio": {
+                "type": "stdio",
+                "command": "github-mcp-server",
+                "args": [
+                    "stdio"
+                ]
+            }
+        }
+    }
 }

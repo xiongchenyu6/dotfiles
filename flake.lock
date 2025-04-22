@@ -694,11 +694,12 @@
         "narHash": "sha256-YlrPOdTcDNxCnTfPsumeHEJtRJm1P7n/7a2NttARNBk=",
         "ref": "refs/heads/develop",
         "rev": "3bccb8ee34e00becd8de543ff07d36f9741828a7",
-        "revCount": 20,
+        "shallow": true,
         "type": "git",
         "url": "ssh://git@github.com/AutoLifeRobot/robot_signal_dashboard.git"
       },
       "original": {
+        "shallow": true,
         "type": "git",
         "url": "ssh://git@github.com/AutoLifeRobot/robot_signal_dashboard.git"
       }
@@ -747,12 +748,13 @@
         "narHash": "sha256-wu2pDfM+lbDrGXkdgP1+0ygvhVrh9VARqwRnky4TDQs=",
         "ref": "ben/service_controller",
         "rev": "4a95a6d4ec876205a49f07fbc7a375c2ffb77355",
-        "revCount": 61,
+        "shallow": true,
         "type": "git",
         "url": "ssh://git@github.com/AutoLifeRobot/rust-web-server.git"
       },
       "original": {
         "ref": "ben/service_controller",
+        "shallow": true,
         "type": "git",
         "url": "ssh://git@github.com/AutoLifeRobot/rust-web-server.git"
       }
