@@ -13,7 +13,6 @@
 
 (setenv "XDG_SESSION_TYPE" "wayland")
 (fset 'epg-wait-for-status 'ignore)
-;; (setenv "LSP_USE_PLISTS" "true")
 ;; (setenv "PATH" (concat (getenv "PATH") ":/home/freeman.xiong/.config/emacs/.cache/lsp/eclipse.jdt.ls/bin/"))
 #+end_src
 ** UI
@@ -28,27 +27,6 @@
 *** Ligature
 #+begin_src emacs-lisp
 (setq tab-width 2)
-;; (use-package ligature
-;;   :config
-;;   (ligature-set-ligatures 't '("www"))
-;;   ;; Enable traditional ligature support in eww-mode, if the
-;;   ;; `variable-pitch' face supports it
-;;   (ligature-set-ligatures 'eww-mode '("ff" "fi" "ffi"))
-;;   ;; Enable all Cascadia Code ligatures in programming modes
-;;   (ligature-set-ligatures 'prog-mode '("|||>" "<|||" "<==>" "<!--" "####" "~~>" "***" "||=" "||>"
-;;                                        ":::" "::=" "=:=" "===" "==>" "=!=" "=>>" "=<<" "=/=" "!=="
-;;                                        "!!." ">=>" ">>=" ">>>" ">>-" ">->" "->>" "-->" "---" "-<<"
-;;                                        "<~~" "<~>" "<*>" "<||" "<|>" "<$>" "<==" "<=>" "<=<" "<->"
-;;                                        "<--" "<-<" "<<=" "<<-" "<<<" "<+>" "</>" "###" "#_(" "..<"
-;;                                        "..." "+++" "/==" "///" "_|_" "www" "&&" "^=" "~~" "~@" "~="
-;;                                        "~>" "~-" "**" "*>" "*/" "||" "|}" "|]" "|=" "|>" "|-" "{|"
-;;                                        "[|" "]#" "::" ":=" ":>" ":<" "$>" "==" "=>" "!=" "!!" ">:"
-;;                                        ">=" ">>" ">-" "-~" "-|" "->" "--" "-<" "<~" "<*" "<|" "<:"
-;;                                        "<$" "<=" "<>" "<-" "<<" "<+" "</" "#{" "#[" "#:" "#=" "#!"
-;;                                        "##" "#(" "#?" "#_" "%%" ".=" ".-" ".." ".?" "+>" "++" "?:"
-;;                                        "?=" "?." "??" ";;" "/*" "/=" "/>" "//" "__" "~~" "(*" "*)"
-;;                                        "\\\\" "://" "=?"))
-;;   (global-ligature-mode t))
 (add-hook 'prog-mode-hook
           (lambda ()
             (setq-local prettify-symbols-alist
@@ -56,7 +34,7 @@
                           ;; Functional
                           ("def" . "ƒ")
                           ("composition" . "∘")
-                                        ;("map" . "↦")
+                          ("map" . "↦")
                           ("lambda" . "λ")
                           ;; Types
                           ("null" . "∅")
@@ -383,8 +361,8 @@
           (if (functionp secret)
               (funcall secret)
             secret))
-      (error "Password not found for %S" params))))
-
+      (error "Password not found for %S" params)))
+)
 (defun my-nickserv-password ()
   (my-fetch-password :user "freemanX" :host "irc.libera.chat")
   )
@@ -660,51 +638,30 @@ is available."
 (define-key copilot-completion-map (kbd "M-n") #'copilot-next-completion)
 
 #+end_src
-**** COMMENT chatgpt-arcana
+**** gptel
 #+begin_src emacs-lisp
-(use-package chatgpt-arcana
-  :init (setq chatgpt-arcana-api-key (my-fetch-password :user "xiongchenyu6@gmail" :host "openai.com"))
-  :config
-  (use-package all-the-icons
-    :config
-    (add-to-list 'all-the-icons-mode-icon-alist
-                 '(chatgpt-arcana-chat-mode all-the-icons-octicon "comment-discussion" :height 1.0 :v-adjust -0.1 :face all-the-icons-purple)))
-  (defvar chatgpt-arcana-keymap
-    (let ((keymap (make-keymap)))
-      (define-key keymap "a" 'chatgpt-arcana-query)
-      (define-key keymap "r" 'chatgpt-arcana-replace-region)
-      (define-key keymap "i" 'chatgpt-arcana-insert-at-point-with-context)
-      (define-key keymap "I" 'chatgpt-arcana-insert-at-point)
-      (define-key keymap "c" 'chatgpt-arcana-start-chat)
-      (define-key keymap "C" 'chatgpt-arcana-resume-chat)
-      (define-key keymap "o" 'chatgpt-arcana-insert-after-region )
-      (define-key keymap "O" 'chatgpt-arcana-insert-before-region )
-      keymap))
-  (defalias 'chatgpt-arcana-keymap chatgpt-arcana-keymap)
-  (global-set-key (kbd "C-c .") 'chatgpt-arcana-keymap)
-  (setq chatgpt-arcana-chat-autosave-enabled t)
-  (setq chatgpt-arcana-chat-autosave-directory "~/OneDrive/chatgpt/")
-  )
-#+end_src
+(require 'gptel)
+(require 'gptel-openai-extras)
+(require 'gptel-curl)
+(require 'gptel-rewrite)
+(require 'gptel-transient)
+(require 'gptel-org)
 
-**** COMMENT org-ai
+(setq gptel-model 'grok-3-latest
+      gptel-backend
+      (gptel-make-xai "xAI"
+        :key (gptel-api-key-from-auth-source "api.x.ai" "apikey")
+        ))
+#+end_src
+**** aidermacs
 #+begin_src emacs-lisp
-(use-package org-ai
-  :commands (org-ai-mode)
+(use-package aidermacs
+  :bind (("C-c a" . aidermacs-transient-menu))
   :custom
-  (org-ai-openai-api-token (my-fetch-password :user "xiongchenyu6@gmail" :host "openai.com"))
-  :init
-  (add-hook 'org-mode-hook #'org-ai-mode))
+  ; See the Configuration section below
+  ;(aidermacs-use-architect-mode t)
+  (aidermacs-default-model "xai/grok-3-mini-beta"))
 #+end_src
-
-**** copilot-chat
-#+begin_src emacs-lisp
-(use-package copilot-chat
-  :custom
-  (copilot-chat-frontend 'markdown)
-)
-#+end_src
-
 ** Lang
 *** completion
 #+begin_src emacs-lisp
@@ -810,7 +767,7 @@ is available."
         '(orderless)))
 #+end_src
 
-**** lsp ui
+**** COMMENT lsp ui
 #+begin_src emacs-lisp
 (use-package lsp-ui
   ;; :straight t
@@ -833,7 +790,7 @@ is available."
               ("C-c a" . lsp-execute-code-action))
   )
 #+end_src
-**** TODO dapv
+**** TODO dap
 #+begin_src emacs-lisp
 (require 'dap-mode)
 (add-hook 'dap-stopped-hook
@@ -1481,7 +1438,7 @@ Bind to lsp mode
   (define-key addon-map "t" 'vterm)
   (define-key addon-map "g" 'gnus)
   (define-key addon-map "i" 'erc-myself)
-  (define-key addon-map "a" 'gpt-dwim)
+  (define-key addon-map "a" 'gp-tdwim) 
   (define-key addon-map "c" 'calendar)
   (define-key addon-map "d" 'dired)
 
