@@ -179,5 +179,7 @@
                 ]
             }
         }
-    }
+    },
+    "svelte.enable-ts-plugin": true,
+    "javascript.updateImportsOnFileMove.enabled": "always"
 }
