@@ -253,9 +253,9 @@
     adb = {
       enable = true;
     };
-    clash-verge = {
-      enable = true;
-    };
+    # clash-verge = {
+    #   enable = true;
+    # };
   };
 
   home-manager = {
