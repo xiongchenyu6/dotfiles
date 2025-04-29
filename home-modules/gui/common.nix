@@ -129,18 +129,19 @@
         with pkgs;
         with epkgs;
         [
+          aidermacs
           ace-link
           all-the-icons
           blamer
-          clojure-mode
-          cider
+          # clojure-mode
+          # cider
           citre
           cmake-mode
           cape
           corfu
           emacs-copilot-el
-          emacs-copilot-chat
           emacs-combobulate
+          emacs-gptel
           citeproc
           dockerfile-mode
           direnv
@@ -153,7 +154,6 @@
           gcmh
           go-mode
           haskell-mode
-
           kind-icon
           leetcode
           lispy
