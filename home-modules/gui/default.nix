@@ -156,6 +156,8 @@
       yubikey-manager
       desktop-file-utils
       inputs.claude-desktop.packages.${system}.claude-desktop-with-fhs
+      gnome-software
+      tradingview
     ];
     sessionVariables = {
       STARSHIP_LOG = "error";
