@@ -41,7 +41,7 @@
       #   allow-emacs-pinentry
       #   allow-loopback-pinentry
       # '';
-      pinentryPackage = pkgs.pinentry-gnome3;
+      pinentry.package = pkgs.pinentry-gnome3;
       enableSshSupport = true;
       # gpg2 -K --with-keygrip
       sshKeys = [
