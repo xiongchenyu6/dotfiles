@@ -14,7 +14,11 @@
     enable = true;
     brews = [
     ];
-    casks = [ "dropbox" "1password" "microsoft-edge"];
+    casks = [
+      "dropbox"
+      "1password"
+      "google-chrome"
+    ];
     global = {
       autoUpdate = true;
       brewfile = true;

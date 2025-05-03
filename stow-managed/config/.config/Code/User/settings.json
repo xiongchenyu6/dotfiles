@@ -181,5 +181,6 @@
         }
     },
     "svelte.enable-ts-plugin": true,
-    "javascript.updateImportsOnFileMove.enabled": "always"
+    "javascript.updateImportsOnFileMove.enabled": "always",
+    "typescript.updateImportsOnFileMove.enabled": "always"
 }

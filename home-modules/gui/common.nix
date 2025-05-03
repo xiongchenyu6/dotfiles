@@ -22,7 +22,7 @@
       ueberzugpp
       ytfzf
       usbutils
-      microsoft-edge
+      #google-chrome
       #vault
       solana-cli
       # expect mkpasswd conflict
@@ -158,7 +158,6 @@
           leetcode
           lispy
           lsp-haskell
-          lsp-java
           nix-mode
           magit
           magit-todos
@@ -200,6 +199,7 @@
         (add-to-list 'default-frame-alist
         '(font . "JetBrains Mono-14"))
         (setq custom-file "~/.config/emacs/custom.el")
+        (setq plantuml-executable-path "${pkgs.plantuml}/bin/plantuml")
       '';
     };
   };

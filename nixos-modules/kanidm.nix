@@ -20,6 +20,7 @@
           home_alias = "name";
           home_attr = "uuid";
           pam_allowed_login_groups = [ "devops" ]; # Updated group to match changes in groups
+          home_mount_prefix = "/run/kanidm:/run/kanidm";
         };
 
         serverSettings = {
@@ -41,6 +42,7 @@
                 "yongyigan"
                 "huxiaoxiang" # Added huxiaoxiang to the devops group
                 "liwenkai" # Added liwenkai to the devops group
+                "chenchao"
               ];
             };
           };
@@ -81,6 +83,12 @@
               displayName = "Liwenkai"; # Added display name for liwenkai
               groups = [ "devops" ]; # Added group for liwenkai
             };
+            chenchao = {
+              mailAddresses = [ "chaochen497@gmail.com" ];
+              legalName = "Chen Chao";
+              displayName = "Chen Chao";
+              groups = [ "devops" ];
+            };
           };
           systems = {
             oauth2 = {
@@ -91,6 +99,22 @@
                 displayName = "Robot Management System";
                 originLanding = "https://robot-management-system.autolife-robotics.me/";
                 originUrl = "https://robot-management-system.autolife-robotics.me/callback";
+                scopeMaps = {
+                  devops = [
+                    "openid"
+                    "profile"
+                    "email"
+                    "groups"
+                  ];
+                };
+              };
+              vr-control = {
+                public = true;
+                enableLocalhostRedirects = true;
+                preferShortUsername = true;
+                displayName = "VR Control";
+                originLanding = "myapp://auth/";
+                originUrl = "myapp://auth/callback";
                 scopeMaps = {
                   devops = [
                     "openid"
