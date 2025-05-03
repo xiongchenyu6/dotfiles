@@ -90,6 +90,7 @@
       gitleaks
       weave-gitops
       graphviz
+      #microsoft-edge
       grpcurl
       #gotron-sdk
       (kubernetes-helm-wrapped.override { plugins = [ kubernetes-helmPlugins.helm-diff ]; })
@@ -114,7 +115,7 @@
       popeye
       pgcli
       plantuml
-      aider-chat-with-playwright
+      aider-chat
       (python3.withPackages (
         _: with python3.pkgs; [
           pip
@@ -234,5 +235,4 @@
       };
     };
   };
-
 }

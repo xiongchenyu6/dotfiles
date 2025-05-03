@@ -20,7 +20,7 @@
       stm32cubemx
       glib
       gcc-arm-embedded
-      microsoft-edge
+      google-chrome
       vault
       kmon
       #gitbutler
@@ -57,12 +57,12 @@
     mimeApps = {
       enable = true;
       defaultApplications = {
-        "text/html" = "microsoft-edge.desktop";
+        "text/html" = "google-chrome.desktop";
         "text/x-csharp" = [ "rider.desktop" ];
-        "x-scheme-handler/http" = "microsoft-edge.desktop";
-        "x-scheme-handler/https" = "microsoft-edge.desktop";
-        "x-scheme-handler/about" = "microsoft-edge.desktop";
-        "x-scheme-handler/unknown" = "microsoft-edge.desktop";
+        "x-scheme-handler/http" = "google-chrome.desktop";
+        "x-scheme-handler/https" = "google-chrome.desktop";
+        "x-scheme-handler/about" = "google-chrome.desktop";
+        "x-scheme-handler/unknown" = "google-chrome.desktop";
       };
     };
     userDirs = {
@@ -82,7 +82,7 @@
 
     chromium = {
       enable = true;
-      package = pkgs.microsoft-edge;
+      package = pkgs.google-chrome;
     };
 
     wofi = {

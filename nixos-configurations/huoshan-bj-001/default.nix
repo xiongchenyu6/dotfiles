@@ -17,8 +17,9 @@
     ezModules.server
     ezModules.cn
     ezModules.v2ray
-    #ezModules.kanidm
+    ezModules.kanidm
     srvos.nixosModules.server
+    #srvos.nixosModules.mixins-nginx
     srvos.nixosModules.mixins-trusted-nix-caches
     srvos.nixosModules.mixins-nix-experimental
     rust-web-server.nixosModules.rust-web-server
@@ -94,4 +95,35 @@
       configFile = config.sops.secrets."rust-web-server/config".path;
     };
   };
+  sops.secrets."acme/volcengine" = {
+    mode = "770";
+    owner = "acme";
+    group = "acme";
+  };
+
+  security = {
+    pam.services.nginx.setEnvironment = false;
+
+    acme = {
+      acceptTerms = true;
+      defaults = {
+        email = "xiongchenyu6@gmail.com";
+        dnsProvider = "volcengine";
+        # dnsResolver = "1.1.1.1:53";
+        # dnsPropagationCheck = false;
+        credentialsFile = config.sops.secrets."acme/volcengine".path;
+        group = "kanidm";
+        # postRun = ''
+        #   ${pkgs.systemd}/bin/systemctl restart openldap
+        # '';
+      };
+      certs = {
+        ${config.networking.domain} = {
+          domain = "autolife-robotics.com";
+          extraDomainNames = [ "*.autolife-robotics.com" ];
+        };
+      };
+    };
+  };
+
 }

@@ -979,10 +979,11 @@ is available."
 *** Plantuml
 #+begin_src emacs-lisp
 ;; Sample jar configuration
-(setq plantuml-default-exec-mode 'jar)
-(setq plantuml-jar-path "/home/freeman.xiong/plantuml.jar")
-(setq org-plantuml-jar-path "/home/freeman.xiong/plantuml.jar")
+(setq plantuml-default-exec-mode 'executable)
+(setq plantuml-exec-mode 'executable)
+(setq org-plantuml-exec-mode 'executable)
 (setq plantuml-output-type "png")
+(setq org-plantuml-jar-path "/home/freeman.xiong/plantuml.jar")
 #+end_src
 *** Solidity
 #+begin_src emacs-lisp
@@ -1280,7 +1281,7 @@ Bind to lsp mode
 #+end_src
 *** Org Roam
 #+begin_src emacs-lisp
-(setq org-roam-directory (expand-file-name "~/Private/xiongchenyu6.github.io/content-org/Notes/")
+(setq org-roam-directory (expand-file-name "~/Documents/github/xiongchenyu6/xiongchenyu6.github.io/content-org/Notes/")
       org-roam-capture-templates
       '(("d" "default" plain "%?"
          :target (file+head "${slug}.org" "#+title: ${title}\n#+date: %U\n")
@@ -1362,7 +1363,7 @@ Bind to lsp mode
 
 ;; (setq org-export-backends '(ascii html icalendar latex man odt hugocv hugo))
 
-(setq org-directory "~/OneDrive/Org"
+(setq org-directory "~/Dropbox/Org"
       org-agenda-files (list org-directory)
       org-agenda-diary-file (concat org-directory "/diary.org")
       org-default-notes-file (concat org-directory "/diary.org"))
