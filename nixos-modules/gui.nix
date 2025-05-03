@@ -118,6 +118,9 @@
   };
 
   programs = {
+    firejail = {
+      enable = true;
+    };
     dconf = {
       enable = true;
     };

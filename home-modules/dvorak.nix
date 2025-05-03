@@ -33,7 +33,7 @@
               }
             }/bin/screen-shot"
 
-            "$mod, E, exec, ${pkgs.microsoft-edge}/bin/microsoft-edge"
+            "$mod, E, exec, ${pkgs.google-chrome}/bin/google-chrome-stable"
 
             "$mod, 14, moveworkspacetomonitor, 1 current"
             "$mod, 14, workspace, 1"

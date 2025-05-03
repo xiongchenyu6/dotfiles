@@ -22,7 +22,7 @@ let
       # telegram-desktop =
       #   nixpkgs-stable.legacyPackages.x86_64-linux.telegram-desktop;
       # waybar = nixpkgs-master.legacyPackages.x86_64-linux.waybar;
-      # godot_4-mono = inputs.nixpkgs-master.legacyPackages.x86_64-linux.godot_4-mono;
+      microsoft-edge = inputs.nixpkgs-stable.legacyPackages.x86_64-linux.microsoft-edge;
     })
   ];
 
@@ -63,6 +63,9 @@ in
     ];
   };
   services = {
+    kanidm = {
+      package = pkgs.kanidm_1_6;
+    };
 
     resolved = {
       enable = true;
@@ -71,9 +74,6 @@ in
       # llmnr = "false";
     };
 
-    kanidm = {
-      package = pkgs.kanidm_1_5;
-    };
   };
   networking.nftables.enable = true;
 }
