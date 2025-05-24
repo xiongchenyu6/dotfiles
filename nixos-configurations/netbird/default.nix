@@ -18,6 +18,7 @@
     ezModules.server
     ezModules.acme
     ezModules.datadog-agent
+    ezModules.postgrest
     srvos.nixosModules.server
     srvos.nixosModules.hardware-amazon
     srvos.nixosModules.mixins-nginx
@@ -49,9 +50,6 @@
   };
 
   sops.secrets."rust-web-server/config" = { };
-
-  sops.secrets."postgrest/pass" = {
-  };
 
   environment = {
     systemPackages = [ pkgs.pgcli ];
