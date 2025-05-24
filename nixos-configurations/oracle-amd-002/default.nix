@@ -41,6 +41,7 @@
         home_alias = "name";
         home_attr = "uuid";
         pam_allowed_login_groups = [ "devops" ]; # Updated group to match changes in groups
+        home_mount_prefix = "/run/kanidm:/run/kanidm";
       };
     };
 
@@ -53,5 +54,4 @@
       };
     };
   };
-
 }

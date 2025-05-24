@@ -4,6 +4,11 @@
   ...
 }:
 {
+  sops.secrets."kanidm/vr-control" = {
+    owner = "kanidm";
+    group = "kanidm";
+  };
+
   services = {
     kanidm =
       let
@@ -38,7 +43,7 @@
               members = [
                 "xiongchenyu"
                 "chensiwei"
-                "benjaming"
+                "benjamin"
                 "yongyigan"
                 "huxiaoxiang" # Added huxiaoxiang to the devops group
                 "liwenkai" # Added liwenkai to the devops group
@@ -59,10 +64,10 @@
               displayName = "Chen Siwei";
               groups = [ "devops" ]; # Updated group to match changes in groups
             };
-            benjaming = {
-              mailAddresses = [ "benjaming@autolife.ai" ]; # Updated email address
-              legalName = "Benjaming"; # Updated legal name
-              displayName = "Benjaming"; # Updated display name
+            benjamin = {
+              mailAddresses = [ "benjamin@autolife.ai" ]; # Updated email address
+              legalName = "Benjamin"; # Updated legal name
+              displayName = "Benjamin"; # Updated display name
               groups = [ "devops" ]; # Updated group to match changes in groups
             };
             yongyigan = {
@@ -107,14 +112,24 @@
                     "groups"
                   ];
                 };
+                claimMaps = {
+                  role = {
+                    joinType = "array";
+                    valuesByGroup = {
+                      devops = [ "Admin" ];
+                    };
+                  };
+                };
               };
               vr-control = {
-                public = true;
-                enableLocalhostRedirects = true;
+                #public = true;
+                #enableLocalhostRedirects = true;
                 preferShortUsername = true;
                 displayName = "VR Control";
-                originLanding = "myapp://auth/";
-                originUrl = "myapp://auth/callback";
+                originLanding = "autolife://auth/callback";
+                originUrl = "autolife://auth/callback";
+                basicSecretFile = config.sops.secrets."kanidm/vr-control".path;
+                allowInsecureClientDisablePkce = true;
                 scopeMaps = {
                   devops = [
                     "openid"
@@ -122,6 +137,14 @@
                     "email"
                     "groups"
                   ];
+                };
+                claimMaps = {
+                  role = {
+                    joinType = "array";
+                    valuesByGroup = {
+                      devops = [ "Admin" ];
+                    };
+                  };
                 };
               };
             };

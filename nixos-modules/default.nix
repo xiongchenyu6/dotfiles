@@ -64,7 +64,7 @@ in
   };
   services = {
     kanidm = {
-      package = pkgs.kanidm_1_6;
+      package = pkgs.kanidmWithSecretProvisioning;
     };
 
     resolved = {
