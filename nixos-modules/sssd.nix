@@ -1,6 +1,6 @@
 { config, ... }:
 let
-  dbDomain = "work-robotics.me";
+  dbDomain = "${config.networking.domain}";
   realm = "work.TECH";
   dbSuffix = "dc=work-robotics,dc=tech";
   ldapRootUser = "admin";

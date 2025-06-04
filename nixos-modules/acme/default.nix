@@ -6,6 +6,12 @@
     group = "acme";
   };
 
+  # sops.secrets."acme/volcengine" = {
+  #   mode = "770";
+  #   owner = "acme";
+  #   group = "acme";
+  # };
+
   security = {
     pam.services.nginx.setEnvironment = false;
 
@@ -15,7 +21,6 @@
         email = "xiongchenyu6@gmail.com";
         dnsProvider = "cloudflare";
         dnsResolver = "1.1.1.1:53";
-        # dnsPropagationCheck = false;
         credentialsFile = config.sops.secrets."acme/cloudflare".path;
         #group = "nginx";
         # postRun = ''
@@ -24,12 +29,17 @@
       };
       certs = {
         ${config.networking.domain} = {
-          domain = "auto-life.tech";
-          extraDomainNames = [ "*.auto-life.tech" ];
+          domain = "${config.networking.domain}";
+          extraDomainNames = [ "*.${config.networking.domain}" ];
         };
-        "${config.networking.hostName}.work-robotics.me" = {
-          domain = "*.work-robotics.me";
-        };
+        # "work-robotics.com" = {
+        #   domain = "work-robotics.com";
+        #   extraDomainNames = [ "*.work-robotics.com" ];
+        #   email = "xiongchenyu6@gmail.com";
+        #   dnsProvider = "volcengine";
+        #   credentialsFile = config.sops.secrets."acme/volcengine".path;
+        #   group = "kanidm";
+        # };
         ai = {
           domain = "work.ai";
           extraDomainNames = [ "*.work.ai" ];

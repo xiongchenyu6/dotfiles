@@ -76,7 +76,7 @@
     "files.associations": {
         "*.json": "jsonc"
     },
-    "github.copilot.editor.enableAutoCompletions": true,
+    "github.copilot.editor.enableAutoCompletions": false,
     "cmake.options.statusBarVisibility": "visible",
     "cmake.pinnedCommands": [
         "workbench.action.tasks.configureTaskRunner",
@@ -160,7 +160,6 @@
     "rust-analyzer.runnables.command": null,
     "godotTools.editorPath.godot4": "godot4",
     "godotTools.inlayHints.gdscript": true,
-    "github.copilot.chat.edits.codesearch.enabled": true,
     "github.copilot.chat.edits.temporalContext.enabled": true,
     "github.copilot.nextEditSuggestions.enabled": true,
     "github.copilot.chat.languageContext.typescript.enabled": true,
@@ -177,10 +176,30 @@
                 "args": [
                     "stdio"
                 ]
+            },
+            "my-mcp-server-58d58cfd": {
+                "type": "stdio",
+                "command": "bunx",
+                "args": [
+                    "-y",
+                    "@upstash/context7-mcp"
+                ]
+            },
+            "my-mcp-server-8fb12a97": {
+                "type": "stdio",
+                "command": "bunx",
+                "args": [
+                    "-y",
+                    "@modelcontextprotocol/server-sequential-thinking"
+                ]
             }
         }
     },
     "svelte.enable-ts-plugin": true,
     "javascript.updateImportsOnFileMove.enabled": "always",
-    "typescript.updateImportsOnFileMove.enabled": "always"
+    "typescript.updateImportsOnFileMove.enabled": "always",
+    "github.copilot.nextEditSuggestions.fixes": true,
+    "github.copilot.chat.search.keywordSuggestions": true,
+    "python.analysis.addHoverSummaries": true,
+    "gitlens.ai.model": "anthropic:claude-4-sonnet-latest",
 }

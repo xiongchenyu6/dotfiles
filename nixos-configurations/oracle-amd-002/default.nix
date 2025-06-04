@@ -34,7 +34,7 @@
     kanidm = {
       enablePam = true;
       clientSettings = {
-        uri = "https://kanidm.auto-life.tech";
+        uri = "https://kanidm.${config.networking.domain}";
       };
       unixSettings = {
         default_shell = "${pkgs.zsh}/bin/zsh";

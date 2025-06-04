@@ -37,8 +37,8 @@
         # s_s_l_certs = {
         #   sort_method = "manual";
         #   certs = {
-        #     "*.inner.work-robotics.me" = "/var/lib/acme/.work-robotics.me/cert.pem";
-        #     "mail.work-robotics.me" = "/var/lib/acme/mail.work-robotics.me/cert.pem";
+        #     "*.inner.${config.networking.domain}" = "/var/lib/acme/.${config.networking.domain}/cert.pem";
+        #     "mail.${config.networking.domain}" = "/var/lib/acme/mail.${config.networking.domain}/cert.pem";
         #   };
         # };
         # weather = {

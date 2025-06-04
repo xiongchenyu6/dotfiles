@@ -94,6 +94,7 @@
         allowedTCPPorts = [
           89
           179
+          8000
           8080
         ];
         allowedUDPPorts = [
@@ -161,10 +162,16 @@
     };
 
   services = {
+    # cloudflare-warp = {
+    #   enable = true;
+    # };
+
+    v2raya.enable = true;
+
     kanidm = {
       enableClient = true;
       clientSettings = {
-        uri = "https://kanidm.auto-life.tech";
+        uri = "https://kanidm.${config.networking.domain}";
       };
       enablePam = true;
       unixSettings = {

@@ -1,4 +1,9 @@
-{ pkgs, ... }:
+{
+  pkgs,
+  config,
+  osConfig,
+  ...
+}:
 {
 
   programs = {
@@ -21,7 +26,7 @@
         sync = {
           records = true;
         };
-        #sync_address = "https://atuin.inner.work-robotics.me";
+        #sync_address = "https://atuin.inner.${config.networking.domain}";
       };
     };
 
@@ -242,7 +247,7 @@
       };
       ".ldaprc" = {
         text = ''
-          URI     ldap://mail.work-robotics.me
+          URI     ldap://mail.${osConfig.networking.domain}
           BASE    dc=work-robotics,dc=tech
           SASL_MECH GSSAPI
           SASL_REALM work.TECH

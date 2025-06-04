@@ -31,9 +31,10 @@
       baidupcs-go
       nur.repos.xddxdd.qq
       nur.repos.xddxdd.bilibili
-      nur.repos.xddxdd.wine-wechat
-      nur.repos.xddxdd.dingtalk
+      #nur.repos.xddxdd.wine-wechat
+      #nur.repos.xddxdd.dingtalk
       gimp
+      gpgme.dev
       #gitkraken
       cmctl
       cloudflared
@@ -43,8 +44,8 @@
       tdesktop
       unrar-wrapper
       whatsapp-for-linux
-      winetricks
-      wineWow64Packages.unstableFull
+      #winetricks
+      #wineWow64Packages.unstableFull
       bottles
       zotero
       kdePackages.dolphin
@@ -63,6 +64,7 @@
       kube-score
       kubelogin-oidc
       calicoctl
+      claude-code
       # kdePackages.wayqt
       # kdePackages.qtstyleplugin-kvantum
       libsForQt5.oxygen-icons
@@ -86,7 +88,6 @@
       ffmpeg-full
       fluxcd
       glab
-      github-copilot-cli
       gitleaks
       weave-gitops
       graphviz
@@ -119,7 +120,7 @@
       (python3.withPackages (
         _: with python3.pkgs; [
           pip
-
+          uv
         ]
       ))
       github-mcp-server
