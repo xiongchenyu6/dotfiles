@@ -122,13 +122,13 @@
             {
               "Netbird" = {
                 description = "VPN";
-                href = "https://netbird.autolife-robotics.me";
+                href = "https://netbird.${config.networking.domain}";
               };
             }
             {
               "Frp" = {
                 description = "Frp";
-                href = "https://frp-dashboard.autolife-robotics.me";
+                href = "https://frp-dashboard.${config.networking.domain}";
               };
             }
           ];
@@ -138,7 +138,7 @@
             {
               "Robot Dashboard" = {
                 description = "Robot Dashboard";
-                href = "https://robot-match.autolife-robotics.me";
+                href = "https://robot-match.${config.networking.domain}";
               };
             }
             {
@@ -205,10 +205,16 @@
         db-anon-role = "rustwebserver";
         server-port = 3333; # use unix socket
         server-unix-socket = null;
-        openapi-server-proxy-uri = "https://api.autolife-robotics.me";
+        openapi-server-proxy-uri = "https://api.${config.networking.domain}";
         openapi-security-active = true;
       };
     };
+    postgresqlBackup = {
+      enable = true;
+      databases = [ "rustWebServer" ];
+
+    };
+
     postgresql = {
       enable = true;
       package = pkgs.postgresql_17_jit;
@@ -246,11 +252,6 @@
       ensureDatabases = [ "freeman.xiong" ];
     };
 
-    # robotSignalDashboard = {
-    #   enable = true;
-    #   configFile = ./config.json;
-    # };
-
     rust-web-server = {
       enable = true;
       configFile = config.sops.secrets."rust-web-server/config".path;
@@ -278,13 +279,13 @@
 
     netbird = {
       server = {
-        domain = "netbird.autolife-robotics.me";
+        domain = "netbird.${config.networking.domain}";
         management = {
           enable = true;
-          domain = "netbird.autolife-robotics.me";
+          domain = "netbird.${config.networking.domain}";
           enableNginx = true;
           oidcConfigEndpoint = "https://dev-bcz6ouy6jucjcnut.jp.auth0.com/.well-known/openid-configuration";
-          turnDomain = "netbird.autolife-robotics.me";
+          turnDomain = "netbird.${config.networking.domain}";
           turnPort = 3478;
           metricsPort = 9092;
           settings = {
@@ -293,7 +294,7 @@
               Turns = [
                 {
                   Proto = "udp";
-                  URI = "turn:netbird.autolife-robotics.me:3478";
+                  URI = "turn:netbird.${config.networking.domain}:3478";
                   Username = "netbird";
                   Password = builtins.getEnv "TRUN_PASSWORD";
                 }
@@ -346,19 +347,19 @@
         signal = {
           enable = true;
           enableNginx = true;
-          domain = "netbird.autolife-robotics.me";
+          domain = "netbird.${config.networking.domain}";
         };
         coturn = {
           enable = true;
           useAcmeCertificates = true;
           passwordFile = config.sops.secrets."netbird/coturn/password".path;
-          domain = "netbird.autolife-robotics.me";
+          domain = "netbird.${config.networking.domain}";
         };
         dashboard = {
           enable = true;
-          domain = "netbird.autolife-robotics.me";
+          domain = "netbird.${config.networking.domain}";
           enableNginx = true;
-          managementServer = "https://netbird.autolife-robotics.me";
+          managementServer = "https://netbird.${config.networking.domain}";
           settings = {
             AUTH_AUDIENCE = "https://dev-bcz6ouy6jucjcnut.jp.auth0.com/api/v2/";
             AUTH_CLIENT_ID = "QoD48IZw95dyYkn7ZMCCGIDVYwGZ94X3";
@@ -372,18 +373,17 @@
     };
 
     nginx = {
-
       virtualHosts = {
         "${config.services.netbird.server.domain}" = {
           forceSSL = true;
           acmeRoot = null;
-          useACMEHost = "netbird.autolife-robotics.me";
+          useACMEHost = "${config.networking.domain}";
           kTLS = true;
         };
-        "rust-server.autolife-robotics.me" = {
+        "rust-server.${config.networking.domain}" = {
           forceSSL = true;
           acmeRoot = null;
-          useACMEHost = "netbird.autolife-robotics.me";
+          useACMEHost = "${config.networking.domain}";
           kTLS = true;
           locations = {
             "/" = {
@@ -391,10 +391,10 @@
             };
           };
         };
-        "vr-sg.autolife-robotics.me" = {
+        "vr-sg.${config.networking.domain}" = {
           forceSSL = true;
           acmeRoot = null;
-          useACMEHost = "netbird.autolife-robotics.me";
+          useACMEHost = "${config.networking.domain}";
           kTLS = true;
           locations = {
             "/" = {
@@ -402,10 +402,10 @@
             };
           };
         };
-        "frp-dashboard.autolife-robotics.me" = {
+        "frp-dashboard.${config.networking.domain}" = {
           forceSSL = true;
           acmeRoot = null;
-          useACMEHost = "netbird.autolife-robotics.me";
+          useACMEHost = "${config.networking.domain}";
           kTLS = true;
           locations = {
             "/" = {
@@ -413,10 +413,10 @@
             };
           };
         };
-        "ollama.autolife-robotics.me" = {
+        "ollama.${config.networking.domain}" = {
           forceSSL = true;
           acmeRoot = null;
-          useACMEHost = "netbird.autolife-robotics.me";
+          useACMEHost = "${config.networking.domain}";
           kTLS = true;
           locations = {
             "/api/" = {
@@ -427,10 +427,10 @@
             };
           };
         };
-        "mngt.autolife-robotics.me" = {
+        "mngt.${config.networking.domain}" = {
           forceSSL = true;
           acmeRoot = null;
-          useACMEHost = "netbird.autolife-robotics.me";
+          useACMEHost = "${config.networking.domain}";
           kTLS = true;
           locations = {
             "/" = {
@@ -439,10 +439,10 @@
             };
           };
         };
-        "www.autolife-robotics.me" = {
+        "www.${config.networking.domain}" = {
           addSSL = true;
           acmeRoot = null;
-          useACMEHost = "netbird.autolife-robotics.me";
+          useACMEHost = "${config.networking.domain}";
           kTLS = true;
           locations = {
             "/" = {
@@ -451,10 +451,10 @@
             };
           };
         };
-        "autolife-robotics.me" = {
+        "${config.networking.domain}" = {
           addSSL = true;
           acmeRoot = null;
-          useACMEHost = "netbird.autolife-robotics.me";
+          useACMEHost = "${config.networking.domain}";
           kTLS = true;
           locations = {
             "/" = {
@@ -463,10 +463,10 @@
             };
           };
         };
-        "api.autolife-robotics.me" = {
+        "api.${config.networking.domain}" = {
           addSSL = true;
           acmeRoot = null;
-          useACMEHost = "netbird.autolife-robotics.me";
+          useACMEHost = "${config.networking.domain}";
           kTLS = true;
           locations = {
             "/" = {

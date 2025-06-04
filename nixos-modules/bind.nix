@@ -57,9 +57,9 @@
           chown named:root /var/db/bind/
           cat > /var/db/bind/inner.${config.networking.domain} << EOF
           \$TTL 3600
-          \$ORIGIN inner.autolife-robotics.me.
-          @         IN SOA    inner.autolife-robotics.me. hostmaster.inner.autolife-robotics.me. ( 1 3h 1h 1w 1d )
-          @         IN NS     ns1.inner.autolife-robotics.me.
+          \$ORIGIN inner.${config.networking.domain}.
+          @         IN SOA    inner.${config.networking.domain}. hostmaster.inner.${config.networking.domain}. ( 1 3h 1h 1w 1d )
+          @         IN NS     ns1.inner.${config.networking.domain}.
           ns1       IN A      43.156.66.157
           *         IN A      43.156.66.157
           office    IN A      172.22.240.98

@@ -41,7 +41,7 @@
       admin = {
         fullName = "freeman.xiong";
         username = "freeman";
-        email = "freeman@autolife-robotics.me";
+        email = "freeman@${config.networking.domain}";
         passwordFile = config.sops.secrets."django/secret".path;
       };
       mail = {
