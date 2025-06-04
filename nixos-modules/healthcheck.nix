@@ -21,11 +21,11 @@
         SECRET_KEY_FILE = config.sops.secrets."django/secret".path;
         COMPRESS_ENABLED = "False";
         REGISTRATION_OPEN = true;
-        EMAIL_HOST = "mail.autolife-robotics.me";
+        EMAIL_HOST = "mail.${config.networking.domain}";
         EMAIL_HOST_PASSWORD = "0";
         EMAIL_HOST_USER = "freeman";
-        DEFAULT_FROM_EMAIL = "healthchecks@mail.autolife-robotics.me";
-        PING_ENDPOINT = "https://healthchecks.inner.autolife-robotics.me/";
+        DEFAULT_FROM_EMAIL = "healthchecks@mail.${config.networking.domain}";
+        PING_ENDPOINT = "https://healthchecks.inner.${config.networking.domain}/";
         SITE_ROOT = "https://healthchekcs.inner.${config.networking.domain}";
       };
     };

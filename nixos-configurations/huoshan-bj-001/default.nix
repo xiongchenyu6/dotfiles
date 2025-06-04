@@ -16,10 +16,10 @@
     ezModules.core
     ezModules.server
     ezModules.cn
-    ezModules.v2ray
+    ezModules.sing-box
     ezModules.kanidm
     srvos.nixosModules.server
-    #srvos.nixosModules.mixins-nginx
+    srvos.nixosModules.mixins-nginx
     srvos.nixosModules.mixins-trusted-nix-caches
     srvos.nixosModules.mixins-nix-experimental
     rust-web-server.nixosModules.rust-web-server
@@ -53,6 +53,7 @@
     in
     {
       inherit hostName;
+      domain = "autolife-robotics.com";
       firewall = {
         allowedTCPPorts = [
           22
@@ -79,6 +80,48 @@
     };
 
   services = {
+    v2ray = {
+      config = {
+        outbounds = [
+          {
+            tag = "direct";
+            protocol = "freedom";
+            settings = { };
+          }
+          {
+            tag = "blocked";
+            protocol = "blackhole";
+            settings = { };
+          }
+        ];
+        routing = {
+          domainStrategy = "AsIs";
+          rules = [
+            {
+              type = "field";
+              domain = [ "geosite:cn" ];
+              outboundTag = "direct";
+            }
+            {
+              type = "field";
+              ip = [ "geoip:cn" ];
+              outboundTag = "direct";
+            }
+            {
+              type = "field";
+              domain = [ "geosite:geolocation-!cn" ];
+              outboundTag = "blocked";
+            }
+            {
+              type = "field";
+              ip = [ "geoip:!cn" ];
+              outboundTag = "blocked";
+            }
+          ];
+        };
+      };
+    };
+
     postgresql = {
       enable = true;
       package = pkgs.postgresql_17_jit;
@@ -95,6 +138,7 @@
       configFile = config.sops.secrets."rust-web-server/config".path;
     };
   };
+
   sops.secrets."acme/volcengine" = {
     mode = "770";
     owner = "acme";
@@ -105,25 +149,16 @@
     pam.services.nginx.setEnvironment = false;
 
     acme = {
-      acceptTerms = true;
-      defaults = {
-        email = "xiongchenyu6@gmail.com";
-        dnsProvider = "volcengine";
-        # dnsResolver = "1.1.1.1:53";
-        # dnsPropagationCheck = false;
-        credentialsFile = config.sops.secrets."acme/volcengine".path;
-        group = "kanidm";
-        # postRun = ''
-        #   ${pkgs.systemd}/bin/systemctl restart openldap
-        # '';
-      };
       certs = {
-        ${config.networking.domain} = {
+        "autolife-robotics.com" = {
           domain = "autolife-robotics.com";
           extraDomainNames = [ "*.autolife-robotics.com" ];
+          email = "xiongchenyu6@gmail.com";
+          dnsProvider = "volcengine";
+          credentialsFile = config.sops.secrets."acme/volcengine".path;
+          group = "kanidm";
         };
       };
     };
   };
-
 }

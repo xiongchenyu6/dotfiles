@@ -51,8 +51,8 @@
     acme = {
       certs = {
         ${config.networking.domain} = {
-          domain = "auto-life.tech";
-          extraDomainNames = [ "*.auto-life.tech" ];
+          domain = "${config.networking.domain}";
+          extraDomainNames = [ "*.${config.networking.domain}" ];
           group = "kanidm";
         };
       };
@@ -71,7 +71,7 @@
           };
           default = "http_status:404";
           # Add specific routes here as needed, for example:
-          # "kanidm.auto-life.tech" = "localhost:443";
+          # "kanidm.${config.networking.domain}" = "localhost:443";
         };
       };
     };

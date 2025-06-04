@@ -24,6 +24,7 @@ in
     ezModules.dn42
     ezModules.bird-inner
     ezModules.datadog-agent
+    ezModules.sing-box
     srvos.nixosModules.server
     srvos.nixosModules.mixins-nginx
     srvos.nixosModules.mixins-trusted-nix-caches
@@ -286,7 +287,7 @@ in
 
     coturn = {
       enable = true;
-      realm = "tcloud.autolife-robotics.me";
+      realm = "tcloud.${config.networking.domain}";
       extraConfig = ''
         user=self:KtcpGDpdkvM0vKrQ7DYtKdXTffJzt33iCGvsD6BA3hM
         fingerprint

@@ -58,7 +58,7 @@
   };
 
   boot = {
-    #kernelPackages = lib.mkForce pkgs.linuxPackages_6_13;
+    kernelPackages = lib.mkForce pkgs.linuxPackages_6_14;
     binfmt.emulatedSystems = [ "aarch64-linux" ];
     initrd.kernelModules = [
       "vfio_pci"
@@ -181,7 +181,7 @@
     kanidm = {
       enableClient = true;
       clientSettings = {
-        uri = "https://kanidm.auto-life.tech";
+        uri = "https://kanidm.${config.networking.domain}";
       };
     };
 
@@ -222,7 +222,7 @@
       enable = false;
       role = "client";
       settings = {
-        serverAddr = "tcloud.autolife-robotics.me";
+        serverAddr = "tcloud.${config.networking.domain}";
         serverPort = 7000;
         auth = {
           method = "token";
@@ -230,8 +230,6 @@
         };
       };
     };
-
-    #v2raya.enable = true;
 
     netbird.enable = true;
     babeld = {

@@ -1,4 +1,9 @@
-{ pkgs, ... }:
+{
+  pkgs,
+  config,
+  osConfig,
+  ...
+}:
 {
 
   programs = {
@@ -21,7 +26,7 @@
         sync = {
           records = true;
         };
-        #sync_address = "https://atuin.inner.autolife-robotics.me";
+        #sync_address = "https://atuin.inner.${config.networking.domain}";
       };
     };
 
@@ -242,7 +247,7 @@
       };
       ".ldaprc" = {
         text = ''
-          URI     ldap://mail.autolife-robotics.me
+          URI     ldap://mail.${osConfig.networking.domain}
           BASE    dc=autolife-robotics,dc=tech
           SASL_MECH GSSAPI
           SASL_REALM AUTOLIFE.TECH

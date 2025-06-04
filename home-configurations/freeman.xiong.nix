@@ -162,7 +162,7 @@ in
           hostname = "172.22.240.99";
         };
         "netbird" = {
-          hostname = "47.128.219.117";
+          hostname = "18.142.246.191";
         };
         "heco-nginx" = {
           hostname = "18.142.238.159";
