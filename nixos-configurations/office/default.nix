@@ -21,6 +21,7 @@
     ezModules.core
     ezModules.greetd
     ezModules.dn42
+    ezModules.tlp
     ezModules.bird-inner
     ezModules.falcon-sensor
     ezModules.wayland

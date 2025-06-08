@@ -1,1 +1,5 @@
-{ console = { keyMap = "dvorak-programmer"; }; }
+{
+  console = {
+    keyMap = "dvorak";
+  };
+}
