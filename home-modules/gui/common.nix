@@ -20,7 +20,7 @@
       #onlyoffice-bin
       zoom-us
       ueberzugpp
-      ytfzf
+      #ytfzf
       usbutils
       #google-chrome
       #vault
