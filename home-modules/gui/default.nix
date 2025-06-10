@@ -123,7 +123,7 @@
 
         ]
       ))
-      uv.out
+      uv
       github-mcp-server
       qrencode
       ripgrep
