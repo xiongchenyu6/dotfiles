@@ -17,12 +17,10 @@
       # jetbrains.rider
       xournalpp
       slack
-      #onlyoffice-bin
       zoom-us
       ueberzugpp
       #ytfzf
       usbutils
-      #google-chrome
       #vault
       solana-cli
       # expect mkpasswd conflict

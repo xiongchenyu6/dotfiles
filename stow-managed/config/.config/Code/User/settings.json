@@ -76,7 +76,6 @@
     "files.associations": {
         "*.json": "jsonc"
     },
-    "github.copilot.editor.enableAutoCompletions": false,
     "cmake.options.statusBarVisibility": "visible",
     "cmake.pinnedCommands": [
         "workbench.action.tasks.configureTaskRunner",
@@ -94,7 +93,6 @@
     "remote.SSH.remotePlatform": {
         "10.65.248.6": "linux"
     },
-    "chat.editing.confirmEditRequestRetry": false,
     "git.confirmSync": false,
     "[move]": {
         "editor.defaultFormatter": "mysten.prettier-move"
@@ -168,16 +166,16 @@
     "github.copilot.chat.agent.thinkingTool": true,
     "github.copilot.chat.languageContext.fix.typescript.enabled": true,
     "github.copilot.chat.languageContext.inline.typescript.enabled": true,
-    "mcp": {
+    "mcp": {        
         "servers": {
-            "github-mcp-server stdio": {
+            "github-mcp-server": {
                 "type": "stdio",
                 "command": "github-mcp-server",
                 "args": [
                     "stdio"
                 ]
             },
-            "my-mcp-server-58d58cfd": {
+            "mcp-context7": {
                 "type": "stdio",
                 "command": "bunx",
                 "args": [
@@ -185,12 +183,22 @@
                     "@upstash/context7-mcp"
                 ]
             },
-            "my-mcp-server-8fb12a97": {
+            "mcp-sequential-thinking": {
                 "type": "stdio",
                 "command": "bunx",
                 "args": [
                     "-y",
                     "@modelcontextprotocol/server-sequential-thinking"
+                ]
+            },
+            "mcp-feedback-enhanced": {
+                "command": "uvx",
+                "args": [
+                    "mcp-feedback-enhanced@latest"
+                ],
+                "timeout": 600,
+                "autoApprove": [
+                    "interactive_feedback"
                 ]
             }
         }
@@ -203,4 +211,13 @@
     "python.analysis.addHoverSummaries": true,
     "gitlens.ai.model": "anthropic:claude-4-sonnet-latest",
     "window.confirmSaveUntitledWorkspace": false,
+    "chat.tools.autoApprove": true,
+    "chat.agent.maxRequests": 100,
+    "chat.edits2.enabled": true,
+    "chat.renderRelatedFiles": true,
+    "inlineChat.enableV2": true,
+    "inlineChat.finishOnType": true,
+    "inlineChat.hideOnRequest": true,
+    "inlineChat.lineEmptyHint": true,
+    "chat.mcp.discovery.enabled": true,
 }
