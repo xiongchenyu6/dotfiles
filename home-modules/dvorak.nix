@@ -33,7 +33,7 @@
               }
             }/bin/screen-shot"
 
-            "$mod, E, exec, ${pkgs.google-chrome}/bin/google-chrome-stable"
+            "$mod, E, exec, ${pkgs.google-chrome}/bin/google-chrome-stable --ozone-platform=wayland  --enable-wayland-ime"
 
             "$mod, 1, moveworkspacetomonitor, 1 current"
             "$mod, 1, workspace, 1"
