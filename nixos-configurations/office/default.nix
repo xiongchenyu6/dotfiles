@@ -37,6 +37,18 @@
     }
   ];
 
+  boot.kernelParams = [
+    "mem_sleep_default=deep"
+    "pcie_aspm=force"
+    "nvme.noacpi=1"
+    "i915.enable_psr=1"
+  ];
+
+  services.logind = {
+    lidSwitch = "suspend";
+    lidSwitchDocked = "ignore";
+  };
+
   # Enable users/freeman gui
   system.nixos.tags = [
     "gui"
