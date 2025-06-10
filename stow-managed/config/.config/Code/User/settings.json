@@ -202,4 +202,5 @@
     "github.copilot.chat.search.keywordSuggestions": true,
     "python.analysis.addHoverSummaries": true,
     "gitlens.ai.model": "anthropic:claude-4-sonnet-latest",
+    "window.confirmSaveUntitledWorkspace": false,
 }

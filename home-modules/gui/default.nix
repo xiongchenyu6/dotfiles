@@ -120,9 +120,10 @@
       (python3.withPackages (
         _: with python3.pkgs; [
           pip
-          uv
+
         ]
       ))
+      uv.out
       github-mcp-server
       qrencode
       ripgrep

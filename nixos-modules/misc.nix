@@ -6,9 +6,9 @@
     };
     gpm.enable = true;
 
-    logind = {
-      lidSwitch = "ignore";
-    };
+    # logind = {
+    #   lidSwitch = "ignore";
+    # };
     # Enable CUPS to print documents.
     gnome = {
       gnome-remote-desktop.enable = true;
@@ -59,7 +59,6 @@
   };
 
   hardware = {
-
     bluetooth = {
       enable = true;
     };
