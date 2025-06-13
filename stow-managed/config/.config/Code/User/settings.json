@@ -166,7 +166,7 @@
     "github.copilot.chat.agent.thinkingTool": true,
     "github.copilot.chat.languageContext.fix.typescript.enabled": true,
     "github.copilot.chat.languageContext.inline.typescript.enabled": true,
-    "mcp": {        
+    "mcp": {
         "servers": {
             "github-mcp-server": {
                 "type": "stdio",
@@ -199,6 +199,14 @@
                 "timeout": 600,
                 "autoApprove": [
                     "interactive_feedback"
+                ]
+            },
+            "agentic-tools-mcp": {
+                "type": "stdio",
+                "command": "bunx",
+                "args": [
+                    "-y",
+                    "@pimzino/agentic-tools-mcp"
                 ]
             }
         }
