@@ -110,12 +110,27 @@
         "$mod, M, layoutmsg, swapwithmaster"
         "$mod SHIFT, M, layoutmsg, focusmaster"
         "$mod, space, fullscreen"
-        "$mod, B, movefocus, l"
-        "$mod, F, movefocus, r"
-        "$mod, P, movefocus, u"
-        "$mod, N, movefocus, d"
+        # Movement keys are defined in layout-specific modules (qwert.nix, dvorak.nix, etc.)
         "$mod, 25, focusmonitor, l"
         "$mod, 26, focusmonitor, r"
+        "$mod SHIFT, A, exec, ${
+          pkgs.writeShellApplication {
+            name = "screen-shot-and-save";
+            text = ''
+              TIME=$(date +%Y%m%d-%H%M%S)_screenshot
+              grim -g "$(slurp)" ~/Pictures/"$TIME".png
+            '';
+          }
+        }/bin/screen-shot-and-save"
+        "$mod SHIFT, S, exec, ${
+          pkgs.writeShellApplication {
+            name = "screen-shot";
+            text = ''
+              grim -g "$(slurp)" - | wl-copy -o
+            '';
+          }
+        }/bin/screen-shot"
+        "$mod, E, exec, ${pkgs.google-chrome}/bin/google-chrome-stable --ozone-platform=wayland  --enable-wayland-ime"
       ];
 
       binde = [

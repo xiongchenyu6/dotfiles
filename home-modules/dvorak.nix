@@ -1,40 +1,41 @@
-{ lib, pkgs, ... }:
+# Dvorak Layout - Emacs-inspired Hyprland Keybindings
+# Philosophy: Emacs-style navigation and window management
+# - b/f/p/n: window focus movement (backward/forward/previous/next)
+# - Alt + bfpn: move windows between positions
+# - Ctrl + bfpn: resize windows
+# - Emacs-like commands (x for kill, C-x for exit, M-x for command, etc.)
+
+{ pkgs, ... }:
 {
   wayland = {
     windowManager = {
       hyprland = {
-        enable = true;
-
         settings = {
           input = {
             kb_variant = "dvorak";
             kb_model = "";
           };
 
-          "$mod" = "SUPER";
-
           bind = [
-            "$mod SHIFT, A, exec, ${
-              pkgs.writeShellApplication {
-                name = "screen-shot-and-save";
-                text = ''
-                  TIME=$(date +%Y%m%d-%H%M%S)_screenshot
-                  grim -g "$(slurp)" ~/Pictures/"$TIME".png
-                '';
-              }
-            }/bin/screen-shot-and-save"
+            # Emacs-like navigation (C-b, C-f, C-p, C-n equivalents)
+            "$mod, b, movefocus, l" # backward-char (left)
+            "$mod, f, movefocus, r" # forward-char (right)
+            "$mod, p, movefocus, u" # previous-line (up)
+            "$mod, n, movefocus, d" # next-line (down)
 
-            "$mod SHIFT, S, exec, ${
-              pkgs.writeShellApplication {
-                name = "screen-shot";
-                text = ''
-                  grim -g "$(slurp)" - | wl-copy -o
-                '';
-              }
-            }/bin/screen-shot"
+            # Emacs-like window movement with Alt (M-)
+            "$mod ALT, b, movewindow, l"
+            "$mod ALT, f, movewindow, r"
+            "$mod ALT, p, movewindow, u"
+            "$mod ALT, n, movewindow, d"
 
-            "$mod, E, exec, ${pkgs.google-chrome}/bin/google-chrome-stable --ozone-platform=wayland  --enable-wayland-ime"
+            # Emacs-like resizing (using C-x prefix metaphor)
+            "$mod CTRL, b, resizeactive, -50 0"
+            "$mod CTRL, f, resizeactive, 50 0"
+            "$mod CTRL, p, resizeactive, 0 -50"
+            "$mod CTRL, n, resizeactive, 0 50"
 
+            # Workspace switching (standard numbers)
             "$mod, 1, moveworkspacetomonitor, 1 current"
             "$mod, 1, workspace, 1"
             "$mod, 2, moveworkspacetomonitor, 2 current"
@@ -56,6 +57,7 @@
             "$mod, 0, moveworkspacetomonitor, 10 current"
             "$mod, 0, workspace, 10"
 
+            # Move windows to workspaces
             "$mod SHIFT, 1, movetoworkspace, 1"
             "$mod SHIFT, 2, movetoworkspace, 2"
             "$mod SHIFT, 3, movetoworkspace, 3"
@@ -66,6 +68,29 @@
             "$mod SHIFT, 8, movetoworkspace, 8"
             "$mod SHIFT, 9, movetoworkspace, 9"
             "$mod SHIFT, 0, movetoworkspace, 10"
+
+            # Emacs-like window management
+            "$mod, x, killactive" # C-x k (kill-buffer)
+            "$mod CTRL, x, exit" # C-x C-c (save-buffers-kill-terminal)
+            "$mod SHIFT, x, exec, ${pkgs.albert}/bin/albert toggle" # M-x (execute-command)
+
+            # Emacs-like splits (C-x 2, C-x 3)
+            "$mod, 2, layoutmsg, togglesplit" # C-x 2 (split horizontal)
+            "$mod, 3, togglesplit" # C-x 3 (split vertical)
+
+            # Emacs-like buffer navigation
+            "$mod, o, cyclenext" # C-x o (other-window)
+            "$mod SHIFT, o, cyclenext, prev" # C-x O (other-window reverse)
+
+            # Additional Emacs-inspired bindings
+            "$mod, g, exec, hyprctl dispatch cancelexitworkspace" # C-g (keyboard-quit)
+            "$mod, space, fullscreen" # Mark/select mode
+            "$mod, s, exec, grim -g \"$(slurp)\" - | wl-copy -o" # C-s (search/save)
+            "$mod, r, layoutmsg, swapwithmaster" # refresh/recenter
+            "$mod, l, togglefloating" # C-l (recenter)
+            "$mod, u, focusurgentorlast" # universal-argument
+            "$mod, m, layoutmsg, focusmaster" # M-< (beginning-of-buffer)
+            "$mod, t, togglegroup" # transpose
           ];
         };
       };
