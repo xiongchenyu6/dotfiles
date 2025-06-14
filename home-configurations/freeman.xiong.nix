@@ -30,7 +30,7 @@ in
             ezModules.gui
             ezModules.mpd
             ezModules.stow-config
-            ezModules.dvorak
+            ezModules.qwert
             ezModules.nvidia
             ezModules.hyprland
           ]
