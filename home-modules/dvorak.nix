@@ -71,6 +71,47 @@
 
             # Emacs-like window management
             "$mod, x, killactive" # C-x k (kill-buffer)
+            "$mod CTRL, x, exit" # C-x C-c (exit emacs)
+            "$mod, return, exec, ${pkgs.alacritty}/bin/alacritty" # terminal
+            "$mod ALT, x, exec, ${pkgs.albert}/bin/albert toggle" # M-x (execute command) - ergonomic on Dvorak
+
+            # Emacs window operations
+            "$mod, space, fullscreen" # space for fullscreen (consistent across layouts)
+            "$mod CTRL, f, togglefloating" # C-f for forward/float
+            "$mod, v, pseudo" # pseudo-tiling
+            "$mod ALT, v, togglesplit" # M-v for split toggle
+            "$mod, w, swapactiveworkspaces, eDP-1 HDMI-A-1" # swap workspaces
+            "$mod, g, togglegroup" # group toggle
+            "$mod ALT, m, layoutmsg, swapwithmaster" # M-m for master
+            "$mod CTRL, m, layoutmsg, focusmaster" # C-m for focus master
+
+            # Emacs-like monitor navigation (using C-x o concept)
+            "$mod CTRL, o, focusmonitor, l" # C-x o (other window)
+            "$mod ALT, o, focusmonitor, r" # M-o (other direction)
+
+            # Emacs-inspired utilities
+            "$mod, u, focusurgentorlast" # urgent focus
+            "$mod, tab, cyclenext" # tab through buffers
+            "$mod, e, exec, ${pkgs.google-chrome}/bin/google-chrome-stable --ozone-platform=wayland  --enable-wayland-ime" # external browser
+
+            # Screenshot with emacs-like bindings
+            "$mod ALT, a, exec, ${
+              pkgs.writeShellApplication {
+                name = "screen-shot-and-save";
+                text = ''
+                  TIME=$(date +%Y%m%d-%H%M%S)_screenshot
+                  grim -g "$(slurp)" ~/Pictures/"$TIME".png
+                '';
+              }
+            }/bin/screen-shot-and-save"
+            "$mod, a, exec, ${
+              pkgs.writeShellApplication {
+                name = "screen-shot";
+                text = ''
+                  grim -g "$(slurp)" - | wl-copy -o
+                '';
+              }
+            }/bin/screen-shot"
             "$mod CTRL, x, exit" # C-x C-c (save-buffers-kill-terminal)
             "$mod SHIFT, x, exec, ${pkgs.albert}/bin/albert toggle" # M-x (execute-command)
 
