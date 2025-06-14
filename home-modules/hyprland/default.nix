@@ -49,7 +49,7 @@
 
       input = {
         kb_layout = "us";
-        kb_options = "ctrl:nocaps";
+        kb_options = "caps:ctrl_modifier";
         repeat_rate = 60;
         repeat_delay = 180;
         follow_mouse = 1;
@@ -98,49 +98,31 @@
       "$mod" = "SUPER";
 
       bind = [
-        "$mod, return, exec, ${pkgs.alacritty}/bin/alacritty"
-        "$mod, X, exec, ${pkgs.albert}/bin/albert toggle"
-        "$mod, c, killactive"
-        "$mod SHIFT, Q, exit"
-        "$mod, L, togglefloating"
-        "$mod, V, pseudo"
-        "$mod, W, swapactiveworkspaces, eDP-1 HDMI-A-1"
-        "$mod, T, togglesplit"
-        "$mod, G, togglegroup"
-        "$mod, M, layoutmsg, swapwithmaster"
-        "$mod SHIFT, M, layoutmsg, focusmaster"
-        "$mod, space, fullscreen"
-        # Movement keys are defined in layout-specific modules (qwert.nix, dvorak.nix, etc.)
-        "$mod, 25, focusmonitor, l"
-        "$mod, 26, focusmonitor, r"
-        "$mod SHIFT, A, exec, ${
-          pkgs.writeShellApplication {
-            name = "screen-shot-and-save";
-            text = ''
-              TIME=$(date +%Y%m%d-%H%M%S)_screenshot
-              grim -g "$(slurp)" ~/Pictures/"$TIME".png
-            '';
-          }
-        }/bin/screen-shot-and-save"
-        "$mod SHIFT, S, exec, ${
-          pkgs.writeShellApplication {
-            name = "screen-shot";
-            text = ''
-              grim -g "$(slurp)" - | wl-copy -o
-            '';
-          }
-        }/bin/screen-shot"
-        "$mod, E, exec, ${pkgs.google-chrome}/bin/google-chrome-stable --ozone-platform=wayland  --enable-wayland-ime"
+        # Core application bindings (shared across all layouts)
+        # Layout-specific movement, window management, and utility keys are defined in:
+        # - qwert.nix: Vim-like keybindings (hjkl navigation, :q commands)
+        # - dvorak.nix: Emacs-like keybindings (bfpn navigation, C-x commands)
+        # - dvorak-programmer.nix: Developer-optimized (htns navigation, symbol-friendly)
+
+        # Audio controls (function keys - layout independent)
+        ", XF86AudioMute, exec, ${pkgs.wireplumber}/bin/wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"
+        ", XF86AudioPlay, exec, ${pkgs.playerctl}/bin/playerctl play-pause"
+        ", XF86AudioNext, exec, ${pkgs.playerctl}/bin/playerctl next"
+        ", XF86AudioPrev, exec, ${pkgs.playerctl}/bin/playerctl previous"
       ];
 
       binde = [
+        # Volume controls (hold to repeat)
         ", XF86AudioRaiseVolume, exec, ${pkgs.wireplumber}/bin/wpctl set-volume -l 1.5 @DEFAULT_AUDIO_SINK@ 5%+"
         ", XF86AudioLowerVolume, exec, ${pkgs.wireplumber}/bin/wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-"
+
+        # Brightness controls (hold to repeat)
         ", XF86MonBrightnessUp, exec, ${pkgs.brightnessctl}/bin/brightnessctl s +5%"
         ", XF86MonBrightnessDown, exec, ${pkgs.brightnessctl}/bin/brightnessctl s 5%-"
       ];
 
       bindm = [
+        # Mouse bindings (layout independent)
         "$mod, mouse:272, movewindow"
         "$mod, mouse:273, resizewindow"
         "$mod ALT, mouse:272, resizewindow"
