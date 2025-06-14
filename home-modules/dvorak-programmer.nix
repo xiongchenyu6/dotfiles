@@ -71,24 +71,53 @@
 
             # Developer-focused commands
             "$mod, q, killactive" # quit (easy to reach)
-            "$mod, semicolon, exec, ${pkgs.albert}/bin/albert toggle" # command mode
+            "$mod SHIFT, q, exit" # quit WM
+            "$mod, return, exec, ${pkgs.alacritty}/bin/alacritty" # terminal (essential for devs)
+            "$mod, semicolon, exec, ${pkgs.albert}/bin/albert toggle" # semicolon is easy on DVP layout
 
             # Programming splits and layouts
             "$mod, minus, layoutmsg, togglesplit" # horizontal split (-)
             "$mod, backslash, togglesplit" # vertical split (\)
+            "$mod, v, pseudo" # pseudo-tiling
+            "$mod, w, swapactiveworkspaces, eDP-1 HDMI-A-1" # workspace swap
 
             # Developer workflow
             "$mod, d, cyclenext" # cycle through windows (development)
             "$mod SHIFT, d, cyclenext, prev" # reverse cycle
             "$mod, c, togglefloating" # code/float toggle
             "$mod, r, layoutmsg, swapwithmaster" # refactor/refresh
-            "$mod, f, fullscreen" # focus/fullscreen
+            "$mod, space, fullscreen" # space for fullscreen (consistent across layouts)
             "$mod, g, togglegroup" # group (like git)
             "$mod, m, layoutmsg, focusmaster" # master (main window)
+            "$mod SHIFT, m, layoutmsg, swapwithmaster" # swap with master
             "$mod, u, focusurgentorlast" # urgent (debugging)
 
+            # Multi-monitor development setup
+            "$mod, e, focusmonitor, l" # external monitor left
+            "$mod, i, focusmonitor, r" # external monitor right (i for right side of keyboard)
+
+            # Developer utilities
+            "$mod, tab, cyclenext" # cycle through windows
+            "$mod, b, exec, ${pkgs.google-chrome}/bin/google-chrome-stable --ozone-platform=wayland  --enable-wayland-ime" # browser for docs/testing
+
             # Developer shortcuts
-            "$mod, period, exec, grim -g \"$(slurp)\" - | wl-copy -o" # screenshot (.)
+            "$mod, period, exec, ${
+              pkgs.writeShellApplication {
+                name = "screen-shot";
+                text = ''
+                  grim -g "$(slurp)" - | wl-copy -o
+                '';
+              }
+            }/bin/screen-shot" # screenshot (.)
+            "$mod SHIFT, period, exec, ${
+              pkgs.writeShellApplication {
+                name = "screen-shot-and-save";
+                text = ''
+                  TIME=$(date +%Y%m%d-%H%M%S)_screenshot
+                  grim -g "$(slurp)" ~/Pictures/"$TIME".png
+                '';
+              }
+            }/bin/screen-shot-and-save" # save screenshot
           ];
         };
       };

@@ -11,11 +11,6 @@
     windowManager = {
       hyprland = {
         settings = {
-          input = {
-            kb_layout = "us";
-            kb_variant = "";
-          };
-
           bind = [
             # Vim-like navigation
             "$mod, h, movefocus, l"
@@ -74,18 +69,45 @@
             "$mod, s, togglesplit"
 
             # Vim-like commands
-            "$mod, w, killactive"
-            "$mod SHIFT, colon, exec, ${pkgs.albert}/bin/albert toggle"
+            "$mod, q, killactive" # :q to quit
+            "$mod SHIFT, Q, exit" # :q! to force quit
+            "$mod, return, exec, ${pkgs.alacritty}/bin/alacritty" # terminal
+            "$mod, p, exec, ${pkgs.albert}/bin/albert toggle"
+            "$mod SHIFT, f, togglefloating" # float toggle
+            "$mod, v, pseudo" # pseudo-tiling (vertical split concept)
+            "$mod, w, swapactiveworkspaces, eDP-1 HDMI-A-1" # swap workspaces
+            "$mod, t, togglegroup" # toggle group (tabs concept)
+            "$mod, m, layoutmsg, swapwithmaster" # move to master
+            "$mod SHIFT, m, layoutmsg, focusmaster" # focus master
 
-            # Additional vim-inspired bindings
-            "$mod, u, focusurgentorlast"
-            "$mod, tab, cyclenext"
-            "$mod SHIFT, tab, cyclenext, prev"
-            "$mod, g, togglegroup"
-            "$mod, m, layoutmsg, swapwithmaster"
-            "$mod SHIFT, m, layoutmsg, focusmaster"
-            "$mod, f, fullscreen"
-            "$mod, t, togglefloating"
+            # Vim-like monitor navigation
+            "$mod, e, focusmonitor, l" # previous monitor
+            "$mod, r, focusmonitor, r" # next monitor
+
+            # Vim-inspired utilities
+            "$mod, u, focusurgentorlast" # urgent/last focus
+            "$mod, tab, cyclenext" # cycle through windows
+            "$mod SHIFT, tab, cyclenext, prev" # reverse cycle
+            "$mod, b, exec, ${pkgs.google-chrome}/bin/google-chrome-stable --ozone-platform=wayland  --enable-wayland-ime" # browser
+
+            # Screenshot with vim-like bindings
+            "$mod SHIFT, a, exec, ${
+              pkgs.writeShellApplication {
+                name = "screen-shot-and-save";
+                text = ''
+                  TIME=$(date +%Y%m%d-%H%M%S)_screenshot
+                  grim -g "$(slurp)" ~/Pictures/"$TIME".png
+                '';
+              }
+            }/bin/screen-shot-and-save"
+            "$mod, a, exec, ${
+              pkgs.writeShellApplication {
+                name = "screen-shot";
+                text = ''
+                  grim -g "$(slurp)" - | wl-copy -o
+                '';
+              }
+            }/bin/screen-shot"
           ];
         };
       };
