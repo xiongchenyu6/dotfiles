@@ -1,71 +1,94 @@
-{ lib, pkgs, ... }:
+# Dvorak Programmer Layout - Developer-Optimized Hyprland Keybindings
+# Philosophy: Programmer-focused navigation optimized for development workflow
+# - Combines Dvorak efficiency with developer muscle memory
+# - h/t/n/s: window focus movement (left/down/up/right) - based on Dvorak home row
+# - Easy access to symbols and coding operations
+# - Optimized for programming tasks and symbol usage
+
+{ pkgs, ... }:
 {
   wayland = {
     windowManager = {
       hyprland = {
-        enable = true;
-
         settings = {
           input = {
             kb_variant = "dvp";
             kb_model = "dvorak-programmer";
           };
 
-          "$mod" = "SUPER";
-
           bind = [
-            "$mod SHIFT, A, exec, ${
-              pkgs.writeShellApplication {
-                name = "screen-shot-and-save";
-                text = ''
-                  TIME=$(date +%Y%m%d-%H%M%S)_screenshot
-                  grim -g "$(slurp)" ~/Pictures/"$TIME".png
-                '';
-              }
-            }/bin/screen-shot-and-save"
+            # Programmer-focused navigation (using DVP home row positions)
+            "$mod, h, movefocus, l" # left (h is leftmost home key in DVP)
+            "$mod, t, movefocus, d" # down (t is down from home row)
+            "$mod, n, movefocus, u" # up (n is up from home row)
+            "$mod, s, movefocus, r" # right (s is rightmost home key in DVP)
 
-            "$mod SHIFT, S, exec, ${
-              pkgs.writeShellApplication {
-                name = "screen-shot";
-                text = ''
-                  grim -g "$(slurp)" - | wl-copy -o
-                '';
-              }
-            }/bin/screen-shot"
+            # Developer window movement
+            "$mod SHIFT, h, movewindow, l"
+            "$mod SHIFT, t, movewindow, d"
+            "$mod SHIFT, n, movewindow, u"
+            "$mod SHIFT, s, movewindow, r"
 
-            "$mod, E, exec, ${pkgs.google-chrome}/bin/google-chrome-stable"
+            # Programming-optimized resizing
+            "$mod CTRL, h, resizeactive, -50 0"
+            "$mod CTRL, t, resizeactive, 0 50"
+            "$mod CTRL, n, resizeactive, 0 -50"
+            "$mod CTRL, s, resizeactive, 50 0"
 
-            "$mod, 14, moveworkspacetomonitor, 1 current"
-            "$mod, 14, workspace, 1"
-            "$mod, 17, moveworkspacetomonitor, 2 current"
-            "$mod, 17, workspace, 2"
-            "$mod, 13, moveworkspacetomonitor, 3 current"
-            "$mod, 13, workspace, 3"
-            "$mod, 18, moveworkspacetomonitor, 4 current"
-            "$mod, 18, workspace, 4"
-            "$mod, 12, moveworkspacetomonitor, 5 current"
-            "$mod, 12, workspace, 5"
-            "$mod, 19, moveworkspacetomonitor, 6 current"
-            "$mod, 19, workspace, 6"
-            "$mod, 11, moveworkspacetomonitor, 7 current"
-            "$mod, 11, workspace, 7"
-            "$mod, 20, moveworkspacetomonitor, 8 current"
-            "$mod, 20, workspace, 8"
-            "$mod, 15, moveworkspacetomonitor, 9 current"
-            "$mod, 15, workspace, 9"
-            "$mod, 16, moveworkspacetomonitor, 10 current"
-            "$mod, 16, workspace, 10"
+            # Workspace switching (DVP number row: &[{}(=*)+])
+            "$mod, ampersand, moveworkspacetomonitor, 1 current" # &
+            "$mod, ampersand, workspace, 1"
+            "$mod, bracketleft, moveworkspacetomonitor, 2 current" # [
+            "$mod, bracketleft, workspace, 2"
+            "$mod, braceleft, moveworkspacetomonitor, 3 current" # {
+            "$mod, braceleft, workspace, 3"
+            "$mod, braceright, moveworkspacetomonitor, 4 current" # }
+            "$mod, braceright, workspace, 4"
+            "$mod, parenleft, moveworkspacetomonitor, 5 current" # (
+            "$mod, parenleft, workspace, 5"
+            "$mod, equal, moveworkspacetomonitor, 6 current" # =
+            "$mod, equal, workspace, 6"
+            "$mod, asterisk, moveworkspacetomonitor, 7 current" # *
+            "$mod, asterisk, workspace, 7"
+            "$mod, parenright, moveworkspacetomonitor, 8 current" # )
+            "$mod, parenright, workspace, 8"
+            "$mod, plus, moveworkspacetomonitor, 9 current" # +
+            "$mod, plus, workspace, 9"
+            "$mod, bracketright, moveworkspacetomonitor, 10 current" # ]
+            "$mod, bracketright, workspace, 10"
 
-            "$mod SHIFT, 14, movetoworkspace, 1"
-            "$mod SHIFT, 17, movetoworkspace, 2"
-            "$mod SHIFT, 13, movetoworkspace, 3"
-            "$mod SHIFT, 18, movetoworkspace, 4"
-            "$mod SHIFT, 12, movetoworkspace, 5"
-            "$mod SHIFT, 19, movetoworkspace, 6"
-            "$mod SHIFT, 11, movetoworkspace, 7"
-            "$mod SHIFT, 20, movetoworkspace, 8"
-            "$mod SHIFT, 15, movetoworkspace, 9"
-            "$mod SHIFT, 16, movetoworkspace, 10"
+            # Move windows to workspaces (DVP symbols)
+            "$mod SHIFT, ampersand, movetoworkspace, 1"
+            "$mod SHIFT, bracketleft, movetoworkspace, 2"
+            "$mod SHIFT, braceleft, movetoworkspace, 3"
+            "$mod SHIFT, braceright, movetoworkspace, 4"
+            "$mod SHIFT, parenleft, movetoworkspace, 5"
+            "$mod SHIFT, equal, movetoworkspace, 6"
+            "$mod SHIFT, asterisk, movetoworkspace, 7"
+            "$mod SHIFT, parenright, movetoworkspace, 8"
+            "$mod SHIFT, plus, movetoworkspace, 9"
+            "$mod SHIFT, bracketright, movetoworkspace, 10"
+
+            # Developer-focused commands
+            "$mod, q, killactive" # quit (easy to reach)
+            "$mod, semicolon, exec, ${pkgs.albert}/bin/albert toggle" # command mode
+
+            # Programming splits and layouts
+            "$mod, minus, layoutmsg, togglesplit" # horizontal split (-)
+            "$mod, backslash, togglesplit" # vertical split (\)
+
+            # Developer workflow
+            "$mod, d, cyclenext" # cycle through windows (development)
+            "$mod SHIFT, d, cyclenext, prev" # reverse cycle
+            "$mod, c, togglefloating" # code/float toggle
+            "$mod, r, layoutmsg, swapwithmaster" # refactor/refresh
+            "$mod, f, fullscreen" # focus/fullscreen
+            "$mod, g, togglegroup" # group (like git)
+            "$mod, m, layoutmsg, focusmaster" # master (main window)
+            "$mod, u, focusurgentorlast" # urgent (debugging)
+
+            # Developer shortcuts
+            "$mod, period, exec, grim -g \"$(slurp)\" - | wl-copy -o" # screenshot (.)
           ];
         };
       };
