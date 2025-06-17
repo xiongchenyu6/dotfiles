@@ -10,11 +10,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1749223377,
-        "narHash": "sha256-H50DosbznMYjzqPu6DYA1pNd7Ei/rFDFbznb4A50zEc=",
+        "lastModified": 1750168945,
+        "narHash": "sha256-AIjeJzpJepgg8/7puBP/QlAjOY+PsrQL/bHp0nd4H00=",
         "owner": "k3d3",
         "repo": "claude-desktop-linux-flake",
-        "rev": "21020c8ba14662447ad20ce19101436953268a7a",
+        "rev": "6d9eb2a653be8a6c06bc29a419839570e0ffc858",
         "type": "github"
       },
       "original": {
@@ -222,11 +222,11 @@
         "nixpkgs-lib": "nixpkgs-lib_2"
       },
       "locked": {
-        "lastModified": 1743550720,
-        "narHash": "sha256-hIshGgKZCgWh6AYJpJmRgFdR3WUbkY04o82X05xqQiY=",
+        "lastModified": 1749398372,
+        "narHash": "sha256-tYBdgS56eXYaWVW3fsnPQ/nFlgWi/Z2Ymhyu21zVM98=",
         "owner": "hercules-ci",
         "repo": "flake-parts",
-        "rev": "c621e8422220273271f52058f618c94e405bb0f5",
+        "rev": "9305fe4e5c2a6fcf5ba6a3ff155720fbe4076569",
         "type": "github"
       },
       "original": {
@@ -492,11 +492,11 @@
     },
     "nixpkgs-lib_2": {
       "locked": {
-        "lastModified": 1743296961,
-        "narHash": "sha256-b1EdN3cULCqtorQ4QeWgLMrd5ZGOjLSLemfa00heasc=",
+        "lastModified": 1748740939,
+        "narHash": "sha256-rQaysilft1aVMwF14xIdGS3sj1yHlI6oKQNBRTF40cc=",
         "owner": "nix-community",
         "repo": "nixpkgs.lib",
-        "rev": "e4822aea2a6d1cdd36653c134cacfd64c97ff4fa",
+        "rev": "656a64127e9d791a334452c6b6606d17539476e2",
         "type": "github"
       },
       "original": {
@@ -507,11 +507,11 @@
     },
     "nixpkgs-master": {
       "locked": {
-        "lastModified": 1750145277,
-        "narHash": "sha256-NpMLIVHF50xbSx53jXfdOWQLZx9g+195CX/hqMVA2oM=",
+        "lastModified": 1750168577,
+        "narHash": "sha256-IQYNgdeSR1cWKZ1qj9+Nfvo2Qld5PXbn4cukhHREsDg=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "02cad84bb5e9d526479dfc24ad1c602240ad9960",
+        "rev": "b5ef7ef4d31fb6c0cb03e21e5d68e0f489227505",
         "type": "github"
       },
       "original": {
@@ -560,11 +560,11 @@
         "treefmt-nix": "treefmt-nix"
       },
       "locked": {
-        "lastModified": 1750143150,
-        "narHash": "sha256-6u+bQRGVy4viR8SXljOn32HtSWr4Z+BNlWdy/VJL3l4=",
+        "lastModified": 1750165058,
+        "narHash": "sha256-qRrYF+lm4UeoqHDMifab3CwY4FxpBecpMuImrzSFYdE=",
         "owner": "nix-community",
         "repo": "NUR",
-        "rev": "dddf6ee8c6a0dfc79b242c38e37ed13b2c325755",
+        "rev": "5509afa491c06e4fe1b648e1034d4ca96c5603d8",
         "type": "github"
       },
       "original": {
@@ -744,16 +744,15 @@
         ]
       },
       "locked": {
-        "lastModified": 1749287831,
-        "narHash": "sha256-ESWZPZ4wG6YZzxib1TVV7iCuWRe9GVOPjr+E2+KbCqQ=",
-        "ref": "ben/service_controller",
-        "rev": "f4e453909cc2c42198c97c1bbb1655bc8382183f",
+        "lastModified": 1750169497,
+        "narHash": "sha256-2USOHGd6EOhy5UgLLxHigMv7R2C8zGu5P0Iv+gUFHbI=",
+        "ref": "refs/heads/main",
+        "rev": "36517b3171222133d58c77592849bf2029264999",
         "shallow": true,
         "type": "git",
         "url": "ssh://git@github.com/AutoLifeRobot/rust-web-server.git"
       },
       "original": {
-        "ref": "ben/service_controller",
         "shallow": true,
         "type": "git",
         "url": "ssh://git@github.com/AutoLifeRobot/rust-web-server.git"

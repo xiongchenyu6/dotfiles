@@ -91,7 +91,6 @@
         flake-parts.follows = "flake-parts";
       };
     };
-
     #claude
     claude-desktop = {
       url = "github:k3d3/claude-desktop-linux-flake";
@@ -111,7 +110,7 @@
     };
 
     rust-web-server = {
-      url = "git+ssh://git@github.com/AutoLifeRobot/rust-web-server.git?shallow=1&ref=ben/service_controller";
+      url = "git+ssh://git@github.com/AutoLifeRobot/rust-web-server.git?shallow=1";
       inputs = {
         nixpkgs.follows = "nixpkgs";
         flake-parts.follows = "flake-parts";
