@@ -233,4 +233,5 @@
     "screencastMode.keyboardOptions": {
         "showCommandGroups": true
     },
+    "chat.editing.confirmEditRequestRetry": false,
 }

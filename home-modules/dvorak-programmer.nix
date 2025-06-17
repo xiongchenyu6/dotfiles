@@ -73,7 +73,7 @@
             "$mod, q, killactive" # quit (easy to reach)
             "$mod SHIFT, q, exit" # quit WM
             "$mod, return, exec, ${pkgs.alacritty}/bin/alacritty" # terminal (essential for devs)
-            "$mod, semicolon, exec, ${pkgs.albert}/bin/albert toggle" # semicolon is easy on DVP layout
+            "$mod, x, exec, ${pkgs.albert}/bin/albert toggle" # M-x (execute command) - ergonomic on Dvorak
 
             # Programming splits and layouts
             "$mod, minus, layoutmsg, togglesplit" # horizontal split (-)
@@ -86,7 +86,6 @@
             "$mod SHIFT, d, cyclenext, prev" # reverse cycle
             "$mod, c, togglefloating" # code/float toggle
             "$mod, r, layoutmsg, swapwithmaster" # refactor/refresh
-            "$mod, space, fullscreen" # space for fullscreen (consistent across layouts)
             "$mod, g, togglegroup" # group (like git)
             "$mod, m, layoutmsg, focusmaster" # master (main window)
             "$mod SHIFT, m, layoutmsg, swapwithmaster" # swap with master
