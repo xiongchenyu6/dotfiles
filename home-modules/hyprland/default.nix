@@ -103,7 +103,7 @@
         # - qwert.nix: Vim-like keybindings (hjkl navigation, :q commands)
         # - dvorak.nix: Emacs-like keybindings (bfpn navigation, C-x commands)
         # - dvorak-programmer.nix: Developer-optimized (htns navigation, symbol-friendly)
-
+        "$mod, space, fullscreen" # space for fullscreen (consistent across layouts)
         # Audio controls (function keys - layout independent)
         ", XF86AudioMute, exec, ${pkgs.wireplumber}/bin/wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"
         ", XF86AudioPlay, exec, ${pkgs.playerctl}/bin/playerctl play-pause"
