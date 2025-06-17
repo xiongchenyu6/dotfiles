@@ -193,7 +193,6 @@
               nixd
               statix
               yq-go
-              nixos-rebuild-ng
               nixos-anywhere
               yaml-language-server
             ];

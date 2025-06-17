@@ -76,7 +76,6 @@
             "$mod ALT, x, exec, ${pkgs.albert}/bin/albert toggle" # M-x (execute command) - ergonomic on Dvorak
 
             # Emacs window operations
-            "$mod, space, fullscreen" # space for fullscreen (consistent across layouts)
             "$mod CTRL, f, togglefloating" # C-f for forward/float
             "$mod, v, pseudo" # pseudo-tiling
             "$mod ALT, v, togglesplit" # M-v for split toggle

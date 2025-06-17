@@ -63,7 +63,7 @@ in
     };
     sessionVariables = {
       OPENAI_API_BASE = "https://api.siliconflow.cn/v1";
-      CLAUDE_CODE_USE_BEDROCK = 1;
+      #CLAUDE_CODE_USE_BEDROCK = 1;
       OPENAI_API_KEY = builtins.getEnv "SILICON_FLOW";
       XAI_API_KEY = builtins.getEnv "XAI_API_KEY";
       OPENROUTER_API_KEY = builtins.getEnv "OPENROUTER_API_KEY";
