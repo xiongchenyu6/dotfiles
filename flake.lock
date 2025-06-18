@@ -118,11 +118,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1744369038,
-        "narHash": "sha256-GNXmjhGAeMZr9omgMknn1vTD1PSPE7Zzt+Dfy51GpUQ=",
+        "lastModified": 1750178074,
+        "narHash": "sha256-+ACS/Ris0V0a3BB6vEI/vTGk5huztx7a5f7eHJK1FaQ=",
         "owner": "ehllie",
         "repo": "ez-configs",
-        "rev": "a8c729530863a971d2a5eb7e35447702f7a4eda1",
+        "rev": "eb320b3a6032a30e5fa67bebbaf381e6552f9441",
         "type": "github"
       },
       "original": {
@@ -351,6 +351,24 @@
         "type": "github"
       }
     },
+    "mcp-servers-nix": {
+      "inputs": {
+        "nixpkgs": "nixpkgs"
+      },
+      "locked": {
+        "lastModified": 1749952797,
+        "narHash": "sha256-FDkzhp60rTbW0qLJ3wxoFjzHD+Com9bdBepnHmi0CXU=",
+        "owner": "natsukium",
+        "repo": "mcp-servers-nix",
+        "rev": "6c8961e93e7278f8c05aefdab4e698ccc846ee05",
+        "type": "github"
+      },
+      "original": {
+        "owner": "natsukium",
+        "repo": "mcp-servers-nix",
+        "type": "github"
+      }
+    },
     "nix-alien": {
       "inputs": {
         "flake-compat": [
@@ -461,16 +479,16 @@
     },
     "nixpkgs": {
       "locked": {
-        "lastModified": 1749794982,
-        "narHash": "sha256-Kh9K4taXbVuaLC0IL+9HcfvxsSUx8dPB5s5weJcc9pc=",
-        "owner": "NixOS",
+        "lastModified": 1749871736,
+        "narHash": "sha256-K9yBph93OLTNw02Q6e9CYFGrUhvEXnh45vrZqIRWfvQ=",
+        "owner": "nixos",
         "repo": "nixpkgs",
-        "rev": "ee930f9755f58096ac6e8ca94a1887e0534e2d81",
+        "rev": "6afe187897bef7933475e6af374c893f4c84a293",
         "type": "github"
       },
       "original": {
-        "owner": "NixOS",
-        "ref": "nixos-unstable",
+        "owner": "nixos",
+        "ref": "nixpkgs-unstable",
         "repo": "nixpkgs",
         "type": "github"
       }
@@ -507,11 +525,11 @@
     },
     "nixpkgs-master": {
       "locked": {
-        "lastModified": 1750168577,
-        "narHash": "sha256-IQYNgdeSR1cWKZ1qj9+Nfvo2Qld5PXbn4cukhHREsDg=",
+        "lastModified": 1750249742,
+        "narHash": "sha256-zkBWtv4VUQRK4TE5/tGmaf7/buSoCx2LFX4kioaClOI=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "b5ef7ef4d31fb6c0cb03e21e5d68e0f489227505",
+        "rev": "e9eb7be1d6a90720af3cf416c60f2d17344c08ef",
         "type": "github"
       },
       "original": {
@@ -523,11 +541,11 @@
     },
     "nixpkgs-stable": {
       "locked": {
-        "lastModified": 1749995256,
-        "narHash": "sha256-LEGfcombb0otUf23oAmYCXR4+lMQKa49XmU0G5HItGI=",
+        "lastModified": 1750151854,
+        "narHash": "sha256-3za+1J9FifMetO7E/kwgyW+dp+8pPBNlWKfcBovnn6M=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "daa45f10955cc2207ac9c5f0206774d2f757c162",
+        "rev": "ad5c70bcc5cc5178205161b7a7d61a6e80f6d244",
         "type": "github"
       },
       "original": {
@@ -539,11 +557,27 @@
     },
     "nixpkgs_2": {
       "locked": {
-        "lastModified": 1749794982,
-        "narHash": "sha256-Kh9K4taXbVuaLC0IL+9HcfvxsSUx8dPB5s5weJcc9pc=",
+        "lastModified": 1750134718,
+        "narHash": "sha256-v263g4GbxXv87hMXMCpjkIxd/viIF7p3JpJrwgKdNiI=",
+        "owner": "NixOS",
+        "repo": "nixpkgs",
+        "rev": "9e83b64f727c88a7711a2c463a7b16eedb69a84c",
+        "type": "github"
+      },
+      "original": {
+        "owner": "NixOS",
+        "ref": "nixos-unstable",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
+    "nixpkgs_3": {
+      "locked": {
+        "lastModified": 1750134718,
+        "narHash": "sha256-v263g4GbxXv87hMXMCpjkIxd/viIF7p3JpJrwgKdNiI=",
         "owner": "nixos",
         "repo": "nixpkgs",
-        "rev": "ee930f9755f58096ac6e8ca94a1887e0534e2d81",
+        "rev": "9e83b64f727c88a7711a2c463a7b16eedb69a84c",
         "type": "github"
       },
       "original": {
@@ -556,15 +590,15 @@
     "nur": {
       "inputs": {
         "flake-parts": "flake-parts_2",
-        "nixpkgs": "nixpkgs_2",
+        "nixpkgs": "nixpkgs_3",
         "treefmt-nix": "treefmt-nix"
       },
       "locked": {
-        "lastModified": 1750165058,
-        "narHash": "sha256-qRrYF+lm4UeoqHDMifab3CwY4FxpBecpMuImrzSFYdE=",
+        "lastModified": 1750243948,
+        "narHash": "sha256-b06GFVmJNmvRHTC+iOPEBq6nF4uj9c8LzHWAmfTeKpk=",
         "owner": "nix-community",
         "repo": "NUR",
-        "rev": "5509afa491c06e4fe1b648e1034d4ca96c5603d8",
+        "rev": "170c75be2288d97b331b4dfc47dd32f988b6a6c5",
         "type": "github"
       },
       "original": {
@@ -680,30 +714,6 @@
         "type": "github"
       }
     },
-    "robot_signal_dashboard": {
-      "inputs": {
-        "flake-parts": [
-          "flake-parts"
-        ],
-        "nixpkgs": [
-          "nixpkgs"
-        ]
-      },
-      "locked": {
-        "lastModified": 1737530177,
-        "narHash": "sha256-YlrPOdTcDNxCnTfPsumeHEJtRJm1P7n/7a2NttARNBk=",
-        "ref": "refs/heads/develop",
-        "rev": "3bccb8ee34e00becd8de543ff07d36f9741828a7",
-        "shallow": true,
-        "type": "git",
-        "url": "ssh://git@github.com/AutoLifeRobot/robot_signal_dashboard.git"
-      },
-      "original": {
-        "shallow": true,
-        "type": "git",
-        "url": "ssh://git@github.com/AutoLifeRobot/robot_signal_dashboard.git"
-      }
-    },
     "root": {
       "inputs": {
         "claude-desktop": "claude-desktop",
@@ -715,16 +725,16 @@
         "flake-utils": "flake-utils",
         "home-manager": "home-manager",
         "impermanence": "impermanence",
+        "mcp-servers-nix": "mcp-servers-nix",
         "nix-alien": "nix-alien",
         "nix-topology": "nix-topology",
         "nixos-hardware": "nixos-hardware",
         "nixos-wsl": "nixos-wsl",
-        "nixpkgs": "nixpkgs",
+        "nixpkgs": "nixpkgs_2",
         "nixpkgs-master": "nixpkgs-master",
         "nixpkgs-stable": "nixpkgs-stable",
         "nur": "nur",
         "pre-commit-hooks": "pre-commit-hooks_2",
-        "robot_signal_dashboard": "robot_signal_dashboard",
         "rust-web-server": "rust-web-server",
         "sops-nix": "sops-nix",
         "srvos": "srvos",
@@ -744,10 +754,10 @@
         ]
       },
       "locked": {
-        "lastModified": 1750169497,
-        "narHash": "sha256-2USOHGd6EOhy5UgLLxHigMv7R2C8zGu5P0Iv+gUFHbI=",
+        "lastModified": 1750250329,
+        "narHash": "sha256-5nyhQ0aIOk93kp0rkpL1hmmD373Dem0h2JKs4an1HxY=",
         "ref": "refs/heads/main",
-        "rev": "36517b3171222133d58c77592849bf2029264999",
+        "rev": "e12b3a89a7653d25364f4022d10a768d58d61c3e",
         "shallow": true,
         "type": "git",
         "url": "ssh://git@github.com/AutoLifeRobot/rust-web-server.git"

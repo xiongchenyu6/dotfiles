@@ -9,8 +9,8 @@
         complete -C '${pkgs.awscli2}/bin/aws_completer' aws
         eval $(${pkgs.bash-my-aws}/bin/bma-init)
         eval "$(${pkgs.rustup}/bin/rustup completions zsh)"
-        eval "$(${pkgs.grafana-loki}/bin/logcli --completion-script-zsh)"
-
+        eval "$(${pkgs.grafana-loki}/bin/logcli --completion-script-zsh)
+        eval "$(${pkgs.gh}/bin/gh copilot alias -- zsh)"
       '';
     };
   };

@@ -63,6 +63,7 @@
         "x-scheme-handler/https" = "google-chrome.desktop";
         "x-scheme-handler/about" = "google-chrome.desktop";
         "x-scheme-handler/unknown" = "google-chrome.desktop";
+        "x-scheme-handler/claude" = "claude-desktop.desktop";
       };
     };
     userDirs = {
@@ -76,6 +77,17 @@
         XDG_WORKSPACE_DIR = "${config.home.homeDirectory}/Workspace";
       };
     };
+  };
+
+  xdg.desktopEntries.claude-desktop = {
+    name = "Claude Desktop";
+    comment = "Claude AI Desktop Application";
+    exec = "claude-desktop %U";
+    icon = "claude-desktop";
+    terminal = false;
+    type = "Application";
+    categories = [ "Network" "Chat" ];
+    mimeType = [ "x-scheme-handler/claude" ];
   };
 
   programs = {
