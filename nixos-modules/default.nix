@@ -14,6 +14,7 @@ let
       sops-nix
       nix-topology
       nur
+      rust-web-server
     ];
 
   sharedOverlays = overlays ++ [

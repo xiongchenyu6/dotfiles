@@ -49,7 +49,6 @@
         flake-compat.follows = "flake-compat";
       };
     };
-
     # Development tools
     pre-commit-hooks = {
       url = "github:cachix/pre-commit-hooks.nix";
@@ -99,16 +98,6 @@
         flake-utils.follows = "flake-utils";
       };
     };
-
-    # Project repositories
-    robot_signal_dashboard = {
-      url = "git+ssh://git@github.com/AutoLifeRobot/robot_signal_dashboard.git?shallow=1";
-      inputs = {
-        nixpkgs.follows = "nixpkgs";
-        flake-parts.follows = "flake-parts";
-      };
-    };
-
     rust-web-server = {
       url = "git+ssh://git@github.com/AutoLifeRobot/rust-web-server.git?shallow=1";
       inputs = {
@@ -116,6 +105,7 @@
         flake-parts.follows = "flake-parts";
       };
     };
+    mcp-servers-nix.url = "github:natsukium/mcp-servers-nix";
   };
 
   outputs =
