@@ -208,6 +208,13 @@
                     "-y",
                     "@pimzino/agentic-tools-mcp"
                 ]
+            },
+            "mcp-nixos": {
+                "type": "stdio",
+                "command": "uvx",
+                "args": [
+                    "mcp-nixos"
+                ]
             }
         }
     },

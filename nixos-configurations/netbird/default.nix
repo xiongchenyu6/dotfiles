@@ -25,7 +25,6 @@
     srvos.nixosModules.mixins-trusted-nix-caches
     srvos.nixosModules.mixins-nix-experimental
     srvos.nixosModules.mixins-tracing
-    robot_signal_dashboard.nixosModules.robotSignalDashboard
     rust-web-server.nixosModules.rust-web-server
     vscode-server.nixosModules.default
   ];
@@ -109,23 +108,6 @@
   };
 
   services = {
-    postgrest = {
-      enable = true;
-      pgpassFile = config.sops.secrets."postgrest/pass".path;
-      settings = {
-        db-uri = {
-          host = "localhost";
-          port = "5432";
-          user = "rustwebserver";
-          dbname = "rustWebServer";
-        };
-        db-anon-role = "rustwebserver";
-        server-port = 3333; # use unix socket
-        server-unix-socket = null;
-        openapi-server-proxy-uri = "https://api.${config.networking.domain}";
-        openapi-security-active = true;
-      };
-    };
     postgresqlBackup = {
       enable = true;
       databases = [ "rustWebServer" ];
@@ -172,26 +154,6 @@
       enable = true;
       configFile = config.sops.secrets."rust-web-server/config".path;
     };
-
-    # frp = {
-    #   enable = true;
-    #   role = "server";
-    #   settings = {
-    #     bindPort = 7000;
-    #     bindAddr = "0.0.0.0";
-    #     kcpBindPort = 7000;
-    #     vhostHTTPPort = 8080;
-    #     webserver = {
-    #       port = 7500;
-    #       user = "admin";
-    #       password = "admin";
-    #     };
-    #     auth = {
-    #       method = "token";
-    #       token = builtins.getEnv "FRO";
-    #     };
-    #   };
-    # };
 
     nginx = {
       virtualHosts = {
