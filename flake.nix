@@ -99,7 +99,8 @@
       };
     };
     rust-web-server = {
-      url = "git+ssh://git@github.com/AutoLifeRobot/rust-web-server.git?shallow=1";
+      #url = "git+ssh://git@github.com/AutoLifeRobot/rust-web-server.git?shallow=1";
+      url = "git+ssh://git@github.com/AutoLifeRobot/rust-web-server.git?shallow=1&ref=ben/service_controller";
       inputs = {
         nixpkgs.follows = "nixpkgs";
         flake-parts.follows = "flake-parts";
