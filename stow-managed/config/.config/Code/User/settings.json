@@ -215,30 +215,36 @@
                 "args": [
                     "mcp-nixos"
                 ]
+            },
+            "slack": {
+                "command": "npx",
+                "args": [
+                    "-y",
+                    "@modelcontextprotocol/server-slack"
+                ],
             }
-        }
-    },
-    "svelte.enable-ts-plugin": true,
-    "javascript.updateImportsOnFileMove.enabled": "always",
-    "typescript.updateImportsOnFileMove.enabled": "always",
-    "github.copilot.nextEditSuggestions.fixes": true,
-    "github.copilot.chat.search.keywordSuggestions": true,
-    "python.analysis.addHoverSummaries": true,
-    "gitlens.ai.model": "anthropic:claude-4-sonnet-latest",
-    "window.confirmSaveUntitledWorkspace": false,
-    "chat.tools.autoApprove": true,
-    "chat.agent.maxRequests": 100,
-    "chat.edits2.enabled": true,
-    "chat.renderRelatedFiles": true,
-    "inlineChat.enableV2": true,
-    "inlineChat.finishOnType": true,
-    "inlineChat.hideOnRequest": true,
-    "inlineChat.lineEmptyHint": true,
-    "chat.mcp.discovery.enabled": true,
-    "workbench.settings.openDefaultKeybindings": true,
-    "keyboard.dispatch": "keyCode",
-    "screencastMode.keyboardOptions": {
-        "showCommandGroups": true
-    },
-    "chat.editing.confirmEditRequestRetry": false,
-}
+        },
+        "svelte.enable-ts-plugin": true,
+        "javascript.updateImportsOnFileMove.enabled": "always",
+        "typescript.updateImportsOnFileMove.enabled": "always",
+        "github.copilot.nextEditSuggestions.fixes": true,
+        "github.copilot.chat.search.keywordSuggestions": true,
+        "python.analysis.addHoverSummaries": true,
+        "gitlens.ai.model": "anthropic:claude-4-sonnet-latest",
+        "window.confirmSaveUntitledWorkspace": false,
+        "chat.tools.autoApprove": true,
+        "chat.agent.maxRequests": 100,
+        "chat.edits2.enabled": true,
+        "chat.renderRelatedFiles": true,
+        "inlineChat.enableV2": true,
+        "inlineChat.finishOnType": true,
+        "inlineChat.hideOnRequest": true,
+        "inlineChat.lineEmptyHint": true,
+        "chat.mcp.discovery.enabled": true,
+        "workbench.settings.openDefaultKeybindings": true,
+        "keyboard.dispatch": "keyCode",
+        "screencastMode.keyboardOptions": {
+            "showCommandGroups": true
+        },
+        "chat.editing.confirmEditRequestRetry": false,
+    }
