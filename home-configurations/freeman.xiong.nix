@@ -63,12 +63,13 @@ in
     };
     sessionVariables = {
       OPENAI_API_BASE = "https://api.siliconflow.cn/v1";
-      #CLAUDE_CODE_USE_BEDROCK = 1;
       OPENAI_API_KEY = builtins.getEnv "SILICON_FLOW";
       XAI_API_KEY = builtins.getEnv "XAI_API_KEY";
       OPENROUTER_API_KEY = builtins.getEnv "OPENROUTER_API_KEY";
       GEMINI_API_KEY = builtins.getEnv "GEMINI_API_KEY";
       GITHUB_PERSONAL_ACCESS_TOKEN = builtins.getEnv "Github_Access_Token";
+      SLACK_BOT_TOKEN = builtins.getEnv "SLACK_BOT_TOKEN";
+      SLACK_TEAM_ID = builtins.getEnv "SLACK_TEAM_ID";
     };
     homeDirectory = osConfig.users.users."freeman.xiong".home;
   };
