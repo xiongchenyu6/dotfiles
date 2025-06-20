@@ -99,7 +99,9 @@
                 name = "screen-shot-and-save";
                 text = ''
                   TIME=$(date +%Y%m%d-%H%M%S)_screenshot
-                  grim -g "$(slurp)" ~/Pictures/"$TIME".png
+                  FILE_PATH=~/Pictures/"$TIME".png
+                  grim -g "$(slurp)" "$FILE_PATH"
+                  echo -n "$FILE_PATH" | wl-copy
                 '';
               }
             }/bin/screen-shot-and-save"

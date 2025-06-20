@@ -49,6 +49,7 @@
           "pipewire"
           "systemd-journal"
           "adbusers"
+          "plugdev"
         ];
       };
     };
