@@ -44,7 +44,7 @@
   };
   sops.secrets."rust-web-server/config" = { };
 
-    users = {
+  users = {
     users = {
       root = {
         openssh = {
@@ -149,6 +149,7 @@
     rust-web-server = {
       enable = true;
       configFile = config.sops.secrets."rust-web-server/config".path;
+      #      logLevel = "info"; # Options: error, warn, info, debug, trace
     };
 
     nginx = {
