@@ -38,7 +38,6 @@
       lnav
       lego
       #gitbutler
-      #unityhub
       # zed-editor
       nixd
       #v4l-utils
@@ -68,7 +67,7 @@
       patchelf
       procs
       #qemu_kvm
-      tpm2-tools
+      #tpm2-tools
     ];
   };
 

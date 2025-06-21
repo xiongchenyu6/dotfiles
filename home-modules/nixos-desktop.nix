@@ -24,7 +24,7 @@
       vault
       kmon
       #gitbutler
-      unityhub
+      #unityhub
       v4l-utils
       pcsc-tools
       opensc
@@ -86,7 +86,10 @@
     icon = "claude-desktop";
     terminal = false;
     type = "Application";
-    categories = [ "Network" "Chat" ];
+    categories = [
+      "Network"
+      "Chat"
+    ];
     mimeType = [ "x-scheme-handler/claude" ];
   };
 

@@ -28,11 +28,12 @@ in
             ezModules.zsh
             ezModules.cli
             ezModules.gui
-            ezModules.mpd
+            #ezModules.mpd
             ezModules.stow-config
             ezModules.qwert
             ezModules.nvidia
             ezModules.hyprland
+            ezModules.tmux
           ]
         else
           [ ezModules.tmux ]
