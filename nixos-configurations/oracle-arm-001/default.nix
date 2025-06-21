@@ -17,7 +17,7 @@
     ezModules.core
     ezModules.server
     ezModules.acme
-    ezModules.datadog-agent
+    #ezModules.datadog-agent
     ezModules.sing-box
     ezModules.postgrest
     rust-web-server.nixosModules.rust-web-server

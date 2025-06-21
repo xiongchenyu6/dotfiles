@@ -20,7 +20,6 @@ in
   imports =
     lib.attrValues {
       inherit (ezModules)
-        # alacritty
         zsh-minimal
         cli-minimal
         ;
@@ -49,6 +48,5 @@ in
     packages = with pkgs; [
       home-manager
     ];
-
   };
 }
