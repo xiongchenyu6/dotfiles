@@ -23,7 +23,7 @@ in
     ezModules.bird-border
     ezModules.dn42
     ezModules.bird-inner
-    ezModules.datadog-agent
+    #ezModules.datadog-agent
     ezModules.sing-box
     srvos.nixosModules.server
     srvos.nixosModules.mixins-nginx
@@ -123,6 +123,7 @@ in
         22616
         22617
         22618
+        22619
         23396
         21816
         33434
@@ -231,6 +232,22 @@ in
               }
             ];
           };
+          wg_iphone = {
+            inherit address privateKeyFile table;
+            listenPort = 22619;
+            postUp = ''
+              ${pkgs.iproute2}/bin/ip addr add dev wg_iphone 172.22.240.97/32 peer 172.22.240.101/32
+              ${pkgs.iproute2}/bin/ip addr add dev wg_iphone fd48:4b4:f3::1/128 peer fd48:4b4:f3::5/128
+              ${pkgs.iproute2}/bin/ip link set multicast on dev wg_iphone
+            '';
+            peers = [
+              {
+                publicKey = "h7PInNWfIbcP3KmQtHCDvzBPeScrfDa3sJBTrVRZs0Y=";
+                inherit allowedIPs;
+              }
+            ];
+          };
+
           wg_kioubit = {
             inherit privateKeyFile address table;
             peers = [
