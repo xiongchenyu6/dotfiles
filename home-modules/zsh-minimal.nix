@@ -26,6 +26,7 @@
       };
       dotDir = ".config/zsh";
       envExtra = "";
+      zprof.enable = false; # Set to true to enable profiling
       # history = {
       #   extended = true;
       #   ignorePatterns = [ "rm -rf *" ];
@@ -65,12 +66,14 @@
         }
 
       '';
-      # completionInit = ''
-      #   autoload -Uz compinit
-      #   compinit
-      #   autoload -Uz bashcompinit
-      #   bashcompinit
-      # ''; #TODO since we use oh-my-zsh library, we don't need to do this https://github.com/ohmyzsh/ohmyzsh/blob/master/lib/completion.zsh
+      completionInit = ''
+        # Speed up compinit by only checking cached .zcompdump once a day
+        autoload -Uz compinit
+        for dump in ~/.config/zsh/.zcompdump(N.mh+24); do
+          compinit
+        done
+        compinit -C
+      '';
       enableCompletion = true;
       autosuggestion.enable = true;
       syntaxHighlighting.enable = true;
@@ -85,22 +88,22 @@
         enable = true;
         plugins = [
           "ohmyzsh/ohmyzsh path:lib"
-          "ohmyzsh/ohmyzsh path:plugins/aliases"
-          "ohmyzsh/ohmyzsh path:plugins/alias-finder"
+          # "ohmyzsh/ohmyzsh path:plugins/aliases"
+          # "ohmyzsh/ohmyzsh path:plugins/alias-finder"
           "ohmyzsh/ohmyzsh path:plugins/colored-man-pages"
           "ohmyzsh/ohmyzsh path:plugins/copypath"
           "ohmyzsh/ohmyzsh path:plugins/copybuffer"
-          "ohmyzsh/ohmyzsh path:plugins/cp"
+          # "ohmyzsh/ohmyzsh path:plugins/cp"
           "ohmyzsh/ohmyzsh path:plugins/extract"
-          "ohmyzsh/ohmyzsh path:plugins/encode64"
+          # "ohmyzsh/ohmyzsh path:plugins/encode64"
           "ohmyzsh/ohmyzsh path:plugins/fancy-ctrl-z"
           "ohmyzsh/ohmyzsh path:plugins/git"
-          "ohmyzsh/ohmyzsh path:plugins/gitignore"
-          "ohmyzsh/ohmyzsh path:plugins/rsync"
+          # "ohmyzsh/ohmyzsh path:plugins/gitignore"
+          # "ohmyzsh/ohmyzsh path:plugins/rsync"
           "ohmyzsh/ohmyzsh path:plugins/sudo"
-          "ohmyzsh/ohmyzsh path:plugins/systemadmin"
-          "ohmyzsh/ohmyzsh path:plugins/kubectl"
-          "ohmyzsh/ohmyzsh path:plugins/emacs"
+          # "ohmyzsh/ohmyzsh path:plugins/systemadmin"
+          # "ohmyzsh/ohmyzsh path:plugins/kubectl"
+          # "ohmyzsh/ohmyzsh path:plugins/emacs"
         ];
       };
     };

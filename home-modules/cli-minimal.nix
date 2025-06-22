@@ -7,7 +7,21 @@
 {
 
   programs = {
-
+    ripgrep-all = {
+      enable = true;
+    };
+    ripgrep = {
+      enable = true;
+    };
+    pgcli = {
+      enable = true;
+    };
+    fd = {
+      enable = true;
+    };
+    fastfetch = {
+      enable = true;
+    };
     btop = {
       enable = true;
       settings = {

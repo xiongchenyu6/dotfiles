@@ -129,7 +129,6 @@
                 originLanding = "work://auth/callback";
                 originUrl = "work://auth/callback";
                 basicSecretFile = config.sops.secrets."kanidm/vr-control".path;
-                basicSecret = true; # This provisions the secret in Kanidm
                 allowInsecureClientDisablePkce = true;
                 scopeMaps = {
                   devops = [
