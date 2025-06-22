@@ -55,6 +55,12 @@
     awscli = {
       enable = true;
     };
+    lazygit = {
+      enable = true;
+    };
+    lazydocker = {
+      enable = true;
+    };
     k9s = {
       enable = true;
       settings = {

@@ -12,6 +12,20 @@
         eval "$(${pkgs.grafana-loki}/bin/logcli --completion-script-zsh)"
         eval "$(${pkgs.gh}/bin/gh copilot alias -- zsh)"
       '';
+      antidote = {
+        plugins = [
+
+          # "ohmyzsh/ohmyzsh path:plugins/aliases"
+          # "ohmyzsh/ohmyzsh path:plugins/alias-finder"
+          # "ohmyzsh/ohmyzsh path:plugins/cp"
+          # "ohmyzsh/ohmyzsh path:plugins/encode64"
+          # "ohmyzsh/ohmyzsh path:plugins/gitignore"
+          # "ohmyzsh/ohmyzsh path:plugins/rsync"
+          # "ohmyzsh/ohmyzsh path:plugins/systemadmin"
+          # "ohmyzsh/ohmyzsh path:plugins/kubectl"
+          "ohmyzsh/ohmyzsh path:plugins/emacs"
+        ];
+      };
     };
   };
 }

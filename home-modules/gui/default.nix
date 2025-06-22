@@ -84,7 +84,6 @@
       dive # docker image analyzer
       du-dust # du alternative
       envsubst
-      fd
       ffmpeg-full
       fluxcd
       glab
@@ -103,18 +102,15 @@
       mongosh
       mycli
       my2sql
-      neofetch
       # nix-du
       nix-index-update
       nixpacks
       nix
-      bun
       nvfetcher
       oath-toolkit
       openssl
       #pg-ldap-sync
       popeye
-      pgcli
       plantuml
       aider-chat
       (python3.withPackages (
@@ -126,7 +122,6 @@
       uv
       github-mcp-server
       qrencode
-      ripgrep
       redis
       rustscan
       ruby
@@ -155,7 +150,6 @@
       wakatime
       wget
       wrangler
-      bun
       yubikey-manager
       desktop-file-utils
       inputs.claude-desktop.packages.${system}.claude-desktop-with-fhs
@@ -196,6 +190,18 @@
       enable = true;
       flake = "/home/freeman.xiong/dotfiles";
     };
+
+    nix-init = {
+      enable = true;
+    };
+
+    zathura = {
+      enable = true;
+    };
+
+    bun = {
+      enable = true;
+    };
     # carapace.enable = true;
     # comodoro.enable = true;
     mpv.enable = true;
@@ -207,23 +213,23 @@
         obs-pipewire-audio-capture
       ];
     };
-    thunderbird = {
-      enable = true;
-      profiles = {
-        "xiongchenyu6@gmail.com" = {
-          isDefault = true;
-          withExternalGnupg = true;
-        };
-      };
-    };
+    # thunderbird = {
+    #   enable = true;
+    #   profiles = {
+    #     "xiongchenyu6@gmail.com" = {
+    #       isDefault = true;
+    #       withExternalGnupg = true;
+    #     };
+    #   };
+    # };
 
     vscode = {
       enable = true;
     };
 
-    password-store = {
-      enable = true;
-    };
+    # password-store = {
+    #   enable = true;
+    # };
   };
   services = {
     emacs = {

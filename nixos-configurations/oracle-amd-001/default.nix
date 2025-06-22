@@ -17,7 +17,7 @@
     ezModules.core
     ezModules.server
     ezModules.acme
-    ezModules.datadog-agent
+    #    ezModules.datadog-agent
     ezModules.kanidm
     srvos.nixosModules.server
     #srvos.nixosModules.mixins-nginx
