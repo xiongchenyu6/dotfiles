@@ -13,7 +13,7 @@
       enable = true;
       autocd = true;
       shellAliases = {
-        vi = "vim";
+        vi = "nvim";
         o = "xdg-open";
         ls = "eza --icons";
         update = "sudo nixos-rebuild switch";

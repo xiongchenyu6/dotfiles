@@ -25,7 +25,7 @@
           home_alias = "name";
           home_attr = "uuid";
           pam_allowed_login_groups = [ "devops" ]; # Updated group to match changes in groups
-          home_mount_prefix = "/run/kanidm:/run/kanidm";
+          #          home_mount_prefix = "/run/kanidm:/run/kanidm";
         };
 
         serverSettings = {
@@ -48,6 +48,7 @@
                 "huxiaoxiang" # Added huxiaoxiang to the devops group
                 "liwenkai" # Added liwenkai to the devops group
                 "chenchao"
+                "chewenwei"
               ];
             };
           };
@@ -94,6 +95,12 @@
               displayName = "Chen Chao";
               groups = [ "devops" ];
             };
+            chewenwei = {
+              mailAddresses = [ "chewenwei@autolife.ai" ];
+              legalName = "Chew En Wei";
+              displayName = "Chew En Wei";
+              groups = [ "devops" ];
+            };
           };
           systems = {
             oauth2 = {
@@ -102,8 +109,8 @@
                 enableLocalhostRedirects = true;
                 preferShortUsername = true;
                 displayName = "Robot Management System";
-                originLanding = "https://robot-management-system.autolife-robotics.me/";
-                originUrl = "https://robot-management-system.autolife-robotics.me/callback";
+                originLanding = "https://robot-management-system.auto-life.tech/";
+                originUrl = "https://robot-management-system.auto-life.tech/callback";
                 scopeMaps = {
                   devops = [
                     "openid"

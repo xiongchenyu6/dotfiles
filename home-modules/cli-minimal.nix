@@ -5,6 +5,13 @@
   ...
 }:
 {
+  imports = [ 
+    ./neovim.nix
+    ./helix.nix
+  ];
+  
+  modules.neovim.enable = true;
+  modules.helix.enable = true;
 
   programs = {
     ripgrep-all = {
@@ -177,27 +184,6 @@
       };
     };
 
-    vim = {
-      enable = true;
-      plugins = with pkgs.vimPlugins; [
-        ale
-        denite
-        lightline-vim
-        nerdtree
-        tagbar
-      ];
-      settings = {
-        expandtab = true;
-        history = 1000;
-        background = "dark";
-      };
-
-      extraConfig = ''
-        set clipboard=unnamed,unnamedplus  " use the clipboards of vim and win
-        set paste               " Paste from a windows or from vim
-        set go+=a               " Visual selection automatically copied to the clipboard
-      '';
-    };
 
     # navi = { enable = true; };
 

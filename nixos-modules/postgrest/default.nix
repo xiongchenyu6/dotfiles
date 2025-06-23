@@ -20,7 +20,7 @@
           host = "localhost";
           port = "5432";
           user = "rustwebserver";
-          dbname = "rustWebServer";
+          dbname = "rustwebserver";
         };
         db-anon-role = "rustwebserver";
         server-port = 3333; # use unix socket
