@@ -18,7 +18,8 @@
 ** UI
 *** Font
 #+begin_src emacs-lisp
-(set-mouse-color "white")
+  (set-mouse-color "white")
+  
 #+end_src
 *** Theme
 #+begin_src emacs-lisp
@@ -236,112 +237,7 @@
          (tsx-ts-mode . combobulate-mode))
   )
 #+end_src
-*** COMMENT Meow
-#+begin_src emacs-lisp
-(use-package meow
-  :config
-  (setq meow-esc-delay 0.001)
-  (defun meow-setup ()
-    (setq meow-cheatsheet-layout meow-cheatsheet-layout-qwerty)
-    (meow-motion-overwrite-define-key
-     '("<escape>" . ignore))
 
-    (meow-leader-define-key
-     ;; SPC j/k will run the original command in MOTION state.
-     '("j" . "H-j")
-     '("k" . "H-k")
-     ;; Use SPC (0-9) for digit arguments.
-     '("1" . meow-digit-argument)
-     '("2" . meow-digit-argument)
-     '("3" . meow-digit-argument)
-     '("4" . meow-digit-argument)
-     '("5" . meow-digit-argument)
-     '("6" . meow-digit-argument)
-     '("7" . meow-digit-argument)
-     '("8" . meow-digit-argument)
-     '("9" . meow-digit-argument)
-
-     '("0" . meow-digit-argument)
-     '("/" . meow-keypad-describe-key)
-     '("?" . meow-cheatsheet))
-    (meow-normal-define-key
-     '("0" . meow-expand-0)
-     '("9" . meow-expand-9)
-     '("8" . meow-expand-8)
-     '("7" . meow-expand-7)
-     '("6" . meow-expand-6)
-     '("5" . meow-expand-5)
-     '("4" . meow-expand-4)
-     '("3" . meow-expand-3)
-     '("2" . meow-expand-2)
-     '("1" . meow-expand-1)
-     '("-" . negative-argument)
-     '(";" . meow-reverse)
-     '("," . meow-inner-of-thing)
-     '("." . meow-bounds-of-thing)
-     '("[" . meow-beginning-of-thing)
-     '("]" . meow-end-of-thing)
-     '("a" . meow-append)
-     '("o" . meow-open-below)
-     '("b" . meow-back-word)
-     '("B" . meow-back-symbol)
-     '("c" . meow-change)
-     '("x" . meow-delete)
-     '("D" . meow-backward-delete)
-     '("e" . meow-next-word)
-     '("E" . meow-next-symbol)
-     '("f" . meow-find)
-     '("g" . meow-cancel-selection)
-
-     '("G" . meow-grab)
-     '("h" . meow-left)
-     '("H" . meow-left-expand)
-     '("i" . meow-insert)
-     '("O" . meow-open-above)
-     '("j" . meow-next)
-     '("J" . meow-next-expand)
-     '("k" . meow-prev)
-     '("K" . meow-prev-expand)
-     '("l" . meow-right)
-     '("L" . meow-right-expand)
-     '("m" . meow-join)
-     '("n" . meow-search)
-
-     '("I" . meow-block)
-     '("A" . meow-to-block)
-     '("p" . meow-yank)
-     '("q" . meow-quit)
-     '("Q" . kill-buffer-and-window)
-     '("r" . meow-replace)
-     '("R" . meow-swap-grab)
-     '("s" . meow-kill)
-     '("t" . meow-till)
-
-     '("u" . meow-undo)
-
-     '("U" . meow-undo-in-selection)
-     '("/" . meow-visit)
-     '("w" . meow-mark-word)
-     '("W" . meow-mark-symbol)
-     '("d" . meow-line)
-     '("X" . meow-goto-line)
-     '("y" . meow-save)
-     '("Y" . meow-sync-grab)
-     '("z" . meow-pop-selection)
-     '("'" . repeat)
-     '("<escape>" . ignore)))
-
-  (meow-setup)
-
-  (unless (bound-and-true-p meow-global-mode)
-    (meow-setup-indicator)
-    (meow-global-mode 1))
-
-  (with-eval-after-load "meow"
-    (add-to-list 'meow-expand-exclude-mode-list 'wdired-mode))
-
-  (setq meow-use-clipboard t))
-#+end_src
 *** Lispy
 #+begin_src emacs-lisp
 (use-package lispy
@@ -382,16 +278,7 @@
   )
 #+end_src
 ** Coding
-*** Better terminal
-#+begin_src emacs-lisp
-(require 'vterm)
-(setq vterm-kill-buffer-on-exit t)
 
-;; (add-hook 'vterm-mode-hook
-;;           (lambda ()
-;;             (add-hook 'meow-insert-mode-hook (lambda () (if (eq major-mode 'vterm-mode) (vterm-copy-mode -1))) nil 'make-it-local)
-;;             (add-hook 'meow-normal-mode-hook (lambda () (if (eq major-mode 'vterm-mode) (vterm-copy-mode 1))) nil 'make-it-local)))
-#+end_src
 *** Better Search
 #+begin_src emacs-lisp
 (autoload 'rg-project "wgrep" nil t)
@@ -536,15 +423,16 @@
 #+begin_src emacs-lisp
 (recentf-mode 1)
 (setq recentf-auto-cleanup 'never)
-(setq recentf-max-saved-items 9999)
-(setq recentf-max-menu-items 999)
+(setq recentf-max-saved-items 500)  ; Reduced from 9999
+(setq recentf-max-menu-items 50)   ; Reduced from 999
 (setq recentf-show-file-shortcuts-flag t)
 (setq recentf-exclude
       '("COMMIT" "autoloads" "archive-contents" "eld" ".newsrc"
         ".recentf" "emacs-font-size.conf" "eh-scratch"
         "pyim-dcache-.*"))
-;; 自动保存recentf文件。
-(add-hook 'find-file-hook #'recentf-save-list)
+;; Save recentf list less frequently - only on Emacs exit
+(setq recentf-save-list-timer
+      (run-at-time nil (* 5 60) 'recentf-save-list))
 
 (defun recentf-filtered-list (arg)
   "Return a filtered list of ARG recentf items."
@@ -765,44 +653,6 @@ is available."
 (defun my/lsp-mode-setup-completion ()
   (setf (alist-get 'styles (alist-get 'lsp-capf completion-category-defaults))
         '(orderless)))
-#+end_src
-
-**** COMMENT lsp ui
-#+begin_src emacs-lisp
-(use-package lsp-ui
-  ;; :straight t
-  :config
-  (setq lsp-ui-doc-include-signature t)
-  (setq lsp-ui-doc-use-webkit t)
-  (setq lsp-ui-sideline-show-code-actions t)
-  (setq lsp-ui-sideline-show-hover t)
-  (setq lsp-ui-sideline-update-mode 'line)
-  (setq lsp-ui-doc-position 'at-point)
-  (setq lsp-enable-snippet nil)
-  :bind (:map lsp-ui-mode-map
-              ([remap xref-find-definitions] . lsp-ui-peek-find-definitions)
-              ([remap xref-find-references] . lsp-ui-peek-find-references)
-              ("C-c i" . lsp-ui-doc-focus-frame)
-              ("C-c u" . lsp-ui-doc-unfocus-frame)
-              ("C-c s" . lsp-ui-sideline-mode)
-              ("C-c k" . lsp-ui-doc-glance)
-              ("C-c f" . lsp-ui-flycheck-list)
-              ("C-c a" . lsp-execute-code-action))
-  )
-#+end_src
-**** TODO dap
-#+begin_src emacs-lisp
-(require 'dap-mode)
-(add-hook 'dap-stopped-hook
-          (lambda (arg) (call-interactively #'dap-hydra)))
-
-(require 'dap-lldb)
-
-(require 'dap-dlv-go)
-
-(require 'dap-gdb-lldb)
-
-(setq dap-lldb-debug-program "/nix/store/b4hid3r3i4alnmfym4jmnqf0wamgia90-lldb-14.0.6/bin/lldb-vscode")
 #+end_src
 
 *** eglog
@@ -1065,37 +915,6 @@ is available."
 
 #+end_src
 
-** Utils
-#+begin_src emacs-lisp
-(defun toggle-letter-case ()
-   "Toggle the letter case of current word or text selection.
-   Toggles between: “all lower”, “Init Caps”, “ALL CAPS”."
-   (interactive)
-   (let (p1 p2 (deactivate-mark nil) (case-fold-search nil))
-    (if (region-active-p)
-        (setq p1 (region-beginning) p2 (region-end))
-      (let ((bds (bounds-of-thing-at-point 'word) ) )
-        (setq p1 (car bds) p2 (cdr bds)) ) )
-    (when (not (eq last-command this-command))
-      (save-excursion
-        (goto-char p1)
-        (cond
-         ((looking-at "[[:lower:]][[:lower:]]") (put this-command 'state "all lower"))
-         ((looking-at "[[:upper:]][[:upper:]]") (put this-command 'state "all caps") )
-         ((looking-at "[[:upper:]][[:lower:]]") (put this-command 'state "init caps") )
-         ((looking-at "[[:lower:]]") (put this-command 'state "all lower"))
-         ((looking-at "[[:upper:]]") (put this-command 'state "all caps") )
-         (t (put this-command 'state "all lower") ) ) ) )
-    (cond
-     ((string= "all lower" (get this-command 'state))
-      (upcase-initials-region p1 p2) (put this-command 'state "init caps"))
-     ((string= "init caps" (get this-command 'state))
-      (upcase-region p1 p2) (put this-command 'state "all caps"))
-     ((string= "all caps" (get this-command 'state))
-      (downcase-region p1 p2) (put this-command 'state "all lower")) )
-    ) )
-#+end_src
-
 ** input method
 #+begin_src emacs-lisp
 (use-package rime
@@ -1231,19 +1050,6 @@ Bind to lsp mode
 
 ;; (with-eval-after-load 'org
 ;;   (add-hook 'org-babel-after-execute-hook 'org-redisplay-inline-images))
-#+end_src
-*** COMMENT Org download
-#+begin_src emacs-lisp
-(use-package org-download
-  :ensure t
-  :after org
-  :bind (:map org-mode-map
-              ("C-c y" . org-download-clipboard)
-              ("C-c d" . org-download-screenshot))
-  :config
-  (setq org-download-image-dir "~/Pictures"
-        org-download-method 'directory
-        org-download-screenshot-method "grim %s"))
 #+end_src
 *** Org Reveal
 #+begin_src emacs-lisp
