@@ -58,7 +58,7 @@
   };
 
   boot = {
-    kernelPackages = lib.mkForce pkgs.linuxPackages_6_14;
+    #kernelPackages = lib.mkForce pkgs.linuxPackages_6_14;
     binfmt.emulatedSystems = [ "aarch64-linux" ];
     initrd.kernelModules = [
       "vfio_pci"
@@ -69,9 +69,9 @@
       "iommu=pt"
     ];
 
-    extraModulePackages = with pkgs; [
-      linuxKernel.packages.linux_6_14.cryptodev
-    ];
+    # extraModulePackages = with pkgs; [
+    #   linuxKernel.packages.linux_6_14.cryptodev
+    # ];
 
     kernel = {
       sysctl = {
@@ -129,6 +129,16 @@
         wifi = {
           powersave = true;
         };
+      };
+      modemmanager = {
+        enable = true;
+        fccUnlockScripts = [
+          {
+            # Quectel EC25 LTE modem
+            id = "2c7c:0125";
+            path = "${pkgs.modemmanager}/share/ModemManager/fcc-unlock.available.d/2c7c";
+          }
+        ];
       };
       enableIPv6 = true;
       wg-quick = {
