@@ -29,6 +29,7 @@
       aspellDicts.en
       albert
       baidupcs-go
+      sbctl
       nur.repos.xddxdd.qq
       nur.repos.xddxdd.bilibili
       #nur.repos.xddxdd.wine-wechat
@@ -76,7 +77,6 @@
       vulkan-loader
       vulnix
       nix-melt
-      code-cursor
       #godot_4
       file
       blender
@@ -92,9 +92,10 @@
       graphviz
       #microsoft-edge
       grpcurl
+      gemini-cli
       #gotron-sdk
       (kubernetes-helm-wrapped.override { plugins = [ kubernetes-helmPlugins.helm-diff ]; })
-      #helmify
+      #helm
       hey # http load generator
       killall
       litecli
