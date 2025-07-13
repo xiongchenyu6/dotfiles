@@ -25,6 +25,7 @@
     ezModules.bird-inner
     ezModules.falcon-sensor
     ezModules.wayland
+    lanzaboote.nixosModules.lanzaboote
     srvos.nixosModules.mixins-trusted-nix-caches
     srvos.nixosModules.mixins-nix-experimental
     srvos.nixosModules.mixins-tracing
@@ -78,18 +79,16 @@
     extraModprobeConfig = ''
       options snd-intel-dspcfg dsp_driver=1
     '';
+    lanzaboote = {
+      enable = true;
+      pkiBundle = "/var/lib/sbctl";
+    };
 
     loader = {
+      systemd-boot.enable = lib.mkForce false;
       efi = {
         canTouchEfiVariables = true;
         efiSysMountPoint = "/boot";
-      };
-      grub = {
-        enable = true;
-        efiSupport = true;
-        device = "nodev";
-        configurationLimit = 5;
-        useOSProber = true;
       };
     };
   };

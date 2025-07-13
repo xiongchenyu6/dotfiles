@@ -7,6 +7,8 @@
     packages = with pkgs; [
       #appimage-run
       #discord
+      cloc
+      minicom
       doctl
       gdrive
       gtrash
