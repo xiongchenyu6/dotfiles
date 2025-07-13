@@ -74,4 +74,15 @@ result
 .data/
 .aider*
 
+# RIME generated files
+stow-managed/rime/.local/share/fcitx5/rime/installation.yaml
+stow-managed/rime/.local/share/fcitx5/rime/*.userdb/
+stow-managed/rime/.local/share/fcitx5/rime/*.prism.bin
+stow-managed/rime/.local/share/fcitx5/rime/*.reverse.bin
+stow-managed/rime/.local/share/fcitx5/rime/*.table.bin
+stow-managed/rime/.local/share/fcitx5/rime/build/
+stow-managed/rime/.local/share/fcitx5/rime/sync/
 stow-managed/rime/.local/share/fcitx5/rime/user.yaml
+stow-managed/rime/.local/share/fcitx5/rime/*.tmp
+stow-managed/rime/.local/share/fcitx5/rime/*.log
+stow-managed/rime/.local/share/fcitx5/rime/*.bin
