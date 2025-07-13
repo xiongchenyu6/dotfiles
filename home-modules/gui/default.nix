@@ -34,7 +34,7 @@
       nur.repos.xddxdd.bilibili
       #nur.repos.xddxdd.wine-wechat
       #nur.repos.xddxdd.dingtalk
-      gimp
+      #gimp
       gpgme.dev
       #gitkraken
       cmctl
@@ -113,7 +113,7 @@
       #pg-ldap-sync
       popeye
       plantuml
-      aider-chat
+      #aider-chat
       (python3.withPackages (
         _: with python3.pkgs; [
           pip
@@ -150,7 +150,7 @@
       unzip
       wakatime
       wget
-      wrangler
+      #wrangler
       yubikey-manager
       desktop-file-utils
       inputs.claude-desktop.packages.${system}.claude-desktop-with-fhs

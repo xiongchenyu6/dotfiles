@@ -29,7 +29,7 @@
       pcsc-tools
       opensc
       sui
-      zssh
+      #zssh
       record_screen
     ];
   };

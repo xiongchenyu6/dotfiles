@@ -26,6 +26,7 @@
     ezModules.virtualisation
     ezModules.falcon-sensor
     ezModules.wayland
+    lanzaboote.nixosModules.lanzaboote
     nixos-hardware.nixosModules.lenovo-legion-16ach6h
     srvos.nixosModules.desktop
     vscode-server.nixosModules.default
@@ -79,11 +80,13 @@
       };
     };
 
+    lanzaboote = {
+      enable = true;
+      pkiBundle = "/var/lib/sbctl";
+    };
+
     loader = {
-      systemd-boot = {
-        configurationLimit = 12;
-        enable = true;
-      };
+      systemd-boot.enable = lib.mkForce false;
       efi = {
         canTouchEfiVariables = true;
         efiSysMountPoint = "/boot";

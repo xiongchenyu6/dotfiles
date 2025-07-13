@@ -107,6 +107,15 @@
       };
     };
     mcp-servers-nix.url = "github:natsukium/mcp-servers-nix";
+
+    lanzaboote = {
+      url = "github:nix-community/lanzaboote";
+      inputs = {
+        nixpkgs.follows = "nixpkgs";
+        flake-compat.follows = "flake-compat";
+        flake-parts.follows = "flake-parts";
+      };
+    };
   };
 
   outputs =
