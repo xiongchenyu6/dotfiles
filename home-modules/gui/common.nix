@@ -31,7 +31,7 @@
       ncdu
       lazygit
       lazydocker
-      (warp-terminal.override { waylandSupport = true; })
+      #(warp-terminal.override { waylandSupport = true; })
       #kmon
       termshark
       glow # markdown viewer

@@ -1,7 +1,7 @@
 # Edit this configuration file to define what should be installed on
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running 'nixos-help').
-{ pkgs, ... }:
+{ config, pkgs, ... }:
 {
   home = {
     # sessionVariables = {
@@ -24,7 +24,7 @@
         vids = "$HOME/Videos";
         dl = "$HOME/Downloads";
       };
-      dotDir = ".config/zsh";
+      dotDir = "${config.xdg.configHome}/zsh";
       envExtra = "";
       zprof.enable = false; # Set to true to enable profiling
       # history = {
@@ -69,7 +69,7 @@
       completionInit = ''
         # Speed up compinit by only checking cached .zcompdump once a day
         autoload -Uz compinit
-        for dump in ~/.config/zsh/.zcompdump(N.mh+24); do
+        for dump in ${config.xdg.configHome}/zsh/.zcompdump(N.mh+24); do
           compinit
         done
         compinit -C

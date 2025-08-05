@@ -177,7 +177,7 @@
       };
 
       perSystem =
-        { pkgs, ... }:
+        { pkgs, system, ... }:
         {
           packages = {
             iso = self.nixosConfigurations.iso.config.system.build.isoImage;
@@ -194,6 +194,10 @@
               yq-go
               nixos-anywhere
               yaml-language-server
+							gnupg
+            ] ++ lib.optionals pkgs.stdenv.isDarwin [
+              # Darwin-specific build tools
+              inputs.darwin.packages.${system}.darwin-rebuild
             ];
             shellHook = ''
               export $(sops -d ./secrets/common.env | xargs)

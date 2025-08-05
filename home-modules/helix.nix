@@ -190,12 +190,12 @@ in
           };
 
           # Rust
-          rust-analyzer = {
-            command = "${pkgs.rust-analyzer}/bin/rust-analyzer";
-            config = {
-              checkOnSave.command = "clippy";
-            };
-          };
+          # rust-analyzer = {
+          #   command = "${pkgs.rust-analyzer}/bin/rust-analyzer";
+          #   config = {
+          #     checkOnSave.command = "clippy";
+          #   };
+          # };
 
           # TypeScript/JavaScript
           typescript-language-server = {
@@ -350,7 +350,7 @@ in
       nodePackages.vscode-langservers-extracted
       nodePackages.yaml-language-server
       pyright
-      rust-analyzer
+      #rust-analyzer
       gopls
       nil
 

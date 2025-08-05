@@ -25,6 +25,7 @@
     srvos.nixosModules.mixins-tracing
     ./disk-config.nix
     ./hardware-configuration.nix
+
   ];
   boot = {
     loader.grub = {

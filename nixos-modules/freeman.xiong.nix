@@ -50,6 +50,7 @@
           "systemd-journal"
           "adbusers"
           "plugdev"
+          "ydotool"
         ];
       };
     };

@@ -180,20 +180,20 @@
 
     v2raya.enable = true;
 
-    kanidm = {
-      enableClient = true;
-      clientSettings = {
-        uri = "https://kanidm.${config.networking.domain}";
-      };
-      enablePam = true;
-      unixSettings = {
-        default_shell = "${pkgs.bashInteractive}/bin/bash";
-        home_alias = "name";
-        home_attr = "uuid";
-        home_prefix = "/mnt/disk1/";
-        pam_allowed_login_groups = [ "admin" ];
-      };
-    };
+    # kanidm = {
+    #   enableClient = true;
+    #   clientSettings = {
+    #     uri = "https://kanidm.${config.networking.domain}";
+    #   };
+    #   enablePam = true;
+    #   unixSettings = {
+    #     default_shell = "${pkgs.bashInteractive}/bin/bash";
+    #     home_alias = "name";
+    #     home_attr = "uuid";
+    #     home_prefix = "/mnt/disk1/";
+    #     pam_allowed_login_groups = [ "admin" ];
+    #   };
+    # };
 
     postgresql = {
       enable = true;
