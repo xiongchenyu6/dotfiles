@@ -49,7 +49,8 @@ in
     ezModules.kernel
     ezModules.security
     ezModules.ssh-harden
-  ] ++ nixos-modules;
+  ]
+  ++ nixos-modules;
 
   home-manager = {
     useGlobalPkgs = true;
@@ -57,16 +58,18 @@ in
   };
 
   zramSwap.enable = true;
-
+  boot.kernel.sysctl = {
+    "vm.swappiness" = 10;
+  };
   environment = {
     systemPackages = with pkgs; [
       lrzsz
     ];
   };
   services = {
-    kanidm = {
-      package = pkgs.kanidmWithSecretProvisioning;
-    };
+    # kanidm = {
+    #   package = pkgs.kanidmWithSecretProvisioning;
+    # };
 
     resolved = {
       enable = true;

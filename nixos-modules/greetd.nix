@@ -4,7 +4,7 @@
     etc = {
       "hyprland.conf" = {
         text = ''
-          exec-once = ${pkgs.greetd.regreet}/bin/regreet; ${pkgs.hyprland}/bin/hyprctl dispatch exit
+          exec-once = ${pkgs.regreet}/bin/regreet; ${pkgs.hyprland}/bin/hyprctl dispatch exit
           misc {
               disable_hyprland_logo = true
               disable_splash_rendering = true

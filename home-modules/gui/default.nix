@@ -24,6 +24,11 @@
       };
       size = 32;
     };
+    # Fix for winetricks wine64 detection issue
+    file.".local/bin/wine64" = {
+      source = "${pkgs.wineWowPackages.waylandFull}/bin/wine";
+      executable = true;
+    };
     packages = with pkgs; [
       aspell
       aspellDicts.en
@@ -31,7 +36,7 @@
       baidupcs-go
       sbctl
       nur.repos.xddxdd.qq
-      nur.repos.xddxdd.bilibili
+      #nur.repos.xddxdd.bilibili
       #nur.repos.xddxdd.wine-wechat
       #nur.repos.xddxdd.dingtalk
       #gimp
@@ -45,8 +50,8 @@
       tdesktop
       unrar-wrapper
       whatsapp-for-linux
-      #winetricks
-      #wineWow64Packages.unstableFull
+      winetricks
+      wineWowPackages.waylandFull
       bottles
       zotero
       kdePackages.dolphin
@@ -77,7 +82,7 @@
       vulkan-loader
       vulnix
       nix-melt
-      #godot_4
+      godot_4
       file
       blender
       delve # go debugger
@@ -132,7 +137,6 @@
       nmap # A utility for network discovery and security auditing
       ipcalc
       nix-fast-build
-      mtr
       solc-select
       #solium
       sops
@@ -150,7 +154,7 @@
       unzip
       wakatime
       wget
-      #wrangler
+      wrangler
       yubikey-manager
       desktop-file-utils
       inputs.claude-desktop.packages.${system}.claude-desktop-with-fhs
@@ -161,6 +165,7 @@
       STARSHIP_LOG = "error";
       NIXPKGS_ALLOW_UNFREE = 1;
     };
+    sessionPath = [ "$HOME/.local/bin" ];
   };
 
   gtk = lib.mkIf pkgs.stdenv.isLinux {

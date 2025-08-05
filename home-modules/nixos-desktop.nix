@@ -24,7 +24,8 @@
       vault
       kmon
       #gitbutler
-      #unityhub
+      unityhub
+      anydesk
       v4l-utils
       pcsc-tools
       opensc

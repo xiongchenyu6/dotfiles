@@ -14,6 +14,9 @@
       xvfb-run # for running GUI applications in headless mode
       figlet # for generating ASCII art
       #step-cli
+      mtr
+      ldns
+      websocat
     ];
   };
   # systemd.services.datadog-agent.serviceConfig.User = lib.mkForce "root";

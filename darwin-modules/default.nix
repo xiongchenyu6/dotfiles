@@ -41,5 +41,5 @@ in
 
   security.pam.services.sudo_local.touchIdAuth = true;
   system.darwinLabel = "gui";
-  nixpkgs.hostPlatform = "x86_64-darwin";
+  nixpkgs.hostPlatform = "aarch64-darwin";
 }

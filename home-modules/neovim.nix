@@ -44,7 +44,7 @@ in
         nodePackages.typescript-language-server
         nodePackages.vscode-langservers-extracted
         pyright
-        rust-analyzer
+        #rust-analyzer
         gopls
         nil # Nix language server
 

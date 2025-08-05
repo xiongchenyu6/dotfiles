@@ -37,6 +37,7 @@
         addresses = [ "172.22.240.99/27" ];
       };
     }
+    ./dnf-native.nix
   ];
 
   sops.secrets."wireguard/game" = { };
@@ -109,11 +110,27 @@
           89
           179
           5002
+          6112
+          6113
+          6114
+          6115
+          6116
+          6117
+          6118
+          6119
         ];
         allowedUDPPorts = [
           89
           179
           5353
+          6112
+          6113
+          6114
+          6115
+          6116
+          6117
+          6118
+          6119
           6696
           33434
         ];
@@ -186,17 +203,17 @@
       enable = true;
     };
 
-    # sunshine = {
-    #   enable = true;
-    #   openFirewall = true;
-    #   capSysAdmin = true;
-    # };
-    kanidm = {
-      enableClient = true;
-      clientSettings = {
-        uri = "https://kanidm.${config.networking.domain}";
-      };
+    sunshine = {
+      enable = true;
+      openFirewall = true;
+      capSysAdmin = true;
     };
+    # kanidm = {
+    #   enableClient = true;
+    #   clientSettings = {
+    #     uri = "https://kanidm.${config.networking.domain}";
+    #   };
+    # };
 
     postgresql = {
       enable = true;
@@ -262,6 +279,9 @@
 
   programs = {
     adb = {
+      enable = true;
+    };
+    ydotool = {
       enable = true;
     };
     # clash-verge = {

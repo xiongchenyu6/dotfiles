@@ -65,7 +65,10 @@
     bluetooth = {
       enable = true;
     };
-    graphics.enable = true;
+    graphics = {
+      enable = true;
+      enable32Bit = true;
+    };
     ledger.enable = true;
   };
 }
