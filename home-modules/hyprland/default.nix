@@ -134,12 +134,18 @@
         "dropbox start"
       ];
 
-      # windowrule = [
-      #   "workspace 1 silent, alacritty"
-      #   "float,noblur,noshadow,noborder,pseudo,dimaround,albert"
-      #   "opacity 0.9 0.95,Alacritty"
-      #   "opacity 0.9 0.95,emacs"
-      # ];
+      # Window rules v2 for Wine/Gaming
+      windowrulev2 = [
+        # Wine/Gaming optimizations
+        "immediate, class:^(wine)$"
+        "noblur, class:^(wine)$"
+        "noshadow, class:^(wine)$"
+        "noanim, class:^(wine)$"
+        "idleinhibit always, class:^(wine)$"  # Prevent screen lock
+        "fullscreen, title:^(Warcraft III)$"  # Auto fullscreen
+        "monitor DP-1, class:^(wine)$"  # Force to specific monitor
+        "workspace 9, class:^(wine)$"  # Dedicated gaming workspace
+      ];
     };
   };
 

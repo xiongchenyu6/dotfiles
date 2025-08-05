@@ -18,6 +18,7 @@ stow-managed/config/.config/albert/*
 !stow-managed/config/.config/albert/snippets/
 stow-managed/albert/.local/share/albert/
 !stow-managed/albert/.local/share/albert/websearch/
+stow-managed/albert/.cache/albert/python.coingecko/coins.json
 !stow-managed/config/.config/nvim/
 !stow-managed/config/.config/nvim/**
 !stow-managed/config/.config/emacs/early-init.el 

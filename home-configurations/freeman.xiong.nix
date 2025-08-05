@@ -73,6 +73,7 @@ in
       SLACK_TEAM_ID = builtins.getEnv "SLACK_TEAM_ID";
     };
     homeDirectory = osConfig.users.users."freeman.xiong".home;
+    sessionPath = [ "$HOME/.local/bin" ];
   };
   programs = {
     git = {

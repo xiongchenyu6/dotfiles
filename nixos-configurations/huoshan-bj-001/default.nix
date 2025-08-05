@@ -17,7 +17,7 @@
     ezModules.server
     ezModules.cn
     ezModules.sing-box
-    ezModules.kanidm
+    #ezModules.kanidm
     srvos.nixosModules.server
     srvos.nixosModules.mixins-nginx
     srvos.nixosModules.mixins-trusted-nix-caches
@@ -54,6 +54,12 @@
     {
       inherit hostName;
       domain = "autolife-robotics.com";
+      hosts = {
+        "172.64.229.235" = [
+          "auto-life.tech"
+          "proxy.auto-life.tech"
+        ];
+      };
       firewall = {
         allowedTCPPorts = [
           22
