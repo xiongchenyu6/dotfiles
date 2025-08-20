@@ -1,0 +1,57 @@
+# Sensitive files - never commit these
+credentials.txt
+*.pem
+*.key
+*.crt
+host_vars/*.yml
+!host_vars/*.sops.yml
+!host_vars/*.sops.yaml
+group_vars/*.yml
+!group_vars/*.sops.yml
+!group_vars/*.sops.yaml
+
+# Decrypted secrets (SOPS will decrypt to .dec files)
+*.dec
+secrets/*.dec.yaml
+secrets/*.dec.yml
+
+# Temporary files
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Ansible cache
+*.retry
+/tmp/ansible_facts_cache/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+
+# IDE
+.vscode/
+.idea/
+*.iml
+
+# Logs
+*.log
+logs/
+
+# Backup files
+*.bak
+*.backup
+*.old
+
+# SSH keys (if stored locally)
+id_rsa*
+id_ed25519*
+*.ppk
+
+# Quick deploy script (contains plain text password)
+quick-deploy.sh

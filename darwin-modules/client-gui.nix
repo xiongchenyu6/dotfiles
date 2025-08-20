@@ -13,8 +13,6 @@
   homebrew = {
     enable = true;
     brews = [
-    ];
-    casks = [
       "dropbox"
       "1password"
       "google-chrome"
@@ -26,7 +24,7 @@
     # mac app store
     # masApps = { WireGuard = 1451685025; };
     taps = [
-      "homebrew/services"
+		  "oven-sh/bun"
     ];
     onActivation = {
       autoUpdate = true;
