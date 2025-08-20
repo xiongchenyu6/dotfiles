@@ -2,7 +2,7 @@ keys:
   - &xiongchenyu 4EDE451FC10722D0C6662C6FB99B8189C7C153F6
   - &yubikey C0807F4C5201D2EE612EE933D750F82262844F39
   - &office age1ss6yryyyma55atqs9mr823q0s9fqlu9rdh6dmkmzhxq8jvf635qssp5cuw
-  - &office-mac age1n8dtlw45h5gh4zp0l53tcasffzgqflyx623ppypasrukyt8kv3vqljflr3
+  - &office-mac age1jay909gq05fnlh6c0fpnnysc8tux7ykrcqxvpngfzxpkt7aqhf6qrxm50u
   - &oracle-arm-001 age1xm5qgvpmy6whs5jqrdzde0l33qktg4azst3zpyr7lgg5qh9cqfjs56e7d5
   - &oracle-arm-002 age1ferch3rq8xyvdqmvws8qg247s2uxsjf4pul6430436rg32tchq7q3aj98d
   - &oracle-amd-001 age1gzyuqqta5820q5ve2udpuf9ccdqd3le7rgtcxz8zxa92cv66qp6s46ukq5

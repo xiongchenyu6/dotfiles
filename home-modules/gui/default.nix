@@ -36,7 +36,7 @@
       baidupcs-go
       sbctl
       nur.repos.xddxdd.qq
-      #nur.repos.xddxdd.bilibili
+      nur.repos.xddxdd.bilibili
       #nur.repos.xddxdd.wine-wechat
       #nur.repos.xddxdd.dingtalk
       #gimp
@@ -122,9 +122,9 @@
       (python3.withPackages (
         _: with python3.pkgs; [
           pip
-
         ]
       ))
+      python312Packages.huggingface-hub.out
       uv
       github-mcp-server
       qrencode

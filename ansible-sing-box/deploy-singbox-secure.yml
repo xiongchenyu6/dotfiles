@@ -1,0 +1,211 @@
+---
+- name: Deploy sing-box with Shadowsocks proxy (Secure)
+  hosts: singbox_servers
+  become: yes
+  vars_files:
+    - secrets/servers.yaml
+  vars:
+    sing_box_version: "1.10.7"
+    ansible_ssh_pass: "{{ servers.ubuntu_server.ssh_password }}"
+    shadowsocks_password: "{{ shadowsocks.password }}"
+    shadowsocks_port: "{{ shadowsocks.port }}"
+    shadowsocks_method: "{{ shadowsocks.method }}"
+    
+  tasks:
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+        cache_valid_time: 3600
+
+    - name: Install required packages
+      apt:
+        name:
+          - curl
+          - tar
+          - ufw
+        state: present
+
+    - name: Create sing-box user
+      user:
+        name: sing-box
+        system: yes
+        shell: /usr/sbin/nologin
+        home: /var/lib/sing-box
+        create_home: yes
+
+    - name: Create sing-box directories
+      file:
+        path: "{{ item }}"
+        state: directory
+        owner: sing-box
+        group: sing-box
+        mode: '0755'
+      loop:
+        - /etc/sing-box
+        - /var/lib/sing-box
+        - /usr/local/bin
+
+    - name: Check if sing-box is installed
+      stat:
+        path: /usr/local/bin/sing-box
+      register: sing_box_binary
+
+    - name: Download sing-box binary
+      unarchive:
+        src: "https://github.com/SagerNet/sing-box/releases/download/v{{ sing_box_version }}/sing-box-{{ sing_box_version }}-linux-amd64.tar.gz"
+        dest: /tmp
+        remote_src: yes
+        creates: "/tmp/sing-box-{{ sing_box_version }}-linux-amd64/sing-box"
+      when: not sing_box_binary.stat.exists
+
+    - name: Install sing-box binary
+      copy:
+        src: "/tmp/sing-box-{{ sing_box_version }}-linux-amd64/sing-box"
+        dest: /usr/local/bin/sing-box
+        owner: root
+        group: root
+        mode: '0755'
+        remote_src: yes
+      when: not sing_box_binary.stat.exists
+
+    - name: Create sing-box configuration
+      copy:
+        content: |
+          {
+            "log": {
+              "level": "info",
+              "timestamp": true
+            },
+            "inbounds": [
+              {
+                "type": "shadowsocks",
+                "tag": "shadowsocks-in",
+                "listen": "::",
+                "listen_port": {{ shadowsocks_port }},
+                "method": "{{ shadowsocks_method }}",
+                "password": "{{ shadowsocks_password }}",
+                "multiplex": {
+                  "enabled": true,
+                  "padding": true
+                }
+              }
+            ],
+            "outbounds": [
+              {
+                "type": "direct",
+                "tag": "direct"
+              },
+              {
+                "type": "block",
+                "tag": "block"
+              }
+            ],
+            "route": {
+              "rules": [
+                {
+                  "geosite": "category-ads-all",
+                  "outbound": "block"
+                }
+              ]
+            }
+          }
+        dest: /etc/sing-box/config.json
+        owner: sing-box
+        group: sing-box
+        mode: '0600'
+      notify: restart sing-box
+
+    - name: Create systemd service file
+      copy:
+        content: |
+          [Unit]
+          Description=sing-box service
+          Documentation=https://sing-box.sagernet.org
+          After=network.target network-online.target
+          Wants=network-online.target
+
+          [Service]
+          Type=simple
+          User=sing-box
+          Group=sing-box
+          WorkingDirectory=/var/lib/sing-box
+          ExecStart=/usr/local/bin/sing-box run -c /etc/sing-box/config.json
+          Restart=on-failure
+          RestartSec=10
+          LimitNOFILE=65536
+          
+          # Security hardening
+          NoNewPrivileges=true
+          PrivateTmp=true
+          ProtectSystem=strict
+          ProtectHome=true
+          ReadWritePaths=/var/lib/sing-box
+          ReadOnlyPaths=/etc/sing-box
+
+          [Install]
+          WantedBy=multi-user.target
+        dest: /etc/systemd/system/sing-box.service
+        owner: root
+        group: root
+        mode: '0644'
+      notify: 
+        - reload systemd
+        - restart sing-box
+
+    - name: Configure UFW firewall
+      ufw:
+        rule: allow
+        port: "{{ shadowsocks_port }}"
+        proto: tcp
+        comment: "Shadowsocks port"
+
+    - name: Allow SSH through UFW
+      ufw:
+        rule: allow
+        port: '22'
+        proto: tcp
+        comment: "SSH access"
+
+    - name: Enable UFW
+      ufw:
+        state: enabled
+        default: deny
+        direction: incoming
+
+    - name: Start and enable sing-box service
+      systemd:
+        name: sing-box
+        state: started
+        enabled: yes
+        daemon_reload: yes
+
+    - name: Verify service is running
+      systemd:
+        name: sing-box
+        state: started
+      register: service_status
+
+    - name: Display deployment status
+      debug:
+        msg: |
+          ========================================
+          Sing-box deployment status: SUCCESS
+          ========================================
+          Service is running: {{ service_status.status.ActiveState == 'active' }}
+          
+          Connection details are stored in encrypted file:
+          secrets/servers.yaml
+          
+          To view decrypted credentials:
+          sops -d secrets/servers.yaml
+          ========================================
+
+  handlers:
+    - name: reload systemd
+      systemd:
+        daemon_reload: yes
+
+    - name: restart sing-box
+      systemd:
+        name: sing-box
+        state: restarted

@@ -68,6 +68,7 @@
       pciutils
       patchelf
       procs
+      ansible.out
       #qemu_kvm
       #tpm2-tools
     ];
