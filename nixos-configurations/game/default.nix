@@ -26,6 +26,7 @@
     ezModules.virtualisation
     ezModules.falcon-sensor
     ezModules.wayland
+    ezModules.openfortivpn-config
     lanzaboote.nixosModules.lanzaboote
     nixos-hardware.nixosModules.lenovo-legion-16ach6h
     srvos.nixosModules.desktop

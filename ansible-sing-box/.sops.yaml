@@ -1,0 +1,7 @@
+creation_rules:
+  - path_regex: secrets/.*\.ya?ml$
+    pgp: '3D7331009E93CC97A8CA809D03DFD2DEA7AF6693'
+  - path_regex: host_vars/.*\.sops\.ya?ml$
+    pgp: '3D7331009E93CC97A8CA809D03DFD2DEA7AF6693'
+  - path_regex: group_vars/.*\.sops\.ya?ml$
+    pgp: '3D7331009E93CC97A8CA809D03DFD2DEA7AF6693'

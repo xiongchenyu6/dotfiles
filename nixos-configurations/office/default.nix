@@ -25,6 +25,7 @@
     ezModules.bird-inner
     ezModules.falcon-sensor
     ezModules.wayland
+    ezModules.openfortivpn-config
     lanzaboote.nixosModules.lanzaboote
     srvos.nixosModules.mixins-trusted-nix-caches
     srvos.nixosModules.mixins-nix-experimental

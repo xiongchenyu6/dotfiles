@@ -4,6 +4,9 @@
       "Bash(git add:*)",
       "Bash(git commit:*)"
     ],
-    "deny": []
+    "deny": [],
+    "additionalDirectories": [
+      "/run/secrets.d/4"
+    ]
   }
 }
