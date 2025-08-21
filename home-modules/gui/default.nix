@@ -212,7 +212,7 @@
     # comodoro.enable = true;
     mpv.enable = true;
 
-    obs-studio = {
+    obs-studio = lib.mkIf pkgs.stdenv.isLinux {
       enable = true;
       plugins = with pkgs.obs-studio-plugins; [
         wlrobs

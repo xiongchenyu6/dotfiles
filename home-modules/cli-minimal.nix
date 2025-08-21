@@ -2,6 +2,7 @@
   pkgs,
   config,
   osConfig,
+  lib,
   ...
 }:
 {
@@ -245,7 +246,7 @@
           backoff_at      = 
         '';
       };
-      ".ldaprc" = {
+      ".ldaprc" = lib.mkIf (osConfig ? networking && osConfig.networking ? domain && osConfig.networking.domain != null) {
         text = ''
           URI     ldap://mail.${osConfig.networking.domain}
           BASE    dc=autolife-robotics,dc=tech

@@ -8,10 +8,12 @@
   ...
 }:
 let
-  isDarwin =
-    (builtins ? "currentSystem")
-    && (builtins.currentSystem == "x86_64-darwin" || builtins.currentSystem == "aarch64-darwin");
-  #isDarwin = false;
+  # Check if we're on Darwin by checking if osConfig has the darwin-specific attributes
+  # If osConfig doesn't have system.nixos, we're likely on Darwin
+  hasNixOSTags = osConfig ? system && osConfig.system ? nixos && osConfig.system.nixos ? tags;
+  hasGuiTag = hasNixOSTags && (builtins.elem "gui" osConfig.system.nixos.tags);
+  hasNvidiaTag = hasNixOSTags && (builtins.elem "nvidia" osConfig.system.nixos.tags);
+  isDarwin = !hasNixOSTags;
 in
 {
   imports =
@@ -23,7 +25,7 @@ in
       ]
     else
       (
-        if (builtins.elem "gui" osConfig.system.nixos.tags) then
+        if hasGuiTag then
           [
             ezModules.zsh
             ezModules.cli
@@ -39,7 +41,7 @@ in
           [ ezModules.tmux ]
       )
       ++ (
-        if (builtins.elem "nvidia" osConfig.system.nixos.tags) then
+        if hasNvidiaTag then
           [
             ezModules.nvidia
           ]
@@ -47,7 +49,13 @@ in
           [ ]
       );
 
-  sops.secrets = lib.mkIf (isDarwin || (builtins.elem "gui" osConfig.system.nixos.tags)) {
+  # Allow unfree packages for home-manager
+  nixpkgs.config = {
+    allowUnfree = true;
+    allowBroken = true;
+  };
+
+  sops.secrets = lib.mkIf (isDarwin || hasGuiTag) {
     "ssh/freeman.xiong/id_ed25519" = {
       path = "${osConfig.users.users."freeman.xiong".home}/.ssh/id_ed25519";
       mode = "600";

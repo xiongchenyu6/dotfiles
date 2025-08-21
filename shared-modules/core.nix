@@ -20,7 +20,7 @@
 
   sops.secrets.nixAccessTokens = {
     mode = "0440";
-    group = config.users.groups.keys.name;
+    group = if (config.users.groups ? keys) then config.users.groups.keys.name else "wheel";
   };
   environment = {
 
