@@ -41,7 +41,7 @@
       #   allow-emacs-pinentry
       #   allow-loopback-pinentry
       # '';
-      pinentry.package = pkgs.pinentry-gnome3;
+      pinentry.package = if pkgs.stdenv.isDarwin then pkgs.pinentry_mac else pkgs.pinentry-gnome3;
       enableSshSupport = true;
       # gpg2 -K --with-keygrip
       sshKeys = [
@@ -72,8 +72,7 @@
           };
         };
       };
-      plugin = {
-        plugins = {
+      plugins = {
           cert-status = {
             shortCut = "Shift-S";
             confirm = false;
@@ -587,7 +586,6 @@
           };
         };
       };
-    };
 
     # keychain = { enable = true; };
     readline = {

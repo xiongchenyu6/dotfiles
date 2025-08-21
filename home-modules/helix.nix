@@ -368,8 +368,9 @@ in
       tree-sitter
 
       # Clipboard support
-      wl-clipboard
       xclip
+    ] ++ lib.optionals pkgs.stdenv.isLinux [
+      wl-clipboard  # for wayland (Linux only)
     ];
 
     # Add hx alias

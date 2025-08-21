@@ -5,17 +5,16 @@
 {
   environment = {
     systemPackages = with pkgs; [
-      docker
-      iterm2
       postman
+      claude-code
     ];
   };
   homebrew = {
-    enable = true;
+    enable = false;
     brews = [
-      "dropbox"
-      "1password"
-      "google-chrome"
+    ];
+    taps = [
+  "oven-sh/bun"
     ];
     global = {
       autoUpdate = true;
@@ -23,9 +22,6 @@
     };
     # mac app store
     # masApps = { WireGuard = 1451685025; };
-    taps = [
-		  "oven-sh/bun"
-    ];
     onActivation = {
       autoUpdate = true;
       cleanup = "zap";
@@ -34,19 +30,11 @@
   };
 
   services = {
-    netbird = {
-      enable = true;
-    };
     postgresql = {
       enable = true;
       package = pkgs.postgresql;
       enableTCPIP = true;
     };
-    redis = {
-      enable = true;
-      bind = "127.0.0.1";
-    };
-
     spacebar = {
       enable = true;
       package = pkgs.spacebar;

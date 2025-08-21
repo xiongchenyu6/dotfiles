@@ -7,14 +7,10 @@
   ...
 }:
 let
-  isDarwin =
-    (builtins ? "currentSystem")
-    && (builtins.currentSystem == "x86_64-darwin" || builtins.currentSystem == "aarch64-darwin");
-  isLinux =
-    if (builtins ? "currentSystem") then
-      (builtins.currentSystem == "x86_64-linux" || builtins.currentSystem == "aarch64-linux")
-    else
-      true;
+  hasNixOSTags = osConfig ? system && osConfig.system ? nixos && osConfig.system.nixos ? tags;
+  hasGuiTag = hasNixOSTags && (builtins.elem "gui" osConfig.system.nixos.tags);
+  isDarwin = !hasNixOSTags;
+  isLinux = hasNixOSTags;
 in
 {
   imports =
@@ -30,7 +26,7 @@ in
       (import ../shared-modules/sops.nix)
     ]
     ++ (
-      if isLinux && (builtins.elem "gui" osConfig.system.nixos.tags) then
+      if hasGuiTag then
         [
           ezModules.nixos-desktop
         ]

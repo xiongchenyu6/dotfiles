@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ pkgs, lib, ... }:
 {
   # Home Manager needs a bit of information about you and the
   # paths it should manage.
@@ -35,8 +35,6 @@
       #kmon
       termshark
       glow # markdown viewer
-      lm_sensors
-      fwupd
       lnav
       lego
       #gitbutler
@@ -56,7 +54,6 @@
       geoip
       manix
       grafana-loki
-      gparted
       imagemagick
       inetutils
       ifuse
@@ -65,12 +62,16 @@
       #my_cookies
       glib
       pass
-      pciutils
       patchelf
       procs
       ansible.out
       #qemu_kvm
       #tpm2-tools
+    ] ++ lib.optionals pkgs.stdenv.isLinux [
+      lm_sensors  # Linux-only hardware monitoring
+      fwupd       # Firmware update daemon (Linux-only)
+      gparted     # Disk partitioning GUI (Linux-only)
+      pciutils    # PCI utilities (mostly Linux-specific)
     ];
   };
 
@@ -139,9 +140,9 @@
           cmake-mode
           cape
           corfu
-          emacs-copilot-el
-          emacs-combobulate
-          emacs-gptel
+          #emacs-copilot-el  # Package not found in nixpkgs
+          #emacs-combobulate  # Package not found in nixpkgs
+          #emacs-gptel  # Package not found in nixpkgs
           citeproc
           dockerfile-mode
           direnv
