@@ -62,8 +62,9 @@ in
         tree-sitter
 
         # Clipboard support
-        wl-clipboard # for wayland
         xclip # for x11
+      ] ++ lib.optionals pkgs.stdenv.isLinux [
+        wl-clipboard # for wayland (Linux only)
       ];
     };
   };

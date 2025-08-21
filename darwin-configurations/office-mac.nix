@@ -10,6 +10,10 @@
   imports = [
     ezModules.wireguard
   ];
+  
+  # Set the primary user for nix-darwin
+  system.primaryUser = "freeman.xiong";
+  
   ids.gids.nixbld = 350;
   users = {
     users = {
