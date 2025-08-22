@@ -4,7 +4,7 @@
 { config, pkgs, ... }:
 {
   home = {
-    # sessionVariables = {
+    # osessionVariables = {
     #   SSH_AUTH_SOCK = "$(gpgconf --list-dirs agent-ssh-socket)";
     # };
   };

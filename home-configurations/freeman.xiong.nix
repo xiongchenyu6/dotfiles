@@ -60,6 +60,29 @@ in
       path = "${osConfig.users.users."freeman.xiong".home}/.ssh/id_ed25519";
       mode = "600";
     };
+    # Define API key secrets (they'll be used by the template)
+    "api-keys/SILICON_FLOW" = { };
+    "api-keys/XAI_API_KEY" = { };
+    "api-keys/OPENROUTER_API_KEY" = { };
+    "api-keys/GEMINI_API_KEY" = { };
+    "api-keys/Github_Access_Token" = { };
+    "api-keys/SLACK_BOT_TOKEN" = { };
+    "api-keys/SLACK_TEAM_ID" = { };
+  };
+
+  # Use sops template for environment variables - much cleaner!
+  sops.templates."api-keys-env" = lib.mkIf (isDarwin || hasGuiTag) {
+    content = ''
+      OPENAI_API_KEY=${config.sops.placeholder."api-keys/SILICON_FLOW"}
+      XAI_API_KEY=${config.sops.placeholder."api-keys/XAI_API_KEY"}
+      OPENROUTER_API_KEY=${config.sops.placeholder."api-keys/OPENROUTER_API_KEY"}
+      GEMINI_API_KEY=${config.sops.placeholder."api-keys/GEMINI_API_KEY"}
+      GITHUB_PERSONAL_ACCESS_TOKEN=${config.sops.placeholder."api-keys/Github_Access_Token"}
+      SLACK_BOT_TOKEN=${config.sops.placeholder."api-keys/SLACK_BOT_TOKEN"}
+      SLACK_TEAM_ID=${config.sops.placeholder."api-keys/SLACK_TEAM_ID"}
+    '';
+    path = "${config.home.homeDirectory}/.config/environment.d/50-api-keys.conf";
+    mode = "600";
   };
 
   home = {
@@ -70,15 +93,9 @@ in
         executable = false;
       };
     };
+    # Session variables are now managed by systemd user service
     sessionVariables = {
       OPENAI_API_BASE = "https://api.siliconflow.cn/v1";
-      OPENAI_API_KEY = builtins.getEnv "SILICON_FLOW";
-      XAI_API_KEY = builtins.getEnv "XAI_API_KEY";
-      OPENROUTER_API_KEY = builtins.getEnv "OPENROUTER_API_KEY";
-      GEMINI_API_KEY = builtins.getEnv "GEMINI_API_KEY";
-      GITHUB_PERSONAL_ACCESS_TOKEN = builtins.getEnv "Github_Access_Token";
-      SLACK_BOT_TOKEN = builtins.getEnv "SLACK_BOT_TOKEN";
-      SLACK_TEAM_ID = builtins.getEnv "SLACK_TEAM_ID";
     };
     homeDirectory = osConfig.users.users."freeman.xiong".home;
     sessionPath = [ "$HOME/.local/bin" ];
@@ -191,6 +208,23 @@ in
           proxyJump = "heco-nginx";
         };
       };
+    };
+  };
+
+  # Systemd user service to ensure environment directory exists
+  # The actual environment file is created by sops template above
+  systemd.user.services.setup-environment = lib.mkIf (isDarwin || hasGuiTag) {
+    Unit = {
+      Description = "Setup environment directory for API keys";
+      After = [ "sops-nix.service" ];
+    };
+    Service = {
+      Type = "oneshot";
+      RemainAfterExit = true;
+      ExecStart = "${pkgs.coreutils}/bin/mkdir -p %h/.config/environment.d";
+    };
+    Install = {
+      WantedBy = [ "default.target" ];
     };
   };
 }

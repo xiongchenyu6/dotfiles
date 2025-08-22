@@ -1,16 +1,22 @@
 {
+  config,
   ...
 }:
 {
-  networking = {
+  # Define sops secret for V2RAY UUID
+  sops.secrets."sing-box/V2RAY" = {
+    owner = "sing-box";
+    mode = "0400";
+  };
 
+  networking = {
     firewall = {
       allowedTCPPorts = [
         10086
       ];
     };
-
   };
+
   services = {
     sing-box = {
       enable = true;
@@ -22,7 +28,9 @@
             listen_port = 10086;
             users = [
               {
-                uuid = builtins.getEnv "V2RAY";
+                uuid = {
+                  _secret = config.sops.secrets."sing-box/V2RAY".path;
+                };
                 flow = "";
               }
             ];

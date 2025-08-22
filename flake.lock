@@ -45,11 +45,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1755751773,
-        "narHash": "sha256-d1H34kko9J5fWrxCVgfa1TkIwdkGt/eDSVopAWenw24=",
+        "lastModified": 1755825449,
+        "narHash": "sha256-XkiN4NM9Xdy59h69Pc+Vg4PxkSm9EWl6u7k6D5FZ5cM=",
         "owner": "lnl7",
         "repo": "nix-darwin",
-        "rev": "3a0a38a1e7ac2c4b4150ea37a491fdffdc9c92e1",
+        "rev": "8df64f819698c1fee0c2969696f54a843b2231e8",
         "type": "github"
       },
       "original": {
@@ -360,11 +360,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1755755322,
-        "narHash": "sha256-spCxkNihCk3uT3LUrUwzdEAjLA/E0EtEgF3KVI05nlM=",
+        "lastModified": 1755810213,
+        "narHash": "sha256-QdenO8f0PTg+tC6HuSvngKcbRZA5oZKmjUT+MXKOLQg=",
         "owner": "nix-community",
         "repo": "home-manager",
-        "rev": "282b4c98de97da6667cb03de4f427371734bc39c",
+        "rev": "6911d3e7f475f7b3558b4f5a6aba90fa86099baa",
         "type": "github"
       },
       "original": {
@@ -591,11 +591,11 @@
     },
     "nixpkgs-master": {
       "locked": {
-        "lastModified": 1755778208,
-        "narHash": "sha256-3cVkP+LPgdM9ZHDXfaeINjt2z6/PWH2XMPLwgainE5A=",
+        "lastModified": 1755829505,
+        "narHash": "sha256-4/Jd+LkQ2ssw8luQVkqVs9spDBVE6h/u/hC/tzngsPo=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "d97d15eb8cac8a8626cc76306d0c8849ead8aa58",
+        "rev": "f937f8ecd1c70efd7e9f90ba13dfb400cf559de4",
         "type": "github"
       },
       "original": {
@@ -659,11 +659,11 @@
         "nixpkgs": "nixpkgs_3"
       },
       "locked": {
-        "lastModified": 1755773349,
-        "narHash": "sha256-dyD8beJKxUiI6Is/YWk060zAJCO9wINh1L+PtQTZJko=",
+        "lastModified": 1755829190,
+        "narHash": "sha256-q/hKI4bFfU29UTKHYaGFIK7ATQrw94otwWwnF44HDGY=",
         "owner": "nix-community",
         "repo": "NUR",
-        "rev": "f579dc81337c902da373b91bf57896d69d6c602a",
+        "rev": "2ae891833195ce38949a3f79ecec2cc05c8f7f90",
         "type": "github"
       },
       "original": {
@@ -867,10 +867,10 @@
         ]
       },
       "locked": {
-        "lastModified": 1755753119,
-        "narHash": "sha256-5xZyiiDAfs3KJX9r8wuGFPbmePH3P6x2v55n649U/eU=",
+        "lastModified": 1755783162,
+        "narHash": "sha256-RQHw/aezwr8eHUqanavHZZgrkIvh6RDSGBmsuuRyCM8=",
         "ref": "refs/heads/main",
-        "rev": "f70b1d0c236761d59c00ad91c3e2272ca2d665ef",
+        "rev": "b77541378274774786feb19faba06c0856210f6f",
         "shallow": true,
         "type": "git",
         "url": "ssh://git@github.com/AutoLifeRobot/rust-web-server.git"
