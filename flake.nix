@@ -184,24 +184,24 @@
           };
 
           devShells.default = pkgs.mkShell {
-            buildInputs = with pkgs; [
-              sops
-              ssh-to-age
-              editorconfig-checker
-              nixfmt-rfc-style
-              nixd
-              statix
-              yq-go
-              nixos-anywhere
-              yaml-language-server
-							gnupg
-            ] ++ lib.optionals pkgs.stdenv.isDarwin [
-              # Darwin-specific build tools
-              inputs.darwin.packages.${system}.darwin-rebuild
-            ];
-            shellHook = ''
-              export $(sops -d ./secrets/common.env | xargs)
-            '';
+            buildInputs =
+              with pkgs;
+              [
+                sops
+                ssh-to-age
+                editorconfig-checker
+                nixfmt-rfc-style
+                nixd
+                statix
+                nixos-anywhere
+                yaml-language-server
+                gnupg
+                yq-go
+              ]
+              ++ lib.optionals pkgs.stdenv.isDarwin [
+                # Darwin-specific build tools
+                inputs.darwin.packages.${system}.darwin-rebuild
+              ];
           };
           #export NIX_SSHOPTS="-Y -p 2222"
           pre-commit = {
