@@ -1,4 +1,17 @@
 #!/usr/bin/env bash
+set -euo pipefail
+
+# This script checks the binding status of the GPU and Audio devices, and the status of the NVIDIA driver.
+
+usage() {
+    echo "Usage: $0"
+    echo "Checks the binding status of the GPU and Audio devices, and the status of the NVIDIA driver."
+}
+
+if [[ "${1:-}" == "-h" || "${1:-}" == "--help" ]]; then
+    usage
+    exit 0
+fi
 
 GPU="0000:01:00.0"
 AUDIO="0000:01:00.1"

@@ -1,4 +1,18 @@
 #!/usr/bin/env bash
+set -euo pipefail
+
+# This script is a complete workflow for rebinding the GPU between the host and a VM.
+
+usage() {
+    echo "Usage: $0 [to-vm|to-host]"
+    echo "  to-vm   - Bind GPU to VFIO for VM passthrough"
+    echo "  to-host - Bind GPU back to host system"
+}
+
+if [[ "${1:-}" == "-h" || "${1:-}" == "--help" ]]; then
+    usage
+    exit 0
+fi
 
 # Complete GPU rebind workflow for Hyprland
 

@@ -1,4 +1,17 @@
 #!/usr/bin/env bash
+set -euo pipefail
+
+# This script unbinds the GPU from the vfio-pci driver and binds it to the nvidia driver for use with Hyprland.
+
+usage() {
+    echo "Usage: $0"
+    echo "Unbinds the GPU from the vfio-pci driver and binds it to the nvidia driver for use with Hyprland."
+}
+
+if [[ "${1:-}" == "-h" || "${1:-}" == "--help" ]]; then
+    usage
+    exit 0
+fi
 
 # GPU PCI addresses
 GPU="0000:01:00.0"

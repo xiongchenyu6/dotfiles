@@ -5,7 +5,7 @@
 {
   # Define sops secret for V2RAY UUID
   sops.secrets."sing-box/V2RAY" = {
-    owner = "sing-box";
+    owner = config.users.users.sing-box.name or "root";
     mode = "0400";
   };
 

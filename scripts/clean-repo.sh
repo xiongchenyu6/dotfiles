@@ -1,5 +1,17 @@
 #!/usr/bin/env bash
-set -o errexit
+set -euo pipefail
+
+# This script permanently deletes files/folders from your git repository.
+
+usage() {
+    echo "Usage: $0 <path1> <path2> ..."
+    echo "Permanently deletes files/folders from your git repository."
+}
+
+if [[ "${1:-}" == "-h" || "${1:-}" == "--help" ]]; then
+    usage
+    exit 0
+fi
 
 # Author: David Underhill
 # Script to permanently delete files/folders from your git repository.  To use
@@ -23,6 +35,6 @@ git filter-branch --index-filter \
 
 # remove the temporary history git-filter-branch
 # otherwise leaves behind for a long time
-rm -rf .git/refs/original/ &&
-	git reflog expire --all &&
+rm -rf .git/refs/original/ && \
+	git reflog expire --all && \
 	git gc --aggressive --prune

@@ -1,4 +1,17 @@
 #!/usr/bin/env bash
+set -euo pipefail
+
+# This script fixes the NVIDIA DRM for Hyprland by loading the nvidia_drm module with modeset=1.
+
+usage() {
+    echo "Usage: $0"
+    echo "Fixes the NVIDIA DRM for Hyprland by loading the nvidia_drm module with modeset=1."
+}
+
+if [[ "${1:-}" == "-h" || "${1:-}" == "--help" ]]; then
+    usage
+    exit 0
+fi
 
 echo "=== Fixing NVIDIA DRM for Hyprland ==="
 

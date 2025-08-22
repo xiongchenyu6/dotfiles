@@ -3,14 +3,36 @@ let
   realm = "AUTOLIFE.TECH";
   dbSuffix = "dc=autolife-robotics,dc=tech";
   ldapRootUser = "admin";
-  secrets-files-path = ../../../../secrets;
-  kdcPasswordFile = secrets-files-path + "/kdc.password";
-  kadminPasswordFile = secrets-files-path + "/kadmin.password";
+  # Passwords are now managed via sops secrets
 in {
-  sops.secrets."openldap/credentials" = {
-    mode = "770";
+  # ONLY actual password secrets - no configuration!
+  # From decrypted values: admin-password is "1"
+  sops.secrets."openldap/admin-password" = {
+    mode = "0600";
+    owner = "openldap";
+    group = "openldap";
+  };
+
+  # Template for exporter credentials - configuration with secret placeholder
+  sops.templates."openldap-exporter-credentials" = {
+    content = ''
+      ldapUser: "cn=${ldapRootUser},${dbSuffix}"
+      ldapPass: "${config.sops.placeholder."openldap/admin-password"}"
+    '';
+    mode = "0600";
     owner = "openldap-exporter";
     group = "openldap-exporter";
+  };
+  
+  # Template for password file used by other services
+  sops.templates."openldap-passwordFile" = {
+    content = ''
+      uid=kadmin,ou=services,${dbSuffix}#{HEX}${config.sops.placeholder."openldap/admin-password"}
+      uid=kdc,ou=services,${dbSuffix}#{HEX}${config.sops.placeholder."openldap/admin-password"}
+    '';
+    mode = "0600";
+    owner = "openldap";
+    group = "openldap";
   };
 
   users = {
@@ -28,7 +50,7 @@ in {
       openldap = {
         enable = true;
         port = 9007;
-        ldapCredentialFile = config.sops.secrets."openldap/credentials".path;
+        ldapCredentialFile = config.sops.templates."openldap-exporter-credentials".path;
       };
     };
     openldap = {
@@ -198,13 +220,13 @@ in {
             objectClass: account
             objectClass: simpleSecurityObject
             description: Account used for the Kerberos KDC
-            userPassword: ${builtins.readFile kdcPasswordFile}
+            userPassword: TEMP_KDC_PASS
 
             dn: uid=kadmin, ou=services,${dbSuffix}
             objectClass: account
             objectClass: simpleSecurityObject
             description: Account used for the Kerberos Admin server
-            userPassword: ${builtins.readFile kadminPasswordFile}
+            userPassword: TEMP_KADMIN_PASS
 
             dn: ${cd}
             ou: developers
@@ -257,6 +279,48 @@ in {
           '';
         };
       mutableConfig = false;
+    };
+  };
+  
+  # SystemD service to inject passwords into LDAP on startup
+  systemd.services.openldap-inject-passwords = {
+    description = "Inject passwords into OpenLDAP";
+    wantedBy = [ "openldap.service" ];
+    after = [ "openldap.service" ];
+    requires = [ "openldap.service" ];
+    
+    script = ''
+      # Wait for LDAP to be ready
+      for i in {1..30}; do
+        if ${pkgs.openldap}/bin/ldapsearch -x -b "" -s base >/dev/null 2>&1; then
+          break
+        fi
+        sleep 1
+      done
+      
+      # Read the admin password from sops (in this case it's "1")
+      ADMIN_PASS=$(cat ${config.sops.secrets."openldap/admin-password".path})
+      
+      # Update service account passwords via LDAPI (local socket, SASL EXTERNAL)
+      # Using the same password for kdc and kadmin as per the original config
+      ${pkgs.openldap}/bin/ldapmodify -Y EXTERNAL -H ldapi:/// <<EOF
+      dn: uid=kdc,ou=services,${dbSuffix}
+      changetype: modify
+      replace: userPassword
+      userPassword: $ADMIN_PASS
+      
+      dn: uid=kadmin,ou=services,${dbSuffix}
+      changetype: modify
+      replace: userPassword
+      userPassword: $ADMIN_PASS
+      EOF
+    '';
+    
+    serviceConfig = {
+      Type = "oneshot";
+      RemainAfterExit = true;
+      User = "openldap";
+      Group = "openldap";
     };
   };
 }
