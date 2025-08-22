@@ -1,4 +1,17 @@
 #!/usr/bin/env bash
+set -euo pipefail
+
+# This script checks the display status in Hyprland.
+
+usage() {
+    echo "Usage: $0"
+    echo "Checks the display status in Hyprland."
+}
+
+if [[ "${1:-}" == "-h" || "${1:-}" == "--help" ]]; then
+    usage
+    exit 0
+fi
 
 echo "=== Hyprland Display Status ==="
 echo ""

@@ -1,4 +1,19 @@
 #!/usr/bin/env bash
+set -euo pipefail
+
+# This script restarts Hyprland.
+# It first tries to exit gracefully, then force kills it if necessary.
+# It also saves the current workspace and prints it out.
+
+usage() {
+    echo "Usage: $0"
+    echo "Restarts Hyprland."
+}
+
+if [[ "${1:-}" == "-h" || "${1:-}" == "--help" ]]; then
+    usage
+    exit 0
+fi
 
 echo "Restarting Hyprland..."
 

@@ -144,6 +144,9 @@
       #stow
       sshpass
       tgpt
+      ugm
+      rkdeveloptool
+      keepassxc
       # terraform
       # terraform-ls
       # terracognita
@@ -180,7 +183,8 @@
 
   i18n = lib.mkIf pkgs.stdenv.isLinux {
     inputMethod = {
-      enabled = "fcitx5";
+      type = "fcitx5";
+      enable = true;
       fcitx5 = {
         addons = with pkgs; [
           #fcitx5-mozc
