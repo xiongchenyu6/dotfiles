@@ -4,75 +4,78 @@
   # paths it should manage.
 
   home = {
-    packages = with pkgs; [
-      #appimage-run
-      #discord
-      cloc
-      minicom
-      doctl
-      gdrive
-      gtrash
-      google-chrome
-      #freerdp
-      #dmidecode
-      # jetbrains.idea-ultimate
-      # jetbrains.rider
-      xournalpp
-      slack
-      zoom-us
-      ueberzugpp
-      #ytfzf
-      usbutils
-      #vault
-      solana-cli
-      # expect mkpasswd conflict
-      gpg-tui
-      sysz
-      ncdu
-      lazygit
-      lazydocker
-      #(warp-terminal.override { waylandSupport = true; })
-      #kmon
-      termshark
-      glow # markdown viewer
-      lnav
-      lego
-      #gitbutler
-      # zed-editor
-      nixd
-      #v4l-utils
-      dotnetCorePackages.sdk_8_0
-      #sui
-      foundry
-      #record_screen
-      apg
-      #cava # audio visualizer
-      cmake
-      gcc
-      openfortivpn
-      gnumake
-      geoip
-      manix
-      grafana-loki
-      imagemagick
-      inetutils
-      ifuse
-      jp2a
-      lsof
-      #my_cookies
-      glib
-      pass
-      patchelf
-      procs
-      ansible.out
-      #qemu_kvm
-      #tpm2-tools
-    ] ++ lib.optionals pkgs.stdenv.isLinux [
-      lm_sensors  # Linux-only hardware monitoring
-      fwupd       # Firmware update daemon (Linux-only)
-      gparted     # Disk partitioning GUI (Linux-only)
-      pciutils    # PCI utilities (mostly Linux-specific)
-    ];
+    packages =
+      with pkgs;
+      [
+        #appimage-run
+        #discord
+        cloc
+        minicom
+        doctl
+        gdrive
+        gtrash
+        google-chrome
+        #freerdp
+        #dmidecode
+        # jetbrains.idea-ultimate
+        # jetbrains.rider
+        xournalpp
+        slack
+        zoom-us
+        ueberzugpp
+        #ytfzf
+        usbutils
+        #vault
+        solana-cli
+        # expect mkpasswd conflict
+        gpg-tui
+        sysz
+        ncdu
+        lazygit
+        lazydocker
+        #(warp-terminal.override { waylandSupport = true; })
+        #kmon
+        termshark
+        glow # markdown viewer
+        lnav
+        lego
+        #gitbutler
+        # zed-editor
+        nixd
+        #v4l-utils
+        dotnetCorePackages.sdk_8_0
+        #sui
+        foundry
+        #record_screen
+        apg
+        #cava # audio visualizer
+        cmake
+        gcc
+        openfortivpn
+        gnumake
+        geoip
+        manix
+        grafana-loki
+        imagemagick
+        inetutils
+        ifuse
+        jp2a
+        lsof
+        #my_cookies
+        glib
+        pass
+        patchelf
+        procs
+        ansible.out
+        #qemu_kvm
+        #tpm2-tools
+      ]
+      ++ lib.optionals pkgs.stdenv.isLinux [
+        lm_sensors # Linux-only hardware monitoring
+        fwupd # Firmware update daemon (Linux-only)
+        gparted # Disk partitioning GUI (Linux-only)
+        pciutils # PCI utilities (mostly Linux-specific)
+      ];
   };
 
   programs = {
@@ -140,9 +143,9 @@
           cmake-mode
           cape
           corfu
-          #emacs-copilot-el  # Package not found in nixpkgs
-          #emacs-combobulate  # Package not found in nixpkgs
-          #emacs-gptel  # Package not found in nixpkgs
+          emacs-copilot-el # Package not found in nixpkgs
+          emacs-combobulate # Package not found in nixpkgs
+          emacs-gptel # Package not found in nixpkgs
           citeproc
           dockerfile-mode
           direnv

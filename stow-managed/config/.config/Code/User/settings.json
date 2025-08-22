@@ -192,4 +192,8 @@
     "github.copilot.chat.notebook.followCellExecution.enabled": true,
     "zig.zls.enabled": "on",
     "chat.mcp.serverSampling": {},
+    "github.copilot.chat.enableRetryAfterFilteredResponse": true,
+    "github.copilot.chat.newWorkspace.useContext7": true,
+    "chat.mcp.assisted.nuget.enabled": true,
+    "chat.mcp.autostart": "newAndOutdated",
 }

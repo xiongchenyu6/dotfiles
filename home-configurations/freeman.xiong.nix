@@ -49,11 +49,8 @@ in
           [ ]
       );
 
-  # Allow unfree packages for home-manager
-  nixpkgs.config = {
-    allowUnfree = true;
-    allowBroken = true;
-  };
+  # nixpkgs.config removed - using global nixpkgs config from NixOS instead
+  # (when home-manager.useGlobalPkgs is enabled)
 
   sops.secrets = lib.mkIf (isDarwin || hasGuiTag) {
     "ssh/freeman.xiong/id_ed25519" = {
@@ -62,7 +59,6 @@ in
     };
     # Define API key secrets (they'll be used by the template)
     "api-keys/SILICON_FLOW" = { };
-    "api-keys/XAI_API_KEY" = { };
     "api-keys/OPENROUTER_API_KEY" = { };
     "api-keys/GEMINI_API_KEY" = { };
     "api-keys/Github_Access_Token" = { };
@@ -74,7 +70,6 @@ in
   sops.templates."api-keys-env" = lib.mkIf (isDarwin || hasGuiTag) {
     content = ''
       OPENAI_API_KEY=${config.sops.placeholder."api-keys/SILICON_FLOW"}
-      XAI_API_KEY=${config.sops.placeholder."api-keys/XAI_API_KEY"}
       OPENROUTER_API_KEY=${config.sops.placeholder."api-keys/OPENROUTER_API_KEY"}
       GEMINI_API_KEY=${config.sops.placeholder."api-keys/GEMINI_API_KEY"}
       GITHUB_PERSONAL_ACCESS_TOKEN=${config.sops.placeholder."api-keys/Github_Access_Token"}

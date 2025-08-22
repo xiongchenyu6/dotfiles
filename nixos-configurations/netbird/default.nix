@@ -10,6 +10,7 @@
 }:
 {
   imports = with inputs; [
+    ../../nixos-modules/rust-web-server-config.nix  # Sops configuration for rust-web-server
     "${modulesPath}/installer/scan/not-detected.nix"
     "${modulesPath}/profiles/qemu-guest.nix"
     ezModules.root
@@ -43,7 +44,7 @@
     };
   };
 
-  sops.secrets."rust-web-server/config" = { };
+  # rust-web-server secrets are now handled by the module itself
 
   environment = {
     systemPackages = [ pkgs.pgcli ];
@@ -152,7 +153,7 @@
 
     rust-web-server = {
       enable = true;
-      configFile = config.sops.secrets."rust-web-server/config".path;
+      configFile = config.sops.templates."rust-web-server-config".path;
     };
 
     nginx = {

@@ -23,11 +23,12 @@
     srvos.nixosModules.mixins-trusted-nix-caches
     srvos.nixosModules.mixins-nix-experimental
     rust-web-server.nixosModules.rust-web-server
+    ../../nixos-modules/rust-web-server-config.nix  # Our local module with sops templates
   ];
 
   zramSwap.enable = true;
 
-  sops.secrets."rust-web-server/config" = { };
+  # rust-web-server secrets are now handled by the module itself
 
   boot = {
     kernelPackages = lib.mkForce pkgs.linuxPackages_latest;
@@ -141,7 +142,7 @@
 
     rust-web-server = {
       enable = true;
-      configFile = config.sops.secrets."rust-web-server/config".path;
+      configFile = config.sops.templates."rust-web-server-config".path;
     };
   };
 

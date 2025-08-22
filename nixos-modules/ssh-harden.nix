@@ -7,6 +7,17 @@
   #   mode = "400";
   # };
 
+  # Install the askpass package to ensure it's available
+  environment.systemPackages = with pkgs; [
+    x11_ssh_askpass
+  ];
+
+  # Configure SSH to use the askpass program
+  programs.ssh = {
+    enableAskPassword = true;
+    askPassword = "${pkgs.x11_ssh_askpass}/libexec/ssh-askpass";
+  };
+
   environment.etc = {
     # "ssh/auth" = {
     #   mode = "0555";

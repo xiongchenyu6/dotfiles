@@ -1,7 +1,8 @@
 { config, ... }: {
 
+  # Restic secrets - keeping the original structure as it's all secrets
   sops.secrets."restic/pass" = { };
-  sops.secrets."restic/s3" = { };
+  sops.secrets."restic/s3" = { };  # This contains the AWS credentials as environment variables
 
   services.restic = {
     backups = {
@@ -11,7 +12,7 @@
         paths = [ "/home" ];
         initialize = true;
         passwordFile = config.sops.secrets."restic/pass".path;
-        environmentFile = config.sops.secrets."restic/s3".path;
+        environmentFile = config.sops.secrets."restic/s3".path;  # Use the s3 secret directly
       };
     };
     server = {

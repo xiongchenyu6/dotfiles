@@ -70,6 +70,9 @@
     ];
     kernelParams = [
       "iommu=pt"
+      "xhci_hcd.quirks=270336"
+      "usbcore.autosuspend=-1"
+      #"usbcore.old_scheme_first=1"
     ];
 
     # extraModulePackages = with pkgs; [
@@ -95,6 +98,8 @@
       };
     };
   };
+
+  systemd.services.ModemManager.enable = false;
 
   networking =
     let
@@ -151,16 +156,6 @@
           powersave = true;
         };
       };
-      modemmanager = {
-        enable = true;
-        fccUnlockScripts = [
-          {
-            # Quectel EC25 LTE modem
-            id = "2c7c:0125";
-            path = "${pkgs.modemmanager}/share/ModemManager/fcc-unlock.available.d/2c7c";
-          }
-        ];
-      };
       enableIPv6 = true;
       wg-quick = {
         interfaces = {
@@ -209,23 +204,30 @@
       openFirewall = true;
       capSysAdmin = true;
     };
-    # kanidm = {
-    #   enableClient = true;
-    #   clientSettings = {
-    #     uri = "https://kanidm.${config.networking.domain}";
+    # litellm = {
+    #   enable = true;
+    #   environmentFile = "";
+    #   settings = {
+    #     model_list = [
+    #       {
+    #         model_name = "github_copilot/gpt-4";
+    #         litellm_params = {
+    #           model = "github_copilot/gpt-4";
+    #         };
+    #       }
+    #     ];
     #   };
     # };
-
     postgresql = {
       enable = true;
-      package = pkgs.postgresql_17_jit;
+      package = pkgs.postgresql_18_jit;
       enableJIT = true;
       enableTCPIP = true;
       extensions =
         ps: with ps; [
           postgis
           pg_repack
-          pg_cron
+          #pg_cron
         ];
       settings = {
         log_connections = true;
@@ -233,8 +235,8 @@
         logging_collector = true;
         log_disconnections = true;
         log_destination = lib.mkForce "syslog";
-        shared_preload_libraries = "pg_cron";
-        "cron.database_name" = "postgres";
+        # shared_preload_libraries = "pg_cron";
+        # "cron.database_name" = "postgres";
       };
       ensureUsers = [
         {
