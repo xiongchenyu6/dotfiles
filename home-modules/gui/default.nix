@@ -192,10 +192,10 @@
     };
   };
   programs = {
-    nh = {
-      enable = true;
-      flake = "/home/freeman.xiong/dotfiles";
-    };
+    # nh = {
+    #   enable = true;
+    #   flake = "/home/freeman.xiong/dotfiles";
+    # };
 
     nix-init = {
       enable = true;
