@@ -222,4 +222,14 @@ in
       WantedBy = [ "default.target" ];
     };
   };
+
+  # Load API keys from sops into shell environment
+  programs.zsh.initContent = lib.mkIf (isDarwin || hasGuiTag) ''
+    # Source API keys from sops if the file exists
+    if [ -f "${config.home.homeDirectory}/.config/sops-nix/secrets/rendered/api-keys-env" ]; then
+      set -a  # mark all new variables for export
+      source "${config.home.homeDirectory}/.config/sops-nix/secrets/rendered/api-keys-env"
+      set +a
+    fi
+  '';
 }
