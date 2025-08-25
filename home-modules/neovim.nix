@@ -23,18 +23,13 @@ in
       # Use the neovim from nixpkgs
       package = pkgs.neovim-unwrapped;
 
-      # Since we're using stow-managed config, we don't need to configure plugins here
-      # The actual configuration is in stow-managed/config/.config/nvim/
-
-      # Set up some basic options that work well with the stow-managed config
-      extraConfig = ''
-        " Basic settings to ensure compatibility
-        set termguicolors
-        set mouse=a
-        set clipboard+=unnamedplus
-
-        " The main configuration is loaded from ~/.config/nvim/init.lua
-        " which is managed by stow
+      # Source the actual configuration from stow-managed directory
+      extraLuaConfig = ''
+        -- Load the stow-managed configuration if it exists
+        local stow_config = vim.fn.expand("~/dotfiles/stow-managed/config/.config/nvim/init.lua")
+        if vim.fn.filereadable(stow_config) == 1 then
+          dofile(stow_config)
+        end
       '';
 
       # Ensure we have the necessary runtime dependencies
