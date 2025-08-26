@@ -23,21 +23,21 @@ in
         database:
           url: postgresql://rustwebserver:${config.sops.placeholder."rust-web-server/db-password"}@localhost/rustwebserver
         oauth:
-          client_id: vr-control
+          client_id: iXPxzvDuhuH9lGHfR3OMIMchnHxhz86c
           client_secret: ${config.sops.placeholder."rust-web-server/oauth-client-secret"}
           redirect_url: https://rust-server.auto-life.tech/auth/authorized
-          config_url: https://kanidm.auto-life.tech/oauth2/openid/vr-control/.well-known/openid-configuration
+          config_url: https://autolife.jp.auth0.com/.well-known/openid-configuration
         oidc:
-          client_id: robot-management-system
-          issuer: https://kanidm.auto-life.tech/oauth2/openid/robot-management-system
-          authorization_endpoint: https://kanidm.auto-life.tech/oauth2/openid/robot-management-system
-          token_endpoint: https://kanidm.auto-life.tech/oauth2/token
-          userinfo_endpoint: https://kanidm.auto-life.tech/oauth2/openid/robot-management-system/userinfo
-          jwks_uri: https://kanidm.auto-life.tech/oauth2/openid/robot-management-system/public_key.jwk
-          revocation_url: https://kanidm.auto-life.tech/oauth2/token/revoke
-          introspection_endpoint: https://kanidm.auto-life.tech/oauth2/token/introspect
+          client_id: iXPxzvDuhuH9lGHfR3OMIMchnHxhz86c
+          issuer: https://autolife.jp.auth0.com/
+          authorization_endpoint: https://autolife.jp.auth0.com/authorize
+          token_endpoint: https://autolife.jp.auth0.com/oauth/token
+          userinfo_endpoint: https://autolife.jp.auth0.com/userinfo
+          jwks_uri: https://autolife.jp.auth0.com/.well-known/jwks.json
+          revocation_url: https://autolife.jp.auth0.com/oauth/revoke
+          introspection_endpoint: https://autolife.jp.auth0.com/oauth/introspect
         auth:
-          enabled: false
+          enabled: true
       '';
       mode = "0600";
       # The owner and group will be created by the upstream rust-web-server module

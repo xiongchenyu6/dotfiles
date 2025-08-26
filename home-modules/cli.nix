@@ -61,6 +61,15 @@
     lazydocker = {
       enable = true;
     };
+    claude-code = {
+      enable = true;
+    };
+    gemini-cli = {
+      enable = true;
+    };
+    # opencode = {
+    #  enable = true;
+    #};
     script-directory = {
       enable = true;
       settings = {

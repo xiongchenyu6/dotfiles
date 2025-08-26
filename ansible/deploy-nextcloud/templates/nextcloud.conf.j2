@@ -1,0 +1,30 @@
+<VirtualHost *:80>
+    ServerName {{ nextcloud_domain }}
+    DocumentRoot /var/www/nextcloud
+    
+    <Directory /var/www/nextcloud/>
+        Require all granted
+        AllowOverride All
+        Options FollowSymLinks MultiViews
+        
+        <IfModule mod_dav.c>
+            Dav off
+        </IfModule>
+        
+        SetEnv HOME /var/www/nextcloud
+        SetEnv HTTP_HOME /var/www/nextcloud
+    </Directory>
+    
+    # Security headers
+    <IfModule mod_headers.c>
+        Header always set Strict-Transport-Security "max-age=15552000; includeSubDomains"
+        Header always set X-Content-Type-Options "nosniff"
+        Header always set X-XSS-Protection "1; mode=block"
+        Header always set X-Robots-Tag "noindex, nofollow"
+        Header always set X-Frame-Options "SAMEORIGIN"
+        Header always set Referrer-Policy "no-referrer"
+    </IfModule>
+    
+    ErrorLog ${APACHE_LOG_DIR}/nextcloud_error.log
+    CustomLog ${APACHE_LOG_DIR}/nextcloud_access.log combined
+</VirtualHost>

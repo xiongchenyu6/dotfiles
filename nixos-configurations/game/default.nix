@@ -68,11 +68,13 @@
       "vfio"
       "vfio_iommu_type1"
     ];
+    kernelModules = [ "sp5100_tco" ]; # AMD watchdog module for Legion 16ach6h
     kernelParams = [
       "iommu=pt"
       "xhci_hcd.quirks=270336"
       "usbcore.autosuspend=-1"
       #"usbcore.old_scheme_first=1"
+      "sp5100_tco.nowayout=1" # Prevent watchdog from being disabled
     ];
 
     # extraModulePackages = with pkgs; [
@@ -100,6 +102,41 @@
   };
 
   systemd.services.ModemManager.enable = false;
+
+  # Hardware watchdog configuration using new systemd options
+  systemd.settings.Manager = {
+    RuntimeWatchdogSec = "30s"; # Reboot if system hangs for 30 seconds
+    RebootWatchdogSec = "10min"; # Allow 10 minutes for reboot to complete
+    KExecWatchdogSec = "1min"; # Time for kexec reboot
+  };
+
+  # Enable watchdog daemon
+  services.watchdogd = {
+    enable = true;
+    settings = {
+      "device /dev/watchdog" = {
+        timeout = 30; # Hardware watchdog timeout in seconds
+        interval = 10; # Ping interval in seconds
+        safe-exit = true; # Disable watchdog on clean exit
+      };
+      loadavg = {
+        enabled = true;
+        interval = 60;
+        warning = 8.0; # Warning at load average 8
+        critical = 12.0; # Critical at load average 12 (will trigger reboot)
+      };
+      meminfo = {
+        enabled = true;
+        interval = 60;
+        warning = 0.85; # Warning at 85% memory usage
+        critical = 0.95; # Critical at 95% memory usage (will trigger reboot)
+      };
+      filenr = {
+        enabled = true;
+        logmark = true;
+      };
+    };
+  };
 
   networking =
     let
@@ -195,9 +232,9 @@
 
   services = {
 
-    cloudflare-warp = {
-      enable = true;
-    };
+    # cloudflare-warp = {
+    #   enable = true;
+    # };
 
     sunshine = {
       enable = true;
@@ -221,13 +258,17 @@
     postgresql = {
       enable = true;
       package = pkgs.postgresql_18_jit;
+      authentication = ''
+        local all all trust
+        host  all  all 0.0.0.0/0 scram-sha-256
+      '';
       enableJIT = true;
       enableTCPIP = true;
       extensions =
         ps: with ps; [
           postgis
           pg_repack
-          #pg_cron
+          pg_cron
         ];
       settings = {
         log_connections = true;
