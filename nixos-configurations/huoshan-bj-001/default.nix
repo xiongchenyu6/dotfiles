@@ -17,7 +17,6 @@
     ezModules.server
     ezModules.cn
     ezModules.sing-box
-    #ezModules.kanidm
     srvos.nixosModules.server
     srvos.nixosModules.mixins-nginx
     srvos.nixosModules.mixins-trusted-nix-caches

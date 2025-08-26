@@ -91,6 +91,7 @@ in
     # Session variables are now managed by systemd user service
     sessionVariables = {
       OPENAI_API_BASE = "https://api.siliconflow.cn/v1";
+      EDITOR = lib.mkForce "nvim";  # Force nvim as editor to resolve conflict with emacs
     };
     homeDirectory = osConfig.users.users."freeman.xiong".home;
     sessionPath = [ "$HOME/.local/bin" ];
@@ -138,7 +139,7 @@ in
         };
         core = {
           autocrlf = "input";
-          editor = "emacs";
+          editor = "nvim";
         };
         pull = {
           rebase = false;

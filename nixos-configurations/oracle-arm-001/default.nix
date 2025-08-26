@@ -9,7 +9,7 @@
 }:
 {
   imports = with inputs; [
-    ../../nixos-modules/rust-web-server-config.nix  # Sops configuration for rust-web-server
+    ../../nixos-modules/rust-web-server-config.nix # Sops configuration for rust-web-server
     disko.nixosModules.disko
     (modulesPath + "/installer/scan/not-detected.nix")
     (modulesPath + "/profiles/qemu-guest.nix")
@@ -107,12 +107,12 @@
   services = {
     postgresqlBackup = {
       enable = true;
-      databases = [ "rustWebServer" ];
+      databases = [ "rustwebserver" ];
     };
 
     postgresql = {
       enable = true;
-      package = pkgs.postgresql_17_jit;
+      package = pkgs.postgresql_18_jit;
       authentication = ''
         local all all trust
         host  all  all 0.0.0.0/0 scram-sha-256
