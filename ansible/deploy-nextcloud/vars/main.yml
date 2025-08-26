@@ -1,0 +1,35 @@
+---
+# Nextcloud version to install
+nextcloud_version: "29.0.4"
+
+# Domain configuration
+nextcloud_domain: "10.171.150.101"  # Change this to your domain
+
+# Database configuration
+mysql_root_password: "SecureRootPass123!"
+nextcloud_db_name: "nextcloud"
+nextcloud_db_user: "nextcloud"
+nextcloud_db_password: "NextcloudDBPass456!"
+
+# Nextcloud admin credentials
+nextcloud_admin_user: "admin"
+nextcloud_admin_password: "AdminPass789!"
+
+# Data directory
+nextcloud_data_dir: "/var/nextcloud-data"
+
+# PHP configuration
+php_memory_limit: "512M"
+php_upload_max_filesize: "512M"
+php_post_max_size: "512M"
+php_max_execution_time: "300"
+php_max_input_time: "300"
+
+# Additional Nextcloud apps to install (optional)
+nextcloud_apps:
+  - calendar
+  - contacts
+  - mail
+  - tasks
+  - notes
+  - deck

@@ -91,10 +91,6 @@
         preserve_split = true;
       };
 
-      gestures = {
-        workspace_swipe = true;
-      };
-
       "$mod" = "SUPER";
 
       bind = [
@@ -141,10 +137,10 @@
         "noblur, class:^(wine)$"
         "noshadow, class:^(wine)$"
         "noanim, class:^(wine)$"
-        "idleinhibit always, class:^(wine)$"  # Prevent screen lock
-        "fullscreen, title:^(Warcraft III)$"  # Auto fullscreen
-        "monitor DP-1, class:^(wine)$"  # Force to specific monitor
-        "workspace 9, class:^(wine)$"  # Dedicated gaming workspace
+        "idleinhibit always, class:^(wine)$" # Prevent screen lock
+        "fullscreen, title:^(Warcraft III)$" # Auto fullscreen
+        "monitor DP-1, class:^(wine)$" # Force to specific monitor
+        "workspace 9, class:^(wine)$" # Dedicated gaming workspace
       ];
     };
   };

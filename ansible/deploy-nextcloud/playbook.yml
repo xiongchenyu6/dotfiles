@@ -1,0 +1,248 @@
+---
+- name: Deploy Nextcloud Server
+  hosts: nextcloud
+  become: yes
+  vars_files:
+    - vars/main.yml
+
+  tasks:
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+        cache_valid_time: 3600
+      when: ansible_os_family == "Debian"
+
+    - name: Install required packages
+      apt:
+        name:
+          - apache2
+          - mariadb-server
+          - mariadb-client
+          - php8.3
+          - php8.3-gd
+          - php8.3-mysql
+          - php8.3-curl
+          - php8.3-mbstring
+          - php8.3-intl
+          - php8.3-gmp
+          - php8.3-bcmath
+          - php8.3-xml
+          - php8.3-zip
+          - php8.3-imagick
+          - php8.3-apcu
+          - php8.3-redis
+          - libapache2-mod-php8.3
+          - redis-server
+          - python3-pymysql
+          - unzip
+          - curl
+          - wget
+        state: present
+      when: ansible_os_family == "Debian"
+
+    - name: Enable Apache modules
+      apache2_module:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - rewrite
+        - headers
+        - env
+        - dir
+        - mime
+        - ssl
+      notify: restart apache
+
+    - name: Start and enable services
+      systemd:
+        name: "{{ item }}"
+        state: started
+        enabled: yes
+      loop:
+        - apache2
+        - mariadb
+        - redis-server
+
+    - name: Secure MariaDB installation
+      mysql_user:
+        name: root
+        password: "{{ mysql_root_password }}"
+        login_unix_socket: /var/run/mysqld/mysqld.sock
+        host: localhost
+        login_user: root
+        login_password: ""
+
+    - name: Remove anonymous MySQL users
+      mysql_user:
+        name: ''
+        host_all: yes
+        state: absent
+        login_user: root
+        login_password: "{{ mysql_root_password }}"
+
+    - name: Remove MySQL test database
+      mysql_db:
+        name: test
+        state: absent
+        login_user: root
+        login_password: "{{ mysql_root_password }}"
+
+    - name: Create Nextcloud database
+      mysql_db:
+        name: "{{ nextcloud_db_name }}"
+        state: present
+        login_user: root
+        login_password: "{{ mysql_root_password }}"
+
+    - name: Create Nextcloud database user
+      mysql_user:
+        name: "{{ nextcloud_db_user }}"
+        password: "{{ nextcloud_db_password }}"
+        priv: "{{ nextcloud_db_name }}.*:ALL"
+        state: present
+        login_user: root
+        login_password: "{{ mysql_root_password }}"
+
+    - name: Download Nextcloud
+      unarchive:
+        src: "https://download.nextcloud.com/server/releases/nextcloud-{{ nextcloud_version }}.zip"
+        dest: /tmp
+        remote_src: yes
+        creates: /tmp/nextcloud
+
+    - name: Move Nextcloud to web directory
+      command: mv /tmp/nextcloud /var/www/nextcloud
+      args:
+        creates: /var/www/nextcloud
+
+    - name: Create Nextcloud data directory
+      file:
+        path: "{{ nextcloud_data_dir }}"
+        state: directory
+        owner: www-data
+        group: www-data
+        mode: '0750'
+
+    - name: Set ownership of Nextcloud directory
+      file:
+        path: /var/www/nextcloud
+        owner: www-data
+        group: www-data
+        recurse: yes
+
+    - name: Configure PHP settings
+      lineinfile:
+        path: /etc/php/8.3/apache2/php.ini
+        regexp: "{{ item.regexp }}"
+        line: "{{ item.line }}"
+      loop:
+        - { regexp: '^memory_limit', line: 'memory_limit = 512M' }
+        - { regexp: '^upload_max_filesize', line: 'upload_max_filesize = 512M' }
+        - { regexp: '^post_max_size', line: 'post_max_size = 512M' }
+        - { regexp: '^max_execution_time', line: 'max_execution_time = 300' }
+        - { regexp: '^max_input_time', line: 'max_input_time = 300' }
+      notify: restart apache
+
+    - name: Configure Redis for Nextcloud
+      blockinfile:
+        path: /var/www/nextcloud/config/config.php
+        marker: "/* {mark} ANSIBLE MANAGED REDIS CONFIG */"
+        insertafter: '\$CONFIG = array \('
+        block: |
+          'memcache.local' => '\\OC\\Memcache\\APCu',
+          'memcache.distributed' => '\\OC\\Memcache\\Redis',
+          'memcache.locking' => '\\OC\\Memcache\\Redis',
+          'redis' => [
+            'host' => 'localhost',
+            'port' => 6379,
+          ],
+        create: no
+      when: nextcloud_installed.stat.exists | default(false)
+
+    - name: Check if Nextcloud is installed
+      stat:
+        path: /var/www/nextcloud/config/config.php
+      register: nextcloud_installed
+
+    - name: Install Nextcloud via occ
+      become_user: www-data
+      command: >
+        php /var/www/nextcloud/occ maintenance:install
+        --database "mysql"
+        --database-name "{{ nextcloud_db_name }}"
+        --database-user "{{ nextcloud_db_user }}"
+        --database-pass "{{ nextcloud_db_password }}"
+        --admin-user "{{ nextcloud_admin_user }}"
+        --admin-pass "{{ nextcloud_admin_password }}"
+        --data-dir "{{ nextcloud_data_dir }}"
+      args:
+        creates: /var/www/nextcloud/config/config.php
+
+    - name: Set trusted domains
+      become_user: www-data
+      command: >
+        php /var/www/nextcloud/occ config:system:set
+        trusted_domains {{ item.index }}
+        --value="{{ item.domain }}"
+      loop:
+        - { index: 0, domain: "localhost" }
+        - { index: 1, domain: "{{ nextcloud_domain }}" }
+        - { index: 2, domain: "{{ ansible_host }}" }
+
+    - name: Configure Apache virtual host
+      template:
+        src: nextcloud.conf.j2
+        dest: /etc/apache2/sites-available/nextcloud.conf
+      notify: restart apache
+
+    - name: Enable Nextcloud site
+      command: a2ensite nextcloud.conf
+      args:
+        creates: /etc/apache2/sites-enabled/nextcloud.conf
+      notify: restart apache
+
+    - name: Disable default Apache site
+      command: a2dissite 000-default.conf
+      args:
+        removes: /etc/apache2/sites-enabled/000-default.conf
+      notify: restart apache
+
+    - name: Configure Nextcloud background jobs
+      cron:
+        name: "Nextcloud cron"
+        minute: "*/5"
+        user: www-data
+        job: "php -f /var/www/nextcloud/cron.php"
+
+    - name: Set background job mode to cron
+      become_user: www-data
+      command: php /var/www/nextcloud/occ background:cron
+
+    - name: Configure PHP OPcache
+      blockinfile:
+        path: /etc/php/8.3/apache2/conf.d/10-opcache.ini
+        create: yes
+        block: |
+          opcache.enable=1
+          opcache.interned_strings_buffer=8
+          opcache.max_accelerated_files=10000
+          opcache.memory_consumption=128
+          opcache.save_comments=1
+          opcache.revalidate_freq=1
+      notify: restart apache
+
+  handlers:
+    - name: restart apache
+      systemd:
+        name: apache2
+        state: restarted
+
+    - name: restart mariadb
+      systemd:
+        name: mariadb
+        state: restarted
+
+    - name: restart redis
+      systemd:
+        name: redis-server
+        state: restarted

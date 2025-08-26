@@ -46,7 +46,7 @@
       cloudflared
       ledger-live-desktop
       netbird-ui
-      termius
+      #termius
       tdesktop
       unrar-wrapper
       whatsapp-for-linux
@@ -70,11 +70,9 @@
       kube-score
       kubelogin-oidc
       calicoctl
-      claude-code
       # kdePackages.wayqt
       # kdePackages.qtstyleplugin-kvantum
-      libsForQt5.oxygen-icons
-      feishu-lark
+      feishu
       websocat
       android-studio
       #opengl-driver
@@ -97,7 +95,6 @@
       graphviz
       #microsoft-edge
       grpcurl
-      gemini-cli
       gotron-sdk
       (kubernetes-helm-wrapped.override { plugins = [ kubernetes-helmPlugins.helm-diff ]; })
       #helm
@@ -160,7 +157,7 @@
       wrangler
       yubikey-manager
       desktop-file-utils
-      inputs.claude-desktop.packages.${system}.claude-desktop-with-fhs
+      #inputs.claude-desktop.packages.${system}.claude-desktop-with-fhs
       gnome-software
       tradingview
     ];

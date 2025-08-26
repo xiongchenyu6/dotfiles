@@ -6,7 +6,6 @@
   environment = {
     systemPackages = with pkgs; [
       postman
-      claude-code
     ];
   };
   homebrew = {
@@ -14,7 +13,7 @@
     brews = [
     ];
     taps = [
-  "oven-sh/bun"
+      "oven-sh/bun"
     ];
     global = {
       autoUpdate = true;

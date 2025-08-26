@@ -25,8 +25,9 @@
         ueberzugpp
         #ytfzf
         usbutils
+        zip
         #vault
-        solana-cli
+        #solana-cli
         # expect mkpasswd conflict
         gpg-tui
         sysz

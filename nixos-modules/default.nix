@@ -68,10 +68,6 @@ in
     ];
   };
   services = {
-    # kanidm = {
-    #   package = pkgs.kanidmWithSecretProvisioning;
-    # };
-
     resolved = {
       enable = true;
       # dnssec = "allow-downgrade";

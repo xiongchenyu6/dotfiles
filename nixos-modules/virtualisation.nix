@@ -26,7 +26,7 @@
           enable = true;
           packages = [
             pkgs.OVMFFull.fd
-            pkgs.pkgsCross.aarch64-multiplatform.OVMF.fd
+            #pkgs.pkgsCross.aarch64-multiplatform.OVMF.fd
           ];
         };
       };
