@@ -16,7 +16,7 @@ in
   config = lib.mkIf cfg.enable {
     programs.neovim = {
       enable = true;
-      defaultEditor = true;
+      defaultEditor = false;  # Set to false to avoid conflict with emacs
       viAlias = true;
       vimAlias = true;
       vimdiffAlias = true;
