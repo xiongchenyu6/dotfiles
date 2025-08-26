@@ -98,7 +98,7 @@
       #microsoft-edge
       grpcurl
       gemini-cli
-      #gotron-sdk
+      gotron-sdk
       (kubernetes-helm-wrapped.override { plugins = [ kubernetes-helmPlugins.helm-diff ]; })
       #helm
       hey # http load generator
