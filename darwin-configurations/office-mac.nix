@@ -9,6 +9,7 @@
 }: {
   imports = [
     ezModules.wireguard
+    inputs.mac-app-util.darwinModules.default
   ];
   
   # Set the primary user for nix-darwin

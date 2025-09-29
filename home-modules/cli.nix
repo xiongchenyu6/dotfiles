@@ -53,7 +53,7 @@
 
   programs = {
     awscli = {
-      enable = true;
+      enable = false;
     };
     lazygit = {
       enable = true;

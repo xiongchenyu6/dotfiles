@@ -5,26 +5,16 @@
   inputs,
   pkgs,
   ezModules,
+  lib,
   ...
 }:
 let
-  overlays =
-    with inputs;
-    map (x: x.overlays.default or x.overlay) [
-      xiongchenyu6
-      nix-alien
-      sops-nix
-      nix-topology
-    ];
+  sharedConfig = import ../shared-modules/default.nix { inherit inputs lib; };
+  
   darwin-modules = with inputs; [
     home-manager.darwinModules.home-manager
     sops-nix.darwinModules.default
-    (import ../shared-modules/sops.nix)
-    (_: {
-      nixpkgs = {
-        inherit overlays;
-      };
-    })
+    (sharedConfig.mkNixpkgsConfig sharedConfig.baseOverlays)
   ];
 in
 {
@@ -38,6 +28,8 @@ in
   system = {
     stateVersion = 6;
   };
+
+  home-manager = sharedConfig.homeManagerConfig;
 
   security.pam.services.sudo_local.touchIdAuth = true;
   system.darwinLabel = "gui";
