@@ -29,8 +29,8 @@ in
       withPython3 = true;
       withRuby = true;
 
-      # COC (Completion) support - if you want to use coc.nvim
-      # coc.enable = false;  # We're using lazy.nvim instead
+      # COC (Completion) support - disabled as we're using nvim-cmp
+      # coc.enable = false;
 
       # Configure through extraLuaConfig
       extraLuaConfig = ''
@@ -60,20 +60,6 @@ in
         vim.g.mapleader = " "
         vim.g.maplocalleader = " "
 
-        -- Bootstrap lazy.nvim
-        local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
-        if not vim.loop.fs_stat(lazypath) then
-          vim.fn.system({
-            "git",
-            "clone",
-            "--filter=blob:none",
-            "https://github.com/folke/lazy.nvim.git",
-            "--branch=stable",
-            lazypath,
-          })
-        end
-        vim.opt.rtp:prepend(lazypath)
-
         -- Load configuration files from stow-managed directory
         local config_path = vim.fn.expand("~/dotfiles/stow-managed/config/.config/nvim/lua")
         if vim.fn.isdirectory(config_path) == 1 then
@@ -83,42 +69,131 @@ in
           local ok_options = pcall(require, "config.options")
           local ok_keymaps = pcall(require, "config.keymaps")
           local ok_autocmds = pcall(require, "config.autocmds")
-          
-          -- Setup lazy.nvim and load plugins
-          require("lazy").setup("plugins", {
-            defaults = {
-              lazy = false,
-              version = false,
-            },
-            checker = { enabled = true },
-            performance = {
-              rtp = {
-                disabled_plugins = {
-                  "gzip",
-                  "tarPlugin",
-                  "tohtml",
-                  "tutor",
-                  "zipPlugin",
-                },
-              },
-            },
-          })
-        else
-          -- Minimal setup if stow-managed config doesn't exist
-          require("lazy").setup({}, {
-            defaults = {
-              lazy = false,
-              version = false,
-            },
-          })
         end
+        
+        -- Basic plugin configurations since we're not using lazy.nvim
+        -- Load colorscheme
+        pcall(function()
+          require("tokyonight").setup({
+            style = "moon",
+            transparent = true,
+            terminal_colors = true,
+            styles = {
+              comments = { italic = true },
+              keywords = { italic = true },
+            },
+          })
+          vim.cmd.colorscheme("tokyonight")
+        end)
+        
+        -- Configure essential plugins with their basic setup
+        pcall(function() require("nvim-treesitter.configs").setup({
+          highlight = { enable = true },
+          indent = { enable = true },
+          incremental_selection = { enable = true },
+        }) end)
+        
+        pcall(function() require("nvim-tree").setup({
+          view = { width = 30 },
+          renderer = { group_empty = true },
+        }) end)
+        
+        pcall(function() require("lualine").setup({
+          options = { theme = "tokyonight", globalstatus = true },
+        }) end)
+        
+        pcall(function() require("gitsigns").setup() end)
+        pcall(function() require("which-key").setup() end)
+        pcall(function() require("telescope").setup() end)
       '';
 
-      # Plugins can be managed through home-manager or lazy.nvim
-      # We're using lazy.nvim for now, but you can add plugins here too
+      # Plugins managed through home-manager instead of lazy.nvim
       plugins = with pkgs.vimPlugins; [
-        # Add any plugins you want to manage through Nix here
-        # Example: nvim-treesitter
+        # Colorschemes
+        tokyonight-nvim
+        catppuccin-nvim
+
+        # LSP and completion
+        nvim-lspconfig
+        nvim-cmp
+        cmp-nvim-lsp
+        cmp-buffer
+        cmp-path
+        cmp-cmdline
+        cmp_luasnip
+        cmp-nvim-lua
+        luasnip
+        friendly-snippets
+        mason-nvim
+        mason-lspconfig-nvim
+        mason-tool-installer-nvim
+        fidget-nvim
+        neodev-nvim
+
+        # Formatting and linting
+        conform-nvim
+        nvim-lint
+
+        # Treesitter
+        nvim-treesitter.withAllGrammars
+        nvim-treesitter-textobjects
+        nvim-ts-context-commentstring
+        nvim-treesitter-context
+        nvim-ts-autotag
+
+        # Editor enhancements
+        mini-pairs
+        mini-surround
+        mini-comment
+        mini-ai
+        mini-indentscope
+
+        # UI improvements
+        dressing-nvim
+        lualine-nvim
+        nvim-web-devicons
+        indent-blankline-nvim
+        alpha-nvim
+        nvim-notify
+        noice-nvim
+        nui-nvim
+
+        # File management
+        nvim-tree-lua
+        telescope-nvim
+        telescope-fzf-native-nvim
+        plenary-nvim
+
+        # Git integration
+        gitsigns-nvim
+        vim-fugitive
+        vim-rhubarb
+        diffview-nvim
+        git-blame-nvim
+
+        # Utilities
+        which-key-nvim
+        persistence-nvim
+        trouble-nvim
+        todo-comments-nvim
+        nvim-colorizer-lua
+        vim-illuminate
+        flash-nvim
+        nvim-spectre
+        undotree
+        vim-repeat
+        nvim-surround
+        comment-nvim
+        nvim-bqf
+        copilot-vim
+
+        # Terminal integration
+        toggleterm-nvim
+
+        # Development tools
+        vim-wakatime
+        vim-startuptime
+        treesj
       ];
 
       # Ensure we have the necessary runtime dependencies
