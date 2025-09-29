@@ -72,7 +72,7 @@
       calicoctl
       # kdePackages.wayqt
       # kdePackages.qtstyleplugin-kvantum
-      feishu
+      feishu-lark
       websocat
       android-studio
       #opengl-driver
