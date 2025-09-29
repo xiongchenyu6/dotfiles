@@ -22,13 +22,6 @@
         package = pkgs.qemu_kvm;
         swtpm.enable = true;
         runAsRoot = true;
-        ovmf = {
-          enable = true;
-          packages = [
-            pkgs.OVMFFull.fd
-            #pkgs.pkgsCross.aarch64-multiplatform.OVMF.fd
-          ];
-        };
       };
     };
 

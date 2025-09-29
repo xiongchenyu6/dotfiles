@@ -6,11 +6,11 @@
   ...
 }:
 {
-  imports = [ 
+  imports = [
     ./neovim.nix
     ./helix.nix
   ];
-  
+
   modules.neovim.enable = true;
   modules.helix.enable = true;
 
@@ -185,7 +185,6 @@
       };
     };
 
-
     # navi = { enable = true; };
 
     zoxide = {
@@ -246,14 +245,17 @@
           backoff_at      = 
         '';
       };
-      ".ldaprc" = lib.mkIf (osConfig ? networking && osConfig.networking ? domain && osConfig.networking.domain != null) {
-        text = ''
-          URI     ldap://mail.${osConfig.networking.domain}
-          BASE    dc=autolife-robotics,dc=tech
-          SASL_MECH GSSAPI
-          SASL_REALM AUTOLIFE.TECH
-        '';
-      };
+      ".ldaprc" =
+        lib.mkIf
+          (osConfig ? networking && osConfig.networking ? domain && osConfig.networking.domain != null)
+          {
+            text = ''
+              URI     ldap://mail.${osConfig.networking.domain}
+              BASE    dc=autolife-robotics,dc=tech
+              SASL_MECH GSSAPI
+              SASL_REALM AUTOLIFE.TECH
+            '';
+          };
       ".curlrc" = {
         text = ''
           connect-timeout = 30

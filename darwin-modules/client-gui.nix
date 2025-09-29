@@ -5,7 +5,6 @@
 {
   environment = {
     systemPackages = with pkgs; [
-      postman
     ];
   };
   homebrew = {
@@ -35,7 +34,7 @@
       enableTCPIP = true;
     };
     spacebar = {
-      enable = true;
+      enable = false;
       package = pkgs.spacebar;
       config = {
         position = "top";

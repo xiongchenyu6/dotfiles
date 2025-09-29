@@ -55,6 +55,7 @@
         openfortivpn
         gnumake
         geoip
+        github-copilot-cli
         manix
         grafana-loki
         imagemagick
@@ -144,9 +145,9 @@
           cmake-mode
           cape
           corfu
-          emacs-copilot-el # Package not found in nixpkgs
-          emacs-combobulate # Package not found in nixpkgs
-          emacs-gptel # Package not found in nixpkgs
+          emacs-copilot-el
+          emacs-combobulate
+          #emacs-gptel
           citeproc
           dockerfile-mode
           direnv
@@ -180,7 +181,6 @@
           plantuml-mode
           pdf-tools
           protobuf-mode
-          rime
           restclient
           rainbow-delimiters
           racket-mode
@@ -199,6 +199,8 @@
           wakatime-mode
           which-key
           yaml-mode
+        ] ++ lib.optionals pkgs.stdenv.isLinux [
+          rime  # Chinese input method - Linux only due to architecture issues on Darwin
         ];
       extraConfig = ''
         (add-to-list 'default-frame-alist
