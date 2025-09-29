@@ -5,7 +5,7 @@ _: {
       allowOther = false;
       directories = [
         "config/.config/xmonad"
-        "config/.config/nvim"
+        #"config/.config/nvim"
         "password-store/.local/share/password-store"
         "albert/.local/share/albert"
         "config/.config/albert"

@@ -526,7 +526,7 @@ is available."
 (define-key copilot-completion-map (kbd "M-n") #'copilot-next-completion)
 
 #+end_src
-**** gptel
+**** COMMENT gptel
 #+begin_src emacs-lisp
 (require 'gptel)
 (require 'gptel-openai-extras)

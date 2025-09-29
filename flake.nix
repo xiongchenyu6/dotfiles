@@ -73,7 +73,7 @@
     };
     # Personal and project packages
     xiongchenyu6 = {
-      url = "github:xiongchenyu6/nur-packages";
+      url = "github:xiongchenyu6/nur-packages?lfs=1";
       inputs = {
         nixpkgs.follows = "nixpkgs";
         flake-parts.follows = "flake-parts";
@@ -107,6 +107,11 @@
       };
     };
     mcp-servers-nix.url = "github:natsukium/mcp-servers-nix";
+
+    mac-app-util = {
+      url = "github:hraban/mac-app-util";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
     lanzaboote = {
       url = "github:nix-community/lanzaboote";

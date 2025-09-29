@@ -5,6 +5,7 @@
   ezModules,
   osConfig,
   lib,
+  inputs,
   ...
 }:
 let
@@ -17,7 +18,13 @@ let
 in
 {
   imports =
-    if isDarwin then
+    # Import mac-app-util only on macOS for proper application linking
+    (lib.optionals isDarwin [
+      inputs.mac-app-util.homeManagerModules.default
+    ])
+    ++
+    # Platform-specific module imports
+    (if isDarwin then
       [
         ezModules.zsh
         ezModules.cli
@@ -47,7 +54,7 @@ in
           ]
         else
           [ ]
-      );
+      ));
 
   # nixpkgs.config removed - using global nixpkgs config from NixOS instead
   # (when home-manager.useGlobalPkgs is enabled)

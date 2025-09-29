@@ -37,7 +37,7 @@
       sbctl
       nur.repos.xddxdd.qq
       nur.repos.xddxdd.bilibili
-      #nur.repos.xddxdd.wine-wechat
+      nur.repos.xddxdd.wine-wechat
       #nur.repos.xddxdd.dingtalk
       #gimp
       gpgme.dev
@@ -204,6 +204,21 @@
 
     zathura = {
       enable = true;
+    };
+
+    texlive = {
+      enable = true;
+      extraPackages = tpkgs: {
+        inherit (tpkgs)
+          collection-basic
+          collection-luatex
+          collection-langcjk
+          collection-latexrecommended
+          collection-fontsrecommended
+          collection-xetex
+          latexmk
+          ;
+      };
     };
 
     bun = {
