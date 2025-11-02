@@ -39,6 +39,9 @@ enabled=true
 index_file_path=true
 paths=@Invalid()
 
+[github]
+enabled=true
+
 [hash]
 enabled=true
 
@@ -114,6 +117,14 @@ enabled=false
 
 [python.vpn]
 enabled=true
+
+[python.vscode_projects]
+enabled=true
+priorityPMName=1
+priorityPMPath=5
+priorityPMTag=10
+priorityRecent=15
+recentEnabled=true
 
 [python.wikipedia]
 enabled=false

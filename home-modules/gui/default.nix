@@ -35,7 +35,7 @@
       albert
       baidupcs-go
       sbctl
-      nur.repos.xddxdd.qq
+      #nur.repos.xddxdd.qq
       nur.repos.xddxdd.bilibili
       nur.repos.xddxdd.wine-wechat
       #nur.repos.xddxdd.dingtalk
@@ -47,9 +47,10 @@
       ledger-live-desktop
       netbird-ui
       #termius
-      tdesktop
+      telegram-desktop
       unrar-wrapper
-      whatsapp-for-linux
+      #whatsapp-for-linux
+      wasistlos
       winetricks
       wineWowPackages.waylandFull
       bottles
@@ -66,7 +67,7 @@
       kustomize
       krew
       kconf
-      #korb
+      #orb
       kube-score
       kubelogin-oidc
       calicoctl
@@ -85,7 +86,7 @@
       blender
       delve # go debugger
       dive # docker image analyzer
-      du-dust # du alternative
+      dust # du alternative
       envsubst
       ffmpeg-full
       fluxcd
@@ -152,9 +153,9 @@
       # tf2pulumi
       tealdeer
       unzip
-      wakatime
+      wakatime-cli
       wget
-      wrangler
+      #wrangler
       yubikey-manager
       desktop-file-utils
       #inputs.claude-desktop.packages.${system}.claude-desktop-with-fhs
@@ -186,7 +187,7 @@
         addons = with pkgs; [
           #fcitx5-mozc
           fcitx5-gtk
-          fcitx5-chinese-addons
+          #fcitx5-chinese-addons
           fcitx5-rime
         ];
       };

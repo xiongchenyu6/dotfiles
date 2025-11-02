@@ -208,6 +208,12 @@
         # };
         status = {
           disabled = false;
+          # Only show when command failed (hide success/OK messages)
+          format = "[$symbol$status]($style) ";
+          success_symbol = "";
+          # Only display status on error
+          recognize_signal_code = true;
+          map_symbol = true;
         };
         time = {
           disabled = false;
@@ -226,6 +232,10 @@
     };
 
   };
+
+  # Disable automatic gpg-agent setup to prevent "OK" message on shell startup
+  services.gpg-agent.enable = lib.mkForce false;
+
   home = {
     file = {
       ".wakatime.cfg" = {
