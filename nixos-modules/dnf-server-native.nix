@@ -104,15 +104,20 @@ in
     systemd.services."create-dnf-network" = {
       description = "Create DNF container network";
       after = [ "network.target" ];
-      before = [ "${cfg.backend}-mysql.service" "${cfg.backend}-dnf-1.service" ];
+      before = [
+        "${cfg.backend}-mysql.service"
+        "${cfg.backend}-dnf-1.service"
+      ];
       wantedBy = [ "multi-user.target" ];
       serviceConfig = {
         Type = "oneshot";
         RemainAfterExit = true;
         User = "root";
-        ExecStart = let
-          cmd = if cfg.backend == "podman" then "${pkgs.podman}/bin/podman" else "${pkgs.docker}/bin/docker";
-        in "${pkgs.bash}/bin/bash -c '${pkgs.util-linux}/bin/nsenter -t 1 -m -u -i -n -p -- ${cmd} network create --subnet=10.90.0.0/24 dnf-net 2>/dev/null || true'";
+        ExecStart =
+          let
+            cmd = if cfg.backend == "podman" then "${pkgs.podman}/bin/podman" else "${pkgs.docker}/bin/docker";
+          in
+          "${pkgs.bash}/bin/bash -c '${pkgs.util-linux}/bin/nsenter -t 1 -m -u -i -n -p -- ${cmd} network create --subnet=10.90.0.0/24 dnf-net 2>/dev/null || true'";
       };
     };
 
@@ -148,8 +153,8 @@ in
             SERVER_GROUP = toString cfg.serverGroup;
             OPEN_CHANNEL = cfg.openChannels;
             PUBLIC_IP = cfg.publicIP;
-            MYSQL_HOST = "10.90.0.10";  # Use fixed IP address
-            MYSQL_PORT = "4000";  # MySQL's internal port
+            MYSQL_HOST = "10.90.0.10"; # Use fixed IP address
+            MYSQL_PORT = "4000"; # MySQL's internal port
             DNF_DB_ROOT_PASSWORD = cfg.rootPassword;
             GM_ACCOUNT = cfg.gmAccount;
             GM_PASSWORD = cfg.gmPassword;
@@ -188,14 +193,20 @@ in
 
     # Ensure dnf-1 starts after mysql container
     systemd.services."${cfg.backend}-dnf-1" = {
-      after = [ "${cfg.backend}-mysql.service" "create-dnf-network.service" ];
-      requires = [ "${cfg.backend}-mysql.service" "create-dnf-network.service" ];
+      after = [
+        "${cfg.backend}-mysql.service"
+        "create-dnf-network.service"
+      ];
+      requires = [
+        "${cfg.backend}-mysql.service"
+        "create-dnf-network.service"
+      ];
       serviceConfig = {
         Restart = "always";
         RestartSec = "10s";
       };
     };
-    
+
     # Ensure mysql container restarts on failure
     systemd.services."${cfg.backend}-mysql" = {
       after = [ "create-dnf-network.service" ];
@@ -236,7 +247,7 @@ in
 
     # Add management tools
     environment.systemPackages = with pkgs; [
-      mariadb-client # MySQL client tools
+      mariadb.client # MySQL client tools
     ];
   };
 }
