@@ -23,7 +23,7 @@
         openssh.authorizedKeys.keys = [
           shares.users-dict."freeman.xiong".public-key
           shares.users-dict."freeman.xiong".yubikey
-          "ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBOCfF/bo5cgjjwlFrsDH63nyo2kf+byktzVWR6FRhtNNqmGqOl5Ze/zBfNlk8+rp5zRVPXjO5PWLezHydgbbUxY= iPhone Termius"
+          "ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBJs7kCjPFf372r6JrSbJ3HcwKyisiOWY2jogSnJ03fCukRKFQVkTQeU7hthTFy8JdrwpQnR8spIdTkaKU9XbBR0="
         ];
         shell = pkgs.zsh;
         hashedPasswordFile = lib.mkDefault config.sops.secrets."user/freeman/pass".path;

@@ -37,7 +37,6 @@
       enable = true;
       enableExtraSocket = true;
       # extraConfig = ''
-
       #   allow-emacs-pinentry
       #   allow-loopback-pinentry
       # '';
