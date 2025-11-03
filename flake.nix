@@ -113,16 +113,11 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    # Pin nixpkgs for lanzaboote to avoid Rust 1.86.0 build failures
-    nixpkgs-lanzaboote.url = "github:NixOS/nixpkgs/nixos-24.11";
-
     lanzaboote = {
       url = "github:nix-community/lanzaboote";
       inputs = {
         # Use stable nixpkgs to avoid Rust 1.86.0 build issues
-        nixpkgs.follows = "nixpkgs-lanzaboote";
-        flake-compat.follows = "flake-compat";
-        flake-parts.follows = "flake-parts";
+        nixpkgs.follows = "nixpkgs";
       };
     };
   };
