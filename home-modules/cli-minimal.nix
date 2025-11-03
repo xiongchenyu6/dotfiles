@@ -54,17 +54,23 @@
 
     ssh = {
       enable = true;
-      hashKnownHosts = false;
-      controlMaster = "auto";
-      controlPersist = "24h";
-      compression = true;
-      forwardAgent = true;
-      addKeysToAgent = "yes";
-      extraConfig = ''
-        RemoteForward /run/user/1000/gnupg/S.gpg-agent /run/user/1000/gnupg/S.gpg-agent.extra
-      '';
-      # forwardX11 = true;
-      # forwardX11Trusted = true;
+      enableDefaultConfig = false; # Explicitly disable defaults as recommended
+      matchBlocks = {
+        "*" = {
+          # Move all the global options here
+          hashKnownHosts = false;
+          controlMaster = "auto";
+          controlPersist = "24h";
+          compression = true;
+          forwardAgent = true;
+          addKeysToAgent = "yes";
+          extraOptions = {
+            RemoteForward = "/run/user/1000/gnupg/S.gpg-agent /run/user/1000/gnupg/S.gpg-agent.extra";
+          };
+          # forwardX11 = true;
+          # forwardX11Trusted = true;
+        };
+      };
     };
 
     home-manager = {
@@ -84,18 +90,16 @@
       lfs = {
         enable = true;
       };
-      aliases = {
-        trash = "!mkdir -p .trash && git ls-files --others --exclude-standard | xargs mv -f -t .trash";
-        pushall = "!git remote | xargs -L1 git push --all";
-        rank = "shortlog -s -n --no-merges";
-      };
-      signing.format = "openpgp";
-      difftastic = {
-        enable = true;
-        background = "dark";
-      };
 
-      extraConfig = {
+      signing.format = "openpgp";
+
+      # Updated to new format: settings replaces extraConfig and aliases
+      settings = {
+        alias = {
+          trash = "!mkdir -p .trash && git ls-files --others --exclude-standard | xargs mv -f -t .trash";
+          pushall = "!git remote | xargs -L1 git push --all";
+          rank = "shortlog -s -n --no-merges";
+        };
         init = {
           defaultBranch = "main";
         };
@@ -231,10 +235,21 @@
       enable = true;
     };
 
+    # Moved difftastic to its own program block as per the new format
+    difftastic = {
+      enable = true;
+      options = {
+        background = "dark";
+      };
+      git = {
+        enable = true; # Explicitly enable git integration as recommended
+      };
+    };
+
   };
 
   # Disable automatic gpg-agent setup to prevent "OK" message on shell startup
-  services.gpg-agent.enable = lib.mkForce false;
+  services.gpg-agent.enable = true;
 
   home = {
     file = {

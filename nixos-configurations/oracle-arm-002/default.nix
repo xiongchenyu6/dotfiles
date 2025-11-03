@@ -17,7 +17,7 @@
     ezModules.server
     ezModules.acme
     ezModules.sing-box
-    #ezModules.datadog-agent
+    ezModules.datadog-agent
     srvos.nixosModules.server
     srvos.nixosModules.mixins-nginx
     srvos.nixosModules.mixins-trusted-nix-caches

@@ -23,7 +23,7 @@ in
     ezModules.bird-border
     ezModules.dn42
     ezModules.bird-inner
-    #ezModules.datadog-agent
+    ezModules.datadog-agent
     ezModules.sing-box
     srvos.nixosModules.server
     srvos.nixosModules.mixins-nginx
@@ -242,7 +242,7 @@ in
             '';
             peers = [
               {
-                publicKey = "h7PInNWfIbcP3KmQtHCDvzBPeScrfDa3sJBTrVRZs0Y=";
+                publicKey = "7Gmt1Ztt3/zwno/Ggfigb0N2KvVWblVyooGOk/7ysVU=";
                 inherit allowedIPs;
               }
             ];

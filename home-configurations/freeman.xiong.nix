@@ -160,8 +160,11 @@ in
     };
 
     ssh = {
-      forwardAgent = true;
+      # forwardAgent moved to matchBlocks."*" as per new format
       matchBlocks = {
+        "*" = {
+          forwardAgent = true;
+        };
         # "*-tmux" = {
         #   extraOptions = {
         #     RequestTTY = "yes";
