@@ -37,7 +37,7 @@
     # Nginx reverse proxy configuration
     nginx = {
       enable = true;
-      virtualHost = "hashtopolis.oracle-arm-002.your-domain.com";  # Update with actual domain
+      virtualHost = "hashtopolis.xiongchenyu.dpdns.org";  # Cloudflare domain
     };
   };
 
@@ -50,21 +50,17 @@
     ];
   };
 
-  # Optional: Configure ACME/Let's Encrypt for SSL
-  # Uncomment and configure if you have a domain pointing to this server
-  # security.acme = {
-  #   acceptTerms = true;
-  #   defaults.email = "admin@your-domain.com";
-  #   certs."hashtopolis.oracle-arm-002.your-domain.com" = {
-  #     webroot = "/var/lib/acme/.challenges";
-  #   };
-  # };
+  # Configure ACME/Let's Encrypt for SSL
+  security.acme = {
+    acceptTerms = true;
+    defaults.email = "xiongchenyu6@gmail.com";  # Update with your email
+  };
 
-  # Optional: Configure nginx SSL
-  # services.nginx.virtualHosts."hashtopolis.oracle-arm-002.your-domain.com" = {
-  #   forceSSL = true;
-  #   enableACME = true;
-  # };
+  # Configure nginx SSL
+  services.nginx.virtualHosts."hashtopolis.xiongchenyu.dpdns.org" = {
+    forceSSL = true;
+    enableACME = true;
+  };
 
   # System packages for debugging/management
   environment.systemPackages = with pkgs; [
