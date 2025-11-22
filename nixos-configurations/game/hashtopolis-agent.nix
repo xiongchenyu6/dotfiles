@@ -15,7 +15,7 @@
 
     # Voucher for initial registration
     # This will be cleared after first successful registration
-    voucher = "AGENT-GAME-001";
+    voucher = "X18Tg93M";
 
     # UUID will be automatically generated after registration
     uuid = "";
