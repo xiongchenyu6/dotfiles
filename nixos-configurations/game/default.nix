@@ -32,6 +32,8 @@
     srvos.nixosModules.desktop
     vscode-server.nixosModules.default
     srvos.nixosModules.mixins-tracing
+    # Import Hashtopolis agent module from NUR packages
+    xiongchenyu6.nixosModules.hashtopolis-agent
     {
       topology.self.interfaces.home = {
         type = "wireguard";
@@ -39,6 +41,7 @@
       };
     }
     ./dnf-native.nix
+    ./hashtopolis-agent.nix
   ];
 
   sops.secrets."wireguard/game" = { };
