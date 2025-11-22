@@ -23,8 +23,11 @@
     srvos.nixosModules.mixins-trusted-nix-caches
     srvos.nixosModules.mixins-nix-experimental
     srvos.nixosModules.mixins-tracing
+    # Import Hashtopolis server module from NUR packages
+    xiongchenyu6.nixosModules.hashtopolis-server
     ./disk-config.nix
     ./hardware-configuration.nix
+    ./hashtopolis.nix  # Hashtopolis server configuration
 
   ];
   boot = {
@@ -57,6 +60,7 @@
     pkgs.curl
     pkgs.gitMinimal
   ];
+
   nixpkgs = {
     hostPlatform = "aarch64-linux";
   };
