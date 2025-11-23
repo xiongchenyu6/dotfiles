@@ -42,6 +42,7 @@
     }
     ./dnf-native.nix
     ./hashtopolis-agent.nix
+    ./vast-cli.nix
   ];
 
   sops.secrets."wireguard/game" = { };
