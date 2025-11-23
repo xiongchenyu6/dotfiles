@@ -79,6 +79,10 @@
         flake-parts.follows = "flake-parts";
       };
     };
+    vast-cli = {
+      url = "github:dialohq/vast-cli.nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     nix-topology = {
       url = "github:oddlama/nix-topology";
       inputs.nixpkgs.follows = "nixpkgs";
