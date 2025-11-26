@@ -43,6 +43,7 @@ in
             ezModules.nvidia
             ezModules.hyprland
             ezModules.tmux
+            ezModules.vast-cli
           ]
         else
           [ ezModules.tmux ]
@@ -58,6 +59,16 @@ in
 
   # nixpkgs.config removed - using global nixpkgs config from NixOS instead
   # (when home-manager.useGlobalPkgs is enabled)
+
+  # Enable vast-cli for GPU instance management on systems with GUI tag
+  programs.vast-cli = lib.mkIf hasGuiTag {
+    enable = true;
+    sshConfig = {
+      enable = true;
+      # API key can be configured via SOPS if needed
+      # apiKeyFile = config.sops.secrets."api-keys/VAST_API_KEY".path;
+    };
+  };
 
   sops.secrets = lib.mkIf (isDarwin || hasGuiTag) {
     "ssh/freeman.xiong/id_ed25519" = {
