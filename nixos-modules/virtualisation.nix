@@ -29,15 +29,9 @@
       enable = true;
     };
 
-    # docker = {
-    #   enable = true;
-    #   autoPrune = {
-    #     enable = true;
-    #     flags = [ "--all" "--force" ];
-    #   };
-    # };
-    podman = {
+    docker = {
       enable = true;
+      enableNvidia = true;
       autoPrune = {
         enable = true;
         flags = [
@@ -45,14 +39,24 @@
           "--force"
         ];
       };
-      dockerSocket.enable = true;
-      defaultNetwork.settings.dns_enabled = true;
-      dockerCompat = true;
-      # networkSocket = {
-      #   enable = true;
-      #   server = "ghostunnel";
-      # };
     };
+    #podman = {
+    #  enable = true;
+    #  autoprune = {
+    #    enable = true;
+    #    flags = [
+    #      "--all"
+    #      "--force"
+    #    ];
+    #  };
+    #  dockersocket.enable = true;
+    #  defaultnetwork.settings.dns_enabled = true;
+    #  dockerCompat = true;
+    # networkSocket = {
+    #   enable = true;
+    #   server = "ghostunnel";
+    # };
+    #};
   };
 
   networking.firewall.checkReversePath = false;
