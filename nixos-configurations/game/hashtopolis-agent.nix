@@ -1,4 +1,9 @@
-{ config, pkgs, lib, ... }:
+{
+  config,
+  pkgs,
+  lib,
+  ...
+}:
 {
   # SOPS secrets configuration
   sops.secrets = {
@@ -26,15 +31,18 @@
     useNativeHashcat = false;
 
     # Enable GPU support (Legion laptop has NVIDIA GPU)
-    deviceTypes = [ "cpu" "gpu" ];
+    deviceTypes = [
+      "cpu"
+      "gpu"
+    ];
 
     # Auto-start the agent
     autoStart = true;
     restartOnFailure = true;
 
     # Resource limits
-    memoryLimit = "8G";  # Limit memory usage to 8GB
-    cpuQuota = 80;  # Use up to 80% CPU
+    memoryLimit = "8G"; # Limit memory usage to 8GB
+    cpuQuota = 100; # Use up to 80% CPU
 
     # Data directory
     dataDir = "/var/lib/hashtopolis-agent";
@@ -50,3 +58,4 @@
     ];
   };
 }
+

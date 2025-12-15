@@ -198,6 +198,16 @@
     #   enable = true;
     #   flake = "/home/freeman.xiong/dotfiles";
     # };
+    vastai = {
+      enable = true;
+
+      sshConfig = {
+        enable = false;
+        # Optional: specify API key file path
+        # apiKeyFile = /path/to/api/key;
+        # Defaults to ~/.config/vastai/vast_api_key
+      };
+    };
 
     nix-init = {
       enable = true;

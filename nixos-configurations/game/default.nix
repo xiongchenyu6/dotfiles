@@ -65,7 +65,7 @@
   };
 
   boot = {
-    #kernelPackages = lib.mkForce pkgs.linuxPackages_6_14;
+    kernelPackages = lib.mkForce pkgs.linuxPackages_6_17;
     binfmt.emulatedSystems = [ "aarch64-linux" ];
     initrd.kernelModules = [
       "vfio_pci"
@@ -149,6 +149,7 @@
     in
     {
       inherit hostName;
+      nameservers = [ "1.1.1.1" ];
 
       firewall = {
         enable = true;
@@ -181,7 +182,10 @@
           6696
           33434
         ];
-        trustedInterfaces = [ "virbr0" ]; # for libvirt
+        trustedInterfaces = [
+          "virbr0"
+          "virbr10"
+        ]; # for libvirt
         interfaces.wg_tcloud.allowedTCPPorts = [
           22
           8080

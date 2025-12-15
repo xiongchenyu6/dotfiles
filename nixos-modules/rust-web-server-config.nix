@@ -1,4 +1,9 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 
 let
   cfg = config.services.rust-web-server;
@@ -6,26 +11,28 @@ in
 {
   # This module provides the sops configuration for rust-web-server
   # It works alongside the upstream rust-web-server module
-  
+
   config = lib.mkIf (cfg.enable or false) {
     # ONLY the actual secrets - passwords and secret keys
     # From the decrypted values you showed:
     # - db-password: rustwebserver
     # - oauth-client-secret: vVuC5jLwHe7y6wF8hdNLgtxJGru2PUk1PwGEVPBCV0wx6hFZ
     sops.secrets = {
-      "rust-web-server/db-password" = {};
-      "rust-web-server/oauth-client-secret" = {};
+      "rust-web-server/db-password" = { };
+      "rust-web-server/oauth-client-secret" = { };
     };
 
     # ALL configuration goes in the template, with placeholders for secrets
     sops.templates."rust-web-server-config" = {
       content = ''
         database:
-          url: postgresql://rustwebserver:${config.sops.placeholder."rust-web-server/db-password"}@localhost/rustwebserver
+          url: postgresql://rustwebserver:${
+            config.sops.placeholder."rust-web-server/db-password"
+          }@localhost/rustwebserver
         oauth:
           client_id: iXPxzvDuhuH9lGHfR3OMIMchnHxhz86c
           client_secret: ${config.sops.placeholder."rust-web-server/oauth-client-secret"}
-          redirect_url: https://rust-server.auto-life.tech/auth/authorized
+          redirect_url: https://rust-server.autolife.ai/auth/authorized
           config_url: https://autolife.jp.auth0.com/.well-known/openid-configuration
         oidc:
           client_id: iXPxzvDuhuH9lGHfR3OMIMchnHxhz86c

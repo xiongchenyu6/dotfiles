@@ -23,52 +23,44 @@ in
       inputs.mac-app-util.homeManagerModules.default
     ])
     ++
-    # Platform-specific module imports
-    (if isDarwin then
-      [
-        ezModules.zsh
-        ezModules.cli
-        ezModules.gui
-      ]
-    else
+      # Platform-specific module imports
       (
-        if hasGuiTag then
+        if isDarwin then
           [
             ezModules.zsh
             ezModules.cli
             ezModules.gui
-            #ezModules.mpd
-            ezModules.stow-config
-            ezModules.qwert
-            ezModules.nvidia
-            ezModules.hyprland
-            ezModules.tmux
-            ezModules.vast-cli
           ]
         else
-          [ ezModules.tmux ]
-      )
-      ++ (
-        if hasNvidiaTag then
-          [
-            ezModules.nvidia
-          ]
-        else
-          [ ]
-      ));
-
-  # nixpkgs.config removed - using global nixpkgs config from NixOS instead
-  # (when home-manager.useGlobalPkgs is enabled)
-
-  # Enable vast-cli for GPU instance management on systems with GUI tag
-  programs.vast-cli = lib.mkIf hasGuiTag {
-    enable = true;
-    sshConfig = {
-      enable = true;
-      # API key can be configured via SOPS if needed
-      # apiKeyFile = config.sops.secrets."api-keys/VAST_API_KEY".path;
-    };
-  };
+          (
+            if hasGuiTag then
+              [
+                ezModules.zsh
+                ezModules.cli
+                ezModules.gui
+                #ezModules.mpd
+                ezModules.stow-config
+                ezModules.qwert
+                ezModules.nvidia
+                ezModules.hyprland
+                ezModules.tmux
+              ]
+            else
+              [
+                ezModules.zsh
+                ezModules.cli
+                ezModules.tmux
+              ]
+          )
+          ++ (
+            if hasNvidiaTag then
+              [
+                ezModules.nvidia
+              ]
+            else
+              [ ]
+          )
+      );
 
   sops.secrets = lib.mkIf (isDarwin || hasGuiTag) {
     "ssh/freeman.xiong/id_ed25519" = {
@@ -109,7 +101,7 @@ in
     # Session variables are now managed by systemd user service
     sessionVariables = {
       OPENAI_API_BASE = "https://api.siliconflow.cn/v1";
-      EDITOR = lib.mkForce "nvim";  # Force nvim as editor to resolve conflict with emacs
+      EDITOR = lib.mkForce "nvim"; # Force nvim as editor to resolve conflict with emacs
     };
     homeDirectory = osConfig.users.users."freeman.xiong".home;
     sessionPath = [ "$HOME/.local/bin" ];
@@ -148,7 +140,7 @@ in
         key = "B99B8189C7C153F6";
         signByDefault = true;
       };
-      extraConfig = {
+      settings = {
         push = {
           default = "current";
         };

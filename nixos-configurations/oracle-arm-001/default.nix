@@ -10,6 +10,8 @@
 {
   imports = with inputs; [
     ../../nixos-modules/rust-web-server-config.nix # Sops configuration for rust-web-server
+    ../../nixos-modules/samba.nix # Samba for corp Windows device management  
+    xiongchenyu6.nixosModules.falcon-sensor # CrowdStrike Falcon for endpoint security
     disko.nixosModules.disko
     (modulesPath + "/installer/scan/not-detected.nix")
     (modulesPath + "/profiles/qemu-guest.nix")
@@ -21,6 +23,7 @@
     ezModules.datadog-agent
     ezModules.sing-box
     ezModules.postgrest
+    ../../nixos-modules/gotrue-supabase.nix
     rust-web-server.nixosModules.rust-web-server
     srvos.nixosModules.server
     srvos.nixosModules.mixins-nginx
@@ -59,10 +62,17 @@
     };
   };
 
-  environment.systemPackages = map lib.lowPrio [
+  environment.systemPackages = (map lib.lowPrio [
     pkgs.curl
     pkgs.gitMinimal
-  ];
+  ]) ++ (with pkgs; [
+    samba
+    # osquery is handled by services.osquery module
+  ]) ++ lib.optionals (inputs ? xiongchenyu6) (
+    with inputs.xiongchenyu6.packages.${pkgs.system}; [
+      # Add any additional corp management tools
+    ]
+  );
   networking =
     let
       file-path = builtins.split "/" (toString ./.);
@@ -70,17 +80,23 @@
     in
     {
       inherit hostName;
+      domain = "corp.autolife.ai"; # Set corp domain
       firewall = {
         allowedTCPPorts = [
           22
           80
           443
+          139   # NetBIOS Session Service
+          445   # SMB
           2222
           5432
           7000
+          8080  # Fleet
         ];
         allowedUDPPorts = [
           89
+          137   # NetBIOS Name Service
+          138   # NetBIOS Datagram Service
           179
           2222
           3478
@@ -155,10 +171,10 @@
 
     nginx = {
       virtualHosts = {
-        "rust-server.${config.networking.domain}" = {
+        "rust-server.autolife.ai" = {
           forceSSL = true;
           acmeRoot = null;
-          useACMEHost = "${config.networking.domain}";
+          useACMEHost = "ai";
           kTLS = true;
           locations = {
             "/" = {
@@ -166,10 +182,10 @@
             };
           };
         };
-        "api.${config.networking.domain}" = {
+        "api.autolife.ai" = {
           addSSL = true;
           acmeRoot = null;
-          useACMEHost = "${config.networking.domain}";
+          useACMEHost = "ai";
           kTLS = true;
           locations = {
             "/" = {
@@ -178,9 +194,104 @@
             };
           };
         };
+        "fleet.${config.networking.domain}" = {
+          forceSSL = true;
+          acmeRoot = null;
+          useACMEHost = "${config.networking.domain}";
+          kTLS = true;
+          locations = {
+            "/" = {
+              root = "/var/www/fleet";
+              index = "index.html";
+              extraConfig = ''
+                # Placeholder for Fleet UI - would host a web interface for device management
+                try_files $uri $uri/ =404;
+              '';
+            };
+          };
+        };
+        "auth.${config.networking.domain}" = {
+          forceSSL = true;
+          acmeRoot = null;
+          useACMEHost = "${config.networking.domain}";
+          kTLS = true;
+          locations = {
+            "/" = {
+              proxyPass = "http://localhost:8081";
+              proxyWebsockets = true;
+              extraConfig = ''
+                # CORS headers for frontend integration
+                add_header 'Access-Control-Allow-Origin' '*' always;
+                add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, DELETE, OPTIONS' always;
+                add_header 'Access-Control-Allow-Headers' 'Accept, Authorization, Cache-Control, Content-Type, DNT, If-Modified-Since, Keep-Alive, Origin, User-Agent, X-Requested-With, apikey' always;
+                
+                # Handle preflight requests
+                if ($request_method = 'OPTIONS') {
+                  add_header 'Access-Control-Allow-Origin' '*';
+                  add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, DELETE, OPTIONS';
+                  add_header 'Access-Control-Allow-Headers' 'Accept, Authorization, Cache-Control, Content-Type, DNT, If-Modified-Since, Keep-Alive, Origin, User-Agent, X-Requested-With, apikey';
+                  add_header 'Access-Control-Max-Age' 1728000;
+                  add_header 'Content-Type' 'text/plain charset=UTF-8';
+                  add_header 'Content-Length' 0;
+                  return 204;
+                }
+              '';
+            };
+          };
+        };
       };
     };
   };
+
+  # Enable osquery for device monitoring using official NixOS module
+  services.osquery = {
+    enable = true;
+    settings = {
+      options = {
+        host_identifier = "hostname";
+        schedule_splay_percent = 10;
+        schedule_timeout = 0;
+        schedule_max_drift = 60;
+        logger_plugin = "filesystem";
+        logger_path = "/var/log/osquery";
+      };
+      schedule = {
+        system_info = {
+          query = "SELECT hostname, cpu_brand, physical_memory FROM system_info;";
+          interval = 3600;
+        };
+        processes = {
+          query = "SELECT name, path, pid FROM processes;";
+          interval = 600;
+        };
+      };
+    };
+  };
+
+  # Enable Samba for Windows device management
+  services.samba.settings = {
+    global = {
+      workgroup = lib.mkForce "AUTOLIFE";
+      "server string" = lib.mkForce "AutoLife Corp Server";
+      realm = "CORP.AUTOLIFE.AI";
+    };
+    corp-shared = {
+      path = "/srv/samba/corp-shared";
+      browseable = "yes";
+      "read only" = "no";
+      "guest ok" = "no";
+      "create mask" = "0664";
+      "directory mask" = "0775";
+      comment = "AutoLife Corp Shared Drive";
+    };
+  };
+
+  # Create additional directories
+  systemd.tmpfiles.rules = [
+    "d /srv/samba/corp-shared 0775 samba samba"
+    "d /var/www/fleet 0755 nginx nginx"
+    # osquery log directory handled by official module
+  ];
 
   nixpkgs = {
     hostPlatform = "aarch64-linux";

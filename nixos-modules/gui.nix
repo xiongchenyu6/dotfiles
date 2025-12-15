@@ -4,6 +4,11 @@
 
 { pkgs, ... }:
 {
+  # Add NetworkManager for nm-applet icons
+  environment.systemPackages = with pkgs; [
+    networkmanager
+  ];
+
   qt = {
     enable = true;
     # style = "adwaita";
@@ -139,7 +144,7 @@
       polkitPolicyOwners = [ "freeman.xiong" ];
     };
     nm-applet = {
-      enable = true;
+      enable = false;
     };
     wireshark = {
       enable = true;
