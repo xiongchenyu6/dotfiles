@@ -7,7 +7,7 @@
   imports = [ ../shared-modules/core.nix ];
 
   networking = {
-    domain = lib.mkDefault "auto-life.tech";
+    domain = lib.mkDefault "autolife.ai";
   };
 
   # Select internationalisation properties.

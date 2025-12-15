@@ -22,7 +22,7 @@
     srvos.nixosModules.mixins-trusted-nix-caches
     srvos.nixosModules.mixins-nix-experimental
     rust-web-server.nixosModules.rust-web-server
-    ../../nixos-modules/rust-web-server-config.nix  # Our local module with sops templates
+    ../../nixos-modules/rust-web-server-config.nix # Our local module with sops templates
   ];
 
   zramSwap.enable = true;
@@ -56,8 +56,8 @@
       domain = "autolife-robotics.com";
       hosts = {
         "172.64.229.235" = [
-          "auto-life.tech"
-          "proxy.auto-life.tech"
+          "autolife.ai"
+          "proxy.autolife.ai"
         ];
       };
       firewall = {

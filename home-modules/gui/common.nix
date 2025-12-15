@@ -199,8 +199,9 @@
           wakatime-mode
           which-key
           yaml-mode
-        ] ++ lib.optionals pkgs.stdenv.isLinux [
-          rime  # Chinese input method - Linux only due to architecture issues on Darwin
+        ]
+        ++ lib.optionals pkgs.stdenv.isLinux [
+          rime # Chinese input method - Linux only due to architecture issues on Darwin
         ];
       extraConfig = ''
         (add-to-list 'default-frame-alist

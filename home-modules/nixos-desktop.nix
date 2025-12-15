@@ -32,6 +32,9 @@
       sui
       #zssh
       record_screen
+      # NetworkManager icon themes
+      adwaita-icon-theme
+      hicolor-icon-theme
     ];
   };
 
@@ -168,10 +171,24 @@
       };
     };
   };
+  
+  # Configure GTK icon theme for nm-applet
+  gtk = {
+    enable = true;
+    iconTheme = {
+      name = "Adwaita";
+      package = pkgs.adwaita-icon-theme;
+    };
+  };
+  
   dconf.settings = {
     "org/virt-manager/virt-manager/connections" = {
       autoconnect = [ "qemu:///system" ];
       uris = [ "qemu:///system" ];
+    };
+    # Set icon theme for nm-applet
+    "org/gnome/desktop/interface" = {
+      icon-theme = "Adwaita";
     };
   };
 
