@@ -3,7 +3,7 @@
 # junos-config.sh - Configure Juniper JUNOS devices via SSH
 
 set timeout 60
-set host "192.168.30.3"
+set host "192.168.30.4"
 set user "freeman.xiong"
 
 spawn ssh $user@$host

@@ -179,8 +179,6 @@
     #   enable = true;
     # };
 
-    v2raya.enable = true;
-
     # kanidm = {
     #   enableClient = true;
     #   clientSettings = {

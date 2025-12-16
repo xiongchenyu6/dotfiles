@@ -8,30 +8,28 @@
   ...
 }:
 {
-  imports =
-    with inputs;
-    [
-      srvos.nixosModules.server
-      srvos.nixosModules.mixins-nginx
-      srvos.nixosModules.mixins-trusted-nix-caches
-      srvos.nixosModules.mixins-nix-experimental
-      srvos.nixosModules.mixins-tracing
-      ../../nixos-modules/corp-infrastructure.nix
-      ../../nixos-modules/acme
-    ];
+  imports = with inputs; [
+    srvos.nixosModules.server
+    srvos.nixosModules.mixins-nginx
+    srvos.nixosModules.mixins-trusted-nix-caches
+    srvos.nixosModules.mixins-nix-experimental
+    srvos.nixosModules.mixins-tracing
+    ../../nixos-modules/corp-infrastructure.nix
+    ../../nixos-modules/acme
+  ];
 
   # Hostname and domain configuration
   networking = {
     hostName = "corp-server";
-    domain = "corp.autolife.ai";
+    domain = "autolife.ai";
   };
 
-  # ACME configuration for corp.autolife.ai
+  # ACME configuration for autolife.ai
   mylib.acme = {
     certs = {
-      "corp.autolife.ai" = {
-        domain = "corp.autolife.ai";
-        extraDomainNames = [ "*.corp.autolife.ai" ];
+      "autolife.ai" = {
+        domain = "autolife.ai";
+        extraDomainNames = [ "*.autolife.ai" ];
         email = "xiongchenyu6@gmail.com";
         dnsProvider = "cloudflare"; # Adjust based on your DNS provider
         # credentialsFile should be configured in secrets
@@ -42,11 +40,11 @@
   # Nginx configuration for corp services
   services.nginx = {
     enable = true;
-    
+
     virtualHosts = {
       # Fleet management interface
-      "fleet.corp.autolife.ai" = {
-        useACMEHost = "corp.autolife.ai";
+      "fleet.autolife.ai" = {
+        useACMEHost = "autolife.ai";
         forceSSL = true;
         locations."/" = {
           proxyPass = "http://127.0.0.1:8080";
@@ -61,8 +59,8 @@
       };
 
       # Samba web management (if needed)
-      "samba.corp.autolife.ai" = {
-        useACMEHost = "corp.autolife.ai";
+      "samba.autolife.ai" = {
+        useACMEHost = "autolife.ai";
         forceSSL = true;
         root = "/var/www/samba";
         locations."/" = {
@@ -70,15 +68,6 @@
         };
       };
 
-      # Main corp portal
-      "corp.autolife.ai" = {
-        useACMEHost = "corp.autolife.ai";
-        forceSSL = true;
-        root = "/var/www/corp";
-        locations."/" = {
-          index = "index.html";
-        };
-      };
     };
   };
 
@@ -119,32 +108,36 @@
   networking.firewall = {
     enable = true;
     allowedTCPPorts = [
-      80    # HTTP
-      443   # HTTPS
-      139   # NetBIOS Session Service
-      445   # SMB
-      8080  # Fleet (internal)
+      80 # HTTP
+      443 # HTTPS
+      139 # NetBIOS Session Service
+      445 # SMB
+      8080 # Fleet (internal)
     ];
     allowedUDPPorts = [
-      137   # NetBIOS Name Service
-      138   # NetBIOS Datagram Service
+      137 # NetBIOS Name Service
+      138 # NetBIOS Datagram Service
     ];
   };
 
   # System packages
-  environment.systemPackages = with pkgs; [
-    samba
-    mysql
-    redis
-    htop
-    curl
-    wget
-    git
-  ] ++ lib.optionals (inputs ? xiongchenyu6) (
-    with inputs.xiongchenyu6.packages.${pkgs.system}; [
-      # Add fleet or osquery packages if available
+  environment.systemPackages =
+    with pkgs;
+    [
+      samba
+      mysql
+      redis
+      htop
+      curl
+      wget
+      git
     ]
-  );
+    ++ lib.optionals (inputs ? xiongchenyu6) (
+      with inputs.xiongchenyu6.packages.${pkgs.system};
+      [
+        # Add fleet or osquery packages if available
+      ]
+    );
 
   # Enable required services
   services.mysql = {
@@ -175,6 +168,6 @@
   # Enable systemd-resolved for proper DNS
   services.resolved = {
     enable = true;
-    domains = [ "corp.autolife.ai" ];
+    domains = [ "autolife.ai" ];
   };
 }

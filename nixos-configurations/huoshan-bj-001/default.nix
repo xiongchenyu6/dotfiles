@@ -53,7 +53,7 @@
     in
     {
       inherit hostName;
-      domain = "autolife-robotics.com";
+      domain = "auotlife.com";
       hosts = {
         "172.64.229.235" = [
           "autolife.ai"
@@ -156,9 +156,9 @@
 
     acme = {
       certs = {
-        "autolife-robotics.com" = {
-          domain = "autolife-robotics.com";
-          extraDomainNames = [ "*.autolife-robotics.com" ];
+        "auotlife.com" = {
+          domain = "auotlife.com";
+          extraDomainNames = [ "*.auotlife.com" ];
           email = "xiongchenyu6@gmail.com";
           dnsProvider = "volcengine";
           credentialsFile = config.sops.secrets."acme/volcengine".path;

@@ -14,7 +14,6 @@ let
 in
 {
   imports = with inputs; [
-    (modulesPath + "/profiles/qemu-guest.nix")
     ezModules.root
     ezModules."freeman.xiong"
     ezModules.core
@@ -23,13 +22,14 @@ in
     ezModules.bird-border
     ezModules.dn42
     ezModules.bird-inner
-    ezModules.datadog-agent
+    #ezModules.datadog-agent
     ezModules.sing-box
     srvos.nixosModules.server
     srvos.nixosModules.mixins-nginx
     srvos.nixosModules.mixins-trusted-nix-caches
     srvos.nixosModules.mixins-nix-experimental
     srvos.nixosModules.mixins-tracing
+    ./hardware-configuration.nix
     #vscode-server.nixosModules.default
     {
       topology.self.interfaces.home = {
@@ -47,18 +47,7 @@ in
     };
   };
 
-  boot.loader.grub.device = "/dev/vda";
-  boot.initrd.availableKernelModules = [
-    "ata_piix"
-    "uhci_hcd"
-    "xen_blkfront"
-  ];
   boot.initrd.kernelModules = [ "nvme" ];
-
-  fileSystems."/" = {
-    device = "/dev/vda2";
-    fsType = "ext4";
-  };
 
   zramSwap.enable = true;
 
@@ -242,7 +231,7 @@ in
             '';
             peers = [
               {
-                publicKey = "7Gmt1Ztt3/zwno/Ggfigb0N2KvVWblVyooGOk/7ysVU=";
+                publicKey = "CAW6+atqM9xmCAZUaev3OZWbYKwjDNCHezyiBpiHmSg=";
                 inherit allowedIPs;
               }
             ];

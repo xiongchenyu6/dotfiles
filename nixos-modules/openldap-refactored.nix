@@ -2,7 +2,7 @@
 
 let
   realm = "AUTOLIFE.TECH";
-  dbSuffix = "dc=autolife-robotics,dc=tech";
+  dbSuffix = "dc=auotlife,dc=ai";
   ldapRootUser = "admin";
   cfg = config.services.openldap;
 in

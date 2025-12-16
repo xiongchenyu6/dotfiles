@@ -194,7 +194,32 @@
           sbt-mode
           tempel
           #terraform-mode
-          treesit-grammars.with-all-grammars
+          (treesit-grammars.with-grammars (
+            ps: with ps; [
+              tree-sitter-c
+              tree-sitter-cpp
+              tree-sitter-rust
+              tree-sitter-python
+              tree-sitter-javascript
+              tree-sitter-typescript
+              tree-sitter-tsx
+              tree-sitter-css
+              tree-sitter-html
+              tree-sitter-json
+              tree-sitter-yaml
+              tree-sitter-markdown
+              tree-sitter-nix
+              tree-sitter-bash
+              tree-sitter-go
+              tree-sitter-java
+              tree-sitter-scala
+              tree-sitter-haskell
+              tree-sitter-dockerfile
+              tree-sitter-sql
+              tree-sitter-toml
+              # Excluding tree-sitter-razor due to build issues
+            ]
+          ))
           vterm
           wakatime-mode
           which-key
