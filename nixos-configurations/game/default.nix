@@ -56,16 +56,18 @@
 
   hardware = {
     enableRedistributableFirmware = true;
+    nvidia-container-toolkit.enable = true;
   };
 
   environment = {
     systemPackages = [
       pkgs.cloudflare-warp
+      pkgs.android-tools # Replaces programs.adb
     ];
   };
-
+  hardware.nvidia.package = config.boot.kernelPackages.nvidiaPackages.beta;
   boot = {
-    kernelPackages = lib.mkForce pkgs.linuxPackages_6_17;
+
     binfmt.emulatedSystems = [ "aarch64-linux" ];
     initrd.kernelModules = [
       "vfio_pci"
@@ -106,6 +108,9 @@
   };
 
   systemd.services.ModemManager.enable = false;
+
+  # Disable NVIDIA power daemon (fails when GPU is bound to vfio/power management unsupported)
+  systemd.services.nvidia-powerd.enable = false;
 
   # Hardware watchdog configuration using new systemd options
   systemd.settings.Manager = {
@@ -243,6 +248,7 @@
     # cloudflare-warp = {
     #   enable = true;
     # };
+    v2raya.enable = true;
 
     sunshine = {
       enable = true;
@@ -301,14 +307,16 @@
 
     vscode-server.enable = true;
     frp = {
-      enable = false;
-      role = "client";
-      settings = {
-        serverAddr = "tcloud.${config.networking.domain}";
-        serverPort = 7000;
-        auth = {
-          method = "token";
-          token = builtins.readFile ../../../secrets/frp.token;
+      instances."" = {
+        enable = false;
+        role = "client";
+        settings = {
+          serverAddr = "tcloud.${config.networking.domain}";
+          serverPort = 7000;
+          auth = {
+            method = "token";
+            token = builtins.readFile ../../../secrets/frp.token;
+          };
         };
       };
     };
@@ -330,9 +338,6 @@
   };
 
   programs = {
-    adb = {
-      enable = true;
-    };
     ydotool = {
       enable = true;
     };

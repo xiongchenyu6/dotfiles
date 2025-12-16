@@ -39,7 +39,7 @@
     };
 
     fontDir = {
-      enable = true;
+      enable = false; # Temporarily disabled due to X11-fonts build issues
     };
 
     packages = with pkgs; [

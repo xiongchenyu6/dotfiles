@@ -474,93 +474,98 @@ in
           plugin = pkgs.vimPlugins.nvim-treesitter.withAllGrammars;
           type = "lua";
           config = ''
-            require("nvim-treesitter.configs").setup({
-              highlight = { enable = true },
-              indent = { enable = true },
-              incremental_selection = {
-                enable = true,
-                keymaps = {
-                  init_selection = "<C-space>",
-                  node_incremental = "<C-space>",
-                  scope_incremental = false,
-                  node_decremental = "<bs>",
-                },
-              },
-              textobjects = {
-                select = {
+            local ok, treesitter_configs = pcall(require, "nvim-treesitter.configs")
+            if ok then
+              treesitter_configs.setup({
+                highlight = { enable = true },
+                indent = { enable = true },
+                incremental_selection = {
                   enable = true,
-                  lookahead = true,
                   keymaps = {
-                    ["af"] = "@function.outer",
-                    ["if"] = "@function.inner",
-                    ["ac"] = "@class.outer",
-                    ["ic"] = "@class.inner",
-                    ["aa"] = "@parameter.outer",
-                    ["ia"] = "@parameter.inner",
-                    ["al"] = "@loop.outer",
-                    ["il"] = "@loop.inner",
-                    ["ai"] = "@conditional.outer",
-                    ["ii"] = "@conditional.inner",
-                    ["a/"] = "@comment.outer",
-                    ["i/"] = "@comment.inner",
-                    ["ab"] = "@block.outer",
-                    ["ib"] = "@block.inner",
+                    init_selection = "<C-space>",
+                    node_incremental = "<C-space>",
+                    scope_incremental = false,
+                    node_decremental = "<bs>",
                   },
                 },
-                move = {
-                  enable = true,
-                  set_jumps = true,
-                  goto_next_start = {
-                    ["]f"] = "@function.outer",
-                    ["]c"] = "@class.outer",
-                    ["]a"] = "@parameter.inner",
+                textobjects = {
+                  select = {
+                    enable = true,
+                    lookahead = true,
+                    keymaps = {
+                      ["af"] = "@function.outer",
+                      ["if"] = "@function.inner",
+                      ["ac"] = "@class.outer",
+                      ["ic"] = "@class.inner",
+                      ["aa"] = "@parameter.outer",
+                      ["ia"] = "@parameter.inner",
+                      ["al"] = "@loop.outer",
+                      ["il"] = "@loop.inner",
+                      ["ai"] = "@conditional.outer",
+                      ["ii"] = "@conditional.inner",
+                      ["a/"] = "@comment.outer",
+                      ["i/"] = "@comment.inner",
+                      ["ab"] = "@block.outer",
+                      ["ib"] = "@block.inner",
+                    },
                   },
-                  goto_next_end = {
-                    ["]F"] = "@function.outer",
-                    ["]C"] = "@class.outer",
-                    ["]A"] = "@parameter.inner",
+                  move = {
+                    enable = true,
+                    set_jumps = true,
+                    goto_next_start = {
+                      ["]f"] = "@function.outer",
+                      ["]c"] = "@class.outer",
+                      ["]a"] = "@parameter.inner",
+                    },
+                    goto_next_end = {
+                      ["]F"] = "@function.outer",
+                      ["]C"] = "@class.outer",
+                      ["]A"] = "@parameter.inner",
+                    },
+                    goto_previous_start = {
+                      ["[f"] = "@function.outer",
+                      ["[c"] = "@class.outer",
+                      ["[a"] = "@parameter.inner",
+                    },
+                    goto_previous_end = {
+                      ["[F"] = "@function.outer",
+                      ["[C"] = "@class.outer",
+                      ["[A"] = "@parameter.inner",
+                    },
                   },
-                  goto_previous_start = {
-                    ["[f"] = "@function.outer",
-                    ["[c"] = "@class.outer",
-                    ["[a"] = "@parameter.inner",
-                  },
-                  goto_previous_end = {
-                    ["[F"] = "@function.outer",
-                    ["[C"] = "@class.outer",
-                    ["[A"] = "@parameter.inner",
+                  swap = {
+                    enable = true,
+                    swap_next = {
+                      ["<leader>a"] = "@parameter.inner",
+                    },
+                    swap_previous = {
+                      ["<leader>A"] = "@parameter.inner",
+                    },
                   },
                 },
-                swap = {
-                  enable = true,
-                  swap_next = {
-                    ["<leader>a"] = "@parameter.inner",
-                  },
-                  swap_previous = {
-                    ["<leader>A"] = "@parameter.inner",
-                  },
-                },
-              },
-            })
+              })
+            end
           '';
         }
 
-        pkgs.vimPlugins.nvim-treesitter-textobjects
         pkgs.vimPlugins.nvim-ts-context-commentstring
         
         {
           plugin = pkgs.vimPlugins.nvim-treesitter-context;
           type = "lua";
           config = ''
-            require("treesitter-context").setup({
-              enable = true,
-              max_lines = 0,
-              min_window_height = 0,
-              line_numbers = true,
-              multiline_threshold = 20,
-              trim_scope = 'outer',
-              mode = 'cursor',
-            })
+            local ok, treesitter_context = pcall(require, "treesitter-context")
+            if ok then
+              treesitter_context.setup({
+                enable = true,
+                max_lines = 0,
+                min_window_height = 0,
+                line_numbers = true,
+                multiline_threshold = 20,
+                trim_scope = 'outer',
+                mode = 'cursor',
+              })
+            end
           '';
         }
 
@@ -943,13 +948,13 @@ in
           '';
         }
 
-        {
-          plugin = pkgs.vimPlugins.neodev-nvim;
-          type = "lua";
-          config = ''
-            require("neodev").setup()
-          '';
-        }
+        # {
+        #   plugin = pkgs.vimPlugins.neodev-nvim;
+        #   type = "lua";
+        #   config = ''
+        #     require("neodev").setup()
+        #   '';
+        # }
 
         # Formatting and linting
         {
@@ -1621,7 +1626,7 @@ in
         nodePackages.prettier
         black
         rustfmt
-        nixfmt-rfc-style
+        nixfmt
 
         # Tools used by plugins
         ripgrep

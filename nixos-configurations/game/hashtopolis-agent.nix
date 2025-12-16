@@ -28,7 +28,7 @@
 
     # Don't use native hashcat - let the server manage binaries
     # The module now includes nix-ld support for downloaded binaries
-    useNativeHashcat = false;
+    useNativeHashcat = true;
 
     # Enable GPU support (Legion laptop has NVIDIA GPU)
     deviceTypes = [
@@ -58,4 +58,3 @@
     ];
   };
 }
-

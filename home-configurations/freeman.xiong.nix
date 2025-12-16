@@ -20,7 +20,6 @@ in
   imports =
     # Import mac-app-util only on macOS for proper application linking
     (lib.optionals isDarwin [
-      inputs.mac-app-util.homeManagerModules.default
     ])
     ++
       # Platform-specific module imports

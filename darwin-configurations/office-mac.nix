@@ -6,15 +6,15 @@
   ezModules,
   shares,
   ...
-}: {
+}:
+{
   imports = [
     ezModules.wireguard
-    inputs.mac-app-util.darwinModules.default
   ];
-  
+
   # Set the primary user for nix-darwin
   system.primaryUser = "freeman.xiong";
-  
+
   ids.gids.nixbld = 350;
   users = {
     users = {

@@ -5,26 +5,16 @@
   inputs,
   ...
 }:
-let
-  nur-packages = inputs.xiongchenyu6.packages.${pkgs.system};
-in
 {
-  # Import the gotrue-supabase module from your nur-packages
+  # Import the gotrue-supabase module from your flake input
   imports = [
     inputs.xiongchenyu6.nixosModules.gotrue-supabase
   ];
 
-  sops.secrets."gotrue/jwt-secret" = {
-    # gotrue service uses DynamicUser, so we'll use sops template instead
-  };
-  sops.secrets."gotrue/database-url" = {
-    # gotrue service uses DynamicUser, so we'll use sops template instead
-  };
-
   # Create environment files via SOPS templates
   sops.templates."gotrue-jwt-secret" = {
     content = ''
-      GOTRUE_JWT_SECRET=${config.sops.placeholder."gotrue/jwt-secret"}
+      GOTRUE_JWT_SECRET=${config.sops.placeholder."postgrest/jwt-secret"}
     '';
     mode = "0600";
     owner = "root";
@@ -33,7 +23,8 @@ in
 
   sops.templates."gotrue-database-url" = {
     content = ''
-      DB_DATABASE_URL=${config.sops.placeholder."gotrue/database-url"}
+      DB_DATABASE_URL=postgresql://rustwebserver:${config.sops.placeholder."rust-web-server/db-password"}@localhost:5432/rustwebserver
+      DATABASE_URL=postgresql://rustwebserver:${config.sops.placeholder."rust-web-server/db-password"}@localhost:5432/rustwebserver
     '';
     mode = "0600";
     owner = "root";
@@ -42,7 +33,7 @@ in
 
   services.gotrue-supabase = {
     enable = true;
-    package = nur-packages.gotrue-supabase;
+    package = pkgs.gotrue-supabase;
     
     # Basic configuration
     siteUrl = "https://auth.${config.networking.domain}";
@@ -224,4 +215,3 @@ in
     8081 # GoTrue API port
   ];
 }
-

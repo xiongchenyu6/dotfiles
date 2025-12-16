@@ -8,30 +8,28 @@
   ...
 }:
 {
-  imports =
-    with inputs;
-    [
-      srvos.nixosModules.server
-      srvos.nixosModules.mixins-nginx
-      srvos.nixosModules.mixins-trusted-nix-caches
-      srvos.nixosModules.mixins-nix-experimental
-      srvos.nixosModules.mixins-tracing
-      ../../nixos-modules/corp-infrastructure.nix
-      ../../nixos-modules/acme
-    ];
+  imports = with inputs; [
+    srvos.nixosModules.server
+    srvos.nixosModules.mixins-nginx
+    srvos.nixosModules.mixins-trusted-nix-caches
+    srvos.nixosModules.mixins-nix-experimental
+    srvos.nixosModules.mixins-tracing
+    ../../nixos-modules/corp-infrastructure.nix
+    ../../nixos-modules/acme
+  ];
 
   # Hostname and domain configuration
   networking = {
     hostName = "corp-server";
-    domain = "corp.work.ai";
+    domain = "work.ai";
   };
 
-  # ACME configuration for corp.work.ai
+  # ACME configuration for work.ai
   mylib.acme = {
     certs = {
-      "corp.work.ai" = {
-        domain = "corp.work.ai";
-        extraDomainNames = [ "*.corp.work.ai" ];
+      "work.ai" = {
+        domain = "work.ai";
+        extraDomainNames = [ "*.work.ai" ];
         email = "xiongchenyu6@gmail.com";
         dnsProvider = "cloudflare"; # Adjust based on your DNS provider
         # credentialsFile should be configured in secrets
@@ -42,11 +40,11 @@
   # Nginx configuration for corp services
   services.nginx = {
     enable = true;
-    
+
     virtualHosts = {
       # Fleet management interface
-      "fleet.corp.work.ai" = {
-        useACMEHost = "corp.work.ai";
+      "fleet.work.ai" = {
+        useACMEHost = "work.ai";
         forceSSL = true;
         locations."/" = {
           proxyPass = "http://127.0.0.1:8080";
@@ -61,8 +59,8 @@
       };
 
       # Samba web management (if needed)
-      "samba.corp.work.ai" = {
-        useACMEHost = "corp.work.ai";
+      "samba.work.ai" = {
+        useACMEHost = "work.ai";
         forceSSL = true;
         root = "/var/www/samba";
         locations."/" = {
@@ -70,15 +68,6 @@
         };
       };
 
-      # Main corp portal
-      "corp.work.ai" = {
-        useACMEHost = "corp.work.ai";
-        forceSSL = true;
-        root = "/var/www/corp";
-        locations."/" = {
-          index = "index.html";
-        };
-      };
     };
   };
 
@@ -119,32 +108,36 @@
   networking.firewall = {
     enable = true;
     allowedTCPPorts = [
-      80    # HTTP
-      443   # HTTPS
-      139   # NetBIOS Session Service
-      445   # SMB
-      8080  # Fleet (internal)
+      80 # HTTP
+      443 # HTTPS
+      139 # NetBIOS Session Service
+      445 # SMB
+      8080 # Fleet (internal)
     ];
     allowedUDPPorts = [
-      137   # NetBIOS Name Service
-      138   # NetBIOS Datagram Service
+      137 # NetBIOS Name Service
+      138 # NetBIOS Datagram Service
     ];
   };
 
   # System packages
-  environment.systemPackages = with pkgs; [
-    samba
-    mysql
-    redis
-    htop
-    curl
-    wget
-    git
-  ] ++ lib.optionals (inputs ? xiongchenyu6) (
-    with inputs.xiongchenyu6.packages.${pkgs.system}; [
-      # Add fleet or osquery packages if available
+  environment.systemPackages =
+    with pkgs;
+    [
+      samba
+      mysql
+      redis
+      htop
+      curl
+      wget
+      git
     ]
-  );
+    ++ lib.optionals (inputs ? xiongchenyu6) (
+      with inputs.xiongchenyu6.packages.${pkgs.system};
+      [
+        # Add fleet or osquery packages if available
+      ]
+    );
 
   # Enable required services
   services.mysql = {
@@ -175,6 +168,6 @@
   # Enable systemd-resolved for proper DNS
   services.resolved = {
     enable = true;
-    domains = [ "corp.work.ai" ];
+    domains = [ "work.ai" ];
   };
 }

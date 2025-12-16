@@ -21,7 +21,7 @@
     };
 
     # System management
-    impermanence.url = "github:nix-community/impermanence";
+    impermanence.url = "github:nix-community/impermanence/home-manager-v1";
     home-manager = {
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -116,11 +116,6 @@
     };
     mcp-servers-nix.url = "github:natsukium/mcp-servers-nix";
 
-    mac-app-util = {
-      url = "github:hraban/mac-app-util";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
     lanzaboote = {
       url = "github:nix-community/lanzaboote";
       inputs = {
@@ -202,13 +197,14 @@
                 sops
                 ssh-to-age
                 editorconfig-checker
-                nixfmt-rfc-style
+                nixfmt
                 nixd
                 statix
                 nixos-anywhere
                 yaml-language-server
                 gnupg
                 yq-go
+                nixos-rebuild
               ]
               ++ lib.optionals pkgs.stdenv.isDarwin [
                 # Darwin-specific build tools

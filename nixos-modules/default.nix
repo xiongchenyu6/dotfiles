@@ -30,7 +30,7 @@ in
   ++ nixos-modules;
 
   home-manager = sharedConfig.homeManagerConfig;
-
+  documentation.info.enable = false;
   zramSwap.enable = true;
   boot.kernel.sysctl = {
     "vm.swappiness" = 10;
