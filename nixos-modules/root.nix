@@ -13,6 +13,7 @@
     shell = pkgs.zsh;
     openssh.authorizedKeys.keys = [
       shares.users-dict."freeman.xiong".public-key
+      shares.users-dict."freeman.xiong".yubikey
     ];
   };
 

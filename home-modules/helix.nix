@@ -248,7 +248,7 @@ in
             name = "nix";
             auto-format = true;
             formatter = {
-              command = "${pkgs.nixfmt-rfc-style}/bin/nixfmt";
+              command = "${pkgs.nixfmt}/bin/nixfmt";
             };
           }
           {
@@ -359,7 +359,7 @@ in
       nodePackages.prettier
       black
       rustfmt
-      nixfmt-rfc-style
+      nixfmt
 
       # Tools
       ripgrep

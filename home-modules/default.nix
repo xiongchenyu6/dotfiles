@@ -21,8 +21,8 @@ in
         ;
     }
     ++ [
-      inputs.impermanence.nixosModules.home-manager.impermanence
       inputs.sops-nix.homeManagerModules.sops
+      inputs.impermanence.homeManagerModules.impermanence
       inputs.vast-cli.homeManagerModules.default
       (import ../shared-modules/sops.nix)
     ]
@@ -30,6 +30,14 @@ in
       if hasGuiTag then
         [
           ezModules.nixos-desktop
+        ]
+      else
+        [ ]
+    )
+    ++ (
+      if isDarwin then
+        [
+          ./macos-app-fix.nix
         ]
       else
         [ ]

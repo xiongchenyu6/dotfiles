@@ -17,10 +17,12 @@ let
   networkName = "nixvirt";
   networkUuid = "7c866405-6284-4d83-a26b-c375e760fe29";
   bridgeName = "virbr10";
+  wifiInterface = "wlo1";
+  macvtapMac = null; # let libvirt choose a MAC for macvtap
 
   domainName = "ubuntu-nixvirt";
   domainUuid = "30c69d8d-d505-4b8b-8971-04ff3d63e018";
-  overlayName = "ubuntu-24.04-overlay.qcow2";
+  overlayName = "ubuntu-24.04-overlay-v6.qcow2";
 
   ubuntuBaseImage = pkgs.fetchurl {
     url = "https://cloud-images.ubuntu.com/releases/24.04/release/ubuntu-24.04-server-cloudimg-amd64.img";
@@ -35,14 +37,18 @@ let
 
   cloudInitUserData = pkgs.writeText "ubuntu-nixvirt-user-data" ''
 #cloud-config
-ssh_pwauth: false
+ssh_pwauth: true
 users:
   - name: freeman
     sudo: ALL=(ALL) NOPASSWD:ALL
     groups: [ adm, sudo ]
     shell: /bin/bash
+    lock_passwd: false
+    passwd: "$6$VNrS5PBI8A6yrY2c$zWY9N42NDkwLoYnadeU028n0nuXtfv/zRYgfoT9i1MAPPM7HC5v2Fz59UmVDZYhpp3KAK3gLB3kiqjh4hMh5K0"
     ssh_authorized_keys:
 ${lib.concatMapStrings (key: "      - ${key}\n") sshAuthorizedKeys}
+chpasswd:
+  expire: false
 package_update: true
 package_upgrade: false
 packages:
@@ -56,9 +62,20 @@ instance-id: ubuntu-nixvirt
 local-hostname: ubuntu-nixvirt
 '';
 
+  cloudInitNetworkConfig = pkgs.writeText "ubuntu-nixvirt-network-config" ''
+version: 2
+ethernets:
+  eth0:
+    match:
+      macaddress: 52:54:00:7d:ce:fb
+    set-name: enp1s0
+    dhcp4: true
+    optional: true
+'';
+
   # Seed image for cloud-init, generated reproducibly from the keys above.
   cloudInitIso = pkgs.runCommand "ubuntu-nixvirt-seed.iso" { buildInputs = [ pkgs.cloud-utils ]; } ''
-    cloud-localds $out ${cloudInitUserData} ${cloudInitMetaData}
+    cloud-localds --network-config=${cloudInitNetworkConfig} $out ${cloudInitUserData} ${cloudInitMetaData}
   '';
 in
 {
@@ -94,6 +111,7 @@ in
               uuid = networkUuid;
               bridge_name = bridgeName;
               subnet_byte = 85;
+              dhcp_hosts = [ ];
             });
             active = true;
             restart = true;
@@ -126,18 +144,45 @@ in
         ];
         domains = [
           {
-            definition = nixvirtLib.domain.writeXML (nixvirtLib.domain.templates.linux {
-              name = domainName;
-              uuid = domainUuid;
-              vcpu = { count = 4; };
-              memory = { count = 8; unit = "GiB"; };
-              storage_vol = { pool = poolName; volume = overlayName; };
-              backing_vol = null;
-              install_vol = cloudInitIso;
-              bridge_name = bridgeName;
-              virtio_drive = true;
-              virtio_video = true;
-            });
+            definition =
+              let
+                domainConfig = nixvirtLib.domain.templates.linux {
+                  name = domainName;
+                  uuid = domainUuid;
+                  vcpu = { count = 4; };
+                  memory = { count = 8; unit = "GiB"; };
+                  storage_vol = { pool = poolName; volume = overlayName; };
+                  backing_vol = null;
+                  install_vol = toString cloudInitIso; # ensure cdrom uses file source, not libvirt volume
+                  bridge_name = bridgeName;
+                  virtio_drive = true;
+                  virtio_video = null; # disable GL accel to avoid EGL init failures on headless host
+                  net_iface_mac = null;
+                  virtio_net = true;
+                };
+              in
+              nixvirtLib.domain.writeXML (domainConfig // {
+                devices = domainConfig.devices // {
+                  interface = {
+                    type = "bridge";
+                    source = { bridge = bridgeName; };
+                    model = { type = "virtio"; };
+                    mac = null; # let libvirt assign; avoids MAC conflicts
+                  };
+                  serial = [
+                    {
+                      type = "pty";
+                      target = { type = "isa-serial"; port = 0; };
+                    }
+                  ];
+                  console = [
+                    {
+                      type = "pty";
+                      target = { type = "serial"; port = 0; };
+                    }
+                  ];
+                };
+              });
             active = true;
             restart = true;
           }
@@ -164,7 +209,6 @@ in
 
     docker = {
       enable = true;
-      enableNvidia = true;
       autoPrune = {
         enable = true;
         flags = [

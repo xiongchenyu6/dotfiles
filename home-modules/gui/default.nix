@@ -161,6 +161,31 @@
       #inputs.claude-desktop.packages.${system}.claude-desktop-with-fhs
       gnome-software
       tradingview
+      # 成像/磁盘工具
+      ddrescue
+      smartmontools
+      hdparm
+      util-linux
+      coreutils
+
+      # NTFS 只读挂载（可选但建议）
+      ntfs3g
+
+      # 取证（命令行）
+      sleuthkit
+
+      # 恢复/雕刻（PhotoRec 在 testdisk 包里）
+      testdisk
+      autopsy
+      # 检索与解压与识别
+      ripgrep
+      p7zip
+      unzip
+      file
+      exiftool
+
+      # 质量提升（可选）
+      jq
     ];
     sessionVariables = {
       STARSHIP_LOG = "error";
@@ -218,7 +243,7 @@
     };
 
     texlive = {
-      enable = true;
+      enable = false;
       extraPackages = tpkgs: {
         inherit (tpkgs)
           collection-basic

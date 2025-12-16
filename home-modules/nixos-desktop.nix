@@ -111,7 +111,7 @@
 
   services = {
     dropbox = {
-      enable = true;
+      enable = false; # Temporarily disabled due to build issues
     };
 
     pasystray = {

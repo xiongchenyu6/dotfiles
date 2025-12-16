@@ -10,7 +10,7 @@
 {
   imports = with inputs; [
     ../../nixos-modules/rust-web-server-config.nix # Sops configuration for rust-web-server
-    ../../nixos-modules/samba.nix # Samba for corp Windows device management  
+    ../../nixos-modules/samba.nix # Samba for corp Windows device management
     xiongchenyu6.nixosModules.falcon-sensor # CrowdStrike Falcon for endpoint security
     disko.nixosModules.disko
     (modulesPath + "/installer/scan/not-detected.nix")
@@ -62,17 +62,21 @@
     };
   };
 
-  environment.systemPackages = (map lib.lowPrio [
-    pkgs.curl
-    pkgs.gitMinimal
-  ]) ++ (with pkgs; [
-    samba
-    # osquery is handled by services.osquery module
-  ]) ++ lib.optionals (inputs ? xiongchenyu6) (
-    with inputs.xiongchenyu6.packages.${pkgs.system}; [
-      # Add any additional corp management tools
-    ]
-  );
+  environment.systemPackages =
+    (map lib.lowPrio [
+      pkgs.curl
+      pkgs.gitMinimal
+    ])
+    ++ (with pkgs; [
+      samba
+      # osquery is handled by services.osquery module
+    ])
+    ++ lib.optionals (inputs ? xiongchenyu6) (
+      with inputs.xiongchenyu6.packages.${pkgs.system};
+      [
+        # Add any additional corp management tools
+      ]
+    );
   networking =
     let
       file-path = builtins.split "/" (toString ./.);
@@ -80,23 +84,23 @@
     in
     {
       inherit hostName;
-      domain = "corp.autolife.ai"; # Set corp domain
+      domain = "autolife.ai"; # Set corp domain
       firewall = {
         allowedTCPPorts = [
           22
           80
           443
-          139   # NetBIOS Session Service
-          445   # SMB
+          139 # NetBIOS Session Service
+          445 # SMB
           2222
           5432
           7000
-          8080  # Fleet
+          8080 # Fleet
         ];
         allowedUDPPorts = [
           89
-          137   # NetBIOS Name Service
-          138   # NetBIOS Datagram Service
+          137 # NetBIOS Name Service
+          138 # NetBIOS Datagram Service
           179
           2222
           3478
@@ -224,7 +228,7 @@
                 add_header 'Access-Control-Allow-Origin' '*' always;
                 add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, DELETE, OPTIONS' always;
                 add_header 'Access-Control-Allow-Headers' 'Accept, Authorization, Cache-Control, Content-Type, DNT, If-Modified-Since, Keep-Alive, Origin, User-Agent, X-Requested-With, apikey' always;
-                
+
                 # Handle preflight requests
                 if ($request_method = 'OPTIONS') {
                   add_header 'Access-Control-Allow-Origin' '*';
@@ -273,7 +277,7 @@
     global = {
       workgroup = lib.mkForce "AUTOLIFE";
       "server string" = lib.mkForce "AutoLife Corp Server";
-      realm = "CORP.AUTOLIFE.AI";
+      realm = "AUTOLIFE.AI";
     };
     corp-shared = {
       path = "/srv/samba/corp-shared";

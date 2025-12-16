@@ -11,10 +11,9 @@
     ./fleet.nix
   ];
 
-  # Basic system configuration for corp.autolife.ai domain
+  # Basic system configuration for autolife.ai domain
   networking = {
-    domain = "corp.autolife.ai";
-    firewall.enable = true;
+    domain = "autolife.ai";
   };
 
   # Samba configuration for Windows device management
@@ -23,7 +22,7 @@
       workgroup = lib.mkDefault "AUTOLIFE";
       "server string" = lib.mkDefault "AutoLife Corp Server";
       # Enable Active Directory support
-      realm = "CORP.AUTOLIFE.AI";
+      realm = "AUTOLIFE.AI";
       # Domain Master Browser settings for corporate network
       "domain master" = lib.mkDefault "yes";
       "local master" = lib.mkDefault "yes";
@@ -71,7 +70,7 @@
       };
       server = {
         # Custom branding for AutoLife Corp
-        server_url = "https://fleet.corp.autolife.ai";
+        server_url = "https://fleet.autolife.ai";
       };
       app = {
         token_key_size = 24;
@@ -88,11 +87,11 @@
 
   # DNS configuration for corp domain
   services.bind = lib.mkIf config.services.bind.enable {
-    zones."corp.autolife.ai" = {
+    zones."autolife.ai" = {
       master = true;
-      file = pkgs.writeText "corp.autolife.ai.zone" ''
+      file = pkgs.writeText "autolife.ai.zone" ''
         $TTL 86400
-        @       IN      SOA     ns1.corp.autolife.ai. admin.corp.autolife.ai. (
+        @       IN      SOA     ns1.autolife.ai. admin.autolife.ai. (
                         $(date +%Y%m%d%H)      ; Serial
                         3600            ; Refresh
                         1800            ; Retry
@@ -100,7 +99,7 @@
                         86400 )         ; Minimum TTL
 
         ; Name servers
-        @       IN      NS      ns1.corp.autolife.ai.
+        @       IN      NS      ns1.autolife.ai.
 
         ; A records
         ns1     IN      A       ${config.networking.interfaces.eth0.ipv4.addresses.address or "127.0.0.1"}
@@ -127,12 +126,16 @@
   };
 
   # Environment packages for corp management
-  environment.systemPackages = with pkgs; [
-    samba
-    # Add osquery if available from xiongchenyu6 packages
-  ] ++ lib.optionals (inputs ? xiongchenyu6) (
-    with inputs.xiongchenyu6.packages.${pkgs.system}; [
-      # Add any fleet-related packages from xiongchenyu6 if available
+  environment.systemPackages =
+    with pkgs;
+    [
+      samba
+      # Add osquery if available from xiongchenyu6 packages
     ]
-  );
+    ++ lib.optionals (inputs ? xiongchenyu6) (
+      with inputs.xiongchenyu6.packages.${pkgs.system};
+      [
+        # Add any fleet-related packages from xiongchenyu6 if available
+      ]
+    );
 }

@@ -276,7 +276,7 @@
           {
             text = ''
               URI     ldap://mail.${osConfig.networking.domain}
-              BASE    dc=autolife-robotics,dc=tech
+              BASE    dc=auotlife,dc=ai
               SASL_MECH GSSAPI
               SASL_REALM AUTOLIFE.TECH
             '';
