@@ -3,6 +3,17 @@
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 { pkgs, ... }:
 {
+  fonts = {
+    packages = with pkgs; [
+      nerd-fonts.hack
+      jetbrains-mono
+      noto-fonts
+      noto-fonts-cjk-sans
+      noto-fonts-cjk-serif
+      font-awesome
+    ];
+  };
+
   environment = {
     systemPackages = with pkgs; [
     ];
