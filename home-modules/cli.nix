@@ -69,9 +69,9 @@
     codex = {
       enable = true;
     };
-    # opencode = {
-    #  enable = true;
-    #};
+    opencode = {
+      enable = true;
+    };
     script-directory = {
       enable = true;
       settings = {
