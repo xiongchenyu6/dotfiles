@@ -10,7 +10,7 @@ keys:
   - &tcloud age1nqkt2nakrnjxqvpr9h99hk828e8407af26yvdf7qn3ce5uydkqwqjgkt8n
   - &game age107w29mcnleyvvza8r9p3pkq6v7pqg8y3uvn9vp0pa55yrrwa757ss3xg5x
   - &netbird age19eapwgdt8ufhzztcs84jtqyyymh5ypld39mq3kc48aruz7jmu3gqgysyle
-  - &huoshan-bj-001 age13sanuad3fazmechnpya64v7cc4swy4v5u6wks09cqxk45lvlhg9seztxzp
+  - &huoshan-bj-001 age140gwsatv8ev09jwnyrt7wmhwtf652hhs07y5x4nwjfy06wphncmql2zdkj
 
 creation_rules:
   - path_regex: secrets/[^/]+\.yaml$

@@ -113,6 +113,7 @@ in
         22617
         22618
         22619
+        22620
         23396
         21816
         33434
@@ -237,6 +238,21 @@ in
             ];
           };
 
+          wg_sg_office = {
+            inherit address privateKeyFile table;
+            listenPort = 22620;
+            postUp = ''
+              ${pkgs.iproute2}/bin/ip addr add dev wg_sg_office 172.22.240.97/32 peer 172.22.240.102/32
+              ${pkgs.iproute2}/bin/ip addr add dev wg_sg_office fd48:4b4:f3::1/128 peer fd48:4b4:f3::6/128
+              ${pkgs.iproute2}/bin/ip link set multicast on dev wg_sg_office 
+            '';
+            peers = [
+              {
+                publicKey = "9WkAJx+EG3VifVLiMgD8+6CoCsBwSyWAMwtajoy/OTk=";
+                inherit allowedIPs;
+              }
+            ];
+          };
           wg_kioubit = {
             inherit privateKeyFile address table;
             peers = [
