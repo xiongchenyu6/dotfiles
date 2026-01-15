@@ -23,27 +23,15 @@
     srvos.nixosModules.mixins-nix-experimental
     rust-web-server.nixosModules.rust-web-server
     ../../nixos-modules/rust-web-server-config.nix # Our local module with sops templates
+    inputs.xiongchenyu6.nixosModules.casdoor
   ];
 
   zramSwap.enable = true;
-
   # rust-web-server secrets are now handled by the module itself
 
   boot = {
     kernelPackages = lib.mkForce pkgs.linuxPackages_latest;
     tmp.cleanOnBoot = true;
-    kernel = {
-      sysctl = {
-        "net.ipv4.ip_forward" = 1;
-        "net.ipv4.conf.default.rp_filter" = 0;
-        "net.ipv4.conf.all.rp_filter" = 0;
-        "net.ipv4.conf.default.forwarding" = 1;
-        "net.ipv4.conf.all.forwarding" = 1;
-        "net.ipv6.conf.all.accept_redirects" = 0;
-        "net.ipv6.conf.default.forwarding" = 1;
-        "net.ipv6.conf.all.forwarding" = 1;
-      };
-    };
   };
 
   networking =
@@ -54,12 +42,6 @@
     {
       inherit hostName;
       domain = "auotlife.com";
-      hosts = {
-        "172.64.229.235" = [
-          "autolife.ai"
-          "proxy.autolife.ai"
-        ];
-      };
       firewall = {
         allowedTCPPorts = [
           22
@@ -67,6 +49,7 @@
           443
           2222
           7000
+          8000
           10086
         ];
         allowedUDPPorts = [
@@ -86,62 +69,49 @@
     };
 
   services = {
-    v2ray = {
-      config = {
-        outbounds = [
-          {
-            tag = "direct";
-            protocol = "freedom";
-            settings = { };
-          }
-          {
-            tag = "blocked";
-            protocol = "blackhole";
-            settings = { };
-          }
-        ];
-        routing = {
-          domainStrategy = "AsIs";
-          rules = [
-            {
-              type = "field";
-              domain = [ "geosite:cn" ];
-              outboundTag = "direct";
-            }
-            {
-              type = "field";
-              ip = [ "geoip:cn" ];
-              outboundTag = "direct";
-            }
-            {
-              type = "field";
-              domain = [ "geosite:geolocation-!cn" ];
-              outboundTag = "blocked";
-            }
-            {
-              type = "field";
-              ip = [ "geoip:!cn" ];
-              outboundTag = "blocked";
-            }
-          ];
+    nginx = {
+      virtualHosts."casdoor.autolife-robotics.com" = {
+        forceSSL = true;
+        useACMEHost = "autolife-robotics.com";
+        locations."/" = {
+          proxyPass = "http://127.0.0.1:8000";
+          proxyWebsockets = true;
         };
       };
     };
 
     postgresql = {
       enable = true;
-      package = pkgs.postgresql_17_jit;
+      package = pkgs.postgresql_18_jit;
       authentication = ''
         local all all trust
         host  all  all 0.0.0.0/0 scram-sha-256
       '';
       enableTCPIP = true;
-      ensureDatabases = [ "rustWebServer" ];
+      ensureDatabases = [
+        "rustWebServer"
+        "casdoor"
+      ];
     };
 
-    rust-web-server = {
+    casdoor = {
       enable = true;
-      configFile = config.sops.templates."rust-web-server-config".path;
+      appName = "casdoor";
+      port = 8000;
+      runMode = "prod";
+      database = {
+        driver = "postgres";
+        host = "localhost";
+        port = 5432;
+        username = "casdoor";
+        password = "casdoor";
+        name = "casdoor";
+      };
+      redis = {
+        enable = false;
+      };
+      staticBaseUrl = "https://casdoor.autolife-robotics.com";
+      autoStart = true;
     };
   };
 
@@ -155,14 +125,16 @@
     pam.services.nginx.setEnvironment = false;
 
     acme = {
+      acceptTerms = true;
+      defaults.server = "https://acme-v02.api.letsencrypt.org/directory";
       certs = {
-        "auotlife.com" = {
-          domain = "auotlife.com";
-          extraDomainNames = [ "*.auotlife.com" ];
+        "autolife-robotics.com" = {
+          domain = "autolife-robotics.com";
+          extraDomainNames = [ "*.autolife-robotics.com" ];
           email = "xiongchenyu6@gmail.com";
           dnsProvider = "volcengine";
           credentialsFile = config.sops.secrets."acme/volcengine".path;
-          group = "kanidm";
+          group = "nginx";
         };
       };
     };

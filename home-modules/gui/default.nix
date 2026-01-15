@@ -31,6 +31,8 @@
     };
     packages = with pkgs; [
       aspell
+      antigravity
+      kiro
       aspellDicts.en
       albert
       baidupcs-go
@@ -153,6 +155,7 @@
       # tf2pulumi
       tealdeer
       unzip
+      localstack
       wakatime-cli
       wget
       #wrangler

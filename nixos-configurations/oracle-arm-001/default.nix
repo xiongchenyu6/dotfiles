@@ -12,6 +12,7 @@
     ../../nixos-modules/rust-web-server-config.nix # Sops configuration for rust-web-server
     ../../nixos-modules/samba.nix # Samba for corp Windows device management
     xiongchenyu6.nixosModules.falcon-sensor # CrowdStrike Falcon for endpoint security
+    xiongchenyu6.nixosModules.casdoor
     disko.nixosModules.disko
     (modulesPath + "/installer/scan/not-detected.nix")
     (modulesPath + "/profiles/qemu-guest.nix")
@@ -164,7 +165,10 @@
           };
         }
       ];
-      ensureDatabases = [ "freeman.xiong" ];
+      ensureDatabases = [
+        "freeman.xiong"
+        "casdoor"
+      ];
     };
 
     rust-web-server = {
@@ -243,7 +247,39 @@
             };
           };
         };
+        "casdoor.${config.networking.domain}" = {
+          forceSSL = true;
+          acmeRoot = null;
+          useACMEHost = "ai";
+          kTLS = true;
+          locations = {
+            "/" = {
+              proxyPass = "http://127.0.0.1:8000";
+              proxyWebsockets = true;
+            };
+          };
+        };
       };
+    };
+
+    casdoor = {
+      enable = true;
+      appName = "casdoor";
+      port = 8000;
+      runMode = "prod";
+      database = {
+        driver = "postgres";
+        host = "localhost";
+        port = 5432;
+        username = "casdoor";
+        password = "casdoor";
+        name = "casdoor";
+      };
+      redis = {
+        enable = false;
+      };
+      staticBaseUrl = "https://casdoor.autolife.ai";
+      autoStart = true;
     };
   };
 

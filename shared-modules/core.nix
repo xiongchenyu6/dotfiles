@@ -60,7 +60,7 @@
       experimental-features = [
         "nix-command"
         "flakes"
-        "ca-derivations"
+        #"ca-derivations"
         "parse-toml-timestamps"
       ];
       trusted-users = [

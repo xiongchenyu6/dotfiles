@@ -10,11 +10,11 @@
         #appimage-run
         #discord
         cloc
+        claude-monitor
         minicom
         doctl
         gdrive
         gtrash
-        google-chrome
         #freerdp
         #dmidecode
         # jetbrains.idea-ultimate
@@ -73,6 +73,7 @@
         #tpm2-tools
       ]
       ++ lib.optionals pkgs.stdenv.isLinux [
+        google-chrome # Keep Chrome in Nix for Linux
         lm_sensors # Linux-only hardware monitoring
         fwupd # Firmware update daemon (Linux-only)
         gparted # Disk partitioning GUI (Linux-only)

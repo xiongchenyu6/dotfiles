@@ -19,8 +19,11 @@
     ];
   };
   homebrew = {
-    enable = false;
+    enable = true;
     brews = [
+    ];
+    casks = [
+      "google-chrome"
     ];
     taps = [
       "oven-sh/bun"
