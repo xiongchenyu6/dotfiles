@@ -10,8 +10,6 @@
 {
   imports = with inputs; [
     ../../nixos-modules/rust-web-server-config.nix # Sops configuration for rust-web-server
-    ../../nixos-modules/samba.nix # Samba for corp Windows device management
-    xiongchenyu6.nixosModules.falcon-sensor # CrowdStrike Falcon for endpoint security
     disko.nixosModules.disko
     (modulesPath + "/installer/scan/not-detected.nix")
     (modulesPath + "/profiles/qemu-guest.nix")
@@ -63,10 +61,10 @@
   };
 
   environment.systemPackages =
-    (map lib.lowPrio [
+    map lib.lowPrio [
       pkgs.curl
       pkgs.gitMinimal
-    ])
+    ]
     ++ (with pkgs; [
       samba
       # osquery is handled by services.osquery module
@@ -127,7 +125,10 @@
   services = {
     postgresqlBackup = {
       enable = true;
-      databases = [ "rustwebserver" ];
+      databases = [
+        "rustwebserver"
+        "odoo"
+      ];
     };
 
     postgresql = {
@@ -136,6 +137,7 @@
       authentication = ''
         local all all trust
         host  all  all 0.0.0.0/0 scram-sha-256
+        host odoo odoo 127.0.0.1/32 md5
       '';
 
       enableJIT = true;
@@ -163,9 +165,14 @@
             superuser = true;
           };
         }
+        {
+          name = "odoo";
+          ensureDBOwnership = true;
+        }
       ];
       ensureDatabases = [
         "freeman.xiong"
+        "odoo"
       ];
     };
 
@@ -173,6 +180,46 @@
       enable = true;
       configFile = config.sops.templates."rust-web-server-config".path;
       #      logLevel = "info"; # Options: error, warn, info, debug, trace
+    };
+
+    # Odoo ERP/CRM system
+    odoo = {
+      enable = true;
+      domain = "odoo.autolife.ai";
+      autoInit = true;
+      settings = {
+        options = {
+          # Database configuration
+          db_host = "localhost";
+          db_port = "5432";
+          db_user = "odoo";
+          db_password = "odoo"; # Added explicit database password
+          db_maxconn = "64";
+
+          # Server configuration
+          list_db = "false";
+          proxy_mode = lib.mkForce true;
+          workers = "4";
+          max_cron_threads = "2";
+          limit_request = "8192";
+          limit_time_cpu = "600";
+          limit_time_real = "1200";
+
+          # File storage
+          data_dir = lib.mkForce "/var/lib/odoo";
+          logfile = "/var/log/odoo/odoo.log";
+          log_level = "info";
+          log_handler = "[':INFO']";
+
+          # Security settings
+          admin_passwd = "admin";
+          without_demo = "true";
+
+          # Performance tuning
+          osv_memory_age_limit = "1.0";
+          osv_memory_count_limit = "0";
+        };
+      };
     };
 
     nginx = {
@@ -212,35 +259,6 @@
               extraConfig = ''
                 # Placeholder for Fleet UI - would host a web interface for device management
                 try_files $uri $uri/ =404;
-              '';
-            };
-          };
-        };
-        "auth.${config.networking.domain}" = {
-          forceSSL = true;
-          acmeRoot = null;
-          useACMEHost = "${config.networking.domain}";
-          kTLS = true;
-          locations = {
-            "/" = {
-              proxyPass = "http://localhost:8081";
-              proxyWebsockets = true;
-              extraConfig = ''
-                # CORS headers for frontend integration
-                add_header 'Access-Control-Allow-Origin' '*' always;
-                add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, DELETE, OPTIONS' always;
-                add_header 'Access-Control-Allow-Headers' 'Accept, Authorization, Cache-Control, Content-Type, DNT, If-Modified-Since, Keep-Alive, Origin, User-Agent, X-Requested-With, apikey' always;
-
-                # Handle preflight requests
-                if ($request_method = 'OPTIONS') {
-                  add_header 'Access-Control-Allow-Origin' '*';
-                  add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, DELETE, OPTIONS';
-                  add_header 'Access-Control-Allow-Headers' 'Accept, Authorization, Cache-Control, Content-Type, DNT, If-Modified-Since, Keep-Alive, Origin, User-Agent, X-Requested-With, apikey';
-                  add_header 'Access-Control-Max-Age' 1728000;
-                  add_header 'Content-Type' 'text/plain charset=UTF-8';
-                  add_header 'Content-Length' 0;
-                  return 204;
-                }
               '';
             };
           };
@@ -296,10 +314,51 @@
   systemd.tmpfiles.rules = [
     "d /srv/samba/corp-shared 0775 samba samba"
     "d /var/www/fleet 0755 nginx nginx"
+    "d /var/lib/odoo 0755 odoo odoo -"
+    "d /var/log/odoo 0755 odoo odoo -"
     # osquery log directory handled by official module
   ];
 
+  # Log rotation for Odoo logs
+  services.logrotate.settings.odoo = {
+    files = [ "/var/log/odoo/*.log" ];
+    frequency = "weekly";
+    rotate = 4;
+    compress = true;
+    delaycompress = true;
+    missingok = true;
+    notifempty = true;
+    create = "644 odoo odoo";
+    postrotate = "systemctl reload odoo.service";
+  };
+
   nixpkgs = {
     hostPlatform = "aarch64-linux";
+  };
+
+  # Set Odoo database user password after PostgreSQL starts
+  systemd.services.odoo-db-init = {
+    description = "Initialize Odoo database user password";
+    wantedBy = [ "odoo.service" ];
+    before = [ "odoo.service" ];
+    after = [ "postgresql.service" ];
+    wants = [ "postgresql.service" ];
+    script = ''
+      # Wait for PostgreSQL to be ready
+      while ! ${pkgs.postgresql_18_jit}/bin/psql -U freeman.xiong -d freeman.xiong -c '\q' 2>/dev/null; do
+        echo "Waiting for PostgreSQL..."
+        sleep 2
+      done
+
+      # Set odoo user password
+      echo "Setting odoo user password..."
+      ${pkgs.postgresql_18_jit}/bin/psql -U freeman.xiong -d freeman.xiong -c "ALTER USER odoo PASSWORD 'odoo';"
+      echo "Odoo database password set successfully!"
+    '';
+
+    serviceConfig = {
+      Type = "oneshot";
+      User = "root";
+    };
   };
 }
