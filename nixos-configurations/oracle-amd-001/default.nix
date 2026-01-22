@@ -126,7 +126,7 @@
       redis = {
         enable = false;
       };
-      staticBaseUrl = "https://casdoor.${config.networking.domain}";
+      staticBaseUrl = "https://cdn.casbin.org";
       autoStart = true;
     };
 
