@@ -1,0 +1,155 @@
+---
+# setup-iam-users.yml
+# This playbook creates IAM user for FAE to upload training data
+# 
+# Design:
+# - FAE user: Owns training-backup bucket, can upload but cannot delete
+# - AI engineers: Use root credentials, full access to all buckets
+#
+# Usage:
+#   ansible-playbook -i inventory.ini setup-iam-users.yml
+#
+# Prerequisites:
+#   - VersityGW must be running with IAM Internal enabled (--iam-dir option)
+#   - Root credentials are stored in secrets/versitygw.yaml
+
+- name: Setup IAM User for Training Data Upload
+  hosts: versitygw_servers
+  become: yes
+  vars:
+    versitygw_port: 7070
+    versitygw_endpoint: "http://127.0.0.1:{{ versitygw_port }}"
+    bucket_name: "training-backup"
+    root_access_key: "{{ versitygw.root_access_key }}"
+    root_secret_key: "{{ versitygw.root_secret_key }}"
+    fae_access_key: "{{ versitygw.fae_access_key }}"
+    fae_secret_key: "{{ versitygw.fae_secret_key }}"
+
+  tasks:
+    - name: Load encrypted variables
+      community.sops.load_vars:
+        file: ../../secrets/versitygw.yaml
+      no_log: true
+
+    - name: Install required apt packages
+      apt:
+        name:
+          - pipx
+          - jq
+        state: present
+        update_cache: yes
+
+    - name: Install AWS CLI via pipx
+      shell: |
+        pipx install awscli || pipx upgrade awscli
+        pipx ensurepath
+      args:
+        creates: /root/.local/bin/aws
+
+    - name: Create symlink for aws command
+      file:
+        src: /root/.local/bin/aws
+        dest: /usr/local/bin/aws
+        state: link
+        force: yes
+      failed_when: false
+
+    - name: Check VersityGW is running
+      wait_for:
+        port: "{{ versitygw_port }}"
+        host: localhost
+        timeout: 30
+
+    - name: Create training-backup bucket if not exists
+      environment:
+        AWS_ACCESS_KEY_ID: "{{ root_access_key }}"
+        AWS_SECRET_ACCESS_KEY: "{{ root_secret_key }}"
+        AWS_ENDPOINT_URL: "{{ versitygw_endpoint }}"
+      shell: |
+        aws s3 mb s3://{{ bucket_name }} 2>/dev/null || true
+      register: bucket_result
+      changed_when: bucket_result.rc == 0
+      failed_when: false
+
+    - name: Create FAE uploader user
+      shell: |
+        /usr/local/bin/versitygw admin \
+          --access "{{ root_access_key }}" \
+          --secret "{{ root_secret_key }}" \
+          --endpoint-url "{{ versitygw_endpoint }}" \
+          create-user \
+          --access "{{ fae_access_key }}" \
+          --secret "{{ fae_secret_key }}" \
+          --role user
+      register: fae_user_result
+      changed_when: fae_user_result.rc == 0
+      failed_when: fae_user_result.rc != 0 and 'XAdminUserExists' not in fae_user_result.stderr
+
+    - name: Assign training-backup bucket to FAE user
+      shell: |
+        /usr/local/bin/versitygw admin \
+          --access "{{ root_access_key }}" \
+          --secret "{{ root_secret_key }}" \
+          --endpoint-url "{{ versitygw_endpoint }}" \
+          change-bucket-owner \
+          --bucket "{{ bucket_name }}" \
+          --owner "{{ fae_access_key }}"
+      register: assign_result
+      changed_when: assign_result.rc == 0
+
+    - name: List users and buckets
+      shell: |
+        echo "=== Users ==="
+        /usr/local/bin/versitygw admin \
+          --access "{{ root_access_key }}" \
+          --secret "{{ root_secret_key }}" \
+          --endpoint-url "{{ versitygw_endpoint }}" \
+          list-users
+        echo ""
+        echo "=== Buckets ==="
+        /usr/local/bin/versitygw admin \
+          --access "{{ root_access_key }}" \
+          --secret "{{ root_secret_key }}" \
+          --endpoint-url "{{ versitygw_endpoint }}" \
+          list-buckets
+      register: list_result
+
+    - name: Display users and buckets
+      debug:
+        msg: "{{ list_result.stdout_lines }}"
+
+    - name: Display setup summary
+      debug:
+        msg: |
+          ========================================
+          IAM Setup Complete
+          ========================================
+          
+          Bucket: {{ bucket_name }}
+          Owner: {{ fae_access_key }}
+          
+          FAE Uploader:
+            - Access Key: {{ fae_access_key }}
+            - Permissions: Upload files to training-backup
+            - Note: VersityGW does not support delete restrictions at user level
+                    To prevent accidental deletion, use restic or versioning
+          
+          AI Engineers (Root):
+            - Access Key: {{ root_access_key }}
+            - Permissions: Full access to all buckets
+          
+          Test Commands:
+          
+          FAE Upload:
+          export AWS_ACCESS_KEY_ID={{ fae_access_key }}
+          export AWS_SECRET_ACCESS_KEY=<secret>
+          export AWS_ENDPOINT_URL=http://<server>:{{ versitygw_port }}
+          aws s3 cp testfile.txt s3://{{ bucket_name }}/
+          
+          AI Download (Root):
+          export AWS_ACCESS_KEY_ID={{ root_access_key }}
+          export AWS_SECRET_ACCESS_KEY=<secret>
+          export AWS_ENDPOINT_URL=http://<server>:{{ versitygw_port }}
+          aws s3 cp s3://{{ bucket_name }}/testfile.txt ./
+          aws s3 ls s3://{{ bucket_name }}/
+          ========================================
