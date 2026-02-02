@@ -737,7 +737,6 @@
       settings = {
         git_protocal = "ssh";
       };
-      extensions = with pkgs; [ gh-copilot ];
     };
 
     gh-dash = {

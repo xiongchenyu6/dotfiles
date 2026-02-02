@@ -60,7 +60,7 @@
         grafana-loki
         imagemagick
         inetutils
-        ifuse
+        #ifuse
         jp2a
         lsof
         #my_cookies
