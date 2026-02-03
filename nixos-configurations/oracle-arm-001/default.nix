@@ -185,6 +185,14 @@
     # Odoo ERP/CRM system
     odoo = {
       enable = true;
+      package = pkgs.odoo.overridePythonAttrs (old: {
+        # Fix worker spawning: Odoo workers re-exec via sys.argv[0].
+        # The makeWrapperArgs creates a bash wrapper, but sys.argv[0] in the Python
+        # wrapper points to it. When workers spawn, Python interprets bash as Python.
+        # Solution: Remove makeWrapperArgs (no bash wrapper), keep Python wrapper
+        # for PYTHONPATH. Add PATH deps via systemd instead.
+        makeWrapperArgs = [ ];
+      });
       domain = "odoo.autolife.ai";
       autoInit = true;
       settings = {
@@ -244,6 +252,29 @@
             "/" = {
               proxyWebsockets = true;
               proxyPass = "http://localhost:3333";
+            };
+          };
+        };
+        "auth.autolife.ai" = {
+          forceSSL = true;
+          acmeRoot = null;
+          useACMEHost = "ai";
+          kTLS = true;
+          locations = {
+            "/" = {
+              proxyWebsockets = true;
+              proxyPass = "http://127.0.0.1:8081";
+              extraConfig = ''
+                # CORS headers for auth endpoints
+                add_header 'Access-Control-Allow-Origin' '*' always;
+                add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, DELETE, OPTIONS' always;
+                add_header 'Access-Control-Allow-Headers' 'Authorization, Content-Type, X-Client-Info, apikey' always;
+
+                # Handle preflight requests
+                if ($request_method = 'OPTIONS') {
+                  return 204;
+                }
+              '';
             };
           };
         };
@@ -317,6 +348,12 @@
     "d /var/lib/odoo 0755 odoo odoo -"
     "d /var/log/odoo 0755 odoo odoo -"
     # osquery log directory handled by official module
+  ];
+
+  # Add wkhtmltopdf and rtlcss to odoo service PATH (since we disabled wrapping)
+  systemd.services.odoo.path = [
+    pkgs.wkhtmltopdf
+    pkgs.rtlcss
   ];
 
   # Log rotation for Odoo logs

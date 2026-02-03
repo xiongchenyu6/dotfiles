@@ -90,6 +90,7 @@
       enableTCPIP = true;
       ensureDatabases = [
         "rustWebServer"
+        "rustwebserver"
         "casdoor"
       ];
     };
@@ -112,6 +113,11 @@
       };
       staticBaseUrl = "https://casdoor.autolife-robotics.com";
       autoStart = true;
+    };
+
+    rust-web-server = {
+      enable = true;
+      configFile = config.sops.templates."rust-web-server-config".path;
     };
   };
 
