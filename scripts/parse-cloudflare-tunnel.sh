@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# This script parses the cloudflared tunnel command to extract the tunnel credentials.
+# Extracts Cloudflare Tunnel credentials from a cloudflared command.
 
 usage() {
     echo "Usage: $0 <tunnel-name> <cloudflared-command>"

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# This script lists the IOMMU groups and the devices in each group.
+# Lists IOMMU groups and their attached devices.
 
 usage() {
     echo "Usage: $0"
