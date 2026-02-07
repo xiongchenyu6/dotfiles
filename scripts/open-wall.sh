@@ -1,6 +1,6 @@
 #!/usr/bin/env nix-shell
 #!nix-shell -i expect -p expect
-# junos-config.sh - Configure Juniper JUNOS devices via SSH
+# Enables reth1 on a JunOS device via SSH (open wall).
 
 set timeout 60
 set host "192.168.30.4"

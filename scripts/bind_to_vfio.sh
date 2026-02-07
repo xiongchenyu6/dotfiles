@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# This script unbinds the GPU and Audio from the current drivers and binds them to the vfio-pci driver.
+# Binds NVIDIA GPU and audio to vfio-pci for VM passthrough.
 
 usage() {
     echo "Usage: $0"

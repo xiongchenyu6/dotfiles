@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# This script checks the display status in Hyprland.
+# Shows Hyprland monitor configuration and DRM device status.
 
 usage() {
     echo "Usage: $0"

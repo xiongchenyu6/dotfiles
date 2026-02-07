@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# This script is a complete workflow for rebinding the GPU between the host and a VM.
+# End-to-end GPU rebind workflow for host <-> VM.
 
 usage() {
     echo "Usage: $0 [to-vm|to-host]"

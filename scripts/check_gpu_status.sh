@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# This script checks the binding status of the GPU and Audio devices, and the status of the NVIDIA driver.
+# Reports GPU/audio binding status and NVIDIA driver state.
 
 usage() {
     echo "Usage: $0"
