@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# This script unbinds the GPU from the vfio-pci driver and binds it to the nvidia driver for use with Hyprland.
+# Rebinds NVIDIA GPU from vfio-pci back to host drivers and restores Hyprland.
 
 usage() {
     echo "Usage: $0"

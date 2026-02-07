@@ -1,8 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# This script restarts Hyprland.
-# It first tries to exit gracefully, then force kills it if necessary.
+# Restarts Hyprland: graceful exit first, then force kill if needed.
 # It also saves the current workspace and prints it out.
 
 usage() {

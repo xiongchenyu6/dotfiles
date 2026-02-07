@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+# Cleans Antidote temp files and regenerates plugins.
 echo "🚀 清理 Antidote 临时文件..."
 rm -f /tmp/tmp_hm_zsh_plugins.zsh-*
 

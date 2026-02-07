@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Setup script for GoTrue + PostgREST integration on oracle-arm-001
+# Sets up GoTrue + PostgREST integration on oracle-arm-001.
 
 set -e
 

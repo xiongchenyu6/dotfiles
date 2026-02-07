@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# This script permanently deletes files/folders from your git repository.
+# Permanently removes paths from git history using filter-branch.
 
 usage() {
     echo "Usage: $0 <path1> <path2> ..."
