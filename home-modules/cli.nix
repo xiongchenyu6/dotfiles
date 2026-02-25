@@ -1,6 +1,5 @@
 { config, pkgs, ... }:
 {
-
   editorconfig = {
     enable = true;
     settings = {
@@ -661,7 +660,6 @@
             "system"
             "git_repos"
             "tldr"
-            "vscode"
           ];
 
         };

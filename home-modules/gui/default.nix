@@ -222,10 +222,6 @@
     };
   };
   programs = {
-    # nh = {
-    #   enable = true;
-    #   flake = "/home/freeman.xiong/dotfiles";
-    # };
     vastai = {
       enable = true;
 
@@ -284,8 +280,14 @@
     #   };
     # };
 
-    vscode = {
+    obsidian = {
       enable = true;
+    };
+
+
+    zed-editor = {
+      enable = true;
+      extensions = [ "nix" ];
     };
 
     # password-store = {

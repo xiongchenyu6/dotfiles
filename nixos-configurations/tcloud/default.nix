@@ -30,7 +30,6 @@ in
     srvos.nixosModules.mixins-nix-experimental
     srvos.nixosModules.mixins-tracing
     ./hardware-configuration.nix
-    #vscode-server.nixosModules.default
     {
       topology.self.interfaces.home = {
         type = "wireguard";

@@ -19,7 +19,6 @@
     ezModules.sops
     srvos.nixosModules.mixins-trusted-nix-caches
     srvos.nixosModules.mixins-nix-experimental
-    vscode-server.nixosModules.default
   ];
 
   sops.secrets."wireguard/digital" = { };
