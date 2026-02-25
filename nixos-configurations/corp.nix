@@ -133,7 +133,7 @@
       git
     ]
     ++ lib.optionals (inputs ? xiongchenyu6) (
-      with inputs.xiongchenyu6.packages.${pkgs.system};
+      with inputs.xiongchenyu6.packages.${pkgs.stdenv.hostPlatform.system};
       [
         # Add fleet or osquery packages if available
       ]
