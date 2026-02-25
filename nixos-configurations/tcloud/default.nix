@@ -288,7 +288,7 @@ in
   services = {
 
     owncast = {
-      enable = true;
+      enable = false; # Disabled: owncast 0.2.3 crash-loops due to Go runtime panic (minpc/maxpc invalid)
       openFirewall = true;
       listen = "0.0.0.0";
     };
