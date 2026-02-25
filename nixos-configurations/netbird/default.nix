@@ -27,7 +27,6 @@
     srvos.nixosModules.mixins-nix-experimental
     srvos.nixosModules.mixins-tracing
     rust-web-server.nixosModules.rust-web-server
-    vscode-server.nixosModules.default
   ];
 
   users = {

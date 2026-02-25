@@ -17,7 +17,6 @@
         o = "xdg-open";
         ls = "eza --icons";
         update = "sudo nixos-rebuild switch";
-        c = "code --enable-wayland-ime=true";
       };
       dirHashes = {
         docs = "$HOME/Documents";

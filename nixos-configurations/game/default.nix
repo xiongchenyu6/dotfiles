@@ -13,7 +13,6 @@
   imports = with inputs; [
     ./hardware-configuration.nix
     ezModules.root
-    ezModules.dvorak
     ezModules."freeman.xiong"
     ezModules.misc
     ezModules.client-cli
@@ -30,7 +29,6 @@
     lanzaboote.nixosModules.lanzaboote
     nixos-hardware.nixosModules.lenovo-legion-16ach6h
     srvos.nixosModules.desktop
-    vscode-server.nixosModules.default
     srvos.nixosModules.mixins-tracing
     # Import Hashtopolis agent module from NUR packages
     xiongchenyu6.nixosModules.hashtopolis-agent
@@ -65,17 +63,19 @@
       pkgs.android-tools # Replaces programs.adb
     ];
   };
-  hardware.nvidia.package = let
-    base = config.boot.kernelPackages.nvidiaPackages.beta;
-  in base.overrideAttrs (old: {
-    passthru = old.passthru // {
-      open = old.passthru.open.overrideAttrs (openOld: {
-        patches = (openOld.patches or []) ++ [
-          ./fix-nvidia-open-6.19.patch  # TODO: Remove once nixos-unstable includes the fix
-        ];
-      });
-    };
-  });
+  hardware.nvidia.package =
+    let
+      base = config.boot.kernelPackages.nvidiaPackages.beta;
+    in
+    base.overrideAttrs (old: {
+      passthru = old.passthru // {
+        open = old.passthru.open.overrideAttrs (openOld: {
+          patches = (openOld.patches or [ ]) ++ [
+            ./fix-nvidia-open-6.19.patch # TODO: Remove once nixos-unstable includes the fix
+          ];
+        });
+      };
+    });
   boot = {
 
     binfmt.emulatedSystems = [ "aarch64-linux" ];
@@ -203,6 +203,7 @@
         ]; # for libvirt
         interfaces.wg_tcloud.allowedTCPPorts = [
           22
+          5173
           8080
         ];
         interfaces.wg_tcloud.allowedUDPPorts = [ 22 ];
@@ -315,7 +316,6 @@
       ensureDatabases = [ "freeman.xiong" ];
     };
 
-    vscode-server.enable = true;
     frp = {
       instances."" = {
         enable = false;

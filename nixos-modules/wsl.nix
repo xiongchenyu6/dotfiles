@@ -9,9 +9,6 @@
       { src = "${coreutils}/bin/readlink"; }
     ];
   };
-  services = {
-    vscode-server.enable = true;
-  };
 
   environment.systemPackages = with pkgs; [ wslu ];
 }

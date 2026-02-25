@@ -64,13 +64,6 @@
         flake-compat.follows = "flake-compat";
       };
     };
-    vscode-server = {
-      url = "github:nix-community/nixos-vscode-server";
-      inputs = {
-        nixpkgs.follows = "nixpkgs";
-        flake-utils.follows = "flake-utils";
-      };
-    };
     nix-alien = {
       url = "github:thiagokokada/nix-alien";
       inputs = {
