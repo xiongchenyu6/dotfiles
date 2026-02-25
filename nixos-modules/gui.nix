@@ -50,7 +50,7 @@
       wqy_microhei
       wqy_zenhei
       nerd-fonts.hack
-      jetbrains-mono
+      # jetbrains-mono  # Temporarily disabled: picosvg test failure in nixpkgs
       emacs-all-the-icons-fonts
       font-awesome
     ];

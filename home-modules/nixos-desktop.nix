@@ -74,11 +74,11 @@
       enable = true;
       createDirectories = true;
       extraConfig = {
-        XDG_MISC_DIR = "${config.home.homeDirectory}/Misc";
-        XDG_TEST_DIR = "${config.home.homeDirectory}/Test";
-        XDG_GIT_DIR = "${config.home.homeDirectory}/Git";
-        XDG_PRIVATE_DIR = "${config.home.homeDirectory}/Private";
-        XDG_WORKSPACE_DIR = "${config.home.homeDirectory}/Workspace";
+        MISC = "${config.home.homeDirectory}/Misc";
+        TEST = "${config.home.homeDirectory}/Test";
+        GIT = "${config.home.homeDirectory}/Git";
+        PRIVATE = "${config.home.homeDirectory}/Private";
+        WORKSPACE = "${config.home.homeDirectory}/Workspace";
       };
     };
   };
