@@ -26,7 +26,7 @@
     };
     # Fix for winetricks wine64 detection issue
     file.".local/bin/wine64" = {
-      source = "${pkgs.wineWowPackages.waylandFull}/bin/wine";
+      source = "${pkgs.wineWow64Packages.waylandFull}/bin/wine";
       executable = true;
     };
     packages = with pkgs; [
@@ -54,7 +54,7 @@
       #whatsapp-for-linux
       wasistlos
       winetricks
-      wineWowPackages.waylandFull
+      wineWow64Packages.waylandFull
       bottles
       zotero
       kdePackages.dolphin
@@ -106,7 +106,7 @@
       litecli
       #vsc-leetcode-cli
       mongosh
-      mycli
+      #mycli
       my2sql
       # nix-du
       nix-index-update
@@ -155,7 +155,7 @@
       # tf2pulumi
       tealdeer
       unzip
-      localstack
+      #localstack
       wakatime-cli
       wget
       #wrangler
