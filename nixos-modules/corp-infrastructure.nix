@@ -133,7 +133,7 @@
       # Add osquery if available from xiongchenyu6 packages
     ]
     ++ lib.optionals (inputs ? xiongchenyu6) (
-      with inputs.xiongchenyu6.packages.${pkgs.system};
+      with inputs.xiongchenyu6.packages.${pkgs.stdenv.hostPlatform.system};
       [
         # Add any fleet-related packages from xiongchenyu6 if available
       ]

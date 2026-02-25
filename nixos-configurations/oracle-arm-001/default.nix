@@ -70,7 +70,7 @@
       # osquery is handled by services.osquery module
     ])
     ++ lib.optionals (inputs ? xiongchenyu6) (
-      with inputs.xiongchenyu6.packages.${pkgs.system};
+      with inputs.xiongchenyu6.packages.${pkgs.stdenv.hostPlatform.system};
       [
         # Add any additional corp management tools
       ]
