@@ -59,6 +59,9 @@ enabled=true
 [mpris]
 enabled=true
 
+[obsidian]
+enabled=true
+
 [path]
 enabled=true
 

@@ -79,7 +79,7 @@
         };
         home = lib.mkIf pkgs.stdenv.isLinux {
           sessionVariables = {
-            EDITOR = "code --wait";
+            EDITOR = "nvim";
           };
         };
       };

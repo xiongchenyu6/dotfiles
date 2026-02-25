@@ -8,11 +8,9 @@
 {
   imports = [
     ./neovim.nix
-    ./helix.nix
   ];
 
   modules.neovim.enable = true;
-  modules.helix.enable = true;
 
   programs = {
     ripgrep-all = {
@@ -348,13 +346,6 @@
           --enable-wayland-ime
           --enable-features=UseOzonePlatform
           --ozone-platform=wayland 
-        '';
-      };
-      ".config/code-flags.conf" = {
-        text = ''
-          --enable-wayland-ime
-          --enable-features=WaylandWindowDecorations
-          --ozone-platform-hint=auto
         '';
       };
     };
