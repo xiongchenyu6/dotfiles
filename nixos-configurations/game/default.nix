@@ -65,7 +65,17 @@
       pkgs.android-tools # Replaces programs.adb
     ];
   };
-  hardware.nvidia.package = config.boot.kernelPackages.nvidiaPackages.beta;
+  hardware.nvidia.package = let
+    base = config.boot.kernelPackages.nvidiaPackages.beta;
+  in base.overrideAttrs (old: {
+    passthru = old.passthru // {
+      open = old.passthru.open.overrideAttrs (openOld: {
+        patches = (openOld.patches or []) ++ [
+          ./fix-nvidia-open-6.19.patch  # TODO: Remove once nixos-unstable includes the fix
+        ];
+      });
+    };
+  });
   boot = {
 
     binfmt.emulatedSystems = [ "aarch64-linux" ];
@@ -251,7 +261,7 @@
     v2raya.enable = true;
 
     sunshine = {
-      enable = true;
+      enable = false;
       openFirewall = true;
       capSysAdmin = true;
     };
