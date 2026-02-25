@@ -30,7 +30,7 @@ in
       withRuby = true;
 
       # Complete Neovim configuration migrated from ~/.config/nvim/lua
-      extraLuaConfig = ''
+      initLua = ''
         -- Set leader keys first
         vim.g.mapleader = " ";
         vim.g.maplocalleader = " ";

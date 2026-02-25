@@ -6,9 +6,9 @@
   xsession = {
     enable = true;
     initContent = ''
-      ${pkgs.xorg.xset}/bin/xset -b
-      ${pkgs.xorg.xset}/bin/xset r rate 180 60
-      ${pkgs.xorg.setxkbmap}/bin/setxkbmap -layout us -variant dvp
+      ${pkgs.xset}/bin/xset -b
+      ${pkgs.xset}/bin/xset r rate 180 60
+      ${pkgs.setxkbmap}/bin/setxkbmap -layout us -variant dvp
     '';
     windowManager =
       let
