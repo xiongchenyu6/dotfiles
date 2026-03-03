@@ -15,7 +15,7 @@
       # jetbrains.idea-ultimate
       # jetbrains.rider
       #tectonic
-      libreoffice
+      #libreoffice
       stlink-gui
       stm32cubemx
       glib
@@ -111,7 +111,7 @@
 
   services = {
     dropbox = {
-      enable = false; # Temporarily disabled due to build issues
+      enable = true; # Temporarily disabled due to build issues
     };
 
     pasystray = {
@@ -171,7 +171,7 @@
       };
     };
   };
-  
+
   # Configure GTK icon theme for nm-applet
   gtk = {
     enable = true;
@@ -180,7 +180,7 @@
       package = pkgs.adwaita-icon-theme;
     };
   };
-  
+
   dconf.settings = {
     "org/virt-manager/virt-manager/connections" = {
       autoconnect = [ "qemu:///system" ];

@@ -59,6 +59,9 @@
     lazydocker = {
       enable = true;
     };
+    lazysql = {
+      enable = true;
+    };
     claude-code = {
       enable = true;
     };
