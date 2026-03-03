@@ -7,6 +7,30 @@
   ezModules,
   ...
 }:
+let
+  zeroclawPkgs = inputs.zeroclaw.packages.${pkgs.system};
+  # Fix upstream stale npm deps hash in zeroclaw-web (FOD hash mismatch)
+  zeroclaw-web-fixed = zeroclawPkgs.zeroclaw-web.overrideAttrs (old: {
+    npmDepsHash = "sha256-+F9yjRj5QLnyFrRFabIhEyyc02AFXVPN+p4q+EvEhGI=";
+    npmDeps = pkgs.fetchNpmDeps {
+      src = old.src;
+      hash = "sha256-+F9yjRj5QLnyFrRFabIhEyyc02AFXVPN+p4q+EvEhGI=";
+    };
+  });
+  zeroclaw =
+    (zeroclawPkgs.zeroclaw.override {
+      zeroclaw-web = zeroclaw-web-fixed;
+    }).overrideAttrs
+      (old: {
+        # Upstream package.nix fileset is incomplete (missing build.rs, templates/, etc.)
+        # Use full source from the flake instead
+        src = inputs.zeroclaw;
+        prePatch = ''
+          mkdir -p web
+          ln -sf ${zeroclaw-web-fixed} web/dist
+        '';
+      });
+in
 {
   imports = with inputs; [
     xiongchenyu6.nixosModules.casdoor
@@ -30,8 +54,9 @@
   sops.secrets."cloudflared/tunnel-credentials" = { };
 
   environment = {
-    systemPackages = with pkgs; [
-      cloudflared
+    systemPackages = [
+      pkgs.cloudflared
+      zeroclaw
     ];
   };
 
@@ -108,41 +133,75 @@
         };
       };
     };
+  };
 
-    casdoor = {
-      enable = true;
-      appName = "casdoor";
-      port = 8000;
-      runMode = "prod";
-      database = {
-        driver = "postgres";
-        host = "localhost";
-        port = 5432;
-        username = "casdoor";
-        password = "casdoor";
-        name = "casdoor";
-      };
-      redis = {
-        enable = false;
-      };
-      staticBaseUrl = "https://cdn.casbin.org";
-      autoStart = true;
+  # ZeroClaw AI Gateway - Rust-based, <5MB RAM
+  # Config is written to /var/lib/zeroclaw/.zeroclaw/config.toml
+  systemd.services.zeroclaw = {
+    description = "ZeroClaw AI Gateway (Telegram + NVIDIA NIM + Brave Search)";
+    wantedBy = [ "multi-user.target" ];
+    after = [ "network-online.target" ];
+    wants = [ "network-online.target" ];
+    environment = {
+      HOME = "/var/lib/zeroclaw";
+      RUST_LOG = "info";
     };
+    serviceConfig = {
+      ExecStartPre =
+        let
+          configFile = pkgs.writeText "zeroclaw-config.toml" ''
+            # ZeroClaw config for oracle-amd-001
+            # Provider: NVIDIA NIM (Kimi K2.5) via OpenAI-compatible API
+            default_provider = "custom:https://integrate.api.nvidia.com/v1"
+            api_key = "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"
+            default_model = "moonshotai/kimi-k2.5"
+            default_temperature = 0.7
 
-    cloudflared = {
-      enable = true;
-      tunnels = {
-        "31881776-71bc-4c81-b206-b579ca61ffd2" = {
-          credentialsFile = config.sops.secrets."cloudflared/tunnel-credentials".path;
-          # Default route for unmatched requests
-          warp-routing = {
-            enabled = true;
-          };
-          default = "http_status:404";
-          # Add specific routes here as needed, for example:
-          # "kanidm.${config.networking.domain}" = "localhost:443";
-        };
-      };
+            # Web Search via Brave
+            [web_search]
+            enabled = true
+            provider = "brave"
+            brave_api_key = "BSAfZcxnhk7D-O0urvk6ygSSciDQpNv"
+            max_results = 5
+
+            # Telegram Channel
+            [channels_config]
+            cli = false
+
+            [channels_config.telegram]
+            bot_token = "8759926301:AAG5dAb9htQc_Fo_FKwNVS5BZaB-Ks1ca0w"
+            allowed_users = ["5368588092"]
+            stream_mode = "partial"
+            ack_enabled = true
+            interrupt_on_new_message = true
+
+            [channels_config.telegram.group_reply]
+            mode = "mention_only"
+            allowed_sender_ids = []
+          '';
+        in
+        "${pkgs.coreutils}/bin/install -D -m 600 ${configFile} /var/lib/zeroclaw/.zeroclaw/config.toml";
+      ExecStart = "${zeroclaw}/bin/zeroclaw daemon";
+      Restart = "always";
+      RestartSec = 5;
+      User = "zeroclaw";
+      Group = "zeroclaw";
+      WorkingDirectory = "/var/lib/zeroclaw";
+      StateDirectory = "zeroclaw";
+      # Security hardening
+      ProtectSystem = "strict";
+      ProtectHome = true;
+      PrivateTmp = true;
+      NoNewPrivileges = true;
+      ReadWritePaths = [ "/var/lib/zeroclaw" ];
     };
   };
+
+  users.users.zeroclaw = {
+    isSystemUser = true;
+    group = "zeroclaw";
+    home = "/var/lib/zeroclaw";
+    createHome = true;
+  };
+  users.groups.zeroclaw = { };
 }
