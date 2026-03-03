@@ -128,6 +128,15 @@
         nixpkgs.follows = "nixpkgs";
       };
     };
+
+    # LazyNixOS - lazy evaluation and deployment
+    lazynixos = {
+      url = "github:xiongchenyu6/lazynixos";
+      inputs = {
+        nixpkgs.follows = "nixpkgs";
+        flake-parts.follows = "flake-parts";
+      };
+    };
   };
 
   outputs =
