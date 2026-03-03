@@ -6,16 +6,18 @@
 }:
 let
   # Common overlays shared between Darwin and NixOS
-  baseOverlays = with inputs; 
+  baseOverlays =
+    with inputs;
     map (x: x.overlays.default or x.overlay) [
       xiongchenyu6
       nix-alien
       sops-nix
       nix-topology
     ];
-  
+
   # Additional overlays for NixOS
-  nixosAdditionalOverlays = with inputs; 
+  nixosAdditionalOverlays =
+    with inputs;
     map (x: x.overlays.default or x.overlay) [
       nur
       rust-web-server
@@ -25,15 +27,18 @@ in
   inherit baseOverlays nixosAdditionalOverlays;
 
   # Combined overlays for NixOS
-  nixosOverlays = baseOverlays ++ nixosAdditionalOverlays ++ [
-    (_: prev: {
-      # gnupg240 = nixpkgs-stable.legacyPackages.x86_64-linux.gnupg;
-      # telegram-desktop =
-      #   nixpkgs-stable.legacyPackages.x86_64-linux.telegram-desktop;
-      # waybar = nixpkgs-master.legacyPackages.x86_64-linux.waybar;
-      microsoft-edge = inputs.nixpkgs-stable.legacyPackages.x86_64-linux.microsoft-edge;
-    })
-  ];
+  nixosOverlays =
+    baseOverlays
+    ++ nixosAdditionalOverlays
+    ++ [
+      (_: prev: {
+        # gnupg240 = nixpkgs-stable.legacyPackages.x86_64-linux.gnupg;
+        # telegram-desktop =
+        #   nixpkgs-stable.legacyPackages.x86_64-linux.telegram-desktop;
+        # waybar = nixpkgs-master.legacyPackages.x86_64-linux.waybar;
+        microsoft-edge = inputs.nixpkgs-stable.legacyPackages.x86_64-linux.microsoft-edge;
+      })
+    ];
 
   # Home Manager configuration shared between Darwin and NixOS
   homeManagerConfig = {
@@ -43,17 +48,21 @@ in
   };
 
   # Generate nixpkgs configuration with overlays
-  mkNixpkgsConfig = overlays: (_: {
-    nixpkgs = {
-      inherit overlays;
-    };
-  });
+  mkNixpkgsConfig =
+    overlays:
+    (_: {
+      nixpkgs = {
+        inherit overlays;
+      };
+    });
 
   # Generate nixpkgs configuration with overlays and hostPlatform for NixOS
-  mkNixosNixpkgsConfig = overlays: (_: {
-    nixpkgs = {
-      hostPlatform = lib.mkDefault "x86_64-linux";
-      inherit overlays;
-    };
-  });
+  mkNixosNixpkgsConfig =
+    overlays:
+    (_: {
+      nixpkgs = {
+        hostPlatform = lib.mkDefault "x86_64-linux";
+        inherit overlays;
+      };
+    });
 }

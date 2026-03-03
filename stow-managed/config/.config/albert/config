@@ -61,6 +61,7 @@ enabled=true
 
 [obsidian]
 enabled=true
+trigger="obs "
 
 [path]
 enabled=true
@@ -103,7 +104,7 @@ use_derived=true
 enabled=false
 
 [python.jetbrains_projects]
-enabled=true
+enabled=false
 
 [python.kill]
 enabled=true
@@ -136,7 +137,7 @@ enabled=false
 enabled=true
 
 [python.vscode_projects]
-enabled=true
+enabled=false
 priorityPMName=1
 priorityPMPath=5
 priorityPMTag=10
@@ -177,6 +178,7 @@ enabled=true
 [widgetsboxmodel]
 action_item_padding=6
 action_item_selection_border_radius=11
+action_item_selection_border_width=0
 alwaysOnTop=true
 clearOnHide=true
 clientShadow=true
