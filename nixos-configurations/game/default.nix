@@ -58,9 +58,10 @@
   };
 
   environment = {
-    systemPackages = [
-      pkgs.cloudflare-warp
-      pkgs.android-tools # Replaces programs.adb
+    systemPackages = with pkgs; [
+      cloudflare-warp
+      android-tools # Replaces programs.adb
+      inputs.lazynixos.packages.${pkgs.system}.default
     ];
   };
   hardware.nvidia.package =
