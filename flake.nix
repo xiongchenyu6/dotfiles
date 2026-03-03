@@ -112,6 +112,15 @@
     };
     mcp-servers-nix.url = "github:natsukium/mcp-servers-nix";
 
+    # ZeroClaw - lightweight AI gateway (Rust, <5MB RAM)
+    zeroclaw = {
+      url = "github:zeroclaw-labs/zeroclaw";
+      inputs = {
+        nixpkgs.follows = "nixpkgs";
+        flake-utils.follows = "flake-utils";
+      };
+    };
+
     lanzaboote = {
       url = "github:nix-community/lanzaboote";
       inputs = {
