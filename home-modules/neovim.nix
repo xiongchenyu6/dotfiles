@@ -16,7 +16,7 @@ in
   config = lib.mkIf cfg.enable {
     programs.neovim = {
       enable = true;
-      defaultEditor = false;  # Set to false to avoid conflict with emacs
+      defaultEditor = true;
       viAlias = true;
       vimAlias = true;
       vimdiffAlias = true;
@@ -449,7 +449,7 @@ in
             vim.cmd.colorscheme("tokyonight")
           '';
         }
-        
+
         {
           plugin = pkgs.vimPlugins.catppuccin-nvim;
           type = "lua";
@@ -549,7 +549,7 @@ in
         }
 
         pkgs.vimPlugins.nvim-ts-context-commentstring
-        
+
         {
           plugin = pkgs.vimPlugins.nvim-treesitter-context;
           type = "lua";
@@ -1063,64 +1063,63 @@ in
           '';
         }
 
-        # Commented out due to hash mismatch build error
-        # {
-        #   plugin = pkgs.vimPlugins.lualine-nvim;
-        #   type = "lua";
-        #   config = ''
-        #     require("lualine").setup({
-        #       options = {
-        #         theme = "tokyonight",
-        #         component_separators = { left = "", right = "" },
-        #         section_separators = { left = "", right = "" },
-        #         globalstatus = true,
-        #         disabled_filetypes = { statusline = { "dashboard", "alpha" } },
-        #       },
-        #       sections = {
-        #         lualine_a = { "mode" },
-        #         lualine_b = { "branch", "diff", "diagnostics" },
-        #         lualine_c = {
-        #           {
-        #             "filename",
-        #             path = 1,
-        #             symbols = {
-        #               modified = "  ",
-        #               readonly = "",
-        #               unnamed = "",
-        #             },
-        #           },
-        #         },
-        #         lualine_x = {
-        #           {
-        #             function()
-        #               local msg = "No Active Lsp"
-        #               local buf_ft = vim.api.nvim_buf_get_option(0, "filetype")
-        #               local clients = vim.lsp.get_clients()
-        #               if next(clients) == nil then
-        #                 return msg
-        #               end
-        #               for _, client in ipairs(clients) do
-        #                 local filetypes = client.config.filetypes
-        #                 if filetypes and vim.fn.index(filetypes, buf_ft) ~= -1 then
-        #                   return client.name
-        #                 end
-        #               end
-        #               return msg
-        #             end,
-        #             icon = " ",
-        #             color = { fg = "#ffffff", gui = "bold" },
-        #           },
-        #           "encoding",
-        #           "fileformat",
-        #           "filetype",
-        #         },
-        #         lualine_y = { "progress" },
-        #         lualine_z = { "location" },
-        #       },
-        #       extensions = { "nvim-tree", "lazy" },
-        #     })
-        #   '';
-        # }
+        {
+          plugin = pkgs.vimPlugins.lualine-nvim;
+          type = "lua";
+          config = ''
+            require("lualine").setup({
+              options = {
+                theme = "tokyonight",
+                component_separators = { left = "", right = "" },
+                section_separators = { left = "", right = "" },
+                globalstatus = true,
+                disabled_filetypes = { statusline = { "dashboard", "alpha" } },
+              },
+              sections = {
+                lualine_a = { "mode" },
+                lualine_b = { "branch", "diff", "diagnostics" },
+                lualine_c = {
+                  {
+                    "filename",
+                    path = 1,
+                    symbols = {
+                      modified = "  ",
+                      readonly = "",
+                      unnamed = "",
+                    },
+                  },
+                },
+                lualine_x = {
+                  {
+                    function()
+                      local msg = "No Active Lsp"
+                      local buf_ft = vim.api.nvim_buf_get_option(0, "filetype")
+                      local clients = vim.lsp.get_clients()
+                      if next(clients) == nil then
+                        return msg
+                      end
+                      for _, client in ipairs(clients) do
+                        local filetypes = client.config.filetypes
+                        if filetypes and vim.fn.index(filetypes, buf_ft) ~= -1 then
+                          return client.name
+                        end
+                      end
+                      return msg
+                    end,
+                    icon = " ",
+                    color = { fg = "#ffffff", gui = "bold" },
+                  },
+                  "encoding",
+                  "fileformat",
+                  "filetype",
+                },
+                lualine_y = { "progress" },
+                lualine_z = { "location" },
+              },
+              extensions = { "nvim-tree", "lazy" },
+            })
+          '';
+        }
 
         pkgs.vimPlugins.nvim-web-devicons
 
@@ -1307,8 +1306,7 @@ in
         {
           plugin = pkgs.vimPlugins.telescope-fzf-native-nvim;
           type = "lua";
-          config = ''
-          '';
+          config = "";
         }
 
         pkgs.vimPlugins.plenary-nvim
@@ -1609,37 +1607,176 @@ in
             -- - Uses symmetric encryption by default (gpg -ae)
           '';
         }
+
+        # ========== HTTP CLIENT ==========
+        {
+          plugin = pkgs.vimPlugins.rest-nvim;
+          type = "lua";
+          config = ''
+            require("rest-nvim").setup()
+            vim.keymap.set("n", "<leader>hr", "<cmd>Rest run<cr>", { desc = "Run HTTP Request" })
+            vim.keymap.set("n", "<leader>hl", "<cmd>Rest run last<cr>", { desc = "Re-run Last Request" })
+          '';
+        }
+
+        # ========== LEETCODE ==========
+        {
+          plugin = pkgs.vimPlugins.leetcode-nvim;
+          type = "lua";
+          config = ''
+            require("leetcode").setup({
+              lang = "python3",
+            })
+          '';
+        }
+
+        # ========== LANGUAGE SUPPORT ==========
+        {
+          plugin = pkgs.vimPlugins.rustaceanvim;
+          type = "lua";
+          config = ''
+            vim.g.rustaceanvim = {
+              server = {
+                default_settings = {
+                  ["rust-analyzer"] = {
+                    checkOnSave = {
+                      command = "clippy",
+                    },
+                  },
+                },
+              },
+            }
+          '';
+        }
+
+        {
+          plugin = pkgs.vimPlugins.haskell-tools-nvim;
+          type = "lua";
+          config = ''
+            -- haskell-tools.nvim configures itself automatically
+            -- It will use haskell-language-server from PATH
+          '';
+        }
+
+        {
+          plugin = pkgs.vimPlugins.nvim-metals;
+          type = "lua";
+          config = ''
+            local metals_config = require("metals").bare_config()
+            metals_config.settings = {
+              showImplicitArguments = true,
+            }
+            metals_config.capabilities = require("cmp_nvim_lsp").default_capabilities()
+
+            local metals_augroup = vim.api.nvim_create_augroup("nvim-metals", { clear = true })
+            vim.api.nvim_create_autocmd("FileType", {
+              group = metals_augroup,
+              pattern = { "scala", "sbt", "java" },
+              callback = function()
+                require("metals").initialize_or_attach(metals_config)
+              end,
+            })
+          '';
+        }
+
+        pkgs.vimPlugins.vim-cmake
+        pkgs.vimPlugins.plantuml-syntax
+        pkgs.vimPlugins.vim-solidity
+        pkgs.vimPlugins.graphviz-vim
+
+        # ========== DEBUG ADAPTER PROTOCOL ==========
+        {
+          plugin = pkgs.vimPlugins.nvim-dap;
+          type = "lua";
+          config = ''
+            local dap = require("dap")
+
+            -- Keymaps
+            vim.keymap.set("n", "<leader>db", dap.toggle_breakpoint, { desc = "Toggle Breakpoint" })
+            vim.keymap.set("n", "<leader>dc", dap.continue, { desc = "Continue" })
+            vim.keymap.set("n", "<leader>di", dap.step_into, { desc = "Step Into" })
+            vim.keymap.set("n", "<leader>do", dap.step_over, { desc = "Step Over" })
+            vim.keymap.set("n", "<leader>dO", dap.step_out, { desc = "Step Out" })
+            vim.keymap.set("n", "<leader>dr", dap.repl.toggle, { desc = "Toggle REPL" })
+            vim.keymap.set("n", "<leader>dl", dap.run_last, { desc = "Run Last" })
+            vim.keymap.set("n", "<leader>dt", dap.terminate, { desc = "Terminate" })
+          '';
+        }
+
+        {
+          plugin = pkgs.vimPlugins.nvim-dap-ui;
+          type = "lua";
+          config = ''
+            local dapui = require("dapui")
+            dapui.setup()
+
+            local dap = require("dap")
+            dap.listeners.after.event_initialized["dapui_config"] = function()
+              dapui.open()
+            end
+            dap.listeners.before.event_terminated["dapui_config"] = function()
+              dapui.close()
+            end
+            dap.listeners.before.event_exited["dapui_config"] = function()
+              dapui.close()
+            end
+
+            vim.keymap.set("n", "<leader>du", dapui.toggle, { desc = "Toggle DAP UI" })
+            vim.keymap.set({ "n", "v" }, "<leader>de", dapui.eval, { desc = "DAP Eval" })
+          '';
+        }
+
+        {
+          plugin = pkgs.vimPlugins.nvim-dap-virtual-text;
+          type = "lua";
+          config = ''
+            require("nvim-dap-virtual-text").setup()
+          '';
+        }
+
+        pkgs.vimPlugins.nvim-nio # Required dependency for nvim-dap-ui
       ];
 
       # Ensure we have the necessary runtime dependencies
-      extraPackages = with pkgs; [
-        # Language servers and tools
-        lua-language-server
-        nodePackages.typescript-language-server
-        nodePackages.vscode-langservers-extracted
-        pyright
-        gopls
-        nil # Nix language server
+      extraPackages =
+        with pkgs;
+        [
+          # Language servers and tools
+          lua-language-server
+          nodePackages.typescript-language-server
+          nodePackages.vscode-langservers-extracted
+          pyright
+          gopls
+          nil # Nix language server
+          rust-analyzer # Rust LSP (used by rustaceanvim)
+          haskell-language-server # Haskell LSP (used by haskell-tools-nvim)
+          metals # Scala LSP (used by nvim-metals)
+          cmake-language-server # CMake LSP
+          buf # Protobuf LSP
+          plantuml # PlantUML rendering
+          graphviz # Graphviz dot rendering
+          solc # Solidity compiler
 
-        # Formatters and linters
-        stylua
-        nodePackages.prettier
-        black
-        rustfmt
-        nixfmt
+          # Formatters and linters
+          stylua
+          nodePackages.prettier
+          black
+          rustfmt
+          nixfmt
 
-        # Tools used by plugins
-        ripgrep
-        fd
-        fzf
-        tree-sitter
-        gnupg # Required for gpg.nvim plugin
+          # Tools used by plugins
+          ripgrep
+          fd
+          fzf
+          tree-sitter
+          gnupg # Required for gpg.nvim plugin
 
-        # Clipboard support
-        xclip # for x11
-      ] ++ lib.optionals pkgs.stdenv.isLinux [
-        wl-clipboard # for wayland (Linux only)
-      ];
+          # Clipboard support
+          xclip # for x11
+        ]
+        ++ lib.optionals pkgs.stdenv.isLinux [
+          wl-clipboard # for wayland (Linux only)
+        ];
     };
   };
 }

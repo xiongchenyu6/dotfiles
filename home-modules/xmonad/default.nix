@@ -28,9 +28,6 @@
       };
   };
   programs = {
-    emacs = {
-      package = pkgs.emacs29;
-    };
     feh = {
       enable = true;
     };
@@ -292,7 +289,6 @@
       opacityRules = [
         "85:class_g = 'kitty'"
         "95:class_g = 'Alacritty'"
-        "5:class_g = 'emacs'"
         "90:class_g = 'Wine'"
         "90:class_g = 'Thunderbird'"
       ];

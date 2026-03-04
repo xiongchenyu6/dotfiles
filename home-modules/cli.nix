@@ -680,7 +680,6 @@
           arguments = "--rebase --autostash";
         };
         commands = {
-          "emacs straight" = "emacs --batch -l ~/.config/emacs/early-init.el -f straight-pull-all";
         };
       };
     };

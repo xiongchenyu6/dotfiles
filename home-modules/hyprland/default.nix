@@ -419,8 +419,5 @@
         };
       };
     };
-    emacs = {
-      package = pkgs.emacs30-pgtk;
-    };
   };
 }

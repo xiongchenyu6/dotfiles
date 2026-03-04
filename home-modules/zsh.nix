@@ -6,7 +6,7 @@
   programs = {
     zsh = {
       initContent = ''
-        
+
         eval "$(${pkgs.rustup}/bin/rustup completions zsh)"
         eval "$(${pkgs.grafana-loki}/bin/logcli --completion-script-zsh)"
       '';
@@ -23,7 +23,6 @@
           # "ohmyzsh/ohmyzsh path:plugins/rsync"
           # "ohmyzsh/ohmyzsh path:plugins/systemadmin"
           # "ohmyzsh/ohmyzsh path:plugins/kubectl"
-          "ohmyzsh/ohmyzsh path:plugins/emacs"
         ];
       };
     };
