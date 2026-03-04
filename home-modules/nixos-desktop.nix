@@ -120,17 +120,6 @@
     poweralertd = {
       enable = true;
     };
-    emacs = {
-      enable = true;
-      defaultEditor = true;
-      client = {
-        enable = true;
-      };
-      socketActivation = {
-        enable = false;
-      };
-    };
-
     dunst = {
       enable = true;
       iconTheme = {

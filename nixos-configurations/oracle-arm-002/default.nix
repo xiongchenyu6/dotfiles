@@ -16,7 +16,6 @@
     ezModules.core
     ezModules.server
     ezModules.acme
-    ezModules.sing-box
     ezModules.datadog-agent
     srvos.nixosModules.server
     srvos.nixosModules.mixins-nginx
@@ -27,7 +26,7 @@
     xiongchenyu6.nixosModules.hashtopolis-server
     ./disk-config.nix
     ./hardware-configuration.nix
-    ./hashtopolis.nix  # Hashtopolis server configuration
+    ./hashtopolis.nix # Hashtopolis server configuration
 
   ];
   boot = {

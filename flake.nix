@@ -110,7 +110,7 @@
         flake-parts.follows = "flake-parts";
       };
     };
-    mcp-servers-nix.url = "github:natsukium/mcp-servers-nix";
+    llm-agents.url = "github:numtide/llm-agents.nix";
 
     # ZeroClaw - lightweight AI gateway (Rust, <5MB RAM)
     zeroclaw = {

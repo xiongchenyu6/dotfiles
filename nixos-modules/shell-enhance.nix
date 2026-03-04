@@ -31,7 +31,6 @@
           "copybuffer"
           "cp"
           "docker"
-          "emacs"
           "extract"
           "encode64"
           "eza"
