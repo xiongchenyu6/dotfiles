@@ -284,7 +284,6 @@
       enable = true;
     };
 
-
     zed-editor = {
       enable = true;
       extensions = [ "nix" ];
@@ -293,17 +292,5 @@
     # password-store = {
     #   enable = true;
     # };
-  };
-  services = {
-    emacs = {
-      enable = true;
-      defaultEditor = true;
-      client = {
-        enable = true;
-      };
-      socketActivation = {
-        enable = false;
-      };
-    };
   };
 }

@@ -11,10 +11,10 @@ let
   zeroclawPkgs = inputs.zeroclaw.packages.${pkgs.system};
   # Fix upstream stale npm deps hash in zeroclaw-web (FOD hash mismatch)
   zeroclaw-web-fixed = zeroclawPkgs.zeroclaw-web.overrideAttrs (old: {
-    npmDepsHash = "sha256-+F9yjRj5QLnyFrRFabIhEyyc02AFXVPN+p4q+EvEhGI=";
+    npmDepsHash = "sha256-H3extDaq4DgNYTUcw57gqwVWc3aPCWjIJEVYRMzdFdM=";
     npmDeps = pkgs.fetchNpmDeps {
       src = old.src;
-      hash = "sha256-+F9yjRj5QLnyFrRFabIhEyyc02AFXVPN+p4q+EvEhGI=";
+      hash = "sha256-H3extDaq4DgNYTUcw57gqwVWc3aPCWjIJEVYRMzdFdM=";
     };
   });
   zeroclaw =
@@ -43,6 +43,7 @@ in
     ezModules.server
     ezModules.acme
     ezModules.datadog-agent
+    ezModules.sing-box
     srvos.nixosModules.server
     srvos.nixosModules.mixins-nginx
     srvos.nixosModules.mixins-trusted-nix-caches
