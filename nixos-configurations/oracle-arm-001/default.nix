@@ -175,30 +175,28 @@
     autolife-relay = {
       enable = true;
       openFirewall = true;
-      settings = {
-        server_url = "ws://183.6.107.47:3000/ws";
-        token = "secure_token_relay_01";
-        region = "sg-1";
-        ip = "183.6.107.47";
-        bind_ip = "0.0.0.0";
-        video_port = 30001;
-        data_port = 30002;
-        audio_port = 30003;
-        probe_port = 30004;
-        video_port_workers = 1;
-        data_port_workers = 1;
-        audio_port_workers = 1;
-        telemetry_interval = 10;
-        debug_stats_interval = 10;
-        debug_stats_enabled = true;
-        service_auth = {
-          client = "autolife-relay";
-          secret = "change_me";
-        };
-        license = {
-          license_file = "/var/lib/autolife-relay/license.key";
-          public_key = "/var/lib/autolife-relay/id_ed25519.pub";
-        };
+      serverUrl = "ws://183.6.107.47:3000/ws";
+      token = "secure_token_relay_01";
+      region = "sg-1";
+      ip = "183.6.107.47";
+      bindIp = "0.0.0.0";
+      videPort = 30001;
+      dataPort = 30002;
+      audioPort = 30003;
+      probePort = 30004;
+      videoPortWorkers = 1;
+      dataPortWorkers = 1;
+      audioPortWorkers = 1;
+      telemetryInterval = 10;
+      debugStatsInterval = 10;
+      debugStatsEnabled = true;
+      serviceAuth = {
+        client = "autolife-relay";
+        secret = "change_me";
+      };
+      license = {
+        licenseFile = "/var/lib/autolife-relay/license.key";
+        publicKey = "/var/lib/autolife-relay/id_ed25519.pub";
       };
     };
 
