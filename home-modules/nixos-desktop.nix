@@ -9,7 +9,6 @@
   home = {
     packages = with pkgs; [
       appimage-run
-      discord
       freerdp
       dmidecode
       # jetbrains.idea-ultimate

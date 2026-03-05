@@ -11,6 +11,11 @@ in
 {
   options.modules.neovim = {
     enable = lib.mkEnableOption "neovim";
+    lightweight = lib.mkOption {
+      type = lib.types.bool;
+      default = false;
+      description = "When true, use minimal neovim config (no Node/Python/Ruby, limited LSPs). Suitable for servers.";
+    };
   };
 
   config = lib.mkIf cfg.enable {
@@ -25,9 +30,9 @@ in
       package = pkgs.neovim-unwrapped;
 
       # Enable useful options through home-manager
-      withNodeJs = true;
-      withPython3 = true;
-      withRuby = true;
+      withNodeJs = !cfg.lightweight;
+      withPython3 = !cfg.lightweight;
+      withRuby = !cfg.lightweight;
 
       # Complete Neovim configuration migrated from ~/.config/nvim/lua
       initLua = ''
@@ -1741,13 +1746,23 @@ in
       extraPackages =
         with pkgs;
         [
-          # Language servers and tools
+          # Core tools (always needed)
+          nil # Nix language server
           lua-language-server
+          nixfmt
+          stylua
+          ripgrep
+          fd
+          fzf
+          tree-sitter
+          gnupg # Required for gpg.nvim plugin
+        ]
+        ++ lib.optionals (!cfg.lightweight) [
+          # Language servers (desktop only)
           nodePackages.typescript-language-server
           nodePackages.vscode-langservers-extracted
           pyright
           gopls
-          nil # Nix language server
           rust-analyzer # Rust LSP (used by rustaceanvim)
           haskell-language-server # Haskell LSP (used by haskell-tools-nvim)
           metals # Scala LSP (used by nvim-metals)
@@ -1757,24 +1772,15 @@ in
           graphviz # Graphviz dot rendering
           solc # Solidity compiler
 
-          # Formatters and linters
-          stylua
+          # Formatters and linters (desktop only)
           nodePackages.prettier
           black
           rustfmt
-          nixfmt
-
-          # Tools used by plugins
-          ripgrep
-          fd
-          fzf
-          tree-sitter
-          gnupg # Required for gpg.nvim plugin
 
           # Clipboard support
           xclip # for x11
         ]
-        ++ lib.optionals pkgs.stdenv.isLinux [
+        ++ lib.optionals (!cfg.lightweight && pkgs.stdenv.isLinux) [
           wl-clipboard # for wayland (Linux only)
         ];
     };
