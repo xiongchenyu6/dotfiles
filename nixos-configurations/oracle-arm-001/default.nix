@@ -195,8 +195,8 @@
         secret = "change_me";
       };
       license = {
-        licenseFile = "/var/lib/autolife-relay/license.key";
-        publicKey = "/var/lib/autolife-relay/id_ed25519.pub";
+        licenseFile = config.sops.secrets."autolife-relay/license".path;
+        publicKey = builtins.readFile ./id_ed25519.pub;
       };
     };
 
@@ -388,6 +388,12 @@
 
   nixpkgs = {
     hostPlatform = "aarch64-linux";
+  };
+
+  # Sops secrets for autolife-relay
+  sops.secrets."autolife-relay/license" = {
+    owner = "autolife-relay";
+    group = "autolife-relay";
   };
 
   # Sops secrets for Odoo

@@ -1,6 +1,7 @@
 # Edit this configuration file to define what should be installed on
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
+{ config, ... }:
 {
   home = {
     file = {
@@ -14,7 +15,7 @@
   services = {
     mpd = {
       enable = true;
-      musicDirectory = "/home/freeman/Music/";
+      musicDirectory = "${config.home.homeDirectory}/Music";
       extraConfig = ''
         audio_output {
                 type            "pipewire"
@@ -26,5 +27,9 @@
       '';
     };
   };
-  programs = { ncmpcpp = { enable = true; }; };
+  programs = {
+    ncmpcpp = {
+      enable = true;
+    };
+  };
 }

@@ -26,7 +26,7 @@
           user = lib.mkDefault "freeman.xiong";
           command = lib.mkDefault "Hyprland";
         };
-        defualt_session = {
+        default_session = {
           user = "greeter";
           command = "${pkgs.hyprland}/bin/Hyprland --config /etc/hyprland.conf";
         };

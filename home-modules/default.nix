@@ -3,6 +3,7 @@
   ezModules,
   pkgs,
   lib,
+  config,
   osConfig,
   ...
 }:
@@ -10,7 +11,7 @@ let
   hasNixOSTags = osConfig ? system && osConfig.system ? nixos && osConfig.system.nixos ? tags;
   hasGuiTag = hasNixOSTags && (builtins.elem "gui" osConfig.system.nixos.tags);
   isDarwin = !hasNixOSTags;
-  isLinux = hasNixOSTags;
+  isRoot = config.home.username == "root";
 in
 {
   imports =
@@ -20,11 +21,16 @@ in
         cli-minimal
         ;
     }
-    ++ [
+    ++ lib.optionals (!isRoot) [
       inputs.sops-nix.homeManagerModules.sops
+      (import ../shared-modules/sops.nix)
+      {
+        sops.gnupg.home = "~/.gnupg";
+      }
+    ]
+    ++ [
       inputs.impermanence.homeManagerModules.impermanence
       inputs.vast-cli.homeManagerModules.default
-      (import ../shared-modules/sops.nix)
     ]
     ++ (
       if hasGuiTag then
@@ -42,12 +48,6 @@ in
       else
         [ ]
     );
-
-  sops = {
-    gnupg = {
-      home = "~/.gnupg";
-    };
-  };
 
   home = {
     packages = with pkgs; [

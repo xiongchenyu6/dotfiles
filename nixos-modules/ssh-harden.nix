@@ -1,4 +1,11 @@
-{ pkgs, lib, ... }:
+{ pkgs, lib, config, ... }:
+let
+  hasGuiTag =
+    config ? system
+    && config.system ? nixos
+    && config.system.nixos ? tags
+    && (builtins.elem "gui" config.system.nixos.tags);
+in
 {
 
   # sops.secrets."openldap/adminPass" = {
@@ -7,14 +14,15 @@
   #   mode = "400";
   # };
 
-  # Install the askpass package to ensure it's available
-  environment.systemPackages = with pkgs; [
-    x11_ssh_askpass
+  # Install askpass only on GUI machines
+  environment.systemPackages = lib.optionals hasGuiTag [
+    pkgs.x11_ssh_askpass
   ];
 
-  # Configure SSH to use the askpass program
+  # Configure SSH askpass only on GUI machines
   programs.ssh = {
-    enableAskPassword = true;
+    enableAskPassword = hasGuiTag;
+  } // lib.optionalAttrs hasGuiTag {
     askPassword = "${pkgs.x11_ssh_askpass}/libexec/ssh-askpass";
   };
 
@@ -28,7 +36,7 @@
     #     }) -b dc=auotlife,dc=ai '(&(objectClass=posixAccount)(uid='"$1"'))' 'sshPublicKey' | ${pkgs.gnused}/bin/sed -n '/^ /{H;d};/sshPublicKey:/x;$g;s/\n *//g;s/sshPublicKey: //gp'
     #   '';
     # };
-    "sudo.conf" = {
+    "sudo.conf" = lib.mkIf hasGuiTag {
       mode = "0400";
       text = ''
         Path askpass ${pkgs.x11_ssh_askpass}/libexec/ssh-askpass

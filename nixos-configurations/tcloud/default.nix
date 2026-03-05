@@ -61,6 +61,18 @@ in
   };
 
   sops.secrets."wireguard/tcloud" = { };
+  sops.secrets."coturn/credentials" = {
+    owner = "turnserver";
+    group = "turnserver";
+  };
+
+  # Inject coturn user credentials from sops at runtime
+  systemd.services.coturn.serviceConfig.ExecStartPre = lib.mkAfter [
+    "+${pkgs.writeShellScript "coturn-inject-credentials" ''
+      cred=$(cat ${config.sops.secrets."coturn/credentials".path})
+      echo "user=$cred" >> /etc/turnserver.conf
+    ''}"
+  ];
 
   networking = {
     nat = {
@@ -310,7 +322,6 @@ in
       enable = true;
       realm = "tcloud.${config.networking.domain}";
       extraConfig = ''
-        user=self:KtcpGDpdkvM0vKrQ7DYtKdXTffJzt33iCGvsD6BA3hM
         fingerprint
         no-software-attribute
       '';

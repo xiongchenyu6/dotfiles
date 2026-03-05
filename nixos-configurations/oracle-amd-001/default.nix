@@ -136,6 +136,47 @@ in
     };
   };
 
+  # ZeroClaw secrets
+  sops.secrets."zeroclaw/nvidia_api_key" = { };
+  sops.secrets."zeroclaw/brave_api_key" = { };
+  sops.secrets."zeroclaw/telegram_bot_token" = { };
+
+  sops.templates."zeroclaw-config.toml" = {
+    content = ''
+      # ZeroClaw config for oracle-amd-001
+      # Provider: NVIDIA NIM (Kimi K2.5) via OpenAI-compatible API
+      default_provider = "custom:https://integrate.api.nvidia.com/v1"
+      api_key = "${config.sops.placeholder."zeroclaw/nvidia_api_key"}"
+      default_model = "moonshotai/kimi-k2.5"
+      default_temperature = 0.7
+
+      # Web Search via Brave
+      [web_search]
+      enabled = true
+      provider = "brave"
+      brave_api_key = "${config.sops.placeholder."zeroclaw/brave_api_key"}"
+      max_results = 5
+
+      # Telegram Channel
+      [channels_config]
+      cli = false
+
+      [channels_config.telegram]
+      bot_token = "${config.sops.placeholder."zeroclaw/telegram_bot_token"}"
+      allowed_users = ["5368588092"]
+      stream_mode = "partial"
+      ack_enabled = true
+      interrupt_on_new_message = true
+
+      [channels_config.telegram.group_reply]
+      mode = "mention_only"
+      allowed_sender_ids = []
+    '';
+    owner = "zeroclaw";
+    group = "zeroclaw";
+    mode = "0600";
+  };
+
   # ZeroClaw AI Gateway - Rust-based, <5MB RAM
   # Config is written to /var/lib/zeroclaw/.zeroclaw/config.toml
   systemd.services.zeroclaw = {
@@ -148,40 +189,9 @@ in
       RUST_LOG = "info";
     };
     serviceConfig = {
-      ExecStartPre =
-        let
-          configFile = pkgs.writeText "zeroclaw-config.toml" ''
-            # ZeroClaw config for oracle-amd-001
-            # Provider: NVIDIA NIM (Kimi K2.5) via OpenAI-compatible API
-            default_provider = "custom:https://integrate.api.nvidia.com/v1"
-            api_key = "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"
-            default_model = "moonshotai/kimi-k2.5"
-            default_temperature = 0.7
-
-            # Web Search via Brave
-            [web_search]
-            enabled = true
-            provider = "brave"
-            brave_api_key = "BSAfZcxnhk7D-O0urvk6ygSSciDQpNv"
-            max_results = 5
-
-            # Telegram Channel
-            [channels_config]
-            cli = false
-
-            [channels_config.telegram]
-            bot_token = "8759926301:AAG5dAb9htQc_Fo_FKwNVS5BZaB-Ks1ca0w"
-            allowed_users = ["5368588092"]
-            stream_mode = "partial"
-            ack_enabled = true
-            interrupt_on_new_message = true
-
-            [channels_config.telegram.group_reply]
-            mode = "mention_only"
-            allowed_sender_ids = []
-          '';
-        in
-        "${pkgs.coreutils}/bin/install -D -m 600 ${configFile} /var/lib/zeroclaw/.zeroclaw/config.toml";
+      ExecStartPre = "${pkgs.coreutils}/bin/install -D -m 600 ${
+        config.sops.templates."zeroclaw-config.toml".path
+      } /var/lib/zeroclaw/.zeroclaw/config.toml";
       ExecStart = "${zeroclaw}/bin/zeroclaw daemon";
       Restart = "always";
       RestartSec = 5;

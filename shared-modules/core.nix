@@ -3,13 +3,13 @@
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 {
   lib,
+  pkgs,
   config,
   ...
 }:
 {
   nixpkgs.config = {
     allowUnfree = true;
-    allowBroken = true;
     android_sdk.accept_license = true;
     permittedInsecurePackages = [
       "openssl-1.1.1w"
@@ -23,7 +23,7 @@
   };
   environment = {
 
-    etc = {
+    etc = lib.mkIf pkgs.stdenv.isLinux {
       "ppp/options".text = ''
         ipcp-accept-remote
       '';

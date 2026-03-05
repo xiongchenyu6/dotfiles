@@ -11,7 +11,6 @@
       eza
       #calibre
       #cyrus_sasl
-      xvfb-run # for running GUI applications in headless mode
       figlet # for generating ASCII art
       #step-cli
       mtr
