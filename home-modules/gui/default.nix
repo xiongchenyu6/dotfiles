@@ -49,7 +49,6 @@
       ledger-live-desktop
       netbird-ui
       #termius
-      telegram-desktop
       unrar-wrapper
       #whatsapp-for-linux
       wasistlos
