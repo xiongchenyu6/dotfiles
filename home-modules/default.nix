@@ -21,14 +21,8 @@ in
         cli-minimal
         ;
     }
-    ++ lib.optionals (!isRoot) [
-      inputs.sops-nix.homeManagerModules.sops
-      (import ../shared-modules/sops.nix)
-      {
-        sops.gnupg.home = "~/.gnupg";
-      }
-    ]
     ++ [
+      inputs.sops-nix.homeManagerModules.sops
       inputs.impermanence.homeManagerModules.impermanence
       inputs.vast-cli.homeManagerModules.default
     ]
@@ -48,6 +42,11 @@ in
       else
         [ ]
     );
+
+  sops = lib.mkIf (!isRoot) {
+    defaultSopsFile = ../secrets/common.yaml;
+    gnupg.home = "~/.gnupg";
+  };
 
   home = {
     packages = with pkgs; [
