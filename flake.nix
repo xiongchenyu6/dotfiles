@@ -110,6 +110,13 @@
         flake-parts.follows = "flake-parts";
       };
     };
+    work-relay = {
+      url = "github:workRobot/work-relay/feat/nix-flake";
+      inputs = {
+        nixpkgs.follows = "nixpkgs";
+        flake-parts.follows = "flake-parts";
+      };
+    };
     llm-agents.url = "github:numtide/llm-agents.nix";
 
     # ZeroClaw - lightweight AI gateway (Rust, <5MB RAM)
