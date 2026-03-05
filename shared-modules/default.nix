@@ -31,13 +31,18 @@ in
     baseOverlays
     ++ nixosAdditionalOverlays
     ++ [
-      (_: prev: {
-        # gnupg240 = nixpkgs-stable.legacyPackages.x86_64-linux.gnupg;
-        # telegram-desktop =
-        #   nixpkgs-stable.legacyPackages.x86_64-linux.telegram-desktop;
-        # waybar = nixpkgs-master.legacyPackages.x86_64-linux.waybar;
-        microsoft-edge = inputs.nixpkgs-stable.legacyPackages.x86_64-linux.microsoft-edge;
-      })
+      (
+        _: prev:
+        {
+          # gnupg240 = nixpkgs-stable.legacyPackages.x86_64-linux.gnupg;
+          # telegram-desktop =
+          #   nixpkgs-stable.legacyPackages.x86_64-linux.telegram-desktop;
+          # waybar = nixpkgs-master.legacyPackages.x86_64-linux.waybar;
+        }
+        // lib.optionalAttrs (prev.stdenv.hostPlatform.system == "x86_64-linux") {
+          microsoft-edge = inputs.nixpkgs-stable.legacyPackages.x86_64-linux.microsoft-edge;
+        }
+      )
     ];
 
   # Home Manager configuration shared between Darwin and NixOS
