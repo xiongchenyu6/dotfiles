@@ -9,7 +9,6 @@
 }:
 {
   imports = with inputs; [
-    ../../nixos-modules/rust-web-server-config.nix # Sops configuration for rust-web-server
     disko.nixosModules.disko
     (modulesPath + "/installer/scan/not-detected.nix")
     (modulesPath + "/profiles/qemu-guest.nix")
@@ -20,8 +19,7 @@
     ezModules.acme
     ezModules.datadog-agent
     ezModules.postgrest
-    ../../nixos-modules/gotrue-supabase.nix
-    rust-web-server.nixosModules.rust-web-server
+    autolife-relay.nixosModules.autolife-relay
     srvos.nixosModules.server
     srvos.nixosModules.mixins-nginx
     srvos.nixosModules.mixins-trusted-nix-caches
@@ -43,7 +41,6 @@
       };
     };
   };
-  # rust-web-server secrets are now handled by the module itself
 
   users = {
     users = {
@@ -175,10 +172,34 @@
       ];
     };
 
-    rust-web-server = {
+    autolife-relay = {
       enable = true;
-      configFile = config.sops.templates."rust-web-server-config".path;
-      #      logLevel = "info"; # Options: error, warn, info, debug, trace
+      openFirewall = true;
+      settings = {
+        server_url = "ws://183.6.107.47:3000/ws";
+        token = "secure_token_relay_01";
+        region = "sg-1";
+        ip = "183.6.107.47";
+        bind_ip = "0.0.0.0";
+        video_port = 30001;
+        data_port = 30002;
+        audio_port = 30003;
+        probe_port = 30004;
+        video_port_workers = 1;
+        data_port_workers = 1;
+        audio_port_workers = 1;
+        telemetry_interval = 10;
+        debug_stats_interval = 10;
+        debug_stats_enabled = true;
+        service_auth = {
+          client = "autolife-relay";
+          secret = "change_me";
+        };
+        license = {
+          license_file = "/var/lib/autolife-relay/license.key";
+          public_key = "/var/lib/autolife-relay/id_ed25519.pub";
+        };
+      };
     };
 
     # Odoo ERP/CRM system
@@ -200,7 +221,7 @@
           db_host = "localhost";
           db_port = "5432";
           db_user = "odoo";
-          db_password = "odoo"; # Added explicit database password
+          # db_password managed by sops — injected at runtime
           db_maxconn = "64";
 
           # Server configuration
@@ -218,8 +239,7 @@
           log_level = "info";
           log_handler = "[':INFO']";
 
-          # Security settings
-          admin_passwd = "admin";
+          # Security settings — admin_passwd managed by sops
           without_demo = "true";
 
           # Performance tuning
@@ -372,12 +392,37 @@
     hostPlatform = "aarch64-linux";
   };
 
+  # Sops secrets for Odoo
+  sops.secrets."odoo/db_password" = {
+    owner = "odoo";
+    group = "odoo";
+  };
+  sops.secrets."odoo/admin_password" = {
+    owner = "odoo";
+    group = "odoo";
+  };
+
+  # Inject Odoo secrets into config at runtime
+  systemd.services.odoo.serviceConfig.ExecStartPre = lib.mkAfter [
+    "+${pkgs.writeShellScript "odoo-inject-secrets" ''
+      cfg="/etc/odoo/odoo.cfg"
+      db_pass=$(cat ${config.sops.secrets."odoo/db_password".path})
+      admin_pass=$(cat ${config.sops.secrets."odoo/admin_password".path})
+      ${pkgs.gnused}/bin/sed -i '/^db_password\s*=/d; /^admin_passwd\s*=/d' "$cfg"
+      echo "db_password = $db_pass" >> "$cfg"
+      echo "admin_passwd = $admin_pass" >> "$cfg"
+    ''}"
+  ];
+
   # Set Odoo database user password after PostgreSQL starts
   systemd.services.odoo-db-init = {
     description = "Initialize Odoo database user password";
     wantedBy = [ "odoo.service" ];
     before = [ "odoo.service" ];
-    after = [ "postgresql.service" ];
+    after = [
+      "postgresql.service"
+      "sops-nix.service"
+    ];
     wants = [ "postgresql.service" ];
     script = ''
       # Wait for PostgreSQL to be ready
@@ -386,9 +431,10 @@
         sleep 2
       done
 
-      # Set odoo user password
+      # Set odoo user password from sops secret
+      DB_PASS=$(cat ${config.sops.secrets."odoo/db_password".path})
       echo "Setting odoo user password..."
-      ${pkgs.postgresql_18_jit}/bin/psql -U freeman.xiong -d freeman.xiong -c "ALTER USER odoo PASSWORD 'odoo';"
+      ${pkgs.postgresql_18_jit}/bin/psql -U freeman.xiong -d freeman.xiong -c "ALTER USER odoo PASSWORD '$DB_PASS';"
       echo "Odoo database password set successfully!"
     '';
 
