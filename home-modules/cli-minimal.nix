@@ -5,14 +5,17 @@
   lib,
   ...
 }:
+let
+  isRoot = config.home.username == "root";
+in
 {
   imports = [
     ./neovim.nix
   ];
 
-  sops.secrets."wakatime/api_key" = { };
+  sops.secrets."wakatime/api_key" = lib.mkIf (!isRoot) { };
 
-  sops.templates."wakatime-cfg" = {
+  sops.templates."wakatime-cfg" = lib.mkIf (!isRoot) {
     content = ''
       [settings]
       debug         = false
