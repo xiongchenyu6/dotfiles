@@ -317,6 +317,7 @@
       ensureDatabases = [ "freeman.xiong" ];
     };
 
+    # FRP client — disabled, token managed by sops when re-enabled
     frp = {
       instances."" = {
         enable = false;
@@ -324,10 +325,8 @@
         settings = {
           serverAddr = "tcloud.${config.networking.domain}";
           serverPort = 7000;
-          auth = {
-            method = "token";
-            token = builtins.readFile ../../../secrets/frp.token;
-          };
+          # auth.token will be injected from sops when frp is re-enabled
+          # See: sops.secrets."frp/token"
         };
       };
     };

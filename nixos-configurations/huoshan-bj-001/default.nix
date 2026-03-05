@@ -105,7 +105,7 @@
         host = "localhost";
         port = 5432;
         username = "casdoor";
-        password = "casdoor";
+        # password managed by sops — injected at runtime
         name = "casdoor";
       };
       redis = {
@@ -126,6 +126,18 @@
     owner = "acme";
     group = "acme";
   };
+  sops.secrets."casdoor/db_password" = { };
+
+  # Inject casdoor DB password into its config at runtime
+  systemd.services.casdoor.serviceConfig.ExecStartPre = lib.mkAfter [
+    "+${pkgs.writeShellScript "casdoor-inject-password" ''
+      cfg="/var/lib/casdoor/app.conf"
+      if [ -f "$cfg" ]; then
+        db_pass=$(cat ${config.sops.secrets."casdoor/db_password".path})
+        ${pkgs.gnused}/bin/sed -i "s|dataSourceName = .*|dataSourceName = \"user=casdoor password=$db_pass host=localhost port=5432 dbname=casdoor sslmode=disable\"|" "$cfg"
+      fi
+    ''}"
+  ];
 
   security = {
     pam.services.nginx.setEnvironment = false;

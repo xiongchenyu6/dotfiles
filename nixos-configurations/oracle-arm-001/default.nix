@@ -195,8 +195,8 @@
         secret = "change_me";
       };
       license = {
-        licenseFile = "/var/lib/work-relay/license.key";
-        publicKey = "/var/lib/work-relay/id_ed25519.pub";
+        licenseFile = config.sops.secrets."work-relay/license".path;
+        publicKey = builtins.readFile ./id_ed25519.pub;
       };
     };
 
@@ -388,6 +388,12 @@
 
   nixpkgs = {
     hostPlatform = "aarch64-linux";
+  };
+
+  # Sops secrets for work-relay
+  sops.secrets."work-relay/license" = {
+    owner = "work-relay";
+    group = "work-relay";
   };
 
   # Sops secrets for Odoo

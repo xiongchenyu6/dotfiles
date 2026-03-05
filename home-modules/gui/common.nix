@@ -61,7 +61,6 @@
         imagemagick
         inetutils
         #ifuse
-        jp2a
         lsof
         #my_cookies
         glib
@@ -74,6 +73,7 @@
       ]
       ++ lib.optionals pkgs.stdenv.isLinux [
         google-chrome # Keep Chrome in Nix for Linux
+        jp2a # Marked broken on Darwin
         lm_sensors # Linux-only hardware monitoring
         fwupd # Firmware update daemon (Linux-only)
         gparted # Disk partitioning GUI (Linux-only)

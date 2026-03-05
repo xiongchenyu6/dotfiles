@@ -1,58 +1,22 @@
-{ config, pkgs, ... }:
 {
-  editorconfig = {
-    enable = true;
-    settings = {
-      "*" = {
-        indent_size = 2;
-        end_of_line = "lf";
-        insert_final_newline = true;
-      };
-      "*.{js,py}" = {
-        charset = "utf-8";
-      };
-      "*.css" = {
-        charset = "utf-8";
-      };
-      "*.{py,cpp,c,h,proto}" = {
-        indent_style = "space";
-        indent_size = 4;
-      };
+  config,
+  pkgs,
+  lib,
+  ...
+}:
+{
+  imports = [
+    ./cli-server.nix
+  ];
 
-      "Makefile" = {
-        indent_style = "tab";
-      };
-      "lib/**.js" = {
-        indent_style = "space";
-      };
-      "{package.json,.travis.yml}" = {
-        indent_style = "space";
-      };
-    };
-  };
+  # Override gpg-agent pinentry for desktop (graphical)
+  services.gpg-agent.pinentry.package =
+    if pkgs.stdenv.isDarwin then pkgs.pinentry_mac else pkgs.pinentry-gnome3;
 
-  services = {
-    gpg-agent = {
-      enable = true;
-      enableExtraSocket = true;
-      # extraConfig = ''
-      #   allow-emacs-pinentry
-      #   allow-loopback-pinentry
-      # '';
-      pinentry.package = if pkgs.stdenv.isDarwin then pkgs.pinentry_mac else pkgs.pinentry-gnome3;
-      enableSshSupport = true;
-      # gpg2 -K --with-keygrip
-      sshKeys = [
-        "AB721FF9682FF07B88063C8FADEB89B859C7ACB1"
-        # "14226143F299FAFBDF90BE806430B42391554668"
-      ];
-    };
-  };
+  # Desktop gets full neovim with all LSPs
+  modules.neovim.lightweight = false;
 
   programs = {
-    awscli = {
-      enable = false;
-    };
     lazygit = {
       enable = true;
     };
@@ -73,14 +37,6 @@
     };
     opencode = {
       enable = true;
-    };
-    script-directory = {
-      enable = true;
-      settings = {
-        SD_ROOT = "${config.home.homeDirectory}/dotfiles/scripts";
-        SD_EDITOR = "nvim";
-        SD_CAT = "bat";
-      };
     };
     k9s = {
       enable = true;
@@ -320,27 +276,6 @@
             ''
           ];
         };
-        # trace = {
-        #   shortCut = "Shift-C";
-        #   confirm = false;
-        #   description = "Flux trace";
-        #   scopes = [ "all" ];
-        #   command = "bash";
-        #   background = false;
-        #   args = [
-        #     "-c"
-        #     ''
-        #       resource=$(echo $RESOURCE_NAME | sed -E 's/ies$/y/' | sed -E 's/ses$/se/' | sed -E 's/(s|es)$//g');
-        #       ${pkgs.flux}/bin/flux
-        #       trace
-        #       --context $CONTEXT
-        #       --kind $resource
-        #       --api-version $RESOURCE_GROUP/$RESOURCE_VERSION
-        #       --namespace $NAMESPACE $NAME
-        #       | less -K
-        #     ''
-        #   ];
-        # };
         get-suspended-helmreleases = {
           shortCut = "Shift-S";
           confirm = false;
@@ -405,21 +340,6 @@
             ''
           ];
         };
-        # helm-diff-previous = {
-        #   shortCut = "Shift-D";
-        #   confirm = false;
-        #   description = "Diff with Previous Revision";
-        #   scopes = [ "helm" ];
-        #   command = "bash";
-        #   background = false;
-        #   args = [
-        #     "-c"
-        #     ''
-        #       LAST_REVISION=$(($COL-REVISION-1));
-        #       ${pkgs.kubernetes-helm}/bin/helm diff revision $COL-NAME $COL-REVISION $LAST_REVISION --kube-context $CONTEXT --namespace $NAMESPACE --color | less -RK
-        #     ''
-        #   ];
-        # };
         helm-diff-current = {
           shortCut = "Shift-Q";
           confirm = false;
@@ -608,20 +528,10 @@
       };
     };
 
-    # keychain = { enable = true; };
-    readline = {
-      enable = true;
-    };
-
-    bat = {
-      enable = true;
-    };
-
     git-cliff = {
       enable = true;
     };
 
-    # navi = { enable = true; };
     pandoc = {
       enable = true;
     };
@@ -635,40 +545,19 @@
       settings = { };
     };
 
-    nix-index = {
-      enable = true;
-    };
-
     java = {
       enable = true;
     };
 
     topgrade = {
-      enable = true;
+      # Override server topgrade with desktop settings
       settings = {
         misc = {
-          /*
-            disable = [
-                     "system"
-                     "emacs"
-                     "nix"
-                     "home_manager"
-                     "helm"
-                     "bun"
-                   ];
-          */
-          pre_sudo = false;
-
           only = [
             "system"
             "git_repos"
             "tldr"
           ];
-
-        };
-        linux = {
-          # nix_arguments = "--flake";
-
         };
         git = {
           max_concurrency = 10;
@@ -679,8 +568,7 @@
           ];
           arguments = "--rebase --autostash";
         };
-        commands = {
-        };
+        commands = { };
       };
     };
 
@@ -692,50 +580,20 @@
       enable = true;
       settings = {
         enable-rpc = true;
-        #允许所有来源, web界面跨域权限需要
         rpc-allow-origin-all = true;
-        #允许外部访问，false的话只监听本地端口
         rpc-listen-all = true;
-        #RPC端口, 仅当默认端口被占用时修改
-        #rpc-listen-port=6800
-        #最大同时下载数(任务数), 路由建议值: 3
         max-concurrent-downloads = 5;
-        #断点续传
         continue = true;
-        #同服务器连接数
         max-connection-per-server = 5;
-        #最小文件分片大小, 下载线程数上限取决于能分出多少片, 对于小文件重要
         min-split-size = "10 M";
-        #单文件最大线程数, 路由建议值: 5
         split = 10;
-        #下载速度限制
         max-overall-download-limit = 0;
-        #单文件速度限制
         max-download-limit = 0;
-        #上传速度限制
         max-overall-upload-limit = 0;
-        #单文件速度限制
         max-upload-limit = 0;
-        #断开速度过慢的连接
-        #lowest-speed-limit=0
-        #验证用，需要1.16.1之后的release版本
-        #referer=*
-        #文件保存路径, 默认为当前启动位置
-        dir = "/home/freeman.xiong/Downloads";
-        #文件缓存, 使用内置的文件缓存, 如果你不相信Linux内核文件缓存和磁盘内置缓存时使用, 需要1.16及以上版本
-        #disk-cache=0
-        #另一种Linux文件缓存方式, 使用前确保您使用的内核支持此选项, 需要1.15及以上版本(?)
+        dir = "${config.home.homeDirectory}/Downloads";
         enable-mmap = true;
-        #文件预分配, 能有效降低文件碎片, 提高磁盘性能. 缺点是预分配时间较长
-        #所需时间 none < falloc ? trunc << prealloc, falloc和trunc需要文件系统和内核支持
         file-allocation = "prealloc";
-      };
-    };
-
-    gh = {
-      enable = true;
-      settings = {
-        git_protocal = "ssh";
       };
     };
 
@@ -764,6 +622,49 @@
     yazi = {
       enable = false;
     };
+
+    # Rustup and grafana-loki completions (moved from zsh.nix)
+    zsh.initContent = ''
+      eval "$(${pkgs.rustup}/bin/rustup completions zsh)"
+      eval "$(${pkgs.grafana-loki}/bin/logcli --completion-script-zsh)"
+    '';
+  };
+
+  # Electron flags config files — Linux/Wayland only
+  home.file = lib.mkIf pkgs.stdenv.isLinux {
+    ".config/electron-flags.conf" = {
+      text = ''
+        --enable-wayland-ime
+        --enable-features=WaylandWindowDecorations
+        --ozone-platform-hint=auto        '';
+    };
+
+    ".config/electron25-flags.conf" = {
+      text = ''
+        --enable-wayland-ime
+        --enable-features=WaylandWindowDecorations
+        --ozone-platform-hint=auto        '';
+    };
+    ".config/electron24-flags.conf" = {
+      text = ''
+        --enable-wayland-ime
+        --enable-features=UseOzonePlatform
+        --ozone-platform=wayland
+      '';
+    };
+    ".config/electron23-flags.conf" = {
+      text = ''
+        --enable-wayland-ime
+        --enable-features=UseOzonePlatform
+        --ozone-platform=wayland
+      '';
+    };
+    ".config/electron22-flags.conf" = {
+      text = ''
+        --enable-wayland-ime
+        --enable-features=UseOzonePlatform
+        --ozone-platform=wayland
+      '';
+    };
   };
 }
-# ocng
