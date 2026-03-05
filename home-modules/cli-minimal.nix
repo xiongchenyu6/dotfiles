@@ -10,7 +10,30 @@
     ./neovim.nix
   ];
 
+  sops.secrets."wakatime/api_key" = { };
+
+  sops.templates."wakatime-cfg" = {
+    content = ''
+      [settings]
+      debug         = false
+      hidefilenames = false
+      ignore        = """
+          COMMIT_EDITMSG$
+          PULLREQ_EDITMSG$
+          MERGE_MSG$
+          TAG_EDITMSG$"""
+      api_key       = ${config.sops.placeholder."wakatime/api_key"}
+
+      [internal]
+      backoff_retries = 0
+      backoff_at      = 
+    '';
+    path = "${config.home.homeDirectory}/.wakatime.cfg";
+    mode = "600";
+  };
+
   modules.neovim.enable = true;
+  modules.neovim.lightweight = lib.mkDefault true;
 
   programs = {
     ripgrep-all = {
@@ -248,23 +271,6 @@
 
   home = {
     file = {
-      ".wakatime.cfg" = {
-        text = ''
-          [settings]
-          debug         = false
-          hidefilenames = false
-          ignore        = """
-              COMMIT_EDITMSG$
-              PULLREQ_EDITMSG$
-              MERGE_MSG$
-              TAG_EDITMSG$"""
-          api_key       = 06fb08d0-68a4-4b39-bbb0-d34d325dc046
-
-          [internal]
-          backoff_retries = 0
-          backoff_at      = 
-        '';
-      };
       ".ldaprc" =
         lib.mkIf
           (osConfig ? networking && osConfig.networking ? domain && osConfig.networking.domain != null)
@@ -312,40 +318,6 @@
       ".aspell" = {
         text = ''
           lang en_US
-        '';
-      };
-      ".config/electron-flags.conf" = {
-        text = ''
-          --enable-wayland-ime
-          --enable-features=WaylandWindowDecorations
-          --ozone-platform-hint=auto        '';
-      };
-
-      ".config/electron25-flags.conf" = {
-        text = ''
-          --enable-wayland-ime
-          --enable-features=WaylandWindowDecorations
-          --ozone-platform-hint=auto        '';
-      };
-      ".config/electron24-flags.conf" = {
-        text = ''
-          --enable-wayland-ime
-          --enable-features=UseOzonePlatform
-          --ozone-platform=wayland 
-        '';
-      };
-      ".config/electron23-flags.conf" = {
-        text = ''
-          --enable-wayland-ime
-          --enable-features=UseOzonePlatform
-          --ozone-platform=wayland 
-        '';
-      };
-      ".config/electron22-flags.conf" = {
-        text = ''
-          --enable-wayland-ime
-          --enable-features=UseOzonePlatform
-          --ozone-platform=wayland 
         '';
       };
     };
