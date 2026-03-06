@@ -178,7 +178,7 @@
       serverUrl = "ws://183.6.107.47:3000/ws";
       token = "secure_token_relay_01";
       region = "sg-1";
-      ip = "183.6.107.47";
+      ip = "138.2.95.174";
       bindIp = "0.0.0.0";
       videPort = 30001;
       dataPort = 30002;
