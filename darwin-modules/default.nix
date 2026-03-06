@@ -1,6 +1,4 @@
-# Edit this configuration file to define what should be installed on
-# your system.  Help is available in the configuration.nix(5) man page
-# and in the NixOS manual (accessible by running ‘nixos-help’).
+# Shared Darwin base — imported by all macOS hosts
 {
   inputs,
   pkgs,
@@ -10,7 +8,7 @@
 }:
 let
   sharedConfig = import ../shared-modules/default.nix { inherit inputs lib; };
-  
+
   darwin-modules = with inputs; [
     home-manager.darwinModules.home-manager
     sops-nix.darwinModules.default
@@ -32,6 +30,4 @@ in
   home-manager = sharedConfig.homeManagerConfig;
 
   security.pam.services.sudo_local.touchIdAuth = true;
-  system.darwinLabel = "gui";
-  nixpkgs.hostPlatform = "aarch64-darwin";
 }
