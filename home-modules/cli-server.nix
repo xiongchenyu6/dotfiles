@@ -1,3 +1,4 @@
+# Server CLI tier — extends cli-minimal with dev/ops tools
 { config, pkgs, lib, ... }:
 {
   editorconfig = {

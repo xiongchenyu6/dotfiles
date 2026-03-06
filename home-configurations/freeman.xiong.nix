@@ -27,7 +27,7 @@ in
         if isDarwin then
           [
             ezModules.zsh
-            ezModules.cli-desktop
+            ezModules.cli-development
             ezModules.gui
           ]
         else
@@ -35,7 +35,7 @@ in
             if hasGuiTag then
               [
                 ezModules.zsh
-                ezModules.cli-desktop
+                ezModules.cli-development
                 ezModules.gui
                 #ezModules.mpd
                 ezModules.stow-config
