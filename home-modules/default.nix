@@ -29,7 +29,7 @@ in
     ++ (
       if hasGuiTag then
         [
-          ezModules.nixos-desktop
+          ezModules.nixos-integration
         ]
       else
         [ ]

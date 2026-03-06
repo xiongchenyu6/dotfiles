@@ -1,3 +1,4 @@
+# Base CLI tools for all users (root + non-root)
 {
   pkgs,
   config,
