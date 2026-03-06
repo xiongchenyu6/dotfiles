@@ -1,3 +1,4 @@
+# Full development CLI tier — extends cli-server with IDE-like tools
 {
   config,
   pkgs,

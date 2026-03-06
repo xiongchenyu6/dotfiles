@@ -2,8 +2,8 @@
 # Not imported by any host. Import this module to re-enable emacs.
 #
 # Contains:
-#   - programs.emacs (packages + config) from gui/common.nix
-#   - services.emacs (daemon) from gui/default.nix & nixos-desktop.nix
+#   - programs.emacs (packages + config) from gui/packages.nix
+#   - services.emacs (daemon) from gui/linux.nix & nixos-integration.nix
 #   - Platform-specific package overrides from hyprland/ and xmonad/
 { pkgs, lib, ... }:
 {

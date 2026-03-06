@@ -71,6 +71,92 @@
         ansible.out
         #qemu_kvm
         #tpm2-tools
+
+        # Cross-platform GUI apps (moved from Linux-only)
+        keepassxc
+        zotero
+        ledger-live-desktop
+        yubikey-manager
+
+        # Cross-platform CLI/DevOps tools (moved from Linux-only)
+        cloudflared
+        sops
+        gpgme.dev
+        cmctl
+        websocat
+        delve # go debugger
+        dive # docker image analyzer
+        dust # du alternative
+        envsubst
+        ffmpeg-full
+        fluxcd
+        glab
+        gitleaks
+        weave-gitops
+        graphviz
+        grpcurl
+        (kubernetes-helm-wrapped.override { plugins = [ kubernetes-helmPlugins.helm-diff ]; })
+        #helm
+        hey # http load generator
+        killall
+        litecli
+        mongosh
+        #mycli
+        nix-index-update
+        nixpacks
+        nix
+        nvfetcher
+        oath-toolkit
+        openssl
+        popeye
+        plantuml
+        #aider-chat
+        (python3.withPackages (
+          _: with python3.pkgs; [
+            pip
+          ]
+        ))
+        python312Packages.huggingface-hub.out
+        uv
+        github-mcp-server
+        qrencode
+        redis
+        ruby
+        shellcheck
+        shfmt
+        ldns
+        nmap # A utility for network discovery and security auditing
+        ipcalc
+        nix-fast-build
+        solc-select
+        #solium
+        socat
+        sshpass
+        tgpt
+        tealdeer
+        unzip
+        wakatime-cli
+        wget
+        ripgrep
+        p7zip
+        file
+        exiftool
+        jq
+
+        # Kubernetes tools
+        kube-capacity
+        kube-prompt
+        kubectl
+        kubectl-tree
+        kubespy
+        kubeshark
+        kustomize
+        krew
+        kconf
+        #orb
+        kube-score
+        kubelogin-oidc
+        calicoctl
       ]
       ++ lib.optionals pkgs.stdenv.isLinux [
         google-chrome # Keep Chrome in Nix for Linux
