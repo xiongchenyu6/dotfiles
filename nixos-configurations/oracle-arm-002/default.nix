@@ -102,6 +102,7 @@
       gnugrep
       nix
       systemd
+      sudo
     ];
 
     # Install openclaw globally on first start or update
