@@ -100,6 +100,8 @@
       gzip
       findutils
       gnugrep
+      nix
+      systemd
     ];
 
     # Install openclaw globally on first start or update
