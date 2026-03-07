@@ -130,7 +130,13 @@
         },
         "agents": {
           "defaults": {
-            "model": "nvidia/minimaxai/minimax-m2.5"
+            "model": {
+              "primary": "nvidia/minimaxai/minimax-m2.5",
+              "fallbacks": [
+                "nvidia/meta/llama-3.3-70b-instruct",
+                "openrouter/anthropic/claude-sonnet-4"
+              ]
+            }
           }
         },
         "models": {
