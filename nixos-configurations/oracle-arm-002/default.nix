@@ -30,7 +30,8 @@
 
   ];
 
-  sops.secrets."api-keys/SILICON_FLOW".owner = "openclaw";
+  sops.secrets."api-keys/GEMINI_API_KEY".owner = "root";
+  sops.secrets."api-keys/SILICON_FLOW".owner = "root";
   sops.secrets."zeroclaw/nvidia_api_key".owner = "openclaw";
   sops.secrets."zeroclaw/telegram_bot_token".owner = "openclaw";
 
@@ -132,9 +133,9 @@
         "agents": {
           "defaults": {
             "model": {
-              "primary": "openrouter/anthropic/claude-sonnet-4",
+              "primary": "google/gemini-2.5-flash",
               "fallbacks": [
-                "nvidia/minimaxai/minimax-m2.5"
+                "openrouter/anthropic/claude-sonnet-4"
               ]
             }
           }
@@ -208,6 +209,7 @@
       export HOME=/var/lib/openclaw
       export NPM_CONFIG_PREFIX=/var/lib/openclaw/.npm-global
       export PATH="$NPM_CONFIG_PREFIX/bin:$PATH"
+      export GEMINI_API_KEY=$(cat /run/secrets/api-keys/GEMINI_API_KEY)
       export NVIDIA_API_KEY=$(cat /run/secrets/zeroclaw/nvidia_api_key)
       exec openclaw gateway --port 18789
     '';
