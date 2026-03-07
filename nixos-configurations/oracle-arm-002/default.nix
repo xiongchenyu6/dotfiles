@@ -176,16 +176,12 @@
     '';
 
     serviceConfig = {
-      User = "openclaw";
-      Group = "openclaw";
+      User = "root";
+      Group = "root";
       WorkingDirectory = "/var/lib/openclaw";
       StateDirectory = "openclaw";
       Restart = "always";
       RestartSec = 5;
-      # Hardening
-      ProtectHome = "read-only";
-      PrivateTmp = true;
-      NoNewPrivileges = true;
     };
   };
 }
