@@ -136,7 +136,6 @@
             "model": {
               "primary": "nvidia/minimaxai/minimax-m2.5",
               "fallbacks": [
-                "nvidia/meta/llama-3.3-70b-instruct",
                 "google/gemini-2.5-flash"
               ]
             }
