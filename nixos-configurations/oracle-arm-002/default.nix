@@ -151,7 +151,13 @@
         },
         "tools": {
           "profile": "full",
-          "allow": ["*"]
+          "allow": ["*"],
+          "elevated": {
+            "enabled": true,
+            "allowFrom": {
+              "telegram": ["*"]
+            }
+          }
         },
         "channels": {
           "telegram": {
