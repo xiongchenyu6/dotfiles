@@ -5,7 +5,7 @@
 {
   sops.secrets = {
     "django/secret" = {
-      mode = "777";
+      mode = "0440";
       owner = "healthchecks";
       group = "healthchecks";
     };
