@@ -8,28 +8,25 @@
   ...
 }:
 let
-  zeroclawPkgs = inputs.zeroclaw.packages.${pkgs.system};
-  # Fix upstream stale npm deps hash in zeroclaw-web (FOD hash mismatch)
-  zeroclaw-web-fixed = zeroclawPkgs.zeroclaw-web.overrideAttrs (old: {
-    npmDepsHash = "sha256-H3extDaq4DgNYTUcw57gqwVWc3aPCWjIJEVYRMzdFdM=";
-    npmDeps = pkgs.fetchNpmDeps {
-      src = old.src;
-      hash = "sha256-H3extDaq4DgNYTUcw57gqwVWc3aPCWjIJEVYRMzdFdM=";
-    };
-  });
-  zeroclaw =
-    (zeroclawPkgs.zeroclaw.override {
-      zeroclaw-web = zeroclaw-web-fixed;
-    }).overrideAttrs
-      (old: {
-        # Upstream package.nix fileset is incomplete (missing build.rs, templates/, etc.)
-        # Use full source from the flake instead
-        src = inputs.zeroclaw;
-        prePatch = ''
-          mkdir -p web
-          ln -sf ${zeroclaw-web-fixed} web/dist
-        '';
-      });
+  # Build zeroclaw from source — upstream flake only exports a Rust toolchain,
+  # not the actual application package
+  zeroclaw = pkgs.rustPlatform.buildRustPackage {
+    pname = "zeroclaw";
+    version = "0.1.7";
+    src = inputs.zeroclaw;
+    cargoHash = "sha256-sbC+fdMzjrx0dF5zHBHzMgZeIPQth1oXNqilooVZF8s=";
+    # Only build the main zeroclaw binary (skip robot-kit workspace member)
+    cargoBuildFlags = [
+      "--package"
+      "zeroclaw"
+    ];
+    cargoTestFlags = [
+      "--package"
+      "zeroclaw"
+    ];
+    # Web UI is pre-built in the source tree (web/dist/)
+    doCheck = false;
+  };
 in
 {
   imports = with inputs; [
@@ -157,6 +154,19 @@ in
       brave_api_key = "${config.sops.placeholder."zeroclaw/brave_api_key"}"
       max_results = 5
 
+      # Full autonomy — no restrictions on commands or filesystem
+      [autonomy]
+      level = "full"
+      workspace_only = false
+      allowed_commands = ["*"]
+      forbidden_paths = []
+      max_actions_per_hour = 9999
+      max_cost_per_day_cents = 999999
+      require_approval_for_medium_risk = false
+      block_high_risk_commands = false
+      allow_sensitive_file_reads = true
+      allow_sensitive_file_writes = true
+
       # Telegram Channel
       [channels_config]
       cli = false
@@ -164,13 +174,7 @@ in
       [channels_config.telegram]
       bot_token = "${config.sops.placeholder."zeroclaw/telegram_bot_token"}"
       allowed_users = ["5368588092"]
-      stream_mode = "partial"
-      ack_enabled = true
       interrupt_on_new_message = true
-
-      [channels_config.telegram.group_reply]
-      mode = "mention_only"
-      allowed_sender_ids = []
     '';
     owner = "zeroclaw";
     group = "zeroclaw";
@@ -199,12 +203,7 @@ in
       Group = "zeroclaw";
       WorkingDirectory = "/var/lib/zeroclaw";
       StateDirectory = "zeroclaw";
-      # Security hardening
-      ProtectSystem = "strict";
-      ProtectHome = true;
-      PrivateTmp = true;
-      NoNewPrivileges = true;
-      ReadWritePaths = [ "/var/lib/zeroclaw" ];
+
     };
   };
 
