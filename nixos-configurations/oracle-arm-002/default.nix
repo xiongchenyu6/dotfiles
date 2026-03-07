@@ -132,7 +132,7 @@
         "agents": {
           "defaults": {
             "model": {
-              "primary": "siliconflow/Pro/MiniMaxAI/MiniMax-M2.5",
+              "primary": "openrouter/anthropic/claude-sonnet-4",
               "fallbacks": [
                 "nvidia/minimaxai/minimax-m2.5"
               ]
