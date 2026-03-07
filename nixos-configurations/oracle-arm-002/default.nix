@@ -119,6 +119,7 @@
 
       # Inject API key into Environment file
       echo "NVIDIA_API_KEY=$(cat /run/secrets/zeroclaw/nvidia_api_key)" > /var/lib/openclaw/.openclaw-env
+      echo "GEMINI_API_KEY=$(cat /run/secrets/api-keys/GEMINI_API_KEY)" >> /var/lib/openclaw/.openclaw-env
 
       # Inject telegram bot token and models into openclaw config if it doesn't exist
       mkdir -p /var/lib/openclaw/.openclaw
@@ -133,9 +134,10 @@
         "agents": {
           "defaults": {
             "model": {
-              "primary": "google/gemini-2.5-flash",
+              "primary": "openrouter/deepseek/deepseek-v3.2",
               "fallbacks": [
-                "openrouter/anthropic/claude-sonnet-4"
+                "openrouter/anthropic/claude-sonnet-4",
+                "google/gemini-2.5-flash"
               ]
             }
           }
