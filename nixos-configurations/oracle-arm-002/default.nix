@@ -132,11 +132,9 @@
         "agents": {
           "defaults": {
             "model": {
-              "primary": "nvidia/minimaxai/minimax-m2.5",
+              "primary": "siliconflow/Pro/MiniMaxAI/MiniMax-M2.5",
               "fallbacks": [
-                "siliconflow/deepseek-ai/DeepSeek-V3",
-                "siliconflow/Pro/MiniMaxAI/MiniMax-M2.5",
-                "nvidia/meta/llama-3.3-70b-instruct"
+                "nvidia/minimaxai/minimax-m2.5"
               ]
             }
           }
