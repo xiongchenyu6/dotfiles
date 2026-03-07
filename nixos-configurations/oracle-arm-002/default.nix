@@ -134,9 +134,9 @@
         "agents": {
           "defaults": {
             "model": {
-              "primary": "openrouter/deepseek/deepseek-v3.2",
+              "primary": "nvidia/minimaxai/minimax-m2.5",
               "fallbacks": [
-                "openrouter/anthropic/claude-sonnet-4",
+                "nvidia/meta/llama-3.3-70b-instruct",
                 "google/gemini-2.5-flash"
               ]
             }
