@@ -103,7 +103,7 @@
       };
     };
     rust-web-server = {
-      url = "git+ssh://git@github.com/workRobot/rust-web-server.git?shallow=1";
+      url = "git+ssh://git@github.com/workRobot/rust-web-server.git";
       #url = "git+ssh://git@github.com/workRobot/rust-web-server.git?shallow=1&rev=0ff6f6d5dbd1131b34bec7c8316eb8ee21713e73";
       inputs = {
         nixpkgs.follows = "nixpkgs";
@@ -111,7 +111,7 @@
       };
     };
     work-relay = {
-      url = "github:workRobot/work-relay/feat/nix-flake";
+      url = "git+ssh://git@github.com/workRobot/work-relay.git";
       inputs = {
         nixpkgs.follows = "nixpkgs";
         flake-parts.follows = "flake-parts";
