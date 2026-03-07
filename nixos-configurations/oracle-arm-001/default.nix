@@ -176,7 +176,7 @@
       enable = true;
       openFirewall = true;
       serverUrl = "ws://183.6.107.47:3000/ws";
-      token = "secure_token_relay_01";
+      token = "SOPS_PLACEHOLDER_TOKEN";
       region = "sg-1";
       ip = "138.2.95.174";
       bindIp = "0.0.0.0";
@@ -192,7 +192,7 @@
       debugStatsEnabled = true;
       serviceAuth = {
         client = "autolife-relay";
-        secret = "change_me";
+        secret = "SOPS_PLACEHOLDER_SERVICE_AUTH_SECRET";
       };
       license = {
         licenseFile = config.sops.secrets."autolife-relay/license".path;
@@ -248,6 +248,13 @@
     };
 
     nginx = {
+      commonHttpConfig = ''
+        map $http_origin $cors_origin {
+          default "";
+          "~^https://.*\.autolife\.ai$" $http_origin;
+          "https://autolife.ai" $http_origin;
+        }
+      '';
       virtualHosts = {
         "rust-server.autolife.ai" = {
           forceSSL = true;
@@ -282,10 +289,11 @@
               proxyWebsockets = true;
               proxyPass = "http://127.0.0.1:8081";
               extraConfig = ''
-                # CORS headers for auth endpoints
-                add_header 'Access-Control-Allow-Origin' '*' always;
+                # CORS headers for auth endpoints — restrict to *.autolife.ai
+                add_header 'Access-Control-Allow-Origin' $cors_origin always;
                 add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, DELETE, OPTIONS' always;
                 add_header 'Access-Control-Allow-Headers' 'Authorization, Content-Type, X-Client-Info, apikey' always;
+                add_header 'Access-Control-Allow-Credentials' 'true' always;
 
                 # Handle preflight requests
                 if ($request_method = 'OPTIONS') {
@@ -367,6 +375,24 @@
     # osquery log directory handled by official module
   ];
 
+  # Inject autolife-relay secrets into config at runtime
+  systemd.services.autolife-relay.serviceConfig.ExecStartPre = lib.mkBefore [
+    "+${pkgs.writeShellScript "autolife-relay-inject-secrets" ''
+      cfg="/var/lib/autolife-relay/config.yaml"
+      # Copy the nix-store config to a writable location
+      cp --no-preserve=mode $(grep -oP '(?<=--config-file )\S+' /etc/systemd/system/autolife-relay.service) "$cfg"
+      # Inject sops secrets
+      token=$(cat ${config.sops.secrets."autolife-relay/token".path})
+      secret=$(cat ${config.sops.secrets."autolife-relay/service-auth-secret".path})
+      ${pkgs.gnused}/bin/sed -i "s|SOPS_PLACEHOLDER_TOKEN|$token|g" "$cfg"
+      ${pkgs.gnused}/bin/sed -i "s|SOPS_PLACEHOLDER_SERVICE_AUTH_SECRET|$secret|g" "$cfg"
+      chown autolife-relay:autolife-relay "$cfg"
+      chmod 0600 "$cfg"
+    ''}"
+  ];
+  systemd.services.autolife-relay.serviceConfig.ExecStart = lib.mkForce
+    "${config.services.autolife-relay.package}/bin/autolife-relay --config-file /var/lib/autolife-relay/config.yaml";
+
   # Add wkhtmltopdf and rtlcss to odoo service PATH (since we disabled wrapping)
   systemd.services.odoo.path = [
     pkgs.wkhtmltopdf
@@ -392,6 +418,14 @@
 
   # Sops secrets for autolife-relay
   sops.secrets."autolife-relay/license" = {
+    owner = "autolife-relay";
+    group = "autolife-relay";
+  };
+  sops.secrets."autolife-relay/token" = {
+    owner = "autolife-relay";
+    group = "autolife-relay";
+  };
+  sops.secrets."autolife-relay/service-auth-secret" = {
     owner = "autolife-relay";
     group = "autolife-relay";
   };
