@@ -7,6 +7,7 @@
 
 let
   cfg = config.services.rust-web-server;
+  shares = import ../shares.nix { inherit lib; };
 in
 {
   # This module provides the sops configuration for rust-web-server
@@ -30,19 +31,19 @@ in
             config.sops.placeholder."rust-web-server/db-password"
           }@localhost/rustwebserver
         oauth:
-          client_id: iXPxzvDuhuH9lGHfR3OMIMchnHxhz86c
+          client_id: ${shares.oauth.client_id}
           client_secret: ${config.sops.placeholder."rust-web-server/oauth-client-secret"}
-          redirect_url: https://rust-server.autolife.ai/auth/authorized
-          config_url: https://autolife.jp.auth0.com/.well-known/openid-configuration
+          redirect_url: ${shares.oauth.redirect_url}
+          config_url: ${shares.oauth.config_url}
         oidc:
-          client_id: iXPxzvDuhuH9lGHfR3OMIMchnHxhz86c
-          issuer: https://autolife.jp.auth0.com/
-          authorization_endpoint: https://autolife.jp.auth0.com/authorize
-          token_endpoint: https://autolife.jp.auth0.com/oauth/token
-          userinfo_endpoint: https://autolife.jp.auth0.com/userinfo
-          jwks_uri: https://autolife.jp.auth0.com/.well-known/jwks.json
-          revocation_url: https://autolife.jp.auth0.com/oauth/revoke
-          introspection_endpoint: https://autolife.jp.auth0.com/oauth/introspect
+          client_id: ${shares.oauth.client_id}
+          issuer: ${shares.oauth.issuer}
+          authorization_endpoint: ${shares.oauth.authorization_endpoint}
+          token_endpoint: ${shares.oauth.token_endpoint}
+          userinfo_endpoint: ${shares.oauth.userinfo_endpoint}
+          jwks_uri: ${shares.oauth.jwks_uri}
+          revocation_url: ${shares.oauth.revocation_url}
+          introspection_endpoint: ${shares.oauth.introspection_endpoint}
         auth:
           enabled: true
       '';
