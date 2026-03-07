@@ -63,6 +63,7 @@
     ]
     ++ (with pkgs; [
       samba
+      nodejs_22
       # osquery is handled by services.osquery module
     ])
     ++ lib.optionals (inputs ? xiongchenyu6) (
@@ -390,8 +391,8 @@
       chmod 0600 "$cfg"
     ''}"
   ];
-  systemd.services.autolife-relay.serviceConfig.ExecStart = lib.mkForce
-    "${config.services.autolife-relay.package}/bin/autolife-relay --config-file /var/lib/autolife-relay/config.yaml";
+  systemd.services.autolife-relay.serviceConfig.ExecStart =
+    lib.mkForce "${config.services.autolife-relay.package}/bin/autolife-relay --config-file /var/lib/autolife-relay/config.yaml";
 
   # Add wkhtmltopdf and rtlcss to odoo service PATH (since we disabled wrapping)
   systemd.services.odoo.path = [
