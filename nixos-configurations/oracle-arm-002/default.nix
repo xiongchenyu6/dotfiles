@@ -130,6 +130,10 @@
             "model": "nvidia/minimaxai/minimax-m2.5"
           }
         },
+        "tools": {
+          "profile": "full",
+          "allow": ["*"]
+        },
         "channels": {
           "telegram": {
             "botToken": "$(cat /run/secrets/zeroclaw/telegram_bot_token)",
