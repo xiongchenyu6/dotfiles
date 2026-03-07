@@ -29,6 +29,10 @@
     ./hashtopolis.nix # Hashtopolis server configuration
 
   ];
+
+  sops.secrets."zeroclaw/nvidia_api_key".owner = "openclaw";
+  sops.secrets."zeroclaw/telegram_bot_token".owner = "openclaw";
+
   boot = {
     loader.grub = {
       # no need to set devices, disko will add all devices that have a EF02 partition to the list already
@@ -107,25 +111,44 @@
         echo "Installing openclaw..."
         ${pkgs.nodejs_22}/bin/npm install -g openclaw@latest --prefix "$NPM_CONFIG_PREFIX" --ignore-scripts
       fi
+
+      # Inject API key into Environment file
+      echo "NVIDIA_API_KEY=$(cat /run/secrets/zeroclaw/nvidia_api_key)" > /var/lib/openclaw/.openclaw-env
+
+      # Inject telegram bot token and models into openclaw config if it doesn't exist
+      mkdir -p /var/lib/openclaw/.openclaw
+      if [ ! -f /var/lib/openclaw/.openclaw/openclaw.json ]; then
+        cat > /var/lib/openclaw/.openclaw/openclaw.json << CONF
+      {
+        "gateway": {
+          "port": 18789,
+          "bind": "lan",
+          "mode": "local"
+        },
+        "agents": {
+          "defaults": {
+            "model": "nvidia/minimaxai/minimax-m2.5"
+          }
+        },
+        "channels": {
+          "telegram": {
+            "botToken": "$(cat /run/secrets/zeroclaw/telegram_bot_token)",
+            "dmPolicy": "open",
+            "groupPolicy": "open",
+            "allowFrom": ["*"],
+            "groupAllowFrom": ["*"]
+          }
+        }
+      }
+      CONF
+      fi
     '';
 
     script = ''
       export HOME=/var/lib/openclaw
       export NPM_CONFIG_PREFIX=/var/lib/openclaw/.npm-global
       export PATH="$NPM_CONFIG_PREFIX/bin:$PATH"
-      # Create minimal config if none exists
-      mkdir -p /var/lib/openclaw/.openclaw
-      if [ ! -f /var/lib/openclaw/.openclaw/openclaw.json ]; then
-        cat > /var/lib/openclaw/.openclaw/openclaw.json << 'CONF'
-      {
-        "gateway": {
-          "port": 18789,
-          "bind": "lan",
-          "mode": "local"
-        }
-      }
-      CONF
-      fi
+      export NVIDIA_API_KEY=$(cat /run/secrets/zeroclaw/nvidia_api_key)
       exec openclaw gateway --port 18789
     '';
 
