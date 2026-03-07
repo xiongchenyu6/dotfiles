@@ -6,7 +6,7 @@
 }:
 {
   sops.secrets."datadog" = {
-    mode = "777";
+    mode = "0440";
     owner = "datadog";
     group = "datadog";
   };

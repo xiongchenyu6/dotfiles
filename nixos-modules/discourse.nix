@@ -7,7 +7,7 @@
       group = "discourse";
     };
     "django/secret" = {
-      mode = "777";
+      mode = "0440";
       owner = "discourse";
       group = "discourse";
     };
