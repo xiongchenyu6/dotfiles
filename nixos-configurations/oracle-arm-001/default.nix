@@ -63,6 +63,7 @@
     ]
     ++ (with pkgs; [
       samba
+      nodejs_22
       # osquery is handled by services.osquery module
     ])
     ++ lib.optionals (inputs ? xiongchenyu6) (
@@ -390,8 +391,8 @@
       chmod 0600 "$cfg"
     ''}"
   ];
-  systemd.services.work-relay.serviceConfig.ExecStart = lib.mkForce
-    "${config.services.work-relay.package}/bin/work-relay --config-file /var/lib/work-relay/config.yaml";
+  systemd.services.work-relay.serviceConfig.ExecStart =
+    lib.mkForce "${config.services.work-relay.package}/bin/work-relay --config-file /var/lib/work-relay/config.yaml";
 
   # Add wkhtmltopdf and rtlcss to odoo service PATH (since we disabled wrapping)
   systemd.services.odoo.path = [
