@@ -34,8 +34,14 @@ in
 
     rootPassword = mkOption {
       type = types.str;
-      default = "88888888";
-      description = "MySQL root password";
+      default = "PLACEHOLDER";
+      description = "MySQL root password (use rootPasswordFile instead for secrets)";
+    };
+
+    rootPasswordFile = mkOption {
+      type = types.nullOr types.path;
+      default = null;
+      description = "File containing MySQL root password (overrides rootPassword)";
     };
 
     gmAccount = mkOption {
@@ -46,14 +52,26 @@ in
 
     gmPassword = mkOption {
       type = types.str;
-      default = "gmpass";
-      description = "GM password";
+      default = "PLACEHOLDER";
+      description = "GM password (use gmPasswordFile instead for secrets)";
+    };
+
+    gmPasswordFile = mkOption {
+      type = types.nullOr types.path;
+      default = null;
+      description = "File containing GM password (overrides gmPassword)";
     };
 
     gmConnectKey = mkOption {
       type = types.str;
-      default = "763WXRBW3PFTC3IXPFWH";
-      description = "GM connect key";
+      default = "PLACEHOLDER";
+      description = "GM connect key (use gmConnectKeyFile instead for secrets)";
+    };
+
+    gmConnectKeyFile = mkOption {
+      type = types.nullOr types.path;
+      default = null;
+      description = "File containing GM connect key (overrides gmConnectKey)";
     };
 
     gmLanderVersion = mkOption {
@@ -92,13 +110,44 @@ in
 
   config = mkIf cfg.enable {
 
-    # Create data directories
+    # Effective values: use file content if *File is set, otherwise use inline option
+    # The env file is generated at runtime by create-dnf-env service
     systemd.tmpfiles.rules = [
+      "d /run/dnf-server 0750 root root -"
       "d ${cfg.dataDir} 0755 root root -"
       "d ${cfg.dataDir}/data 0755 root root -"
       "d ${cfg.dataDir}/log 0755 root root -"
       "d ${cfg.dataDir}/mysql 0755 root root -"
     ];
+
+    # Generate env file from sops secrets at runtime
+    systemd.services."create-dnf-env" = {
+      description = "Generate DNF server environment file from secrets";
+      after = [ "sops-nix.service" ];
+      before = [
+        "${cfg.backend}-mysql.service"
+        "${cfg.backend}-dnf-1.service"
+      ];
+      wantedBy = [ "multi-user.target" ];
+      serviceConfig = {
+        Type = "oneshot";
+        RemainAfterExit = true;
+      };
+      script = ''
+        ROOT_PASS="${cfg.rootPassword}"
+        GM_PASS="${cfg.gmPassword}"
+        GM_KEY="${cfg.gmConnectKey}"
+        ${optionalString (cfg.rootPasswordFile != null) ''ROOT_PASS=$(cat "${cfg.rootPasswordFile}")''}
+        ${optionalString (cfg.gmPasswordFile != null) ''GM_PASS=$(cat "${cfg.gmPasswordFile}")''}
+        ${optionalString (cfg.gmConnectKeyFile != null) ''GM_KEY=$(cat "${cfg.gmConnectKeyFile}")''}
+        cat > /run/dnf-server/env <<EOF
+        DNF_DB_ROOT_PASSWORD=$ROOT_PASS
+        GM_PASSWORD=$GM_PASS
+        GM_CONNECT_KEY=$GM_KEY
+        EOF
+        chmod 0400 /run/dnf-server/env
+      '';
+    };
 
     # Create network for containers (run as root to match container runtime)
     systemd.services."create-dnf-network" = {
@@ -128,7 +177,6 @@ in
         mysql = {
           image = "docker.io/1995chen/mysql:7-5.0.95";
           environment = {
-            DNF_DB_ROOT_PASSWORD = cfg.rootPassword;
             TZ = "Asia/Shanghai";
           };
           ports = [
@@ -142,6 +190,7 @@ in
             "--network=dnf-net"
             "--hostname=mysql"
             "--ip=10.90.0.10"
+            "--env-file=/run/dnf-server/env"
           ];
         };
         dnf-1 = {
@@ -155,10 +204,7 @@ in
             PUBLIC_IP = cfg.publicIP;
             MYSQL_HOST = "10.90.0.10"; # Use fixed IP address
             MYSQL_PORT = "4000"; # MySQL's internal port
-            DNF_DB_ROOT_PASSWORD = cfg.rootPassword;
             GM_ACCOUNT = cfg.gmAccount;
-            GM_PASSWORD = cfg.gmPassword;
-            GM_CONNECT_KEY = cfg.gmConnectKey;
             GM_LANDER_VERSION = cfg.gmLanderVersion;
           };
           ports = [
@@ -186,6 +232,7 @@ in
             "--cpus=1.0"
             "--network=dnf-net"
             "--ip=10.90.0.20"
+            "--env-file=/run/dnf-server/env"
           ];
         };
       };
@@ -196,10 +243,12 @@ in
       after = [
         "${cfg.backend}-mysql.service"
         "create-dnf-network.service"
+        "create-dnf-env.service"
       ];
       requires = [
         "${cfg.backend}-mysql.service"
         "create-dnf-network.service"
+        "create-dnf-env.service"
       ];
       serviceConfig = {
         Restart = "always";
@@ -209,8 +258,8 @@ in
 
     # Ensure mysql container restarts on failure
     systemd.services."${cfg.backend}-mysql" = {
-      after = [ "create-dnf-network.service" ];
-      requires = [ "create-dnf-network.service" ];
+      after = [ "create-dnf-network.service" "create-dnf-env.service" ];
+      requires = [ "create-dnf-network.service" "create-dnf-env.service" ];
       serviceConfig = {
         Restart = "always";
         RestartSec = "10s";
