@@ -30,6 +30,7 @@
 
   ];
 
+  sops.secrets."api-keys/SILICON_FLOW".owner = "openclaw";
   sops.secrets."zeroclaw/nvidia_api_key".owner = "openclaw";
   sops.secrets."zeroclaw/telegram_bot_token".owner = "openclaw";
 
@@ -133,14 +134,37 @@
             "model": {
               "primary": "nvidia/minimaxai/minimax-m2.5",
               "fallbacks": [
-                "nvidia/meta/llama-3.3-70b-instruct",
-                "openrouter/anthropic/claude-sonnet-4"
+                "siliconflow/deepseek-ai/DeepSeek-V3",
+                "siliconflow/Pro/MiniMaxAI/MiniMax-M2.5",
+                "nvidia/meta/llama-3.3-70b-instruct"
               ]
             }
           }
         },
         "models": {
           "providers": {
+            "siliconflow": {
+              "baseUrl": "https://api.siliconflow.cn/v1",
+              "api": "openai-completions",
+              "auth": "api-key",
+              "apiKey": "$(cat /run/secrets/api-keys/SILICON_FLOW)",
+              "models": [
+                {
+                  "id": "deepseek-ai/DeepSeek-V3",
+                  "name": "DeepSeek V3",
+                  "input": ["text"],
+                  "contextWindow": 65536,
+                  "maxTokens": 8192
+                },
+                {
+                  "id": "Pro/MiniMaxAI/MiniMax-M2.5",
+                  "name": "MiniMax M2.5 (Pro)",
+                  "input": ["text"],
+                  "contextWindow": 131072,
+                  "maxTokens": 4096
+                }
+              ]
+            },
             "nvidia": {
               "baseUrl": "https://integrate.api.nvidia.com/v1",
               "api": "openai-completions",
