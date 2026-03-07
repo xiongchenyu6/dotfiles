@@ -188,6 +188,37 @@ in
     wantedBy = [ "multi-user.target" ];
     after = [ "network-online.target" ];
     wants = [ "network-online.target" ];
+    path = with pkgs; [
+      coreutils
+      findutils
+      gnugrep
+      gnused
+      gawk
+      iproute2 # ip, ss
+      nftables # nft
+      iptables # iptables-legacy
+      nettools # ifconfig, route, netstat
+      curl
+      wget
+      git
+      openssh
+      procps # ps, top, free
+      util-linux # lsblk, mount, etc.
+      systemd # systemctl, journalctl
+      bash
+      which
+      less
+      jq
+      dig # DNS lookups
+      nmap
+      tcpdump
+      lsof
+      file
+      tree
+      gnutar
+      gzip
+      unzip
+    ];
     environment = {
       HOME = "/var/lib/zeroclaw";
       RUST_LOG = "info";
@@ -199,11 +230,11 @@ in
       ExecStart = "${zeroclaw}/bin/zeroclaw daemon";
       Restart = "always";
       RestartSec = 5;
-      User = "zeroclaw";
-      Group = "zeroclaw";
+      # Run as root for full system access (user explicitly requested unrestricted execution)
+      User = "root";
+      Group = "root";
       WorkingDirectory = "/var/lib/zeroclaw";
       StateDirectory = "zeroclaw";
-
     };
   };
 
