@@ -130,6 +130,25 @@
             "model": "nvidia/minimaxai/minimax-m2.5"
           }
         },
+        "models": {
+          "providers": {
+            "nvidia": {
+              "baseUrl": "https://integrate.api.nvidia.com/v1",
+              "api": "openai-completions",
+              "auth": "api-key",
+              "apiKey": "$(cat /run/secrets/zeroclaw/nvidia_api_key)",
+              "models": [
+                {
+                  "id": "minimaxai/minimax-m2.5",
+                  "name": "MiniMax M2.5",
+                  "input": ["text"],
+                  "contextWindow": 131072,
+                  "maxTokens": 4096
+                }
+              ]
+            }
+          }
+        },
         "tools": {
           "profile": "full",
           "allow": ["*"]
