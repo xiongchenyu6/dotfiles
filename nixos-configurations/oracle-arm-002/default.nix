@@ -73,7 +73,7 @@
       x11vnc
       novnc
       chromium
-      xorg.xorgserver
+      xorg-server
       inputs.xiongchenyu6.packages."aarch64-linux".xiaohongshu-mcp
     ]);
 
@@ -140,16 +140,16 @@
           "bind": "lan",
           "mode": "local"
         },
-        "agents": {
-          "defaults": {
-            "model": {
-              "primary": "volcengine/ark-code-latest",
-              "fallbacks": [
-                "google/gemini-2.5-flash"
-              ]
+         "agents": {
+           "defaults": {
+             "model": {
+               "primary": "volcengine/ark-code-latest",
+               "fallbacks": [
+                 "google/gemini-2.5-flash"
+               ]
+              }
             }
-          }
-        },
+         },
         "models": {
           "providers": {
             "volcengine": {
@@ -209,22 +209,22 @@
         "tools": {
           "profile": "full",
           "allow": ["*"],
-          "elevated": {
-            "enabled": true,
-            "allowFrom": {
-              "telegram": ["5368588092", "5369058954"]
-            }
-          }
+           "elevated": {
+             "enabled": true,
+             "allowFrom": {
+               "telegram": ["5368588092", "5369058954", "5293993503"]
+             }
+           }
         },
-        "channels": {
-          "telegram": {
-            "botToken": "$(cat /run/secrets/zeroclaw/telegram_bot_token)",
-            "dmPolicy": "allowlist",
-            "groupPolicy": "allowlist",
-            "allowFrom": ["5368588092", "5369058954"],
-            "groupAllowFrom": ["5368588092", "5369058954"]
-          }
-        },
+         "channels": {
+           "telegram": {
+             "botToken": "$(cat /run/secrets/zeroclaw/telegram_bot_token)",
+             "dmPolicy": "allowlist",
+             "groupPolicy": "allowlist",
+             "allowFrom": ["5368588092", "5369058954"],
+             "groupAllowFrom": ["5368588092", "5369058954", "5293993503"]
+           }
+         },
         "mcp": {
           "servers": {
             "xiaohongshu-mcp": {
@@ -264,7 +264,7 @@
     wantedBy = [ "multi-user.target" ];
 
     script = ''
-      exec ${pkgs.xvfb-run}/bin/Xvfb :99 -screen 0 1280x1024x24 -ac +extension GLX +render -noreset
+      exec ${pkgs.xorg-server}/bin/Xvfb :99 -screen 0 1280x1024x24 -ac +extension GLX +render -noreset
     '';
 
     serviceConfig = {
