@@ -32,6 +32,7 @@
 
   sops.secrets."api-keys/GEMINI_API_KEY".owner = "root";
   sops.secrets."api-keys/SILICON_FLOW".owner = "root";
+  sops.secrets."api-keys/VOLCENGINE_API_KEY".owner = "root";
   sops.secrets."zeroclaw/nvidia_api_key".owner = "openclaw";
   sops.secrets."zeroclaw/telegram_bot_token".owner = "openclaw";
 
@@ -68,12 +69,19 @@
     ]
     ++ (with pkgs; [
       nodejs_22
+      xvfb-run
+      x11vnc
+      novnc
+      chromium
+      xorg.xorgserver
       inputs.xiongchenyu6.packages."aarch64-linux".xiaohongshu-mcp
     ]);
 
   nixpkgs = {
     hostPlatform = "aarch64-linux";
   };
+
+  networking.firewall.allowedTCPPorts = [ 6080 ];
 
   # OpenClaw — personal AI assistant
   users.users.openclaw = {
@@ -148,7 +156,7 @@
               "baseUrl": "https://ark.cn-beijing.volces.com/api/coding/v3",
               "api": "openai-completions",
               "auth": "api-key",
-              "apiKey": "5bbbbe4f-5520-461b-ac31-988058a979c7",
+              "apiKey": "$(cat /run/secrets/api-keys/VOLCENGINE_API_KEY)",
               "models": [
                 {
                   "id": "ark-code-latest",
@@ -216,6 +224,13 @@
             "allowFrom": ["5368588092", "5369058954"],
             "groupAllowFrom": ["5368588092", "5369058954"]
           }
+        },
+        "mcp": {
+          "servers": {
+            "xiaohongshu-mcp": {
+              "url": "http://127.0.0.1:18060/mcp"
+            }
+          }
         }
       }
       CONF
@@ -238,6 +253,101 @@
       StateDirectory = "openclaw";
       Restart = "always";
       RestartSec = 5;
+    };
+  };
+
+  # Virtual display support for browser automation
+  systemd.services.xvfb = {
+    description = "X virtual framebuffer for headless display";
+    after = [ "network-online.target" ];
+    wants = [ "network-online.target" ];
+    wantedBy = [ "multi-user.target" ];
+
+    script = ''
+      exec ${pkgs.xvfb-run}/bin/Xvfb :99 -screen 0 1280x1024x24 -ac +extension GLX +render -noreset
+    '';
+
+    serviceConfig = {
+      User = "openclaw";
+      Group = "openclaw";
+      Restart = "always";
+      RestartSec = 5;
+      Type = "simple";
+    };
+  };
+
+  systemd.services.x11vnc = {
+    description = "X11 VNC server";
+    after = [
+      "network-online.target"
+      "xvfb.service"
+    ];
+    wants = [ "network-online.target" ];
+    wantedBy = [ "multi-user.target" ];
+    requires = [ "xvfb.service" ];
+
+    script = ''
+      exec ${pkgs.x11vnc}/bin/x11vnc -display :99 -forever -shared -nopw -listen localhost -rfbport 5900
+    '';
+
+    serviceConfig = {
+      User = "openclaw";
+      Group = "openclaw";
+      Restart = "always";
+      RestartSec = 5;
+      Type = "simple";
+    };
+  };
+
+  systemd.services.novnc = {
+    description = "NoVNC web VNC client";
+    after = [
+      "network-online.target"
+      "x11vnc.service"
+    ];
+    wants = [ "network-online.target" ];
+    wantedBy = [ "multi-user.target" ];
+    requires = [ "x11vnc.service" ];
+
+    script = ''
+      exec ${pkgs.novnc}/bin/novnc --vnc localhost:5900 --listen 0.0.0.0:6080
+    '';
+
+    serviceConfig = {
+      User = "openclaw";
+      Group = "openclaw";
+      Restart = "always";
+      RestartSec = 5;
+      Type = "simple";
+    };
+  };
+
+  systemd.services.xiaohongshu-mcp = {
+    description = "Xiaohongshu MCP service";
+    after = [
+      "network-online.target"
+      "xvfb.service"
+    ];
+    wants = [ "network-online.target" ];
+    wantedBy = [ "multi-user.target" ];
+    requires = [ "xvfb.service" ];
+
+    environment = {
+      DISPLAY = ":99";
+    };
+
+    script = ''
+      exec ${
+        inputs.xiongchenyu6.packages."aarch64-linux".xiaohongshu-mcp
+      }/bin/xiaohongshu-mcp -headless=false
+    '';
+
+    serviceConfig = {
+      User = "openclaw";
+      Group = "openclaw";
+      Restart = "always";
+      RestartSec = 5;
+      Type = "simple";
     };
   };
 }
