@@ -212,7 +212,7 @@
             "elevated": {
               "enabled": true,
               "allowFrom": {
-                "telegram": ["5368588092", "5369058954", "5293993503", "-5293993503", "-1005293993503"]
+                "telegram": ["5368588092", "5369058954"]
               }
             }
           },
@@ -221,8 +221,12 @@
               "botToken": "$(cat /run/secrets/zeroclaw/telegram_bot_token)",
               "dmPolicy": "allowlist",
               "groupPolicy": "allowlist",
+              "groups": {
+                "-5293993503": {},
+                "-1005293993503": {}
+              },
               "allowFrom": ["5368588092", "5369058954"],
-              "groupAllowFrom": ["5368588092", "5369058954", "5293993503", "-5293993503", "-1005293993503"]
+              "groupAllowFrom": ["5368588092", "5369058954"]
             }
           },
         "mcp": {
