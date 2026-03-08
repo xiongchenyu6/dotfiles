@@ -209,22 +209,22 @@
         "tools": {
           "profile": "full",
           "allow": ["*"],
-           "elevated": {
-             "enabled": true,
-             "allowFrom": {
-               "telegram": ["5368588092", "5369058954", "5293993503"]
-             }
-           }
-        },
-         "channels": {
-           "telegram": {
-             "botToken": "$(cat /run/secrets/zeroclaw/telegram_bot_token)",
-             "dmPolicy": "allowlist",
-             "groupPolicy": "allowlist",
-             "allowFrom": ["5368588092", "5369058954"],
-             "groupAllowFrom": ["5368588092", "5369058954", "5293993503"]
-           }
-         },
+            "elevated": {
+              "enabled": true,
+              "allowFrom": {
+                "telegram": ["5368588092", "5369058954", "5293993503", "-5293993503"]
+              }
+            }
+          },
+          "channels": {
+            "telegram": {
+              "botToken": "$(cat /run/secrets/zeroclaw/telegram_bot_token)",
+              "dmPolicy": "allowlist",
+              "groupPolicy": "allowlist",
+              "allowFrom": ["5368588092", "5369058954"],
+              "groupAllowFrom": ["5368588092", "5369058954", "5293993503", "-5293993503"]
+            }
+          },
         "mcp": {
           "servers": {
             "xiaohongshu-mcp": {
