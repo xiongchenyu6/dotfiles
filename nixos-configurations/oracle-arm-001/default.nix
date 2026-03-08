@@ -376,23 +376,48 @@
     # osquery log directory handled by official module
   ];
 
-  # Inject work-relay secrets into config at runtime
-  systemd.services.work-relay.serviceConfig.ExecStartPre = lib.mkBefore [
-    "+${pkgs.writeShellScript "work-relay-inject-secrets" ''
-      cfg="/var/lib/work-relay/config.yaml"
-      # Copy the nix-store config to a writable location
-      cp --no-preserve=mode $(grep -oP '(?<=--config-file )\S+' /etc/systemd/system/work-relay.service) "$cfg"
-      # Inject sops secrets
-      token=$(cat ${config.sops.secrets."work-relay/token".path})
-      secret=$(cat ${config.sops.secrets."work-relay/service-auth-secret".path})
-      ${pkgs.gnused}/bin/sed -i "s|SOPS_PLACEHOLDER_TOKEN|$token|g" "$cfg"
-      ${pkgs.gnused}/bin/sed -i "s|SOPS_PLACEHOLDER_SERVICE_AUTH_SECRET|$secret|g" "$cfg"
-      chown work-relay:work-relay "$cfg"
-      chmod 0600 "$cfg"
-    ''}"
-  ];
-  systemd.services.work-relay.serviceConfig.ExecStart =
-    lib.mkForce "${config.services.work-relay.package}/bin/work-relay --config-file /var/lib/work-relay/config.yaml";
+  # Inject work-relay secrets into config at runtime by wrapping the binary
+  services.work-relay.package = pkgs.writeShellScriptBin "work-relay" ''
+    set -euo pipefail
+
+    cfg="/var/lib/work-relay/config.yaml"
+
+    # The module calls us as: work-relay --config-file /nix/store/...-config.yaml
+    # We extract the config file path from the arguments
+    config_file=""
+    while [[ $# -gt 0 ]]; do
+      case $1 in
+        -c|--config-file)
+          config_file="$2"
+          break
+          ;;
+        *)
+          shift
+          ;;
+      esac
+    done
+
+    if [[ -z "$config_file" ]]; then
+      echo "Error: --config-file argument missing" >&2
+      exit 1
+    fi
+
+    # Copy the nix-store config to a writable location
+    cp --no-preserve=mode "$config_file" "$cfg"
+
+    # Inject sops secrets
+    token=$(cat ${config.sops.secrets."work-relay/token".path})
+    secret=$(cat ${config.sops.secrets."work-relay/service-auth-secret".path})
+    ${pkgs.gnused}/bin/sed -i "s|SOPS_PLACEHOLDER_TOKEN|$token|g" "$cfg"
+    ${pkgs.gnused}/bin/sed -i "s|SOPS_PLACEHOLDER_SERVICE_AUTH_SECRET|$secret|g" "$cfg"
+
+    chmod 0600 "$cfg"
+
+    # Execute the real binary
+    exec ${
+      inputs.work-relay.packages.${pkgs.stdenv.hostPlatform.system}.work-relay
+    }/bin/work-relay --config-file "$cfg"
+  '';
 
   # Add wkhtmltopdf and rtlcss to odoo service PATH (since we disabled wrapping)
   systemd.services.odoo.path = [
