@@ -346,12 +346,13 @@
     script = ''
       exec ${
         inputs.xiongchenyu6.packages."aarch64-linux".xiaohongshu-mcp
-      }/bin/xiaohongshu-mcp -headless=false
+      }/bin/xiaohongshu-mcp -headless=false -bin ${pkgs.chromium}/bin/chromium
     '';
 
     serviceConfig = {
       User = "openclaw";
       Group = "openclaw";
+      WorkingDirectory = "/var/lib/openclaw";
       Restart = "always";
       RestartSec = 5;
       Type = "simple";
