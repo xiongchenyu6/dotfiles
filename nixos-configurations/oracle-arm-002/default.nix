@@ -223,7 +223,8 @@
               "groupPolicy": "allowlist",
               "groups": {
                 "-1003475261813": {
-                  "allowFrom": ["5368588092", "5369058954"]
+                  "allowFrom": ["5368588092", "5369058954"],
+                  "requireMention": false
                 }
               },
               "allowFrom": ["5368588092", "5369058954"],
