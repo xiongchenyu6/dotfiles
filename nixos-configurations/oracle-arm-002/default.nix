@@ -68,6 +68,7 @@
     ]
     ++ (with pkgs; [
       nodejs_22
+      inputs.xiongchenyu6.packages."aarch64-linux".xiaohongshu-mcp
     ]);
 
   nixpkgs = {
