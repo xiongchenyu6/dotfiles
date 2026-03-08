@@ -376,23 +376,48 @@
     # osquery log directory handled by official module
   ];
 
-  # Inject autolife-relay secrets into config at runtime
-  systemd.services.autolife-relay.serviceConfig.ExecStartPre = lib.mkBefore [
-    "+${pkgs.writeShellScript "autolife-relay-inject-secrets" ''
-      cfg="/var/lib/autolife-relay/config.yaml"
-      # Copy the nix-store config to a writable location
-      cp --no-preserve=mode $(grep -oP '(?<=--config-file )\S+' /etc/systemd/system/autolife-relay.service) "$cfg"
-      # Inject sops secrets
-      token=$(cat ${config.sops.secrets."autolife-relay/token".path})
-      secret=$(cat ${config.sops.secrets."autolife-relay/service-auth-secret".path})
-      ${pkgs.gnused}/bin/sed -i "s|SOPS_PLACEHOLDER_TOKEN|$token|g" "$cfg"
-      ${pkgs.gnused}/bin/sed -i "s|SOPS_PLACEHOLDER_SERVICE_AUTH_SECRET|$secret|g" "$cfg"
-      chown autolife-relay:autolife-relay "$cfg"
-      chmod 0600 "$cfg"
-    ''}"
-  ];
-  systemd.services.autolife-relay.serviceConfig.ExecStart =
-    lib.mkForce "${config.services.autolife-relay.package}/bin/autolife-relay --config-file /var/lib/autolife-relay/config.yaml";
+  # Inject autolife-relay secrets into config at runtime by wrapping the binary
+  services.autolife-relay.package = pkgs.writeShellScriptBin "autolife-relay" ''
+    set -euo pipefail
+
+    cfg="/var/lib/autolife-relay/config.yaml"
+
+    # The module calls us as: autolife-relay --config-file /nix/store/...-config.yaml
+    # We extract the config file path from the arguments
+    config_file=""
+    while [[ $# -gt 0 ]]; do
+      case $1 in
+        -c|--config-file)
+          config_file="$2"
+          break
+          ;;
+        *)
+          shift
+          ;;
+      esac
+    done
+
+    if [[ -z "$config_file" ]]; then
+      echo "Error: --config-file argument missing" >&2
+      exit 1
+    fi
+
+    # Copy the nix-store config to a writable location
+    cp --no-preserve=mode "$config_file" "$cfg"
+
+    # Inject sops secrets
+    token=$(cat ${config.sops.secrets."autolife-relay/token".path})
+    secret=$(cat ${config.sops.secrets."autolife-relay/service-auth-secret".path})
+    ${pkgs.gnused}/bin/sed -i "s|SOPS_PLACEHOLDER_TOKEN|$token|g" "$cfg"
+    ${pkgs.gnused}/bin/sed -i "s|SOPS_PLACEHOLDER_SERVICE_AUTH_SECRET|$secret|g" "$cfg"
+
+    chmod 0600 "$cfg"
+
+    # Execute the real binary
+    exec ${
+      inputs.autolife-relay.packages.${pkgs.stdenv.hostPlatform.system}.autolife-relay
+    }/bin/autolife-relay --config-file "$cfg"
+  '';
 
   # Add wkhtmltopdf and rtlcss to odoo service PATH (since we disabled wrapping)
   systemd.services.odoo.path = [
