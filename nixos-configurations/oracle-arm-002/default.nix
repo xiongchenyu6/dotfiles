@@ -210,8 +210,8 @@
         "channels": {
           "telegram": {
             "botToken": "$(cat /run/secrets/zeroclaw/telegram_bot_token)",
-            "dmPolicy": "open",
-            "groupPolicy": "open",
+            "dmPolicy": "allowlist",
+            "groupPolicy": "allowlist",
             "allowFrom": ["5368588092", "5369058954"],
             "groupAllowFrom": ["5368588092", "5369058954"]
           }
