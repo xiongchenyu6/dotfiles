@@ -134,7 +134,7 @@
         "agents": {
           "defaults": {
             "model": {
-              "primary": "nvidia/minimaxai/minimax-m2.5",
+              "primary": "volcengine/ark-code-latest",
               "fallbacks": [
                 "google/gemini-2.5-flash"
               ]
@@ -143,6 +143,21 @@
         },
         "models": {
           "providers": {
+            "volcengine": {
+              "baseUrl": "https://ark.cn-beijing.volces.com/api/coding/v3",
+              "api": "openai-completions",
+              "auth": "api-key",
+              "apiKey": "5bbbbe4f-5520-461b-ac31-988058a979c7",
+              "models": [
+                {
+                  "id": "ark-code-latest",
+                  "name": "Volcengine Ark Code Latest",
+                  "input": ["text"],
+                  "contextWindow": 65536,
+                  "maxTokens": 8192
+                }
+              ]
+            },
             "siliconflow": {
               "baseUrl": "https://api.siliconflow.cn/v1",
               "api": "openai-completions",
