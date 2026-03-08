@@ -212,7 +212,7 @@
             "elevated": {
               "enabled": true,
               "allowFrom": {
-                "telegram": ["5368588092", "5369058954", "5293993503", "-5293993503"]
+                "telegram": ["5368588092", "5369058954", "5293993503", "-5293993503", "-1005293993503"]
               }
             }
           },
@@ -222,7 +222,7 @@
               "dmPolicy": "allowlist",
               "groupPolicy": "allowlist",
               "allowFrom": ["5368588092", "5369058954"],
-              "groupAllowFrom": ["5368588092", "5369058954", "5293993503", "-5293993503"]
+              "groupAllowFrom": ["5368588092", "5369058954", "5293993503", "-5293993503", "-1005293993503"]
             }
           },
         "mcp": {
@@ -308,6 +308,8 @@
     wants = [ "network-online.target" ];
     wantedBy = [ "multi-user.target" ];
     requires = [ "x11vnc.service" ];
+
+    path = [ pkgs.procps ];
 
     script = ''
       exec ${pkgs.novnc}/bin/novnc --vnc localhost:5900 --listen 0.0.0.0:6080
