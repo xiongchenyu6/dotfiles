@@ -203,7 +203,7 @@
           "elevated": {
             "enabled": true,
             "allowFrom": {
-              "telegram": ["*"]
+              "telegram": ["*", "5369058954"]
             }
           }
         },
@@ -212,7 +212,7 @@
             "botToken": "$(cat /run/secrets/zeroclaw/telegram_bot_token)",
             "dmPolicy": "open",
             "groupPolicy": "open",
-            "allowFrom": ["*"],
+            "allowFrom": ["*", "5369058954"],
             "groupAllowFrom": ["*"]
           }
         }

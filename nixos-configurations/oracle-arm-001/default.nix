@@ -467,16 +467,28 @@
   };
 
   # Inject Odoo secrets into config at runtime
-  systemd.services.odoo.serviceConfig.ExecStartPre = lib.mkAfter [
-    "+${pkgs.writeShellScript "odoo-inject-secrets" ''
-      cfg="/etc/odoo/odoo.cfg"
-      db_pass=$(cat ${config.sops.secrets."odoo/db_password".path})
-      admin_pass=$(cat ${config.sops.secrets."odoo/admin_password".path})
-      ${pkgs.gnused}/bin/sed -i '/^db_password\s*=/d; /^admin_passwd\s*=/d' "$cfg"
-      echo "db_password = $db_pass" >> "$cfg"
-      echo "admin_passwd = $admin_pass" >> "$cfg"
-    ''}"
-  ];
+  systemd.services.odoo.serviceConfig = {
+    ExecStartPre = lib.mkAfter [
+      "+${pkgs.writeShellScript "odoo-inject-secrets" ''
+        cfg="/var/lib/odoo/odoo.cfg"
+        # The NixOS module sets ODOO_RC in the systemd Environment to point to the nix-store config
+        cp --no-preserve=mode "$ODOO_RC" "$cfg"
+
+        db_pass=$(cat ${config.sops.secrets."odoo/db_password".path})
+        admin_pass=$(cat ${config.sops.secrets."odoo/admin_password".path})
+
+        ${pkgs.gnused}/bin/sed -i '/^db_password\s*=/d; /^admin_passwd\s*=/d' "$cfg"
+        echo "db_password = $db_pass" >> "$cfg"
+        echo "admin_passwd = $admin_pass" >> "$cfg"
+
+        chown odoo:odoo "$cfg"
+        chmod 0600 "$cfg"
+      ''}"
+    ];
+    # Force Odoo to use our writable config instead of the default ODOO_RC from the environment.
+    # Also use .odoo-wrapped directly to fix worker spawning (Python trying to parse the bash wrapper).
+    ExecStart = lib.mkForce "${config.services.odoo.package}/bin/.odoo-wrapped -c /var/lib/odoo/odoo.cfg";
+  };
 
   # Set Odoo database user password after PostgreSQL starts
   systemd.services.odoo-db-init = {
