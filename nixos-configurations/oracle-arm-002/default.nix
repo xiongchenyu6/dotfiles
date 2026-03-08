@@ -74,6 +74,8 @@
       novnc
       chromium
       xorg-server
+      scrot
+      imagemagick
       inputs.xiongchenyu6.packages."aarch64-linux".xiaohongshu-mcp
     ]);
 
@@ -114,6 +116,8 @@
       nix
       systemd
       sudo
+      scrot
+      imagemagick
     ];
 
     # Install openclaw globally on first start or update
