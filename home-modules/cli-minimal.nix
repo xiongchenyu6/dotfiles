@@ -8,15 +8,32 @@
 }:
 let
   isRoot = config.home.username == "root";
+  hasNixOSTags = osConfig ? system && osConfig.system ? nixos && osConfig.system.nixos ? tags;
+  hostName =
+    if osConfig ? networking && osConfig.networking ? hostName then
+      osConfig.networking.hostName
+    else
+      "";
+  isVps =
+    hasNixOSTags
+    && builtins.elem hostName [
+      "oracle-arm-001"
+      "oracle-arm-002"
+      "oracle-amd-001"
+      "oracle-amd-002"
+      "tcloud"
+      "netbird"
+      "huoshan-bj-001"
+    ];
 in
 {
   imports = [
     ./neovim.nix
   ];
 
-  sops.secrets."wakatime/api_key" = lib.mkIf (!isRoot) { };
+  sops.secrets."wakatime/api_key" = lib.mkIf (!isRoot && !isVps) { };
 
-  sops.templates."wakatime-cfg" = lib.mkIf (!isRoot) {
+  sops.templates."wakatime-cfg" = lib.mkIf (!isRoot && !isVps) {
     content = ''
       [settings]
       debug         = false
