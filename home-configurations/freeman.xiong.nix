@@ -15,6 +15,19 @@ let
   hasGuiTag = hasNixOSTags && (builtins.elem "gui" osConfig.system.nixos.tags);
   hasNvidiaTag = hasNixOSTags && (builtins.elem "nvidia" osConfig.system.nixos.tags);
   isDarwin = !hasNixOSTags;
+  hostName = if hasNixOSTags then osConfig.networking.hostName else "";
+  isVps =
+    hasNixOSTags
+    && builtins.elem hostName [
+      "oracle-arm-001"
+      "oracle-arm-002"
+      "oracle-amd-001"
+      "oracle-amd-002"
+      "tcloud"
+      "netbird"
+      "huoshan-bj-001"
+    ];
+  enableHomeSops = (isDarwin || hasGuiTag) && !isVps;
 in
 {
   imports =
@@ -60,7 +73,8 @@ in
           )
       );
 
-  sops.secrets = lib.mkIf (isDarwin || hasGuiTag) {
+  # Only enable SOPS secrets on desktop (Darwin/GUI) - not on VPS servers
+  sops.secrets = lib.mkIf enableHomeSops {
     "ssh/freeman.xiong/id_ed25519" = {
       path = "${osConfig.users.users."freeman.xiong".home}/.ssh/id_ed25519";
       mode = "600";
@@ -75,7 +89,7 @@ in
   };
 
   # Use sops template for environment variables - much cleaner!
-  sops.templates."api-keys-env" = lib.mkIf (isDarwin || hasGuiTag) {
+  sops.templates."api-keys-env" = lib.mkIf enableHomeSops {
     content = ''
       OPENAI_API_KEY=${config.sops.placeholder."api-keys/SILICON_FLOW"}
       OPENROUTER_API_KEY=${config.sops.placeholder."api-keys/OPENROUTER_API_KEY"}
@@ -220,7 +234,7 @@ in
 
   # Systemd user service to ensure environment directory exists
   # The actual environment file is created by sops template above
-  systemd.user.services.setup-environment = lib.mkIf (isDarwin || hasGuiTag) {
+  systemd.user.services.setup-environment = lib.mkIf enableHomeSops {
     Unit = {
       Description = "Setup environment directory for API keys";
       After = [ "sops-nix.service" ];
@@ -236,7 +250,7 @@ in
   };
 
   # Load API keys from sops into shell environment
-  programs.zsh.initContent = lib.mkIf (isDarwin || hasGuiTag) ''
+  programs.zsh.initContent = lib.mkIf enableHomeSops ''
     # Source API keys from sops if the file exists
     if [ -f "${config.home.homeDirectory}/.config/sops-nix/secrets/rendered/api-keys-env" ]; then
       set -a  # mark all new variables for export
