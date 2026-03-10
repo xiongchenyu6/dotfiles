@@ -2,10 +2,30 @@
   inputs,
   modulesPath,
   lib,
+  config,
   pkgs,
   ezModules,
   ...
 }:
+let
+  mcporter = inputs.llm-agents.packages.${pkgs.system}.mcporter;
+
+  # Shared packages available to both system environment and openclaw service
+  sharedToolPkgs = with pkgs; [
+    nodejs_25
+    bash
+    coreutils
+    gnused
+    gnutar
+    gzip
+    findutils
+    gnugrep
+    git
+    scrot
+    imagemagick
+    mcporter
+  ];
+in
 {
   imports = with inputs; [
     disko.nixosModules.disko
@@ -23,12 +43,22 @@
     srvos.nixosModules.mixins-nix-experimental
     srvos.nixosModules.mixins-tracing
     # Import Hashtopolis server module from NUR packages
+    inputs.openclaw.nixosModules.openclaw-gateway
     xiongchenyu6.nixosModules.hashtopolis-server
+    xiongchenyu6.nixosModules.xiaohongshu-mcp
     ./disk-config.nix
     ./hardware-configuration.nix
     ./hashtopolis.nix # Hashtopolis server configuration
 
   ];
+
+  sops.templates."openclaw-env".content = ''
+    VOLCENGINE_API_KEY=${config.sops.placeholder."api-keys/VOLCENGINE_API_KEY"}
+    SILICON_FLOW_API_KEY=${config.sops.placeholder."api-keys/SILICON_FLOW"}
+    NVIDIA_API_KEY=${config.sops.placeholder."zeroclaw/nvidia_api_key"}
+    TELEGRAM_BOT_TOKEN=${config.sops.placeholder."zeroclaw/telegram_bot_token"}
+    GEMINI_API_KEY=${config.sops.placeholder."api-keys/GEMINI_API_KEY"}
+  '';
 
   sops.secrets."api-keys/GEMINI_API_KEY".owner = "root";
   sops.secrets."api-keys/SILICON_FLOW".owner = "root";
@@ -67,15 +97,13 @@
       pkgs.curl
       pkgs.gitMinimal
     ]
+    ++ sharedToolPkgs
     ++ (with pkgs; [
-      nodejs_22
       xvfb-run
       x11vnc
       novnc
       chromium
       xorg-server
-      scrot
-      imagemagick
       inputs.xiongchenyu6.packages."aarch64-linux".xiaohongshu-mcp
     ]);
 
@@ -83,136 +111,133 @@
     hostPlatform = "aarch64-linux";
   };
 
-  networking.firewall.allowedTCPPorts = [ 6080 ];
+  networking.firewall.allowedTCPPorts = [
+    6080
+  ];
 
-  # OpenClaw — personal AI assistant
-  users.users.openclaw = {
-    isSystemUser = true;
-    group = "openclaw";
-    home = "/var/lib/openclaw";
-    createHome = true;
+  services.xiaohongshu-mcp = {
+    enable = true;
+    port = 18060;
+    display = ":99";
+    workingDirectory = "/var/lib/openclaw";
+    cookiesPath = "/var/lib/openclaw/.openclaw/workspace/cookies.json";
+    user = "root";
+    group = "root";
   };
-  users.groups.openclaw = { };
 
-  systemd.services.openclaw = {
-    description = "OpenClaw Gateway Service";
-    after = [
-      "network-online.target"
-      "sops-nix.service"
-    ];
-    wants = [ "network-online.target" ];
-    wantedBy = [ "multi-user.target" ];
+  systemd.services.xiaohongshu-mcp = {
+    preStart = lib.mkBefore ''
+      rm -f /tmp/cookies.json
+    '';
+    environment.COOKIES_PATH = lib.mkForce "/var/lib/openclaw/.openclaw/workspace/cookies.json";
+  };
 
-    path = with pkgs; [
-      nodejs_22
-      git
-      bash
-      coreutils
-      gnused
-      gnutar
-      gzip
-      findutils
-      gnugrep
-      nix
-      systemd
-      sudo
-      scrot
-      imagemagick
-    ];
+  services.openclaw-gateway = {
+    enable = true;
+    user = "root";
+    group = "root";
+    createUser = false;
+    port = 18789;
+    servicePath =
+      sharedToolPkgs
+      ++ (with pkgs; [
+        nix
+        systemd
+        sudo
+        file
+        wget
+      ]);
+    environmentFiles = [ config.sops.templates."openclaw-env".path ];
 
-    # Install openclaw globally on first start or update
-    preStart = ''
-      export HOME=/var/lib/openclaw
-      export NPM_CONFIG_PREFIX=/var/lib/openclaw/.npm-global
-      export PATH="$NPM_CONFIG_PREFIX/bin:$PATH"
-      if [ ! -x "$NPM_CONFIG_PREFIX/bin/openclaw" ]; then
-        echo "Installing openclaw..."
-        ${pkgs.nodejs_22}/bin/npm install -g openclaw@latest --prefix "$NPM_CONFIG_PREFIX" --ignore-scripts
-      fi
+    environment = {
+      OPENCLAW_CONFIG_PATH = "/var/lib/openclaw/.openclaw/openclaw.json";
+      COOKIES_PATH = "/var/lib/openclaw/.openclaw/workspace/cookies.json";
+      HOME = "/var/lib/openclaw";
+    };
 
-      # Inject API key into Environment file
-      echo "NVIDIA_API_KEY=$(cat /run/secrets/zeroclaw/nvidia_api_key)" > /var/lib/openclaw/.openclaw-env
-      echo "GEMINI_API_KEY=$(cat /run/secrets/api-keys/GEMINI_API_KEY)" >> /var/lib/openclaw/.openclaw-env
+    execStartPre = [
+      ''
+        ${pkgs.coreutils}/bin/mkdir -p /var/lib/openclaw/.openclaw/workspace
+        ${pkgs.coreutils}/bin/mkdir -p /var/lib/openclaw/config
+        ${pkgs.coreutils}/bin/mkdir -p /home/freeman.xiong/config
 
-      # Inject telegram bot token and models into openclaw config if it doesn't exist
-      mkdir -p /var/lib/openclaw/.openclaw
-      if [ ! -f /var/lib/openclaw/.openclaw/openclaw.json ]; then
-        cat > /var/lib/openclaw/.openclaw/openclaw.json << CONF
-      {
-        "gateway": {
-          "port": 18789,
-          "bind": "lan",
-          "mode": "local"
-        },
-         "agents": {
-           "defaults": {
-             "model": {
-               "primary": "volcengine/ark-code-latest",
-               "fallbacks": [
-                 "google/gemini-2.5-flash"
-               ]
+        if [ ! -f /var/lib/openclaw/.openclaw/openclaw.json ]; then
+          cat > /var/lib/openclaw/.openclaw/openclaw.json << 'CONF'
+        {
+          "gateway": {
+            "port": 18789,
+            "bind": "lan",
+            "mode": "local"
+          },
+          "agents": {
+            "defaults": {
+              "model": {
+                "primary": "volcengine/ark-code-latest",
+                "fallbacks": [
+                  "google/gemini-2.5-flash"
+                ]
               }
             }
-         },
-        "models": {
-          "providers": {
-            "volcengine": {
-              "baseUrl": "https://ark.cn-beijing.volces.com/api/coding/v3",
-              "api": "openai-completions",
-              "auth": "api-key",
-              "apiKey": "$(cat /run/secrets/api-keys/VOLCENGINE_API_KEY)",
-              "models": [
-                {
-                  "id": "ark-code-latest",
-                  "name": "Volcengine Ark Code Latest",
-                  "input": ["text"],
-                  "contextWindow": 65536,
-                  "maxTokens": 8192
-                }
-              ]
-            },
-            "siliconflow": {
-              "baseUrl": "https://api.siliconflow.cn/v1",
-              "api": "openai-completions",
-              "auth": "api-key",
-              "apiKey": "$(cat /run/secrets/api-keys/SILICON_FLOW)",
-              "models": [
-                {
-                  "id": "deepseek-ai/DeepSeek-V3",
-                  "name": "DeepSeek V3",
-                  "input": ["text"],
-                  "contextWindow": 65536,
-                  "maxTokens": 8192
-                },
-                {
-                  "id": "Pro/MiniMaxAI/MiniMax-M2.5",
-                  "name": "MiniMax M2.5 (Pro)",
-                  "input": ["text"],
-                  "contextWindow": 131072,
-                  "maxTokens": 4096
-                }
-              ]
-            },
-            "nvidia": {
-              "baseUrl": "https://integrate.api.nvidia.com/v1",
-              "api": "openai-completions",
-              "auth": "api-key",
-              "apiKey": "$(cat /run/secrets/zeroclaw/nvidia_api_key)",
-              "models": [
-                {
-                  "id": "minimaxai/minimax-m2.5",
-                  "name": "MiniMax M2.5",
-                  "input": ["text"],
-                  "contextWindow": 131072,
-                  "maxTokens": 4096
-                }
-              ]
+          },
+          "models": {
+            "providers": {
+              "volcengine": {
+                "baseUrl": "https://ark.cn-beijing.volces.com/api/coding/v3",
+                "api": "openai-completions",
+                "auth": "api-key",
+                "apiKey": "''${VOLCENGINE_API_KEY}",
+                "models": [
+                  {
+                    "id": "ark-code-latest",
+                    "name": "Volcengine Ark Code Latest",
+                    "input": ["text"],
+                    "contextWindow": 65536,
+                    "maxTokens": 8192
+                  }
+                ]
+              },
+              "siliconflow": {
+                "baseUrl": "https://api.siliconflow.cn/v1",
+                "api": "openai-completions",
+                "auth": "api-key",
+                "apiKey": "''${SILICON_FLOW_API_KEY}",
+                "models": [
+                  {
+                    "id": "deepseek-ai/DeepSeek-V3",
+                    "name": "DeepSeek V3",
+                    "input": ["text"],
+                    "contextWindow": 65536,
+                    "maxTokens": 8192
+                  },
+                  {
+                    "id": "Pro/MiniMaxAI/MiniMax-M2.5",
+                    "name": "MiniMax M2.5 (Pro)",
+                    "input": ["text"],
+                    "contextWindow": 131072,
+                    "maxTokens": 4096
+                  }
+                ]
+              },
+              "nvidia": {
+                "baseUrl": "https://integrate.api.nvidia.com/v1",
+                "api": "openai-completions",
+                "auth": "api-key",
+                "apiKey": "''${NVIDIA_API_KEY}",
+                "models": [
+                  {
+                    "id": "minimaxai/minimax-m2.5",
+                    "name": "MiniMax M2.5",
+                    "input": ["text"],
+                    "contextWindow": 131072,
+                    "maxTokens": 4096
+                  }
+                ]
+              }
             }
-          }
-        },
-        "tools": {
-          "profile": "full",
-          "allow": ["*"],
+          },
+          "tools": {
+            "profile": "full",
+            "allow": ["*"],
             "elevated": {
               "enabled": true,
               "allowFrom": {
@@ -222,7 +247,7 @@
           },
           "channels": {
             "telegram": {
-              "botToken": "$(cat /run/secrets/zeroclaw/telegram_bot_token)",
+              "botToken": "''${TELEGRAM_BOT_TOKEN}",
               "dmPolicy": "allowlist",
               "groupPolicy": "allowlist",
               "groups": {
@@ -234,37 +259,36 @@
               "allowFrom": ["5368588092", "5369058954"],
               "groupAllowFrom": ["5368588092", "5369058954"]
             }
-          },
-        "mcp": {
-          "servers": {
-            "xiaohongshu-mcp": {
-              "url": "http://127.0.0.1:18060/mcp"
-            }
           }
         }
-      }
-      CONF
-      fi
-    '';
+        CONF
+        fi
 
-    script = ''
-      export HOME=/var/lib/openclaw
-      export NPM_CONFIG_PREFIX=/var/lib/openclaw/.npm-global
-      export PATH="$NPM_CONFIG_PREFIX/bin:$PATH"
-      export GEMINI_API_KEY=$(cat /run/secrets/api-keys/GEMINI_API_KEY)
-      export NVIDIA_API_KEY=$(cat /run/secrets/zeroclaw/nvidia_api_key)
-      exec openclaw gateway --port 18789
-    '';
+        cat > /var/lib/openclaw/config/mcporter.json << 'MCP'
+        {
+          "mcpServers": {
+            "xiaohongshu-mcp": {
+              "baseUrl": "http://127.0.0.1:18060/mcp"
+            }
+          },
+          "imports": []
+        }
+        MCP
 
-    serviceConfig = {
-      User = "root";
-      Group = "root";
-      WorkingDirectory = "/var/lib/openclaw";
-      StateDirectory = "openclaw";
-      Restart = "always";
-      RestartSec = 5;
-    };
+        ${pkgs.coreutils}/bin/cp -f /var/lib/openclaw/config/mcporter.json /home/freeman.xiong/config/mcporter.json
+        ${pkgs.coreutils}/bin/chown -R freeman.xiong:users /home/freeman.xiong/config
+      ''
+    ];
   };
+
+  # OpenClaw — personal AI assistant
+  users.users.openclaw = {
+    isSystemUser = true;
+    group = "openclaw";
+    home = "/var/lib/openclaw";
+    createHome = true;
+  };
+  users.groups.openclaw = { };
 
   # Virtual display support for browser automation
   systemd.services.xvfb = {
@@ -280,84 +304,6 @@
     serviceConfig = {
       User = "openclaw";
       Group = "openclaw";
-      Restart = "always";
-      RestartSec = 5;
-      Type = "simple";
-    };
-  };
-
-  systemd.services.x11vnc = {
-    description = "X11 VNC server";
-    after = [
-      "network-online.target"
-      "xvfb.service"
-    ];
-    wants = [ "network-online.target" ];
-    wantedBy = [ "multi-user.target" ];
-    requires = [ "xvfb.service" ];
-
-    script = ''
-      exec ${pkgs.x11vnc}/bin/x11vnc -display :99 -forever -shared -nopw -listen localhost -rfbport 5900
-    '';
-
-    serviceConfig = {
-      User = "openclaw";
-      Group = "openclaw";
-      Restart = "always";
-      RestartSec = 5;
-      Type = "simple";
-    };
-  };
-
-  systemd.services.novnc = {
-    description = "NoVNC web VNC client";
-    after = [
-      "network-online.target"
-      "x11vnc.service"
-    ];
-    wants = [ "network-online.target" ];
-    wantedBy = [ "multi-user.target" ];
-    requires = [ "x11vnc.service" ];
-
-    path = [ pkgs.procps ];
-
-    script = ''
-      exec ${pkgs.novnc}/bin/novnc --vnc localhost:5900 --listen 0.0.0.0:6080
-    '';
-
-    serviceConfig = {
-      User = "openclaw";
-      Group = "openclaw";
-      Restart = "always";
-      RestartSec = 5;
-      Type = "simple";
-    };
-  };
-
-  systemd.services.xiaohongshu-mcp = {
-    description = "Xiaohongshu MCP service";
-    after = [
-      "network-online.target"
-      "xvfb.service"
-    ];
-    wants = [ "network-online.target" ];
-    wantedBy = [ "multi-user.target" ];
-    requires = [ "xvfb.service" ];
-
-    environment = {
-      DISPLAY = ":99";
-    };
-
-    script = ''
-      exec ${
-        inputs.xiongchenyu6.packages."aarch64-linux".xiaohongshu-mcp
-      }/bin/xiaohongshu-mcp -headless=false -bin ${pkgs.chromium}/bin/chromium
-    '';
-
-    serviceConfig = {
-      User = "openclaw";
-      Group = "openclaw";
-      WorkingDirectory = "/var/lib/openclaw";
       Restart = "always";
       RestartSec = 5;
       Type = "simple";

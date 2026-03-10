@@ -12,7 +12,10 @@
     nixos-hardware.url = "github:NixOS/nixos-hardware/master";
     nur = {
       url = "github:nix-community/NUR";
-      inputs.nixpkgs.follows = "nixpkgs";
+      inputs = {
+        nixpkgs.follows = "nixpkgs";
+        flake-parts.follows = "flake-parts";
+      };
     };
 
     # Flake utilities
@@ -81,11 +84,17 @@
     };
     vast-cli = {
       url = "github:dialohq/vast-cli.nix";
-      inputs.nixpkgs.follows = "nixpkgs";
+      inputs = {
+        nixpkgs.follows = "nixpkgs";
+        flake-parts.follows = "flake-parts";
+      };
     };
     nix-topology = {
       url = "github:oddlama/nix-topology";
-      inputs.nixpkgs.follows = "nixpkgs";
+      inputs = {
+        nixpkgs.follows = "nixpkgs";
+        flake-parts.follows = "flake-parts";
+      };
     };
     ez-configs = {
       url = "github:ehllie/ez-configs";
@@ -108,6 +117,7 @@
       inputs = {
         nixpkgs.follows = "nixpkgs";
         flake-parts.follows = "flake-parts";
+        flake-pparts.follows = "flake-parts";
       };
     };
     autolife-relay = {
@@ -117,22 +127,30 @@
         flake-parts.follows = "flake-parts";
       };
     };
-    llm-agents.url = "github:numtide/llm-agents.nix";
+    llm-agents = {
+      url = "github:numtide/llm-agents.nix";
+      inputs = {
+        nixpkgs.follows = "nixpkgs";
+        systems.follows = "systems";
+        flake-parts.follows = "flake-parts";
+      };
+    };
 
-    # ZeroClaw - lightweight AI gateway (Rust, <5MB RAM)
-    zeroclaw = {
-      url = "github:zeroclaw-labs/zeroclaw";
+    openclaw = {
+      url = "github:openclaw/nix-openclaw";
       inputs = {
         nixpkgs.follows = "nixpkgs";
         flake-utils.follows = "flake-utils";
+        home-manager.follows = "home-manager";
+        nix-steipete-tools.inputs.nixpkgs.follows = "nixpkgs";
       };
     };
 
     lanzaboote = {
       url = "github:nix-community/lanzaboote";
       inputs = {
-        # Use stable nixpkgs to avoid Rust 1.86.0 build issues
         nixpkgs.follows = "nixpkgs";
+        pre-commit.follows = "pre-commit-hooks";
       };
     };
 
@@ -141,7 +159,7 @@
       url = "github:xiongchenyu6/lazynixos";
       inputs = {
         nixpkgs.follows = "nixpkgs";
-        flake-parts.follows = "flake-parts";
+        flake-utils.follows = "flake-utils";
       };
     };
   };
