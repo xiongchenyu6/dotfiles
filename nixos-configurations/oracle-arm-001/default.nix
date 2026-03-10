@@ -63,7 +63,7 @@
     ]
     ++ (with pkgs; [
       samba
-      nodejs_22
+      nodejs_25
       # osquery is handled by services.osquery module
     ])
     ++ lib.optionals (inputs ? xiongchenyu6) (
