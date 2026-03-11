@@ -21,7 +21,7 @@
     ezModules.postgrest
     autolife-relay.nixosModules.autolife-relay
     srvos.nixosModules.server
-    srvos.nixosModules.mixins-nginx
+    ezModules.mixins-nginx
     srvos.nixosModules.mixins-trusted-nix-caches
     srvos.nixosModules.mixins-nix-experimental
     srvos.nixosModules.mixins-tracing
@@ -362,13 +362,13 @@
 
   nixpkgs = {
     hostPlatform = "aarch64-linux";
-    overlays = [
-      (final: prev: {
-        odoo = prev.odoo.overrideAttrs (old: {
-          patches = (old.patches or []) ++ [ ./patches/odoo-update.patch ];
-        });
-      })
-    ];
+    # overlays = [
+    #   (final: prev: {
+    #     odoo = prev.odoo.overrideAttrs (old: {
+    #       patches = (old.patches or []) ++ [ ./patches/odoo-update.patch ];
+    #     });
+    #   })
+    # ];
   };
 
   # Sops secrets for autolife-relay

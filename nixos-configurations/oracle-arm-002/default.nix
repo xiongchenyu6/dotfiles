@@ -38,7 +38,7 @@ in
     ezModules.acme
     ezModules.datadog-agent
     srvos.nixosModules.server
-    srvos.nixosModules.mixins-nginx
+    ezModules.mixins-nginx
     srvos.nixosModules.mixins-trusted-nix-caches
     srvos.nixosModules.mixins-nix-experimental
     srvos.nixosModules.mixins-tracing
@@ -225,7 +225,10 @@ in
         elevated = {
           enabled = true;
           allowFrom = {
-            telegram = [ "5368588092" "5369058954" ];
+            telegram = [
+              "5368588092"
+              "5369058954"
+            ];
           };
         };
       };
@@ -235,17 +238,29 @@ in
           dmPolicy = "allowlist";
           groupPolicy = "allowlist";
           execApprovals = {
-            enabled = true;
-            approvers = [ 5368588092 5369058954 ];
+            enabled = false;
+            approvers = [
+              "5368588092"
+              "5369058954"
+            ];
           };
           groups = {
             "-1003475261813" = {
-              allowFrom = [ "5368588092" "5369058954" ];
+              allowFrom = [
+                "5368588092"
+                "5369058954"
+              ];
               requireMention = false;
             };
           };
-          allowFrom = [ "5368588092" "5369058954" ];
-          groupAllowFrom = [ "5368588092" "5369058954" ];
+          allowFrom = [
+            "5368588092"
+            "5369058954"
+          ];
+          groupAllowFrom = [
+            "5368588092"
+            "5369058954"
+          ];
         };
       };
     };
@@ -258,22 +273,26 @@ in
 
   systemd.tmpfiles.rules =
     let
-      mcporterJson = pkgs.writeText "mcporter.json" (builtins.toJSON {
-        mcpServers = {
-          xiaohongshu-mcp = {
-            baseUrl = "http://127.0.0.1:18060/mcp";
+      mcporterJson = pkgs.writeText "mcporter.json" (
+        builtins.toJSON {
+          mcpServers = {
+            xiaohongshu-mcp = {
+              baseUrl = "http://127.0.0.1:18060/mcp";
+            };
           };
-        };
-        imports = [ ];
-      });
+          imports = [ ];
+        }
+      );
     in
     [
       # Create necessary directories
       "d /var/lib/openclaw/.openclaw/workspace 0755 root root - -"
       "d /var/lib/openclaw/config 0755 root root - -"
       "d /home/freeman.xiong/config 0755 freeman.xiong users - -"
-      
+
       # Symlink the generated JSON files into the configs
+      "d /root/config 0755 root root - -"
+      "L+ /root/config/mcporter.json - - - - ${mcporterJson}"
       "L+ /var/lib/openclaw/config/mcporter.json - - - - ${mcporterJson}"
       "L+ /home/freeman.xiong/config/mcporter.json - - - - ${mcporterJson}"
     ];
