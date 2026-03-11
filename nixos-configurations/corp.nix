@@ -10,7 +10,7 @@
 {
   imports = with inputs; [
     srvos.nixosModules.server
-    srvos.nixosModules.mixins-nginx
+    ../nixos-modules/mixins-nginx.nix
     srvos.nixosModules.mixins-trusted-nix-caches
     srvos.nixosModules.mixins-nix-experimental
     srvos.nixosModules.mixins-tracing
