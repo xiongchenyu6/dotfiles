@@ -28,7 +28,7 @@
       v4l-utils
       pcsc-tools
       opensc
-      sui
+      #sui
       #zssh
       record_screen
       # NetworkManager icon themes

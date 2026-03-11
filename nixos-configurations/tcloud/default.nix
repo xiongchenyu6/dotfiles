@@ -22,7 +22,7 @@ in
     ezModules.bird-border
     ezModules.dn42
     ezModules.bird-inner
-    #ezModules.datadog-agent
+    ezModules.datadog-agent
     ezModules.sing-box
     srvos.nixosModules.server
     srvos.nixosModules.mixins-nginx

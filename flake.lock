@@ -31,11 +31,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1772771927,
-        "narHash": "sha256-7sc6BiNYCpa/oevCvvZWQfgTVGzwZUAijT1fVXgXH3E=",
+        "lastModified": 1773216796,
+        "narHash": "sha256-Lx2omEn30aPZPBqx/f4EiM3zQ83exC8D2zeVpi+kqx4=",
         "ref": "refs/heads/main",
-        "rev": "b0f4e8d6e59b2ceb15f15b92994d5f6da3cbc901",
-        "revCount": 31,
+        "rev": "9b3e8efbf668c0fa56e25866ad1c8ad6b9b20363",
+        "revCount": 34,
         "type": "git",
         "url": "ssh://git@github.com/AutoLifeRobot/autolife-relay.git"
       },
@@ -325,11 +325,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1773093840,
-        "narHash": "sha256-u/96NoAyN8BSRuM3ZimGf7vyYgXa3pLx4MYWjokuoH4=",
+        "lastModified": 1773179137,
+        "narHash": "sha256-EdW2bwzlfme0vbMOcStnNmKlOAA05Bp6su2O8VLGT0k=",
         "owner": "nix-community",
         "repo": "home-manager",
-        "rev": "bb014746edb2a98d975abde4dd40fa240de4cf86",
+        "rev": "3f98e2bbc661ec0aaf558d8a283d6955f05f1d09",
         "type": "github"
       },
       "original": {
@@ -433,11 +433,11 @@
         "treefmt-nix": "treefmt-nix"
       },
       "locked": {
-        "lastModified": 1773119472,
-        "narHash": "sha256-+b9fxAYJQSBAzBwRaRSZ55cT9/ae4w5ttg5VZIMTnRc=",
+        "lastModified": 1773201098,
+        "narHash": "sha256-yq35qMKDHyMdVlhGfR5BojbjniY2cY9XYmiILeCf1Xc=",
         "owner": "numtide",
         "repo": "llm-agents.nix",
-        "rev": "6cbeeae9fab23fa0de85930a733df478fbc955b4",
+        "rev": "8578734bf5087a1ca45033c2ec8e1a2228f9b95c",
         "type": "github"
       },
       "original": {
@@ -607,11 +607,11 @@
     },
     "nixpkgs-master": {
       "locked": {
-        "lastModified": 1773116380,
-        "narHash": "sha256-1dxcHZ8LRUxJeAPIiFhaQxjNFNNrDxjfBxb9Pvx0/E0=",
+        "lastModified": 1773220281,
+        "narHash": "sha256-yeeq14DFLwauDLLsaaqH6IKzc2IPbnF4rydTRs8/ow0=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "f3a45b4564c37b5b753139c65540d70de312b3bc",
+        "rev": "6a7f1a34047fef8dae119dc98ac0e8715ef4cd25",
         "type": "github"
       },
       "original": {
@@ -647,11 +647,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1773120746,
-        "narHash": "sha256-R+AEoR+hry9CcOL9xjvgi4L/DqLX5AGsWCN3YE9L6Q8=",
+        "lastModified": 1773218258,
+        "narHash": "sha256-I0QMb48tJmAt2mAR0Kb4lKCT6IxwbnqfCHKSCoHfruM=",
         "owner": "nix-community",
         "repo": "NUR",
-        "rev": "3b2d7de9ea2ca3b72eeba2182c801c1d4a524cb8",
+        "rev": "3d0a84ecc0195834bc431a2f84295d3c8f4d2f1e",
         "type": "github"
       },
       "original": {
@@ -674,11 +674,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1773118425,
-        "narHash": "sha256-GgbGFKhDJ+69BLES8FEtAE4Kc1kR94yBTPe1HsqrrTE=",
+        "lastModified": 1773213044,
+        "narHash": "sha256-zkBv17s/mylMdphgRoCZ6Tl6Jase/JHXdR9kTyp9g7o=",
         "owner": "openclaw",
         "repo": "nix-openclaw",
-        "rev": "08338f0f69be17052aa2a79da8a9e3d489dbd231",
+        "rev": "93e9cfdc9a924c3931e7242cbb933c90e36bf85c",
         "type": "github"
       },
       "original": {
@@ -840,11 +840,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1773119991,
-        "narHash": "sha256-DJQga1XZUXw2KZ2dIUO+XKOSMvERpZL6gDR174om4Ig=",
+        "lastModified": 1773141054,
+        "narHash": "sha256-6/jQcEM1V25IKRLCLXN+kdWWWZXhsk5c1WnNFKTjJqs=",
         "ref": "refs/heads/main",
-        "rev": "850191ce33c3d5af9404a9ca90f7e6fb65de1297",
-        "revCount": 115,
+        "rev": "bab53cf190859e651d9ac3328f2cfa4b87b6272f",
+        "revCount": 116,
         "type": "git",
         "url": "ssh://git@github.com/AutoLifeRobot/rust-web-server.git"
       },

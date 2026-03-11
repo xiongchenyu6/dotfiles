@@ -62,16 +62,10 @@
       pkgs.gitMinimal
     ]
     ++ (with pkgs; [
-      samba
       nodejs_25
-      # osquery is handled by services.osquery module
-    ])
-    ++ lib.optionals (inputs ? xiongchenyu6) (
-      with inputs.xiongchenyu6.packages.${pkgs.stdenv.hostPlatform.system};
-      [
-        # Add any additional corp management tools
-      ]
-    );
+      osquery # is handled by services.osquery module
+    ]);
+
   networking =
     let
       file-path = builtins.split "/" (toString ./.);
@@ -134,6 +128,7 @@
       authentication = ''
         local all all trust
         host  all  all 0.0.0.0/0 scram-sha-256
+        host  all  all ::1/128 scram-sha-256
         host odoo odoo 127.0.0.1/32 md5
       '';
 
@@ -176,57 +171,54 @@
     autolife-relay = {
       enable = true;
       openFirewall = true;
-      serverUrl = "ws://183.6.107.47:3000/ws";
-      token = "SOPS_PLACEHOLDER_TOKEN";
-      region = "sg-1";
-      ip = "138.2.95.174";
-      bindIp = "0.0.0.0";
-      videPort = 30001;
-      dataPort = 30002;
-      audioPort = 30003;
-      probePort = 30004;
-      videoPortWorkers = 1;
-      dataPortWorkers = 1;
-      audioPortWorkers = 1;
-      telemetryInterval = 10;
-      debugStatsInterval = 10;
-      debugStatsEnabled = true;
-      serviceAuth = {
-        client = "autolife-relay";
-        secret = "SOPS_PLACEHOLDER_SERVICE_AUTH_SECRET";
+      settings = {
+        server_url = "ws://183.6.107.47:3000/ws";
+        token = "@token@";
+        region = "sg-1";
+        ip = "138.2.95.174";
+        bind_ip = "[::]";
+        video_port = 30001;
+        data_port = 30002;
+        audio_port = 30003;
+        probe_port = 30004;
+        video_port_workers = 1;
+        data_port_workers = 1;
+        audio_port_workers = 1;
+        telemetry_interval = 10;
+        debug_stats_interval = 10;
+        debug_stats_enabled = true;
+        service_auth = {
+          client = "autolife-relay";
+          secret = "@service-auth-secret@";
+        };
+        license = {
+          license_file = config.sops.secrets."autolife-relay/license".path;
+          public_key = builtins.readFile ./id_ed25519.pub;
+        };
       };
-      license = {
-        licenseFile = config.sops.secrets."autolife-relay/license".path;
-        publicKey = builtins.readFile ./id_ed25519.pub;
-      };
+      sopsSecretFiles = [
+        config.sops.secrets."autolife-relay/token".path
+        config.sops.secrets."autolife-relay/service-auth-secret".path
+      ];
     };
 
     # Odoo ERP/CRM system
     odoo = {
       enable = true;
-      package = pkgs.odoo.overridePythonAttrs (old: {
-        # Fix worker spawning: Odoo workers re-exec via sys.argv[0].
-        # The makeWrapperArgs creates a bash wrapper, but sys.argv[0] in the Python
-        # wrapper points to it. When workers spawn, Python interprets bash as Python.
-        # Solution: Remove makeWrapperArgs (no bash wrapper), keep Python wrapper
-        # for PYTHONPATH. Add PATH deps via systemd instead.
-        makeWrapperArgs = [ ];
-      });
       domain = "odoo.autolife.ai";
       autoInit = true;
       settings = {
         options = {
-          # Database configuration
-          db_host = "localhost";
+          # Database configuration — use unix socket (no password needed with peer/trust auth)
+          db_host = "False";
           db_port = "5432";
           db_user = "odoo";
-          # db_password managed by sops — injected at runtime
           db_maxconn = "64";
 
           # Server configuration
           list_db = "false";
           proxy_mode = lib.mkForce true;
-          workers = "4";
+          #workers = "4";
           max_cron_threads = "2";
           limit_request = "8192";
           limit_time_cpu = "600";
@@ -257,6 +249,12 @@
         }
       '';
       virtualHosts = {
+        "odoo.autolife.ai" = {
+          forceSSL = true;
+          acmeRoot = null;
+          useACMEHost = "ai";
+          kTLS = true;
+        };
         "rust-server.autolife.ai" = {
           forceSSL = true;
           acmeRoot = null;
@@ -349,82 +347,6 @@
     };
   };
 
-  # Enable Samba for Windows device management
-  services.samba.settings = {
-    global = {
-      workgroup = lib.mkForce "AUTOLIFE";
-      "server string" = lib.mkForce "AutoLife Corp Server";
-      realm = "AUTOLIFE.AI";
-    };
-    corp-shared = {
-      path = "/srv/samba/corp-shared";
-      browseable = "yes";
-      "read only" = "no";
-      "guest ok" = "no";
-      "create mask" = "0664";
-      "directory mask" = "0775";
-      comment = "AutoLife Corp Shared Drive";
-    };
-  };
-
-  # Create additional directories
-  systemd.tmpfiles.rules = [
-    "d /srv/samba/corp-shared 0775 samba samba"
-    "d /var/www/fleet 0755 nginx nginx"
-    "d /var/lib/odoo 0755 odoo odoo -"
-    "d /var/log/odoo 0755 odoo odoo -"
-    # osquery log directory handled by official module
-  ];
-
-  # Inject autolife-relay secrets into config at runtime by wrapping the binary
-  services.autolife-relay.package = pkgs.writeShellScriptBin "autolife-relay" ''
-    set -euo pipefail
-
-    cfg="/var/lib/autolife-relay/config.yaml"
-
-    # The module calls us as: autolife-relay --config-file /nix/store/...-config.yaml
-    # We extract the config file path from the arguments
-    config_file=""
-    while [[ $# -gt 0 ]]; do
-      case $1 in
-        -c|--config-file)
-          config_file="$2"
-          break
-          ;;
-        *)
-          shift
-          ;;
-      esac
-    done
-
-    if [[ -z "$config_file" ]]; then
-      echo "Error: --config-file argument missing" >&2
-      exit 1
-    fi
-
-    # Copy the nix-store config to a writable location
-    cp --no-preserve=mode "$config_file" "$cfg"
-
-    # Inject sops secrets
-    token=$(cat ${config.sops.secrets."autolife-relay/token".path})
-    secret=$(cat ${config.sops.secrets."autolife-relay/service-auth-secret".path})
-    ${pkgs.gnused}/bin/sed -i "s|SOPS_PLACEHOLDER_TOKEN|$token|g" "$cfg"
-    ${pkgs.gnused}/bin/sed -i "s|SOPS_PLACEHOLDER_SERVICE_AUTH_SECRET|$secret|g" "$cfg"
-
-    chmod 0600 "$cfg"
-
-    # Execute the real binary
-    exec ${
-      inputs.autolife-relay.packages.${pkgs.stdenv.hostPlatform.system}.autolife-relay
-    }/bin/autolife-relay --config-file "$cfg"
-  '';
-
-  # Add wkhtmltopdf and rtlcss to odoo service PATH (since we disabled wrapping)
-  systemd.services.odoo.path = [
-    pkgs.wkhtmltopdf
-    pkgs.rtlcss
-  ];
-
   # Log rotation for Odoo logs
   services.logrotate.settings.odoo = {
     files = [ "/var/log/odoo/*.log" ];
@@ -440,6 +362,13 @@
 
   nixpkgs = {
     hostPlatform = "aarch64-linux";
+    overlays = [
+      (final: prev: {
+        odoo = prev.odoo.overrideAttrs (old: {
+          patches = (old.patches or []) ++ [ ./patches/odoo-update.patch ];
+        });
+      })
+    ];
   };
 
   # Sops secrets for autolife-relay
@@ -464,60 +393,6 @@
   sops.secrets."odoo/admin_password" = {
     owner = "odoo";
     group = "odoo";
-  };
-
-  # Inject Odoo secrets into config at runtime
-  systemd.services.odoo.serviceConfig = {
-    ExecStartPre = lib.mkAfter [
-      "+${pkgs.writeShellScript "odoo-inject-secrets" ''
-        cfg="/var/lib/odoo/odoo.cfg"
-        # The NixOS module sets ODOO_RC in the systemd Environment to point to the nix-store config
-        cp --no-preserve=mode "$ODOO_RC" "$cfg"
-
-        db_pass=$(cat ${config.sops.secrets."odoo/db_password".path})
-        admin_pass=$(cat ${config.sops.secrets."odoo/admin_password".path})
-
-        ${pkgs.gnused}/bin/sed -i '/^db_password\s*=/d; /^admin_passwd\s*=/d' "$cfg"
-        echo "db_password = $db_pass" >> "$cfg"
-        echo "admin_passwd = $admin_pass" >> "$cfg"
-
-        chown odoo:odoo "$cfg"
-        chmod 0600 "$cfg"
-      ''}"
-    ];
-    # Force Odoo to use our writable config instead of the default ODOO_RC from the environment.
-    # Also use .odoo-wrapped directly to fix worker spawning (Python trying to parse the bash wrapper).
-    ExecStart = lib.mkForce "${config.services.odoo.package}/bin/.odoo-wrapped -c /var/lib/odoo/odoo.cfg";
-  };
-
-  # Set Odoo database user password after PostgreSQL starts
-  systemd.services.odoo-db-init = {
-    description = "Initialize Odoo database user password";
-    wantedBy = [ "odoo.service" ];
-    before = [ "odoo.service" ];
-    after = [
-      "postgresql.service"
-      "sops-nix.service"
-    ];
-    wants = [ "postgresql.service" ];
-    script = ''
-      # Wait for PostgreSQL to be ready
-      while ! ${pkgs.postgresql_18_jit}/bin/psql -U freeman.xiong -d freeman.xiong -c '\q' 2>/dev/null; do
-        echo "Waiting for PostgreSQL..."
-        sleep 2
-      done
-
-      # Set odoo user password from sops secret
-      DB_PASS=$(cat ${config.sops.secrets."odoo/db_password".path})
-      echo "Setting odoo user password..."
-      ${pkgs.postgresql_18_jit}/bin/psql -U freeman.xiong -d freeman.xiong -c "ALTER USER odoo PASSWORD '$DB_PASS';"
-      echo "Odoo database password set successfully!"
-    '';
-
-    serviceConfig = {
-      Type = "oneshot";
-      User = "root";
-    };
   };
 
 }
