@@ -22,7 +22,7 @@
     ezModules.postgrest
     srvos.nixosModules.server
     srvos.nixosModules.hardware-amazon
-    srvos.nixosModules.mixins-nginx
+    ezModules.mixins-nginx
     srvos.nixosModules.mixins-trusted-nix-caches
     srvos.nixosModules.mixins-nix-experimental
     srvos.nixosModules.mixins-tracing

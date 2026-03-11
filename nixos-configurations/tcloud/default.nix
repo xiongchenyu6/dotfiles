@@ -25,7 +25,7 @@ in
     ezModules.datadog-agent
     ezModules.sing-box
     srvos.nixosModules.server
-    srvos.nixosModules.mixins-nginx
+    ezModules.mixins-nginx
     srvos.nixosModules.mixins-trusted-nix-caches
     srvos.nixosModules.mixins-nix-experimental
     srvos.nixosModules.mixins-tracing

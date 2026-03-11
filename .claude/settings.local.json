@@ -3,7 +3,8 @@
     "allow": [
       "Bash(git add:*)",
       "Bash(git commit:*)",
-      "Bash(sops:*)"
+      "Bash(sops:*)",
+      "WebSearch"
     ],
     "deny": [],
     "additionalDirectories": [
