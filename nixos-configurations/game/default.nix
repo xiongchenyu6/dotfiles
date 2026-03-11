@@ -64,19 +64,7 @@
       inputs.lazynixos.packages.${pkgs.system}.default
     ];
   };
-  hardware.nvidia.package =
-    let
-      base = config.boot.kernelPackages.nvidiaPackages.beta;
-    in
-    base.overrideAttrs (old: {
-      passthru = old.passthru // {
-        open = old.passthru.open.overrideAttrs (openOld: {
-          patches = (openOld.patches or [ ]) ++ [
-            ./fix-nvidia-open-6.19.patch # TODO: Remove once nixos-unstable includes the fix
-          ];
-        });
-      };
-    });
+  hardware.nvidia.package = config.boot.kernelPackages.nvidiaPackages.beta;
   boot = {
 
     binfmt.emulatedSystems = [ "aarch64-linux" ];
