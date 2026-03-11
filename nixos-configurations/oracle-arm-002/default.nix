@@ -125,13 +125,6 @@ in
     group = "root";
   };
 
-  systemd.services.xiaohongshu-mcp = {
-    preStart = lib.mkBefore ''
-      rm -f /tmp/cookies.json
-    '';
-    environment.COOKIES_PATH = lib.mkForce "/var/lib/openclaw/.openclaw/workspace/cookies.json";
-  };
-
   services.openclaw-gateway = {
     enable = true;
     user = "root";
@@ -149,137 +142,141 @@ in
       ]);
     environmentFiles = [ config.sops.templates."openclaw-env".path ];
 
-    environment = {
-      OPENCLAW_CONFIG_PATH = "/var/lib/openclaw/.openclaw/openclaw.json";
-      COOKIES_PATH = "/var/lib/openclaw/.openclaw/workspace/cookies.json";
-      HOME = "/var/lib/openclaw";
+    config = {
+      gateway = {
+        port = 18789;
+        bind = "lan";
+        mode = "local";
+      };
+      approvals = {
+        exec = {
+          enabled = false;
+        };
+      };
+      agents = {
+        defaults = {
+          model = {
+            primary = "volcengine/ark-code-latest";
+            fallbacks = [
+              "google/gemini-2.5-flash"
+            ];
+          };
+        };
+      };
+      models = {
+        providers = {
+          volcengine = {
+            baseUrl = "https://ark.cn-beijing.volces.com/api/coding/v3";
+            api = "openai-completions";
+            auth = "api-key";
+            apiKey = "\${VOLCENGINE_API_KEY}";
+            models = [
+              {
+                id = "ark-code-latest";
+                name = "Volcengine Ark Code Latest";
+                input = [ "text" ];
+                contextWindow = 65536;
+                maxTokens = 8192;
+              }
+            ];
+          };
+          siliconflow = {
+            baseUrl = "https://api.siliconflow.cn/v1";
+            api = "openai-completions";
+            auth = "api-key";
+            apiKey = "\${SILICON_FLOW_API_KEY}";
+            models = [
+              {
+                id = "deepseek-ai/DeepSeek-V3";
+                name = "DeepSeek V3";
+                input = [ "text" ];
+                contextWindow = 65536;
+                maxTokens = 8192;
+              }
+              {
+                id = "Pro/MiniMaxAI/MiniMax-M2.5";
+                name = "MiniMax M2.5 (Pro)";
+                input = [ "text" ];
+                contextWindow = 131072;
+                maxTokens = 4096;
+              }
+            ];
+          };
+          nvidia = {
+            baseUrl = "https://integrate.api.nvidia.com/v1";
+            api = "openai-completions";
+            auth = "api-key";
+            apiKey = "\${NVIDIA_API_KEY}";
+            models = [
+              {
+                id = "minimaxai/minimax-m2.5";
+                name = "MiniMax M2.5";
+                input = [ "text" ];
+                contextWindow = 131072;
+                maxTokens = 4096;
+              }
+            ];
+          };
+        };
+      };
+      tools = {
+        profile = "full";
+        allow = [ "*" ];
+        elevated = {
+          enabled = true;
+          allowFrom = {
+            telegram = [ "5368588092" "5369058954" ];
+          };
+        };
+      };
+      channels = {
+        telegram = {
+          botToken = "\${TELEGRAM_BOT_TOKEN}";
+          dmPolicy = "allowlist";
+          groupPolicy = "allowlist";
+          execApprovals = {
+            enabled = true;
+            approvers = [ 5368588092 5369058954 ];
+          };
+          groups = {
+            "-1003475261813" = {
+              allowFrom = [ "5368588092" "5369058954" ];
+              requireMention = false;
+            };
+          };
+          allowFrom = [ "5368588092" "5369058954" ];
+          groupAllowFrom = [ "5368588092" "5369058954" ];
+        };
+      };
     };
-
-    execStartPre = [
-      ''
-        ${pkgs.coreutils}/bin/mkdir -p /var/lib/openclaw/.openclaw/workspace
-        ${pkgs.coreutils}/bin/mkdir -p /var/lib/openclaw/config
-        ${pkgs.coreutils}/bin/mkdir -p /home/freeman.xiong/config
-
-        if [ ! -f /var/lib/openclaw/.openclaw/openclaw.json ]; then
-          cat > /var/lib/openclaw/.openclaw/openclaw.json << 'CONF'
-        {
-          "gateway": {
-            "port": 18789,
-            "bind": "lan",
-            "mode": "local"
-          },
-          "agents": {
-            "defaults": {
-              "model": {
-                "primary": "volcengine/ark-code-latest",
-                "fallbacks": [
-                  "google/gemini-2.5-flash"
-                ]
-              }
-            }
-          },
-          "models": {
-            "providers": {
-              "volcengine": {
-                "baseUrl": "https://ark.cn-beijing.volces.com/api/coding/v3",
-                "api": "openai-completions",
-                "auth": "api-key",
-                "apiKey": "''${VOLCENGINE_API_KEY}",
-                "models": [
-                  {
-                    "id": "ark-code-latest",
-                    "name": "Volcengine Ark Code Latest",
-                    "input": ["text"],
-                    "contextWindow": 65536,
-                    "maxTokens": 8192
-                  }
-                ]
-              },
-              "siliconflow": {
-                "baseUrl": "https://api.siliconflow.cn/v1",
-                "api": "openai-completions",
-                "auth": "api-key",
-                "apiKey": "''${SILICON_FLOW_API_KEY}",
-                "models": [
-                  {
-                    "id": "deepseek-ai/DeepSeek-V3",
-                    "name": "DeepSeek V3",
-                    "input": ["text"],
-                    "contextWindow": 65536,
-                    "maxTokens": 8192
-                  },
-                  {
-                    "id": "Pro/MiniMaxAI/MiniMax-M2.5",
-                    "name": "MiniMax M2.5 (Pro)",
-                    "input": ["text"],
-                    "contextWindow": 131072,
-                    "maxTokens": 4096
-                  }
-                ]
-              },
-              "nvidia": {
-                "baseUrl": "https://integrate.api.nvidia.com/v1",
-                "api": "openai-completions",
-                "auth": "api-key",
-                "apiKey": "''${NVIDIA_API_KEY}",
-                "models": [
-                  {
-                    "id": "minimaxai/minimax-m2.5",
-                    "name": "MiniMax M2.5",
-                    "input": ["text"],
-                    "contextWindow": 131072,
-                    "maxTokens": 4096
-                  }
-                ]
-              }
-            }
-          },
-          "tools": {
-            "profile": "full",
-            "allow": ["*"],
-            "elevated": {
-              "enabled": true,
-              "allowFrom": {
-                "telegram": ["5368588092", "5369058954"]
-              }
-            }
-          },
-          "channels": {
-            "telegram": {
-              "botToken": "''${TELEGRAM_BOT_TOKEN}",
-              "dmPolicy": "allowlist",
-              "groupPolicy": "allowlist",
-              "groups": {
-                "-1003475261813": {
-                  "allowFrom": ["5368588092", "5369058954"],
-                  "requireMention": false
-                }
-              },
-              "allowFrom": ["5368588092", "5369058954"],
-              "groupAllowFrom": ["5368588092", "5369058954"]
-            }
-          }
-        }
-        CONF
-        fi
-
-        cat > /var/lib/openclaw/config/mcporter.json << 'MCP'
-        {
-          "mcpServers": {
-            "xiaohongshu-mcp": {
-              "baseUrl": "http://127.0.0.1:18060/mcp"
-            }
-          },
-          "imports": []
-        }
-        MCP
-
-        ${pkgs.coreutils}/bin/cp -f /var/lib/openclaw/config/mcporter.json /home/freeman.xiong/config/mcporter.json
-        ${pkgs.coreutils}/bin/chown -R freeman.xiong:users /home/freeman.xiong/config
-      ''
-    ];
   };
+
+  systemd.services.openclaw-gateway.serviceConfig = {
+    StandardOutput = lib.mkForce "journal";
+    StandardError = lib.mkForce "journal";
+  };
+
+  systemd.tmpfiles.rules =
+    let
+      mcporterJson = pkgs.writeText "mcporter.json" (builtins.toJSON {
+        mcpServers = {
+          xiaohongshu-mcp = {
+            baseUrl = "http://127.0.0.1:18060/mcp";
+          };
+        };
+        imports = [ ];
+      });
+    in
+    [
+      # Create necessary directories
+      "d /var/lib/openclaw/.openclaw/workspace 0755 root root - -"
+      "d /var/lib/openclaw/config 0755 root root - -"
+      "d /home/freeman.xiong/config 0755 freeman.xiong users - -"
+      
+      # Symlink the generated JSON files into the configs
+      "L+ /var/lib/openclaw/config/mcporter.json - - - - ${mcporterJson}"
+      "L+ /home/freeman.xiong/config/mcporter.json - - - - ${mcporterJson}"
+    ];
 
   # OpenClaw — personal AI assistant
   users.users.openclaw = {

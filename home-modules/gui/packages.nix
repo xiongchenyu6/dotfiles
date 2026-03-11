@@ -46,7 +46,6 @@
         nixd
         #v4l-utils
         dotnetCorePackages.sdk_8_0
-        #sui
         foundry
         #record_screen
         apg
