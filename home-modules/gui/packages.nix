@@ -74,7 +74,6 @@
         # Cross-platform GUI apps (moved from Linux-only)
         keepassxc
         zotero
-        ledger-live-desktop
         yubikey-manager
 
         # Cross-platform CLI/DevOps tools (moved from Linux-only)
@@ -91,7 +90,6 @@
         fluxcd
         glab
         gitleaks
-        weave-gitops
         graphviz
         grpcurl
         (kubernetes-helm-wrapped.override { plugins = [ kubernetes-helmPlugins.helm-diff ]; })
@@ -155,10 +153,12 @@
         #orb
         kube-score
         kubelogin-oidc
-        calicoctl
       ]
       ++ lib.optionals pkgs.stdenv.isLinux [
         google-chrome # Keep Chrome in Nix for Linux
+        ledger-live-desktop # x86_64-linux only
+        weave-gitops # Linux only
+        calicoctl # Linux only
         jp2a # Marked broken on Darwin
         lm_sensors # Linux-only hardware monitoring
         fwupd # Firmware update daemon (Linux-only)
