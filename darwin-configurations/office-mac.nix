@@ -16,6 +16,8 @@
   # Set the primary user for nix-darwin
   system.primaryUser = "freeman.xiong";
 
+  networking.dns = [ "1.1.1.1" ];
+
   ids.gids.nixbld = 350;
   users = {
     users = {
