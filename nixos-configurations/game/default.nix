@@ -23,7 +23,7 @@
     ezModules.dn42
     ezModules.bird-inner
     ezModules.virtualisation
-    # ezModules.falcon-sensor  # Disabled - broken
+    ezModules.falcon-sensor # Disabled - broken
     ezModules.wayland
     ezModules.openfortivpn-config
     lanzaboote.nixosModules.lanzaboote
