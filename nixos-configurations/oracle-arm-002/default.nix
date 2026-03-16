@@ -10,6 +10,44 @@
 let
   mcporter = inputs.llm-agents.packages.${pkgs.system}.mcporter;
 
+  # Workaround: nix-openclaw copies source extensions/ and compiled dist/extensions/
+  # separately, but plugin manifests (openclaw.plugin.json) only exist in extensions/.
+  # The gateway looks for them in dist/extensions/. Patch the package to copy them over.
+  openclawPkg = pkgs.openclaw-gateway;
+  patchedOpenclaw = openclawPkg.overrideAttrs (old: {
+    installPhase = ''
+      ${old.installPhase}
+      # Fix 1: Copy plugin manifests and package.json to dist/extensions/
+      for d in $out/lib/openclaw/extensions/*/; do
+        name=$(basename "$d")
+        if [ -d "$out/lib/openclaw/dist/extensions/$name" ]; then
+          [ -f "$d/openclaw.plugin.json" ] && cp "$d/openclaw.plugin.json" "$out/lib/openclaw/dist/extensions/$name/"
+          if [ -f "$d/package.json" ]; then
+            ${pkgs.gnused}/bin/sed 's/\.ts"/\.js"/g' "$d/package.json" > "$out/lib/openclaw/dist/extensions/$name/package.json"
+          fi
+        fi
+      done
+
+      # Fix 2: Create dist/plugins/runtime/index.js stub.
+      # tsdown bundles createPluginRuntime into setup-surface-*.js chunks but the
+      # plugin loader resolves {packageRoot}/dist/plugins/runtime/index.js at runtime.
+      # Find the chunk that exports createPluginRuntime and re-export it by name.
+      mkdir -p $out/lib/openclaw/dist/plugins/runtime
+      chunk=$(${pkgs.gnugrep}/bin/grep -rl 'createPluginRuntime as ' $out/lib/openclaw/dist/setup-surface-*.js | head -1)
+      if [ -n "$chunk" ]; then
+        alias=$(${pkgs.gnugrep}/bin/grep -oP 'createPluginRuntime as \K\w+' "$chunk" | head -1)
+        chunkName=$(basename "$chunk")
+        echo ">> Creating plugin runtime stub: $chunkName alias=$alias"
+        cat > $out/lib/openclaw/dist/plugins/runtime/index.js <<STUB
+import { $alias as createPluginRuntime } from "../../$chunkName";
+export { createPluginRuntime };
+STUB
+      else
+        echo "WARNING: Could not find createPluginRuntime export in any setup-surface chunk"
+      fi
+    '';
+  });
+
   # Shared packages available to both system environment and openclaw service
   sharedToolPkgs = with pkgs; [
     nodejs_25
@@ -45,7 +83,7 @@ in
     # Import Hashtopolis server module from NUR packages
     inputs.openclaw.nixosModules.openclaw-gateway
     xiongchenyu6.nixosModules.hashtopolis-server
-    xiongchenyu6.nixosModules.xiaohongshu-mcp
+
     ./disk-config.nix
     ./hardware-configuration.nix
     ./hashtopolis.nix # Hashtopolis server configuration
@@ -59,6 +97,16 @@ in
     TELEGRAM_BOT_TOKEN=${config.sops.placeholder."zeroclaw/telegram_bot_token"}
     GEMINI_API_KEY=${config.sops.placeholder."api-keys/GEMINI_API_KEY"}
   '';
+
+  sops.templates."s3fs-passwd" = {
+    content = "${config.sops.placeholder."s3fs/access_key"}:${config.sops.placeholder."s3fs/secret_key"}";
+    mode = "0600";
+    owner = "root";
+    group = "root";
+  };
+
+  sops.secrets."s3fs/access_key" = { };
+  sops.secrets."s3fs/secret_key" = { };
 
   sops.secrets."api-keys/GEMINI_API_KEY".owner = "root";
   sops.secrets."api-keys/SILICON_FLOW".owner = "root";
@@ -104,7 +152,7 @@ in
       novnc
       chromium
       xorg-server
-      inputs.xiongchenyu6.packages."aarch64-linux".xiaohongshu-mcp
+      s3fs
     ]);
 
   nixpkgs = {
@@ -115,18 +163,10 @@ in
     6080
   ];
 
-  services.xiaohongshu-mcp = {
-    enable = true;
-    port = 18060;
-    display = ":99";
-    workingDirectory = "/var/lib/openclaw";
-    cookiesPath = "/var/lib/openclaw/.openclaw/workspace/cookies.json";
-    user = "root";
-    group = "root";
-  };
 
   services.openclaw-gateway = {
     enable = true;
+    package = patchedOpenclaw;
     user = "root";
     group = "root";
     createUser = false;
@@ -161,6 +201,7 @@ in
               "google/gemini-2.5-flash"
             ];
           };
+          elevatedDefault = "full";
         };
       };
       models = {
@@ -275,11 +316,7 @@ in
     let
       mcporterJson = pkgs.writeText "mcporter.json" (
         builtins.toJSON {
-          mcpServers = {
-            xiaohongshu-mcp = {
-              baseUrl = "http://127.0.0.1:18060/mcp";
-            };
-          };
+          mcpServers = { };
           imports = [ ];
         }
       );
@@ -324,5 +361,20 @@ in
       RestartSec = 5;
       Type = "simple";
     };
+  };
+
+  # S3 FUSE mount for iDrive e2 docs bucket
+  fileSystems."/mnt/s3/docs" = {
+    device = "docs";
+    fsType = "fuse./run/current-system/sw/bin/s3fs";
+    noCheck = true;
+    options = [
+      "_netdev"
+      "allow_other"
+      "use_path_request_style"
+      "url=https://s3.us-west-1.idrivee2.com"
+      "endpoint=us-west-1"
+      "passwd_file=${config.sops.templates."s3fs-passwd".path}"
+    ];
   };
 }
