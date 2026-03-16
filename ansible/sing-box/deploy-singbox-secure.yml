@@ -2,14 +2,13 @@
 - name: Deploy sing-box with Shadowsocks proxy (Secure)
   hosts: singbox_servers
   become: yes
-  vars_files:
-    - secrets/servers.yaml
   vars:
     sing_box_version: "1.10.7"
-    ansible_ssh_pass: "{{ servers.ubuntu_server.ssh_password }}"
-    shadowsocks_password: "{{ shadowsocks.password }}"
-    shadowsocks_port: "{{ shadowsocks.port }}"
-    shadowsocks_method: "{{ shadowsocks.method }}"
+    sops_secrets: "{{ lookup('community.sops.sops', 'secrets/servers.yaml') | from_yaml }}"
+    ansible_ssh_pass: "{{ sops_secrets.servers.ubuntu_server.ssh_password }}"
+    shadowsocks_password: "{{ sops_secrets.shadowsocks.password }}"
+    shadowsocks_port: "{{ sops_secrets.shadowsocks.port }}"
+    shadowsocks_method: "{{ sops_secrets.shadowsocks.method }}"
     
   tasks:
     - name: Update apt cache
