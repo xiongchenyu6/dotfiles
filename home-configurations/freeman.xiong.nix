@@ -211,6 +211,13 @@ in
         "game" = {
           hostname = "172.22.240.99";
         };
+        "sg-office" = {
+          hostname = "118.201.235.1";
+        };
+        "huawei-bj-001" = {
+          hostname = "1.94.246.7";
+          user = "root";
+        };
         "netbird" = {
           hostname = "18.142.246.191";
         };
