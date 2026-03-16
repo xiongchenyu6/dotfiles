@@ -29,6 +29,18 @@
   ];
 
   sops.secrets."cloudflared/tunnel-credentials" = { };
+  sops.secrets."casdoor/db_password" = { };
+
+  # Inject casdoor DB password into its config at runtime
+  systemd.services.casdoor.serviceConfig.ExecStartPre = lib.mkAfter [
+    "+${pkgs.writeShellScript "casdoor-inject-password" ''
+      cfg="/var/lib/casdoor/app.conf"
+      if [ -f "$cfg" ]; then
+        db_pass=$(cat ${config.sops.secrets."casdoor/db_password".path})
+        ${pkgs.gnused}/bin/sed -i "s|dataSourceName = .*|dataSourceName = \"user=casdoor password=$db_pass host=localhost port=5432 dbname=casdoor sslmode=disable\"|" "$cfg"
+      fi
+    ''}"
+  ];
 
   environment = {
     systemPackages = [
@@ -92,6 +104,25 @@
       ensureDatabases = [
         "casdoor"
       ];
+    };
+
+    casdoor = {
+      enable = true;
+      appName = "casdoor";
+      port = 8000;
+      runMode = "prod";
+      database = {
+        driver = "postgres";
+        host = "localhost";
+        port = 5432;
+        username = "casdoor";
+        name = "casdoor";
+      };
+      redis = {
+        enable = false;
+      };
+      staticBaseUrl = "https://casdoor.${config.networking.domain}";
+      autoStart = true;
     };
 
     nginx = {
