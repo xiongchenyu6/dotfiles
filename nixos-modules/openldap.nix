@@ -1,7 +1,7 @@
 { config, pkgs, lib, shares, ... }:
 let
   realm = "AUTOLIFE.TECH";
-  dbSuffix = "dc=auotlife,dc=ai";
+  dbSuffix = "dc=autolife,dc=ai";
   ldapRootUser = "admin";
   # Passwords are now managed via sops secrets
 in {

@@ -2,7 +2,7 @@
 let
   dbDomain = "${config.networking.domain}";
   realm = "AUTOLIFE.TECH";
-  dbSuffix = "dc=auotlife,dc=ai";
+  dbSuffix = "dc=autolife,dc=ai";
   ldapRootUser = "admin";
 in
 {

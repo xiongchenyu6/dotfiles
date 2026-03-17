@@ -177,9 +177,6 @@ in
     ssh = {
       # forwardAgent moved to matchBlocks."*" as per new format
       matchBlocks = {
-        "*" = {
-          forwardAgent = true;
-        };
         # "*-tmux" = {
         #   extraOptions = {
         #     RequestTTY = "yes";

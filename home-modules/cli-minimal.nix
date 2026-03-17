@@ -207,7 +207,7 @@ in
       enable = true;
       scdaemonSettings = {
         debug-level = "guru";
-        log-file = "/tmp/scdaemon.log";
+        log-file = "${config.home.homeDirectory}/.cache/gnupg/scdaemon.log";
         disable-ccid = true;
       };
       settings = {
@@ -298,7 +298,7 @@ in
           {
             text = ''
               URI     ldap://mail.${osConfig.networking.domain}
-              BASE    dc=auotlife,dc=ai
+              BASE    dc=autolife,dc=ai
               SASL_MECH GSSAPI
               SASL_REALM AUTOLIFE.TECH
             '';
