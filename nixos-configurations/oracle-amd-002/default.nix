@@ -33,11 +33,6 @@
   #   source = "${pkgs.kanidm}/bin/kanidm_ssh_authorizedkeys";
   # };
 
-  security.acme.certs."xiongchenyu.dpdns.org" = {
-    domain = "xiongchenyu.dpdns.org";
-    extraDomainNames = [ "*.xiongchenyu.dpdns.org" ];
-    group = "nginx";
-  };
 
   sops.secrets."sub2api/env" = {
     owner = "sub2api";

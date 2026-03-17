@@ -44,6 +44,12 @@
           domain = "work.ai";
           extraDomainNames = [ "*.work.ai" ];
         };
+        "xiongchenyu.dpdns.org" = {
+          domain = "xiongchenyu.dpdns.org";
+          extraDomainNames = [ "*.xiongchenyu.dpdns.org" ];
+          group = "nginx";
+          reloadServices = [ "nginx.service" ];
+        };
       };
     };
   };

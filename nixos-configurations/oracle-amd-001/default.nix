@@ -10,6 +10,7 @@
 {
   imports = with inputs; [
     xiongchenyu6.nixosModules.casdoor
+    xiongchenyu6.nixosModules.casibase
     disko.nixosModules.disko
     (modulesPath + "/installer/scan/not-detected.nix")
     (modulesPath + "/profiles/qemu-guest.nix")
@@ -30,6 +31,21 @@
 
   sops.secrets."cloudflared/tunnel-credentials" = { };
   sops.secrets."casdoor/db_password" = { };
+  sops.secrets."casibase/client_id" = { };
+  sops.secrets."casibase/client_secret" = { };
+
+  # Inject casibase credentials into its config at runtime
+  systemd.services.casibase.serviceConfig.ExecStartPre = lib.mkAfter [
+    "+${pkgs.writeShellScript "casibase-inject-credentials" ''
+      cfg="/var/lib/casibase/conf/app.conf"
+      if [ -f "$cfg" ]; then
+        client_id=$(cat ${config.sops.secrets."casibase/client_id".path})
+        client_secret=$(cat ${config.sops.secrets."casibase/client_secret".path})
+        ${pkgs.gnused}/bin/sed -i "s|clientId = .*|clientId = $client_id|" "$cfg"
+        ${pkgs.gnused}/bin/sed -i "s|clientSecret = .*|clientSecret = $client_secret|" "$cfg"
+      fi
+    ''}"
+  ];
 
   # Inject casdoor DB password into its config at runtime
   systemd.services.casdoor.serviceConfig.ExecStartPre = lib.mkAfter [
@@ -72,6 +88,7 @@
           group = "nginx";
           reloadServices = [ "nginx.service" ];
         };
+
       };
     };
   };
@@ -100,9 +117,14 @@
           name = "casdoor";
           ensureDBOwnership = true;
         }
+        {
+          name = "casibase";
+          ensureDBOwnership = true;
+        }
       ];
       ensureDatabases = [
         "casdoor"
+        "casibase"
       ];
     };
 
@@ -121,16 +143,48 @@
       redis = {
         enable = false;
       };
-      staticBaseUrl = "https://casdoor.${config.networking.domain}";
+      autoStart = true;
+    };
+
+    casibase = {
+      enable = true;
+      port = 14000;
+      runMode = "prod";
+      database = {
+        driver = "postgres";
+        host = "localhost";
+        port = 5432;
+        username = "casibase";
+        name = "casibase";
+      };
+      casdoor = {
+        endpoint = "https://casdoor.xiongchenyu.dpdns.org";
+        clientId = "PLACEHOLDER_FROM_SOPS";
+        clientSecret = "PLACEHOLDER_FROM_SOPS";
+        organization = "built-in";
+        application = "app-casibase";
+      };
       autoStart = true;
     };
 
     nginx = {
       virtualHosts = {
-        "casdoor.${config.networking.domain}" = {
+        "casibase.xiongchenyu.dpdns.org" = {
           forceSSL = true;
           acmeRoot = null;
-          useACMEHost = "ai";
+          useACMEHost = "xiongchenyu.dpdns.org";
+          kTLS = true;
+          locations = {
+            "/" = {
+              proxyPass = "http://127.0.0.1:14000";
+              proxyWebsockets = true;
+            };
+          };
+        };
+        "casdoor.xiongchenyu.dpdns.org" = {
+          forceSSL = true;
+          acmeRoot = null;
+          useACMEHost = "xiongchenyu.dpdns.org";
           kTLS = true;
           locations = {
             "/" = {
