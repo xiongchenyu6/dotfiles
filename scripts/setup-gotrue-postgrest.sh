@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Sets up GoTrue + PostgREST integration on oracle-arm-001.
 
-set -e
+set -euo pipefail
 
 echo "🔧 Setting up GoTrue + PostgREST Integration"
 echo "============================================="

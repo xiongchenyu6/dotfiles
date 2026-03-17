@@ -1,6 +1,6 @@
 { config, pkgs, ... }:
 let
-  dbSuffix = "dc=auotlife,dc=ai";
+  dbSuffix = "dc=work,dc=ai";
   owner = "hydra";
 in
 {

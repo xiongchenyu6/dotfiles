@@ -554,7 +554,7 @@
       # Override server topgrade with desktop settings
       settings = {
         misc = {
-          only = [
+          only = lib.mkForce [
             "system"
             "git_repos"
             "tldr"

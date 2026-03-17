@@ -1,7 +1,7 @@
 { config, pkgs, lib, shares, ... }:
 let
   realm = "work.TECH";
-  dbSuffix = "dc=auotlife,dc=ai";
+  dbSuffix = "dc=work,dc=ai";
   ldapRootUser = "admin";
   # Passwords are now managed via sops secrets
 in {
