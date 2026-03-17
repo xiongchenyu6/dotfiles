@@ -32,9 +32,9 @@
           domain = "${config.networking.domain}";
           extraDomainNames = [ "*.${config.networking.domain}" ];
         };
-        # "auotlife.com" = {
-        #   domain = "auotlife.com";
-        #   extraDomainNames = [ "*.auotlife.com" ];
+        # "autolife.com" = {
+        #   domain = "autolife.com";
+        #   extraDomainNames = [ "*.autolife.com" ];
         #   email = "xiongchenyu6@gmail.com";
         #   dnsProvider = "volcengine";
         #   credentialsFile = config.sops.secrets."acme/volcengine".path;

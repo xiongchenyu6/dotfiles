@@ -31,9 +31,9 @@ in
     #   mode = "0555";
     #   text = ''
     #           #!${pkgs.stdenv.shell}
-    #     #       ${pkgs.openldap}/bin/ldapsearch -x -D cn=admin,dc=auotlife,dc=ai -w $(${pkgs.coreutils-full}/bin/cat ${
+    #     #       ${pkgs.openldap}/bin/ldapsearch -x -D cn=admin,dc=autolife,dc=ai -w $(${pkgs.coreutils-full}/bin/cat ${
     #       config.sops.secrets."openldap/adminPass".path
-    #     }) -b dc=auotlife,dc=ai '(&(objectClass=posixAccount)(uid='"$1"'))' 'sshPublicKey' | ${pkgs.gnused}/bin/sed -n '/^ /{H;d};/sshPublicKey:/x;$g;s/\n *//g;s/sshPublicKey: //gp'
+    #     }) -b dc=autolife,dc=ai '(&(objectClass=posixAccount)(uid='"$1"'))' 'sshPublicKey' | ${pkgs.gnused}/bin/sed -n '/^ /{H;d};/sshPublicKey:/x;$g;s/\n *//g;s/sshPublicKey: //gp'
     #   '';
     # };
     "sudo.conf" = lib.mkIf hasGuiTag {

@@ -41,7 +41,7 @@
     in
     {
       inherit hostName;
-      domain = "auotlife.com";
+      domain = "autolife.com";
       firewall = {
         allowedTCPPorts = [
           22

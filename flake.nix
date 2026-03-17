@@ -117,7 +117,6 @@
       inputs = {
         nixpkgs.follows = "nixpkgs";
         flake-parts.follows = "flake-parts";
-        flake-pparts.follows = "flake-parts";
       };
     };
     autolife-relay = {
@@ -211,7 +210,7 @@
           {
             game = hostConfig;
             office = hostConfig;
-            office-office = hostConfig;
+
             tcloud = hostConfig;
             oracle-arm-001 = hostConfig;
             oracle-arm-002 = hostConfig;
@@ -255,7 +254,7 @@
             check.enable = true;
             settings = {
               hooks = {
-                nixfmt.enable = false;
+                nixfmt.enable = true;
                 statix.enable = true;
                 deadnix.enable = true;
                 shellcheck.enable = true;
