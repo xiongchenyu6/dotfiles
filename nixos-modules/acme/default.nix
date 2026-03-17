@@ -44,6 +44,12 @@
           domain = "autolife.ai";
           extraDomainNames = [ "*.autolife.ai" ];
         };
+        "xiongchenyu.dpdns.org" = {
+          domain = "xiongchenyu.dpdns.org";
+          extraDomainNames = [ "*.xiongchenyu.dpdns.org" ];
+          group = "nginx";
+          reloadServices = [ "nginx.service" ];
+        };
       };
     };
   };

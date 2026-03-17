@@ -218,6 +218,10 @@ in
           hostname = "1.94.246.7";
           user = "root";
         };
+        "shenzhen-office" = {
+          hostname = "113.90.155.31";
+          user = "autolife";
+        };
         "netbird" = {
           hostname = "18.142.246.191";
         };
