@@ -988,11 +988,11 @@
         "pkgs-by-name-for-flake-parts": "pkgs-by-name-for-flake-parts"
       },
       "locked": {
-        "lastModified": 1773650170,
-        "narHash": "sha256-dHqG38e8fTXX3zcXes/rHXzJt21pybvKKcwpnq0sLfc=",
+        "lastModified": 1773734143,
+        "narHash": "sha256-ek+lbv+Akk+By0p6jwnjlCyYIj34f18VJGgIIRR3l3w=",
         "owner": "xiongchenyu6",
         "repo": "nur-packages",
-        "rev": "7e2dd0a952d08d23c40410e287dbabab13bb9c8b",
+        "rev": "6b07be6344ef7a7f839c8426c204bf44569b9f31",
         "type": "github"
       },
       "original": {
