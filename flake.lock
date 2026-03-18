@@ -434,11 +434,19 @@
         "treefmt-nix": "treefmt-nix"
       },
       "locked": {
+<<<<<<< HEAD
         "lastModified": 1773631298,
         "narHash": "sha256-ayzlBBwiXP30BiI+T4POukapy+x0TG7MVsWbTIfUDac=",
         "owner": "numtide",
         "repo": "llm-agents.nix",
         "rev": "49964b8b4efa9ed7ffab7cbd63497ab029bdfc82",
+=======
+        "lastModified": 1773832159,
+        "narHash": "sha256-3/NopFIsqGECDQ/qN0yyOspqqhPRiYlIdgBtt3rPS9w=",
+        "owner": "numtide",
+        "repo": "llm-agents.nix",
+        "rev": "adb2db566d35cded281fea2c0583b6f5b8efa557",
+>>>>>>> daa9064 (feat: deploy dify 1.13.1 on oracle-arm-002)
         "type": "github"
       },
       "original": {
@@ -608,11 +616,19 @@
     },
     "nixpkgs-master": {
       "locked": {
+<<<<<<< HEAD
         "lastModified": 1773636305,
         "narHash": "sha256-1kG8RPMGoR+H9VcQMa1jD2hk0IUey2aQ7Fesy7Fsvs4=",
         "owner": "NixOS",
         "repo": "nixpkgs",
         "rev": "3e9e8f59f0cbbd2182574c732ae2689ee94b02f4",
+=======
+        "lastModified": 1773843949,
+        "narHash": "sha256-zQeHX0pjd6frTFLQgAqSK42JBL+MP74MVbKmA9MFZPI=",
+        "owner": "NixOS",
+        "repo": "nixpkgs",
+        "rev": "80fa4a0ad81ebe0222308510cae132a7951e7ff7",
+>>>>>>> daa9064 (feat: deploy dify 1.13.1 on oracle-arm-002)
         "type": "github"
       },
       "original": {
@@ -648,11 +664,19 @@
         ]
       },
       "locked": {
+<<<<<<< HEAD
         "lastModified": 1773636563,
         "narHash": "sha256-iau+/Djt2+hb6tRataE+HIlnlfudCAP/0deNqs1NhvY=",
         "owner": "nix-community",
         "repo": "NUR",
         "rev": "4679826af20631e7dfde79e53094791bdf416f00",
+=======
+        "lastModified": 1773843905,
+        "narHash": "sha256-nzpDIdsV9k44CiAngnvvIObllg/7kUAts7eVnE6+HGs=",
+        "owner": "nix-community",
+        "repo": "NUR",
+        "rev": "13f82afa24c63f59b5be08a40b4df74dc1665be4",
+>>>>>>> daa9064 (feat: deploy dify 1.13.1 on oracle-arm-002)
         "type": "github"
       },
       "original": {
@@ -675,11 +699,19 @@
         ]
       },
       "locked": {
+<<<<<<< HEAD
         "lastModified": 1773659446,
         "narHash": "sha256-WX0Uz45TjIkKvYyPIB6+TDms/ibd2oKv9/Cf2Mu/z0U=",
         "owner": "openclaw",
         "repo": "nix-openclaw",
         "rev": "eb76f589fffae6f1c357d8ec521ac5929754ac42",
+=======
+        "lastModified": 1773841796,
+        "narHash": "sha256-gG0llC9Hen5QAacdY2DgWYf0SjLYD+HxsosOMP0o7FE=",
+        "owner": "openclaw",
+        "repo": "nix-openclaw",
+        "rev": "990b572c3c6520a9eeab4efe5ad3460f3bec9106",
+>>>>>>> daa9064 (feat: deploy dify 1.13.1 on oracle-arm-002)
         "type": "github"
       },
       "original": {
@@ -988,11 +1020,19 @@
         "pkgs-by-name-for-flake-parts": "pkgs-by-name-for-flake-parts"
       },
       "locked": {
+<<<<<<< HEAD
         "lastModified": 1773734143,
         "narHash": "sha256-ek+lbv+Akk+By0p6jwnjlCyYIj34f18VJGgIIRR3l3w=",
         "owner": "xiongchenyu6",
         "repo": "nur-packages",
         "rev": "6b07be6344ef7a7f839c8426c204bf44569b9f31",
+=======
+        "lastModified": 1773848328,
+        "narHash": "sha256-ZHtJ4gOus2X8DVbVHWjcVcoBys3OgjB3uEyBGi2SZ4A=",
+        "owner": "xiongchenyu6",
+        "repo": "nur-packages",
+        "rev": "52a56bb52e7b4dc752a26106775b665e644d6064",
+>>>>>>> daa9064 (feat: deploy dify 1.13.1 on oracle-arm-002)
         "type": "github"
       },
       "original": {
