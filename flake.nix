@@ -120,7 +120,7 @@
       };
     };
     autolife-relay = {
-      url = "git+ssh://git@github.com/AutoLifeRobot/autolife-relay.git?ref=support_ipv6";
+      url = "git+ssh://git@github.com/AutoLifeRobot/autolife-relay.git";
       inputs = {
         nixpkgs.follows = "nixpkgs";
         flake-parts.follows = "flake-parts";
