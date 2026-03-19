@@ -120,7 +120,7 @@
       };
     };
     work-relay = {
-      url = "git+ssh://git@github.com/workRobot/work-relay.git?ref=support_ipv6";
+      url = "git+ssh://git@github.com/workRobot/work-relay.git";
       inputs = {
         nixpkgs.follows = "nixpkgs";
         flake-parts.follows = "flake-parts";

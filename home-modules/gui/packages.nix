@@ -1,13 +1,20 @@
-{ pkgs, lib, ... }:
+{
+  inputs,
+  pkgs,
+  lib,
+  ...
+}:
 {
   # Home Manager needs a bit of information about you and the
   # paths it should manage.
-
   home = {
     packages =
       with pkgs;
       [
         #appimage-run
+        inputs.llm-agents.packages.${pkgs.system}.mcporter
+        # inputs.llm-agents.packages.${pkgs.system}.cc-switch-cli # temporarily disabled: hash mismatch upstream
+        inputs.llm-agents.packages.${pkgs.system}.auto-claude
         discord
         telegram-desktop
         cloc
