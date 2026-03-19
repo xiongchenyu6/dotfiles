@@ -11,6 +11,7 @@
   imports = with inputs; [
     xiongchenyu6.nixosModules.casdoor
     xiongchenyu6.nixosModules.casibase
+    xiongchenyu6.nixosModules.sub2api
     disko.nixosModules.disko
     (modulesPath + "/installer/scan/not-detected.nix")
     (modulesPath + "/profiles/qemu-guest.nix")
@@ -33,6 +34,21 @@
   sops.secrets."casdoor/db_password" = { };
   sops.secrets."casibase/client_id" = { };
   sops.secrets."casibase/client_secret" = { };
+  sops.secrets."sub2api/env" = {
+    owner = "sub2api";
+    group = "sub2api";
+  };
+
+  systemd.services.sub2api = {
+    after = [
+      "postgresql.service"
+      "redis-sub2api.service"
+    ];
+    requires = [
+      "postgresql.service"
+      "redis-sub2api.service"
+    ];
+  };
 
   # Inject casibase credentials into its config at runtime
   systemd.services.casibase.serviceConfig.ExecStartPre = lib.mkAfter [
@@ -88,7 +104,12 @@
           group = "nginx";
           reloadServices = [ "nginx.service" ];
         };
-
+        "starslab.qzz.io" = {
+          domain = "starslab.qzz.io";
+          extraDomainNames = [ "*.starslab.qzz.io" ];
+          group = "nginx";
+          reloadServices = [ "nginx.service" ];
+        };
       };
     };
   };
@@ -121,10 +142,15 @@
           name = "casibase";
           ensureDBOwnership = true;
         }
+        {
+          name = "sub2api";
+          ensureDBOwnership = true;
+        }
       ];
       ensureDatabases = [
         "casdoor"
         "casibase"
+        "sub2api"
       ];
     };
 
@@ -167,6 +193,26 @@
       autoStart = true;
     };
 
+    redis.servers.sub2api = {
+      enable = true;
+      port = 6379;
+    };
+
+    sub2api = {
+      enable = true;
+      port = 18088;
+      database = {
+        host = "/run/postgresql";
+        user = "sub2api";
+        name = "sub2api";
+      };
+      redis = {
+        host = "127.0.0.1";
+        port = 6379;
+      };
+      environmentFile = config.sops.secrets."sub2api/env".path;
+    };
+
     nginx = {
       virtualHosts = {
         "casibase.xiongchenyu.dpdns.org" = {
@@ -189,6 +235,18 @@
           locations = {
             "/" = {
               proxyPass = "http://127.0.0.1:8000";
+              proxyWebsockets = true;
+            };
+          };
+        };
+        "sub2api.starslab.qzz.io" = {
+          forceSSL = true;
+          acmeRoot = null;
+          useACMEHost = "starslab.qzz.io";
+          kTLS = true;
+          locations = {
+            "/" = {
+              proxyPass = "http://127.0.0.1:18088";
               proxyWebsockets = true;
             };
           };
