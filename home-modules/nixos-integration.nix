@@ -14,7 +14,7 @@
       # jetbrains.idea-ultimate
       # jetbrains.rider
       #tectonic
-      #libreoffice
+      libreoffice
       stlink-gui
       stm32cubemx
       glib
