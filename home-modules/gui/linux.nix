@@ -40,7 +40,7 @@
       #nur.repos.xddxdd.dingtalk
       #gimp
       #gitkraken
-      netbird-ui
+      # netbird-ui
       #termius
       unrar-wrapper
       #whatsapp-for-linux

@@ -64,6 +64,7 @@
       inputs.lazynixos.packages.${pkgs.system}.default
     ];
   };
+
   hardware.nvidia.package = config.boot.kernelPackages.nvidiaPackages.beta;
   boot = {
 

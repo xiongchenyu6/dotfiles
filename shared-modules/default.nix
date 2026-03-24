@@ -39,6 +39,9 @@ in
           # telegram-desktop =
           #   nixpkgs-stable.legacyPackages.x86_64-linux.telegram-desktop;
           # waybar = nixpkgs-master.legacyPackages.x86_64-linux.waybar;
+          netbird = prev.netbird.override {
+            buildGoModule = prev.buildGo125Module;
+          };
         }
         // lib.optionalAttrs (prev.stdenv.hostPlatform.system == "x86_64-linux") {
           microsoft-edge = inputs.nixpkgs-stable.legacyPackages.x86_64-linux.microsoft-edge;
