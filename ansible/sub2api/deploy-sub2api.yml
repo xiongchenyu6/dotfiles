@@ -1,0 +1,117 @@
+---
+- name: Deploy Sub2API AI Gateway
+  hosts: sub2api_servers
+  become: yes
+  vars_files:
+    - vars/main.yml
+
+  tasks:
+    - name: Install required packages
+      apt:
+        name:
+          - curl
+          - docker.io
+          - docker-compose-v2
+        state: present
+        update_cache: yes
+        cache_valid_time: 3600
+
+    - name: Start and enable Docker service
+      systemd:
+        name: docker
+        state: started
+        enabled: yes
+
+    - name: Create deployment directory
+      file:
+        path: "{{ sub2api_deploy_dir }}"
+        state: directory
+        owner: root
+        group: root
+        mode: '0755'
+
+    - name: Create data directories
+      file:
+        path: "{{ sub2api_deploy_dir }}/{{ item }}"
+        state: directory
+        owner: root
+        group: root
+        mode: '0755'
+      loop:
+        - data
+        - postgres_data
+        - redis_data
+
+    - name: Generate POSTGRES_PASSWORD if not set
+      set_fact:
+        sub2api_postgres_password: "{{ sub2api_postgres_password | default(lookup('ansible.builtin.pipe', 'openssl rand -hex 32')) }}"
+      no_log: true
+
+    - name: Generate REDIS_PASSWORD if not set
+      set_fact:
+        sub2api_redis_password: "{{ sub2api_redis_password | default(lookup('ansible.builtin.pipe', 'openssl rand -hex 32')) }}"
+      no_log: true
+
+    - name: Generate JWT_SECRET if not set
+      set_fact:
+        sub2api_jwt_secret: "{{ sub2api_jwt_secret | default(lookup('ansible.builtin.pipe', 'openssl rand -hex 32')) }}"
+      no_log: true
+
+    - name: Generate TOTP_ENCRYPTION_KEY if not set
+      set_fact:
+        sub2api_totp_key: "{{ sub2api_totp_key | default(lookup('ansible.builtin.pipe', 'openssl rand -hex 32')) }}"
+      no_log: true
+
+    - name: Generate ADMIN_PASSWORD if not set
+      set_fact:
+        sub2api_admin_password: "{{ sub2api_admin_password | default(lookup('ansible.builtin.pipe', 'openssl rand -hex 16')) }}"
+      no_log: true
+
+    - name: Deploy docker-compose.yml
+      template:
+        src: templates/docker-compose.yml.j2
+        dest: "{{ sub2api_deploy_dir }}/docker-compose.yml"
+        owner: root
+        group: root
+        mode: '0600'
+      notify: restart sub2api
+
+    - name: Deploy .env file
+      template:
+        src: templates/env.j2
+        dest: "{{ sub2api_deploy_dir }}/.env"
+        owner: root
+        group: root
+        mode: '0600'
+
+    - name: Pull and start services
+      command: docker compose up -d --pull always
+      args:
+        chdir: "{{ sub2api_deploy_dir }}"
+
+    - name: Wait for sub2api to be healthy
+      uri:
+        url: "http://localhost:{{ sub2api_server_port }}/health"
+        status_code: 200
+      register: health_check
+      retries: 12
+      delay: 5
+      until: health_check.status == 200
+      ignore_errors: yes
+
+    - name: Display deployment status
+      debug:
+        msg: |
+          ========================================
+          Sub2API deployment status: {{ 'SUCCESS' if health_check.status | default(0) == 200 else 'STARTING' }}
+          ========================================
+          Deploy dir: {{ sub2api_deploy_dir }}
+          Access URL: http://{{ ansible_host }}:{{ sub2api_server_port }}
+          Admin email: {{ sub2api_admin_email }}
+          ========================================
+
+  handlers:
+    - name: restart sub2api
+      command: docker compose restart
+      args:
+        chdir: "{{ sub2api_deploy_dir }}"

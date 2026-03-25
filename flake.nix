@@ -218,6 +218,7 @@
             oracle-amd-002 = hostConfig;
             netbird = hostConfig;
             huoshan-bj-001 = hostConfig;
+            lubancat = hostConfig;
           };
       };
 

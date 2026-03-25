@@ -222,6 +222,11 @@ in
         "netbird" = {
           hostname = "18.142.246.191";
         };
+        "lubancat" = {
+          hostname = "203.116.95.146";
+          port = 22222;
+          user = "root";
+        };
         "heco-nginx" = {
           hostname = "18.142.238.159";
           user = "root";
