@@ -1,0 +1,38 @@
+---
+# =============================================================================
+# Sub2API Deployment Variables
+# =============================================================================
+
+# Server configuration
+sub2api_server_port: 8080
+sub2api_server_mode: release
+sub2api_run_mode: standard
+sub2api_bind_host: "0.0.0.0"
+
+# Deployment directory on remote host
+sub2api_deploy_dir: /opt/sub2api
+
+# Docker image
+sub2api_image: weishaw/sub2api:latest
+
+# PostgreSQL
+sub2api_postgres_user: sub2api
+sub2api_postgres_db: sub2api
+
+# Redis
+sub2api_redis_db: 0
+
+# Admin account
+sub2api_admin_email: admin@sub2api.local
+
+# JWT
+sub2api_jwt_expire_hour: 24
+
+# Timezone
+sub2api_tz: Asia/Shanghai
+
+# H2C
+sub2api_h2c_enabled: true
+
+# Docker Compose local version (uses local dirs for easy migration)
+sub2api_use_local_dirs: true

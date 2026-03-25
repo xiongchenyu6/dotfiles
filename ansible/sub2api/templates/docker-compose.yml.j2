@@ -1,0 +1,129 @@
+# =============================================================================
+# Sub2API Docker Compose - Local Directory Version (Ansible Managed)
+# =============================================================================
+services:
+  sub2api:
+    image: {{ sub2api_image }}
+    container_name: sub2api
+    restart: unless-stopped
+    ulimits:
+      nofile:
+        soft: 100000
+        hard: 100000
+    ports:
+      - "{{ sub2api_bind_host }}:{{ sub2api_server_port }}:8080"
+    volumes:
+      - ./data:/app/data
+    environment:
+      - AUTO_SETUP=true
+      - SERVER_HOST=0.0.0.0
+      - SERVER_PORT=8080
+      - SERVER_MODE={{ sub2api_server_mode }}
+      - RUN_MODE={{ sub2api_run_mode }}
+
+      - DATABASE_HOST=postgres
+      - DATABASE_PORT=5432
+      - DATABASE_USER={{ sub2api_postgres_user }}
+      - DATABASE_PASSWORD={{ sub2api_postgres_password }}
+      - DATABASE_DBNAME={{ sub2api_postgres_db }}
+      - DATABASE_SSLMODE=disable
+      - DATABASE_MAX_OPEN_CONNS=256
+      - DATABASE_MAX_IDLE_CONNS=128
+      - DATABASE_CONN_MAX_LIFETIME_MINUTES=30
+      - DATABASE_CONN_MAX_IDLE_TIME_MINUTES=5
+
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - REDIS_PASSWORD={{ sub2api_redis_password }}
+      - REDIS_DB={{ sub2api_redis_db }}
+      - REDIS_POOL_SIZE=4096
+      - REDIS_MIN_IDLE_CONNS=256
+      - REDIS_ENABLE_TLS=false
+
+      - ADMIN_EMAIL={{ sub2api_admin_email }}
+      - ADMIN_PASSWORD={{ sub2api_admin_password }}
+
+      - JWT_SECRET={{ sub2api_jwt_secret }}
+      - JWT_EXPIRE_HOUR={{ sub2api_jwt_expire_hour }}
+
+      - TOTP_ENCRYPTION_KEY={{ sub2api_totp_key }}
+
+      - TZ={{ sub2api_tz }}
+
+      - SERVER_H2C_ENABLED={{ sub2api_h2c_enabled | lower }}
+
+      - SECURITY_URL_ALLOWLIST_ENABLED=false
+      - SECURITY_URL_ALLOWLIST_ALLOW_INSECURE_HTTP=false
+      - SECURITY_URL_ALLOWLIST_ALLOW_PRIVATE_HOSTS=false
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - sub2api-network
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-T", "5", "-O", "/dev/null", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+  postgres:
+    image: postgres:18-alpine
+    container_name: sub2api-postgres
+    restart: unless-stopped
+    ulimits:
+      nofile:
+        soft: 100000
+        hard: 100000
+    volumes:
+      - ./postgres_data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_USER={{ sub2api_postgres_user }}
+      - POSTGRES_PASSWORD={{ sub2api_postgres_password }}
+      - POSTGRES_DB={{ sub2api_postgres_db }}
+      - PGDATA=/var/lib/postgresql/data
+      - TZ={{ sub2api_tz }}
+    networks:
+      - sub2api-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U {{ sub2api_postgres_user }} -d {{ sub2api_postgres_db }}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+  redis:
+    image: redis:8-alpine
+    container_name: sub2api-redis
+    restart: unless-stopped
+    ulimits:
+      nofile:
+        soft: 100000
+        hard: 100000
+    volumes:
+      - ./redis_data:/data
+    command: >
+        sh -c '
+          redis-server
+          --save 60 1
+          --appendonly yes
+          --appendfsync everysec
+          $${REDIS_PASSWORD:+--requirepass "$$REDIS_PASSWORD"}
+        '
+    environment:
+      - TZ={{ sub2api_tz }}
+      - REDISCLI_AUTH={{ sub2api_redis_password }}
+    networks:
+      - sub2api-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 5s
+
+networks:
+  sub2api-network:
+    driver: bridge

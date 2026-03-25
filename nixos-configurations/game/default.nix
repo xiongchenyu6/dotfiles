@@ -252,7 +252,7 @@
     v2raya.enable = true;
 
     sunshine = {
-      enable = false;
+      enable = true;
       openFirewall = true;
       capSysAdmin = true;
     };
