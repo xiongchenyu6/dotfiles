@@ -621,7 +621,7 @@
       enable = true;
     };
     yazi = {
-      enable = false;
+      enable = true;
     };
 
     # Rustup and grafana-loki completions (moved from zsh.nix)

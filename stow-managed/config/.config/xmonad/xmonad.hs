@@ -27,11 +27,11 @@ import XMonad.Util.EZConfig (additionalKeys)
 import XMonad.Util.SpawnOnce
 
 myTerminal :: String
-myTerminal = "alacritty"
+myTerminal = "ghostty"
 
 myManageHook =
   composeAll
-    [ className =? "Alacritty" --> doShift "term",
+    [       className =? "ghostty" --> doShift "term",
       className =? "URxvt" --> doShift "term",
       className =? "Kitty" --> doShift "term",
       className =? "kitty" --> doShift "term",

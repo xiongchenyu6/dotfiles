@@ -72,7 +72,7 @@
             # Developer-focused commands
             "$mod, q, killactive" # quit (easy to reach)
             "$mod SHIFT, q, exit" # quit WM
-            "$mod, return, exec, ${pkgs.alacritty}/bin/alacritty" # terminal (essential for devs)
+            "$mod, return, exec, ${pkgs.ghostty}/bin/ghostty" # terminal (essential for devs)
             "$mod, x, exec, ${pkgs.albert}/bin/albert toggle" # M-x (execute command) - ergonomic on Dvorak
 
             # Programming splits and layouts

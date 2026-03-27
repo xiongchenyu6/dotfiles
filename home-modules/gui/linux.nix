@@ -83,6 +83,8 @@
       desktop-file-utils
       #inputs.claude-desktop.packages.${system}.claude-desktop-with-fhs
       gnome-software
+      gws
+      google-cloud-sdk
       tradingview
 
       # 成像/磁盘工具
@@ -197,7 +199,7 @@
     };
 
     zed-editor = {
-      enable = false;
+      enable = true;
       extensions = [ "nix" ];
     };
 
