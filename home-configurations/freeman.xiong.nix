@@ -263,13 +263,15 @@ in
   };
 
   # Load API keys from sops into shell environment
-  programs.zsh.initContent = lib.mkIf enableHomeSops ''
-    # Source API keys from sops if the file exists
-    if [ -f "${config.home.homeDirectory}/.config/sops-nix/secrets/rendered/api-keys-env" ]; then
-      set -a  # mark all new variables for export
-      source "${config.home.homeDirectory}/.config/sops-nix/secrets/rendered/api-keys-env"
-      set +a
-    fi
-  '';
+  programs.zsh = {
+    initContent = lib.optionalString enableHomeSops ''
+      # Source API keys from sops if the file exists
+      if [ -f "${config.home.homeDirectory}/.config/sops-nix/secrets/rendered/api-keys-env" ]; then
+        set -a  # mark all new variables for export
+        source "${config.home.homeDirectory}/.config/sops-nix/secrets/rendered/api-keys-env"
+        set +a
+      fi
+    '';
+  };
 
 }
