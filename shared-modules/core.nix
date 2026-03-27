@@ -20,6 +20,9 @@
     group = if (config.users.groups ? keys) then config.users.groups.keys.name else "wheel";
   };
   environment = {
+    systemPackages = [
+      pkgs.ghostty.terminfo
+    ];
 
     etc = lib.mkIf pkgs.stdenv.isLinux {
       "ppp/options".text = ''

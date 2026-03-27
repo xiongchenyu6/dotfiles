@@ -72,7 +72,7 @@
             # Emacs-like window management
             "$mod, x, killactive" # C-x k (kill-buffer)
             "$mod CTRL, x, exit" # C-x C-c (exit emacs)
-            "$mod, return, exec, ${pkgs.alacritty}/bin/alacritty" # terminal
+            "$mod, return, exec, ${pkgs.ghostty}/bin/ghostty" # terminal
             "$mod ALT, x, exec, ${pkgs.albert}/bin/albert toggle" # M-x (execute command) - ergonomic on Dvorak
 
             # Emacs window operations

@@ -71,7 +71,7 @@
             # Vim-like commands
             "$mod, q, killactive" # :q to quit
             "$mod SHIFT, Q, exit" # :q! to force quit
-            "$mod, return, exec, alacritty" # terminal
+            "$mod, return, exec, ${pkgs.ghostty}/bin/ghostty" # terminal
             "$mod, p, exec, ${pkgs.albert}/bin/albert toggle"
             "$mod SHIFT, f, togglefloating" # float toggle
             "$mod, v, pseudo" # pseudo-tiling (vertical split concept)

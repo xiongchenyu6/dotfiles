@@ -276,7 +276,7 @@
             tooltip-format = "{title}";
             on-click = "activate";
             on-click-middle = "close";
-            ignore-list = [ "Alacritty" ];
+            ignore-list = [ "ghostty" ];
           };
           "clock" = {
             "tooltip-format" = ''

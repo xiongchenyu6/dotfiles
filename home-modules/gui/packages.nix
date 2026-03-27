@@ -175,46 +175,19 @@
   };
 
   programs = {
-    alacritty = {
+    ghostty = {
       enable = true;
+      enableZshIntegration = true;
+      systemd.enable = true;
       settings = {
-        # opacity = 0.9;
-        font = {
-          size = 10;
-          normal = {
-            family = "Hack Nerd Font";
-          };
-          bold = {
-            family = "Hack Nerd Font";
-          };
-          italic = {
-            family = "Hack Nerd Font";
-          };
-          bold_italic = {
-            family = "Hack Nerd Font";
-          };
-        };
-        cursor = {
-          style = {
-            shape = "Beam";
-            blinking = "Always";
-          };
-        };
-        keyboard = {
-          bindings = [
-            {
-              key = "Space";
-              mods = "Control|Shift";
-              mode = "~Search";
-              action = "ToggleViMode";
-            }
-            {
-              key = "Return";
-              mods = "Command|Shift";
-              action = "SpawnNewInstance";
-            }
-          ];
-        };
+        font-family = "Hack Nerd Font";
+        font-size = 10;
+        cursor-style = "bar";
+        cursor-style-blink = true;
+        background-opacity = 0.7;
+        working-directory = "inherit";
+        window-inherit-working-directory = true;
+        shell-integration = "zsh";
       };
     };
 
