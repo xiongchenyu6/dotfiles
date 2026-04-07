@@ -33,14 +33,12 @@ let
   # Workaround: nix-openclaw copies source extensions/ and compiled dist/extensions/
   # separately, but plugin manifests (openclaw.plugin.json) only exist in extensions/.
   # The gateway looks for them in dist/extensions/. Patch the package to copy them over.
-  patchedOpenclaw = openclawPkg.overrideAttrs (
-    final: old: {
-      pnpmDeps = resilientOpenclawDeps;
-      env = (old.env or { }) // {
-        PNPM_DEPS = final.pnpmDeps;
-      };
-      # check_no_broken_symlinks exits 1 with current nixpkgs; patch the install script.
-      # Also preserve Fix 1 (plugin manifests) and Fix 2 (runtime stub).
+  patchedOpenclaw = openclawPkg.overrideAttrs (old: {
+    pnpmDeps = resilientOpenclawDeps;
+    env = (old.env or { }) // {
+      PNPM_DEPS = resilientOpenclawDeps;
+    };
+    # check_no_broken_symlinks exits 1 with current nixpkgs; patch the install script.      # Also preserve Fix 1 (plugin manifests) and Fix 2 (runtime stub).
       installPhase =
         let
           # Replace the entire check_no_broken_symlinks function with a no-op.
@@ -84,8 +82,7 @@ let
             echo "WARNING: Could not find createPluginRuntime export in any setup-surface chunk"
           fi
         '';
-    }
-  );
+  });
 
   # Shared packages available to both system environment and openclaw service
   sharedToolPkgs = with pkgs; [
