@@ -8,7 +8,7 @@
   ...
 }:
 let
-  mcporter = inputs.llm-agents.packages.${pkgs.system}.mcporter;
+  mcporter = inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.mcporter;
 
   # Workaround: nix-openclaw copies source extensions/ and compiled dist/extensions/
   # separately, but plugin manifests (openclaw.plugin.json) only exist in extensions/.
@@ -113,7 +113,9 @@ in
   '';
 
   sops.templates."s3fs-passwd" = {
-    content = "${config.sops.placeholder."s3fs/access_key"}:${config.sops.placeholder."s3fs/secret_key"}";
+    content = "${config.sops.placeholder."s3fs/access_key"}:${
+      config.sops.placeholder."s3fs/secret_key"
+    }";
     mode = "0600";
     owner = "root";
     group = "root";
@@ -176,7 +178,6 @@ in
   networking.firewall.allowedTCPPorts = [
     6080
   ];
-
 
   services.openclaw-gateway = {
     enable = true;

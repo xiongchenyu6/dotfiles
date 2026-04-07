@@ -1759,8 +1759,8 @@ in
         ]
         ++ lib.optionals (!cfg.lightweight) [
           # Language servers (desktop only)
-          nodePackages.typescript-language-server
-          nodePackages.vscode-langservers-extracted
+          typescript-language-server
+          vscode-langservers-extracted
           pyright
           gopls
           rust-analyzer # Rust LSP (used by rustaceanvim)
@@ -1773,7 +1773,7 @@ in
           solc # Solidity compiler
 
           # Formatters and linters (desktop only)
-          nodePackages.prettier
+          prettier
           black
           rustfmt
 

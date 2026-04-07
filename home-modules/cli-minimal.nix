@@ -342,7 +342,7 @@ in
         '';
       };
     };
-    stateVersion = "25.05";
+    stateVersion = "26.05";
     keyboard = {
       options = [ "caps:ctrl_modifier" ];
     };

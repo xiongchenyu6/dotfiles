@@ -112,7 +112,7 @@
       };
     };
     rust-web-server = {
-      url = "git+ssh://git@github.com/AutoLifeRobot/rust-web-server.git";
+      url = "git+ssh://git@github.com/AutoLifeRobot/rust-web-server.git?ref=feat/nixos-improvements";
       #url = "git+ssh://git@github.com/AutoLifeRobot/rust-web-server.git?shallow=1&rev=0ff6f6d5dbd1131b34bec7c8316eb8ee21713e73";
       inputs = {
         nixpkgs.follows = "nixpkgs";

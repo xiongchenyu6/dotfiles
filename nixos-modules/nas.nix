@@ -24,9 +24,9 @@
     aria2 = {
       enable = true;
       openPorts = true;
-      downloadDir = "/srv/media/downloads";
       rpcSecretFile = config.sops.secrets."aria2/rpc-secret".path;
       settings = {
+        dir = "/srv/media/downloads";
         enable-rpc = true;
         rpc-listen-all = true;
         rpc-allow-origin-all = true;

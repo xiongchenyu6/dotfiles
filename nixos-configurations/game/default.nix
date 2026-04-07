@@ -62,7 +62,7 @@
     systemPackages = with pkgs; [
       cloudflare-warp
       android-tools # Replaces programs.adb
-      inputs.lazynixos.packages.${pkgs.system}.default
+      inputs.lazynixos.packages.${pkgs.stdenv.hostPlatform.system}.default
     ];
   };
 
