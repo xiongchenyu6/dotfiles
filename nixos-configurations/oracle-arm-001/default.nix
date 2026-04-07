@@ -246,6 +246,8 @@
     rust-web-server = {
       enable = true;
       configFile = config.sops.templates."rust-web-server-config".path;
+      licenseFile = config.sops.templates."rust-web-server-license".path;
+      publicKey = builtins.readFile ./id_ed25519.pub;
     };
 
     nginx = {
@@ -383,6 +385,12 @@
   };
 
   # Sops secrets for work-relay
+  sops.templates."rust-web-server-license" = {
+    content = config.sops.placeholder."work-relay/license";
+    owner = "rust-web-server";
+    group = "rust-web-server";
+    mode = "0400";
+  };
   sops.secrets."work-relay/license" = {
     owner = "work-relay";
     group = "work-relay";
