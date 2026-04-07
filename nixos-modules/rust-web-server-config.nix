@@ -46,12 +46,17 @@ in
           introspection_endpoint: ${shares.oauth.introspection_endpoint}
         auth:
           enabled: true
+        ${
+          lib.optionalString (cfg.licenseFile != null && cfg.publicKey != null) ''
+            auth_license:
+              license_file: ${cfg.licenseFile}
+              public_key: ${cfg.publicKey}
+          ''
+        }
       '';
-      mode = "0600";
-      # The owner and group will be created by the upstream rust-web-server module
-      # For now, use root to avoid dependency issues
-      owner = "root";
-      group = "root";
+      mode = "0400";
+      owner = "rust-web-server";
+      group = "rust-web-server";
     };
 
     # User and systemd service are defined by the upstream rust-web-server module
