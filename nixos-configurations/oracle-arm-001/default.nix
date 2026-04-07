@@ -246,6 +246,8 @@
     rust-web-server = {
       enable = true;
       configFile = config.sops.templates."rust-web-server-config".path;
+      licenseFile = config.sops.templates."rust-web-server-license".path;
+      publicKey = builtins.readFile ./id_ed25519.pub;
     };
 
     nginx = {
@@ -383,6 +385,12 @@
   };
 
   # Sops secrets for autolife-relay
+  sops.templates."rust-web-server-license" = {
+    content = config.sops.placeholder."autolife-relay/license";
+    owner = "rust-web-server";
+    group = "rust-web-server";
+    mode = "0400";
+  };
   sops.secrets."autolife-relay/license" = {
     owner = "autolife-relay";
     group = "autolife-relay";
