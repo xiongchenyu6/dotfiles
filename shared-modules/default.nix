@@ -5,6 +5,13 @@
   lib,
 }:
 let
+  masterPkgsFor =
+    system:
+    import inputs.nixpkgs-master {
+      inherit system;
+      config.allowUnfree = true;
+    };
+
   # Common overlays shared between Darwin and NixOS
   baseOverlays =
     with inputs;
@@ -39,6 +46,7 @@ in
           # telegram-desktop =
           #   nixpkgs-stable.legacyPackages.x86_64-linux.telegram-desktop;
           # waybar = nixpkgs-master.legacyPackages.x86_64-linux.waybar;
+          claude-code = (masterPkgsFor prev.stdenv.hostPlatform.system).claude-code;
           netbird = prev.netbird.override {
             buildGoModule = prev.buildGo125Module;
           };

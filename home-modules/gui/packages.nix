@@ -12,9 +12,9 @@
       with pkgs;
       [
         #appimage-run
-        inputs.llm-agents.packages.${pkgs.system}.mcporter
-        # inputs.llm-agents.packages.${pkgs.system}.cc-switch-cli # temporarily disabled: hash mismatch upstream
-        inputs.llm-agents.packages.${pkgs.system}.auto-claude
+        inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.mcporter
+        # inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.cc-switch-cli # temporarily disabled: hash mismatch upstream
+        inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.auto-claude
         discord
         telegram-desktop
         cloc
