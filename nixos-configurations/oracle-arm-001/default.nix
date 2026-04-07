@@ -25,6 +25,8 @@
     srvos.nixosModules.mixins-trusted-nix-caches
     srvos.nixosModules.mixins-nix-experimental
     srvos.nixosModules.mixins-tracing
+    inputs.rust-web-server.nixosModules.rust-web-server
+    ../../nixos-modules/rust-web-server-config.nix
     ./disk-config.nix
     ./hardware-configuration.nix
   ];
@@ -240,6 +242,12 @@
       };
     };
 
+    # Rust web server
+    rust-web-server = {
+      enable = true;
+      configFile = config.sops.templates."rust-web-server-config".path;
+    };
+
     nginx = {
       commonHttpConfig = ''
         map $http_origin $cors_origin {
@@ -362,6 +370,9 @@
 
   nixpkgs = {
     hostPlatform = "aarch64-linux";
+    config.permittedInsecurePackages = [
+      "python3.12-pypdf2-3.0.1"
+    ];
     # overlays = [
     #   (final: prev: {
     #     odoo = prev.odoo.overrideAttrs (old: {
