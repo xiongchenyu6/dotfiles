@@ -6,7 +6,7 @@
   ...
 }:
 let
-  wgInterface = "wg_oracle-amd-002";
+  wgInterface = "wg_ora";
 in
 {
   sops.secrets."wireguard/office" = { };
@@ -17,7 +17,7 @@ in
   ];
 
   # Use the built-in networking.wg-quick.interfaces for WireGuard configuration
-  networking.wg-quick.interfaces.${wgInterface} = {
+  networking.wg-quick.interfaces.wg_ora = {
     # Private key from sops secrets
     privateKeyFile = config.sops.secrets."wireguard/office".path;
 

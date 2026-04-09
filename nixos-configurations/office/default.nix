@@ -117,8 +117,8 @@
           6696
           33434
         ];
-        interfaces.wg_oracle-amd-002.allowedTCPPorts = [ 2222 ];
-        interfaces.wg_oracle-amd-002.allowedUDPPorts = [ 2222 ];
+        interfaces.wg_ora.allowedTCPPorts = [ 2222 ];
+        interfaces.wg_ora.allowedUDPPorts = [ 2222 ];
       };
 
       networkmanager = {
@@ -140,13 +140,13 @@
         in
         {
           interfaces = {
-            wg_oracle-amd-002 = {
+            wg_ora = {
               inherit privateKeyFile table;
               address = [ "fe80::101/64" ];
               postUp = ''
-                ${pkgs.iproute2}/bin/ip addr add dev wg_oracle-amd-002 172.22.240.98/32 peer 172.22.240.96/27
-                ${pkgs.iproute2}/bin/ip addr add dev wg_oracle-amd-002 fd48:4b4:f3::2/128 peer fd48:4b4:f3::1/128
-                ${pkgs.iproute2}/bin/ip link set multicast on dev wg_oracle-amd-002
+                ${pkgs.iproute2}/bin/ip addr add dev wg_ora 172.22.240.98/32 peer 172.22.240.96/27
+                ${pkgs.iproute2}/bin/ip addr add dev wg_ora fd48:4b4:f3::2/128 peer fd48:4b4:f3::1/128
+                ${pkgs.iproute2}/bin/ip link set multicast on dev wg_ora
               '';
 
               peers = [
