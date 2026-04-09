@@ -192,12 +192,12 @@
           "virbr0"
           "virbr10"
         ]; # for libvirt
-        interfaces.wg_oracle-amd-002.allowedTCPPorts = [
+        interfaces.wg_ora.allowedTCPPorts = [
           22
           5173
           8080
         ];
-        interfaces.wg_oracle-amd-002.allowedUDPPorts = [ 22 ];
+        interfaces.wg_ora.allowedUDPPorts = [ 22 ];
         interfaces.wt0.allowedTCPPorts = [ 22 ];
         interfaces.wt0.allowedUDPPorts = [ 22 ];
       };
@@ -211,14 +211,14 @@
       enableIPv6 = true;
       wg-quick = {
         interfaces = {
-          wg_oracle-amd-002 = {
+          wg_ora = {
             privateKeyFile = config.sops.secrets."wireguard/game".path;
             table = "off";
             address = [ "fe80::102/64" ];
             postUp = ''
-              ${pkgs.iproute2}/bin/ip addr add dev wg_oracle-amd-002 172.22.240.99/32 peer 172.22.240.96/27
-              ${pkgs.iproute2}/bin/ip addr add dev wg_oracle-amd-002 fd48:4b4:f3::3/128 peer fd48:4b4:f3::1/128
-              ${pkgs.iproute2}/bin/ip link set multicast on dev wg_oracle-amd-002
+              ${pkgs.iproute2}/bin/ip addr add dev wg_ora 172.22.240.99/32 peer 172.22.240.96/27
+              ${pkgs.iproute2}/bin/ip addr add dev wg_ora fd48:4b4:f3::3/128 peer fd48:4b4:f3::1/128
+              ${pkgs.iproute2}/bin/ip link set multicast on dev wg_ora
             '';
 
             peers = [
@@ -324,7 +324,7 @@
     netbird.enable = true;
     babeld = {
       interfaces = {
-        wg_oracle-amd-002 = {
+        wg_ora = {
           hello-interval = 5;
           split-horizon = "auto";
           type = "wired";
