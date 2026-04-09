@@ -101,7 +101,7 @@ in
     wg-quick = {
       interfaces =
         let
-          privateKeyFile = config.sops.secrets."wireguard/oracle-amd-002".path;
+          privateKeyFile = config.sops.secrets."wireguard/tcloud".path;
           address = [ "fe80::100/64" ];
           table = "off";
           allowedIPs = [
@@ -152,7 +152,7 @@ in
     };
   };
 
-  sops.secrets."wireguard/oracle-amd-002" = { };
+  sops.secrets."wireguard/tcloud" = { };
 
   services = {
     openssh = {
