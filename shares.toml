@@ -23,9 +23,8 @@ public-key = 'ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIK9lhSffZNM3UYm884iQc/XmWL+g5f
 public-key = 'trmPW+CV8BbXfDMbe7I7IFwRh5ke8vpbDlgisSoH6ng='
 
 [[hosts]]
-endpoint = 'tcloud.autolife.ai'
-host = 'tcloud'
-public-key = 'ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKcBsPZi+OYEL/RCSGZMr82x0UGUaghP3AGl6M57ssjn'
+endpoint = 'oracle-amd-002.autolife.ai'
+host = 'oracle-amd-002'
 
 [hosts.wg]
 port = 22616

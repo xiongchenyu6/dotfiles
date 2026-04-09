@@ -6,36 +6,36 @@
   ...
 }:
 let
-  wgInterface = "wg_tcloud";
+  wgInterface = "wg_oracle-amd-002";
 in
 {
   sops.secrets."wireguard/office" = { };
 
   environment.systemPackages = with pkgs; [
     wireguard-tools
-    wireguard-go  # WireGuard userspace implementation for macOS
+    wireguard-go # WireGuard userspace implementation for macOS
   ];
 
   # Use the built-in networking.wg-quick.interfaces for WireGuard configuration
   networking.wg-quick.interfaces.${wgInterface} = {
     # Private key from sops secrets
     privateKeyFile = config.sops.secrets."wireguard/office".path;
-    
+
     # Interface addresses
     address = [
       "fe80::101/64"
       "172.22.240.98/32"
       "fd48:4b4:f3::2/128"
     ];
-    
+
     # Let WireGuard manage routes automatically (default behavior)
     # Routes will be created for all allowedIPs
-    
+
     # Peer configuration
     peers = [
       {
-        publicKey = shares.hosts-dict.tcloud.wg.public-key;
-        endpoint = "43.156.66.157:22616";
+        publicKey = shares.hosts-dict.oracle-amd-002.wg.public-key;
+        endpoint = "oracle-amd-002.autolife.ai:22616";
         persistentKeepalive = 30;
         allowedIPs = [
           "10.0.0.0/8"
@@ -50,7 +50,7 @@ in
         ];
       }
     ];
-    
+
     # Auto-start the interface
     autostart = true;
   };

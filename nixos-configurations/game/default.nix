@@ -192,12 +192,12 @@
           "virbr0"
           "virbr10"
         ]; # for libvirt
-        interfaces.wg_tcloud.allowedTCPPorts = [
+        interfaces.wg_oracle-amd-002.allowedTCPPorts = [
           22
           5173
           8080
         ];
-        interfaces.wg_tcloud.allowedUDPPorts = [ 22 ];
+        interfaces.wg_oracle-amd-002.allowedUDPPorts = [ 22 ];
         interfaces.wt0.allowedTCPPorts = [ 22 ];
         interfaces.wt0.allowedUDPPorts = [ 22 ];
       };
@@ -211,20 +211,20 @@
       enableIPv6 = true;
       wg-quick = {
         interfaces = {
-          wg_tcloud = {
+          wg_oracle-amd-002 = {
             privateKeyFile = config.sops.secrets."wireguard/game".path;
             table = "off";
             address = [ "fe80::102/64" ];
             postUp = ''
-              ${pkgs.iproute2}/bin/ip addr add dev wg_tcloud 172.22.240.99/32 peer 172.22.240.96/27
-              ${pkgs.iproute2}/bin/ip addr add dev wg_tcloud fd48:4b4:f3::3/128 peer fd48:4b4:f3::1/128
-              ${pkgs.iproute2}/bin/ip link set multicast on dev wg_tcloud
+              ${pkgs.iproute2}/bin/ip addr add dev wg_oracle-amd-002 172.22.240.99/32 peer 172.22.240.96/27
+              ${pkgs.iproute2}/bin/ip addr add dev wg_oracle-amd-002 fd48:4b4:f3::3/128 peer fd48:4b4:f3::1/128
+              ${pkgs.iproute2}/bin/ip link set multicast on dev wg_oracle-amd-002
             '';
 
             peers = [
               {
-                endpoint = "43.156.66.157:22617";
-                publicKey = shares.hosts-dict.tcloud.wg.public-key;
+                endpoint = "oracle-amd-002.autolife.ai:22617";
+                publicKey = shares.hosts-dict.oracle-amd-002.wg.public-key;
                 persistentKeepalive = 30;
                 allowedIPs = [
                   "10.0.0.0/8"
@@ -313,7 +313,7 @@
         enable = false;
         role = "client";
         settings = {
-          serverAddr = "tcloud.${config.networking.domain}";
+          serverAddr = "oracle-amd-002.${config.networking.domain}";
           serverPort = 7000;
           # auth.token will be injected from sops when frp is re-enabled
           # See: sops.secrets."frp/token"
@@ -324,7 +324,7 @@
     netbird.enable = true;
     babeld = {
       interfaces = {
-        wg_tcloud = {
+        wg_oracle-amd-002 = {
           hello-interval = 5;
           split-horizon = "auto";
           type = "wired";

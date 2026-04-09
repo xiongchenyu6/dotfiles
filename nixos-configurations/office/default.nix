@@ -117,8 +117,8 @@
           6696
           33434
         ];
-        interfaces.wg_tcloud.allowedTCPPorts = [ 2222 ];
-        interfaces.wg_tcloud.allowedUDPPorts = [ 2222 ];
+        interfaces.wg_oracle-amd-002.allowedTCPPorts = [ 2222 ];
+        interfaces.wg_oracle-amd-002.allowedUDPPorts = [ 2222 ];
       };
 
       networkmanager = {
@@ -140,19 +140,19 @@
         in
         {
           interfaces = {
-            wg_tcloud = {
+            wg_oracle-amd-002 = {
               inherit privateKeyFile table;
               address = [ "fe80::101/64" ];
               postUp = ''
-                ${pkgs.iproute2}/bin/ip addr add dev wg_tcloud 172.22.240.98/32 peer 172.22.240.96/27
-                ${pkgs.iproute2}/bin/ip addr add dev wg_tcloud fd48:4b4:f3::2/128 peer fd48:4b4:f3::1/128
-                ${pkgs.iproute2}/bin/ip link set multicast on dev wg_tcloud
+                ${pkgs.iproute2}/bin/ip addr add dev wg_oracle-amd-002 172.22.240.98/32 peer 172.22.240.96/27
+                ${pkgs.iproute2}/bin/ip addr add dev wg_oracle-amd-002 fd48:4b4:f3::2/128 peer fd48:4b4:f3::1/128
+                ${pkgs.iproute2}/bin/ip link set multicast on dev wg_oracle-amd-002
               '';
 
               peers = [
                 {
-                  endpoint = "43.156.66.157:22616";
-                  publicKey = shares.hosts-dict.tcloud.wg.public-key;
+                  endpoint = "oracle-amd-002.autolife.ai:22616";
+                  publicKey = shares.hosts-dict.oracle-amd-002.wg.public-key;
                   persistentKeepalive = 30;
                   allowedIPs = [
                     "10.0.0.0/8"
