@@ -135,13 +135,10 @@
       };
     };
 
-    openclaw = {
-      url = "github:openclaw/nix-openclaw";
+    zeroclaw = {
+      url = "github:zeroclaw-labs/zeroclaw";
       inputs = {
         nixpkgs.follows = "nixpkgs";
-        flake-utils.follows = "flake-utils";
-        home-manager.follows = "home-manager";
-        nix-steipete-tools.inputs.nixpkgs.follows = "nixpkgs";
       };
     };
 

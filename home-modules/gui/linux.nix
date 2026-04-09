@@ -36,7 +36,7 @@
       sbctl
       #nur.repos.xddxdd.qq
       nur.repos.xddxdd.bilibili
-      nur.repos.xddxdd.wine-wechat
+      (nur.repos.xddxdd.wine-wechat.override { wine64 = wineWow64Packages.waylandFull; })
       #nur.repos.xddxdd.dingtalk
       #gimp
       #gitkraken

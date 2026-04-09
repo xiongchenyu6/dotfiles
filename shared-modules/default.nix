@@ -20,7 +20,6 @@ let
       nix-alien
       sops-nix
       nix-topology
-      openclaw
     ];
 
   # Additional overlays for NixOS
