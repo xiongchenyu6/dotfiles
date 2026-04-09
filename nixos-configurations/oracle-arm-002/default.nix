@@ -10,83 +10,163 @@
 let
   mcporter = inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.mcporter;
 
-  # Workaround: nix-openclaw copies source extensions/ and compiled dist/extensions/
-  # separately, but plugin manifests (openclaw.plugin.json) only exist in extensions/.
-  # The gateway looks for them in dist/extensions/. Patch the package to copy them over.
-  openclawPkg = pkgs.openclaw-gateway;
-  resilientOpenclawDeps = pkgs.fetchPnpmDeps {
-    pname = "openclaw-gateway";
-    version = openclawPkg.version;
-    src = openclawPkg.src;
-    pnpm = pkgs.pnpm_10;
-    hash = openclawPkg.passthru.sourceInfo.pnpmDepsHash;
-    fetcherVersion = 3;
-    nativeBuildInputs = [ pkgs.git ];
-    prePnpmInstall = ''
-      pnpm config set fetch-retries 10
-      pnpm config set fetch-retry-factor 2
-      pnpm config set fetch-retry-maxtimeout 600000
-      pnpm config set network-concurrency 8
-    '';
+  # Build zeroclaw from source (Rust binary)
+  zeroclaw = pkgs.rustPlatform.buildRustPackage {
+    pname = "zeroclaw";
+    version = inputs.zeroclaw.shortRev or "unstable";
+    src = inputs.zeroclaw;
+
+    cargoLock = {
+      lockFile = "${inputs.zeroclaw}/Cargo.lock";
+      allowBuiltinFetchGit = true;
+    };
+
+    nativeBuildInputs = with pkgs; [
+      pkg-config
+      cmake
+    ];
+
+    buildInputs = with pkgs; [
+      openssl
+      sqlite
+    ];
+
+    buildNoDefaultFeatures = true;
+    buildFeatures = [
+      "sandbox-landlock"
+      "skill-creation"
+    ];
+
+    # Only build the main zeroclaw binary (skip tauri app and robot-kit)
+    cargoBuildFlags = [ "-p" "zeroclawlabs" ];
+
+    doCheck = false;
+
+    meta = {
+      description = "Fast, small, and fully autonomous AI personal assistant infrastructure";
+      homepage = "https://github.com/zeroclaw-labs/zeroclaw";
+      license = with lib.licenses; [ mit asl20 ];
+      mainProgram = "zeroclaw";
+    };
   };
 
-  # Workaround: nix-openclaw copies source extensions/ and compiled dist/extensions/
-  # separately, but plugin manifests (openclaw.plugin.json) only exist in extensions/.
-  # The gateway looks for them in dist/extensions/. Patch the package to copy them over.
-  patchedOpenclaw = openclawPkg.overrideAttrs (old: {
-    pnpmDeps = resilientOpenclawDeps;
-    env = (old.env or { }) // {
-      PNPM_DEPS = resilientOpenclawDeps;
+  # Generate zeroclaw TOML config from Nix attrset
+  zeroclawConfigToml = (pkgs.formats.toml { }).generate "config.toml" {
+    default_provider = "volcengine";
+
+    gateway = {
+      port = 18789;
+      bind = "lan";
     };
-    # check_no_broken_symlinks exits 1 with current nixpkgs; patch the install script.      # Also preserve Fix 1 (plugin manifests) and Fix 2 (runtime stub).
-      installPhase =
-        let
-          # Replace the entire check_no_broken_symlinks function with a no-op.
-          # The function uses `find | while` which exits non-zero with set -e on NixOS sandbox.
-          patchedScript = pkgs.runCommand "gateway-install-patched.sh" { } ''
-            ${pkgs.gnused}/bin/sed \
-              '/^check_no_broken_symlinks()/,/^}/c\check_no_broken_symlinks() { echo "(symlink check disabled)"; }' \
-              ${old.installPhase} > $out
-            chmod +x $out
-          '';
-        in
-        ''
-          source ${patchedScript}
-        ''
-        + ''
-          set +e  # Disable set -e inherited from sourced install script for our additions
 
-          # Fix 1: Copy plugin manifests and package.json to dist/extensions/
-          for d in $out/lib/openclaw/extensions/*/; do
-            [ -d "$d" ] || continue
-            name=$(basename "$d")
-            if [ -d "$out/lib/openclaw/dist/extensions/$name" ]; then
-              [ -f "$d/openclaw.plugin.json" ] && cp "$d/openclaw.plugin.json" "$out/lib/openclaw/dist/extensions/$name/"
-              if [ -f "$d/package.json" ]; then
-                ${pkgs.gnused}/bin/sed 's/\.ts"/\.js"/g' "$d/package.json" > "$out/lib/openclaw/dist/extensions/$name/package.json"
-              fi
-            fi
-          done
+    approvals.exec.enabled = false;
 
-          # Fix 2: Create dist/plugins/runtime/index.js stub.
-          mkdir -p $out/lib/openclaw/dist/plugins/runtime
-          chunk=$(${pkgs.gnugrep}/bin/grep -rl 'createPluginRuntime as ' $out/lib/openclaw/dist/setup-surface-*.js 2>/dev/null | head -1)
-          if [ -n "$chunk" ]; then
-            alias=$(${pkgs.gnugrep}/bin/grep -oP 'createPluginRuntime as \K\w+' "$chunk" | head -1)
-            chunkName=$(basename "$chunk")
-            echo ">> Creating plugin runtime stub: $chunkName alias=$alias"
-            printf 'import { %s as createPluginRuntime } from "../../%s";\nexport { createPluginRuntime };\n' \
-              "$alias" "$chunkName" \
-              > $out/lib/openclaw/dist/plugins/runtime/index.js
-          else
-            echo "WARNING: Could not find createPluginRuntime export in any setup-surface chunk"
-          fi
-        '';
-  });
+    agents.defaults = {
+      elevated_default = "full";
+      model = {
+        primary = "volcengine/ark-code-latest";
+        fallbacks = [ "google/gemini-2.5-flash" ];
+      };
+    };
 
-  # Shared packages available to both system environment and openclaw service
+    models.providers = {
+      volcengine = {
+        base_url = "https://ark.cn-beijing.volces.com/api/coding/v3";
+        api = "openai-completions";
+        auth = "api-key";
+        api_key = "\${VOLCENGINE_API_KEY}";
+        models = [
+          {
+            id = "ark-code-latest";
+            name = "Volcengine Ark Code Latest";
+            input = [ "text" ];
+            context_window = 65536;
+            max_tokens = 8192;
+          }
+        ];
+      };
+      siliconflow = {
+        base_url = "https://api.siliconflow.cn/v1";
+        api = "openai-completions";
+        auth = "api-key";
+        api_key = "\${SILICON_FLOW_API_KEY}";
+        models = [
+          {
+            id = "deepseek-ai/DeepSeek-V3";
+            name = "DeepSeek V3";
+            input = [ "text" ];
+            context_window = 65536;
+            max_tokens = 8192;
+          }
+          {
+            id = "Pro/MiniMaxAI/MiniMax-M2.5";
+            name = "MiniMax M2.5 (Pro)";
+            input = [ "text" ];
+            context_window = 131072;
+            max_tokens = 4096;
+          }
+        ];
+      };
+      nvidia = {
+        base_url = "https://integrate.api.nvidia.com/v1";
+        api = "openai-completions";
+        auth = "api-key";
+        api_key = "\${NVIDIA_API_KEY}";
+        models = [
+          {
+            id = "minimaxai/minimax-m2.5";
+            name = "MiniMax M2.5";
+            input = [ "text" ];
+            context_window = 131072;
+            max_tokens = 4096;
+          }
+        ];
+      };
+    };
+
+    tools = {
+      profile = "full";
+      allow = [ "*" ];
+      elevated = {
+        enabled = true;
+        allow_from.telegram = [
+          "5368588092"
+          "5369058954"
+        ];
+      };
+    };
+
+    channels.telegram = {
+      bot_token = "\${TELEGRAM_BOT_TOKEN}";
+      dm_policy = "allowlist";
+      group_policy = "allowlist";
+      allow_from = [
+        "5368588092"
+        "5369058954"
+      ];
+      group_allow_from = [
+        "5368588092"
+        "5369058954"
+      ];
+      exec_approvals = {
+        enabled = false;
+        approvers = [
+          "5368588092"
+          "5369058954"
+        ];
+      };
+      groups."-1003475261813" = {
+        allow_from = [
+          "5368588092"
+          "5369058954"
+        ];
+        require_mention = false;
+      };
+    };
+  };
+
+  # Shared packages available to both system environment and zeroclaw service
   sharedToolPkgs = with pkgs; [
-    nodejs_25
     bash
     coreutils
     gnused
@@ -116,8 +196,6 @@ in
     srvos.nixosModules.mixins-trusted-nix-caches
     srvos.nixosModules.mixins-nix-experimental
     srvos.nixosModules.mixins-tracing
-    # Import Hashtopolis server module from NUR packages
-    inputs.openclaw.nixosModules.openclaw-gateway
     xiongchenyu6.nixosModules.hashtopolis-server
 
     ./disk-config.nix
@@ -126,7 +204,7 @@ in
 
   ];
 
-  sops.templates."openclaw-env".content = ''
+  sops.templates."zeroclaw-env".content = ''
     VOLCENGINE_API_KEY=${config.sops.placeholder."api-keys/VOLCENGINE_API_KEY"}
     SILICON_FLOW_API_KEY=${config.sops.placeholder."api-keys/SILICON_FLOW"}
     NVIDIA_API_KEY=${config.sops.placeholder."zeroclaw/nvidia_api_key"}
@@ -149,8 +227,8 @@ in
   sops.secrets."api-keys/GEMINI_API_KEY".owner = "root";
   sops.secrets."api-keys/SILICON_FLOW".owner = "root";
   sops.secrets."api-keys/VOLCENGINE_API_KEY".owner = "root";
-  sops.secrets."zeroclaw/nvidia_api_key".owner = "openclaw";
-  sops.secrets."zeroclaw/telegram_bot_token".owner = "openclaw";
+  sops.secrets."zeroclaw/nvidia_api_key".owner = "zeroclaw";
+  sops.secrets."zeroclaw/telegram_bot_token".owner = "zeroclaw";
 
   boot = {
     loader.grub = {
@@ -184,6 +262,9 @@ in
       pkgs.gitMinimal
     ]
     ++ sharedToolPkgs
+    ++ [
+      zeroclaw
+    ]
     ++ (with pkgs; [
       xvfb-run
       x11vnc
@@ -201,14 +282,46 @@ in
     6080
   ];
 
-  services.openclaw-gateway = {
-    enable = true;
-    package = patchedOpenclaw;
-    user = "root";
-    group = "root";
-    createUser = false;
-    port = 18789;
-    servicePath =
+  # ZeroClaw — personal AI assistant (Rust rewrite of OpenClaw)
+  # One-shot migration service: runs `zeroclaw migrate openclaw` on first activation
+  # to carry over memory, skills, and workspace from ~/.openclaw/ to ~/.zeroclaw/
+  systemd.services.zeroclaw-migrate = {
+    description = "Migrate OpenClaw data to ZeroClaw";
+    after = [ "network-online.target" ];
+    wants = [ "network-online.target" ];
+    before = [ "zeroclaw.service" ];
+    wantedBy = [ "multi-user.target" ];
+
+    # Only run if the old openclaw data directory exists and zeroclaw hasn't been migrated yet
+    unitConfig.ConditionPathExists = "/var/lib/zeroclaw/.openclaw";
+
+    serviceConfig = {
+      Type = "oneshot";
+      User = "zeroclaw";
+      Group = "zeroclaw";
+      WorkingDirectory = "/var/lib/zeroclaw";
+      ExecStart = "${zeroclaw}/bin/zeroclaw migrate openclaw";
+      RemainAfterExit = true;
+      EnvironmentFile = config.sops.templates."zeroclaw-env".path;
+    };
+  };
+
+  # Main zeroclaw daemon service
+  systemd.services.zeroclaw = {
+    description = "ZeroClaw AI assistant daemon";
+    after = [
+      "network-online.target"
+      "zeroclaw-migrate.service"
+    ];
+    wants = [ "network-online.target" ];
+    wantedBy = [ "multi-user.target" ];
+
+    environment = {
+      HOME = "/var/lib/zeroclaw";
+      ZEROCLAW_CONFIG = toString zeroclawConfigToml;
+    };
+
+    path =
       sharedToolPkgs
       ++ (with pkgs; [
         nix
@@ -217,136 +330,19 @@ in
         file
         wget
       ]);
-    environmentFiles = [ config.sops.templates."openclaw-env".path ];
 
-    config = {
-      gateway = {
-        port = 18789;
-        bind = "lan";
-        mode = "local";
-      };
-      approvals = {
-        exec = {
-          enabled = false;
-        };
-      };
-      agents = {
-        defaults = {
-          model = {
-            primary = "volcengine/ark-code-latest";
-            fallbacks = [
-              "google/gemini-2.5-flash"
-            ];
-          };
-          elevatedDefault = "full";
-        };
-      };
-      models = {
-        providers = {
-          volcengine = {
-            baseUrl = "https://ark.cn-beijing.volces.com/api/coding/v3";
-            api = "openai-completions";
-            auth = "api-key";
-            apiKey = "\${VOLCENGINE_API_KEY}";
-            models = [
-              {
-                id = "ark-code-latest";
-                name = "Volcengine Ark Code Latest";
-                input = [ "text" ];
-                contextWindow = 65536;
-                maxTokens = 8192;
-              }
-            ];
-          };
-          siliconflow = {
-            baseUrl = "https://api.siliconflow.cn/v1";
-            api = "openai-completions";
-            auth = "api-key";
-            apiKey = "\${SILICON_FLOW_API_KEY}";
-            models = [
-              {
-                id = "deepseek-ai/DeepSeek-V3";
-                name = "DeepSeek V3";
-                input = [ "text" ];
-                contextWindow = 65536;
-                maxTokens = 8192;
-              }
-              {
-                id = "Pro/MiniMaxAI/MiniMax-M2.5";
-                name = "MiniMax M2.5 (Pro)";
-                input = [ "text" ];
-                contextWindow = 131072;
-                maxTokens = 4096;
-              }
-            ];
-          };
-          nvidia = {
-            baseUrl = "https://integrate.api.nvidia.com/v1";
-            api = "openai-completions";
-            auth = "api-key";
-            apiKey = "\${NVIDIA_API_KEY}";
-            models = [
-              {
-                id = "minimaxai/minimax-m2.5";
-                name = "MiniMax M2.5";
-                input = [ "text" ];
-                contextWindow = 131072;
-                maxTokens = 4096;
-              }
-            ];
-          };
-        };
-      };
-      tools = {
-        profile = "full";
-        allow = [ "*" ];
-        elevated = {
-          enabled = true;
-          allowFrom = {
-            telegram = [
-              "5368588092"
-              "5369058954"
-            ];
-          };
-        };
-      };
-      channels = {
-        telegram = {
-          botToken = "\${TELEGRAM_BOT_TOKEN}";
-          dmPolicy = "allowlist";
-          groupPolicy = "allowlist";
-          execApprovals = {
-            enabled = false;
-            approvers = [
-              "5368588092"
-              "5369058954"
-            ];
-          };
-          groups = {
-            "-1003475261813" = {
-              allowFrom = [
-                "5368588092"
-                "5369058954"
-              ];
-              requireMention = false;
-            };
-          };
-          allowFrom = [
-            "5368588092"
-            "5369058954"
-          ];
-          groupAllowFrom = [
-            "5368588092"
-            "5369058954"
-          ];
-        };
-      };
+    serviceConfig = {
+      Type = "simple";
+      User = "root";
+      Group = "root";
+      WorkingDirectory = "/var/lib/zeroclaw";
+      ExecStart = "${zeroclaw}/bin/zeroclaw daemon";
+      Restart = "on-failure";
+      RestartSec = 10;
+      EnvironmentFile = config.sops.templates."zeroclaw-env".path;
+      StandardOutput = "journal";
+      StandardError = "journal";
     };
-  };
-
-  systemd.services.openclaw-gateway.serviceConfig = {
-    StandardOutput = lib.mkForce "journal";
-    StandardError = lib.mkForce "journal";
   };
 
   systemd.tmpfiles.rules =
@@ -359,26 +355,32 @@ in
       );
     in
     [
-      # Create necessary directories
-      "d /var/lib/openclaw/.openclaw/workspace 0755 root root - -"
-      "d /var/lib/openclaw/config 0755 root root - -"
+      # Create necessary directories for zeroclaw
+      "d /var/lib/zeroclaw/.zeroclaw/workspace 0755 zeroclaw zeroclaw - -"
+      "d /var/lib/zeroclaw/config 0755 zeroclaw zeroclaw - -"
       "d /home/freeman.xiong/config 0755 freeman.xiong users - -"
+
+      # Copy old openclaw data directory if it exists (for migration)
+      "C /var/lib/zeroclaw/.openclaw 0755 zeroclaw zeroclaw - /var/lib/openclaw/.openclaw"
 
       # Symlink the generated JSON files into the configs
       "d /root/config 0755 root root - -"
       "L+ /root/config/mcporter.json - - - - ${mcporterJson}"
-      "L+ /var/lib/openclaw/config/mcporter.json - - - - ${mcporterJson}"
+      "L+ /var/lib/zeroclaw/config/mcporter.json - - - - ${mcporterJson}"
       "L+ /home/freeman.xiong/config/mcporter.json - - - - ${mcporterJson}"
+
+      # Symlink zeroclaw config
+      "L+ /var/lib/zeroclaw/.zeroclaw/config.toml - - - - ${zeroclawConfigToml}"
     ];
 
-  # OpenClaw — personal AI assistant
-  users.users.openclaw = {
+  # ZeroClaw system user (replaces openclaw user)
+  users.users.zeroclaw = {
     isSystemUser = true;
-    group = "openclaw";
-    home = "/var/lib/openclaw";
+    group = "zeroclaw";
+    home = "/var/lib/zeroclaw";
     createHome = true;
   };
-  users.groups.openclaw = { };
+  users.groups.zeroclaw = { };
 
   # Virtual display support for browser automation
   systemd.services.xvfb = {
@@ -392,8 +394,8 @@ in
     '';
 
     serviceConfig = {
-      User = "openclaw";
-      Group = "openclaw";
+      User = "zeroclaw";
+      Group = "zeroclaw";
       Restart = "always";
       RestartSec = 5;
       Type = "simple";

@@ -5,8 +5,13 @@
   pkgs,
   config,
   ezModules,
+  shares,
   ...
 }:
+let
+  vpn-dev = "wg0";
+  port = 22616;
+in
 {
   imports = with inputs; [
     disko.nixosModules.disko
@@ -26,7 +31,128 @@
     srvos.nixosModules.mixins-tracing
     xiongchenyu6.nixosModules.cc-gateway
     ./hardware-configuration.nix
+    {
+      topology.self.interfaces.home = {
+        type = "wireguard";
+        addresses = [ "172.22.240.97/27" ];
+      };
+    }
   ];
+
+  boot.initrd.kernelModules = [ "nvme" ];
+
+  boot = {
+    kernelPackages = lib.mkForce pkgs.linuxPackages_latest;
+    tmp.cleanOnBoot = true;
+    kernel = {
+      sysctl = {
+        "net.ipv4.ip_forward" = 1;
+      };
+    };
+  };
+
+  networking = {
+    nat = {
+      enable = true;
+      enableIPv6 = true;
+      externalInterface = "ens5";
+      internalInterfaces = [
+        "wg_office"
+        "wg_game"
+        vpn-dev
+      ];
+    };
+
+    firewall = {
+      enable = true;
+      trustedInterfaces = [ vpn-dev ];
+      allowedTCPPorts = [
+        22
+        53
+        80
+        443
+        179
+        389
+        636
+        993
+      ];
+      allowedUDPPorts = [
+        port
+        53
+        80
+        179
+        389
+        636
+        5353
+      ];
+      allowedUDPPortRanges = [
+        {
+          from = 49152;
+          to = 65535;
+        }
+      ];
+
+      interfaces.wg_office.allowedTCPPorts = [ 22 ];
+      interfaces.wg_office.allowedUDPPorts = [ 22 ];
+      interfaces.wg_game.allowedTCPPorts = [ 22 ];
+      interfaces.wg_game.allowedUDPPorts = [ 22 ];
+    };
+
+    wg-quick = {
+      interfaces =
+        let
+          privateKeyFile = config.sops.secrets."wireguard/oracle-amd-002".path;
+          address = [ "fe80::100/64" ];
+          table = "off";
+          allowedIPs = [
+            "10.0.0.0/8"
+            "172.20.0.0/14"
+            "172.31.0.0/16"
+            "fd00::/8"
+            "fe80::/64"
+            "fd48:4b4:f3::/48"
+            "ff02::1:6/128"
+            "224.0.0.251/32"
+            "ff02::fb/128"
+          ];
+        in
+        {
+          wg_office = {
+            inherit address privateKeyFile table;
+            listenPort = 22616;
+            postUp = ''
+              ${pkgs.iproute2}/bin/ip addr add dev wg_office 172.22.240.97/32 peer 172.22.240.98/32
+              ${pkgs.iproute2}/bin/ip addr add dev wg_office fd48:4b4:f3::1/128 peer fd48:4b4:f3::2/128
+              ${pkgs.iproute2}/bin/ip link set multicast on dev wg_office
+            '';
+            peers = [
+              {
+                publicKey = shares.hosts-dict.office.wg.public-key;
+                inherit allowedIPs;
+              }
+            ];
+          };
+          wg_game = {
+            inherit address privateKeyFile table;
+            listenPort = 22617;
+            postUp = ''
+              ${pkgs.iproute2}/bin/ip addr add dev wg_game 172.22.240.97/32 peer 172.22.240.99/32
+              ${pkgs.iproute2}/bin/ip addr add dev wg_game fd48:4b4:f3::1/128 peer fd48:4b4:f3::3/128
+              ${pkgs.iproute2}/bin/ip link set multicast on dev wg_game
+            '';
+
+            peers = [
+              {
+                publicKey = shares.hosts-dict.game.wg.public-key;
+                inherit allowedIPs;
+              }
+            ];
+          };
+        };
+    };
+  };
+
+  sops.secrets."wireguard/oracle-amd-002" = { };
 
   services = {
     openssh = {
