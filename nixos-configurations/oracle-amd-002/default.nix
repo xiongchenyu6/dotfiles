@@ -11,6 +11,7 @@
 let
   vpn-dev = "wg0";
   port = 22616;
+  port-game = 22617;
 in
 {
   imports = with inputs; [
@@ -78,6 +79,7 @@ in
       ];
       allowedUDPPorts = [
         port
+        22617
         53
         80
         179

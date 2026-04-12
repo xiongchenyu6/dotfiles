@@ -223,7 +223,7 @@
 
             peers = [
               {
-                endpoint = "oracle-amd-002.autolife.ai:22617";
+                endpoint = "213.35.117.232:22617";
                 publicKey = shares.hosts-dict.oracle-amd-002.wg.public-key;
                 persistentKeepalive = 30;
                 allowedIPs = [
@@ -313,7 +313,7 @@
         enable = false;
         role = "client";
         settings = {
-          serverAddr = "oracle-amd-002.${config.networking.domain}";
+          serverAddr = "${config.networking.domain}";
           serverPort = 7000;
           # auth.token will be injected from sops when frp is re-enabled
           # See: sops.secrets."frp/token"
