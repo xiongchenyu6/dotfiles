@@ -35,7 +35,7 @@ in
     peers = [
       {
         publicKey = shares.hosts-dict.oracle-amd-002.wg.public-key;
-        endpoint = "oracle-amd-002.autolife.ai:22616";
+        endpoint = "213.35.117.232:22616";
         persistentKeepalive = 30;
         allowedIPs = [
           "10.0.0.0/8"
