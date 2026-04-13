@@ -60,11 +60,31 @@ let
 
     approvals.exec.enabled = false;
 
+    autonomy = {
+      level = "full";
+      workspace_only = false;
+      allowed_commands = [ "*" ];
+      forbidden_paths = [ ];
+      max_actions_per_hour = 9999;
+      max_cost_per_day_cents = 99999;
+      require_approval_for_medium_risk = false;
+      block_high_risk_commands = false;
+      auto_approve = [ "*" ];
+      always_ask = [ ];
+      non_cli_excluded_tools = [ ];
+    };
+
+    trust = {
+      initial_score = 1.0;
+    };
+
     agents.defaults = {
       elevated_default = "full";
       model = "gemini-2.5-flash";
       provider = "google";
     };
+
+    reliability.fallback_providers = [ "google-backup" ];
 
     models.providers = {
       google = {
@@ -76,6 +96,21 @@ let
           {
             id = "gemini-2.5-flash";
             name = "Gemini 2.5 Flash";
+            input = [ "text" ];
+            context_window = 1048576;
+            max_tokens = 65536;
+          }
+        ];
+      };
+      google-backup = {
+        base_url = "https://generativelanguage.googleapis.com/v1beta";
+        api = "openai-completions";
+        auth = "api-key";
+        api_key = "\${GEMINI_API_KEY_BACKUP}";
+        models = [
+          {
+            id = "gemini-2.5-flash";
+            name = "Gemini 2.5 Flash (Backup)";
             input = [ "text" ];
             context_window = 1048576;
             max_tokens = 65536;
@@ -148,6 +183,12 @@ let
       };
     };
 
+    skills = {
+      open_skills_enabled = true;
+      allow_scripts = true;
+      skill_creation.enabled = true;
+    };
+
     channels_config.telegram = {
       bot_token = "\${TELEGRAM_BOT_TOKEN}";
       allowed_users = [
@@ -202,6 +243,7 @@ in
     NVIDIA_API_KEY=${config.sops.placeholder."zeroclaw/nvidia_api_key"}
     TELEGRAM_BOT_TOKEN=${config.sops.placeholder."zeroclaw/telegram_bot_token"}
     GEMINI_API_KEY=${config.sops.placeholder."api-keys/GEMINI_API_KEY"}
+    GEMINI_API_KEY_BACKUP=${config.sops.placeholder."api-keys/GEMINI_API_KEY_BACKUP"}
   '';
 
   sops.templates."s3fs-passwd" = {
@@ -217,6 +259,7 @@ in
   sops.secrets."s3fs/secret_key" = { };
 
   sops.secrets."api-keys/GEMINI_API_KEY".owner = "root";
+  sops.secrets."api-keys/GEMINI_API_KEY_BACKUP".owner = "root";
   sops.secrets."api-keys/SILICON_FLOW".owner = "root";
   sops.secrets."api-keys/VOLCENGINE_API_KEY".owner = "root";
   sops.secrets."zeroclaw/nvidia_api_key".owner = "zeroclaw";
