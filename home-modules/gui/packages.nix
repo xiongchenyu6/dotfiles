@@ -21,6 +21,7 @@
         claude-monitor
         minicom
         doctl
+        wrangler
         gdrive
         gtrash
         #freerdp

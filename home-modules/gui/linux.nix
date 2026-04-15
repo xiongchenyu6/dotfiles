@@ -79,7 +79,6 @@
       # terraformer
       # tf2pulumi
       #localstack
-      #wrangler
       desktop-file-utils
       #inputs.claude-desktop.packages.${system}.claude-desktop-with-fhs
       gnome-software
