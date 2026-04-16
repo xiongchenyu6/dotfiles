@@ -20,7 +20,7 @@
     group = if (config.users.groups ? keys) then config.users.groups.keys.name else "wheel";
   };
   environment = {
-    systemPackages = [
+    systemPackages = lib.optionals pkgs.stdenv.isLinux [
       pkgs.ghostty.terminfo
     ];
 
