@@ -176,6 +176,11 @@
   };
 
   programs = {
+    noti = {
+      enable = true;
+    };
+  }
+  // lib.optionalAttrs pkgs.stdenv.isLinux {
     ghostty = {
       enable = true;
       enableZshIntegration = true;
@@ -191,10 +196,5 @@
         shell-integration = "zsh";
       };
     };
-
-    noti = {
-      enable = true;
-    };
-
   };
 }
