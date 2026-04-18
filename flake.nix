@@ -135,8 +135,8 @@
       };
     };
 
-    zeroclaw = {
-      url = "github:zeroclaw-labs/zeroclaw";
+    hermes-agent = {
+      url = "github:NousResearch/hermes-agent";
       inputs = {
         nixpkgs.follows = "nixpkgs";
       };
