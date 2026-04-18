@@ -32,6 +32,7 @@
       kiro
       aspellDicts.en
       albert
+      camber
       baidupcs-go
       sbctl
       #nur.repos.xddxdd.qq
