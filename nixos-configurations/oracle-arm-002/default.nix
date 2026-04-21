@@ -93,9 +93,16 @@
     enable = true;
     settings = {
       model = {
-        default = "google/gemini-2.5-flash";
+        # Bare model ID — `provider = "gemini"` hits Google AI Studio's native
+        # endpoint (v1beta), which rejects OpenRouter-style "google/" prefixes.
+        default = "gemini-2.5-flash";
         provider = "gemini";
       };
+      # User-authored skills migrated from the old zeroclaw workspace.
+      # External dirs are read-only to hermes; skill creation still writes
+      # to $HERMES_HOME/skills/. Hermes reads finnhub/flyclaw/self-improving/
+      # xiaohongshu-mcp from here alongside its built-in skill library.
+      skills.external_dirs = [ "/var/lib/hermes/custom-skills" ];
     };
     # Non-secret env vars (bot allowlist). Secrets go via environmentFiles.
     environment = {

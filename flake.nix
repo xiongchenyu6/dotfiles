@@ -136,7 +136,11 @@
     };
 
     hermes-agent = {
-      url = "github:NousResearch/hermes-agent";
+      # Pinned to v0.8.0 HEAD (last commit before v0.9.0 bump on 2026-04-13).
+      # Newer commits pull in Feishu/DingTalk alibabacloud-credentials-api (broken
+      # uv2nix wheel build: missing setuptools) and a hermes-tui npmDeps hash
+      # that has drifted against the npm registry. Unpin once upstream fixes both.
+      url = "github:NousResearch/hermes-agent/0e60a9dc25ae32241339286a85ab69f949e3f24b";
       inputs = {
         nixpkgs.follows = "nixpkgs";
       };
