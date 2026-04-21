@@ -39,7 +39,7 @@
         addresses = [ "172.22.240.99/27" ];
       };
     }
-    #./dnf-native.nix
+    ./dnf-native.nix
     ./hashtopolis-agent.nix
     # ./vast-cli.nix  # Moved to home-manager module
   ];
