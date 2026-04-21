@@ -80,10 +80,34 @@ in
       description = "GM lander version";
     };
 
+    gamePassword = mkOption {
+      type = types.str;
+      default = "gmgmgmgm";
+      description = "DNF MySQL `game` user password — must be exactly 8 characters (image requirement).";
+    };
+
+    gamePasswordFile = mkOption {
+      type = types.nullOr types.path;
+      default = null;
+      description = "File containing the 8-char DNF `game` user password (overrides gamePassword).";
+    };
+
     serverGroup = mkOption {
       type = types.int;
       default = 3;
-      description = "Server group number";
+      description = "Server group number (1=cain, 2=diregie, 3=siroco, 4=prey, 5=casillas, 6=hilder)";
+    };
+
+    serverGroupDB = mkOption {
+      type = types.str;
+      default = "cain";
+      description = "Server-group DB name; most GM tools expect `cain` even when SERVER_GROUP=3.";
+    };
+
+    clientPoolSize = mkOption {
+      type = types.int;
+      default = 10;
+      description = "Client buffer pool; affects df_bridge_r/df_channel_r memory. 3-1000.";
     };
 
     openChannels = mkOption {
@@ -137,11 +161,20 @@ in
         ROOT_PASS="${cfg.rootPassword}"
         GM_PASS="${cfg.gmPassword}"
         GM_KEY="${cfg.gmConnectKey}"
+        GAME_DB_PASS="${cfg.gamePassword}"
         ${optionalString (cfg.rootPasswordFile != null) ''ROOT_PASS=$(cat "${cfg.rootPasswordFile}")''}
         ${optionalString (cfg.gmPasswordFile != null) ''GM_PASS=$(cat "${cfg.gmPasswordFile}")''}
         ${optionalString (cfg.gmConnectKeyFile != null) ''GM_KEY=$(cat "${cfg.gmConnectKeyFile}")''}
+        ${optionalString (cfg.gamePasswordFile != null) ''GAME_DB_PASS=$(cat "${cfg.gamePasswordFile}")''}
+        # DNF image requires DNF_DB_GAME_PASSWORD to be exactly 8 characters.
+        if [ ''${#GAME_DB_PASS} -ne 8 ]; then
+          echo "ERROR: gamePassword must be exactly 8 chars, got ''${#GAME_DB_PASS}" >&2
+          exit 1
+        fi
         cat > /run/dnf-server/env <<EOF
         DNF_DB_ROOT_PASSWORD=$ROOT_PASS
+        MAIN_MYSQL_ROOT_PASSWORD=$ROOT_PASS
+        DNF_DB_GAME_PASSWORD=$GAME_DB_PASS
         GM_PASSWORD=$GM_PASS
         GM_CONNECT_KEY=$GM_KEY
         EOF
@@ -194,18 +227,27 @@ in
           ];
         };
         dnf-1 = {
-          image = "docker.io/1995chen/dnf:centos5-2.1.5";
+          image = "docker.io/1995chen/dnf:centos7-latest";
           hostname = "dnf-1";
           dependsOn = [ "mysql" ];
           environment = {
             TZ = "Asia/Shanghai";
             SERVER_GROUP = toString cfg.serverGroup;
+            SERVER_GROUP_DB = cfg.serverGroupDB;
             OPEN_CHANNEL = cfg.openChannels;
+            CLIENT_POOL_SIZE = toString cfg.clientPoolSize;
             PUBLIC_IP = cfg.publicIP;
-            MYSQL_HOST = "10.90.0.10"; # Use fixed IP address
-            MYSQL_PORT = "4000"; # MySQL's internal port
+            # Main DB and server-group DB both live in the mysql container
+            MAIN_MYSQL_HOST = "10.90.0.10";
+            MAIN_MYSQL_PORT = "4000";
+            MAIN_MYSQL_GAME_ALLOW_IP = "10.90.0.20";
+            MYSQL_HOST = "10.90.0.10";
+            MYSQL_PORT = "4000";
+            MYSQL_GAME_ALLOW_IP = "10.90.0.20";
             GM_ACCOUNT = cfg.gmAccount;
             GM_LANDER_VERSION = cfg.gmLanderVersion;
+            WEB_USER = "root";
+            WEB_PASS = "123456";
           };
           ports = [
             "2000:180/tcp" # supervisor web
@@ -227,12 +269,22 @@ in
           ];
           extraOptions = [
             "--shm-size=8g"
-            "--memory=1g"
+            "--memory=4g"
             "--memory-swap=-1"
-            "--cpus=1.0"
+            "--cpus=2.0"
             "--network=dnf-net"
             "--ip=10.90.0.20"
             "--env-file=/run/dnf-server/env"
+            # README-recommended cap:
+            "--cap-add=NET_ADMIN"
+            # Old prebuilt binaries trip modern kernel defaults:
+            "--security-opt=seccomp=unconfined"
+            "--security-opt=apparmor=unconfined"
+            "--cap-add=SYS_PTRACE"
+            "--cap-add=SYS_NICE"
+            "--cap-add=IPC_LOCK"
+            "--ulimit=nofile=65536:65536"
+            "--ulimit=nproc=32768:32768"
           ];
         };
       };
@@ -251,17 +303,23 @@ in
         "create-dnf-env.service"
       ];
       serviceConfig = {
-        Restart = "always";
+        Restart = lib.mkForce "always";
         RestartSec = "10s";
       };
     };
 
     # Ensure mysql container restarts on failure
     systemd.services."${cfg.backend}-mysql" = {
-      after = [ "create-dnf-network.service" "create-dnf-env.service" ];
-      requires = [ "create-dnf-network.service" "create-dnf-env.service" ];
+      after = [
+        "create-dnf-network.service"
+        "create-dnf-env.service"
+      ];
+      requires = [
+        "create-dnf-network.service"
+        "create-dnf-env.service"
+      ];
       serviceConfig = {
-        Restart = "always";
+        Restart = lib.mkForce "always";
         RestartSec = "10s";
       };
     };
