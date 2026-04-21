@@ -3,6 +3,7 @@
   config,
   pkgs,
   lib,
+  inputs,
   ...
 }:
 {
@@ -29,6 +30,7 @@
     };
     claude-code = {
       enable = true;
+      package = inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.claude-code;
     };
     gemini-cli = {
       enable = true;
