@@ -1,8 +1,8 @@
-{ config, pkgs, ... }:
+{ config, pkgs, inputs, ... }:
 
 {
   imports = [
-    ../../nixos-modules/dnf-server-native.nix
+    inputs.xiongchenyu6.nixosModules.dnf-server
   ];
 
   # Sops secrets for DNF server
