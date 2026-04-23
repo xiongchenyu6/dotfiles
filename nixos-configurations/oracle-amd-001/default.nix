@@ -184,7 +184,7 @@
         name = "casibase";
       };
       casdoor = {
-        endpoint = "https://casdoor.xiongchenyu.dpdns.org";
+        endpoint = "https://casdoor.panda.qzz.io";
         clientId = "PLACEHOLDER_FROM_SOPS";
         clientSecret = "PLACEHOLDER_FROM_SOPS";
         organization = "built-in";
@@ -215,10 +215,10 @@
 
     nginx = {
       virtualHosts = {
-        "casibase.xiongchenyu.dpdns.org" = {
+        "casibase.panda.qzz.io" = {
           forceSSL = true;
           acmeRoot = null;
-          useACMEHost = "xiongchenyu.dpdns.org";
+          useACMEHost = "panda.qzz.io";
           kTLS = true;
           locations = {
             "/" = {
@@ -227,10 +227,10 @@
             };
           };
         };
-        "casdoor.xiongchenyu.dpdns.org" = {
+        "casdoor.panda.qzz.io" = {
           forceSSL = true;
           acmeRoot = null;
-          useACMEHost = "xiongchenyu.dpdns.org";
+          useACMEHost = "panda.qzz.io";
           kTLS = true;
           locations = {
             "/" = {
