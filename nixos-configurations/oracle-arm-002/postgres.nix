@@ -162,7 +162,11 @@
         ensureClauses.superuser = true;
       }
       { name = "api_authenticator"; }
-      { name = "api_anon"; }
+      # Supabase-standard role names. The Realtime server's migrations and
+      # most @supabase/* JS clients hardcode `anon` / `authenticated` /
+      # `service_role`, so we match those names here rather than prefixing
+      # with `api_`.
+      { name = "anon"; }
       { name = "authenticated"; }
       { name = "service_role"; }
       { name = "supabase_auth_admin"; }
@@ -251,18 +255,36 @@
         -- index_advisor) resolve without per-role ALTER.
         ALTER DATABASE api SET search_path TO "\$user", public, extensions;
 
+        -- One-time migration from our old role name (api_anon) to
+        -- Supabase's conventional `anon`. By the time this init script
+        -- runs, postgresql-setup has already created the new `anon` role
+        -- (ensureUsers), so we can't use RENAME — instead drop the old
+        -- role after releasing its grants. The grants it used to hold
+        -- (schema USAGE, membership in api_authenticator) are re-granted
+        -- to `anon` further down in this same script, so nothing is lost.
+        -- Idempotent: noop once api_anon is gone.
+        DO \$fix\$
+        BEGIN
+          IF EXISTS (SELECT 1 FROM pg_roles WHERE rolname = 'api_anon') THEN
+            REASSIGN OWNED BY api_anon TO anon;
+            DROP OWNED BY api_anon CASCADE;
+            DROP ROLE api_anon;
+          END IF;
+        END
+        \$fix\$;
+
         ALTER ROLE api_authenticator   WITH LOGIN PASSWORD \$pw\$$PW\$pw\$;
         ALTER ROLE supabase_auth_admin WITH LOGIN PASSWORD \$pw\$$PW\$pw\$ CREATEROLE;
         ALTER ROLE supabase_admin      WITH LOGIN PASSWORD \$pw\$$PW\$pw\$;
-        ALTER ROLE api_anon            WITH NOLOGIN;
+        ALTER ROLE anon                WITH NOLOGIN;
         ALTER ROLE authenticated       WITH NOLOGIN;
         ALTER ROLE service_role        WITH NOLOGIN;
         ALTER ROLE quant               WITH LOGIN PASSWORD \$pw\$$QPW\$pw\$;
 
-        GRANT api_anon, authenticated, service_role TO api_authenticator;
+        GRANT anon, authenticated, service_role TO api_authenticator;
 
         CREATE SCHEMA IF NOT EXISTS api AUTHORIZATION "freeman.xiong";
-        GRANT USAGE ON SCHEMA api TO api_anon, authenticated, service_role;
+        GRANT USAGE ON SCHEMA api TO anon, authenticated, service_role;
 
         CREATE SCHEMA IF NOT EXISTS auth AUTHORIZATION supabase_auth_admin;
 
@@ -287,7 +309,7 @@
         -- their documentation assumes them; put the smaller helpers into
         -- a dedicated `extensions` schema exposed to the API roles.
         CREATE SCHEMA IF NOT EXISTS extensions AUTHORIZATION "freeman.xiong";
-        GRANT USAGE ON SCHEMA extensions TO api_anon, authenticated, service_role;
+        GRANT USAGE ON SCHEMA extensions TO anon, authenticated, service_role;
 
         -- contrib grab-bag (install first — pgjwt etc. depend on pgcrypto)
         CREATE EXTENSION IF NOT EXISTS "uuid-ossp"         SCHEMA extensions;
@@ -374,7 +396,7 @@
       ${pkgs.sudo}/bin/sudo -u postgres ${pkgs.postgresql_18_jit}/bin/psql \
         -v ON_ERROR_STOP=1 -d api <<'SQL'
         GRANT EXECUTE ON FUNCTION auth.jwt(), auth.uid(), auth.role(), auth.email()
-          TO api_anon, authenticated, service_role;
+          TO anon, authenticated, service_role;
       SQL
     '';
   };
@@ -406,7 +428,7 @@
         dbname = "api";
       };
       db-schemas = "api";
-      db-anon-role = "api_anon";
+      db-anon-role = "anon";
       server-port = 3333;
       server-unix-socket = null;
       jwt-role-claim-key = ".role";

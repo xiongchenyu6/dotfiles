@@ -11,7 +11,7 @@ aarch64-linux, 138.2.76.211). All endpoints work today; last verified
 
 | Surface | URL / DSN | Auth | Notes |
 |---|---|---|---|
-| **PostgREST (HTTP API)** | `https://api.panda.qzz.io` | Anonymous by default (`api_anon` role). Pass `Authorization: Bearer <JWT>` to upgrade to `authenticated` or `service_role`. | Exposes schema `api`. Cloudflare-proxied. 100 s idle cap on Free plan. |
+| **PostgREST (HTTP API)** | `https://api.panda.qzz.io` | Anonymous by default (`anon` role). Pass `Authorization: Bearer <JWT>` to upgrade to `authenticated` or `service_role`. | Exposes schema `api`. Cloudflare-proxied. 100 s idle cap on Free plan. |
 | **GoTrue auth** | `https://auth.panda.qzz.io` | — | Endpoints: `/signup`, `/token?grant_type=password`, `/logout`, `/settings`, `/recover`, `/verify`. `GOTRUE_MAILER_AUTOCONFIRM=true` so new users get an access_token immediately from `/signup`. CF-proxied. |
 | **Supabase Realtime** | `wss://<external_id>.realtime.panda.qzz.io/socket/websocket?apikey=<JWT>&vsn=1.0.0` | Tenant JWT (same `JWT_SECRET` as the auth layer) | Per-tenant via Host header subdomain. Admin API at `https://realtime.panda.qzz.io/api/tenants` (role=supabase_admin JWT). Wildcard `*.realtime.panda.qzz.io` is DNS-only → direct origin (still TLS). |
 | **Direct PostgreSQL** | `postgres://quant:<pw>@db.panda.qzz.io:5432/api?sslmode=require` | Password — ask the operator | DNS-only (CF proxy doesn't tunnel 5432). `sslmode=require` works; `verify-full` needs the self-signed origin cert (CN=`db.panda.qzz.io`). |
@@ -20,7 +20,7 @@ aarch64-linux, 138.2.76.211). All endpoints work today; last verified
 
 - **Database:** `api` on PostgreSQL 18 (aarch64).
 - **Roles (Supabase convention):**
-  - `api_anon` — unauthenticated PostgREST caller, `statement_timeout=3s`
+  - `anon` — unauthenticated PostgREST caller, `statement_timeout=3s`
   - `authenticated` — any logged-in user
   - `service_role` — bypass RLS
   - `api_authenticator` — PostgREST's DB login (inherits the above)
@@ -157,7 +157,7 @@ ADMIN_JWT="$H.$P.$S"
 - **pgaudit is not installed** — nixpkgs marks it broken for PG18 (2026-04). Re-add once upstream fixes.
 - **pg_jsonschema, wrappers, supabase_vault are not installed** — these are pgrx-based and haven't been packaged yet. If you need JSON schema validation in RLS policies, use `pg_graphql` validations or a plpgsql helper.
 - **Single-node only.** Realtime has `DNS_NODES=""`, `RUN_JANITOR=true`. If you scale out, also provision a shared Erlang cluster.
-- **`auth.uid()`, `auth.role()`, `auth.jwt()`** are gotrue-managed. Our RLS helpers must reference them via `SELECT auth.uid()` inside policies; EXECUTE is granted to `api_anon`/`authenticated`/`service_role`.
+- **`auth.uid()`, `auth.role()`, `auth.jwt()`** are gotrue-managed. Our RLS helpers must reference them via `SELECT auth.uid()` inside policies; EXECUTE is granted to `anon`/`authenticated`/`service_role`.
 
 ## If something is broken
 
