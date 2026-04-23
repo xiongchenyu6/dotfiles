@@ -32,15 +32,15 @@
       workers = 2;
       logLevel = "INFO";
       migrationEnabled = true;
-      consoleApiUrl = "https://dify.xiongchenyu.dpdns.org";
-      serviceApiUrl = "https://dify.xiongchenyu.dpdns.org";
-      appApiUrl = "https://dify.xiongchenyu.dpdns.org";
-      filesUrl = "https://dify.xiongchenyu.dpdns.org";
+      consoleApiUrl = "https://dify.panda.qzz.io";
+      serviceApiUrl = "https://dify.panda.qzz.io";
+      appApiUrl = "https://dify.panda.qzz.io";
+      filesUrl = "https://dify.panda.qzz.io";
     };
 
     web = {
       port = 3000;
-      consoleWebUrl = "https://dify.xiongchenyu.dpdns.org";
+      consoleWebUrl = "https://dify.panda.qzz.io";
     };
 
     database = {
@@ -59,12 +59,12 @@
 
     nginx = {
       enable = true;
-      domain = "dify.xiongchenyu.dpdns.org";
+      domain = "dify.panda.qzz.io";
     };
   };
 
   # SSL for dify virtual host
-  services.nginx.virtualHosts."dify.xiongchenyu.dpdns.org" = {
+  services.nginx.virtualHosts."dify.panda.qzz.io" = {
     forceSSL = true;
     enableACME = true;
   };

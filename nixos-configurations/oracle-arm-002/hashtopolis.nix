@@ -12,6 +12,26 @@
   services.hashtopolis-server = {
     enable = true;
 
+    # Upstream package.nix is stale after hashtopolis renamed *.class.php → *.php
+    # and bumped composer deps. Two fixes layered on top of pkgs.hashtopolis-server:
+    #   1. composerVendor: relax composerStrictValidation (lockfile drift) and
+    #      pin the updated vendor hash.
+    #   2. postPatch: point substituteInPlace at the new filenames.
+    # Remove once xiongchenyu6/nur-packages ships a refreshed package.nix.
+    package = pkgs.hashtopolis-server.overrideAttrs (_: previousAttrs: {
+      composerVendor = previousAttrs.composerVendor.overrideAttrs (_: {
+        composerStrictValidation = false;
+        outputHash = "sha256-KobiZlzJjL6nOsxmbndnNxE5a9ElLvU+ehdnvcRqtxo=";
+      });
+      postPatch = ''
+        substituteInPlace src/inc/utils/Lock.php \
+          --replace-fail 'dirname(__FILE__) . "/locks/"' '(getenv("HASHTOPOLIS_LOCKS_PATH") ?: dirname(__FILE__) . "/locks/") . "/"'
+        substituteInPlace src/inc/utils/LockUtils.php \
+          --replace-fail 'dirname(__FILE__) . "/locks/"' '(getenv("HASHTOPOLIS_LOCKS_PATH") ?: dirname(__FILE__) . "/locks/") . "/"'
+        sed -i '2a require_once(dirname(__FILE__) . "/../../vendor/autoload.php");' src/install/updates/update.php
+      '';
+    });
+
     listenAddress = "0.0.0.0";
     port = 8080;
     dataDir = "/var/lib/hashtopolis";
@@ -33,12 +53,12 @@
 
     nginx = {
       enable = true;
-      virtualHost = "hashtopolis.xiongchenyu.dpdns.org";
+      virtualHost = "hashtopolis.panda.qzz.io";
     };
   };
 
   # Configure nginx SSL for hashtopolis virtual host
-  services.nginx.virtualHosts."hashtopolis.xiongchenyu.dpdns.org" = {
+  services.nginx.virtualHosts."hashtopolis.panda.qzz.io" = {
     forceSSL = true;
     enableACME = true;
   };

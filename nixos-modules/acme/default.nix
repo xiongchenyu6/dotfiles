@@ -44,9 +44,9 @@
           domain = "work.ai";
           extraDomainNames = [ "*.work.ai" ];
         };
-        "xiongchenyu.dpdns.org" = {
-          domain = "xiongchenyu.dpdns.org";
-          extraDomainNames = [ "*.xiongchenyu.dpdns.org" ];
+        "panda.qzz.io" = {
+          domain = "panda.qzz.io";
+          extraDomainNames = [ "*.panda.qzz.io" ];
           group = "nginx";
           reloadServices = [ "nginx.service" ];
         };

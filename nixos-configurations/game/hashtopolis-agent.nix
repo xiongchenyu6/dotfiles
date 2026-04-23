@@ -21,7 +21,7 @@
     enable = true;
 
     # Server configuration
-    serverUrl = "https://hashtopolis.xiongchenyu.dpdns.org/api/server.php";
+    serverUrl = "https://hashtopolis.panda.qzz.io/api/server.php";
 
     # Use SOPS secret for voucher - module handles UUID preservation natively
     voucherFile = config.sops.secrets."hashtopolis/agent/voucher".path;

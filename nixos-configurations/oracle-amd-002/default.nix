@@ -31,6 +31,7 @@ in
     srvos.nixosModules.mixins-nix-experimental
     srvos.nixosModules.mixins-tracing
     xiongchenyu6.nixosModules.cc-gateway
+    hermes-agent.nixosModules.default
     ./hardware-configuration.nix
     {
       topology.self.interfaces.home = {
@@ -80,6 +81,9 @@ in
       allowedUDPPorts = [
         port
         22617
+        22618
+        22619
+        22620
         53
         80
         179
@@ -150,11 +154,89 @@ in
               }
             ];
           };
+          wg_game_office = {
+            inherit address privateKeyFile table;
+            listenPort = 22618;
+            postUp = ''
+              ${pkgs.iproute2}/bin/ip addr add dev wg_game_office 172.22.240.97/32 peer 172.22.240.100/32
+              ${pkgs.iproute2}/bin/ip addr add dev wg_game_office fd48:4b4:f3::1/128 peer fd48:4b4:f3::4/128
+              ${pkgs.iproute2}/bin/ip link set multicast on dev wg_game_office
+            '';
+            peers = [
+              {
+                publicKey = "nBEkTpn4kRYXS9r7beXh3uMYJBAq/534byXv8NsB8gM=";
+                inherit allowedIPs;
+              }
+            ];
+          };
+          wg_iphone = {
+            inherit address privateKeyFile table;
+            listenPort = 22619;
+            postUp = ''
+              ${pkgs.iproute2}/bin/ip addr add dev wg_iphone 172.22.240.97/32 peer 172.22.240.101/32
+              ${pkgs.iproute2}/bin/ip addr add dev wg_iphone fd48:4b4:f3::1/128 peer fd48:4b4:f3::5/128
+              ${pkgs.iproute2}/bin/ip link set multicast on dev wg_iphone
+            '';
+            peers = [
+              {
+                publicKey = "CAW6+atqM9xmCAZUaev3OZWbYKwjDNCHezyiBpiHmSg=";
+                inherit allowedIPs;
+              }
+            ];
+          };
+          wg_sg_office = {
+            inherit address privateKeyFile table;
+            listenPort = 22620;
+            postUp = ''
+              ${pkgs.iproute2}/bin/ip addr add dev wg_sg_office 172.22.240.97/32 peer 172.22.240.102/32
+              ${pkgs.iproute2}/bin/ip addr add dev wg_sg_office fd48:4b4:f3::1/128 peer fd48:4b4:f3::6/128
+              ${pkgs.iproute2}/bin/ip link set multicast on dev wg_sg_office
+            '';
+            peers = [
+              {
+                publicKey = "9WkAJx+EG3VifVLiMgD8+6CoCsBwSyWAMwtajoy/OTk=";
+                inherit allowedIPs;
+              }
+            ];
+          };
+          wg_kioubit = {
+            inherit address privateKeyFile table;
+            peers = [
+              {
+                endpoint = "hk1.g-load.eu:22616";
+                publicKey = "sLbzTRr2gfLFb24NPzDOpy8j09Y6zI+a7NkeVMdVSR8=";
+                inherit allowedIPs;
+              }
+            ];
+          };
         };
     };
   };
 
   sops.secrets."wireguard/tcloud" = { };
+
+  # Secret env file consumed by hermes-agent. Stored under the legacy
+  # `zeroclaw/telegram_bot_token` SOPS key — the YAML namespace in
+  # secrets/common.yaml is unchanged; only the nix references migrated.
+  sops.templates."hermes-env".content = ''
+    GEMINI_API_KEY=${config.sops.placeholder."api-keys/GEMINI_API_KEY"}
+    TELEGRAM_BOT_TOKEN=${config.sops.placeholder."zeroclaw/telegram_bot_token"}
+  '';
+
+  sops.templates."s3fs-passwd" = {
+    content = "${config.sops.placeholder."s3fs/access_key"}:${
+      config.sops.placeholder."s3fs/secret_key"
+    }";
+    mode = "0600";
+    owner = "root";
+    group = "root";
+  };
+
+  sops.secrets."s3fs/access_key" = { };
+  sops.secrets."s3fs/secret_key" = { };
+
+  sops.secrets."api-keys/GEMINI_API_KEY".owner = "root";
+  sops.secrets."zeroclaw/telegram_bot_token".owner = "root";
 
   services = {
     openssh = {
@@ -241,6 +323,7 @@ in
 
   environment.systemPackages = with pkgs; [
     inputs.xiongchenyu6.packages.x86_64-linux.cc-gateway
+    s3fs
   ];
 
   services.cc-gateway = {
@@ -248,5 +331,42 @@ in
     port = 18443;
     openFirewall = false;
     configFile = config.sops.templates."cc-gateway-config".path;
+  };
+
+  services.hermes-agent = {
+    enable = true;
+    settings = {
+      model = {
+        # Bare model ID — `provider = "gemini"` hits Google AI Studio's native
+        # endpoint (v1beta), which rejects OpenRouter-style "google/" prefixes.
+        default = "gemini-2.5-flash";
+        provider = "gemini";
+      };
+      # User-authored skills migrated from the old zeroclaw workspace.
+      # External dirs are read-only to hermes; skill creation still writes
+      # to $HERMES_HOME/skills/. Hermes reads finnhub/flyclaw/self-improving/
+      # xiaohongshu-mcp from here alongside its built-in skill library.
+      skills.external_dirs = [ "/var/lib/hermes/custom-skills" ];
+    };
+    # Non-secret env vars (bot allowlist). Secrets go via environmentFiles.
+    environment = {
+      TELEGRAM_ALLOWED_USERS = "5368588092,5369058954";
+    };
+    environmentFiles = [ config.sops.templates."hermes-env".path ];
+  };
+
+  # S3 FUSE mount for iDrive e2 docs bucket
+  fileSystems."/mnt/s3/docs" = {
+    device = "docs";
+    fsType = "fuse./run/current-system/sw/bin/s3fs";
+    noCheck = true;
+    options = [
+      "_netdev"
+      "allow_other"
+      "use_path_request_style"
+      "url=https://s3.us-west-1.idrivee2.com"
+      "endpoint=us-west-1"
+      "passwd_file=${config.sops.templates."s3fs-passwd".path}"
+    ];
   };
 }

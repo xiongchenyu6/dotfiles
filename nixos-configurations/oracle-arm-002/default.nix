@@ -2,7 +2,6 @@
   inputs,
   modulesPath,
   lib,
-  config,
   pkgs,
   ezModules,
   ...
@@ -23,36 +22,12 @@
     srvos.nixosModules.mixins-trusted-nix-caches
     srvos.nixosModules.mixins-nix-experimental
     srvos.nixosModules.mixins-tracing
-    # xiongchenyu6.nixosModules.hashtopolis-server # TEMP: disabled — composerVendorCheckHook fails after nixpkgs bump; re-enable once composer.lock is fixed upstream
-    hermes-agent.nixosModules.default
-
+    xiongchenyu6.nixosModules.hashtopolis-server
     ./disk-config.nix
     ./hardware-configuration.nix
-    # ./hashtopolis.nix # TEMP: disabled alongside hashtopolis-server module
+    ./hashtopolis.nix
+    ./postgres.nix
   ];
-
-  # Secret env file consumed by hermes-agent. Stored under the legacy
-  # `zeroclaw/telegram_bot_token` SOPS key — the YAML namespace in
-  # secrets/common.yaml is unchanged; only the nix references migrated.
-  sops.templates."hermes-env".content = ''
-    GEMINI_API_KEY=${config.sops.placeholder."api-keys/GEMINI_API_KEY"}
-    TELEGRAM_BOT_TOKEN=${config.sops.placeholder."zeroclaw/telegram_bot_token"}
-  '';
-
-  sops.templates."s3fs-passwd" = {
-    content = "${config.sops.placeholder."s3fs/access_key"}:${
-      config.sops.placeholder."s3fs/secret_key"
-    }";
-    mode = "0600";
-    owner = "root";
-    group = "root";
-  };
-
-  sops.secrets."s3fs/access_key" = { };
-  sops.secrets."s3fs/secret_key" = { };
-
-  sops.secrets."api-keys/GEMINI_API_KEY".owner = "root";
-  sops.secrets."zeroclaw/telegram_bot_token".owner = "root";
 
   boot = {
     loader.grub = {
@@ -78,51 +53,12 @@
     };
   };
 
-  environment.systemPackages =
-    map lib.lowPrio [
-      pkgs.curl
-      pkgs.gitMinimal
-    ]
-    ++ [ pkgs.s3fs ];
+  environment.systemPackages = map lib.lowPrio [
+    pkgs.curl
+    pkgs.gitMinimal
+  ];
 
   nixpkgs = {
     hostPlatform = "aarch64-linux";
-  };
-
-  services.hermes-agent = {
-    enable = true;
-    settings = {
-      model = {
-        # Bare model ID — `provider = "gemini"` hits Google AI Studio's native
-        # endpoint (v1beta), which rejects OpenRouter-style "google/" prefixes.
-        default = "gemini-2.5-flash";
-        provider = "gemini";
-      };
-      # User-authored skills migrated from the old zeroclaw workspace.
-      # External dirs are read-only to hermes; skill creation still writes
-      # to $HERMES_HOME/skills/. Hermes reads finnhub/flyclaw/self-improving/
-      # xiaohongshu-mcp from here alongside its built-in skill library.
-      skills.external_dirs = [ "/var/lib/hermes/custom-skills" ];
-    };
-    # Non-secret env vars (bot allowlist). Secrets go via environmentFiles.
-    environment = {
-      TELEGRAM_ALLOWED_USERS = "5368588092,5369058954";
-    };
-    environmentFiles = [ config.sops.templates."hermes-env".path ];
-  };
-
-  # S3 FUSE mount for iDrive e2 docs bucket
-  fileSystems."/mnt/s3/docs" = {
-    device = "docs";
-    fsType = "fuse./run/current-system/sw/bin/s3fs";
-    noCheck = true;
-    options = [
-      "_netdev"
-      "allow_other"
-      "use_path_request_style"
-      "url=https://s3.us-west-1.idrivee2.com"
-      "endpoint=us-west-1"
-      "passwd_file=${config.sops.templates."s3fs-passwd".path}"
-    ];
   };
 }
