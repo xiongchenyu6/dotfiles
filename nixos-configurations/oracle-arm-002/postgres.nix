@@ -17,6 +17,7 @@
   sops.secrets."oracle-arm-002/quant-password" = { };
   sops.secrets."oracle-arm-002/realtime-secret-key-base" = { };
   sops.secrets."oracle-arm-002/realtime-metrics-jwt-secret" = { };
+  sops.secrets."oracle-arm-002/google-oauth-secret" = { };
 
   sops.templates."postgrest-pgpass" = {
     content = ''
@@ -34,6 +35,7 @@
     content = ''
       GOTRUE_JWT_SECRET=${config.sops.placeholder."oracle-arm-002/jwt-secret"}
       DATABASE_URL=postgres://supabase_auth_admin:${config.sops.placeholder."oracle-arm-002/db-service-password"}@127.0.0.1:5432/api?search_path=auth&sslmode=disable
+      GOTRUE_EXTERNAL_GOOGLE_SECRET=${config.sops.placeholder."oracle-arm-002/google-oauth-secret"}
     '';
     mode = "0400";
   };
@@ -456,6 +458,18 @@
       GOTRUE_DISABLE_SIGNUP = false;
       GOTRUE_PASSWORD_MIN_LENGTH = 8;
       DB_NAMESPACE = "auth";
+
+      # Google OAuth (client secret comes from the SOPS template above).
+      # Redirect URI below must be registered verbatim in GCP → Credentials
+      # → OAuth 2.0 Client IDs → Authorised redirect URIs.
+      GOTRUE_EXTERNAL_GOOGLE_ENABLED = true;
+      GOTRUE_EXTERNAL_GOOGLE_CLIENT_ID =
+        "903515141994-i4q7kuslcjsff955t8vt1fmre2jh9gk0.apps.googleusercontent.com";
+      GOTRUE_EXTERNAL_GOOGLE_REDIRECT_URI = "https://auth.panda.qzz.io/callback";
+
+      # Where GoTrue is allowed to redirect users after OAuth. Every frontend
+      # callback route must be listed here or the post-auth redirect 400s.
+      GOTRUE_URI_ALLOW_LIST = "https://quant.panda.qzz.io/auth/callback,https://quant.panda.qzz.io/,https://quant.xiongchenyu6.workers.dev/auth/callback";
     };
   };
 
