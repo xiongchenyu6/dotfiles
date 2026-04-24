@@ -21,7 +21,13 @@ let
 in
 {
   imports = [
-    ({ config, inputs, lib, ... }:
+    (
+      {
+        config,
+        inputs,
+        lib,
+        ...
+      }:
       {
         disabledModules = [
           "${inputs.srvos}/nixos/common"
@@ -51,7 +57,8 @@ in
         boot.initrd.systemd.enable = lib.mkDefault (!config.boot.swraid.enable && !config.boot.isContainer);
         environment.ldso32 = null;
         boot.tmp.cleanOnBoot = lib.mkDefault true;
-      })
+      }
+    )
     ezModules.kernel
     ezModules.security
     ezModules.ssh-harden
@@ -62,7 +69,7 @@ in
 
   home-manager = sharedConfig.homeManagerConfig;
   documentation.info.enable = false;
-  zramSwap.enable = true;
+  zramSwap.enable = false;
   boot.kernel.sysctl = {
     "vm.swappiness" = 10;
   };
