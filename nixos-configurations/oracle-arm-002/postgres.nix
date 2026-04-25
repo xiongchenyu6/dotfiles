@@ -467,9 +467,10 @@
         "903515141994-i4q7kuslcjsff955t8vt1fmre2jh9gk0.apps.googleusercontent.com";
       GOTRUE_EXTERNAL_GOOGLE_REDIRECT_URI = "https://auth.panda.qzz.io/callback";
 
-      # Where GoTrue is allowed to redirect users after OAuth. Every frontend
-      # callback route must be listed here or the post-auth redirect 400s.
-      GOTRUE_URI_ALLOW_LIST = "https://quant.panda.qzz.io/auth/callback,https://quant.panda.qzz.io/,https://quant.xiongchenyu6.workers.dev/auth/callback";
+      # Where GoTrue is allowed to redirect users after OAuth. Glob (**) so
+      # the `?next=/protected/path` pattern used for post-login bounce-back
+      # passes without tripping redirect_uri_mismatch.
+      GOTRUE_URI_ALLOW_LIST = "https://quant.panda.qzz.io/**,https://quant.xiongchenyu6.workers.dev/**";
     };
   };
 
@@ -530,9 +531,21 @@
     "api.panda.qzz.io" = {
       forceSSL = true;
       enableACME = true;
+      # Catch-all → PostgREST. Authenticated clients land here for detail views.
       locations."/" = {
         proxyPass = "http://127.0.0.1:3333";
         proxyWebsockets = true;
+      };
+      # Public preview views are the only paths anon can reach after migration
+      # 007's revokes. Rate-limit per-IP and tell Cloudflare's CDN to cache
+      # them hard so abusive callers hit edge, not origin PostgREST.
+      locations."~ ^/public_" = {
+        proxyPass = "http://127.0.0.1:3333";
+        extraConfig = ''
+          limit_req zone=public_preview burst=60 nodelay;
+          limit_req_status 429;
+          add_header Cache-Control "public, max-age=60, s-maxage=300" always;
+        '';
       };
     };
     "auth.panda.qzz.io" = {
@@ -582,5 +595,8 @@
   services.nginx.commonHttpConfig = lib.mkAfter ''
     proxy_headers_hash_max_size 1024;
     proxy_headers_hash_bucket_size 128;
+    # Rate-limit zone for the public_* preview views on api.panda.qzz.io.
+    # 30 req/min per IP, 10MB state (~160k unique IPs tracked).
+    limit_req_zone $binary_remote_addr zone=public_preview:10m rate=30r/m;
   '';
 }

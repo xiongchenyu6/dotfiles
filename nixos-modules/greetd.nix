@@ -1,36 +1,26 @@
 { pkgs, lib, ... }:
 {
-  environment = {
-    etc = {
-      "hyprland.conf" = {
-        text = ''
-          exec-once = ${pkgs.regreet}/bin/regreet; ${pkgs.hyprland}/bin/hyprctl dispatch exit
-          misc {
-              disable_hyprland_logo = true
-              disable_splash_rendering = true
-              disable_hyprland_qtutils_check = true
-          }
-        '';
-        user = "greeter";
-      };
-    };
-  };
-
-  programs.regreet.enable = true;
-
   services = {
     greetd = {
       enable = true;
       settings = {
         initial_session = {
           user = lib.mkDefault "freeman.xiong";
-          command = lib.mkDefault "Hyprland";
+          command = lib.mkDefault "niri-session";
         };
         default_session = {
           user = "greeter";
-          command = "${pkgs.hyprland}/bin/Hyprland --config /etc/hyprland.conf";
+          command = "${pkgs.greetd.tuigreet}/bin/tuigreet --time --remember --cmd niri-session";
         };
       };
     };
+  };
+
+  # Unlock gnome-keyring on login. gnome-keyring itself is enabled in
+  # nixos-modules/gui.nix (services.gnome.gnome-keyring.enable).
+  security.pam.services = {
+    login.enableGnomeKeyring = true;
+    greetd.enableGnomeKeyring = true;
+    swaylock = { };
   };
 }

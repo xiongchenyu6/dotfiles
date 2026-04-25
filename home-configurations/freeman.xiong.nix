@@ -52,8 +52,7 @@ in
                 ezModules.gui
                 #ezModules.mpd
                 ezModules.stow-config
-                ezModules.qwert
-                ezModules.hyprland
+                ezModules.niri
                 ezModules.tmux
               ]
             else
