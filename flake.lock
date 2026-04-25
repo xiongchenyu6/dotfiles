@@ -505,11 +505,11 @@
         "xwayland-satellite-unstable": "xwayland-satellite-unstable"
       },
       "locked": {
-        "lastModified": 1777101165,
-        "narHash": "sha256-YlI2Gj6sLQjwM4qfQJ/3KtcidBAphSYvbTVCyFF0FdE=",
+        "lastModified": 1777107623,
+        "narHash": "sha256-QAfcUqeQN2JN/V8rxzLzbWsEASgvsGY+1hh/t5/b8VQ=",
         "owner": "sodiboo",
         "repo": "niri-flake",
-        "rev": "aea780a19bdc06cc5305ef99cfdb892a095f4186",
+        "rev": "6558302716aad0f2fee658638202175ccbf40961",
         "type": "github"
       },
       "original": {
@@ -538,11 +538,11 @@
     "niri-unstable": {
       "flake": false,
       "locked": {
-        "lastModified": 1777097789,
-        "narHash": "sha256-nNCSWMQv7YL22pphvYu8w3NzUZB0aJlY2Wcf7niPQkc=",
+        "lastModified": 1777105194,
+        "narHash": "sha256-W4KXT0RtNYs+qe2ScroVRiaaenlfJpI8aU/DLk2t8/0=",
         "owner": "YaLTeR",
         "repo": "niri",
-        "rev": "8fd9fb73f29cb7e9003df707de4d30779f73f2e6",
+        "rev": "4438aefc8d01b775ee855f96c7d93b16e55a7a9f",
         "type": "github"
       },
       "original": {
@@ -690,22 +690,6 @@
         "type": "github"
       }
     },
-    "nixpkgs-master": {
-      "locked": {
-        "lastModified": 1777100098,
-        "narHash": "sha256-m9HxywMUYWroIRrQHKE+wxE17gBfum99i9H5bBdsxYI=",
-        "owner": "NixOS",
-        "repo": "nixpkgs",
-        "rev": "370045a56d68e7127ce54e0906ab33c3abd387a5",
-        "type": "github"
-      },
-      "original": {
-        "owner": "NixOS",
-        "ref": "master",
-        "repo": "nixpkgs",
-        "type": "github"
-      }
-    },
     "nixpkgs-stable": {
       "locked": {
         "lastModified": 1751274312,
@@ -732,11 +716,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1777100132,
-        "narHash": "sha256-znxFuOd2qd0XD6UL0I8MU/MLqrPMK/RGP7TPZ690wrA=",
+        "lastModified": 1777110581,
+        "narHash": "sha256-Vm0vbbLxFgNqx87kYvCYE2HY+bYv+g0SW9IOvnTjbho=",
         "owner": "nix-community",
         "repo": "NUR",
-        "rev": "a54780e86cd702614d82e00339a7adde38a0d49f",
+        "rev": "e237b5873bf506d8be3e5461e40143a4d1374ce8",
         "type": "github"
       },
       "original": {
@@ -991,7 +975,6 @@
         "nixos-hardware": "nixos-hardware",
         "nixos-wsl": "nixos-wsl",
         "nixpkgs": "nixpkgs",
-        "nixpkgs-master": "nixpkgs-master",
         "nixpkgs-stable": "nixpkgs-stable",
         "nur": "nur",
         "pre-commit-hooks": "pre-commit-hooks",
