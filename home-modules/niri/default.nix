@@ -7,6 +7,27 @@
 }:
 let
   noctalia = "${pkgs.noctalia-shell}/bin/noctalia-shell";
+
+  # niri's `spawn-at-startup` runs while niri is still initialising — its IPC
+  # server (and therefore NIRI_SOCKET) is not yet exported into spawned
+  # children's environments. Without NIRI_SOCKET, noctalia falls back to the
+  # generic ext-workspace backend ("no recognized compositor env" in its
+  # logs) and the bar surface fails to show on niri's outputs. Wrap the
+  # noctalia spawn in a small shell that polls for niri's IPC socket
+  # (~5 s timeout) and exports NIRI_SOCKET before exec'ing noctalia-shell.
+  noctaliaSpawn = pkgs.writeShellScript "noctalia-spawn" ''
+    if [ -z "''${NIRI_SOCKET:-}" ]; then
+      for _ in $(${pkgs.coreutils}/bin/seq 1 50); do
+        sock=$(${pkgs.coreutils}/bin/ls -t "''${XDG_RUNTIME_DIR}"/niri.wayland-*.sock 2>/dev/null | ${pkgs.coreutils}/bin/head -n1)
+        if [ -n "$sock" ]; then
+          export NIRI_SOCKET="$sock"
+          break
+        fi
+        ${pkgs.coreutils}/bin/sleep 0.1
+      done
+    fi
+    exec ${noctalia}
+  '';
 in
 {
   home = lib.mkIf pkgs.stdenv.isLinux {
@@ -104,8 +125,9 @@ in
 
     spawn-at-startup = [
       # Desktop shell — owns bar, notifications, OSD, launcher, lock,
-      # wallpaper, night light, idle management.
-      { command = [ noctalia ]; }
+      # wallpaper, night light, idle management. Wrapper exports
+      # NIRI_SOCKET (see `noctaliaSpawn` above for context).
+      { command = [ "${noctaliaSpawn}" ]; }
 
       # Polkit auth agent (GUI password prompts)
       { command = [ "${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1" ]; }
