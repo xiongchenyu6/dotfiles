@@ -6,6 +6,10 @@
 
   programs.niri = {
     enable = true;
+    # Use niri-unstable (main) for `background-effect { xray ... }` and other
+    # post-25.08 features. niri-flake's `niri-stable` is pinned to v25.08
+    # which doesn't yet support background effects in window/layer rules.
+    package = inputs.niri.packages.${pkgs.stdenv.hostPlatform.system}.niri-unstable;
   };
 
   xdg = {

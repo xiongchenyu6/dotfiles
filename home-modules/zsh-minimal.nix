@@ -26,10 +26,23 @@
       dotDir = "${config.xdg.configHome}/zsh";
       envExtra = "";
       zprof.enable = false; # Set to true to enable profiling
-      # history = {
-      #   extended = true;
-      #   ignorePatterns = [ "rm -rf *" ];
-      # };
+      history = {
+        extended = true;
+        ignoreDups = true;
+        ignoreSpace = true;
+        share = true;
+        size = 50000;
+        save = 50000;
+        ignorePatterns = [ "rm -rf *" ];
+      };
+      # HIST_FCNTL_LOCK uses fcntl() locks instead of the default link-based
+      # lock — required for safe concurrent writes when SHARE_HISTORY is on.
+      # INC_APPEND_HISTORY flushes each command immediately so a killed shell
+      # cannot leave a half-written entry behind.
+      setOptions = [
+        "HIST_FCNTL_LOCK"
+        "INC_APPEND_HISTORY"
+      ];
 
       initContent = ''
         function gre {

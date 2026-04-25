@@ -75,7 +75,10 @@
       "vfio"
       "vfio_iommu_type1"
     ];
-    kernelModules = [ "sp5100_tco" ]; # AMD watchdog module for Legion 16ach6h
+    kernelModules = [
+      "sp5100_tco" # AMD watchdog module for Legion 16ach6h
+      "acpi_call" # exploratory: try to clear EC's persistent camera-disabled flag left by Lenovo Vantage
+    ];
     kernelParams = [
       "iommu=pt"
       "xhci_hcd.quirks=270336"
@@ -84,9 +87,7 @@
       "sp5100_tco.nowayout=1" # Prevent watchdog from being disabled
     ];
 
-    # extraModulePackages = with pkgs; [
-    #   linuxKernel.packages.linux_6_14.cryptodev
-    # ];
+    extraModulePackages = with config.boot.kernelPackages; [ acpi_call ];
 
     kernel = {
       sysctl = {
@@ -155,6 +156,10 @@
     in
     {
       inherit hostName;
+      # game is a local workstation, not part of the autolife.ai inner zone.
+      # Unsetting the domain keeps gethostname() == $HOST (short name) so
+      # ghostty's OSC 7 isLocal() check accepts cwd reports from the shell.
+      domain = null;
       nameservers = [ "1.1.1.1" ];
 
       firewall = {
@@ -313,7 +318,7 @@
         enable = false;
         role = "client";
         settings = {
-          serverAddr = "${config.networking.domain}";
+          serverAddr = "autolife.ai";
           serverPort = 7000;
           # auth.token will be injected from sops when frp is re-enabled
           # See: sops.secrets."frp/token"
