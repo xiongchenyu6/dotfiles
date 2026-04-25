@@ -163,19 +163,6 @@
       };
     };
 
-    # Ghostty tip — v1.3.1 predates PR #9158 which fixes
-    # split/tab-inherit-working-directory on GTK-NG (Linux). Using upstream's
-    # flake pulls `main`; Ghostty publishes cachix so builds are cached.
-    ghostty = {
-      url = "github:ghostty-org/ghostty";
-      inputs = {
-        nixpkgs.follows = "nixpkgs";
-        flake-compat.follows = "flake-compat";
-        systems.follows = "systems";
-        home-manager.follows = "home-manager";
-      };
-    };
-
     # LazyNixOS - lazy evaluation and deployment
     lazynixos = {
       url = "github:xiongchenyu6/lazynixos";
