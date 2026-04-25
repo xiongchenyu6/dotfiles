@@ -43,6 +43,7 @@
       # netbird-ui
       #termius
       unrar-wrapper
+      moonlight-qt # Sunshine client — stream from sg-office or any Sunshine host
       #whatsapp-for-linux
       wasistlos
       winetricks
