@@ -124,6 +124,11 @@
     blueman-applet = {
       enable = true;
     };
+    kdeconnect = {
+      enable = true;
+      indicator = true;
+      package = pkgs.kdePackages.kdeconnect-kde;
+    };
     udiskie = {
       enable = true;
       automount = true;
@@ -134,6 +139,19 @@
       enable = true;
       tray = {
         enable = true;
+      };
+    };
+    activitywatch = {
+      enable = true;
+      watchers = {
+        aw-watcher-afk.settings = {
+          timeout = 300;
+          poll_time = 2;
+        };
+        aw-watcher-window.settings = {
+          poll_time = 1;
+          exclude_title = false;
+        };
       };
     };
   };

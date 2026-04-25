@@ -143,6 +143,7 @@
       url = "github:NousResearch/hermes-agent/0e60a9dc25ae32241339286a85ab69f949e3f24b";
       inputs = {
         nixpkgs.follows = "nixpkgs";
+        flake-parts.follows = "flake-parts";
       };
     };
 
@@ -159,6 +160,19 @@
       inputs = {
         nixpkgs.follows = "nixpkgs";
         nixpkgs-stable.follows = "nixpkgs-stable";
+      };
+    };
+
+    # Ghostty tip — v1.3.1 predates PR #9158 which fixes
+    # split/tab-inherit-working-directory on GTK-NG (Linux). Using upstream's
+    # flake pulls `main`; Ghostty publishes cachix so builds are cached.
+    ghostty = {
+      url = "github:ghostty-org/ghostty";
+      inputs = {
+        nixpkgs.follows = "nixpkgs";
+        flake-compat.follows = "flake-compat";
+        systems.follows = "systems";
+        home-manager.follows = "home-manager";
       };
     };
 

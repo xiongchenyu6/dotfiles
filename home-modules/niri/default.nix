@@ -2,10 +2,14 @@
   pkgs,
   lib,
   config,
+  inputs,
   ...
 }:
 let
   noctalia = "${pkgs.noctalia-shell}/bin/noctalia-shell";
+  # Keep in sync with programs.ghostty.package in home-modules/gui/packages.nix.
+  # Must be the same binary so GTK single-instance doesn't mix versions.
+  ghostty = inputs.ghostty.packages.${pkgs.stdenv.hostPlatform.system}.default;
 in
 {
   home = lib.mkIf pkgs.stdenv.isLinux {
@@ -34,8 +38,6 @@ in
           ln -s "$(cat '${pkgs.stdenv.cc}/nix-support/dynamic-linker')" $out
         ''
       );
-      INPUT_METHOD = "fcitx";
-      XIM_SERVERS = "fcitx";
       NIXOS_OZONE_WL = "1";
       XDG_SESSION_TYPE = "wayland";
       XDG_SESSION_DESKTOP = "niri";
@@ -44,6 +46,18 @@ in
   };
 
   programs.niri.settings = {
+    # Environment pushed to niri itself and imported into systemd --user
+    # via niri-session. Needed because tuigreet --cmd niri-session exec's
+    # directly and never sources hm-session-vars.sh, so the IM env vars
+    # written by i18n.inputMethod.fcitx5 would otherwise be missing.
+    environment = {
+      GTK_IM_MODULE = "fcitx";
+      QT_IM_MODULE = "fcitx";
+      XMODIFIERS = "@im=fcitx";
+      SDL_IM_MODULE = "fcitx";
+      GLFW_IM_MODULE = "ibus";
+    };
+
     outputs = {
       "eDP-1" = {
         scale = 1.5;
@@ -102,6 +116,10 @@ in
       # X11 compatibility shim
       { command = [ "${pkgs.xwayland-satellite}/bin/xwayland-satellite" ]; }
 
+      # Chinese input method — niri doesn't process XDG autostart, so
+      # home-manager's .config/autostart/org.fcitx.Fcitx5.desktop never fires.
+      { command = [ "fcitx5" "-d" "--replace" ]; }
+
       # User-space autostart
       { command = [ "${pkgs.netbird-ui}/bin/netbird-ui" ]; }
       { command = [ "dropbox" "start" ]; }
@@ -113,7 +131,7 @@ in
       "Mod+Shift+Slash".action = show-hotkey-overlay;
 
       "Mod+T" = {
-        action = spawn "${pkgs.ghostty}/bin/ghostty";
+        action = spawn "${ghostty}/bin/ghostty";
         hotkey-overlay.title = "Terminal (ghostty)";
       };
       "Mod+D" = {
@@ -271,8 +289,14 @@ in
       "Mod+V".action = toggle-window-floating;
       "Mod+Shift+V".action = switch-focus-between-floating-and-tiling;
 
-      # Overview
-      "Mod+W".action = toggle-overview;
+      # Overview (moved off Mod+W to free it for tabbed-column toggle)
+      "Mod+O".action = toggle-overview;
+
+      # Tabbed-column display — Mod+W toggles the focused column between
+      # tiled and tabbed rendering. Mod+Up/Down already navigate within
+      # a tabbed column, Mod+BracketLeft/Right already consume/expel
+      # windows into/out of the column (i.e. add/remove tabs).
+      "Mod+W".action = toggle-column-tabbed-display;
 
       "Mod+R".action = switch-preset-column-width;
       "Mod+F".action = maximize-column;
@@ -293,4 +317,31 @@ in
       "Mod+Shift+P".action = power-off-monitors;
     };
   };
+
+  # --- xray background effect ---------------------------------------
+  # niri 25.11 supports `background-effect { xray true }` in window- and
+  # layer-rules, but niri-flake's typed settings schema doesn't expose
+  # it yet (no open PR at sodiboo/niri-flake as of 2026-04). Until that
+  # lands, append the xray rule as raw KDL to the config file niri-flake
+  # installs, and re-validate against the real niri binary at build time.
+  #
+  # Removing this block is as simple as removing it; `programs.niri.settings`
+  # above is untouched.
+  xdg.configFile.niri-config.source = lib.mkForce (
+    inputs.niri.lib.internal.validated-config-for pkgs config.programs.niri.package (
+      config.programs.niri.finalConfig
+      + ''
+
+        // Make all windows "see through" to the wallpaper, ignoring windows
+        // below. Niri auto-enables this when other background effects are
+        // active, but we want it on every window regardless so transparent
+        // terminals / editors show the wallpaper.
+        window-rule {
+            background-effect {
+                xray true
+            }
+        }
+      ''
+    )
+  );
 }
