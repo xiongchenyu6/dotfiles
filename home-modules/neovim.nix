@@ -429,6 +429,12 @@ in
 
       # Properly configured plugins with structured format
       plugins = [
+        # ========== ACTIVITYWATCH ==========
+        # aw-watcher-vim auto-registers on VimEnter and posts events to
+        # http://localhost:5600. Creates the aw-watcher-vim_<host> bucket and
+        # populates the Editor view in the dashboard.
+        pkgs.vimPlugins.aw-watcher-vim
+
         # ========== COLORSCHEMES ==========
         {
           plugin = pkgs.vimPlugins.tokyonight-nvim;
