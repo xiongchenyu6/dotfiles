@@ -183,6 +183,9 @@
   // lib.optionalAttrs pkgs.stdenv.isLinux {
     ghostty = {
       enable = true;
+      # v1.3.1 on nixpkgs predates the GTK-NG fix for split/tab inherit cwd
+      # (ghostty-org/ghostty#1392 → PR #9158, merged 2026-01-07).
+      package = inputs.ghostty.packages.${pkgs.stdenv.hostPlatform.system}.default;
       enableZshIntegration = true;
       systemd.enable = true;
       settings = {
@@ -193,6 +196,8 @@
         background-opacity = 0.9;
         working-directory = "inherit";
         window-inherit-working-directory = true;
+        tab-inherit-working-directory = true;
+        split-inherit-working-directory = true;
         shell-integration = "zsh";
       };
     };
