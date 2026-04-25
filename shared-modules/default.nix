@@ -69,6 +69,39 @@ in
           }
         );
       })
+      # aw-watcher-window-wayland emits the raw Wayland app_id (e.g.
+      # "google-chrome", "firefox", "chromium"), but aw-webui's hardcoded
+      # browser whitelist is in CamelCase ("Google-chrome", "Firefox", ...).
+      # Without this remap, the Browser dashboard view stays empty even when
+      # both the window watcher and the aw-watcher-web-* extension are
+      # collecting data.
+      (_: prev: {
+        aw-watcher-window-wayland = prev.aw-watcher-window-wayland.overrideAttrs (old: {
+          postPatch = (old.postPatch or "") + ''
+            substituteInPlace src/main.rs \
+              --replace-fail \
+                'data.insert("app".to_string(), Value::String(window.appid.clone()));' \
+                'data.insert("app".to_string(), Value::String(normalize_appid(&window.appid)));'
+            cat >> src/main.rs <<'RUST_EOF'
+
+            fn normalize_appid(appid: &str) -> String {
+                match appid {
+                    "google-chrome" => "Google-chrome".to_string(),
+                    "google-chrome-stable" => "Google-chrome-stable".to_string(),
+                    "google-chrome-beta" => "Google-chrome-beta".to_string(),
+                    "google-chrome-unstable" => "Google-chrome-unstable".to_string(),
+                    "chromium" => "Chromium".to_string(),
+                    "chromium-browser" => "Chromium-browser".to_string(),
+                    "brave-browser" => "Brave-browser".to_string(),
+                    "firefox" => "Firefox".to_string(),
+                    "firefox-esr" => "Firefox-esr".to_string(),
+                    _ => appid.to_string(),
+                }
+            }
+            RUST_EOF
+          '';
+        });
+      })
     ];
 
   # Home Manager configuration shared between Darwin and NixOS
