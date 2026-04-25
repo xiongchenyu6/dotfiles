@@ -25,8 +25,13 @@ let
   overlayName = "ubuntu-24.04-overlay-v6.qcow2";
 
   ubuntuBaseImage = pkgs.fetchurl {
+    # Canonical refreshes this same URL with newer builds; whenever the daily
+    # image rotates the sha256 changes. Bump via:
+    #   nix-prefetch-url --type sha256 \
+    #     https://cloud-images.ubuntu.com/releases/24.04/release/ubuntu-24.04-server-cloudimg-amd64.img \
+    #     | xargs nix hash to-sri --type sha256
     url = "https://cloud-images.ubuntu.com/releases/24.04/release/ubuntu-24.04-server-cloudimg-amd64.img";
-    hash = "sha256-b97AlveI0/s5Zo8hEUblq4L48LE7pSmkYiaryiK6W88=";
+    hash = "sha256-XD3bAPYLxFXawIYvq+nYus7EbDOsF1EUPFw2g0BLEQ0=";
   };
 
   sshAuthorizedKeys = [
