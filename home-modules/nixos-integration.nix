@@ -110,9 +110,12 @@
     };
     # Notification daemon: mako (configured in home-modules/niri)
 
-    blueman-applet = {
-      enable = true;
-    };
+    # blueman-applet: do NOT enable here. NixOS's services.blueman.enable
+    # (in nixos-modules/misc.nix) already ships the upstream user unit at
+    # /etc/systemd/user/blueman-applet.service. Enabling it again here
+    # creates a drop-in with a duplicate ExecStart= that systemd refuses
+    # ("Service has more than one ExecStart= setting"). The applet is
+    # auto-started by graphical-session.target via the upstream WantedBy.
     kdeconnect = {
       enable = true;
       indicator = true;
@@ -133,13 +136,15 @@
     activitywatch = {
       enable = true;
       watchers = {
-        aw-watcher-afk.settings = {
-          timeout = 300;
-          poll_time = 2;
-        };
-        aw-watcher-window.settings = {
-          poll_time = 1;
-          exclude_title = false;
+        # aw-watcher-window-wayland reports to BOTH aw-watcher-window and
+        # aw-watcher-afk buckets, so it replaces the X11-only defaults.
+        # Niri implements the required protocols (ext-idle-notify-v1 and
+        # wlr-foreign-toplevel-management-v1). Heartbeat is hardcoded to 5s;
+        # no settings to tune. Must override `package` because home-manager
+        # defaults to the `activitywatch` bundle, which only ships the X11
+        # watchers (aw-watcher-afk, aw-watcher-window).
+        aw-watcher-window-wayland = {
+          package = pkgs.aw-watcher-window-wayland;
         };
       };
     };
