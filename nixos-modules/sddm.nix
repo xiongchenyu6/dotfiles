@@ -14,7 +14,7 @@
 
   services = {
     displayManager = {
-      sessionPackages = [ pkgs.hyprland ];
+      sessionPackages = [ pkgs.niri ];
       sddm = {
         enable = true;
         #theme = "catppuccin-sddm-corners";
@@ -22,7 +22,7 @@
         wayland.enable = true;
         autoNumlock = true;
       };
-      defaultSession = "hyprland";
+      defaultSession = "niri";
     };
   };
 }
