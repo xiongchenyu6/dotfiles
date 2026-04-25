@@ -39,21 +39,10 @@
 
   xdg = {
     enable = true;
-    #TODO screen capture seems only works in nixos modules, but here for xdg-open
-    portal = {
-      enable = true;
-      xdgOpenUsePortal = true;
-      extraPortals = with pkgs; [
-        xdg-desktop-portal-gtk
-        xdg-desktop-portal-gnome
-      ];
-      # Add this configuration to address the warning about xdg-desktop-portal 1.17+
-      config = {
-        common = {
-          default = "*";
-        };
-      };
-    };
+    # Portal is configured at the NixOS level in nixos-modules/wayland.nix.
+    # Re-declaring it here causes dbus-broker to log "Ignoring duplicate name"
+    # for each portal service since home-manager would also add the packages
+    # to ~/.nix-profile/share/dbus-1/services/.
     mime = {
       enable = true;
     };

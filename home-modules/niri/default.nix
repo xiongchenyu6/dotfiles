@@ -7,9 +7,6 @@
 }:
 let
   noctalia = "${pkgs.noctalia-shell}/bin/noctalia-shell";
-  # Keep in sync with programs.ghostty.package in home-modules/gui/packages.nix.
-  # Must be the same binary so GTK single-instance doesn't mix versions.
-  ghostty = inputs.ghostty.packages.${pkgs.stdenv.hostPlatform.system}.default;
 in
 {
   home = lib.mkIf pkgs.stdenv.isLinux {
@@ -118,11 +115,22 @@ in
 
       # Chinese input method — niri doesn't process XDG autostart, so
       # home-manager's .config/autostart/org.fcitx.Fcitx5.desktop never fires.
-      { command = [ "fcitx5" "-d" "--replace" ]; }
+      {
+        command = [
+          "fcitx5"
+          "-d"
+          "--replace"
+        ];
+      }
 
       # User-space autostart
       { command = [ "${pkgs.netbird-ui}/bin/netbird-ui" ]; }
-      { command = [ "dropbox" "start" ]; }
+      {
+        command = [
+          "dropbox"
+          "start"
+        ];
+      }
     ];
 
     # Keybindings mirror niri's upstream defaults.
@@ -131,7 +139,7 @@ in
       "Mod+Shift+Slash".action = show-hotkey-overlay;
 
       "Mod+T" = {
-        action = spawn "${ghostty}/bin/ghostty";
+        action = spawn "${pkgs.ghostty}/bin/ghostty";
         hotkey-overlay.title = "Terminal (ghostty)";
       };
       "Mod+D" = {
