@@ -45,7 +45,7 @@
       xdgOpenUsePortal = true;
       extraPortals = with pkgs; [
         xdg-desktop-portal-gtk
-        xdg-desktop-portal-hyprland
+        xdg-desktop-portal-gnome
       ];
       # Add this configuration to address the warning about xdg-desktop-portal 1.17+
       config = {
@@ -119,29 +119,7 @@
     poweralertd = {
       enable = true;
     };
-    dunst = {
-      enable = true;
-      iconTheme = {
-        name = "Adwaita";
-        package = pkgs.adwaita-icon-theme;
-        size = "16x16";
-      };
-      settings = {
-        global = {
-          monitor = 0;
-          geometry = "600x50-50+65";
-          shrink = "yes";
-          transparency = 10;
-          padding = 16;
-          horizontal_padding = 16;
-          font = "JetBrainsMono Nerd Font 10";
-          line_height = 4;
-          format = "<b>%s</b>\\n%b";
-          browser = "${pkgs.xdg-utils}/bin/xdg-open";
-          dmenu = "${pkgs.rofi}/bin/rofi -dmenu -i -p dunst";
-        };
-      };
-    };
+    # Notification daemon: mako (configured in home-modules/niri)
 
     blueman-applet = {
       enable = true;

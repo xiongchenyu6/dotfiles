@@ -154,6 +154,14 @@
       };
     };
 
+    niri = {
+      url = "github:sodiboo/niri-flake";
+      inputs = {
+        nixpkgs.follows = "nixpkgs";
+        nixpkgs-stable.follows = "nixpkgs-stable";
+      };
+    };
+
     # LazyNixOS - lazy evaluation and deployment
     lazynixos = {
       url = "github:xiongchenyu6/lazynixos";

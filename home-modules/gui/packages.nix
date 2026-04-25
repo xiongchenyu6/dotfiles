@@ -190,7 +190,7 @@
         font-size = 10;
         cursor-style = "bar";
         cursor-style-blink = true;
-        background-opacity = 0.7;
+        background-opacity = 0.9;
         working-directory = "inherit";
         window-inherit-working-directory = true;
         shell-integration = "zsh";
