@@ -37,7 +37,6 @@
       sbctl
       #nur.repos.xddxdd.qq
       nur.repos.xddxdd.bilibili
-      (nur.repos.xddxdd.wine-wechat.override { wine64 = wineWow64Packages.waylandFull; })
       #nur.repos.xddxdd.dingtalk
       #gimp
       #gitkraken
@@ -48,7 +47,6 @@
       wasistlos
       winetricks
       wineWow64Packages.waylandFull
-      bottles
       kdePackages.dolphin
       kdePackages.qtwayland
       kdePackages.qt6ct
