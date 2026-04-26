@@ -31,6 +31,7 @@
         xournalpp
         slack
         zoom-us
+        jitsi-meet-electron
         ueberzugpp
         #ytfzf
         usbutils

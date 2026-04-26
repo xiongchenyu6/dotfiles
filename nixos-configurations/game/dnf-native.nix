@@ -26,7 +26,7 @@
     serverGroupDB = "cain"; # README recommends cain even for siroco
     clientPoolSize = 10;
     openChannels = "11,52";
-    backend = "docker"; # Docker is already enabled in nixos-modules/virtualisation.nix
+    backend = "podman"; # Podman is enabled in nixos-modules/virtualisation.nix
   };
 
   # Convenience packages
@@ -43,7 +43,7 @@
     dnf-logs-mysql = "docker logs mysql -f";
     dnf-mysql = "mysql -h 127.0.0.1 -P 3000 -u root -p";
     dnf-shell = "docker exec -it dnf-1 /bin/bash";
-    dnf-restart = "systemctl restart docker-mysql && systemctl restart docker-dnf-1";
+    dnf-restart = "systemctl restart podman-mysql && systemctl restart podman-dnf-1";
     dnf-supervisor = "xdg-open http://localhost:2000"; # Open supervisor web interface
   };
 }

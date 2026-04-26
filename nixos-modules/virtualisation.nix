@@ -252,7 +252,7 @@ in
       enable = true;
     };
 
-    docker = {
+    podman = {
       enable = true;
       autoPrune = {
         enable = true;
@@ -261,24 +261,10 @@ in
           "--force"
         ];
       };
+      dockerSocket.enable = true;
+      defaultNetwork.settings.dns_enabled = true;
+      dockerCompat = true;
     };
-    #podman = {
-    #  enable = true;
-    #  autoprune = {
-    #    enable = true;
-    #    flags = [
-    #      "--all"
-    #      "--force"
-    #    ];
-    #  };
-    #  dockersocket.enable = true;
-    #  defaultnetwork.settings.dns_enabled = true;
-    #  dockerCompat = true;
-    # networkSocket = {
-    #   enable = true;
-    #   server = "ghostunnel";
-    # };
-    #};
   };
 
   networking.firewall.checkReversePath = false;

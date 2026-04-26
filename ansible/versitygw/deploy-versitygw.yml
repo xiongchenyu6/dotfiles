@@ -9,6 +9,8 @@
     versitygw_iam_dir: /var/lib/versitygw/iam  # IAM Internal storage directory
     versitygw_user: versitygw
     versitygw_group: versitygw
+    versitygw_uid: 995
+    versitygw_gid: 986
     versitygw_download_url: "https://github.com/versity/versitygw/releases/download/v{{ versitygw_version }}/versitygw_v{{ versitygw_version }}_Linux_x86_64.tar.gz"
     root_access_key: "{{ versitygw.root_access_key }}"
     root_secret_key: "{{ versitygw.root_secret_key }}"
@@ -22,12 +24,14 @@
     - name: Create versitygw group
       group:
         name: "{{ versitygw_group }}"
+        gid: "{{ versitygw_gid | default(omit) }}"
         system: yes
         state: present
 
     - name: Create versitygw user
       user:
         name: "{{ versitygw_user }}"
+        uid: "{{ versitygw_uid | default(omit) }}"
         group: "{{ versitygw_group }}"
         system: yes
         shell: /usr/sbin/nologin
