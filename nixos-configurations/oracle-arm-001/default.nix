@@ -25,10 +25,16 @@
     srvos.nixosModules.mixins-trusted-nix-caches
     srvos.nixosModules.mixins-nix-experimental
     srvos.nixosModules.mixins-tracing
-    inputs.rust-web-server.nixosModules.rust-web-server
+    rust-web-server.nixosModules.rust-web-server
     ../../nixos-modules/rust-web-server-config.nix
     ./disk-config.nix
     ./hardware-configuration.nix
+  ];
+
+  # rust-web-server overlay applied host-locally — the input is private SSH
+  # so the overlay is scoped per-host (see also huoshan-bj-001).
+  nixpkgs.overlays = [
+    (inputs.rust-web-server.overlays.default or inputs.rust-web-server.overlay)
   ];
   boot = {
     loader.grub = {
