@@ -170,6 +170,14 @@
       ];
     };
 
+    rustdesk-server = {
+      enable = true;
+      openFirewall = true;
+      signal = {
+        relayHosts = [ "138.2.95.174" ];
+      };
+    };
+
     autolife-relay = {
       enable = true;
       openFirewall = true;
