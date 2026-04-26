@@ -111,9 +111,14 @@
         flake-utils.follows = "flake-utils";
       };
     };
+    # Private SSH input. Lock entry is committed; users without the deploy
+    # key can build from the existing lock but cannot `nix flake update
+    # rust-web-server`. The overlay is host-scoped (see
+    # nixos-configurations/huoshan-bj-001/default.nix nixpkgs.overlays) so
+    # only that host evaluates rust-web-server outputs — every other host
+    # builds without ever touching this input.
     rust-web-server = {
       url = "git+ssh://git@github.com/AutoLifeRobot/rust-web-server.git?ref=feat/nixos-improvements";
-      #url = "git+ssh://git@github.com/AutoLifeRobot/rust-web-server.git?shallow=1&rev=0ff6f6d5dbd1131b34bec7c8316eb8ee21713e73";
       inputs = {
         nixpkgs.follows = "nixpkgs";
         flake-parts.follows = "flake-parts";
