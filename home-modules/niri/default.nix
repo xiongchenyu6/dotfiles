@@ -68,10 +68,12 @@ in
     # via niri-session. Needed because tuigreet --cmd niri-session exec's
     # directly and never sources hm-session-vars.sh, so the IM env vars
     # written by i18n.inputMethod.fcitx5 would otherwise be missing.
+    # GTK_IM_MODULE/XMODIFIERS are intentionally omitted: on Wayland,
+    # GTK3/4 reach fcitx5 natively via text-input-v3, and XMODIFIERS is
+    # X11-only. Setting GTK_IM_MODULE=fcitx triggers fcitx5's Wayland
+    # Diagnose warning about double input handling.
     environment = {
-      GTK_IM_MODULE = "fcitx";
       QT_IM_MODULE = "fcitx";
-      XMODIFIERS = "@im=fcitx";
       SDL_IM_MODULE = "fcitx";
       GLFW_IM_MODULE = "ibus";
     };
