@@ -10,7 +10,7 @@
 {
   imports = with inputs; [
     xiongchenyu6.nixosModules.casdoor
-    xiongchenyu6.nixosModules.casibase
+    xiongchenyu6.nixosModules.openagent
     xiongchenyu6.nixosModules.sub2api
     disko.nixosModules.disko
     (modulesPath + "/installer/scan/not-detected.nix")
@@ -50,10 +50,10 @@
     ];
   };
 
-  # Inject casibase credentials into its config at runtime
-  systemd.services.casibase.serviceConfig.ExecStartPre = lib.mkAfter [
-    "+${pkgs.writeShellScript "casibase-inject-credentials" ''
-      cfg="/var/lib/casibase/conf/app.conf"
+  # Inject openagent (formerly casibase) credentials into its config at runtime
+  systemd.services.openagent.serviceConfig.ExecStartPre = lib.mkAfter [
+    "+${pkgs.writeShellScript "openagent-inject-credentials" ''
+      cfg="/var/lib/openagent/conf/app.conf"
       if [ -f "$cfg" ]; then
         client_id=$(cat ${config.sops.secrets."casibase/client_id".path})
         client_secret=$(cat ${config.sops.secrets."casibase/client_secret".path})
@@ -172,7 +172,7 @@
       autoStart = true;
     };
 
-    casibase = {
+    openagent = {
       enable = true;
       port = 14000;
       runMode = "prod";

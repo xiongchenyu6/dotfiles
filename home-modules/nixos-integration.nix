@@ -129,9 +129,11 @@
     };
     syncthing = {
       enable = true;
-      tray = {
-        enable = true;
-      };
+      # tray disabled: syncthingtray's replaceable status notifications poison
+      # noctalia's popupState (Services/System/NotificationService.qml), making
+      # every notification click open syncthingtray. The noctalia bar already
+      # surfaces status via the `plugin:syncthing-status` widget.
+      tray.enable = false;
     };
     activitywatch = {
       enable = true;
@@ -147,6 +149,25 @@
           package = pkgs.aw-watcher-window-wayland;
         };
       };
+    };
+  };
+
+  # Without explicit ordering, the home-manager activitywatch module starts
+  # the wayland watcher as soon as activitywatch.target is reached — which
+  # happens before niri.service has set up the wayland socket. The watcher
+  # then panics with "Could not find a listening wayland compositor" and
+  # exits 101 with no retry. Tie it to graphical-session.target (niri.service
+  # has `Before=graphical-session.target`, so the target only fires once the
+  # socket is up) and add Restart=on-failure as a safety net for any residual
+  # race after the target is reached.
+  systemd.user.services."activitywatch-watcher-aw-watcher-window-wayland" = {
+    Unit = {
+      After = [ "graphical-session.target" ];
+      PartOf = [ "graphical-session.target" ];
+    };
+    Service = {
+      Restart = "on-failure";
+      RestartSec = 5;
     };
   };
 
