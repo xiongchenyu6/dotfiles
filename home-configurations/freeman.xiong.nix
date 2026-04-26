@@ -130,6 +130,7 @@ in
       upnp = disabled
       capture = kms
       encoder = nvenc
+      origin_web_ui_allowed = wan
     '';
   };
 
