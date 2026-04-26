@@ -1,194 +1,152 @@
-# GPU Passthrough Scripts for NixOS with Hyprland
+# GPU Passthrough Scripts for NixOS
 
-This collection of scripts helps manage NVIDIA GPU passthrough between host (NixOS with Hyprland) and virtual machines (VMs).
+Scripts for managing NVIDIA GPU passthrough between the host (NixOS) and
+KVM/libvirt VMs.
+
+> **Compositor note.** The `game` workstation now runs **niri**. The
+> compositor-agnostic IOMMU/VFIO bind logic (`bind_to_vfio.sh`,
+> `check_iommu.sh`, `check_gpu_status.sh`, `fix_nvidia_drm.sh`) is still
+> current. The scripts whose names contain `hyprland` (and the Hyprland
+> branches in `gpu_rebind_complete.sh`) call `hyprctl` directly and have
+> not yet been ported to niri — see [Migrating to niri](#migrating-to-niri)
+> below.
 
 ## Prerequisites
 
-1. **NixOS Configuration**:
+1. **NixOS configuration**:
    ```nix
-   # In your configuration.nix
-   boot.kernelParams = [ 
+   boot.kernelParams = [
      "intel_iommu=on" # or "amd_iommu=on" for AMD
      "iommu=pt"
      "nvidia-drm.modeset=1"
    ];
-   
+
    hardware.nvidia = {
      modesetting.enable = true;
      powerManagement.enable = true;
    };
-   
+
    virtualisation.libvirtd.enable = true;
    ```
 
-2. **Hyprland Environment Variables** (in home-manager):
+2. **NVIDIA Wayland environment variables** — passed to the compositor's
+   environment:
    ```nix
-   wayland.windowManager.hyprland = {
-     settings = {
-       env = [
-         "WLR_NO_HARDWARE_CURSORS,1"
-         "__GLX_VENDOR_LIBRARY_NAME,nvidia"
-         "GBM_BACKEND,nvidia-drm"
-       ];
-     };
+   # niri (active on `game`)
+   programs.niri.settings.environment = {
+     WLR_NO_HARDWARE_CURSORS    = "1";
+     __GLX_VENDOR_LIBRARY_NAME  = "nvidia";
+     GBM_BACKEND                = "nvidia-drm";
    };
+
+   # Hyprland (legacy, retained for the Hyprland-specific scripts)
+   wayland.windowManager.hyprland.settings.env = [
+     "WLR_NO_HARDWARE_CURSORS,1"
+     "__GLX_VENDOR_LIBRARY_NAME,nvidia"
+     "GBM_BACKEND,nvidia-drm"
+   ];
    ```
 
-## Scripts Overview
+## Scripts
 
-### Core GPU Management
+### Compositor-agnostic
 
-#### `bind_to_vfio.sh`
-Binds NVIDIA GPU to vfio-pci driver for VM passthrough.
-```bash
-sudo ./bind_to_vfio.sh
-```
+| Script | Purpose |
+|---|---|
+| `bind_to_vfio.sh` | Bind NVIDIA GPU to `vfio-pci` for VM passthrough |
+| `check_gpu_status.sh` | Show current GPU driver binding |
+| `check_iommu.sh` | Verify IOMMU groups for passthrough |
+| `fix_nvidia_drm.sh` | Reload `nvidia_drm` after rebind (run as root) |
 
-#### `bind_gpu_to_host_hyprland.sh`
-Rebinds NVIDIA GPU back to host system with Hyprland-specific fixes.
-```bash
-sudo ./bind_gpu_to_host_hyprland.sh
-```
+### Hyprland-specific (legacy)
 
-#### `gpu_rebind_complete.sh`
-Complete workflow script for GPU passthrough management.
-```bash
-# Bind GPU to VM
-./gpu_rebind_complete.sh to-vm
+These scripts call `hyprctl` and assume a running Hyprland session. They
+need to be ported (or replaced) for the current niri workstation.
 
-# Bind GPU back to host
-./gpu_rebind_complete.sh to-host
-```
+| Script | Purpose | niri equivalent |
+|---|---|---|
+| `bind_gpu_to_host_hyprland.sh` | Rebind GPU to host + restart Hyprland | TODO: port to `niri msg action quit` + greetd restart |
+| `check_hyprland_displays.sh` | Print Hyprland monitor config | `niri msg outputs` |
+| `restart_hyprland.sh` | Graceful Hyprland restart | `systemctl restart greetd` from another TTY |
+| `gpu_rebind_complete.sh` | One-shot `to-vm` / `to-host` workflow | Hyprland branch in `to-host` needs porting |
 
-### Diagnostic Tools
+## Workflow
 
-#### `check_gpu_status.sh`
-Shows current GPU binding status and driver information.
-```bash
-./check_gpu_status.sh
-```
-
-#### `check_hyprland_displays.sh`
-Displays Hyprland monitor configuration and DRM device status.
-```bash
-./check_hyprland_displays.sh
-```
-
-#### `check_iommu.sh`
-Verifies IOMMU groups for GPU passthrough compatibility.
-```bash
-./check_iommu.sh
-```
-
-### Utility Scripts
-
-#### `fix_nvidia_drm.sh`
-Fixes NVIDIA DRM module loading issues (run as root).
-```bash
-sudo ./fix_nvidia_drm.sh
-```
-
-#### `restart_hyprland.sh`
-Gracefully restarts Hyprland compositor.
-```bash
-./restart_hyprland.sh
-```
-
-## Typical Workflow
-
-### 1. Starting a VM with GPU Passthrough
+### 1. Start a VM with GPU passthrough
 
 ```bash
-# Check current GPU status
-./check_gpu_status.sh
-
-# Bind GPU to VFIO for VM
-./gpu_rebind_complete.sh to-vm
-
-# Start your VM with GPU passthrough
+./check_gpu_status.sh                       # see current state
+./gpu_rebind_complete.sh to-vm              # bind GPU → vfio-pci
 virsh start your-vm-name
 ```
 
-### 2. Returning GPU to Host
+### 2. Return GPU to the host
 
 ```bash
-# Shutdown the VM
 virsh shutdown your-vm-name
-
-# Wait for VM to fully stop
-virsh list --all
-
-# Rebind GPU to host
-./gpu_rebind_complete.sh to-host
-
-# If external display doesn't work, run:
-sudo ./fix_nvidia_drm.sh
-
-# Restart Hyprland (choose one):
-# Option 1: Press Super+M to exit and re-login
-# Option 2: From another TTY (Ctrl+Alt+F2):
-sudo systemctl restart greetd
+virsh list --all                            # wait for the VM to fully stop
+./gpu_rebind_complete.sh to-host            # ⚠️  restarts Hyprland — see note below
+sudo ./fix_nvidia_drm.sh                    # if the external display stays dark
 ```
+
+> **niri users:** `gpu_rebind_complete.sh to-host` triggers
+> `bind_gpu_to_host_hyprland.sh`, which won't work under niri. Until that
+> script is ported, run the bind portion manually
+> (`bind_to_vfio.sh`-equivalent rebind to `nvidia`) and restart your niri
+> session via `systemctl restart greetd` from another TTY.
 
 ## Troubleshooting
 
-### External Display Not Working After Rebind
+### External display stays dark after rebind
 
-1. Check if nvidia_drm is loaded:
-   ```bash
-   lsmod | grep nvidia_drm
-   ```
+```bash
+lsmod | grep nvidia_drm                     # confirm module is loaded
+sudo ./fix_nvidia_drm.sh                    # reload if missing
+ls -la /dev/dri/                            # should show card0 (NVIDIA) + card1 (iGPU)
+```
 
-2. If not loaded, run:
-   ```bash
-   sudo ./fix_nvidia_drm.sh
-   ```
+### GPU refuses to unbind
 
-3. Verify DRM devices:
-   ```bash
-   ls -la /dev/dri/
-   # Should show both card0 (NVIDIA) and card1 (AMD/Intel)
-   ```
-
-4. Check Hyprland displays:
-   ```bash
-   ./check_hyprland_displays.sh
-   ```
-
-### GPU Not Unbinding
-
-If GPU fails to unbind, check if any processes are using it:
 ```bash
 sudo lsof /dev/nvidia*
 nvidia-smi
 ```
 
-### IOMMU Issues
+### IOMMU not working
 
-Verify IOMMU is enabled:
 ```bash
 ./check_iommu.sh
 dmesg | grep -i iommu
 ```
 
-## Important Notes
-
-- Always shutdown VMs before rebinding GPU to host
-- Hyprland requires a full restart (not just reload) after GPU changes
-- The `nvidia_drm` module with `modeset=1` is essential for Wayland
-- External displays may take a few seconds to be detected after rebind
-
 ## Hardware IDs
 
-Default GPU IDs in scripts (modify if yours differ):
-- GPU: `0000:01:00.0`
-- Audio: `0000:01:00.1`
+Default GPU IDs hardcoded in the scripts (edit if yours differ):
 
-Find your GPU IDs:
+- GPU: `0000:01:00.0`
+- HDMI audio: `0000:01:00.1`
+
 ```bash
 lspci | grep -E "VGA|3D|Display|Audio.*NVIDIA"
 ```
 
-## License
+## Migrating to niri
 
-These scripts are provided as-is for the NixOS community.
+The Hyprland-specific scripts can mostly be ported by swapping:
+
+| Hyprland | niri equivalent |
+|---|---|
+| `hyprctl monitors` | `niri msg outputs` |
+| `hyprctl activewindow` | `niri msg focused-window` |
+| `hyprctl dispatch exit` | `niri msg action quit` |
+| `pkill -9 Hyprland` | `pkill -9 niri` |
+
+A full port also needs to update the env-var injection step (niri reads
+from `programs.niri.settings.environment`, not Hyprland's `env =`
+list-of-strings format).
+
+## Notes
+
+- Always shut down VMs before rebinding GPU to host.
+- The `nvidia_drm` module with `modeset=1` is essential for Wayland.
+- External displays may take a few seconds to be detected after rebind.
