@@ -174,7 +174,7 @@
       enable = true;
       openFirewall = true;
       signal = {
-        relayHosts = [ "138.2.95.174" ];
+        relayHosts = [ "rustdesk.autolife.ai" ];
       };
     };
 
