@@ -342,6 +342,11 @@
     };
   };
 
+  # Sunshine's NVENC encoder dlopen()s libcuda.so.1, which lives in
+  # /run/opengl-driver/lib on NixOS. Without this on the user-service env,
+  # CUDA fails to load and Sunshine silently falls back to libx264 (CPU).
+  systemd.user.services.sunshine.environment.LD_LIBRARY_PATH = "/run/opengl-driver/lib";
+
   programs = {
     ydotool = {
       enable = true;

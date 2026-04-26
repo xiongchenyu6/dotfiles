@@ -117,6 +117,22 @@ in
     homeDirectory = osConfig.users.users."freeman.xiong".home;
     sessionPath = [ "$HOME/.local/bin" ];
   };
+
+  # Sunshine on Wayland+NVIDIA: zwlr_screencopy returns unusable dmabufs from
+  # the NVIDIA driver, so Moonlight clients see corrupted/garbled frames. KMS
+  # capture (Sunshine reads the GPU framebuffer directly via DRM, requires
+  # capSysAdmin which the system module already grants) bypasses Wayland for
+  # the capture path. encoder=nvenc tries the GPU encoder first; falls back
+  # to libx264 when libcuda.so.1 isn't reachable from the unit's lib path.
+  xdg.configFile."sunshine/sunshine.conf" = lib.mkIf hasGuiTag {
+    text = ''
+      address_family = ipv4
+      upnp = disabled
+      capture = kms
+      encoder = nvenc
+    '';
+  };
+
   programs = {
     git = {
       includes = [
@@ -208,7 +224,7 @@ in
           hostname = "172.22.240.99";
         };
         "sg-office" = {
-          hostname = "118.201.235.1";
+          hostname = "101.78.126.6";
         };
         "huawei-bj-001" = {
           hostname = "1.94.246.7";
