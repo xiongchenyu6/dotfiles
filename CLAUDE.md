@@ -30,7 +30,7 @@ nix flake show
 nix flake check
 ```
 
-Pre-commit hooks run: statix, deadnix, shellcheck, shfmt (nixfmt is disabled).
+Pre-commit hooks (configured in `flake.nix` via `pre-commit-hooks.nix`): nixfmt, statix, deadnix, shellcheck, shfmt — all enabled.
 
 ## Architecture
 
@@ -71,10 +71,13 @@ cli-minimal       → base CLI tools (all users including root)
 | oracle-arm-001/002 | aarch64-linux | Oracle Cloud |
 | tcloud | x86_64-linux | Tencent Cloud |
 | huoshan-bj-001 | x86_64-linux | Huoshan (Beijing) |
-| game | x86_64-linux | Local (NVIDIA GPU passthrough) |
-| office, office-office | x86_64-linux | Local workstations |
+| game | x86_64-linux | Local desktop (NVIDIA GPU passthrough; niri compositor) |
+| office | x86_64-linux | Local workstation (niri compositor) |
+| lubancat | aarch64-linux | LubanCat SBC |
 | netbird | x86_64-linux | NetBird VPN |
 | office-mac | aarch64-darwin | macOS (nix-darwin) |
+
+Hosts in `nixos-configurations/` that aren't in `ezConfigs.nixos.hosts` (`iso`, `corp`, `digital`, `digitalocean`, `generic-nixos`, `office-windows`) are templates/modules imported by other hosts or used to build images, not standalone deploy targets.
 
 ### Secrets
 
@@ -83,8 +86,9 @@ Uses `sops-nix` with age encryption. Each host has its own age key defined in `.
 ### Peripheral Systems
 
 - **`ansible/`** — deployment playbooks for sing-box, Nextcloud, Wazuh, VersityGW
-- **`scripts/`** — GPU passthrough management, NixOS bootstrap, nixos-infect
+- **`scripts/`** — GPU passthrough management, NixOS bootstrap, nixos-infect (note: `scripts/README.md` still references Hyprland; the active compositor is now niri — the IOMMU/VFIO bind logic remains compositor-agnostic)
 - **`stow-managed/`** — GNU Stow dotfiles (iTerm, IntelliJ, Rime, etc.)
+- **`lazynixos`** (flake input, `github:xiongchenyu6/lazynixos`) — staged/lazy deployment helper used by the user; check there before reinventing deploy logic
 
 ## Conventions
 
