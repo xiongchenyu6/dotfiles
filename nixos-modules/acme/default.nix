@@ -21,7 +21,7 @@
         email = "xiongchenyu6@gmail.com";
         dnsProvider = "cloudflare";
         dnsResolver = "1.1.1.1:53";
-        credentialsFile = config.sops.secrets."acme/cloudflare".path;
+        environmentFile = config.sops.secrets."acme/cloudflare".path;
         #group = "nginx";
         # postRun = ''
         #   ${pkgs.systemd}/bin/systemctl restart openldap
@@ -37,7 +37,7 @@
         #   extraDomainNames = [ "*.autolife.com" ];
         #   email = "xiongchenyu6@gmail.com";
         #   dnsProvider = "volcengine";
-        #   credentialsFile = config.sops.secrets."acme/volcengine".path;
+        #   environmentFile = config.sops.secrets."acme/volcengine".path;
         #   group = "kanidm";
         # };
         ai = {
