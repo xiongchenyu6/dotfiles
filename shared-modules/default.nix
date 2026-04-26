@@ -22,12 +22,16 @@ let
       nix-topology
     ];
 
-  # Additional overlays for NixOS
+  # Additional overlays for NixOS — applied to ALL nixos hosts.
+  # rust-web-server intentionally NOT in this list: it's a private SSH
+  # input and only one host (huoshan-bj-001) actually deploys the service.
+  # Adding it globally would force every host's eval to touch the private
+  # repo, which fails for users without the deploy key. The overlay is
+  # added locally in nixos-configurations/huoshan-bj-001/default.nix.
   nixosAdditionalOverlays =
     with inputs;
     map (x: x.overlays.default or x.overlay) [
       nur
-      rust-web-server
     ];
 in
 {

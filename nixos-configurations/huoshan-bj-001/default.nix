@@ -26,6 +26,13 @@
     inputs.xiongchenyu6.nixosModules.casdoor
   ];
 
+  # rust-web-server overlay applied host-locally (was previously in
+  # shared-modules/default.nix nixosOverlays, but moved here so other hosts
+  # don't need access to the private SSH repo to build).
+  nixpkgs.overlays = [
+    (inputs.rust-web-server.overlays.default or inputs.rust-web-server.overlay)
+  ];
+
   zramSwap.enable = true;
   # rust-web-server secrets are now handled by the module itself
 
