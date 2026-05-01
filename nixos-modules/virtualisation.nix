@@ -22,7 +22,7 @@ let
 
   domainName = "ubuntu-nixvirt";
   domainUuid = "30c69d8d-d505-4b8b-8971-04ff3d63e018";
-  overlayName = "ubuntu-24.04-overlay-v6.qcow2";
+  overlayName = "ubuntu-24.04-overlay.qcow2";
 
   ubuntuBaseImage = pkgs.fetchurl {
     # Canonical refreshes this same URL with newer builds; whenever the daily
