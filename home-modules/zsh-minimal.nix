@@ -17,6 +17,9 @@
         o = "xdg-open";
         ls = "eza --icons";
         update = "sudo nixos-rebuild switch";
+        # View GBK-encoded files (Chinese Windows apps under wine)
+        catgbk = "iconv -f GBK -t UTF-8";
+        catgb18030 = "iconv -f GB18030 -t UTF-8";
       };
       dirHashes = {
         docs = "$HOME/Documents";
