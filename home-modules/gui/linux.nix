@@ -54,6 +54,7 @@
       # kdePackages.wayqt
       # kdePackages.qtstyleplugin-kvantum
       feishu-lark
+      feishu
       android-studio
       #opengl-driver
       libsecret
