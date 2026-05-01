@@ -11,7 +11,6 @@
 let
   vpn-dev = "wg0";
   port = 22616;
-  port-game = 22617;
 in
 {
   imports = with inputs; [
@@ -58,11 +57,7 @@ in
       enable = true;
       enableIPv6 = true;
       externalInterface = "ens5";
-      internalInterfaces = [
-        "wg_office"
-        "wg_game"
-        vpn-dev
-      ];
+      internalInterfaces = [ vpn-dev ];
     };
 
     firewall = {
@@ -80,10 +75,6 @@ in
       ];
       allowedUDPPorts = [
         port
-        22617
-        22618
-        22619
-        22620
         53
         80
         179
@@ -97,115 +88,63 @@ in
           to = 65535;
         }
       ];
-
-      interfaces.wg_office.allowedTCPPorts = [ 22 ];
-      interfaces.wg_office.allowedUDPPorts = [ 22 ];
-      interfaces.wg_game.allowedTCPPorts = [ 22 ];
-      interfaces.wg_game.allowedUDPPorts = [ 22 ];
     };
 
     wg-quick = {
       interfaces =
         let
           privateKeyFile = config.sops.secrets."wireguard/tcloud".path;
-          address = [ "fe80::100/64" ];
           table = "off";
-          allowedIPs = [
-            "10.0.0.0/8"
-            "172.20.0.0/14"
-            "172.31.0.0/16"
-            "fd00::/8"
-            "fe80::/64"
-            "fd48:4b4:f3::/48"
-            "ff02::1:6/128"
-            "224.0.0.251/32"
-            "ff02::fb/128"
-          ];
+          mkPeer = mesh4: mesh6: publicKey: {
+            inherit publicKey;
+            allowedIPs = [
+              "${mesh4}/32"
+              "${mesh6}/128"
+            ];
+          };
         in
         {
-          wg_office = {
-            inherit address privateKeyFile table;
-            listenPort = 22616;
-            postUp = ''
-              ${pkgs.iproute2}/bin/ip addr add dev wg_office 172.22.240.97/32 peer 172.22.240.98/32
-              ${pkgs.iproute2}/bin/ip addr add dev wg_office fd48:4b4:f3::1/128 peer fd48:4b4:f3::2/128
-              ${pkgs.iproute2}/bin/ip link set multicast on dev wg_office
-            '';
-            peers = [
-              {
-                publicKey = shares.hosts-dict.office.wg.public-key;
-                inherit allowedIPs;
-              }
+          ${vpn-dev} = {
+            inherit privateKeyFile table;
+            listenPort = port;
+            address = [
+              "172.22.240.97/27"
+              "fd48:4b4:f3::1/64"
             ];
-          };
-          wg_game = {
-            inherit address privateKeyFile table;
-            listenPort = 22617;
             postUp = ''
-              ${pkgs.iproute2}/bin/ip addr add dev wg_game 172.22.240.97/32 peer 172.22.240.99/32
-              ${pkgs.iproute2}/bin/ip addr add dev wg_game fd48:4b4:f3::1/128 peer fd48:4b4:f3::3/128
-              ${pkgs.iproute2}/bin/ip link set multicast on dev wg_game
-            '';
-
-            peers = [
-              {
-                publicKey = shares.hosts-dict.game.wg.public-key;
-                inherit allowedIPs;
-              }
-            ];
-          };
-          wg_game_office = {
-            inherit address privateKeyFile table;
-            listenPort = 22618;
-            postUp = ''
-              ${pkgs.iproute2}/bin/ip addr add dev wg_game_office 172.22.240.97/32 peer 172.22.240.100/32
-              ${pkgs.iproute2}/bin/ip addr add dev wg_game_office fd48:4b4:f3::1/128 peer fd48:4b4:f3::4/128
-              ${pkgs.iproute2}/bin/ip link set multicast on dev wg_game_office
+              ${pkgs.iproute2}/bin/ip link set multicast on dev ${vpn-dev}
             '';
             peers = [
-              {
-                publicKey = "nBEkTpn4kRYXS9r7beXh3uMYJBAq/534byXv8NsB8gM=";
-                inherit allowedIPs;
-              }
-            ];
-          };
-          wg_iphone = {
-            inherit address privateKeyFile table;
-            listenPort = 22619;
-            postUp = ''
-              ${pkgs.iproute2}/bin/ip addr add dev wg_iphone 172.22.240.97/32 peer 172.22.240.101/32
-              ${pkgs.iproute2}/bin/ip addr add dev wg_iphone fd48:4b4:f3::1/128 peer fd48:4b4:f3::5/128
-              ${pkgs.iproute2}/bin/ip link set multicast on dev wg_iphone
-            '';
-            peers = [
-              {
-                publicKey = "CAW6+atqM9xmCAZUaev3OZWbYKwjDNCHezyiBpiHmSg=";
-                inherit allowedIPs;
-              }
-            ];
-          };
-          wg_sg_office = {
-            inherit address privateKeyFile table;
-            listenPort = 22620;
-            postUp = ''
-              ${pkgs.iproute2}/bin/ip addr add dev wg_sg_office 172.22.240.97/32 peer 172.22.240.102/32
-              ${pkgs.iproute2}/bin/ip addr add dev wg_sg_office fd48:4b4:f3::1/128 peer fd48:4b4:f3::6/128
-              ${pkgs.iproute2}/bin/ip link set multicast on dev wg_sg_office
-            '';
-            peers = [
-              {
-                publicKey = "9WkAJx+EG3VifVLiMgD8+6CoCsBwSyWAMwtajoy/OTk=";
-                inherit allowedIPs;
-              }
+              (mkPeer "172.22.240.98" "fd48:4b4:f3::2"
+                shares.hosts-dict.office.wg.public-key)
+              (mkPeer "172.22.240.99" "fd48:4b4:f3::3"
+                shares.hosts-dict.game.wg.public-key)
+              (mkPeer "172.22.240.100" "fd48:4b4:f3::4"
+                "nBEkTpn4kRYXS9r7beXh3uMYJBAq/534byXv8NsB8gM=")
+              (mkPeer "172.22.240.101" "fd48:4b4:f3::5"
+                "CAW6+atqM9xmCAZUaev3OZWbYKwjDNCHezyiBpiHmSg=")
+              (mkPeer "172.22.240.102" "fd48:4b4:f3::6"
+                "9WkAJx+EG3VifVLiMgD8+6CoCsBwSyWAMwtajoy/OTk=")
             ];
           };
           wg_kioubit = {
-            inherit address privateKeyFile table;
+            inherit privateKeyFile table;
+            address = [ "fe80::100/64" ];
             peers = [
               {
                 endpoint = "hk1.g-load.eu:22616";
                 publicKey = "sLbzTRr2gfLFb24NPzDOpy8j09Y6zI+a7NkeVMdVSR8=";
-                inherit allowedIPs;
+                allowedIPs = [
+                  "10.0.0.0/8"
+                  "172.20.0.0/14"
+                  "172.31.0.0/16"
+                  "fd00::/8"
+                  "fe80::/64"
+                  "fd48:4b4:f3::/48"
+                  "ff02::1:6/128"
+                  "224.0.0.251/32"
+                  "ff02::fb/128"
+                ];
               }
             ];
           };
