@@ -72,7 +72,11 @@ in
     # GTK3/4 reach fcitx5 natively via text-input-v3, and XMODIFIERS is
     # X11-only. Setting GTK_IM_MODULE=fcitx triggers fcitx5's Wayland
     # Diagnose warning about double input handling.
+    # NIXOS_OZONE_WL gates the Wayland-IME flags injected by the nixpkgs
+    # wrappers for Chrome/Slack/VSCode/etc.; without it those Chromium
+    # apps run without --enable-wayland-ime and fcitx5 can't reach them.
     environment = {
+      NIXOS_OZONE_WL = "1";
       QT_IM_MODULE = "fcitx";
       SDL_IM_MODULE = "fcitx";
       GLFW_IM_MODULE = "ibus";
