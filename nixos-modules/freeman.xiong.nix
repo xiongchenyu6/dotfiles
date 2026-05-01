@@ -40,7 +40,7 @@
           "dialout"
           "lp"
           "input"
-          #"podman"
+          "podman"
           "docker"
           "tss"
           "libvirtd"
