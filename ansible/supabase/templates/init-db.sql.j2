@@ -1,0 +1,120 @@
+-- =============================================================================
+-- Supabase-stack init: roles, schemas, extensions
+-- Mirrors nixos-configurations/oracle-arm-002/postgres.nix postgresql-api-init.
+-- Mounted into /docker-entrypoint-initdb.d/zzz-app.sql so it runs AFTER the
+-- supabase/postgres image's own init scripts that create supabase_admin /
+-- authenticator / anon / authenticated / service_role / supabase_auth_admin.
+-- =============================================================================
+\set ON_ERROR_STOP on
+\connect {{ supabase_db_name }}
+
+-- ----- passwords for the supabase-managed roles ------------------------------
+-- The image creates these roles but with random passwords; align them with
+-- the password the host services use. Idempotent: ALTER works on every run.
+ALTER ROLE supabase_admin       WITH LOGIN PASSWORD '{{ supabase_db_service_password }}'
+    SUPERUSER REPLICATION CREATEDB CREATEROLE BYPASSRLS;
+ALTER ROLE supabase_auth_admin  WITH LOGIN PASSWORD '{{ supabase_db_service_password }}' CREATEROLE NOINHERIT;
+ALTER ROLE authenticator        WITH LOGIN PASSWORD '{{ supabase_db_service_password }}' NOINHERIT;
+ALTER ROLE anon                 WITH NOLOGIN;
+ALTER ROLE authenticated        WITH NOLOGIN;
+ALTER ROLE service_role         WITH NOLOGIN;
+
+-- The NixOS reference uses `api_authenticator` as the PostgREST login role.
+-- supabase/postgres ships `authenticator` instead. Create an alias so the
+-- compose file's PGRST_DB_URI=api_authenticator@... keeps working without
+-- renaming everything downstream.
+DO $$
+BEGIN
+  IF NOT EXISTS (SELECT 1 FROM pg_roles WHERE rolname = 'api_authenticator') THEN
+    CREATE ROLE api_authenticator LOGIN PASSWORD '{{ supabase_db_service_password }}' NOINHERIT;
+  ELSE
+    ALTER ROLE api_authenticator WITH LOGIN PASSWORD '{{ supabase_db_service_password }}' NOINHERIT;
+  END IF;
+END
+$$;
+GRANT anon, authenticated, service_role TO api_authenticator;
+GRANT anon, authenticated, service_role TO authenticator;
+
+-- ----- database-level defaults ----------------------------------------------
+ALTER DATABASE {{ supabase_db_name }} OWNER TO {{ supabase_db_owner }};
+ALTER DATABASE {{ supabase_db_name }} SET search_path TO "$user", public, extensions;
+
+-- ----- application schemas --------------------------------------------------
+CREATE SCHEMA IF NOT EXISTS api        AUTHORIZATION {{ supabase_db_owner }};
+GRANT USAGE ON SCHEMA api TO anon, authenticated, service_role;
+
+CREATE SCHEMA IF NOT EXISTS auth       AUTHORIZATION supabase_auth_admin;
+
+-- supabase-realtime's DB_AFTER_CONNECT_QUERY sets search_path to _realtime on
+-- every connection — including the one the migrator uses on first boot.
+-- Pre-create both so the migrator doesn't trip on `invalid_schema_name`.
+CREATE SCHEMA IF NOT EXISTS _realtime  AUTHORIZATION supabase_admin;
+CREATE SCHEMA IF NOT EXISTS realtime   AUTHORIZATION supabase_admin;
+
+CREATE SCHEMA IF NOT EXISTS extensions AUTHORIZATION {{ supabase_db_owner }};
+GRANT USAGE ON SCHEMA extensions TO anon, authenticated, service_role;
+
+-- ----- extensions -----------------------------------------------------------
+-- Order matters: pgcrypto first because pgjwt depends on it. Heavy/stateful
+-- extensions (timescaledb, pg_cron, pgsodium, pg_tle, pgmq, pg_graphql, plv8)
+-- live in their default schemas to match Supabase's own conventions.
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp"        SCHEMA extensions;
+CREATE EXTENSION IF NOT EXISTS pgcrypto           SCHEMA extensions;
+CREATE EXTENSION IF NOT EXISTS hstore             SCHEMA extensions;
+CREATE EXTENSION IF NOT EXISTS citext             SCHEMA extensions;
+CREATE EXTENSION IF NOT EXISTS ltree              SCHEMA extensions;
+CREATE EXTENSION IF NOT EXISTS btree_gin          SCHEMA extensions;
+CREATE EXTENSION IF NOT EXISTS btree_gist         SCHEMA extensions;
+
+CREATE EXTENSION IF NOT EXISTS pg_stat_statements SCHEMA extensions;
+CREATE EXTENSION IF NOT EXISTS plpgsql_check      SCHEMA extensions;
+CREATE EXTENSION IF NOT EXISTS pg_net             SCHEMA extensions;
+CREATE EXTENSION IF NOT EXISTS pgjwt              SCHEMA extensions;
+CREATE EXTENSION IF NOT EXISTS pgtap              SCHEMA extensions;
+CREATE EXTENSION IF NOT EXISTS vector             SCHEMA extensions;
+CREATE EXTENSION IF NOT EXISTS http               SCHEMA extensions;
+CREATE EXTENSION IF NOT EXISTS pg_hashids         SCHEMA extensions;
+CREATE EXTENSION IF NOT EXISTS hypopg             SCHEMA extensions;
+CREATE EXTENSION IF NOT EXISTS index_advisor      SCHEMA extensions CASCADE;
+CREATE EXTENSION IF NOT EXISTS postgis            SCHEMA extensions;
+CREATE EXTENSION IF NOT EXISTS pg_repack;
+-- pg_hint_plan is not bundled in supabase/postgres; install via pg_tle if you
+-- need it. Skipped here so the init runs cleanly.
+
+CREATE EXTENSION IF NOT EXISTS timescaledb;
+CREATE EXTENSION IF NOT EXISTS pg_cron;
+CREATE EXTENSION IF NOT EXISTS pgsodium;
+CREATE EXTENSION IF NOT EXISTS pg_tle;
+CREATE EXTENSION IF NOT EXISTS pg_graphql;
+CREATE EXTENSION IF NOT EXISTS pgmq;
+CREATE EXTENSION IF NOT EXISTS plv8;
+
+-- ----- supabase-realtime publication ----------------------------------------
+-- Realtime listens on this publication for logical-decoding events. Start
+-- empty; users add tables via `ALTER PUBLICATION supabase_realtime ADD TABLE`.
+DO $$
+BEGIN
+  IF NOT EXISTS (SELECT 1 FROM pg_publication WHERE pubname = 'supabase_realtime') THEN
+    CREATE PUBLICATION supabase_realtime;
+  END IF;
+END
+$$;
+
+-- ----- expose gotrue helper functions to PostgREST roles --------------------
+-- gotrue creates auth.{jwt,uid,role,email}() during its own migrations on
+-- first boot. Grant EXECUTE per-function so missing ones don't abort the
+-- whole script; the playbook re-runs this idempotently after gotrue has
+-- finished its migrations.
+DO $$
+DECLARE fn text;
+BEGIN
+  FOREACH fn IN ARRAY ARRAY['jwt','uid','role','email'] LOOP
+    IF EXISTS (
+      SELECT 1 FROM pg_proc p JOIN pg_namespace n ON p.pronamespace = n.oid
+      WHERE n.nspname = 'auth' AND p.proname = fn
+    ) THEN
+      EXECUTE format('GRANT EXECUTE ON FUNCTION auth.%I() TO anon, authenticated, service_role', fn);
+    END IF;
+  END LOOP;
+END
+$$;

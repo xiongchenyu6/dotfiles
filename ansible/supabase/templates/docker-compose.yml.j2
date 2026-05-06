@@ -1,0 +1,168 @@
+# =============================================================================
+# Supabase Stack (Ansible Managed)
+# postgres + postgrest + gotrue (auth) + realtime
+# =============================================================================
+services:
+  postgres:
+    image: {{ supabase_postgres_image }}
+    container_name: supabase-postgres
+    restart: unless-stopped
+    # supabase/postgres entrypoint expects a number of POSTGRES_* + JWT vars and
+    # runs its own init scripts that pre-create supabase_admin / authenticator /
+    # anon / authenticated / service_role / supabase_auth_admin. Our init script
+    # in /docker-entrypoint-initdb.d runs after that, so we can ALTER those
+    # roles and add app schemas/extensions without races.
+    environment:
+      POSTGRES_PASSWORD: "{{ supabase_db_service_password }}"
+      POSTGRES_DB: "{{ supabase_db_name }}"
+      JWT_SECRET: "{{ supabase_jwt_secret }}"
+      JWT_EXP: 3600
+      PGDATA: /var/lib/postgresql/data/pgdata
+      TZ: "{{ supabase_tz }}"
+    volumes:
+      - ./postgres_data:/var/lib/postgresql/data
+      - ./init/00-app.sql:/docker-entrypoint-initdb.d/zzz-app.sql:ro
+      - ./pgsodium_getkey.sh:/usr/share/postgresql/extension/pgsodium_getkey:ro
+      - ./backups:/backups
+    # The supabase image defaults listen_addresses=localhost; that breaks
+    # postgrest/auth/realtime which connect via the docker network DNS.
+    command:
+      - postgres
+      - -c
+      - listen_addresses=*
+      - -c
+      - shared_preload_libraries=pg_stat_statements,plpgsql,plpgsql_check,pg_cron,pg_net,pgsodium,auto_explain,pg_tle,plan_filter,timescaledb
+      - -c
+      - cron.database_name={{ supabase_db_name }}
+      - -c
+      - cron.use_background_workers=on
+      - -c
+      - max_worker_processes=20
+      - -c
+      - wal_level=logical
+      - -c
+      - max_wal_senders=10
+      - -c
+      - max_replication_slots=10
+      - -c
+      - log_connections=on
+      - -c
+      - log_disconnections=on
+{% if supabase_postgres_expose %}
+    ports:
+      - "0.0.0.0:{{ supabase_postgres_external_port }}:5432"
+{% endif %}
+    networks:
+      - supabase
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d {{ supabase_db_name }}"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+
+  # PostgREST → REST API for the `api` schema. Authenticator role logs in;
+  # role-switching to anon/authenticated/service_role is driven by the JWT
+  # `role` claim signed with the same JWT secret as gotrue.
+  postgrest:
+    image: {{ supabase_postgrest_image }}
+    container_name: supabase-postgrest
+    restart: unless-stopped
+    environment:
+      PGRST_DB_URI: "postgres://api_authenticator:{{ supabase_db_service_password }}@postgres:5432/{{ supabase_db_name }}"
+      PGRST_DB_SCHEMAS: "api"
+      PGRST_DB_ANON_ROLE: "anon"
+      PGRST_JWT_SECRET: "{{ supabase_jwt_secret }}"
+      PGRST_JWT_AUD: "authenticated"
+      PGRST_JWT_ROLE_CLAIM_KEY: ".role"
+      PGRST_SERVER_PORT: "3000"
+      PGRST_OPENAPI_SERVER_PROXY_URI: "https://{{ supabase_api_domain }}"
+      TZ: "{{ supabase_tz }}"
+    ports:
+      - "127.0.0.1:{{ supabase_postgrest_port }}:3000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - supabase
+
+  # GoTrue (now upstream "auth"). Runs its own migrations on boot via the
+  # `auth migrate` step baked into the image entrypoint.
+  auth:
+    image: {{ supabase_auth_image }}
+    container_name: supabase-auth
+    restart: unless-stopped
+    environment:
+      GOTRUE_API_HOST: "0.0.0.0"
+      GOTRUE_API_PORT: "8081"
+      GOTRUE_DB_DRIVER: "postgres"
+      GOTRUE_DB_NAMESPACE: "auth"
+      DATABASE_URL: "postgres://supabase_auth_admin:{{ supabase_db_service_password }}@postgres:5432/{{ supabase_db_name }}?search_path=auth&sslmode=disable"
+      API_EXTERNAL_URL: "https://{{ supabase_auth_domain }}"
+      GOTRUE_SITE_URL: "https://{{ supabase_auth_domain }}"
+      GOTRUE_URI_ALLOW_LIST: "{{ supabase_uri_allow_list }}"
+      GOTRUE_JWT_SECRET: "{{ supabase_jwt_secret }}"
+      GOTRUE_JWT_AUD: "authenticated"
+      GOTRUE_JWT_EXP: "3600"
+      GOTRUE_JWT_DEFAULT_GROUP_NAME: "authenticated"
+      GOTRUE_MAILER_AUTOCONFIRM: "true"
+      GOTRUE_EXTERNAL_EMAIL_ENABLED: "true"
+      GOTRUE_EXTERNAL_PHONE_ENABLED: "false"
+      GOTRUE_DISABLE_SIGNUP: "false"
+      GOTRUE_PASSWORD_MIN_LENGTH: "8"
+      # ----- SAML 2.0 SSO ---------------------------------------------------
+      # GoTrue serves /sso, /sso/saml/acs, /sso/saml/metadata. The private key
+      # is a base64-encoded DER PKCS#1 RSA key — used to sign AuthnRequests
+      # and decrypt assertions if the IdP encrypts them.
+      GOTRUE_SAML_ENABLED: "true"
+      GOTRUE_SAML_PRIVATE_KEY: "{{ supabase_saml_private_key }}"
+      GOTRUE_API_EXTERNAL_URL: "https://{{ supabase_auth_domain }}"
+      TZ: "{{ supabase_tz }}"
+    ports:
+      # Host port {{ supabase_auth_port }} → container's GOTRUE_API_PORT (8081).
+      - "127.0.0.1:{{ supabase_auth_port }}:8081"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - supabase
+
+  # supabase/realtime: the docker entrypoint (`/app/bin/server`) auto-runs Ecto
+  # migrations on the _realtime schema and seeds the self-host tenant when
+  # SEED_SELF_HOST=true. ERL_AFLAGS=-proto_dist inet_tcp keeps clustering off
+  # for single-node deployments.
+  realtime:
+    image: {{ supabase_realtime_image }}
+    container_name: supabase-realtime
+    restart: unless-stopped
+    environment:
+      APP_NAME: "{{ supabase_realtime_app_name }}"
+      DB_HOST: postgres
+      DB_PORT: "5432"
+      DB_NAME: "{{ supabase_db_name }}"
+      DB_USER: "{{ supabase_db_owner }}"
+      DB_PASSWORD: "{{ supabase_db_service_password }}"
+      DB_AFTER_CONNECT_QUERY: "SET search_path TO _realtime"
+      DB_ENC_KEY: "{{ supabase_realtime_db_enc_key }}"
+      API_JWT_SECRET: "{{ supabase_jwt_secret }}"
+      METRICS_JWT_SECRET: "{{ supabase_realtime_metrics_jwt_secret }}"
+      SECRET_KEY_BASE: "{{ supabase_realtime_secret_key_base }}"
+      ERL_AFLAGS: "-proto_dist inet_tcp"
+      DNS_NODES: "''"
+      RLIMIT_NOFILE: "10000"
+      RUN_JANITOR: "true"
+      SEED_SELF_HOST: "true"
+      RELEASE_COOKIE: "supabase-realtime-single-node-cookie"
+      PORT: "4000"
+      TZ: "{{ supabase_tz }}"
+    ports:
+      - "127.0.0.1:{{ supabase_realtime_port }}:4000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - supabase
+
+networks:
+  supabase:
+    driver: bridge
