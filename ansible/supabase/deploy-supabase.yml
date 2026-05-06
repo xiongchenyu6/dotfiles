@@ -1,0 +1,409 @@
+---
+- name: Deploy Supabase stack (postgres + postgrest + gotrue + realtime)
+  hosts: supabase_servers
+  become: yes
+  vars_files:
+    - vars/main.yml
+  vars:
+    supabase_oidc_client_id: "{{ supabase.oidc_client_id }}"
+    supabase_oidc_client_secret: "{{ supabase.oidc_client_secret }}"
+
+  tasks:
+    - name: Load OIDC credentials from sops
+      community.sops.load_vars:
+        file: ../../secrets/supabase.yaml
+      no_log: true
+
+    - name: Install required packages
+      apt:
+        name:
+          - curl
+          - docker.io
+          - docker-compose-v2
+          - postgresql-client
+        state: present
+        update_cache: yes
+        cache_valid_time: 3600
+      # The host has third-party PPAs (panfork-mesa, rockchip-multimedia)
+      # that are intermittently unreachable; partial cache failures are fine
+      # because all packages here are core Ubuntu and already installed.
+      register: apt_install
+      failed_when:
+        - apt_install.failed
+        - apt_install.msg is defined
+        - "'Failed to update apt cache' not in apt_install.msg"
+
+    - name: Start and enable Docker service
+      systemd:
+        name: docker
+        state: started
+        enabled: yes
+
+    - name: Create deployment directories
+      file:
+        path: "{{ supabase_deploy_dir }}/{{ item }}"
+        state: directory
+        owner: root
+        group: root
+        mode: '0755'
+      loop:
+        - ""
+        - init
+        - postgres_data
+        - backups
+
+    # ----- secret persistence (matches casdoor pattern) ----------------------
+    # Without this, every re-run regenerates new passwords/keys and the
+    # existing postgres data dir rejects them. Resolution order:
+    #   1. extra-var (-e) on this run
+    #   2. previously persisted file
+    #   3. fresh openssl-generated random
+    - name: Slurp existing secrets file if present
+      slurp:
+        src: "{{ supabase_deploy_dir }}/.secrets.yml"
+      register: supabase_secrets_slurp
+      failed_when: false
+      no_log: true
+
+    - name: Load existing secrets
+      set_fact:
+        _supabase_existing: "{{ (supabase_secrets_slurp.content | b64decode | from_yaml) if supabase_secrets_slurp.content is defined else {} }}"
+      no_log: true
+
+    - name: Resolve DB service password
+      set_fact:
+        supabase_db_service_password: "{{ supabase_db_service_password | default(_supabase_existing.supabase_db_service_password) | default(lookup('ansible.builtin.pipe', 'openssl rand -hex 32')) }}"
+      no_log: true
+
+    - name: Resolve JWT secret
+      set_fact:
+        supabase_jwt_secret: "{{ supabase_jwt_secret | default(_supabase_existing.supabase_jwt_secret) | default(lookup('ansible.builtin.pipe', 'openssl rand -hex 64')) }}"
+      no_log: true
+
+    - name: Resolve realtime SECRET_KEY_BASE
+      set_fact:
+        supabase_realtime_secret_key_base: "{{ supabase_realtime_secret_key_base | default(_supabase_existing.supabase_realtime_secret_key_base) | default(lookup('ansible.builtin.pipe', 'openssl rand -hex 64')) }}"
+      no_log: true
+
+    - name: Resolve realtime metrics JWT secret
+      set_fact:
+        supabase_realtime_metrics_jwt_secret: "{{ supabase_realtime_metrics_jwt_secret | default(_supabase_existing.supabase_realtime_metrics_jwt_secret) | default(lookup('ansible.builtin.pipe', 'openssl rand -hex 32')) }}"
+      no_log: true
+
+    # SAML signing key for GoTrue. PKCS#1 DER, base64 (no newlines). Same
+    # format the supabase/auth README documents. Deterministic regen would
+    # invalidate registered SSO providers — we persist the first one.
+    # OpenSSL 3 defaults to PKCS#8 for `rsa -outform DER`; `-traditional` keeps
+    # the legacy PKCS#1 layout that supabase/auth requires.
+    - name: Resolve SAML private key (PKCS#1 DER, base64)
+      set_fact:
+        supabase_saml_private_key: "{{ supabase_saml_private_key | default(_supabase_existing.supabase_saml_private_key) | default(lookup('ansible.builtin.pipe', 'openssl genrsa 2048 2>/dev/null | openssl rsa -traditional -outform DER 2>/dev/null | base64 -w0')) }}"
+      no_log: true
+
+    - name: Persist secrets to remote host
+      copy:
+        content: |
+          supabase_db_service_password: "{{ supabase_db_service_password }}"
+          supabase_jwt_secret: "{{ supabase_jwt_secret }}"
+          supabase_realtime_secret_key_base: "{{ supabase_realtime_secret_key_base }}"
+          supabase_realtime_metrics_jwt_secret: "{{ supabase_realtime_metrics_jwt_secret }}"
+          supabase_saml_private_key: "{{ supabase_saml_private_key }}"
+        dest: "{{ supabase_deploy_dir }}/.secrets.yml"
+        owner: root
+        group: root
+        mode: '0600'
+      no_log: true
+
+    # ----- compose + init SQL templates --------------------------------------
+    - name: Deploy init SQL (runs after image's own init scripts on first boot)
+      template:
+        src: templates/init-db.sql.j2
+        dest: "{{ supabase_deploy_dir }}/init/00-app.sql"
+        owner: root
+        group: root
+        mode: '0644'
+
+    # supabase/postgres has pgsodium in shared_preload_libraries and expects a
+    # /usr/share/postgresql/extension/pgsodium_getkey script. Provide one that
+    # persists a random key under PGDATA.
+    - name: Deploy pgsodium getkey script
+      template:
+        src: templates/pgsodium_getkey.sh.j2
+        dest: "{{ supabase_deploy_dir }}/pgsodium_getkey.sh"
+        owner: "999"           # postgres uid inside the container
+        group: "999"
+        mode: '0755'
+
+    - name: Deploy docker-compose.yml
+      template:
+        src: templates/docker-compose.yml.j2
+        dest: "{{ supabase_deploy_dir }}/docker-compose.yml"
+        owner: root
+        group: root
+        mode: '0600'
+      register: compose_template
+
+    # ----- bring up the stack ------------------------------------------------
+    - name: Pull and start services
+      command: docker compose up -d --pull always
+      args:
+        chdir: "{{ supabase_deploy_dir }}"
+
+    - name: Wait for postgres to accept connections
+      command: docker exec supabase-postgres pg_isready -U postgres -d {{ supabase_db_name }}
+      register: pg_ready
+      retries: 30
+      delay: 5
+      until: pg_ready.rc == 0
+      changed_when: false
+
+    # The image's init scripts only run on a fresh data dir. For pre-existing
+    # data dirs (re-runs, upgrades), apply the app init SQL idempotently here.
+    # Must run as supabase_admin (the image strips SUPERUSER from `postgres`);
+    # local pg_hba trust lets us connect without a password. We pipe via stdin
+    # rather than `-f /docker-entrypoint-initdb.d/zzz-app.sql` because the
+    # container's view of that file is the inode it was created with — Ansible
+    # `template` writes a new inode on edits, so the in-container view goes
+    # stale across re-runs.
+    - name: Re-apply app init SQL on existing data dirs (idempotent)
+      shell: |
+        docker exec -i supabase-postgres \
+          psql -v ON_ERROR_STOP=1 -U supabase_admin -d {{ supabase_db_name }} \
+          < {{ supabase_deploy_dir }}/init/00-app.sql
+      changed_when: false
+
+    - name: Wait for PostgREST
+      uri:
+        url: "http://127.0.0.1:{{ supabase_postgrest_port }}/"
+        status_code: [200, 401, 404]
+      register: pgrst_health
+      retries: 24
+      delay: 5
+      until: pgrst_health.status in [200, 401, 404]
+      ignore_errors: yes
+
+    - name: Wait for GoTrue (auth)
+      uri:
+        url: "http://127.0.0.1:{{ supabase_auth_port }}/health"
+        status_code: 200
+      register: auth_health
+      retries: 24
+      delay: 5
+      until: auth_health.status == 200
+      ignore_errors: yes
+
+    - name: Wait for Realtime
+      uri:
+        # Realtime serves the dashboard at /; per-tenant health endpoints
+        # require a tenant slug, so / is the simplest unauthenticated probe.
+        url: "http://127.0.0.1:{{ supabase_realtime_port }}/"
+        status_code: 200
+      register: realtime_health
+      retries: 24
+      delay: 5
+      until: realtime_health.status == 200
+      ignore_errors: yes
+
+    # SEED_SELF_HOST hardcodes external_id="realtime-dev". Realtime resolves
+    # tenants from the first DNS label of the Host header, so a bare-domain
+    # deployment on "{{ supabase_realtime_domain }}" needs a tenant whose
+    # external_id matches "{{ supabase_realtime_app_name }}". The rename has
+    # to update _realtime.extensions too (FK has no ON UPDATE CASCADE), so we
+    # do both UPDATEs in one txn with replication-role swap to defer FK
+    # enforcement (supabase_admin is superuser).
+    - name: Check realtime tenant external_id
+      shell: |
+        docker exec -i supabase-postgres \
+          psql -U supabase_admin -d {{ supabase_db_name }} -tAc \
+          "SELECT string_agg(external_id, ',' ORDER BY external_id) FROM _realtime.tenants;"
+      register: tenant_check
+      changed_when: false
+
+    - name: Rename seeded realtime tenant to match domain label
+      shell: |
+        docker exec -i supabase-postgres \
+          psql -v ON_ERROR_STOP=1 -U supabase_admin -d {{ supabase_db_name }} <<'SQL'
+        BEGIN;
+        SET LOCAL session_replication_role = 'replica';
+        UPDATE _realtime.tenants
+           SET external_id = '{{ supabase_realtime_app_name }}',
+               name        = '{{ supabase_realtime_app_name }}'
+         WHERE external_id = 'realtime-dev';
+        UPDATE _realtime.extensions
+           SET tenant_external_id = '{{ supabase_realtime_app_name }}'
+         WHERE tenant_external_id = 'realtime-dev';
+        COMMIT;
+        SQL
+      when:
+        - "'realtime-dev' in (tenant_check.stdout | default(''))"
+        - "supabase_realtime_app_name not in (tenant_check.stdout | default('') | split(','))"
+
+    # If compose recreates the realtime container later, SEED_SELF_HOST will
+    # re-insert "realtime-dev" alongside the renamed tenant. Drop it whenever
+    # the canonical tenant is present (FK has ON DELETE CASCADE so its
+    # _realtime.extensions row goes too). No restart needed — Realtime
+    # populates its tenant cache lazily on first request.
+    - name: Drop ghost realtime-dev tenant if canonical tenant exists
+      shell: |
+        docker exec -i supabase-postgres \
+          psql -v ON_ERROR_STOP=1 -U supabase_admin -d {{ supabase_db_name }} -tAc \
+          "DELETE FROM _realtime.tenants
+            WHERE external_id = 'realtime-dev'
+              AND EXISTS (SELECT 1 FROM _realtime.tenants
+                           WHERE external_id = '{{ supabase_realtime_app_name }}')
+            RETURNING external_id;"
+      register: tenant_cleanup
+      changed_when: tenant_cleanup.stdout | trim | length > 0
+
+    # ----- SAML SSO provider (Casdoor) ---------------------------------------
+    # GoTrue's /admin/sso/providers requires a service_role JWT signed with
+    # GOTRUE_JWT_SECRET. We mint one via openssl HMAC then register the
+    # Casdoor IdP if it isn't already registered.
+    - name: Mint a short-lived service_role JWT
+      set_fact:
+        supabase_admin_jwt: "{{ lookup('ansible.builtin.pipe', _mint_cmd) }}"
+      vars:
+        _mint_cmd: |
+          set -e
+          H=$(printf '{"alg":"HS256","typ":"JWT"}' | base64 -w0 | tr '+/' '-_' | tr -d '=')
+          P=$(printf '{"role":"service_role","iss":"supabase","iat":%d,"exp":%d}' \
+                $(date +%s) $(($(date +%s)+600)) \
+                | base64 -w0 | tr '+/' '-_' | tr -d '=')
+          S=$(printf '%s' "$H.$P" | openssl dgst -sha256 -mac HMAC -macopt key:'{{ supabase_jwt_secret }}' -binary \
+                | base64 -w0 | tr '+/' '-_' | tr -d '=')
+          printf '%s.%s.%s' "$H" "$P" "$S"
+      no_log: true
+
+    - name: List existing SSO providers
+      uri:
+        url: "http://127.0.0.1:{{ supabase_auth_port }}/admin/sso/providers"
+        method: GET
+        headers:
+          Authorization: "Bearer {{ supabase_admin_jwt }}"
+        status_code: [200]
+        return_content: true
+      register: sso_list
+
+    - name: Extract registered SAML metadata URLs
+      set_fact:
+        # `sso_list.json["items"]` rather than `.items` — `items` collides
+        # with the dict.items() method when the value is null.
+        _sso_existing_urls: >-
+          {{ (sso_list.json["items"] or [])
+             | selectattr('saml', 'defined')
+             | map(attribute='saml')
+             | map(attribute='metadata_url', default='')
+             | list }}
+
+    - name: Register Casdoor as SAML SSO provider (if not already present)
+      uri:
+        url: "http://127.0.0.1:{{ supabase_auth_port }}/admin/sso/providers"
+        method: POST
+        headers:
+          Authorization: "Bearer {{ supabase_admin_jwt }}"
+          Content-Type: application/json
+        body_format: json
+        body:
+          type: saml
+          metadata_url: "{{ supabase_casdoor_url }}/api/saml/metadata?application=admin/{{ supabase_casdoor_app_name }}"
+          domains:
+            - "{{ supabase_casdoor_url | urlsplit('hostname') }}"
+        status_code: [200, 201]
+        return_content: true
+      register: sso_create
+      when: _sso_existing_urls
+            | select('search', supabase_casdoor_url)
+            | list | length == 0
+
+    # ----- nginx reverse proxy (Cloudflare-fronted, like casdoor) -----------
+    - name: Ensure nginx is installed
+      apt:
+        name: nginx
+        state: present
+
+    - name: Verify TLS cert is present
+      stat:
+        path: "{{ supabase_ssl_cert }}"
+      register: supabase_cert_stat
+
+    - name: Fail with instructions if cert is missing
+      fail:
+        msg: |
+          {{ supabase_ssl_cert }} not found on the target host.
+          Issue a Let's Encrypt cert via DNS-01, e.g.:
+            CF_Token=... /root/.acme.sh/acme.sh --issue --dns dns_cf \
+              -d {{ supabase_api_domain }} \
+              -d {{ supabase_auth_domain }} \
+              -d {{ supabase_realtime_domain }} \
+              --keylength ec-256
+            /root/.acme.sh/acme.sh --install-cert -d {{ supabase_api_domain }} --ecc \
+              --key-file {{ supabase_ssl_key }} \
+              --fullchain-file {{ supabase_ssl_cert }} \
+              --reloadcmd "systemctl reload nginx"
+      when: not supabase_cert_stat.stat.exists
+
+    - name: Deploy nginx site
+      template:
+        src: templates/nginx-supabase.conf.j2
+        dest: /etc/nginx/sites-available/supabase
+        owner: root
+        group: root
+        mode: '0644'
+      notify: reload nginx
+
+    - name: Enable nginx site
+      file:
+        src: /etc/nginx/sites-available/supabase
+        dest: /etc/nginx/sites-enabled/supabase
+        state: link
+      notify: reload nginx
+
+    - name: Validate nginx configuration
+      command: nginx -t
+      changed_when: false
+
+    # ----- daily pg_dump (matches services.postgresqlBackup) -----------------
+    - name: Install pg_dump cron job
+      copy:
+        dest: /etc/cron.d/supabase-pg-backup
+        owner: root
+        group: root
+        mode: '0644'
+        content: |
+          # Daily pg_dump of {{ supabase_db_name }} → {{ supabase_deploy_dir }}/backups
+          # Retention: {{ supabase_backup_retention_days }} days
+          SHELL=/bin/bash
+          PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+          0 {{ supabase_backup_hour }} * * * root \
+            docker exec supabase-postgres pg_dump -U postgres -Fc {{ supabase_db_name }} \
+              > {{ supabase_deploy_dir }}/backups/{{ supabase_db_name }}-$(date +\%F).dump \
+            && find {{ supabase_deploy_dir }}/backups -name '{{ supabase_db_name }}-*.dump' -mtime +{{ supabase_backup_retention_days }} -delete
+
+    - name: Display deployment status
+      debug:
+        msg: |
+          ========================================
+          Supabase stack deployment summary
+          ========================================
+          Deploy dir: {{ supabase_deploy_dir }}
+          Postgres   : {{ 'UP' if pg_ready.rc == 0 else 'DOWN' }} (container supabase-postgres)
+          PostgREST  : {{ 'UP' if pgrst_health.status | default(0) in [200, 401, 404] else 'DOWN' }}  → https://{{ supabase_api_domain }}
+          GoTrue/Auth: {{ 'UP' if auth_health.status | default(0) == 200 else 'DOWN' }}  → https://{{ supabase_auth_domain }}
+          Realtime   : {{ 'UP' if realtime_health.status | default(0) == 200 else 'DOWN' }}  → https://{{ supabase_realtime_domain }}
+          ----
+          SAML SSO   : Casdoor IdP registered with GoTrue
+            metadata: {{ supabase_casdoor_url }}/api/saml/metadata?application=admin/{{ supabase_casdoor_app_name }}
+            login   : https://{{ supabase_auth_domain }}/sso?domain={{ supabase_casdoor_url | urlsplit('hostname') }}
+          ----
+          Secrets persisted at {{ supabase_deploy_dir }}/.secrets.yml (mode 0600).
+          DB password / JWT secret / realtime keys are now stable across re-runs.
+          ----
+          To rotate a secret: edit .secrets.yml on the host, then re-run the
+          playbook (or pass -e supabase_jwt_secret=... once and persist).
+          ========================================
+
+  handlers:
+    - name: reload nginx
+      systemd:
+        name: nginx
+        state: reloaded

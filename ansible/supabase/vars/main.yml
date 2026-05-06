@@ -1,0 +1,77 @@
+---
+# =============================================================================
+# Supabase-stack Deployment Variables
+# (postgres + postgrest + gotrue + realtime, nginx-fronted)
+# =============================================================================
+
+supabase_deploy_dir: /opt/supabase
+supabase_tz: Asia/Shanghai
+
+# ----- container images -----------------------------------------------------
+# supabase/postgres bundles timescaledb, pgvector, pg_graphql, pgjwt, pgsodium,
+# pgmq, pg_cron, pg_net, pg_tle, pgsql-http, hypopg, pg_hint_plan, postgis,
+# plv8, pg_repack, pg_safeupdate, plpgsql_check, wal2json out of the box.
+# Bump tags via: docker pull <image> && grep -ri image: .
+supabase_postgres_image: supabase/postgres:15.6.1.143
+supabase_postgrest_image: postgrest/postgrest:v12.2.3
+supabase_auth_image:     supabase/auth:v2.158.1
+supabase_realtime_image: supabase/realtime:v2.30.34
+
+# ----- internal ports (loopback on host) ------------------------------------
+# nginx reverse-proxies these. Postgres is reachable on the docker network only
+# unless supabase_postgres_expose=true (then it binds 0.0.0.0:5432).
+# Note: 8081 is already used by another container on this host, so GoTrue's
+# host-side port is 8181 → maps to its container-internal 8081.
+supabase_postgrest_port: 3333
+supabase_auth_port:      8181
+supabase_realtime_port:  4000
+supabase_postgres_expose: false
+supabase_postgres_external_port: 5432
+
+# ----- public domains -------------------------------------------------------
+supabase_api_domain:      api.starslab.qzz.io
+supabase_auth_domain:     auth.starslab.qzz.io
+supabase_realtime_domain: realtime.starslab.qzz.io
+
+# Where GoTrue is allowed to bounce users after OAuth — comma-separated list.
+# Glob (**) lets `?next=/protected/path` redirect-back patterns through.
+supabase_uri_allow_list: "https://{{ supabase_api_domain }}/**,https://{{ supabase_auth_domain }}/**,https://{{ supabase_realtime_domain }}/**"
+
+# ----- nginx TLS material on the host ---------------------------------------
+# Issued by Let's Encrypt via acme.sh DNS-01 (dns_cf), SAN covers all three
+# supabase_*_domain names. Renewal is handled by acme.sh's own cron.
+supabase_ssl_cert: /etc/nginx/ssl/supabase.crt
+supabase_ssl_key:  /etc/nginx/ssl/supabase.key
+
+# ----- database -------------------------------------------------------------
+supabase_db_name: api
+# Owner of the application schema; Supabase-style superuser for migrations etc.
+supabase_db_owner: supabase_admin
+
+# ----- Casdoor SSO ---------------------------------------------------------
+# clientId/clientSecret live in vars/oidc.yml (gitignored). The application
+# itself was created via POST /api/add-application; redirect URI is
+# https://{{ supabase_auth_domain }}/callback.
+#
+# NOTE on wiring: supabase/auth v2.158.1 has provider-specific connectors
+# (google, github, keycloak, …) but no generic OIDC. Casdoor's URL layout
+# does not match Keycloak's, so the `keycloak` provider is not a drop-in.
+# Two viable patterns once the user picks one:
+#   (a) Mint Casdoor JWTs signed with the same {{ supabase_jwt_secret }} and
+#       send them straight to PostgREST (skip GoTrue for SSO logins).
+#   (b) Run a tiny adapter container exposing keycloak-style /protocol/...
+#       paths in front of Casdoor.
+# For now the playbook deploys GoTrue with email/password auth as the
+# baseline; the Casdoor app is registered and ready to use.
+supabase_casdoor_url:      https://casdoor.starslab.qzz.io
+supabase_casdoor_app_name: supabase
+
+# ----- realtime / janitor ---------------------------------------------------
+supabase_realtime_db_enc_key: supabaserealtime
+supabase_realtime_app_name:   realtime
+
+# ----- backups --------------------------------------------------------------
+# Daily pg_dump → ./backups, retained N days. Matches services.postgresqlBackup
+# from the NixOS module.
+supabase_backup_retention_days: 14
+supabase_backup_hour: 2

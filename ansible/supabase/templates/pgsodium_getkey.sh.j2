@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+# pgsodium root-key provider. Bind-mounted to
+# /usr/share/postgresql/extension/pgsodium_getkey inside supabase-postgres.
+# Persists a base64-encoded 32-byte key under PGDATA so it survives container
+# restarts; rotate by deleting the file and rebooting postgres.
+#
+# Production note: replace this with a fetch from a real KMS (Vault, AWS KMS,
+# etc.) — the key here protects pgsodium-encrypted columns at rest.
+set -euo pipefail
+# PGDATA is /var/lib/postgresql/data/pgdata in supabase/postgres — that dir is
+# owned by the in-container postgres user (uid 999), unlike the bind-mount
+# parent which is root-owned on the host.
+KEY_FILE="${PGDATA:-/var/lib/postgresql/data/pgdata}/pgsodium_root.key"
+if [ ! -s "$KEY_FILE" ]; then
+  # pgsodium expects a 64-char hex-encoded 32-byte key — same format as the
+  # reference script in pgsodium/getkey_scripts/getkey_urandom.sh.
+  head -c 32 /dev/urandom | od -An -tx1 | tr -d ' \n' > "$KEY_FILE"
+  chmod 600 "$KEY_FILE"
+fi
+cat "$KEY_FILE"
