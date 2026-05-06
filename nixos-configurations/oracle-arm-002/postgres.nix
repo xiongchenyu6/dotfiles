@@ -248,14 +248,28 @@
       set -euo pipefail
       PW=$(cat "$CREDENTIALS_DIRECTORY/db-pass")
       QPW=$(cat "$CREDENTIALS_DIRECTORY/quant-pass")
-      export PW QPW
-      ${pkgs.postgresql_18_jit}/bin/psql -v ON_ERROR_STOP=1 -d api <<SQL
+
+      # Bring already-installed extensions whose .so name carries a version
+      # up to the version shipped by the current package set. Without this,
+      # a timescaledb (or similar) bump leaves pg_extension.extversion
+      # pointing at a .so the new package no longer ships, and connections
+      # to api error out with `could not access file "timescaledb-X.Y.Z"`.
+      # Soft-fail when the extension isn't yet installed (first boot).
+      ${pkgs.postgresql_18_jit}/bin/psql -d api \
+        -c "ALTER EXTENSION timescaledb UPDATE;" 2>/dev/null || true
+
+      # Quoted heredoc (<<'SQL') so bash doesn't interpret backticks in SQL
+      # comments as command substitution, or expand $-prefixed dollar-quote
+      # tags like $fix$ / $$. Passwords reach psql via -v variables and are
+      # interpolated SQL-safely with :'pw' / :'qpw'.
+      ${pkgs.postgresql_18_jit}/bin/psql -v ON_ERROR_STOP=1 \
+        -v pw="$PW" -v qpw="$QPW" -d api <<'SQL'
         ALTER DATABASE api OWNER TO "freeman.xiong";
 
         -- Supabase-style default search_path: put `extensions` in scope so
         -- unqualified calls like hypopg_get_indexdef() (used internally by
         -- index_advisor) resolve without per-role ALTER.
-        ALTER DATABASE api SET search_path TO "\$user", public, extensions;
+        ALTER DATABASE api SET search_path TO "$user", public, extensions;
 
         -- One-time migration from our old role name (api_anon) to
         -- Supabase's conventional `anon`. By the time this init script
@@ -265,7 +279,7 @@
         -- (schema USAGE, membership in api_authenticator) are re-granted
         -- to `anon` further down in this same script, so nothing is lost.
         -- Idempotent: noop once api_anon is gone.
-        DO \$fix\$
+        DO $fix$
         BEGIN
           IF EXISTS (SELECT 1 FROM pg_roles WHERE rolname = 'api_anon') THEN
             REASSIGN OWNED BY api_anon TO anon;
@@ -273,15 +287,15 @@
             DROP ROLE api_anon;
           END IF;
         END
-        \$fix\$;
+        $fix$;
 
-        ALTER ROLE api_authenticator   WITH LOGIN PASSWORD \$pw\$$PW\$pw\$;
-        ALTER ROLE supabase_auth_admin WITH LOGIN PASSWORD \$pw\$$PW\$pw\$ CREATEROLE;
-        ALTER ROLE supabase_admin      WITH LOGIN PASSWORD \$pw\$$PW\$pw\$;
+        ALTER ROLE api_authenticator   WITH LOGIN PASSWORD :'pw';
+        ALTER ROLE supabase_auth_admin WITH LOGIN PASSWORD :'pw' CREATEROLE;
+        ALTER ROLE supabase_admin      WITH LOGIN PASSWORD :'pw';
         ALTER ROLE anon                WITH NOLOGIN;
         ALTER ROLE authenticated       WITH NOLOGIN;
         ALTER ROLE service_role        WITH NOLOGIN;
-        ALTER ROLE quant               WITH LOGIN PASSWORD \$pw\$$QPW\$pw\$;
+        ALTER ROLE quant               WITH LOGIN PASSWORD :'qpw';
 
         GRANT anon, authenticated, service_role TO api_authenticator;
 
@@ -352,13 +366,13 @@
         -- Logical replication publication consumed by supabase-realtime.
         -- Start empty — users add tables via
         -- `ALTER PUBLICATION supabase_realtime ADD TABLE ...`.
-        DO \$\$
+        DO $$
         BEGIN
           IF NOT EXISTS (SELECT 1 FROM pg_publication WHERE pubname = 'supabase_realtime') THEN
             CREATE PUBLICATION supabase_realtime;
           END IF;
         END
-        \$\$;
+        $$;
       SQL
     '';
   };
@@ -555,6 +569,17 @@
         proxyPass = "http://127.0.0.1:8081";
         proxyWebsockets = true;
         extraConfig = ''
+          # GoTrue emits its own Access-Control-Allow-Origin on actual
+          # responses; without proxy_hide_header those would stack on top
+          # of the add_header below, producing "header contains multiple
+          # values '*, *'" and CORS-blocking the browser. We strip the
+          # upstream copies and re-emit a single canonical set from nginx.
+          # GoTrue's preflight (OPTIONS) handler does not emit a usable
+          # Allow-Origin for our origin, so we keep nginx's own short-
+          # circuit OPTIONS response below.
+          proxy_hide_header Access-Control-Allow-Origin;
+          proxy_hide_header Access-Control-Allow-Methods;
+          proxy_hide_header Access-Control-Allow-Headers;
           add_header 'Access-Control-Allow-Origin'      '*' always;
           add_header 'Access-Control-Allow-Methods'     'GET, POST, PUT, PATCH, DELETE, OPTIONS' always;
           add_header 'Access-Control-Allow-Headers'     'Authorization, Content-Type, X-Client-Info, apikey' always;
