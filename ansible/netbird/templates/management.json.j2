@@ -1,0 +1,69 @@
+{
+  "Stuns": [
+    {"Proto": "udp", "URI": "stun:{{ netbird_turn_domain }}:{{ netbird_turn_listen_port }}", "Username": "", "Password": ""}
+  ],
+  "TURNConfig": {
+    "TimeBasedCredentials": false,
+    "CredentialsTTL": "12h",
+    "Secret": "{{ netbird_turn_secret }}",
+    "Turns": [
+      {
+        "Proto": "udp",
+        "URI": "turn:{{ netbird_turn_domain }}:{{ netbird_turn_listen_port }}",
+        "Username": "{{ netbird_turn_user }}",
+        "Password": "{{ netbird_turn_password }}"
+      }
+    ]
+  },
+  "Signal": {
+    "Proto": "https",
+    "URI": "{{ netbird_domain }}:443",
+    "Username": "",
+    "Password": ""
+  },
+  "ReverseProxy": {
+    "TrustedHTTPProxies": ["127.0.0.1/32"],
+    "TrustedHTTPProxiesCount": 0,
+    "TrustedPeers": ["0.0.0.0/0"]
+  },
+  "Datadir": "",
+  "DataStoreEncryptionKey": "{{ netbird_datastore_key }}",
+  "StoreConfig": {"Engine": "sqlite"},
+  "HttpConfig": {
+    "AuthIssuer": "{{ netbird_casdoor_url }}",
+    "AuthAudience": "{{ netbird_oidc_client_id }}",
+    "AuthKeysLocation": "{{ netbird_casdoor_url }}/.well-known/jwks",
+    "AuthUserIDClaim": "sub",
+    "OIDCConfigEndpoint": "{{ netbird_casdoor_url }}/.well-known/openid-configuration",
+    "IdpSignKeyRefreshEnabled": true
+  },
+  "IdpManagerConfig": {
+    "ManagerType": "none"
+  },
+  "DeviceAuthorizationFlow": {
+    "Provider": "hosted",
+    "ProviderConfig": {
+      "Audience": "{{ netbird_oidc_client_id }}",
+      "ClientID": "{{ netbird_oidc_client_id }}",
+      "ClientSecret": "{{ netbird_oidc_client_secret }}",
+      "Domain": "{{ netbird_casdoor_url | regex_replace('^https?://', '') }}",
+      "Scope": "{{ netbird_oidc_scope }}",
+      "UseIDToken": false,
+      "TokenEndpoint": "{{ netbird_casdoor_url }}/api/login/oauth/access_token",
+      "DeviceAuthEndpoint": "{{ netbird_casdoor_url }}/api/device-auth"
+    }
+  },
+  "PKCEAuthorizationFlow": {
+    "ProviderConfig": {
+      "Audience": "{{ netbird_oidc_client_id }}",
+      "ClientID": "{{ netbird_oidc_client_id }}",
+      "ClientSecret": "{{ netbird_oidc_client_secret }}",
+      "Domain": "{{ netbird_casdoor_url | regex_replace('^https?://', '') }}",
+      "AuthorizationEndpoint": "{{ netbird_casdoor_url }}/login/oauth/authorize",
+      "TokenEndpoint": "{{ netbird_casdoor_url }}/api/login/oauth/access_token",
+      "Scope": "{{ netbird_oidc_scope }}",
+      "RedirectURLs": ["http://localhost:53000/", "http://localhost:54000/"],
+      "UseIDToken": false
+    }
+  }
+}

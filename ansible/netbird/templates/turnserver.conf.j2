@@ -1,0 +1,23 @@
+# Coturn server config (Ansible managed)
+# Host is NAT'd: eth0={{ ansible_default_ipv4.address }} → public={{ netbird_public_ip }}.
+# Bind only to the private IP (avoids enumerating docker bridges) and advertise the public.
+listening-port={{ netbird_turn_listen_port }}
+listening-ip={{ ansible_default_ipv4.address }}
+relay-ip={{ ansible_default_ipv4.address }}
+external-ip={{ netbird_public_ip }}/{{ ansible_default_ipv4.address }}
+realm={{ netbird_domain }}
+fingerprint
+lt-cred-mech
+user={{ netbird_turn_user }}:{{ netbird_turn_password }}
+min-port={{ netbird_turn_relay_min }}
+max-port={{ netbird_turn_relay_max }}
+no-cli
+no-tls
+no-dtls
+no-software-attribute
+total-quota=100
+bps-capacity=0
+stale-nonce=600
+log-file=stdout
+no-stdout-log
+verbose

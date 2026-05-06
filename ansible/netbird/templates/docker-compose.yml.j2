@@ -1,0 +1,82 @@
+# =============================================================================
+# NetBird Docker Compose (Ansible Managed)
+#   - dashboard / signal / management / relay bound to 127.0.0.1, fronted by host nginx
+#   - coturn uses host networking for the UDP relay range
+# =============================================================================
+services:
+  dashboard:
+    image: {{ netbird_dashboard_image }}
+    container_name: netbird-dashboard
+    restart: unless-stopped
+    environment:
+      - NETBIRD_MGMT_API_ENDPOINT=https://{{ netbird_domain }}
+      - NETBIRD_MGMT_GRPC_API_ENDPOINT=https://{{ netbird_domain }}
+      - AUTH_AUTHORITY={{ netbird_casdoor_url }}
+      - AUTH_AUDIENCE={{ netbird_oidc_client_id }}
+      - AUTH_CLIENT_ID={{ netbird_oidc_client_id }}
+      - AUTH_CLIENT_SECRET=
+      - AUTH_SUPPORTED_SCOPES={{ netbird_oidc_scope }}
+      - AUTH_REDIRECT_URI=/auth
+      - AUTH_SILENT_REDIRECT_URI=/silent-auth
+      - USE_AUTH0=false
+      - NETBIRD_TOKEN_SOURCE=accessToken
+      - NETBIRD_DRAG_QUERY_PARAMS=true
+    ports:
+      - '127.0.0.1:{{ netbird_dashboard_port }}:80'
+    networks: [netbird]
+
+  signal:
+    image: {{ netbird_signal_image }}
+    container_name: netbird-signal
+    restart: unless-stopped
+    volumes:
+      - ./signal:/var/lib/netbird
+    ports:
+      - '127.0.0.1:{{ netbird_signal_http_port }}:80'
+      - '127.0.0.1:{{ netbird_signal_grpc_port }}:10000'
+    networks: [netbird]
+
+  relay:
+    image: {{ netbird_relay_image }}
+    container_name: netbird-relay
+    restart: unless-stopped
+    environment:
+      - NB_LOG_LEVEL=info
+      - NB_LISTEN_ADDRESS=:80
+      - NB_EXPOSED_ADDRESS=rels://{{ netbird_domain }}:443/relay
+      - NB_AUTH_SECRET={{ netbird_relay_secret }}
+    ports:
+      - '127.0.0.1:{{ netbird_relay_port }}:80'
+    networks: [netbird]
+
+  management:
+    image: {{ netbird_management_image }}
+    container_name: netbird-management
+    restart: unless-stopped
+    depends_on: [dashboard]
+    volumes:
+      - ./management:/var/lib/netbird
+      - ./management.json:/etc/netbird/management.json:ro
+    command:
+      - --port=80
+      - --log-file=console
+      - --log-level=info
+      - --disable-anonymous-metrics=true
+      - --single-account-mode-domain={{ netbird_domain }}
+      - --dns-domain={{ netbird_dns_domain }}
+    ports:
+      - '127.0.0.1:{{ netbird_management_port }}:80'
+    networks: [netbird]
+
+  coturn:
+    image: {{ netbird_coturn_image }}
+    container_name: netbird-coturn
+    restart: unless-stopped
+    network_mode: host
+    volumes:
+      - ./turnserver.conf:/etc/turnserver.conf:ro
+    command: -c /etc/turnserver.conf
+
+networks:
+  netbird:
+    driver: bridge
