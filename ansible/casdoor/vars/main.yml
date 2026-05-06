@@ -1,0 +1,33 @@
+---
+# =============================================================================
+# Casdoor Deployment Variables
+# =============================================================================
+
+# Server configuration
+casdoor_http_port: 8000
+casdoor_run_mode: prod
+# Loopback only — nginx on the host terminates TLS and reverse-proxies to this.
+casdoor_bind_host: "127.0.0.1"
+
+# Deployment directory on remote host
+casdoor_deploy_dir: /opt/casdoor
+
+# Docker image
+casdoor_image: casbin/casdoor:latest
+
+# PostgreSQL backend
+casdoor_postgres_image: postgres:16-alpine
+casdoor_postgres_user: casdoor
+casdoor_postgres_db: casdoor
+
+# Public origin (Cloudflare-fronted)
+casdoor_domain: casdoor.starslab.qzz.io
+casdoor_origin: "https://{{ casdoor_domain }}"
+casdoor_origin_frontend: "https://{{ casdoor_domain }}"
+
+# nginx TLS material on the host (Cloudflare Origin Certificate)
+casdoor_ssl_cert: /etc/nginx/ssl/casdoor.crt
+casdoor_ssl_key:  /etc/nginx/ssl/casdoor.key
+
+# Timezone
+casdoor_tz: Asia/Shanghai
