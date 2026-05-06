@@ -6,14 +6,12 @@ nextcloud_version: "29.0.4"
 nextcloud_domain: "10.171.150.101"  # Change this to your domain
 
 # Database configuration
-mysql_root_password: "SecureRootPass123!"
+# Passwords come from sops: secrets/nextcloud.yaml (loaded by playbook.yml).
 nextcloud_db_name: "nextcloud"
 nextcloud_db_user: "nextcloud"
-nextcloud_db_password: "NextcloudDBPass456!"
 
-# Nextcloud admin credentials
+# Nextcloud admin credentials (password from sops).
 nextcloud_admin_user: "admin"
-nextcloud_admin_password: "AdminPass789!"
 
 # Data directory
 nextcloud_data_dir: "/var/nextcloud-data"
