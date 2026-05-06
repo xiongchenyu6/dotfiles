@@ -158,7 +158,7 @@ in
   # `zeroclaw/telegram_bot_token` SOPS key — the YAML namespace in
   # secrets/common.yaml is unchanged; only the nix references migrated.
   sops.templates."hermes-env".content = ''
-    GEMINI_API_KEY=${config.sops.placeholder."api-keys/GEMINI_API_KEY"}
+    XIAOMI_API_KEY=${config.sops.placeholder."api-keys/XIAOMI_API_KEY"}
     TELEGRAM_BOT_TOKEN=${config.sops.placeholder."zeroclaw/telegram_bot_token"}
   '';
 
@@ -174,7 +174,7 @@ in
   sops.secrets."s3fs/access_key" = { };
   sops.secrets."s3fs/secret_key" = { };
 
-  sops.secrets."api-keys/GEMINI_API_KEY".owner = "root";
+  sops.secrets."api-keys/XIAOMI_API_KEY".owner = "root";
   sops.secrets."zeroclaw/telegram_bot_token".owner = "root";
 
   services = {
@@ -276,10 +276,8 @@ in
     enable = true;
     settings = {
       model = {
-        # Bare model ID — `provider = "gemini"` hits Google AI Studio's native
-        # endpoint (v1beta), which rejects OpenRouter-style "google/" prefixes.
-        default = "gemini-2.5-flash";
-        provider = "gemini";
+        default = "mimo-v2.5-pro";
+        provider = "xiaomi";
       };
       # User-authored skills migrated from the old zeroclaw workspace.
       # External dirs are read-only to hermes; skill creation still writes
@@ -287,9 +285,10 @@ in
       # xiaohongshu-mcp from here alongside its built-in skill library.
       skills.external_dirs = [ "/var/lib/hermes/custom-skills" ];
     };
-    # Non-secret env vars (bot allowlist). Secrets go via environmentFiles.
+    # Non-secret env vars (bot allowlist + provider endpoint). Secrets go via environmentFiles.
     environment = {
       TELEGRAM_ALLOWED_USERS = "5368588092,5369058954";
+      XIAOMI_BASE_URL = "https://token-plan-cn.xiaomimimo.com/v1";
     };
     environmentFiles = [ config.sops.templates."hermes-env".path ];
   };
