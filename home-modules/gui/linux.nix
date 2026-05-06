@@ -31,6 +31,7 @@
       antigravity
       kiro
       aspellDicts.en
+      supabase-cli
       albert
       camber
       baidupcs-go
@@ -45,7 +46,7 @@
       unrar-wrapper
       moonlight-qt # Sunshine client — stream from sg-office or any Sunshine host
       #whatsapp-for-linux
-      wasistlos
+      karere
       winetricks
       wineWow64Packages.waylandFull
       kdePackages.dolphin

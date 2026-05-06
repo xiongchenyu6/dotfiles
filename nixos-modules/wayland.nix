@@ -25,6 +25,13 @@
         };
         niri = {
           default = [ "gnome" "gtk" ];
+          # xdg-desktop-portal-gnome 46+ delegates FileChooser/AppChooser to
+          # Nautilus (org.gnome.NautilusPortal). Without Nautilus installed,
+          # the D-Bus name isn't activatable and every file picker fails with
+          # "Delegated FileChooser call failed: The name is not activatable",
+          # breaking Slack/Chromium uploads. Pin these to gtk.
+          "org.freedesktop.impl.portal.FileChooser" = [ "gtk" ];
+          "org.freedesktop.impl.portal.AppChooser" = [ "gtk" ];
           "org.freedesktop.impl.portal.ScreenCast" = [ "wlr" ];
           "org.freedesktop.impl.portal.Screenshot" = [ "wlr" ];
           "org.freedesktop.impl.portal.Secret" = [ "gnome-keyring" ];

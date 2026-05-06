@@ -73,6 +73,30 @@ in
           }
         );
       })
+      # nixpkgs pins wireshark 4.6.5 via fetchFromGitLab using a tag
+      # ref. GitLab regenerated the v4.6.5 archive, so the recorded
+      # hash drifted (`U30OJ8m+L/...` → `Zvrwxjp4LK2J3...`) and every
+      # build that pulls wireshark/wireshark-cli/termshark fails. Pin
+      # the new hash here until nixpkgs' update lands. Both wireshark
+      # (qt) and wireshark-cli need patching: wireshark-cli is
+      # `wireshark.override { withQt = false; }`, which re-invokes the
+      # package with the original src, bypassing an override on
+      # wireshark alone.
+      (_: prev:
+        let
+          wiresharkSrc = prev.fetchFromGitLab {
+            repo = "wireshark";
+            owner = "wireshark";
+            tag = "v4.6.5";
+            hash = "sha256-Zvrwxjp4LK2J3QnxmPxKKrU01YHQvPyp54UWzeGNCjA=";
+          };
+          fixSrc = drv: drv.overrideAttrs (_: { src = wiresharkSrc; });
+        in
+        {
+          wireshark = fixSrc prev.wireshark;
+          wireshark-cli = fixSrc prev.wireshark-cli;
+        }
+      )
       # aw-watcher-window-wayland emits the raw Wayland app_id (e.g.
       # "google-chrome", "firefox", "chromium"), but aw-webui's hardcoded
       # browser whitelist is in CamelCase ("Google-chrome", "Firefox", ...).
