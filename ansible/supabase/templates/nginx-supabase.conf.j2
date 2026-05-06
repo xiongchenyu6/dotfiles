@@ -1,0 +1,129 @@
+# Supabase stack reverse proxy (Cloudflare-fronted)
+# Three vhosts share one Let's Encrypt certificate (acme.sh DNS-01) whose SAN
+# covers {{ supabase_api_domain }}, {{ supabase_auth_domain }},
+# and {{ supabase_realtime_domain }}.
+
+map $http_upgrade $supabase_connection_upgrade {
+    default upgrade;
+    ''      close;
+}
+
+# Rate-limit zone for public/* PostgREST views (anon-callable). 30 req/min/IP.
+limit_req_zone $binary_remote_addr zone=supabase_public_preview:10m rate=30r/m;
+
+upstream supabase_postgrest { server 127.0.0.1:{{ supabase_postgrest_port }}; keepalive 32; }
+upstream supabase_auth      { server 127.0.0.1:{{ supabase_auth_port }};      keepalive 32; }
+upstream supabase_realtime  { server 127.0.0.1:{{ supabase_realtime_port }};  keepalive 32; }
+
+# ---------- HTTP → HTTPS redirect (all three) -------------------------------
+server {
+    listen 80;
+    listen [::]:80;
+    server_name {{ supabase_api_domain }} {{ supabase_auth_domain }} {{ supabase_realtime_domain }};
+    return 301 https://$host$request_uri;
+}
+
+# ---------- api.<domain> → PostgREST ----------------------------------------
+server {
+    listen 443 ssl http2;
+    listen [::]:443 ssl http2;
+    server_name {{ supabase_api_domain }};
+
+    include /etc/nginx/cloudflare-realip.conf;
+
+    ssl_certificate     {{ supabase_ssl_cert }};
+    ssl_certificate_key {{ supabase_ssl_key }};
+    ssl_protocols       TLSv1.2 TLSv1.3;
+    ssl_ciphers         HIGH:!aNULL:!MD5;
+
+    access_log /var/log/nginx/supabase-api.access.log;
+    error_log  /var/log/nginx/supabase-api.error.log;
+
+    proxy_http_version 1.1;
+    proxy_set_header Host              $host;
+    proxy_set_header X-Real-IP         $remote_addr;
+    proxy_set_header X-Forwarded-For   $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto $scheme;
+    proxy_set_header Upgrade           $http_upgrade;
+    proxy_set_header Connection        $supabase_connection_upgrade;
+
+    # Public preview views (anon-callable) — rate-limit at edge + tell
+    # Cloudflare to cache hard so abuse hits CDN, not origin.
+    location ~ ^/public_ {
+        limit_req zone=supabase_public_preview burst=60 nodelay;
+        limit_req_status 429;
+        add_header Cache-Control "public, max-age=60, s-maxage=300" always;
+        proxy_pass http://supabase_postgrest;
+    }
+
+    location / {
+        proxy_pass http://supabase_postgrest;
+    }
+}
+
+# ---------- auth.<domain> → GoTrue ------------------------------------------
+server {
+    listen 443 ssl http2;
+    listen [::]:443 ssl http2;
+    server_name {{ supabase_auth_domain }};
+
+    include /etc/nginx/cloudflare-realip.conf;
+
+    ssl_certificate     {{ supabase_ssl_cert }};
+    ssl_certificate_key {{ supabase_ssl_key }};
+    ssl_protocols       TLSv1.2 TLSv1.3;
+    ssl_ciphers         HIGH:!aNULL:!MD5;
+
+    access_log /var/log/nginx/supabase-auth.access.log;
+    error_log  /var/log/nginx/supabase-auth.error.log;
+
+    location / {
+        proxy_pass http://supabase_auth;
+        proxy_http_version 1.1;
+        proxy_set_header Host              $host;
+        proxy_set_header X-Real-IP         $remote_addr;
+        proxy_set_header X-Forwarded-For   $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header Upgrade           $http_upgrade;
+        proxy_set_header Connection        $supabase_connection_upgrade;
+
+        add_header 'Access-Control-Allow-Origin'  '*' always;
+        add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, PATCH, DELETE, OPTIONS' always;
+        add_header 'Access-Control-Allow-Headers' 'Authorization, Content-Type, X-Client-Info, apikey' always;
+        if ($request_method = 'OPTIONS') { return 204; }
+    }
+}
+
+# ---------- realtime.<domain> → Realtime ------------------------------------
+# Single-tenant deployment: only the bare realtime domain is served. To enable
+# per-tenant subdomains later, re-issue the cert with a wildcard SAN and add
+# the wildcard back to server_name + the HTTP redirect block.
+server {
+    listen 443 ssl http2;
+    listen [::]:443 ssl http2;
+    server_name {{ supabase_realtime_domain }};
+
+    include /etc/nginx/cloudflare-realip.conf;
+
+    ssl_certificate     {{ supabase_ssl_cert }};
+    ssl_certificate_key {{ supabase_ssl_key }};
+    ssl_protocols       TLSv1.2 TLSv1.3;
+    ssl_ciphers         HIGH:!aNULL:!MD5;
+
+    access_log /var/log/nginx/supabase-realtime.access.log;
+    error_log  /var/log/nginx/supabase-realtime.error.log;
+
+    location / {
+        proxy_pass http://supabase_realtime;
+        proxy_http_version 1.1;
+        proxy_set_header Host              $host;
+        proxy_set_header X-Real-IP         $remote_addr;
+        proxy_set_header X-Forwarded-For   $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header Upgrade           $http_upgrade;
+        proxy_set_header Connection        $supabase_connection_upgrade;
+        # Long-lived WS — defaults of 60s would chop every realtime connection.
+        proxy_read_timeout 3600s;
+        proxy_send_timeout 3600s;
+    }
+}
