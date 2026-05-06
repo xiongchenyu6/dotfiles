@@ -17,15 +17,15 @@
     ezModules.core
     ezModules.server
     ezModules.acme
-    ezModules.datadog-agent
-    ezModules.postgrest
-    autolife-relay.nixosModules.autolife-relay
+    #ezModules.datadog-agent
+    #ezModules.postgrest
+    #autolife-relay.nixosModules.autolife-relay
     srvos.nixosModules.server
     ezModules.mixins-nginx
     srvos.nixosModules.mixins-trusted-nix-caches
     srvos.nixosModules.mixins-nix-experimental
     srvos.nixosModules.mixins-tracing
-    rust-web-server.nixosModules.rust-web-server
+    #rust-web-server.nixosModules.rust-web-server
     ../../nixos-modules/rust-web-server-config.nix
     ./disk-config.nix
     ./hardware-configuration.nix
@@ -34,7 +34,7 @@
   # rust-web-server overlay applied host-locally — the input is private SSH
   # so the overlay is scoped per-host (see also huoshan-bj-001).
   nixpkgs.overlays = [
-    (inputs.rust-web-server.overlays.default or inputs.rust-web-server.overlay)
+    #(inputs.rust-web-server.overlays.default or inputs.rust-web-server.overlay)
   ];
   boot = {
     loader.grub = {
@@ -123,7 +123,7 @@
 
   services = {
     postgresqlBackup = {
-      enable = true;
+      enable = false;
       databases = [
         "rustwebserver"
         "odoo"
@@ -131,7 +131,7 @@
     };
 
     postgresql = {
-      enable = true;
+      enable = false;
       package = pkgs.postgresql_18_jit;
       authentication = ''
         local all all trust
@@ -177,7 +177,7 @@
     };
 
     rustdesk-server = {
-      enable = true;
+      enable = false;
       openFirewall = true;
       signal = {
         relayHosts = [ "rustdesk.autolife.ai" ];
@@ -185,7 +185,7 @@
     };
 
     autolife-relay = {
-      enable = true;
+      enable = false;
       openFirewall = true;
       settings = {
         server_url = "ws://183.6.107.47:3000/ws";
@@ -220,7 +220,7 @@
 
     # Odoo ERP/CRM system
     odoo = {
-      enable = true;
+      enable = false;
       domain = "odoo.autolife.ai";
       autoInit = true;
       settings = {
@@ -258,7 +258,7 @@
 
     # Rust web server
     rust-web-server = {
-      enable = true;
+      enable = false;
       configFile = config.sops.templates."rust-web-server-config".path;
       licenseFile = config.sops.templates."rust-web-server-license".path;
       publicKey = builtins.readFile ./id_ed25519.pub;
@@ -348,7 +348,7 @@
 
   # Enable osquery for device monitoring using official NixOS module
   services.osquery = {
-    enable = true;
+    enable = false;
     settings = {
       options = {
         host_identifier = "hostname";
