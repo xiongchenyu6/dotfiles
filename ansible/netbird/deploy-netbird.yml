@@ -1,0 +1,216 @@
+---
+- name: Deploy NetBird Zero Trust VPN
+  hosts: netbird_servers
+  become: yes
+  vars_files:
+    - vars/main.yml
+  vars:
+    netbird_oidc_client_id: "{{ netbird.oidc_client_id }}"
+    netbird_oidc_client_secret: "{{ netbird.oidc_client_secret }}"
+
+  tasks:
+    - name: Load OIDC credentials from sops
+      community.sops.load_vars:
+        file: ../../secrets/netbird.yaml
+      no_log: true
+
+    - name: Fail fast if OIDC credentials are not set
+      fail:
+        msg: "secrets/netbird.yaml must define netbird.oidc_client_id and netbird.oidc_client_secret."
+      when:
+        - netbird.oidc_client_id is not defined
+          or netbird.oidc_client_secret is not defined
+          or netbird.oidc_client_id | length == 0
+          or netbird.oidc_client_secret | length == 0
+
+    - name: Install required packages
+      apt:
+        name:
+          - curl
+          - docker.io
+          - docker-compose-v2
+        state: present
+        update_cache: yes
+        cache_valid_time: 3600
+
+    - name: Start and enable Docker service
+      systemd:
+        name: docker
+        state: started
+        enabled: yes
+
+    - name: Create deployment directory
+      file:
+        path: "{{ netbird_deploy_dir }}"
+        state: directory
+        owner: root
+        group: root
+        mode: '0755'
+
+    - name: Create data directories
+      file:
+        path: "{{ netbird_deploy_dir }}/{{ item }}"
+        state: directory
+        owner: root
+        group: root
+        mode: '0755'
+      loop:
+        - signal
+        - management
+
+    # ----- Persisted secrets (TURN, datastore, relay) -----
+    - name: Slurp existing secrets file if present
+      slurp:
+        src: "{{ netbird_deploy_dir }}/.secrets.yml"
+      register: nb_secrets_slurp
+      failed_when: false
+      no_log: true
+
+    - name: Load existing secrets
+      set_fact:
+        _nb_existing: "{{ (nb_secrets_slurp.content | b64decode | from_yaml) if nb_secrets_slurp.content is defined else {} }}"
+      no_log: true
+
+    - name: Resolve TURN secret
+      set_fact:
+        netbird_turn_secret: "{{ netbird_turn_secret | default(_nb_existing.netbird_turn_secret) | default(lookup('ansible.builtin.pipe', 'openssl rand -hex 32')) }}"
+      no_log: true
+
+    - name: Resolve TURN user password
+      set_fact:
+        netbird_turn_password: "{{ netbird_turn_password | default(_nb_existing.netbird_turn_password) | default(lookup('ansible.builtin.pipe', 'openssl rand -hex 16')) }}"
+      no_log: true
+
+    - name: Resolve datastore encryption key (32-byte base64)
+      set_fact:
+        netbird_datastore_key: "{{ netbird_datastore_key | default(_nb_existing.netbird_datastore_key) | default(lookup('ansible.builtin.pipe', 'openssl rand -base64 32')) }}"
+      no_log: true
+
+    - name: Resolve relay auth secret
+      set_fact:
+        netbird_relay_secret: "{{ netbird_relay_secret | default(_nb_existing.netbird_relay_secret) | default(lookup('ansible.builtin.pipe', 'openssl rand -hex 32')) }}"
+      no_log: true
+
+    - name: Persist secrets to remote host
+      copy:
+        content: |
+          netbird_turn_secret: "{{ netbird_turn_secret }}"
+          netbird_turn_password: "{{ netbird_turn_password }}"
+          netbird_datastore_key: "{{ netbird_datastore_key }}"
+          netbird_relay_secret: "{{ netbird_relay_secret }}"
+        dest: "{{ netbird_deploy_dir }}/.secrets.yml"
+        owner: root
+        group: root
+        mode: '0600'
+      no_log: true
+
+    # ----- Render configs -----
+    - name: Deploy management.json
+      template:
+        src: templates/management.json.j2
+        dest: "{{ netbird_deploy_dir }}/management.json"
+        owner: root
+        group: root
+        mode: '0644'
+      notify: restart netbird
+
+    - name: Deploy turnserver.conf
+      template:
+        src: templates/turnserver.conf.j2
+        dest: "{{ netbird_deploy_dir }}/turnserver.conf"
+        owner: root
+        group: root
+        mode: '0644'
+      notify: restart netbird
+
+    - name: Deploy docker-compose.yml
+      template:
+        src: templates/docker-compose.yml.j2
+        dest: "{{ netbird_deploy_dir }}/docker-compose.yml"
+        owner: root
+        group: root
+        mode: '0600'
+      notify: restart netbird
+
+    - name: Pull and start services
+      command: docker compose up -d --pull always
+      args:
+        chdir: "{{ netbird_deploy_dir }}"
+
+    - name: Wait for management API to respond
+      uri:
+        url: "http://127.0.0.1:{{ netbird_management_port }}/api/users"
+        status_code: [200, 401, 403]
+      register: nb_health
+      retries: 24
+      delay: 5
+      until: nb_health.status in [200, 401, 403]
+      ignore_errors: yes
+
+    # ----- nginx reverse proxy -----
+    - name: Ensure nginx is installed
+      apt:
+        name: nginx
+        state: present
+
+    - name: Verify TLS cert is present
+      stat:
+        path: "{{ netbird_ssl_cert }}"
+      register: nb_cert_stat
+
+    - name: Fail with instructions if cert is missing
+      fail:
+        msg: |
+          {{ netbird_ssl_cert }} not found.
+          Issue a Let's Encrypt cert via DNS-01, e.g.:
+            CF_Token=... /root/.acme.sh/acme.sh --issue --dns dns_cf \
+              -d {{ netbird_domain }} -d {{ netbird_turn_domain }} --keylength ec-256
+            /root/.acme.sh/acme.sh --install-cert -d {{ netbird_domain }} --ecc \
+              --key-file {{ netbird_ssl_key }} --fullchain-file {{ netbird_ssl_cert }} \
+              --reloadcmd "systemctl reload nginx"
+      when: not nb_cert_stat.stat.exists
+
+    - name: Deploy nginx site for {{ netbird_domain }}
+      template:
+        src: templates/nginx-netbird.conf.j2
+        dest: /etc/nginx/sites-available/netbird
+        owner: root
+        group: root
+        mode: '0644'
+      notify: reload nginx
+
+    - name: Enable nginx site
+      file:
+        src: /etc/nginx/sites-available/netbird
+        dest: /etc/nginx/sites-enabled/netbird
+        state: link
+      notify: reload nginx
+
+    - name: Validate nginx configuration
+      command: nginx -t
+      changed_when: false
+
+    - name: Display deployment status
+      debug:
+        msg: |
+          ========================================
+          NetBird deployment status: {{ 'SUCCESS' if nb_health.status | default(0) in [200, 401, 403] else 'STARTING' }}
+          ========================================
+          Deploy dir: {{ netbird_deploy_dir }}
+          Dashboard:  https://{{ netbird_domain }}
+          Mgmt API:   https://{{ netbird_domain }}/api/
+          Signal:     https://{{ netbird_domain }} (gRPC /signalexchange.SignalExchange/)
+          Coturn:     {{ netbird_turn_domain }}:{{ netbird_turn_listen_port }}/udp (relay {{ netbird_turn_relay_min }}-{{ netbird_turn_relay_max }}/udp)
+          IdP:        {{ netbird_casdoor_url }} (Casdoor SSO, app=netbird)
+          ========================================
+
+  handlers:
+    - name: restart netbird
+      command: docker compose restart
+      args:
+        chdir: "{{ netbird_deploy_dir }}"
+
+    - name: reload nginx
+      systemd:
+        name: nginx
+        state: reloaded
