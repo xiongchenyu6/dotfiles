@@ -1,0 +1,82 @@
+# =============================================================================
+# Casdoor Docker Compose (Ansible Managed)
+# =============================================================================
+services:
+  casdoor:
+    image: {{ casdoor_image }}
+    container_name: casdoor
+    restart: unless-stopped
+    entrypoint: /bin/sh -c './server --createDatabase=true'
+    ports:
+      - "{{ casdoor_bind_host }}:{{ casdoor_http_port }}:8000"
+    volumes:
+      - ./conf/app.conf:/conf/app.conf:ro
+      - ./logs:/logs
+    environment:
+      - RUNNING_IN_DOCKER=true
+      - TZ={{ casdoor_tz }}
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - casdoor-network
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-T", "5", "-O", "/dev/null", "http://localhost:8000/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+  postgres:
+    image: {{ casdoor_postgres_image }}
+    container_name: casdoor-postgres
+    restart: unless-stopped
+    volumes:
+      - ./postgres_data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_USER={{ casdoor_postgres_user }}
+      - POSTGRES_PASSWORD={{ casdoor_postgres_password }}
+      - POSTGRES_DB=postgres
+      - PGDATA=/var/lib/postgresql/data
+      - TZ={{ casdoor_tz }}
+    networks:
+      - casdoor-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U {{ casdoor_postgres_user }} -d postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+  redis:
+    image: redis:7-alpine
+    container_name: casdoor-redis
+    restart: unless-stopped
+    volumes:
+      - ./redis_data:/data
+    command: >
+        sh -c '
+          redis-server
+          --save 60 1
+          --appendonly yes
+          --appendfsync everysec
+          --requirepass "$$REDIS_PASSWORD"
+        '
+    environment:
+      - REDIS_PASSWORD={{ casdoor_redis_password }}
+      - REDISCLI_AUTH={{ casdoor_redis_password }}
+      - TZ={{ casdoor_tz }}
+    networks:
+      - casdoor-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "-a", "{{ casdoor_redis_password }}", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 5s
+
+networks:
+  casdoor-network:
+    driver: bridge
