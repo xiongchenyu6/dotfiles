@@ -1,0 +1,48 @@
+---
+# =============================================================================
+# NetBird Deployment Variables
+# =============================================================================
+
+# Domains (Cloudflare DNS-only — gRPC and UDP do not work behind CF proxy)
+netbird_domain: netbird.starslab.qzz.io
+netbird_turn_domain: coturn.starslab.qzz.io
+netbird_public_ip: 203.116.95.146
+
+# Deployment directory on remote host
+netbird_deploy_dir: /opt/netbird
+
+# Container images
+netbird_management_image: netbirdio/management:latest
+netbird_signal_image: netbirdio/signal:latest
+netbird_dashboard_image: netbirdio/dashboard:latest
+netbird_relay_image: netbirdio/relay:latest
+netbird_coturn_image: coturn/coturn:latest
+
+# Loopback ports (nginx on host proxies to these)
+netbird_dashboard_port: 8080
+netbird_signal_http_port: 8083
+netbird_signal_grpc_port: 10000
+netbird_management_port: 8081
+netbird_relay_port: 8084
+
+# TURN
+netbird_turn_listen_port: 3478
+netbird_turn_relay_min: 49152
+netbird_turn_relay_max: 65535
+netbird_turn_user: self
+
+# nginx TLS material on the host (Let's Encrypt via DNS-01)
+netbird_ssl_cert: /etc/nginx/ssl/netbird.crt
+netbird_ssl_key:  /etc/nginx/ssl/netbird.key
+
+# OIDC (Casdoor)
+netbird_casdoor_url: https://casdoor.starslab.qzz.io
+netbird_oidc_scope: "openid profile email offline_access"
+# These two MUST be supplied via vars/oidc.yml (gitignored) or --extra-vars.
+# The deploy fails fast if either is missing.
+# netbird_oidc_client_id: "..."
+# netbird_oidc_client_secret: "..."
+
+# Misc
+netbird_tz: Asia/Shanghai
+netbird_dns_domain: netbird.selfhosted
