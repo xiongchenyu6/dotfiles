@@ -1,0 +1,31 @@
+appname = casdoor
+httpport = 8000
+runmode = {{ casdoor_run_mode }}
+copyrequestbody = true
+
+driverName = postgres
+dataSourceName = host=postgres port=5432 user={{ casdoor_postgres_user }} password={{ casdoor_postgres_password }} sslmode=disable dbname=postgres
+dbName = {{ casdoor_postgres_db }}
+
+redisEndpoint = redis:6379,password={{ casdoor_redis_password }}
+
+origin = {{ casdoor_origin }}
+originFrontend = {{ casdoor_origin_frontend }}
+
+defaultStorageProvider =
+isCloudIntranet = false
+authState = "casdoor"
+verificationCodeTimeout = 10
+initScore = 0
+logPostOnly = true
+isUsernameLowered = false
+enableErrorMask = true
+enableGzip = true
+inactiveTimeoutMinutes = 30
+batchSize = 100
+ldapServerPort = 389
+radiusServerPort = 1812
+radiusSecret = "secret"
+quota = {"organization": -1, "user": -1, "application": -1, "provider": -1}
+logConfig = {"adapter":"file", "filename": "logs/casdoor.log", "maxdays":99999, "perm":"0770"}
+initDataFile = "./init_data.json"

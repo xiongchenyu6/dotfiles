@@ -1,0 +1,182 @@
+---
+- name: Deploy Casdoor IAM/SSO platform
+  hosts: casdoor_servers
+  become: yes
+  vars_files:
+    - vars/main.yml
+
+  tasks:
+    - name: Install required packages
+      apt:
+        name:
+          - curl
+          - docker.io
+          - docker-compose-v2
+        state: present
+        update_cache: yes
+        cache_valid_time: 3600
+
+    - name: Start and enable Docker service
+      systemd:
+        name: docker
+        state: started
+        enabled: yes
+
+    - name: Create deployment directory
+      file:
+        path: "{{ casdoor_deploy_dir }}"
+        state: directory
+        owner: root
+        group: root
+        mode: '0755'
+
+    - name: Create data directories
+      file:
+        path: "{{ casdoor_deploy_dir }}/{{ item.name }}"
+        state: directory
+        owner: "{{ item.owner }}"
+        group: "{{ item.group }}"
+        mode: '0755'
+      loop:
+        # Casdoor container runs as UID 1000 — logs/ must be writable by it.
+        # Postgres/Redis images chown their own data dirs on first init.
+        - { name: conf,          owner: root, group: root }
+        - { name: logs,          owner: '1000', group: '1000' }
+        - { name: postgres_data, owner: root, group: root }
+        - { name: redis_data,    owner: root, group: root }
+
+    # Persist generated secrets across runs — without this, every re-run
+    # regenerates new passwords and the existing postgres volume rejects them.
+    - name: Slurp existing secrets file if present
+      slurp:
+        src: "{{ casdoor_deploy_dir }}/.secrets.yml"
+      register: casdoor_secrets_slurp
+      failed_when: false
+      no_log: true
+
+    - name: Load existing secrets
+      set_fact:
+        _casdoor_existing: "{{ (casdoor_secrets_slurp.content | b64decode | from_yaml) if casdoor_secrets_slurp.content is defined else {} }}"
+      no_log: true
+
+    - name: Resolve POSTGRES password (existing > extra-var > generated)
+      set_fact:
+        casdoor_postgres_password: "{{ casdoor_postgres_password | default(_casdoor_existing.casdoor_postgres_password) | default(lookup('ansible.builtin.pipe', 'openssl rand -hex 32')) }}"
+      no_log: true
+
+    - name: Resolve REDIS password (existing > extra-var > generated)
+      set_fact:
+        casdoor_redis_password: "{{ casdoor_redis_password | default(_casdoor_existing.casdoor_redis_password) | default(lookup('ansible.builtin.pipe', 'openssl rand -hex 32')) }}"
+      no_log: true
+
+    - name: Persist secrets to remote host
+      copy:
+        content: |
+          casdoor_postgres_password: "{{ casdoor_postgres_password }}"
+          casdoor_redis_password: "{{ casdoor_redis_password }}"
+        dest: "{{ casdoor_deploy_dir }}/.secrets.yml"
+        owner: root
+        group: root
+        mode: '0600'
+      no_log: true
+
+    - name: Deploy app.conf
+      template:
+        src: templates/app.conf.j2
+        dest: "{{ casdoor_deploy_dir }}/conf/app.conf"
+        owner: root
+        group: root
+        # 0644 so the non-root user inside the casdoor container can read it.
+        # /opt/casdoor itself is 0755 root-owned, so nothing else on the host can.
+        mode: '0644'
+      notify: restart casdoor
+
+    - name: Deploy docker-compose.yml
+      template:
+        src: templates/docker-compose.yml.j2
+        dest: "{{ casdoor_deploy_dir }}/docker-compose.yml"
+        owner: root
+        group: root
+        mode: '0600'
+      notify: restart casdoor
+
+    - name: Pull and start services
+      command: docker compose up -d --pull always
+      args:
+        chdir: "{{ casdoor_deploy_dir }}"
+
+    - name: Wait for casdoor to be healthy
+      uri:
+        url: "http://127.0.0.1:{{ casdoor_http_port }}/api/health"
+        status_code: 200
+      register: health_check
+      retries: 24
+      delay: 5
+      until: health_check.status == 200
+      ignore_errors: yes
+
+    # ----- nginx reverse proxy (TLS terminator, Cloudflare-fronted) -----
+
+    - name: Ensure nginx is installed
+      apt:
+        name: nginx
+        state: present
+
+    - name: Verify Cloudflare Origin Certificate is present
+      stat:
+        path: "{{ casdoor_ssl_cert }}"
+      register: casdoor_cert_stat
+
+    - name: Fail with instructions if cert is missing
+      fail:
+        msg: |
+          {{ casdoor_ssl_cert }} not found on the target host.
+          Place a Cloudflare Origin Certificate (and key at {{ casdoor_ssl_key }})
+          for {{ casdoor_domain }} before running this playbook, e.g.:
+            scp casdoor.crt root@{{ ansible_host }}:{{ casdoor_ssl_cert }}
+            scp casdoor.key root@{{ ansible_host }}:{{ casdoor_ssl_key }}
+            ssh root@{{ ansible_host }} 'chmod 600 {{ casdoor_ssl_key }}'
+      when: not casdoor_cert_stat.stat.exists
+
+    - name: Deploy nginx site for {{ casdoor_domain }}
+      template:
+        src: templates/nginx-casdoor.conf.j2
+        dest: /etc/nginx/sites-available/casdoor
+        owner: root
+        group: root
+        mode: '0644'
+      notify: reload nginx
+
+    - name: Enable nginx site
+      file:
+        src: /etc/nginx/sites-available/casdoor
+        dest: /etc/nginx/sites-enabled/casdoor
+        state: link
+      notify: reload nginx
+
+    - name: Validate nginx configuration
+      command: nginx -t
+      changed_when: false
+
+    - name: Display deployment status
+      debug:
+        msg: |
+          ========================================
+          Casdoor deployment status: {{ 'SUCCESS' if health_check.status | default(0) == 200 else 'STARTING' }}
+          ========================================
+          Deploy dir: {{ casdoor_deploy_dir }}
+          Internal:   http://127.0.0.1:{{ casdoor_http_port }}
+          Public URL: {{ casdoor_origin }}
+          Default login: admin / 123 (change immediately!)
+          ========================================
+
+  handlers:
+    - name: restart casdoor
+      command: docker compose restart
+      args:
+        chdir: "{{ casdoor_deploy_dir }}"
+
+    - name: reload nginx
+      systemd:
+        name: nginx
+        state: reloaded

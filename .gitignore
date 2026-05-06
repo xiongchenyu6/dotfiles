@@ -88,3 +88,9 @@ stow-managed/rime/.local/share/fcitx5/rime/*.tmp
 stow-managed/rime/.local/share/fcitx5/rime/*.log
 stow-managed/rime/.local/share/fcitx5/rime/*.bin
 stow-managed/config/.config/nvim/init.lua
+
+# Ansible per-deployment secrets — never commit these
+ansible/*/vars/oidc.yml
+ansible/*/secrets/
+ansible/*/.secrets.yml
+
