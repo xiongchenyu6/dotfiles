@@ -23,10 +23,12 @@
     srvos.nixosModules.mixins-nix-experimental
     srvos.nixosModules.mixins-tracing
     xiongchenyu6.nixosModules.hashtopolis-server
+    xiongchenyu6.nixosModules.freqtrade-ohlc-sync
     ./disk-config.nix
     ./hardware-configuration.nix
     ./hashtopolis.nix
     ./postgres.nix
+    ./freqtrade-ohlc.nix
   ];
 
   boot = {
