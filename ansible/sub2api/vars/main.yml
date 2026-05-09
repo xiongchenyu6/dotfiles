@@ -4,10 +4,15 @@
 # =============================================================================
 
 # Server configuration
-sub2api_server_port: 8080
+sub2api_server_port: 8082
 sub2api_server_mode: release
 sub2api_run_mode: standard
-sub2api_bind_host: "0.0.0.0"
+sub2api_bind_host: "127.0.0.1"
+
+# Public domain (terminated by host nginx; cert managed by acme.sh)
+sub2api_domain: sub2api.starslab.qzz.io
+sub2api_ssl_cert: /etc/nginx/ssl/sub2api.crt
+sub2api_ssl_key: /etc/nginx/ssl/sub2api.key
 
 # Deployment directory on remote host
 sub2api_deploy_dir: /opt/sub2api
@@ -23,7 +28,7 @@ sub2api_postgres_db: sub2api
 sub2api_redis_db: 0
 
 # Admin account
-sub2api_admin_email: admin@sub2api.local
+sub2api_admin_email: admin@starslab.qzz.io
 
 # JWT
 sub2api_jwt_expire_hour: 24

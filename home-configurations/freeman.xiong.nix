@@ -227,35 +227,19 @@ in
         "sg-office" = {
           hostname = "101.78.126.6";
         };
-        "huawei-bj-001" = {
-          hostname = "1.94.246.7";
-          user = "root";
-        };
-        "shenzhen-office" = {
+        "sz-office" = {
           hostname = "113.90.155.31";
           user = "autolife";
+          port = 2222;
         };
-        "netbird" = {
-          hostname = "18.142.246.191";
+        "gz-office" = {
+          hostname = "183.6.107.47";
+          user = "autolife";
+          port = 2222;
         };
         "lubancat" = {
           hostname = "203.116.95.146";
-          port = 22222;
           user = "root";
-        };
-        "heco-nginx" = {
-          hostname = "18.142.238.159";
-          user = "root";
-        };
-        "heco-zammad" = {
-          hostname = "10.16.0.96";
-          user = "root";
-          proxyJump = "heco-nginx";
-        };
-        "heco-mysql" = {
-          hostname = "10.16.0.230";
-          user = "root";
-          proxyJump = "heco-nginx";
         };
       };
     };

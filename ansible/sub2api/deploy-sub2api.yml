@@ -12,6 +12,7 @@
           - curl
           - docker.io
           - docker-compose-v2
+          - nginx
         state: present
         update_cache: yes
         cache_valid_time: 3600
@@ -42,29 +43,69 @@
         - postgres_data
         - redis_data
 
-    - name: Generate POSTGRES_PASSWORD if not set
-      set_fact:
-        sub2api_postgres_password: "{{ sub2api_postgres_password | default(lookup('ansible.builtin.pipe', 'openssl rand -hex 32')) }}"
+    # Persist generated secrets so reruns don't rotate the postgres password
+    # (which would brick the DB on the next reboot).
+    - name: Check for previously persisted secrets
+      stat:
+        path: "{{ sub2api_deploy_dir }}/.secrets.yml"
+      register: sub2api_secrets_stat
+
+    - name: Load previously persisted secrets
+      slurp:
+        src: "{{ sub2api_deploy_dir }}/.secrets.yml"
+      register: sub2api_secrets_blob
+      when: sub2api_secrets_stat.stat.exists
       no_log: true
 
-    - name: Generate REDIS_PASSWORD if not set
+    - name: Parse persisted secrets into facts
       set_fact:
-        sub2api_redis_password: "{{ sub2api_redis_password | default(lookup('ansible.builtin.pipe', 'openssl rand -hex 32')) }}"
+        sub2api_persisted: "{{ sub2api_secrets_blob.content | b64decode | from_yaml }}"
+      when: sub2api_secrets_stat.stat.exists
       no_log: true
 
-    - name: Generate JWT_SECRET if not set
+    - name: Resolve POSTGRES_PASSWORD
       set_fact:
-        sub2api_jwt_secret: "{{ sub2api_jwt_secret | default(lookup('ansible.builtin.pipe', 'openssl rand -hex 32')) }}"
+        sub2api_postgres_password: "{{ sub2api_postgres_password
+          | default(sub2api_persisted.sub2api_postgres_password | default(lookup('ansible.builtin.pipe', 'openssl rand -hex 32'))) }}"
       no_log: true
 
-    - name: Generate TOTP_ENCRYPTION_KEY if not set
+    - name: Resolve REDIS_PASSWORD
       set_fact:
-        sub2api_totp_key: "{{ sub2api_totp_key | default(lookup('ansible.builtin.pipe', 'openssl rand -hex 32')) }}"
+        sub2api_redis_password: "{{ sub2api_redis_password
+          | default(sub2api_persisted.sub2api_redis_password | default(lookup('ansible.builtin.pipe', 'openssl rand -hex 32'))) }}"
       no_log: true
 
-    - name: Generate ADMIN_PASSWORD if not set
+    - name: Resolve JWT_SECRET
       set_fact:
-        sub2api_admin_password: "{{ sub2api_admin_password | default(lookup('ansible.builtin.pipe', 'openssl rand -hex 16')) }}"
+        sub2api_jwt_secret: "{{ sub2api_jwt_secret
+          | default(sub2api_persisted.sub2api_jwt_secret | default(lookup('ansible.builtin.pipe', 'openssl rand -hex 32'))) }}"
+      no_log: true
+
+    - name: Resolve TOTP_ENCRYPTION_KEY
+      set_fact:
+        sub2api_totp_key: "{{ sub2api_totp_key
+          | default(sub2api_persisted.sub2api_totp_key | default(lookup('ansible.builtin.pipe', 'openssl rand -hex 32'))) }}"
+      no_log: true
+
+    - name: Resolve ADMIN_PASSWORD
+      set_fact:
+        sub2api_admin_password: "{{ sub2api_admin_password
+          | default(sub2api_persisted.sub2api_admin_password | default(lookup('ansible.builtin.pipe', 'openssl rand -hex 16'))) }}"
+      no_log: true
+
+    - name: Persist secrets to {{ sub2api_deploy_dir }}/.secrets.yml
+      copy:
+        content: |
+          ---
+          sub2api_postgres_password: "{{ sub2api_postgres_password }}"
+          sub2api_redis_password: "{{ sub2api_redis_password }}"
+          sub2api_jwt_secret: "{{ sub2api_jwt_secret }}"
+          sub2api_totp_key: "{{ sub2api_totp_key }}"
+          sub2api_admin_password: "{{ sub2api_admin_password }}"
+        dest: "{{ sub2api_deploy_dir }}/.secrets.yml"
+        owner: root
+        group: root
+        mode: '0600'
       no_log: true
 
     - name: Deploy docker-compose.yml
@@ -89,9 +130,39 @@
       args:
         chdir: "{{ sub2api_deploy_dir }}"
 
+    - name: Ensure TLS cert is in place
+      stat:
+        path: "{{ sub2api_ssl_cert }}"
+      register: sub2api_cert_stat
+
+    - name: Fail if TLS cert is missing
+      fail:
+        msg: "TLS cert not found at {{ sub2api_ssl_cert }}. Issue via acme.sh first."
+      when: not sub2api_cert_stat.stat.exists
+
+    - name: Deploy nginx vhost
+      template:
+        src: templates/nginx-sub2api.conf.j2
+        dest: /etc/nginx/sites-available/sub2api
+        owner: root
+        group: root
+        mode: '0644'
+      notify: reload nginx
+
+    - name: Enable nginx vhost
+      file:
+        src: /etc/nginx/sites-available/sub2api
+        dest: /etc/nginx/sites-enabled/sub2api
+        state: link
+      notify: reload nginx
+
+    - name: Validate nginx config
+      command: nginx -t
+      changed_when: false
+
     - name: Wait for sub2api to be healthy
       uri:
-        url: "http://localhost:{{ sub2api_server_port }}/health"
+        url: "http://127.0.0.1:{{ sub2api_server_port }}/health"
         status_code: 200
       register: health_check
       retries: 12
@@ -106,8 +177,10 @@
           Sub2API deployment status: {{ 'SUCCESS' if health_check.status | default(0) == 200 else 'STARTING' }}
           ========================================
           Deploy dir: {{ sub2api_deploy_dir }}
-          Access URL: http://{{ ansible_host }}:{{ sub2api_server_port }}
+          Public URL: https://{{ sub2api_domain }}
+          Local URL:  http://127.0.0.1:{{ sub2api_server_port }}
           Admin email: {{ sub2api_admin_email }}
+          Secrets:    {{ sub2api_deploy_dir }}/.secrets.yml (mode 0600)
           ========================================
 
   handlers:
@@ -115,3 +188,8 @@
       command: docker compose restart
       args:
         chdir: "{{ sub2api_deploy_dir }}"
+
+    - name: reload nginx
+      systemd:
+        name: nginx
+        state: reloaded
