@@ -94,3 +94,6 @@ ansible/*/vars/oidc.yml
 ansible/*/secrets/
 ansible/*/.secrets.yml
 
+# Claude Code runtime artifacts
+**/.claude/
+
