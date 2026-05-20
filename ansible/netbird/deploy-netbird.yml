@@ -2,36 +2,58 @@
 - name: Deploy NetBird Zero Trust VPN
   hosts: netbird_servers
   become: yes
-  vars_files:
-    - vars/main.yml
   vars:
+    # Profile selects which vars/secrets bundle to load. Defaults to "starslab"
+    # for backward compatibility; override with -e profile=autolife etc.
+    profile: starslab
     netbird_oidc_client_id: "{{ netbird.oidc_client_id }}"
     netbird_oidc_client_secret: "{{ netbird.oidc_client_secret }}"
 
-  tasks:
-    - name: Load OIDC credentials from sops
+  pre_tasks:
+    - name: Load profile vars (vars/{{ profile }}.yml)
+      include_vars: "vars/{{ profile }}.yml"
+
+    - name: Load OIDC credentials from sops (secrets/netbird-{{ profile }}.yaml)
       community.sops.load_vars:
-        file: ../../secrets/netbird.yaml
+        file: "../../secrets/netbird-{{ profile }}.yaml"
+      no_log: true
+
+    - name: Apply ansible_become_pass from secrets if provided
+      set_fact:
+        ansible_become_pass: "{{ netbird.become_password }}"
+      when: netbird.become_password is defined
       no_log: true
 
     - name: Fail fast if OIDC credentials are not set
       fail:
-        msg: "secrets/netbird.yaml must define netbird.oidc_client_id and netbird.oidc_client_secret."
+        msg: "secrets/netbird-{{ profile }}.yaml must define netbird.oidc_client_id and netbird.oidc_client_secret."
       when:
         - netbird.oidc_client_id is not defined
           or netbird.oidc_client_secret is not defined
           or netbird.oidc_client_id | length == 0
           or netbird.oidc_client_secret | length == 0
 
-    - name: Install required packages
+  tasks:
+
+    - name: Install required apt packages (curl)
       apt:
         name:
           - curl
-          - docker.io
-          - docker-compose-v2
         state: present
         update_cache: yes
         cache_valid_time: 3600
+
+    - name: Ensure docker is available (CE or docker.io — fail with hint if missing)
+      command: docker version --format '{% raw %}{{.Server.Version}}{% endraw %}'
+      register: docker_version_check
+      changed_when: false
+      failed_when: docker_version_check.rc != 0
+
+    - name: Ensure docker compose plugin is available
+      command: docker compose version
+      register: docker_compose_check
+      changed_when: false
+      failed_when: docker_compose_check.rc != 0
 
     - name: Start and enable Docker service
       systemd:

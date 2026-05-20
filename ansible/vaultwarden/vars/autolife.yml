@@ -1,0 +1,51 @@
+---
+# =============================================================================
+# Vaultwarden Deployment Variables — autolife profile
+# Target: Tencent Cloud, 43.139.62.96 (ubuntu user with sudo)
+# IdP   : Casdoor at https://casdoor.autolife-robotics.com (same host)
+# Image : Timshel/OIDCWarden fork — Vaultwarden + native OIDC SSO support
+# =============================================================================
+
+# .com is not ICP-filed → must use DNS-01 for cert (HTTP-01 hijacked by 腾讯云 webblock).
+# Cert is reused from the existing Volcengine DNS-01 setup configured during
+# the Casdoor + NetBird deploys; certbot --manual hooks under /etc/letsencrypt/hooks.
+vaultwarden_domain: vaultwarden.autolife-robotics.com
+
+vaultwarden_deploy_dir: /opt/vaultwarden
+vaultwarden_data_dir: /opt/vaultwarden/data
+
+# Timshel maintains the OIDC-capable Vaultwarden fork. Pin to a tag in prod
+# once stable; latest-alpine is fine for first deploy.
+vaultwarden_image: timshel/oidcwarden:latest-alpine
+
+# Loopback port — nginx on host proxies HTTPS → this.
+vaultwarden_port: 8082
+
+# certbot via DNS-01 (Volcengine TXT helper installed earlier)
+vaultwarden_ssl_cert: /etc/letsencrypt/live/vaultwarden.autolife-robotics.com/fullchain.pem
+vaultwarden_ssl_key:  /etc/letsencrypt/live/vaultwarden.autolife-robotics.com/privkey.pem
+
+# OIDC (Casdoor on same host). Casdoor exposes the standard discovery
+# document at <issuer>/.well-known/openid-configuration.
+vaultwarden_casdoor_url: https://casdoor.autolife-robotics.com
+vaultwarden_oidc_scopes: "email profile openid"
+
+# Once SSO works, set sso_only=true to require Casdoor login and disable the
+# plain master-password login form. Leave false during initial bring-up so
+# you can log in as the admin before SSO is wired through.
+vaultwarden_sso_only: false
+
+# Signup behavior. With SSO on, new users land in Vaultwarden via the
+# Casdoor flow; SIGNUPS_ALLOWED still gates whether *new* accounts auto-
+# provision on first SSO login. Lock down after onboarding.
+vaultwarden_signups_allowed: true
+vaultwarden_signups_domains: ""   # e.g. "autolife-robotics.com,autolife.ai" — empty = no domain filter
+vaultwarden_invitations_allowed: true
+
+vaultwarden_tz: Asia/Shanghai
+
+# Web vault UI ships inside the image; no need to fetch separately.
+vaultwarden_web_vault_enabled: true
+
+# Vaultwarden's WebSocket endpoint (live sync between clients) is built-in
+# on newer releases and exposed under /notifications/hub on the same port.

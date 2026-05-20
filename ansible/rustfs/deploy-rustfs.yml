@@ -1,0 +1,251 @@
+---
+- name: Deploy RustFS (binary + systemd) alongside VersityGW
+  hosts: rustfs_servers
+  become: yes
+  vars:
+    rustfs_version: "1.0.0-beta.3"
+    rustfs_s3_port: 9000
+    rustfs_console_port: 9001
+    rustfs_user: rustfs
+    rustfs_group: rustfs
+    rustfs_volume_dir: /data/rustfs/vol1
+    rustfs_config_dir: /etc/rustfs
+    rustfs_log_dir: /var/log/rustfs
+    # gh-proxy.com mirror because direct GitHub from CN is ~40 KB/s
+    rustfs_download_url: "https://gh-proxy.com/https://github.com/rustfs/rustfs/releases/download/{{ rustfs_version }}/rustfs-linux-x86_64-musl-v{{ rustfs_version }}.zip"
+    root_access_key: "{{ rustfs.root_access_key }}"
+    root_secret_key: "{{ rustfs.root_secret_key }}"
+
+  tasks:
+    - name: Load encrypted variables
+      community.sops.load_vars:
+        file: ../../secrets/rustfs.yaml
+      no_log: true
+
+    - name: Install dependencies
+      apt:
+        name:
+          - unzip
+          - curl
+        state: present
+        update_cache: yes
+
+    - name: Create rustfs group
+      group:
+        name: "{{ rustfs_group }}"
+        system: yes
+        state: present
+
+    - name: Create rustfs user
+      user:
+        name: "{{ rustfs_user }}"
+        group: "{{ rustfs_group }}"
+        system: yes
+        shell: /usr/sbin/nologin
+        home: /var/lib/rustfs
+        create_home: yes
+        state: present
+
+    - name: Create rustfs directories
+      file:
+        path: "{{ item }}"
+        state: directory
+        owner: "{{ rustfs_user }}"
+        group: "{{ rustfs_group }}"
+        mode: "0755"
+      loop:
+        - "{{ rustfs_volume_dir }}"
+        - "{{ rustfs_log_dir }}"
+
+    - name: Create config directory (root-owned)
+      file:
+        path: "{{ rustfs_config_dir }}"
+        state: directory
+        owner: root
+        group: root
+        mode: "0755"
+
+    - name: Check installed rustfs version
+      command: /usr/local/bin/rustfs --version
+      register: rustfs_installed_version
+      failed_when: false
+      changed_when: false
+
+    - name: Download rustfs binary archive
+      get_url:
+        url: "{{ rustfs_download_url }}"
+        dest: "/tmp/rustfs-{{ rustfs_version }}.zip"
+        mode: "0644"
+        timeout: 300
+      when: rustfs_installed_version.rc != 0 or rustfs_version not in rustfs_installed_version.stdout
+      notify: restart rustfs
+
+    - name: Extract rustfs binary
+      unarchive:
+        src: "/tmp/rustfs-{{ rustfs_version }}.zip"
+        dest: /usr/local/bin
+        remote_src: yes
+        owner: root
+        group: root
+        mode: "0755"
+        creates: "/usr/local/bin/rustfs"
+      when: rustfs_installed_version.rc != 0 or rustfs_version not in rustfs_installed_version.stdout
+      notify: restart rustfs
+
+    - name: Remove downloaded archive
+      file:
+        path: "/tmp/rustfs-{{ rustfs_version }}.zip"
+        state: absent
+
+    - name: Create environment file
+      copy:
+        content: |
+          # Server addresses (S3 API + admin/console)
+          RUSTFS_ADDRESS=0.0.0.0:{{ rustfs_s3_port }}
+          RUSTFS_CONSOLE_ENABLE=true
+          RUSTFS_CONSOLE_ADDRESS=0.0.0.0:{{ rustfs_console_port }}
+
+          # Static root credentials (MinIO-compatible env var names also work)
+          RUSTFS_ACCESS_KEY={{ root_access_key }}
+          RUSTFS_SECRET_KEY={{ root_secret_key }}
+
+          # Storage volumes (single-node, single volume)
+          RUSTFS_VOLUMES={{ rustfs_volume_dir }}
+
+          # Region
+          RUSTFS_REGION=us-east-1
+
+          # Logging
+          RUSTFS_OBS_LOG_DIRECTORY={{ rustfs_log_dir }}
+          RUSTFS_OBS_LOGGER_LEVEL=info
+          RUSTFS_OBS_LOG_KEEP_FILES=30
+          RUSTFS_OBS_LOG_MAX_TOTAL_SIZE_BYTES=5368709120
+
+          # Buffer profile. Default GeneralPurpose allocates large per-request
+          # buffers and OOMed (27G peak / 30G host) under console batch
+          # folder-download. WebWorkload uses smaller buffers tuned for many
+          # concurrent HTTP downloads — the workload we actually have here.
+          RUSTFS_BUFFER_PROFILE=WebWorkload
+        dest: "{{ rustfs_config_dir }}/rustfs.env"
+        owner: root
+        group: "{{ rustfs_group }}"
+        mode: "0640"
+      notify: restart rustfs
+
+    - name: Create systemd service
+      copy:
+        content: |
+          [Unit]
+          Description=RustFS S3-compatible object storage
+          Documentation=https://docs.rustfs.com
+          After=network.target
+
+          [Service]
+          User={{ rustfs_user }}
+          Group={{ rustfs_group }}
+          EnvironmentFile={{ rustfs_config_dir }}/rustfs.env
+          ExecStart=/usr/local/bin/rustfs
+          Restart=on-failure
+          RestartSec=5s
+          LimitNOFILE=65536
+
+          # Memory safety. RustFS 1.0.0-beta.3 buffers large GetObject responses
+          # in RAM; a handful of parallel multi-GB MKV downloads from the console
+          # ballooned to 27G on this 30G host and tripped the kernel OOM killer
+          # (which can also kill unrelated services). Cap at 20G hard / 16G soft
+          # so cgroup OOMs RustFS cleanly and systemd restarts it without the
+          # box ever getting close to swap death.
+          MemoryMax=20G
+          MemoryHigh=16G
+          OOMScoreAdjust=200
+
+          # Security hardening
+          NoNewPrivileges=true
+          PrivateTmp=true
+          ProtectSystem=full
+          ReadWritePaths={{ rustfs_volume_dir }} {{ rustfs_log_dir }}
+
+          [Install]
+          WantedBy=multi-user.target
+        dest: /etc/systemd/system/rustfs.service
+        owner: root
+        group: root
+        mode: "0644"
+      notify:
+        - reload systemd
+        - restart rustfs
+
+    - name: Open S3 port through UFW
+      ufw:
+        rule: allow
+        port: "{{ rustfs_s3_port }}"
+        proto: tcp
+        comment: "RustFS S3 API"
+
+    - name: Open console port through UFW
+      ufw:
+        rule: allow
+        port: "{{ rustfs_console_port }}"
+        proto: tcp
+        comment: "RustFS admin console"
+
+    - name: Start and enable rustfs
+      systemd:
+        name: rustfs
+        state: started
+        enabled: yes
+        daemon_reload: yes
+
+    - name: Wait for S3 port to be ready
+      wait_for:
+        port: "{{ rustfs_s3_port }}"
+        host: localhost
+        delay: 2
+        timeout: 60
+
+    - name: Wait for console port to be ready
+      wait_for:
+        port: "{{ rustfs_console_port }}"
+        host: localhost
+        delay: 2
+        timeout: 60
+
+    - name: Probe console endpoint (Next.js console at /rustfs/console/)
+      uri:
+        url: "http://127.0.0.1:{{ rustfs_console_port }}/rustfs/console/"
+        status_code: [200, 301, 302, 307, 308]
+        return_content: false
+      register: console_check
+      retries: 5
+      delay: 3
+      until: console_check.status in [200, 301, 302, 307, 308]
+      failed_when: false
+
+    - name: Display deployment summary
+      debug:
+        msg: |
+          ========================================
+          RustFS deployment: SUCCESS
+          ========================================
+          Version : {{ rustfs_version }}
+          S3 API  : http://{{ ansible_host }}:{{ rustfs_s3_port }}
+          Console : http://{{ ansible_host }}:{{ rustfs_console_port }}/rustfs/console/
+          Volume  : {{ rustfs_volume_dir }}
+          Console : HTTP {{ console_check.status | default('unknown') }}
+
+          VersityGW remains on :7070 untouched.
+
+          Next: configure mc client locally:
+            mc alias set rustfs-new http://{{ ansible_host }}:{{ rustfs_s3_port }} \
+              {{ root_access_key }} <root_secret_from_sops>
+          ========================================
+
+  handlers:
+    - name: reload systemd
+      systemd:
+        daemon_reload: yes
+
+    - name: restart rustfs
+      systemd:
+        name: rustfs
+        state: restarted

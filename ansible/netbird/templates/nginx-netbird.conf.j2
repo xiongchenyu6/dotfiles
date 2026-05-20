@@ -91,6 +91,35 @@ server {
         grpc_socket_keepalive on;
     }
 
+    # User-typed /login isn't a real route; bounce to root so the
+    # dashboard's auto-redirect to the IdP kicks in.
+    location = /login {
+        return 301 /;
+    }
+
+    # OIDC callback URIs — Dashboard JS hardcodes redirect_uri=/auth and
+    # silent_redirect_uri=/silent-auth, but the dashboard image's internal
+    # nginx 404s these paths. Rewrite to / upstream while leaving the
+    # browser URL alone (JS reads the OIDC code from window.location.search).
+    location = /auth {
+        rewrite ^.*$ / break;
+        proxy_pass http://netbird_dashboard;
+        proxy_http_version 1.1;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto https;
+    }
+    location = /silent-auth {
+        rewrite ^.*$ / break;
+        proxy_pass http://netbird_dashboard;
+        proxy_http_version 1.1;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto https;
+    }
+
     # Dashboard (catch-all)
     location / {
         proxy_pass http://netbird_dashboard;
