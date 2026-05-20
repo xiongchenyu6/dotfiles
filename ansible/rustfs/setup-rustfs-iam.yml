@@ -1,0 +1,249 @@
+---
+# Create RustFS users, buckets, and policies via mc.
+# Idempotent: re-running is safe.
+- name: Configure RustFS IAM (users, buckets, policies)
+  hosts: rustfs_servers
+  become: yes
+  vars:
+    rustfs_endpoint: "http://127.0.0.1:9000"
+    rustfs_alias: rustfs
+    robot_buckets:
+      - robot-001
+      - robot-234
+      - robot-239
+      - robot-249
+      - robot-250
+      - robot-252
+      - robot-255
+      - robot-256
+      - robot-260
+      - robot-263
+      - robot-267
+      - robot-268
+      - robot-269
+      - robot-270
+    other_buckets:
+      - audit-archive
+    # User credentials. Phase 1 keys preserved as-is so scripts only need
+    # an endpoint swap. audit-reviewer-w9wlcu gets a fresh secret because the
+    # original was unrecoverable.
+    static_users:
+      - access: myaccess
+        secret: "mysecret"  # placeholder — replaced from sops
+        sops_secret_key: versitygw_root_secret
+        policy: consoleAdmin
+      - access: fae-uploader
+        secret: "fae-secret-uploader-2026"
+        policy: fae-writer
+      - access: fae-uploader-v2
+        secret: "fae-secret-uploader-v2-2026"
+        policy: fae-writer
+      - access: audit-reviewer-autolife-robot-234
+        secret: "audit-secret-autolife-robot-234-20260409"
+        policy: audit-robot-234
+      - access: audit-reviewer-w9wlcu
+        secret: "audit-secret-w9wlcu-20260514"
+        policy: audit-w9wlcu
+
+  tasks:
+    - name: Load encrypted variables
+      community.sops.load_vars:
+        file: ../../secrets/rustfs.yaml
+      no_log: true
+
+    - name: Load versitygw root secret (for myaccess)
+      community.sops.load_vars:
+        file: ../../secrets/versitygw.yaml
+      no_log: true
+
+    - name: Ensure mc alias is configured
+      shell: |
+        mc alias set {{ rustfs_alias }} {{ rustfs_endpoint }} \
+          {{ rustfs.root_access_key }} {{ rustfs.root_secret_key }} --api S3v4
+      register: alias_result
+      changed_when: "'Added' in alias_result.stdout"
+      no_log: true
+
+    - name: Create robot buckets (idempotent)
+      shell: |
+        mc mb --ignore-existing {{ rustfs_alias }}/{{ item }}
+      loop: "{{ robot_buckets + other_buckets }}"
+      register: bucket_result
+      changed_when: "'created successfully' in (bucket_result.stdout | default(''))"
+
+    - name: Write fae-writer policy file
+      copy:
+        content: |
+          {
+            "Version": "2012-10-17",
+            "Statement": [
+              {
+                "Effect": "Allow",
+                "Action": ["s3:ListAllMyBuckets"],
+                "Resource": ["arn:aws:s3:::*"]
+              },
+              {
+                "Effect": "Allow",
+                "Action": [
+                  "s3:ListBucket",
+                  "s3:GetBucketLocation",
+                  "s3:GetObject",
+                  "s3:PutObject",
+                  "s3:DeleteObject",
+                  "s3:AbortMultipartUpload",
+                  "s3:ListMultipartUploadParts"
+                ],
+                "Resource": [
+                  "arn:aws:s3:::robot-*",
+                  "arn:aws:s3:::robot-*/*",
+                  "arn:aws:s3:::audit-archive",
+                  "arn:aws:s3:::audit-archive/*",
+                  "arn:aws:s3:::lerobot-*",
+                  "arn:aws:s3:::lerobot-*/*"
+                ]
+              }
+            ]
+          }
+        dest: /tmp/policy-fae-writer.json
+        mode: "0644"
+
+    - name: Write audit-robot-234 policy file
+      copy:
+        content: |
+          {
+            "Version": "2012-10-17",
+            "Statement": [
+              {
+                "Effect": "Allow",
+                "Action": ["s3:ListAllMyBuckets"],
+                "Resource": ["arn:aws:s3:::*"]
+              },
+              {
+                "Effect": "Allow",
+                "Action": [
+                  "s3:ListBucket",
+                  "s3:GetBucketLocation",
+                  "s3:GetObject"
+                ],
+                "Resource": [
+                  "arn:aws:s3:::robot-234",
+                  "arn:aws:s3:::robot-234/*",
+                  "arn:aws:s3:::audit-archive",
+                  "arn:aws:s3:::audit-archive/robot-234",
+                  "arn:aws:s3:::audit-archive/robot-234/*"
+                ]
+              }
+            ]
+          }
+        dest: /tmp/policy-audit-robot-234.json
+        mode: "0644"
+
+    - name: Write audit-w9wlcu policy file
+      copy:
+        content: |
+          {
+            "Version": "2012-10-17",
+            "Statement": [
+              {
+                "Effect": "Allow",
+                "Action": ["s3:ListAllMyBuckets"],
+                "Resource": ["arn:aws:s3:::*"]
+              },
+              {
+                "Effect": "Allow",
+                "Action": [
+                  "s3:ListBucket",
+                  "s3:GetBucketLocation",
+                  "s3:GetObject"
+                ],
+                "Resource": [
+                  "arn:aws:s3:::audit-archive",
+                  "arn:aws:s3:::audit-archive/w9wlcu",
+                  "arn:aws:s3:::audit-archive/w9wlcu/*"
+                ]
+              }
+            ]
+          }
+        dest: /tmp/policy-audit-w9wlcu.json
+        mode: "0644"
+
+    - name: Create policies in RustFS
+      shell: |
+        mc admin policy create {{ rustfs_alias }} {{ item.name }} /tmp/policy-{{ item.name }}.json
+      loop:
+        - { name: fae-writer }
+        - { name: audit-robot-234 }
+        - { name: audit-w9wlcu }
+      register: policy_create
+      changed_when: "'created' in (policy_create.stdout | default('')) or 'added' in (policy_create.stdout | default(''))"
+      failed_when: policy_create.rc != 0 and 'already exists' not in (policy_create.stderr | default(''))
+
+    - name: Create non-root users
+      shell: |
+        mc admin user add {{ rustfs_alias }} '{{ item.access }}' '{{ item.secret }}'
+      loop:
+        - access: fae-uploader
+          secret: "fae-secret-uploader-2026"
+        - access: fae-uploader-v2
+          secret: "fae-secret-uploader-v2-2026"
+        - access: audit-reviewer-autolife-robot-234
+          secret: "audit-secret-autolife-robot-234-20260409"
+        - access: audit-reviewer-w9wlcu
+          secret: "audit-secret-w9wlcu-20260514"
+      register: user_add
+      changed_when: "'added' in (user_add.stdout | default(''))"
+      failed_when: user_add.rc != 0 and 'already exists' not in (user_add.stderr | default(''))
+      no_log: true
+
+    - name: Create myaccess user (root admin alias with the same key as versitygw)
+      shell: |
+        mc admin user add {{ rustfs_alias }} 'myaccess' '{{ versitygw.root_secret_key }}'
+      register: myaccess_add
+      changed_when: "'added' in (myaccess_add.stdout | default(''))"
+      failed_when: myaccess_add.rc != 0 and 'already exists' not in (myaccess_add.stderr | default(''))
+      no_log: true
+
+    - name: Attach policies to non-root users
+      shell: |
+        mc admin policy attach {{ rustfs_alias }} {{ item.policy }} --user '{{ item.user }}'
+      loop:
+        - { user: fae-uploader, policy: fae-writer }
+        - { user: fae-uploader-v2, policy: fae-writer }
+        - { user: audit-reviewer-autolife-robot-234, policy: audit-robot-234 }
+        - { user: audit-reviewer-w9wlcu, policy: audit-w9wlcu }
+        - { user: myaccess, policy: consoleAdmin }
+      register: policy_attach
+      changed_when: "'attached' in (policy_attach.stdout | default(''))"
+      failed_when: policy_attach.rc != 0 and 'already attached' not in (policy_attach.stderr | default(''))
+
+    - name: List users for verification
+      shell: mc admin user list {{ rustfs_alias }}
+      register: user_list
+      changed_when: false
+
+    - name: List buckets for verification
+      shell: mc ls {{ rustfs_alias }}
+      register: bucket_list
+      changed_when: false
+
+    - name: Remove policy temp files
+      file:
+        path: "/tmp/policy-{{ item }}.json"
+        state: absent
+      loop:
+        - fae-writer
+        - audit-robot-234
+        - audit-w9wlcu
+
+    - name: Display IAM summary
+      debug:
+        msg: |
+          ========================================
+          RustFS IAM configured
+          ========================================
+          Users:
+          {{ user_list.stdout }}
+
+          Buckets:
+          {{ bucket_list.stdout }}
+          ========================================

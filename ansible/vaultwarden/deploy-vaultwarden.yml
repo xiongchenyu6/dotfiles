@@ -1,0 +1,172 @@
+---
+- name: Deploy Vaultwarden (Bitwarden-compatible password manager) with Casdoor OIDC
+  hosts: vaultwarden_servers
+  become: yes
+  vars:
+    # Profile selects which vars/secrets bundle to load. Defaults to "autolife"
+    # since this is the only deploy for now; override with -e profile=<other>.
+    profile: autolife
+
+  pre_tasks:
+    - name: Load profile vars (vars/{{ profile }}.yml)
+      include_vars: "vars/{{ profile }}.yml"
+
+    - name: Load OIDC credentials + admin token from sops (secrets/vaultwarden-{{ profile }}.yaml)
+      community.sops.load_vars:
+        file: "../../secrets/vaultwarden-{{ profile }}.yaml"
+      no_log: true
+
+    - name: Apply ansible_become_pass from secrets if provided
+      set_fact:
+        ansible_become_pass: "{{ vaultwarden.become_password }}"
+      when: vaultwarden.become_password is defined
+      no_log: true
+
+    - name: Fail fast if required secrets are not set
+      fail:
+        msg: |
+          secrets/vaultwarden-{{ profile }}.yaml must define:
+            vaultwarden.admin_token
+            vaultwarden.oidc_client_id
+            vaultwarden.oidc_client_secret
+      when:
+        - vaultwarden.admin_token is not defined
+          or vaultwarden.oidc_client_id is not defined
+          or vaultwarden.oidc_client_secret is not defined
+          or vaultwarden.admin_token | length == 0
+          or vaultwarden.oidc_client_id | length == 0
+          or vaultwarden.oidc_client_secret | length == 0
+
+  tasks:
+
+    - name: Ensure docker is available
+      command: docker version --format '{% raw %}{{.Server.Version}}{% endraw %}'
+      register: docker_version_check
+      changed_when: false
+      failed_when: docker_version_check.rc != 0
+
+    - name: Ensure docker compose plugin is available
+      command: docker compose version
+      register: docker_compose_check
+      changed_when: false
+      failed_when: docker_compose_check.rc != 0
+
+    - name: Start and enable Docker service
+      systemd:
+        name: docker
+        state: started
+        enabled: yes
+
+    - name: Create deployment directory
+      file:
+        path: "{{ vaultwarden_deploy_dir }}"
+        state: directory
+        owner: root
+        group: root
+        mode: '0755'
+
+    - name: Create data directory (sqlite db + attachments + sends)
+      file:
+        path: "{{ vaultwarden_data_dir }}"
+        state: directory
+        owner: root
+        group: root
+        mode: '0700'
+
+    - name: Deploy docker-compose.yml
+      template:
+        src: templates/docker-compose.yml.j2
+        dest: "{{ vaultwarden_deploy_dir }}/docker-compose.yml"
+        owner: root
+        group: root
+        mode: '0600'
+      notify: restart vaultwarden
+
+    - name: Pull and start vaultwarden
+      command: docker compose up -d --pull always
+      args:
+        chdir: "{{ vaultwarden_deploy_dir }}"
+
+    - name: Wait for vaultwarden to respond on the loopback port
+      uri:
+        url: "http://127.0.0.1:{{ vaultwarden_port }}/alive"
+        status_code: [200]
+      register: vw_health
+      retries: 24
+      delay: 5
+      until: vw_health.status == 200
+      ignore_errors: yes
+
+    # ----- nginx reverse proxy -----
+    - name: Ensure nginx is installed
+      apt:
+        name: nginx
+        state: present
+
+    - name: Verify TLS cert is present
+      stat:
+        path: "{{ vaultwarden_ssl_cert }}"
+      register: vw_cert_stat
+
+    - name: Fail with instructions if cert is missing
+      fail:
+        msg: |
+          {{ vaultwarden_ssl_cert }} not found.
+
+          Issue via the existing Volcengine DNS-01 setup:
+            sudo /usr/local/bin/volc-dns-txt --help    # confirm helper is present
+            sudo certbot certonly --manual --preferred-challenges dns \
+              --manual-auth-hook   /etc/letsencrypt/hooks/cb-auth-hook.sh \
+              --manual-cleanup-hook /etc/letsencrypt/hooks/cb-cleanup-hook.sh \
+              -d {{ vaultwarden_domain }} \
+              --email permission-center@bitgc.io --agree-tos --no-eff-email \
+              --non-interactive
+
+          Renewal cron is already in place from the Casdoor deploy.
+      when: not vw_cert_stat.stat.exists
+
+    - name: Deploy nginx site for {{ vaultwarden_domain }}
+      template:
+        src: templates/nginx-vaultwarden.conf.j2
+        dest: /etc/nginx/sites-available/vaultwarden
+        owner: root
+        group: root
+        mode: '0644'
+      notify: reload nginx
+
+    - name: Enable nginx site
+      file:
+        src: /etc/nginx/sites-available/vaultwarden
+        dest: /etc/nginx/sites-enabled/vaultwarden
+        state: link
+      notify: reload nginx
+
+    - name: Validate nginx configuration
+      command: nginx -t
+      changed_when: false
+
+    - name: Display deployment status
+      debug:
+        msg: |
+          ========================================
+          Vaultwarden deployment: {{ 'SUCCESS' if vw_health.status | default(0) == 200 else 'STARTING' }}
+          ========================================
+          Web vault: https://{{ vaultwarden_domain }}
+          Admin:     https://{{ vaultwarden_domain }}/admin  (token in sops)
+          OIDC IdP:  {{ vaultwarden_casdoor_url }} (Casdoor, app=vaultwarden)
+          Data dir:  {{ vaultwarden_data_dir }}
+
+          Casdoor application redirect URI must be set to:
+            https://{{ vaultwarden_domain }}/identity/connect/oidc-signin
+          ========================================
+
+  handlers:
+    - name: restart vaultwarden
+      command: docker compose restart
+      args:
+        chdir: "{{ vaultwarden_deploy_dir }}"
+
+    - name: reload nginx
+      systemd:
+        name: nginx
+        state: reloaded

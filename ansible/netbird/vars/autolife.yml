@@ -1,0 +1,45 @@
+---
+# =============================================================================
+# NetBird Deployment Variables — autolife profile
+# Target: Tencent Cloud, 43.139.62.96 (ubuntu user with sudo)
+# IdP   : Casdoor at https://casdoor.autolife-robotics.com (same host)
+# =============================================================================
+
+# Single domain serves dashboard + signal + management + (s)turn.
+# .com is not ICP-filed → must use DNS-01 for cert (HTTP-01 hijacked by 腾讯云 webblock).
+netbird_domain: netbird.autolife-robotics.com
+netbird_turn_domain: netbird.autolife-robotics.com
+netbird_public_ip: 43.139.62.96
+
+netbird_deploy_dir: /opt/netbird
+
+netbird_management_image: netbirdio/management:latest
+netbird_signal_image: netbirdio/signal:latest
+netbird_dashboard_image: netbirdio/dashboard:latest
+netbird_relay_image: netbirdio/relay:latest
+netbird_coturn_image: coturn/coturn:latest
+
+# Loopback ports — nginx on host proxies to these
+netbird_dashboard_port: 8080
+netbird_signal_http_port: 8083
+netbird_signal_grpc_port: 10000
+netbird_management_port: 8081
+netbird_relay_port: 8084
+
+# TURN
+netbird_turn_listen_port: 3478
+netbird_turn_relay_min: 49152
+netbird_turn_relay_max: 65535
+netbird_turn_user: self
+
+# certbot-issued via DNS-01 (Volcengine TXT)
+netbird_ssl_cert: /etc/letsencrypt/live/netbird.autolife-robotics.com/fullchain.pem
+netbird_ssl_key:  /etc/letsencrypt/live/netbird.autolife-robotics.com/privkey.pem
+
+# OIDC (Casdoor on same host)
+netbird_casdoor_url: https://casdoor.autolife-robotics.com
+netbird_oidc_scope: "openid profile email offline_access"
+# client_id/secret loaded from secrets/netbird-autolife.yaml (sops)
+
+netbird_tz: Asia/Shanghai
+netbird_dns_domain: netbird.selfhosted

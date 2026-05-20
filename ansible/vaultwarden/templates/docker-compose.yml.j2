@@ -1,0 +1,60 @@
+services:
+  vaultwarden:
+    image: {{ vaultwarden_image }}
+    container_name: vaultwarden
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:{{ vaultwarden_port }}:80"
+    volumes:
+      - {{ vaultwarden_data_dir }}:/data
+    environment:
+      TZ: {{ vaultwarden_tz }}
+
+      # Public URL — must match exactly what users hit (including scheme + host).
+      DOMAIN: "https://{{ vaultwarden_domain }}"
+
+      # Admin panel — protected by ADMIN_TOKEN (bcrypt hash recommended; this
+      # playbook stores a plain token in sops and Vaultwarden accepts both).
+      ADMIN_TOKEN: "{{ vaultwarden.admin_token }}"
+
+      # Web UI
+      WEB_VAULT_ENABLED: "{{ vaultwarden_web_vault_enabled | string | lower }}"
+
+      # Signup behavior
+      SIGNUPS_ALLOWED: "{{ vaultwarden_signups_allowed | string | lower }}"
+{% if vaultwarden_signups_domains | length > 0 %}
+      SIGNUPS_DOMAINS_WHITELIST: "{{ vaultwarden_signups_domains }}"
+{% endif %}
+      INVITATIONS_ALLOWED: "{{ vaultwarden_invitations_allowed | string | lower }}"
+
+      # Hide password hints (security: don't leak hint to non-owner on unknown email)
+      SHOW_PASSWORD_HINT: "false"
+
+      # Trust proxy headers (nginx terminates TLS)
+      IP_HEADER: "X-Real-IP"
+
+      # ============================================================
+      # OIDC (Casdoor) — Timshel/OIDCWarden fork only honors these
+      # ============================================================
+      SSO_ENABLED: "true"
+      SSO_ONLY: "{{ vaultwarden_sso_only | string | lower }}"
+
+      # Casdoor exposes the standard discovery doc; OIDCWarden uses
+      # <authority>/.well-known/openid-configuration to find endpoints.
+      SSO_AUTHORITY: "{{ vaultwarden_casdoor_url }}"
+
+      SSO_CLIENT_ID: "{{ vaultwarden.oidc_client_id }}"
+      SSO_CLIENT_SECRET: "{{ vaultwarden.oidc_client_secret }}"
+      SSO_SCOPES: "{{ vaultwarden_oidc_scopes }}"
+
+      # Link SSO logins to the matching email if a local account already exists.
+      # Useful when migrating users from non-SSO to SSO.
+      SSO_SIGNUPS_MATCH_EMAIL: "true"
+
+      # By default OIDCWarden requires the SSO user's `email_verified` claim
+      # to be true. Casdoor sets it on accounts whose email was confirmed.
+      SSO_ACCEPT_INVALID_EMAIL: "false"
+
+      # Optional: organization invitations bypass SSO and use plain email link.
+      # Renamed from SSO_ORGANIZATIONS_INVITE in v2026.4.x.
+      SSO_ORGANIZATIONS_ENABLED: "true"

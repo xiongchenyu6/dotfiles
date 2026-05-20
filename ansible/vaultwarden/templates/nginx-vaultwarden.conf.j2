@@ -1,0 +1,52 @@
+# Vaultwarden reverse proxy for {{ vaultwarden_domain }}
+# Cert: Let's Encrypt, issued via DNS-01 (Volcengine TXT) — auto-renewed by
+# the hooks under /etc/letsencrypt/hooks/ installed during the Casdoor deploy.
+# http2 deliberately off — same nginx 1.24 port-level constraint that bit us
+# on rustfs.gz; the netbird/casdoor vhosts on :443 here are HTTP/1.1.
+
+server {
+    listen 80;
+    listen [::]:80;
+    server_name {{ vaultwarden_domain }};
+    return 301 https://$host$request_uri;
+}
+
+server {
+    listen 443 ssl;
+    listen [::]:443 ssl;
+    server_name {{ vaultwarden_domain }};
+
+    ssl_certificate     {{ vaultwarden_ssl_cert }};
+    ssl_certificate_key {{ vaultwarden_ssl_key }};
+    ssl_protocols       TLSv1.2 TLSv1.3;
+    ssl_ciphers         HIGH:!aNULL:!MD5;
+
+    access_log /var/log/nginx/vaultwarden.access.log;
+    error_log  /var/log/nginx/vaultwarden.error.log;
+
+    # Vault attachment uploads can be large; remove the default 1M cap.
+    client_max_body_size 525M;
+
+    # Vaultwarden uses a single WebSocket endpoint /notifications/hub for
+    # live sync across devices. Long timeouts keep it from getting cut.
+    proxy_read_timeout  1d;
+    proxy_send_timeout  1d;
+
+    proxy_set_header Host              $host;
+    proxy_set_header X-Real-IP         $remote_addr;
+    proxy_set_header X-Forwarded-For   $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto $scheme;
+
+    # WebSocket sync channel
+    location /notifications/hub {
+        proxy_pass http://127.0.0.1:{{ vaultwarden_port }};
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade    $http_upgrade;
+        proxy_set_header Connection "upgrade";
+    }
+
+    # Everything else (web vault, API, /admin, /identity, OIDC callback)
+    location / {
+        proxy_pass http://127.0.0.1:{{ vaultwarden_port }};
+    }
+}
