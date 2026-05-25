@@ -1,0 +1,71 @@
+---
+# =============================================================================
+# Parseable Deployment Variables
+# =============================================================================
+# Single-binary Rust observability platform (logs + metrics + traces).
+# Co-located with rustfs on gz-office:
+#   - Public:  https://parseable.gz.autolife.ai:8444/
+#   - Storage: rustfs S3 on the same host (http://host.docker.internal:9000)
+#   - SSO:     Casdoor at casdoor.autolife-robotics.com (autolife host)
+
+# ---------------------------------------------------------------------------
+# Container image
+# ---------------------------------------------------------------------------
+# gz-office can't pull from Docker Hub directly; route via the docker.1ms.run
+# China mirror (same one used on autolife host). For any official upstream
+# tag like parseable/parseable:edge, prefix with docker.1ms.run/.
+parseable_image: docker.1ms.run/parseable/parseable:edge
+
+# ---------------------------------------------------------------------------
+# Networking
+# ---------------------------------------------------------------------------
+# Bind on loopback inside the container; host nginx fronts TLS on :8444.
+# Pick a port that doesn't collide with anything else on gz-office (casdoor
+# owns :8000; rustfs owns 9000/9001; alist :5244; postgres :5432; mysql :3306).
+parseable_bind_port: 8030
+parseable_bind_host: "127.0.0.1"
+
+# Public-facing hostname — covered by the wildcard *.gz.autolife.ai cert.
+parseable_domain: parseable.gz.autolife.ai
+
+# Carrier blocks 80/443 on this host. Same custom HTTPS port rustfs uses.
+parseable_listen_port: 8444
+
+# Wildcard cert is renewed by acme.sh — shared with rustfs.gz.autolife.ai.
+parseable_ssl_cert: /etc/nginx/certs/gz/fullchain.pem
+parseable_ssl_key:  /etc/nginx/certs/gz/key.pem
+
+# ---------------------------------------------------------------------------
+# Filesystem layout on the target
+# ---------------------------------------------------------------------------
+parseable_deploy_dir: /opt/parseable
+# Staging area (hot data before flush to S3). Keep on /data/ since the root
+# partition is small. Parseable writes lots of small files here.
+parseable_data_dir: /data/parseable
+
+# ---------------------------------------------------------------------------
+# S3 backend (the rustfs instance on this same host)
+# ---------------------------------------------------------------------------
+# host.docker.internal is mapped via extra_hosts in docker-compose.
+parseable_s3_url: "http://host.docker.internal:9000"
+parseable_s3_region: "us-east-1"
+parseable_s3_bucket: "parseable"
+# Reuses the rustfs root credentials. Decrypted from secrets/rustfs.yaml at
+# play time; the playbook also creates the bucket if missing.
+parseable_s3_access_key: "{{ rustfs.root_access_key }}"
+parseable_s3_secret_key: "{{ rustfs.root_secret_key }}"
+
+# ---------------------------------------------------------------------------
+# OIDC (Casdoor on autolife-robotics.com)
+# ---------------------------------------------------------------------------
+parseable_oidc_issuer: "https://casdoor.autolife-robotics.com"
+parseable_oidc_scope: "openid profile email"
+# client_id / client_secret come from secrets/parseable.yaml; the matching
+# Casdoor application must exist with redirect_uri set to the URL below.
+parseable_oidc_redirect_url: "https://{{ parseable_domain }}:{{ parseable_listen_port }}/api/v1/o/code"
+
+# ---------------------------------------------------------------------------
+# Admin (local Parseable account; OIDC users are linked on first login)
+# ---------------------------------------------------------------------------
+parseable_admin_username: "{{ parseable.admin_username }}"
+parseable_admin_password: "{{ parseable.admin_password }}"

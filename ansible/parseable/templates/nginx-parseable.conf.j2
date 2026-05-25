@@ -1,0 +1,54 @@
+# Parseable reverse proxy via {{ parseable_domain }}:{{ parseable_listen_port }}
+# Cert: /etc/nginx/certs/gz/ (auto-renewed by acme.sh — shared with rustfs.gz).
+# Carrier blocks 80/443 on this host.
+#
+# IMPORTANT: nginx 1.24 sets http2 at the port-socket level (not per-vhost),
+# so this vhost matches the existing rustfs vhost on :{{ parseable_listen_port }}
+# — both stay on HTTP/1.1. The rustfs vhost needs HTTP/1.1 for browser
+# concurrency caps; we follow suit for consistency.
+
+upstream parseable_backend {
+    server 127.0.0.1:{{ parseable_bind_port }};
+    keepalive 16;
+}
+
+server {
+    listen {{ parseable_listen_port }} ssl;
+    listen [::]:{{ parseable_listen_port }} ssl;
+    server_name {{ parseable_domain }};
+
+    ssl_certificate     {{ parseable_ssl_cert }};
+    ssl_certificate_key {{ parseable_ssl_key }};
+    ssl_protocols       TLSv1.2 TLSv1.3;
+    ssl_ciphers         HIGH:!aNULL:!MD5;
+
+    access_log /var/log/nginx/parseable.access.log;
+    error_log  /var/log/nginx/parseable.error.log;
+
+    # OTLP/HTTP and bulk log ingest can be large.
+    client_max_body_size 0;
+
+    proxy_http_version 1.1;
+    proxy_set_header Host              $host:$server_port;
+    proxy_set_header X-Real-IP         $remote_addr;
+    proxy_set_header X-Forwarded-For   $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto https;
+    # X-Forwarded-Host MUST include the port. Parseable derives its base URL
+    # from this header (via actix-web's ConnectionInfo::host(), which prefers
+    # X-Forwarded-Host over the Host header). If the port is missing, the OIDC
+    # redirect-URL validator in src/handlers/http/oidc.rs:84 compares
+    # "parseable.gz.autolife.ai/" vs "parseable.gz.autolife.ai:8444/" and
+    # 400s every login attempt.
+    proxy_set_header X-Forwarded-Host  $host:$server_port;
+    proxy_set_header X-Forwarded-Port  $server_port;
+
+    # Long-lived requests: SQL queries over large time ranges + livetail SSE.
+    proxy_buffering    off;
+    proxy_read_timeout 1800s;
+    proxy_send_timeout 1800s;
+    proxy_connect_timeout 60s;
+
+    location / {
+        proxy_pass http://parseable_backend;
+    }
+}

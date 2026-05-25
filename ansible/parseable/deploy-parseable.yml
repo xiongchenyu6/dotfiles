@@ -1,0 +1,232 @@
+---
+- name: Deploy Parseable observability platform (logs + metrics + traces)
+  hosts: parseable_servers
+  become: yes
+  vars_files:
+    - vars/main.yml
+
+  tasks:
+    - name: Load Parseable secrets (admin pw + OIDC client creds)
+      community.sops.load_vars:
+        file: ../../secrets/parseable.yaml
+      no_log: true
+
+    - name: Load rustfs secrets (S3 access/secret key)
+      community.sops.load_vars:
+        file: ../../secrets/rustfs.yaml
+      no_log: true
+
+    # ---- prerequisites --------------------------------------------------------
+    - name: Install required apt packages
+      apt:
+        name:
+          - curl
+          - nginx
+        state: present
+        update_cache: yes
+        cache_valid_time: 3600
+
+    - name: Verify docker is reachable
+      command: docker version --format '{{ "{{" }}.Server.Version{{ "}}" }}'
+      register: docker_version_check
+      changed_when: false
+      failed_when: docker_version_check.rc != 0
+
+    - name: Check docker compose v2 plugin
+      command: docker compose version --short
+      register: compose_version_check
+      changed_when: false
+      failed_when: false
+
+    # Ubuntu's own apt only carries docker-compose v1 (the python one); v2 is
+    # only in Docker's upstream repo. Fetch the static binary directly so we
+    # don't touch the host's apt sources.
+    - name: Install docker compose v2 plugin if missing
+      block:
+        - name: Ensure plugin dir exists
+          file:
+            path: /usr/local/lib/docker/cli-plugins
+            state: directory
+            mode: "0755"
+        - name: Download docker compose v2 binary
+          get_url:
+            url: "https://gh-proxy.com/https://github.com/docker/compose/releases/download/v2.39.1/docker-compose-linux-x86_64"
+            dest: /usr/local/lib/docker/cli-plugins/docker-compose
+            mode: "0755"
+            timeout: 120
+        - name: Verify plugin installation
+          command: docker compose version --short
+          changed_when: false
+      when: compose_version_check.rc != 0
+
+    # ---- ensure the rustfs bucket exists -------------------------------------
+    # awscli is no longer in Ubuntu 24.04 apt; use the official amazon/aws-cli
+    # docker image as a one-shot. --network=host so the container reaches
+    # rustfs on 127.0.0.1:9000 directly.
+    - name: Check if parseable bucket exists on rustfs
+      command: >-
+        docker run --rm --network=host
+        -e AWS_ACCESS_KEY_ID={{ parseable_s3_access_key }}
+        -e AWS_SECRET_ACCESS_KEY={{ parseable_s3_secret_key }}
+        docker.1ms.run/amazon/aws-cli
+        --endpoint-url http://127.0.0.1:9000
+        --region {{ parseable_s3_region }}
+        s3api head-bucket --bucket {{ parseable_s3_bucket }}
+      register: bucket_check
+      changed_when: false
+      failed_when: false
+      no_log: true
+
+    - name: Create parseable bucket on rustfs if missing
+      command: >-
+        docker run --rm --network=host
+        -e AWS_ACCESS_KEY_ID={{ parseable_s3_access_key }}
+        -e AWS_SECRET_ACCESS_KEY={{ parseable_s3_secret_key }}
+        docker.1ms.run/amazon/aws-cli
+        --endpoint-url http://127.0.0.1:9000
+        --region {{ parseable_s3_region }}
+        s3 mb s3://{{ parseable_s3_bucket }}
+      when: bucket_check.rc != 0
+      no_log: true
+
+    # ---- filesystem layout ----------------------------------------------------
+    - name: Create deploy + data directories
+      file:
+        path: "{{ item }}"
+        state: directory
+        owner: root
+        group: root
+        mode: "0755"
+      loop:
+        - "{{ parseable_deploy_dir }}"
+        - "{{ parseable_data_dir }}"
+        - "{{ parseable_data_dir }}/staging"
+
+    # ---- render compose -------------------------------------------------------
+    - name: Render docker-compose.yml
+      template:
+        src: templates/docker-compose.yml.j2
+        dest: "{{ parseable_deploy_dir }}/docker-compose.yml"
+        owner: root
+        group: root
+        mode: "0600"
+      notify: restart parseable
+
+    - name: Pull image (best-effort; CN mirror flakiness tolerated)
+      command: docker compose pull
+      args:
+        chdir: "{{ parseable_deploy_dir }}"
+      register: parseable_pull
+      changed_when: "'Downloaded' in parseable_pull.stdout or 'Pull complete' in parseable_pull.stdout"
+      failed_when: false
+
+    - name: Start parseable
+      command: docker compose up -d --remove-orphans
+      args:
+        chdir: "{{ parseable_deploy_dir }}"
+      register: parseable_up
+      changed_when: "'Started' in parseable_up.stderr or 'Created' in parseable_up.stderr or 'Recreated' in parseable_up.stderr"
+
+    - name: Wait for parseable liveness
+      uri:
+        url: "http://127.0.0.1:{{ parseable_bind_port }}/api/v1/liveness"
+        status_code: 200
+      register: parseable_health
+      retries: 30
+      delay: 3
+      until: parseable_health.status == 200
+      ignore_errors: yes
+
+    # ---- bootstrap RBAC -------------------------------------------------------
+    # Without this, the FIRST OIDC user who logs in gets an empty role set and
+    # every UI call 403s. We create a non-reserved 'operator' role with admin
+    # privileges and set it as the default for any new OIDC user.
+    # 'admin' / 'superadmin' are reserved role names in Parseable's validator,
+    # hence 'operator'.
+    - name: Create 'operator' role with admin privileges
+      uri:
+        url: "http://127.0.0.1:{{ parseable_bind_port }}/api/v1/role/operator"
+        method: PUT
+        user: "{{ parseable_admin_username }}"
+        password: "{{ parseable_admin_password }}"
+        force_basic_auth: yes
+        body_format: json
+        body: '[{"privilege":"admin"}]'
+        status_code: [200, 201]
+      no_log: true
+
+    - name: Set 'operator' as default role for new OIDC users
+      uri:
+        url: "http://127.0.0.1:{{ parseable_bind_port }}/api/v1/role/default"
+        method: PUT
+        user: "{{ parseable_admin_username }}"
+        password: "{{ parseable_admin_password }}"
+        force_basic_auth: yes
+        body_format: json
+        body: '"operator"'
+        status_code: [200, 201]
+      no_log: true
+
+    # ---- nginx TLS terminator -------------------------------------------------
+    - name: Ensure wildcard cert is present
+      stat:
+        path: "{{ parseable_ssl_cert }}"
+      register: parseable_cert_stat
+
+    - name: Fail with instructions if cert is missing
+      fail:
+        msg: |
+          {{ parseable_ssl_cert }} not found.
+          The wildcard *.gz.autolife.ai cert is renewed by acme.sh on this host —
+          confirm rustfs.gz.autolife.ai is still serving before re-running.
+      when: not parseable_cert_stat.stat.exists
+
+    - name: Deploy nginx vhost for {{ parseable_domain }}
+      template:
+        src: templates/nginx-parseable.conf.j2
+        dest: /etc/nginx/sites-available/parseable-gz.conf
+        owner: root
+        group: root
+        mode: "0644"
+      notify: reload nginx
+
+    - name: Enable nginx vhost
+      file:
+        src: /etc/nginx/sites-available/parseable-gz.conf
+        dest: /etc/nginx/sites-enabled/parseable-gz.conf
+        state: link
+      notify: reload nginx
+
+    - name: Validate nginx config
+      command: nginx -t
+      changed_when: false
+
+    # ---- summary --------------------------------------------------------------
+    - name: Display deployment status
+      debug:
+        msg: |
+          ========================================
+          Parseable deployment: {{ 'SUCCESS' if parseable_health.status | default(0) == 200 else 'STARTING (liveness not yet 200)' }}
+          ========================================
+          Deploy dir:  {{ parseable_deploy_dir }}
+          Data dir:    {{ parseable_data_dir }}
+          Internal:    http://127.0.0.1:{{ parseable_bind_port }}
+          Public URL:  https://{{ parseable_domain }}:{{ parseable_listen_port }}/
+          S3 backend:  {{ parseable_s3_url }} (bucket: {{ parseable_s3_bucket }})
+          OIDC issuer: {{ parseable_oidc_issuer }}
+          Admin (local): {{ parseable_admin_username }} / <see secrets/parseable.yaml>
+          ========================================
+          OIDC redirect_uri to register in Casdoor:
+            {{ parseable_oidc_redirect_url }}
+          ========================================
+
+  handlers:
+    - name: restart parseable
+      command: docker compose up -d --remove-orphans
+      args:
+        chdir: "{{ parseable_deploy_dir }}"
+
+    - name: reload nginx
+      systemd:
+        name: nginx
+        state: reloaded
