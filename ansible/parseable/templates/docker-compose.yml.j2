@@ -1,0 +1,55 @@
+# Parseable docker-compose (Ansible-managed).
+# Single-process: parseable's `s3-store` subcommand uses rustfs as the
+# durable backend; staging/local data goes to {{ parseable_data_dir }}.
+services:
+  parseable:
+    image: {{ parseable_image }}
+    container_name: parseable
+    restart: unless-stopped
+    command: ["parseable", "s3-store"]
+    # extra_hosts maps host.docker.internal -> the docker bridge gateway,
+    # giving the container a stable name to reach rustfs running on the host.
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    ports:
+      - "{{ parseable_bind_host }}:{{ parseable_bind_port }}:8000"
+    environment:
+      # --- Bind ---
+      P_ADDR: "0.0.0.0:8000"
+
+      # --- Public origin (used to build OIDC redirect_uri) ---
+      # Without this, src/oidc.rs falls back to Origin::Local{socket_addr}
+      # and tells Casdoor the redirect_uri is http://0.0.0.0:8000/api/v1/o/code,
+      # which 1) doesn't match Casdoor's registered redirect and 2) the browser
+      # can't follow.
+      P_ORIGIN_URI: "https://{{ parseable_domain }}:{{ parseable_listen_port }}"
+
+      # --- Local staging (mounted from host) ---
+      P_STAGING_DIR: "/parseable/staging"
+
+      # --- Admin (local account; OIDC users are linked on first login) ---
+      P_USERNAME: "{{ parseable_admin_username }}"
+      P_PASSWORD: "{{ parseable_admin_password }}"
+
+      # --- S3 backend (rustfs on the same host) ---
+      P_S3_URL: "{{ parseable_s3_url }}"
+      P_S3_ACCESS_KEY: "{{ parseable_s3_access_key }}"
+      P_S3_SECRET_KEY: "{{ parseable_s3_secret_key }}"
+      P_S3_REGION: "{{ parseable_s3_region }}"
+      P_S3_BUCKET: "{{ parseable_s3_bucket }}"
+      # rustfs is MinIO/path-style, not vhost-style.
+      P_S3_PATH_STYLE: "true"
+
+      # --- OIDC (Casdoor) ---
+      P_OIDC_ISSUER: "{{ parseable_oidc_issuer }}"
+      P_OIDC_CLIENT_ID: "{{ parseable.oidc_client_id }}"
+      P_OIDC_CLIENT_SECRET: "{{ parseable.oidc_client_secret }}"
+      P_OIDC_SCOPE: "{{ parseable_oidc_scope }}"
+    volumes:
+      - {{ parseable_data_dir }}/staging:/parseable/staging
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://localhost:8000/api/v1/liveness"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
