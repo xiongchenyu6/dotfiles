@@ -3,7 +3,6 @@
 # Idempotent: re-running is safe.
 - name: Configure RustFS IAM (users, buckets, policies)
   hosts: rustfs_servers
-  become: yes
   vars:
     rustfs_endpoint: "http://127.0.0.1:9000"
     rustfs_alias: rustfs
@@ -11,6 +10,7 @@
       - robot-001
       - robot-234
       - robot-239
+      - robot-248
       - robot-249
       - robot-250
       - robot-252
@@ -24,6 +24,7 @@
       - robot-270
     other_buckets:
       - audit-archive
+      - fae-tools
     # User credentials. Phase 1 keys preserved as-is so scripts only need
     # an endpoint swap. audit-reviewer-w9wlcu gets a fresh secret because the
     # original was unrecoverable.
@@ -84,6 +85,14 @@
               },
               {
                 "Effect": "Allow",
+                "Action": ["s3:CreateBucket"],
+                "Resource": [
+                  "arn:aws:s3:::robot-*",
+                  "arn:aws:s3:::lerobot-*"
+                ]
+              },
+              {
+                "Effect": "Allow",
                 "Action": [
                   "s3:ListBucket",
                   "s3:GetBucketLocation",
@@ -99,7 +108,9 @@
                   "arn:aws:s3:::audit-archive",
                   "arn:aws:s3:::audit-archive/*",
                   "arn:aws:s3:::lerobot-*",
-                  "arn:aws:s3:::lerobot-*/*"
+                  "arn:aws:s3:::lerobot-*/*",
+                  "arn:aws:s3:::fae-tools",
+                  "arn:aws:s3:::fae-tools/*"
                 ]
               }
             ]
@@ -215,6 +226,38 @@
       register: policy_attach
       changed_when: "'attached' in (policy_attach.stdout | default(''))"
       failed_when: policy_attach.rc != 0 and 'already attached' not in (policy_attach.stderr | default(''))
+
+    - name: Write fae-tools public-read policy file
+      copy:
+        content: |
+          {
+            "Version": "2012-10-17",
+            "Statement": [
+              {
+                "Sid": "PublicReadFaeTools",
+                "Effect": "Allow",
+                "Principal": "*",
+                "Action": ["s3:GetObject"],
+                "Resource": [
+                  "arn:aws:s3:::fae-tools/trainingdata-cli",
+                  "arn:aws:s3:::fae-tools/README.md"
+                ]
+              }
+            ]
+          }
+        dest: /tmp/policy-fae-tools-bucket.json
+        mode: "0644"
+
+    - name: Apply anonymous-read bucket policy on fae-tools/trainingdata-cli
+      shell: |
+        mc anonymous set-json /tmp/policy-fae-tools-bucket.json {{ rustfs_alias }}/fae-tools
+      register: anon_policy
+      changed_when: "'Access permission' in (anon_policy.stdout | default('')) or 'updated' in (anon_policy.stdout | default(''))"
+
+    - name: Remove fae-tools bucket policy temp file
+      file:
+        path: /tmp/policy-fae-tools-bucket.json
+        state: absent
 
     - name: List users for verification
       shell: mc admin user list {{ rustfs_alias }}
