@@ -1,0 +1,17 @@
+---
+# Extra-vars for the autolife deployment. Apply with:
+#   ansible-playbook -i inventory-autolife.ini -e @vars-autolife.yml deploy-sub2api.yml
+#
+# Extra-vars outrank vars_files, so these override vars/main.yml defaults.
+
+sub2api_server_port: 8085
+sub2api_bind_host: "127.0.0.1"
+
+sub2api_domain: sub2api.autolife-robotics.com
+sub2api_ssl_cert: /etc/letsencrypt/live/sub2api.autolife-robotics.com/fullchain.pem
+sub2api_ssl_key: /etc/letsencrypt/live/sub2api.autolife-robotics.com/privkey.pem
+
+sub2api_admin_email: admin@autolife-robotics.com
+
+# docker-ce + nginx already provisioned via vendor repos.
+sub2api_apt_packages: []

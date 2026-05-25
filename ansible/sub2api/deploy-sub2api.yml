@@ -5,17 +5,32 @@
   vars_files:
     - vars/main.yml
 
+  pre_tasks:
+    # Sudo password lives in secrets/sub2api-<profile>.yaml (sops). Default
+    # profile is "autolife" — override on the command line with `-e profile=...`
+    # if other deployments come online.
+    - name: Load sudo password from sops (secrets/sub2api-{{ profile | default('autolife') }}.yaml)
+      community.sops.load_vars:
+        file: "../../secrets/sub2api-{{ profile | default('autolife') }}.yaml"
+      no_log: true
+      delegate_to: localhost
+      become: false
+      run_once: true
+
+    - name: Apply ansible_become_pass from secrets if provided
+      set_fact:
+        ansible_become_pass: "{{ sub2api.become_password }}"
+      when: sub2api.become_password is defined
+      no_log: true
+
   tasks:
     - name: Install required packages
       apt:
-        name:
-          - curl
-          - docker.io
-          - docker-compose-v2
-          - nginx
+        name: "{{ sub2api_apt_packages | default(['curl', 'docker.io', 'docker-compose-v2', 'nginx']) }}"
         state: present
         update_cache: yes
         cache_valid_time: 3600
+      when: (sub2api_apt_packages | default(['curl', 'docker.io', 'docker-compose-v2', 'nginx']) | length) > 0
 
     - name: Start and enable Docker service
       systemd:
@@ -125,8 +140,16 @@
         group: root
         mode: '0600'
 
-    - name: Pull and start services
-      command: docker compose up -d --pull always
+    - name: Pull latest images (best-effort; tolerates mirror flakiness)
+      command: docker compose pull --ignore-pull-failures
+      args:
+        chdir: "{{ sub2api_deploy_dir }}"
+      register: sub2api_pull
+      changed_when: "'Pull complete' in sub2api_pull.stdout or 'Downloaded' in sub2api_pull.stdout"
+      failed_when: false
+
+    - name: Start services
+      command: docker compose up -d
       args:
         chdir: "{{ sub2api_deploy_dir }}"
 
