@@ -97,6 +97,21 @@ in
           wireshark-cli = fixSrc prev.wireshark-cli;
         }
       )
+      # nixpkgs' activitywatch let-binds `aw-webui` inside aw-server-rust's
+      # default.nix and exposes it only via `env.AW_WEBUI_DIR`. The current
+      # unstable revision crashes jest with `Cannot find module
+      # 'vue-template-compiler'` (transitive dep missing from the package
+      # closure); the runtime bundle is fine. Reach the let-bound derivation
+      # through aw-server-rust.env.AW_WEBUI_DIR and skip its checks.
+      (_: prev: {
+        aw-server-rust = prev.aw-server-rust.overrideAttrs (old: {
+          env = old.env // {
+            AW_WEBUI_DIR = old.env.AW_WEBUI_DIR.overrideAttrs (_: {
+              doCheck = false;
+            });
+          };
+        });
+      })
       # aw-watcher-window-wayland emits the raw Wayland app_id (e.g.
       # "google-chrome", "firefox", "chromium"), but aw-webui's hardcoded
       # browser whitelist is in CamelCase ("Google-chrome", "Firefox", ...).
