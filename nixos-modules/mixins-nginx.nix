@@ -1,7 +1,7 @@
 # Drop-in replacement for srvos.nixosModules.mixins-nginx
-# The srvos version is incompatible with current nixpkgs due to infinite recursion
-# between sslDhparam and security.dhparams.params.nginx.
-# This uses the new nixpkgs `sslDhparam = true` API instead.
+# The srvos version is incompatible with current nixpkgs: it sets
+# services.nginx.sslDhparam, which has been removed since DHE cipher suites
+# are no longer in the default nginx cipher list (ECDHE is used by default).
 { config, lib, ... }:
 {
   networking.firewall.allowedTCPPorts = [ 443 80 ];
@@ -61,7 +61,5 @@
           if config.networking.nameservers == [ ] then cloudflare else config.networking.nameservers;
       in
       map escapeIPv6 resolvers;
-
-    sslDhparam = true;
   };
 }

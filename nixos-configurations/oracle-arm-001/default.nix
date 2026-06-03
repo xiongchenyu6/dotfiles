@@ -26,7 +26,9 @@
     srvos.nixosModules.mixins-nix-experimental
     srvos.nixosModules.mixins-tracing
     #rust-web-server.nixosModules.rust-web-server
-    ../../nixos-modules/rust-web-server-config.nix
+    # rust-web-server-config.nix reads config.services.rust-web-server, which
+    # only exists when the (disabled) rust-web-server module above is imported.
+    #../../nixos-modules/rust-web-server-config.nix
     ./disk-config.nix
     ./hardware-configuration.nix
   ];
@@ -70,7 +72,7 @@
       pkgs.gitMinimal
     ]
     ++ (with pkgs; [
-      nodejs_25
+      nodejs_24
       osquery # is handled by services.osquery module
     ]);
 
@@ -184,39 +186,43 @@
       };
     };
 
-    autolife-relay = {
-      enable = false;
-      openFirewall = true;
-      settings = {
-        server_url = "ws://183.6.107.47:3000/ws";
-        token = "@token@";
-        region = "sg-1";
-        ip = "138.2.95.174";
-        bind_ip = "[::]";
-        video_port = 30001;
-        data_port = 30002;
-        audio_port = 30003;
-        probe_port = 30004;
-        video_port_workers = 1;
-        data_port_workers = 1;
-        audio_port_workers = 1;
-        telemetry_interval = 10;
-        debug_stats_interval = 10;
-        debug_stats_enabled = true;
-        service_auth = {
-          client = "autolife-relay";
-          secret = "@service-auth-secret@";
+    # Disabled with its module (see commented import above). Re-enable the
+    # autolife-relay.nixosModules.autolife-relay import to restore.
+    /*
+      autolife-relay = {
+        enable = false;
+        openFirewall = true;
+        settings = {
+          server_url = "ws://183.6.107.47:3000/ws";
+          token = "@token@";
+          region = "sg-1";
+          ip = "138.2.95.174";
+          bind_ip = "[::]";
+          video_port = 30001;
+          data_port = 30002;
+          audio_port = 30003;
+          probe_port = 30004;
+          video_port_workers = 1;
+          data_port_workers = 1;
+          audio_port_workers = 1;
+          telemetry_interval = 10;
+          debug_stats_interval = 10;
+          debug_stats_enabled = true;
+          service_auth = {
+            client = "autolife-relay";
+            secret = "@service-auth-secret@";
+          };
+          license = {
+            license_file = config.sops.secrets."autolife-relay/license".path;
+            public_key = builtins.readFile ./id_ed25519.pub;
+          };
         };
-        license = {
-          license_file = config.sops.secrets."autolife-relay/license".path;
-          public_key = builtins.readFile ./id_ed25519.pub;
-        };
+        sopsSecretFiles = [
+          config.sops.secrets."autolife-relay/token".path
+          config.sops.secrets."autolife-relay/service-auth-secret".path
+        ];
       };
-      sopsSecretFiles = [
-        config.sops.secrets."autolife-relay/token".path
-        config.sops.secrets."autolife-relay/service-auth-secret".path
-      ];
-    };
+    */
 
     # Odoo ERP/CRM system
     odoo = {
@@ -256,13 +262,15 @@
       };
     };
 
-    # Rust web server
-    rust-web-server = {
-      enable = false;
-      configFile = config.sops.templates."rust-web-server-config".path;
-      licenseFile = config.sops.templates."rust-web-server-license".path;
-      publicKey = builtins.readFile ./id_ed25519.pub;
-    };
+    # Rust web server — disabled with its module (see commented import above).
+    /*
+      rust-web-server = {
+        enable = false;
+        configFile = config.sops.templates."rust-web-server-config".path;
+        licenseFile = config.sops.templates."rust-web-server-license".path;
+        publicKey = builtins.readFile ./id_ed25519.pub;
+      };
+    */
 
     nginx = {
       commonHttpConfig = ''
@@ -398,25 +406,29 @@
     # ];
   };
 
-  # Sops secrets for autolife-relay
-  sops.templates."rust-web-server-license" = {
-    content = config.sops.placeholder."autolife-relay/license";
-    owner = "rust-web-server";
-    group = "rust-web-server";
-    mode = "0400";
-  };
-  sops.secrets."autolife-relay/license" = {
-    owner = "autolife-relay";
-    group = "autolife-relay";
-  };
-  sops.secrets."autolife-relay/token" = {
-    owner = "autolife-relay";
-    group = "autolife-relay";
-  };
-  sops.secrets."autolife-relay/service-auth-secret" = {
-    owner = "autolife-relay";
-    group = "autolife-relay";
-  };
+  # Sops secrets for autolife-relay — disabled with the module above; their
+  # owners (rust-web-server / autolife-relay users) no longer exist, so the
+  # sops chown would fail at activation. Re-enable alongside the module.
+  /*
+    sops.templates."rust-web-server-license" = {
+      content = config.sops.placeholder."autolife-relay/license";
+      owner = "rust-web-server";
+      group = "rust-web-server";
+      mode = "0400";
+    };
+    sops.secrets."autolife-relay/license" = {
+      owner = "autolife-relay";
+      group = "autolife-relay";
+    };
+    sops.secrets."autolife-relay/token" = {
+      owner = "autolife-relay";
+      group = "autolife-relay";
+    };
+    sops.secrets."autolife-relay/service-auth-secret" = {
+      owner = "autolife-relay";
+      group = "autolife-relay";
+    };
+  */
 
   # Sops secrets for Odoo
   sops.secrets."odoo/db_password" = {
