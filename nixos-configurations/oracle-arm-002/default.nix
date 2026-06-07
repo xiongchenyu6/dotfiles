@@ -24,11 +24,13 @@
     srvos.nixosModules.mixins-tracing
     xiongchenyu6.nixosModules.hashtopolis-server
     xiongchenyu6.nixosModules.freqtrade-ohlc-sync
+    xiongchenyu6.nixosModules.nautilus-accumulator
     ./disk-config.nix
     ./hardware-configuration.nix
     ./hashtopolis.nix
     ./postgres.nix
     ./freqtrade-ohlc.nix
+    ./nautilus.nix
   ];
 
   boot = {
