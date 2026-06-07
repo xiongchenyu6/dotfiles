@@ -34,4 +34,15 @@
     mode = "smart";
     environmentFile = config.sops.templates."nautilus-accumulator.env".path;
   };
+
+  # Crypto trend follower (HonestTrend15mProtections). Reuses the nautilus user + the
+  # same Binance creds env as the accumulator. Testnet until soak-proven.
+  services.nautilus-trend = {
+    enable = true;
+    package = inputs.xiongchenyu6.packages.${pkgs.stdenv.hostPlatform.system}.nautilus-trader;
+    testnet = true;
+    instrument = "BTCUSDT.BINANCE";
+    barSpec = "15-MINUTE-LAST-EXTERNAL";
+    environmentFile = config.sops.templates."nautilus-accumulator.env".path;
+  };
 }
