@@ -25,6 +25,7 @@
     xiongchenyu6.nixosModules.hashtopolis-server
     xiongchenyu6.nixosModules.freqtrade-ohlc-sync
     xiongchenyu6.nixosModules.nautilus-accumulator
+    xiongchenyu6.nixosModules.nautilus-trend
     ./disk-config.nix
     ./hardware-configuration.nix
     ./hashtopolis.nix
