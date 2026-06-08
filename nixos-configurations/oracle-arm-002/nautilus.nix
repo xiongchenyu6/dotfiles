@@ -22,6 +22,18 @@
     owner = "nautilus";
   };
 
+  # Telegram alert sink for the signal layer — same bot + chat the legacy
+  # event_dca/reactor daemons used, so alerts land in the same place.
+  sops.secrets."oracle-arm-002/telegram-bot-token" = { };
+  sops.secrets."oracle-arm-002/telegram-chat-id" = { };
+  sops.templates."nautilus-signal.env" = {
+    content = ''
+      TELEGRAM_BOT_TOKEN=${config.sops.placeholder."oracle-arm-002/telegram-bot-token"}
+      TELEGRAM_CHAT_ID=${config.sops.placeholder."oracle-arm-002/telegram-chat-id"}
+    '';
+    owner = "nautilus";
+  };
+
   services.nautilus-accumulator = {
     enable = true;
     # nur overlay isn't applied globally on this host — reference the package directly.
@@ -48,5 +60,16 @@
     entryLb = 168;
     exitLb = 72;
     environmentFile = config.sops.templates."nautilus-accumulator.env".path;
+  };
+
+  # Signal layer — spike (PUMP/DUMP) + accumulation-dip (FLASH/FAST) Telegram alerts.
+  # Data-only on Binance MAINNET public market data (real prices; no execution client,
+  # no money at risk). Replaces the retired standalone event_reactor / event_dca_bot daemons.
+  services.nautilus-signal = {
+    enable = true;
+    package = inputs.xiongchenyu6.packages.${pkgs.stdenv.hostPlatform.system}.nautilus-trader;
+    instruments = [ "BTCUSDT.BINANCE" "ETHUSDT.BINANCE" "SOLUSDT.BINANCE" ];
+    barSpec = "1-MINUTE-LAST-EXTERNAL";
+    environmentFile = config.sops.templates."nautilus-signal.env".path;
   };
 }
