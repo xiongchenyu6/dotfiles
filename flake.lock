@@ -1242,11 +1242,11 @@
         "uv2nix": "uv2nix_3"
       },
       "locked": {
-        "lastModified": 1780877823,
-        "narHash": "sha256-Gb9+cLlvOoTqoRoNoRmgnrXRaIe+cyo2up33OurLy4A=",
+        "lastModified": 1780879407,
+        "narHash": "sha256-VmDHqCQEEJhoN/8zrKOwe2dViDFPMXM6fcHlBd3aVmQ=",
         "owner": "xiongchenyu6",
         "repo": "nur-packages",
-        "rev": "e04cf9ac29261159a896057c27c2a57cc8a49247",
+        "rev": "058d02e86595ae31865a1b82a34a71f28e295141",
         "type": "github"
       },
       "original": {
