@@ -17,6 +17,7 @@
     content = ''
       BINANCE_API_KEY=${config.sops.placeholder."oracle-arm-002/binance-api-key"}
       BINANCE_API_SECRET_FILE=${config.sops.secrets."oracle-arm-002/binance-api-secret".path}
+      TIMESCALE_URL=postgres://quant:${config.sops.placeholder."oracle-arm-002/quant-password"}@127.0.0.1:5432/api
     '';
     owner = "nautilus";
   };
