@@ -35,14 +35,17 @@
     environmentFile = config.sops.templates."nautilus-accumulator.env".path;
   };
 
-  # Crypto trend follower (HonestTrend15mProtections). Reuses the nautilus user + the
-  # same Binance creds env as the accumulator. Testnet until soak-proven.
+  # Crypto trend follower — Donchian breakout (recent-regime-validated winner; replaces the
+  # decayed EMA-cross). ETH+BTC+SOL 1h, ~6.67% each. Reuses the nautilus user + creds.
   services.nautilus-trend = {
     enable = true;
     package = inputs.xiongchenyu6.packages.${pkgs.stdenv.hostPlatform.system}.nautilus-trader;
     testnet = true;
-    instrument = "BTCUSDT.BINANCE";
-    barSpec = "15-MINUTE-LAST-EXTERNAL";
+    instruments = [ "ETHUSDT.BINANCE" "BTCUSDT.BINANCE" "SOLUSDT.BINANCE" ];
+    barSpec = "1-HOUR-LAST-EXTERNAL";
+    riskFrac = 0.0667;
+    entryLb = 168;
+    exitLb = 72;
     environmentFile = config.sops.templates."nautilus-accumulator.env".path;
   };
 }
