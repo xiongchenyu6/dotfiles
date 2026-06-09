@@ -75,8 +75,10 @@
       };
     };
     # Personal and project packages
+    # TEMP: pinned to the equity-trend feature branch for the amd-002 nautilus-equity-trend
+    # service. Revert to "...?lfs=1" (master) once feat/nautilus-equity-trend-ib is merged.
     xiongchenyu6 = {
-      url = "github:xiongchenyu6/nur-packages?lfs=1";
+      url = "github:xiongchenyu6/nur-packages?ref=feat/nautilus-equity-trend-ib&lfs=1";
       inputs = {
         nixpkgs.follows = "nixpkgs";
         flake-parts.follows = "flake-parts";
