@@ -47,9 +47,14 @@ in
       environmentFiles = [ config.sops.templates."ib-gateway.env".path ];
       environment = {
         TRADING_MODE = "paper"; # SAFETY: paper only. live would be 4001 — intentionally unused.
-        READ_ONLY_API = "yes"; # data + reconcile only. Flip to "no" when paper-TRADING (Stage 4).
+        READ_ONLY_API = "no"; # paper-TRADING enabled (places simulated orders). Still PAPER (DU* acct).
         TWOFA_TIMEOUT_ACTION = "restart";
         AUTO_RESTART_TIME = "11:59 PM"; # daily Gateway self-restart, outside US regular hours
+        # On the daily restart, auto-take-over any lingering session instead of hanging on the
+        # "Existing session detected" dialog (which froze the API until a manual restart).
+        EXISTING_SESSION_DETECTED_ACTION = "primary";
+        # Auto-accept incoming API connections (the socat relay arrives as 127.0.0.1 = trusted).
+        TWS_ACCEPT_INCOMING = "accept";
         TIME_ZONE = "America/New_York";
       };
       # Tune for the 956MB box: lower Gateway heap (768m->512m) so it stops swap-thrashing,
