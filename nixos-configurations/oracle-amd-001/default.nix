@@ -9,9 +9,7 @@
 }:
 {
   imports = with inputs; [
-    xiongchenyu6.nixosModules.casdoor
-    xiongchenyu6.nixosModules.openagent
-    xiongchenyu6.nixosModules.sub2api
+    hermes-agent.nixosModules.default
     disko.nixosModules.disko
     (modulesPath + "/installer/scan/not-detected.nix")
     (modulesPath + "/profiles/qemu-guest.nix")
@@ -20,62 +18,108 @@
     ezModules.core
     ezModules.server
     ezModules.acme
-    ezModules.datadog-agent
     ezModules.sing-box
     srvos.nixosModules.server
     ezModules.mixins-nginx
     srvos.nixosModules.mixins-trusted-nix-caches
     srvos.nixosModules.mixins-nix-experimental
     srvos.nixosModules.mixins-tracing
+    xiongchenyu6.nixosModules.cc-gateway
     ./hardware-configuration.nix
   ];
 
   sops.secrets."cloudflared/tunnel-credentials" = { };
-  sops.secrets."casdoor/db_password" = { };
-  sops.secrets."casibase/client_id" = { };
-  sops.secrets."casibase/client_secret" = { };
-  sops.secrets."sub2api/env" = {
-    owner = "sub2api";
-    group = "sub2api";
+
+  # hermes-agent moved here from amd-002 (frees amd-002 RAM + isolates the
+  # EOL-nodejs build to this now-idle box). The XIAOMI_API_KEY / telegram-token
+  # SOPS keys already live in secrets/common.yaml, encrypted to all hosts
+  # incl. oracle-amd-001 — no re-encryption needed.
+  sops.templates."hermes-env".content = ''
+    XIAOMI_API_KEY=${config.sops.placeholder."api-keys/XIAOMI_API_KEY"}
+    TELEGRAM_BOT_TOKEN=${config.sops.placeholder."zeroclaw/telegram_bot_token"}
+  '';
+  sops.secrets."api-keys/XIAOMI_API_KEY".owner = "root";
+  sops.secrets."zeroclaw/telegram_bot_token".owner = "root";
+
+  # cc-gateway moved here from amd-002 (frees amd-002 RAM for the new IB Gateway
+  # container). Port 18443 is free on this box. The cc-gateway/* SOPS keys already
+  # live in secrets/common.yaml, encrypted to all hosts incl. oracle-amd-001 — no
+  # re-encryption needed.
+  sops.templates."cc-gateway-config" = {
+    content = ''
+      {
+        "server": {
+          "port": 18443
+        },
+        "upstream": {
+          "url": "https://api.anthropic.com"
+        },
+        "identity": {
+          "device_id": "${config.sops.placeholder."cc-gateway/device_id"}",
+          "email": "${config.sops.placeholder."cc-gateway/email"}"
+        },
+        "oauth": {
+          "refresh_token": "${config.sops.placeholder."cc-gateway/refresh_token"}"
+        },
+        "auth": {
+          "tokens": ${config.sops.placeholder."cc-gateway/client_tokens"}
+        },
+        "env": {
+          "platform": "linux",
+          "platform_raw": "linux",
+          "arch": "x86_64",
+          "node_version": "v22.0.0",
+          "terminal": "xterm-256color",
+          "package_managers": "npm",
+          "runtimes": "node",
+          "is_running_with_bun": false,
+          "is_ci": false,
+          "is_claude_ai_auth": true,
+          "version": "2.1.81",
+          "version_base": "2.1.81",
+          "build_time": "2026-03-20T21:26:18Z",
+          "deployment_environment": "nixos",
+          "vcs": "git"
+        },
+        "prompt_env": {
+          "platform": "linux",
+          "shell": "bash",
+          "os_version": "NixOS",
+          "working_dir": "/var/lib/cc-gateway"
+        },
+        "process": {
+          "constrained_memory": 34359738368,
+          "rss_range": [300000000, 500000000],
+          "heap_total_range": [40000000, 80000000],
+          "heap_used_range": [100000000, 200000000]
+        },
+        "logging": {
+          "level": "info",
+          "audit": true
+        }
+      }
+    '';
+    owner = "cc-gateway";
+    group = "cc-gateway";
+    mode = "0400";
   };
 
-  systemd.services.sub2api = {
-    after = [
-      "postgresql.service"
-      "redis-sub2api.service"
-    ];
-    requires = [
-      "postgresql.service"
-      "redis-sub2api.service"
-    ];
+  sops.secrets."cc-gateway/email".owner = "cc-gateway";
+  sops.secrets."cc-gateway/device_id".owner = "cc-gateway";
+  sops.secrets."cc-gateway/refresh_token".owner = "cc-gateway";
+  sops.secrets."cc-gateway/client_tokens".owner = "cc-gateway";
+
+  users.users.cc-gateway = {
+    isSystemUser = true;
+    group = "cc-gateway";
+    home = "/var/lib/cc-gateway";
+    createHome = true;
   };
-
-  # Inject openagent (formerly casibase) credentials into its config at runtime
-  systemd.services.openagent.serviceConfig.ExecStartPre = lib.mkAfter [
-    "+${pkgs.writeShellScript "openagent-inject-credentials" ''
-      cfg="/var/lib/openagent/conf/app.conf"
-      if [ -f "$cfg" ]; then
-        client_id=$(cat ${config.sops.secrets."casibase/client_id".path})
-        client_secret=$(cat ${config.sops.secrets."casibase/client_secret".path})
-        ${pkgs.gnused}/bin/sed -i "s|clientId = .*|clientId = $client_id|" "$cfg"
-        ${pkgs.gnused}/bin/sed -i "s|clientSecret = .*|clientSecret = $client_secret|" "$cfg"
-      fi
-    ''}"
-  ];
-
-  # Inject casdoor DB password into its config at runtime
-  systemd.services.casdoor.serviceConfig.ExecStartPre = lib.mkAfter [
-    "+${pkgs.writeShellScript "casdoor-inject-password" ''
-      cfg="/var/lib/casdoor/app.conf"
-      if [ -f "$cfg" ]; then
-        db_pass=$(cat ${config.sops.secrets."casdoor/db_password".path})
-        ${pkgs.gnused}/bin/sed -i "s|dataSourceName = .*|dataSourceName = \"user=casdoor password=$db_pass host=localhost port=5432 dbname=casdoor sslmode=disable\"|" "$cfg"
-      fi
-    ''}"
-  ];
+  users.groups.cc-gateway = { };
 
   environment = {
     systemPackages = [
+      inputs.xiongchenyu6.packages.x86_64-linux.cc-gateway
       pkgs.cloudflared
       pkgs.nix
     ];
@@ -104,154 +148,35 @@
           group = "nginx";
           reloadServices = [ "nginx.service" ];
         };
-        "starslab.qzz.io" = {
-          domain = "starslab.qzz.io";
-          extraDomainNames = [ "*.starslab.qzz.io" ];
-          group = "nginx";
-          reloadServices = [ "nginx.service" ];
-        };
       };
     };
   };
 
-  services = {
-    postgresql = {
-      enable = true;
-      package = pkgs.postgresql_18_jit;
-      authentication = ''
-        local all all trust
-        host  all  all 127.0.0.1/32 trust
-        host  all  all ::1/128 trust
-        host  all  all 0.0.0.0/0 scram-sha-256
-      '';
-      enableJIT = true;
-      enableTCPIP = true;
-      settings = {
-        log_connections = true;
-        log_statement = "all";
-        logging_collector = true;
-        log_disconnections = true;
-        log_destination = lib.mkForce "syslog";
+  services.hermes-agent = {
+    enable = true;
+    settings = {
+      model = {
+        default = "mimo-v2.5-pro";
+        provider = "xiaomi";
       };
-      ensureUsers = [
-        {
-          name = "casdoor";
-          ensureDBOwnership = true;
-        }
-        {
-          name = "casibase";
-          ensureDBOwnership = true;
-        }
-        {
-          name = "sub2api";
-          ensureDBOwnership = true;
-        }
-      ];
-      ensureDatabases = [
-        "casdoor"
-        "casibase"
-        "sub2api"
-      ];
+      # User-authored skills migrated from the old zeroclaw workspace. Hermes
+      # reads these alongside its built-in skill library; skill creation still
+      # writes to $HERMES_HOME/skills/. State dir /var/lib/hermes is rsynced
+      # from amd-002 at migration time (see deploy notes).
+      skills.external_dirs = [ "/var/lib/hermes/custom-skills" ];
     };
+    # Non-secret env vars (bot allowlist + provider endpoint). Secrets via environmentFiles.
+    environment = {
+      TELEGRAM_ALLOWED_USERS = "5368588092,5369058954";
+      XIAOMI_BASE_URL = "https://token-plan-cn.xiaomimimo.com/v1";
+    };
+    environmentFiles = [ config.sops.templates."hermes-env".path ];
+  };
 
-    casdoor = {
-      enable = true;
-      appName = "casdoor";
-      port = 8000;
-      runMode = "prod";
-      database = {
-        driver = "postgres";
-        host = "localhost";
-        port = 5432;
-        username = "casdoor";
-        name = "casdoor";
-      };
-      redis = {
-        enable = false;
-      };
-      autoStart = true;
-    };
-
-    openagent = {
-      enable = true;
-      port = 14000;
-      runMode = "prod";
-      database = {
-        driver = "postgres";
-        host = "localhost";
-        port = 5432;
-        username = "casibase";
-        name = "casibase";
-      };
-      casdoor = {
-        endpoint = "https://casdoor.panda.qzz.io";
-        clientId = "PLACEHOLDER_FROM_SOPS";
-        clientSecret = "PLACEHOLDER_FROM_SOPS";
-        organization = "built-in";
-        application = "app-casibase";
-      };
-      autoStart = true;
-    };
-
-    redis.servers.sub2api = {
-      enable = true;
-      port = 6379;
-    };
-
-    sub2api = {
-      enable = true;
-      port = 18088;
-      database = {
-        host = "/run/postgresql";
-        user = "sub2api";
-        name = "sub2api";
-      };
-      redis = {
-        host = "127.0.0.1";
-        port = 6379;
-      };
-      environmentFile = config.sops.secrets."sub2api/env".path;
-    };
-
-    nginx = {
-      virtualHosts = {
-        "casibase.panda.qzz.io" = {
-          forceSSL = true;
-          acmeRoot = null;
-          useACMEHost = "panda.qzz.io";
-          kTLS = true;
-          locations = {
-            "/" = {
-              proxyPass = "http://127.0.0.1:14000";
-              proxyWebsockets = true;
-            };
-          };
-        };
-        "casdoor.panda.qzz.io" = {
-          forceSSL = true;
-          acmeRoot = null;
-          useACMEHost = "panda.qzz.io";
-          kTLS = true;
-          locations = {
-            "/" = {
-              proxyPass = "http://127.0.0.1:8000";
-              proxyWebsockets = true;
-            };
-          };
-        };
-        "sub2api.starslab.qzz.io" = {
-          forceSSL = true;
-          acmeRoot = null;
-          useACMEHost = "starslab.qzz.io";
-          kTLS = true;
-          locations = {
-            "/" = {
-              proxyPass = "http://127.0.0.1:18088";
-              proxyWebsockets = true;
-            };
-          };
-        };
-      };
-    };
+  services.cc-gateway = {
+    enable = true;
+    port = 18443;
+    openFirewall = false;
+    configFile = config.sops.templates."cc-gateway-config".path;
   };
 }
