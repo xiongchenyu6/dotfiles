@@ -1,6 +1,7 @@
 {
   inputs,
   pkgs,
+  config,
   ...
 }:
 # US-equity HonestTrend live node (NautilusTrader via Interactive Brokers), PAPER only.
@@ -34,5 +35,23 @@
     barSpec = "1-HOUR-LAST-EXTERNAL";
     emaFast = 50;
     emaSlow = 100;
+
+    # The IB paper account base currency is SGD; the strategy sizes in USD (quote ccy),
+    # so convert (~0.74 USD per SGD). Without this it sizes off raw SGD and over-buys ~1.35x.
+    quotePerBaseFx = 0.74;
+
+    # Persist fills / closed positions to quant.nautilus_trades with asset_class='equity'.
+    environment = "testnet"; # NAUTILUS_ENV row tag — paper, non-real money.
+    environmentFile = config.sops.templates."nautilus-equity.env".path;
+  };
+
+  # TIMESCALE_URL for the trade ledger. quant-password is in common.yaml (encrypted to all
+  # hosts incl. amd-002). DB reached over the public Internet (db.panda.qzz.io), not the mesh.
+  sops.secrets."oracle-arm-002/quant-password" = { };
+  sops.templates."nautilus-equity.env" = {
+    content = ''
+      TIMESCALE_URL=postgres://quant:${config.sops.placeholder."oracle-arm-002/quant-password"}@db.panda.qzz.io:5432/api?sslmode=require
+    '';
+    owner = "nautilus";
   };
 }
