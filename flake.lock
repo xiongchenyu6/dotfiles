@@ -1242,16 +1242,15 @@
         "uv2nix": "uv2nix_3"
       },
       "locked": {
-        "lastModified": 1781018891,
+        "lastModified": 1781020752,
         "narHash": "sha256-pUOSybm7UcB4beDTJ0Ja5988wYf80hqfADmozKiIzJI=",
         "owner": "xiongchenyu6",
         "repo": "nur-packages",
-        "rev": "44559524d97058deaaa31ab1d759d842e9dd75f9",
+        "rev": "8615183a36ff7a2f8dfc8531576da3c3dc6ca996",
         "type": "github"
       },
       "original": {
         "owner": "xiongchenyu6",
-        "ref": "feat/nautilus-equity-trend-ib",
         "repo": "nur-packages",
         "type": "github"
       }
