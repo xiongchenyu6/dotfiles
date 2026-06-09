@@ -28,8 +28,10 @@ in
     srvos.nixosModules.mixins-trusted-nix-caches
     srvos.nixosModules.mixins-nix-experimental
     srvos.nixosModules.mixins-tracing
+    xiongchenyu6.nixosModules.nautilus-equity-trend
     ./hardware-configuration.nix
     ./ib-gateway.nix
+    ./nautilus-equity.nix
     {
       topology.self.interfaces.home = {
         type = "wireguard";
