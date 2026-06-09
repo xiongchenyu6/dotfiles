@@ -1,0 +1,32 @@
+#
+# This file contains VM parameters for IB Gateway 10.45.
+# Each parameter should be defined in a separate line and the
+# last line must be followed by a line feed. No leading or
+# trailing whitespaces are allowed in the same line, where a
+# parameter is defined.
+#
+# Lines starting with a '#' character are treated as comments
+# and ignored. Additionally, if a line contains a
+# '### keep on update' string, all parameters defined below will
+# be preserved on update.
+#
+
+# maximum Java heap size — lowered 768m -> 512m so Gateway fits the 956MB box
+# without swap-thrashing (the cause of the IBC LoginDialogDisplayTimeout=1112 loop).
+-Xmx512m
+
+# GC settings
+-XX:+UseG1GC
+-XX:MaxGCPauseMillis=200
+-XX:ParallelGCThreads=20
+-XX:ConcGCThreads=5
+-XX:InitiatingHeapOccupancyPercent=70
+
+-Dinstaller.uuid=2f5bc1ae-9f14-4656-a49f-c7f470abb084
+-DvmOptionsPath=/root/Jts/ibgateway/10.45.1g/ibgateway.vmoptions
+-Dsun.awt.nopixfmt=true
+-Dsun.java2d.noddraw=true
+-Dswing.boldMetal=false
+-Dsun.locale.formatasdefault=true
+
+### keep on update
