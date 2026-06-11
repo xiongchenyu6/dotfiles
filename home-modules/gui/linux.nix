@@ -167,6 +167,22 @@
           collection-fontsrecommended
           collection-xetex
           latexmk
+          appendix
+          biber
+          awesomebox
+          fontawesome5
+          changepage
+          csquotes
+          algorithms
+          algorithmicx
+          algpseudocodex
+          titlesec
+          fontspec
+          microtype
+          amsmath
+          amssymb
+          mathtools
+          xfrac
           ;
       };
     };
