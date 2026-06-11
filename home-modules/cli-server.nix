@@ -43,7 +43,8 @@
       pinentry.package = lib.mkDefault pkgs.pinentry-curses;
       enableSshSupport = true;
       sshKeys = [
-        "AB721FF9682FF07B88063C8FADEB89B859C7ACB1"
+        # YubiKey 32087478 OpenPGP Authentication key (keygrip)
+        "B68FCD72AC825180E7A69A6B0EC58850115D477E"
       ];
     };
   };

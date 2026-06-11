@@ -56,6 +56,7 @@
         #v4l-utils
         dotnetCorePackages.sdk_8_0
         foundry
+        surfpool
         #record_screen
         apg
         #cava # audio visualizer
@@ -78,7 +79,7 @@
         procs
         ansible.out
         #qemu_kvm
-        #tpm2-tools
+        tpm2-tools
 
         # Cross-platform GUI apps (moved from Linux-only)
         keepassxc
