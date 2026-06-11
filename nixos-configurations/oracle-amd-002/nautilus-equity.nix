@@ -18,7 +18,12 @@
 # IP, not loopback. Hence host = "172.22.240.97" (overriding the module's 127.0.0.1 default).
 {
   services.nautilus-equity-trend = {
-    enable = true;
+    # RETIRED 2026-06-10 — equity execution moved to the game box (quant-equity user
+    # service, repo systemd/quant-equity.service): this nix node traded IB paper but its
+    # nur-copied code drifted (no DB persistence) and under-sized on the SGD account.
+    # amd-002 now hosts ONLY the IB Gateway (ib-gateway.nix). NEVER re-enable while the
+    # game-box node runs — both use IB client id 8 on the one paper account (double-trade).
+    enable = false;
     # The nur overlay isn't applied globally on this host — reference the packages directly,
     # exactly like oracle-arm-002/nautilus.nix does for the crypto services. The equity node
     # additionally needs the IB adapter's `ibapi` module (nautilus-ibapi).
