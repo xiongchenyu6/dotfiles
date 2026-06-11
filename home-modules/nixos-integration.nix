@@ -28,8 +28,9 @@
       v4l-utils
       pcsc-tools
       opensc
-      #sui
-      #zssh
+      bitcoin
+      sui
+      zssh
       record_screen
       # NetworkManager icon themes
       adwaita-icon-theme
