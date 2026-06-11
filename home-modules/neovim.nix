@@ -57,7 +57,7 @@ in
         opt.pumheight = 10
         opt.pumblend = 10
         opt.winblend = 0
-        opt.wrap = false
+        opt.wrap = true
         opt.linebreak = true
         opt.list = true
         opt.listchars = { tab = "» ", trail = "·", nbsp = "␣" };
