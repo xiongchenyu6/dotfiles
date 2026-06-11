@@ -209,6 +209,11 @@ in
         debug-level = "guru";
         log-file = "${config.home.homeDirectory}/.cache/gnupg/scdaemon.log";
         disable-ccid = true;
+        # Ignore the YubiKey PIV applet: gpg-agent otherwise auto-exposes the
+        # PIV 9A Ed25519 key over ssh and mis-encodes it (extra "Ed25519"
+        # curve field), which makes `ssh-add -L` fail with "invalid format".
+        # PIV is used directly via PC/SC by yubikey-crypto, not through scdaemon.
+        disable-application = "piv";
       };
       settings = {
         #keyserver = "hkps://keyserver.ubuntu.com";
