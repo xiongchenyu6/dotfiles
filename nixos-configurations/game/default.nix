@@ -201,6 +201,7 @@
           22
           5173
           8080
+          8765
         ];
         interfaces.wg_ora.allowedUDPPorts = [ 22 ];
         interfaces.wt0.allowedTCPPorts = [ 22 ];
@@ -359,6 +360,31 @@
   home-manager = {
     users = {
       "freeman.xiong" = {
+        systemd.user.services.codex-remote-control = {
+          Unit = {
+            Description = "Codex remote control bridge";
+            After = [ "network-online.target" ];
+          };
+
+          Service = {
+            Type = "simple";
+            WorkingDirectory = "%h";
+            ExecStartPre = "${pkgs.writeShellScript "codex-remote-control-pre-start" ''
+              mkdir -p "$HOME/.codex"
+              ${pkgs.codex}/bin/codex features enable remote_control
+            ''}";
+            ExecStart = "${pkgs.codex}/bin/codex remote-control";
+            Restart = "always";
+            RestartSec = 5;
+            StandardOutput = "append:%h/.codex/remote-control.log";
+            StandardError = "append:%h/.codex/remote-control.log";
+          };
+
+          Install = {
+            WantedBy = [ "default.target" ];
+          };
+        };
+
         programs = {
           waybar = {
             settings = {
