@@ -34,6 +34,19 @@
     owner = "nautilus";
   };
 
+  # Data collectors (news RSS + market stress index) — moved off the game box so they
+  # run 7×24 next to the DB. Only need the local TimescaleDB DSN, no exchange keys.
+  sops.templates."quant-collectors.env" = {
+    content = ''
+      TIMESCALE_URL=postgres://quant:${config.sops.placeholder."oracle-arm-002/quant-password"}@127.0.0.1:5432/api
+    '';
+    owner = "nautilus";
+  };
+  services.quant-collectors = {
+    enable = true;
+    environmentFile = config.sops.templates."quant-collectors.env".path;
+  };
+
   services.nautilus-accumulator = {
     enable = true;
     # nur overlay isn't applied globally on this host — reference the package directly.

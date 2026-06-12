@@ -27,6 +27,7 @@
     xiongchenyu6.nixosModules.nautilus-accumulator
     xiongchenyu6.nixosModules.nautilus-trend
     xiongchenyu6.nixosModules.nautilus-signal
+    xiongchenyu6.nixosModules.quant-collectors
     ./disk-config.nix
     ./hardware-configuration.nix
     ./hashtopolis.nix
