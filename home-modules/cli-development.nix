@@ -32,7 +32,7 @@
       enable = true;
       package = inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.claude-code;
     };
-    gemini-cli = {
+    antigravity-cli = {
       enable = true;
     };
     codex = {

@@ -21,6 +21,7 @@
     brews = [
     ];
     casks = [
+      "feishu"
       "google-chrome"
     ];
     taps = [

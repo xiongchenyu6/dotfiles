@@ -6,12 +6,12 @@
   lib,
   ...
 }:
-{
+lib.mkIf pkgs.stdenv.isLinux {
   qt = {
     enable = true;
   };
 
-  home = lib.mkIf pkgs.stdenv.isLinux {
+  home = {
     pointerCursor = {
       name = "Vanilla-DMZ";
       package = pkgs.vanilla-dmz;
@@ -62,7 +62,6 @@
       vulkan-loader
       vulnix
       nix-melt
-      godot_4
       blender
       #microsoft-edge
       gotron-sdk
@@ -112,7 +111,7 @@
     sessionPath = [ "$HOME/.local/bin" ];
   };
 
-  gtk = lib.mkIf pkgs.stdenv.isLinux {
+  gtk = {
     enable = true;
     gtk4 = {
       extraConfig = {
@@ -122,7 +121,7 @@
     };
   };
 
-  i18n = lib.mkIf pkgs.stdenv.isLinux {
+  i18n = {
     inputMethod = {
       type = "fcitx5";
       enable = true;

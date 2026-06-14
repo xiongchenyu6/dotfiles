@@ -14,13 +14,45 @@ let
 
   # Common overlays shared between Darwin and NixOS
   baseOverlays =
-    with inputs;
-    map (x: x.overlays.default or x.overlay) [
-      xiongchenyu6
-      nix-alien
-      sops-nix
-      nix-topology
-    ];
+    (with inputs;
+      map (x: x.overlays.default or x.overlay) [
+        xiongchenyu6
+        nix-alien
+        sops-nix
+        nix-topology
+      ])
+    ++ commonAdditionalOverlays;
+
+  # Additional overlays shared by both Darwin and NixOS.
+  commonAdditionalOverlays = [
+    # nixpkgs currently packages nvim-lint via `fetchgit` from Codeberg.
+    # On this host the fetch repeatedly dies with HTTP/2 stream resets
+    # during darwin-rebuild. The same pinned commit is mirrored on GitHub
+    # and the unpacked tree hash is identical, so override only the source
+    # transport and keep the nixpkgs revision/version unchanged.
+    (_: prev: {
+      vimPlugins = prev.vimPlugins // {
+        nvim-lint = prev.vimPlugins.nvim-lint.overrideAttrs (_: {
+          src = prev.fetchFromGitHub {
+            owner = "mfussenegger";
+            repo = "nvim-lint";
+            rev = "d48f3a76189d03b2239f6df1b2f7e3fa8353743b";
+            hash = "sha256-5mlNCE0KFGfJTocV5NMlczZMmZKGzxqVdUO23KVZ4O8=";
+          };
+          meta.homepage = "https://github.com/mfussenegger/nvim-lint";
+        });
+      };
+    })
+    (_: prev: {
+      # wrangler 4.93.0's Darwin build fails under nodejs 24 with EBADF
+      # during tsup; nodejs 22 builds and passes the version check.
+      wrangler =
+        if prev.stdenv.hostPlatform.isDarwin then
+          prev.wrangler.override { nodejs = prev.nodejs_22; }
+        else
+          prev.wrangler;
+    })
+  ];
 
   # Additional overlays for NixOS — applied to ALL nixos hosts.
   # rust-web-server intentionally NOT in this list: it's a private SSH
@@ -39,8 +71,7 @@ in
 
   # Combined overlays for NixOS
   nixosOverlays =
-    baseOverlays
-    ++ nixosAdditionalOverlays
+    baseOverlays ++ nixosAdditionalOverlays
     ++ [
       (
         _: prev:

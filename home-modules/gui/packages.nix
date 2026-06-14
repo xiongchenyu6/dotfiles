@@ -14,7 +14,7 @@
         #appimage-run
         inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.mcporter
         # inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.cc-switch-cli # temporarily disabled: hash mismatch upstream
-        inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.auto-claude
+        inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.aperant
         discord
         telegram-desktop
         cloc
@@ -79,11 +79,9 @@
         procs
         ansible.out
         #qemu_kvm
-        tpm2-tools
-
         # Cross-platform GUI apps (moved from Linux-only)
+        godot_4
         keepassxc
-        zotero
         yubikey-manager
 
         # Cross-platform CLI/DevOps tools (moved from Linux-only)
@@ -166,9 +164,11 @@
       ]
       ++ lib.optionals pkgs.stdenv.isLinux [
         google-chrome # Keep Chrome in Nix for Linux
+        zotero # Managed outside Nix on Darwin
         ledger-live-desktop # x86_64-linux only
         weave-gitops # Linux only
         calicoctl # Linux only
+        tpm2-tools # Linux only
         jp2a # Marked broken on Darwin
         lm_sensors # Linux-only hardware monitoring
         fwupd # Firmware update daemon (Linux-only)
