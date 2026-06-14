@@ -23,6 +23,7 @@
     casks = [
       "feishu"
       "google-chrome"
+      "tradingview"
     ];
     taps = [
       "oven-sh/bun"

@@ -214,11 +214,6 @@ lib.mkIf pkgs.stdenv.isLinux {
       enable = true;
     };
 
-    zed-editor = {
-      enable = true;
-      extensions = [ "nix" ];
-    };
-
     # password-store = {
     #   enable = true;
     # };

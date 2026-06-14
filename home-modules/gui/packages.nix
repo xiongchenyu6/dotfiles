@@ -181,6 +181,10 @@
     noti = {
       enable = true;
     };
+    zed-editor = {
+      enable = true;
+      extensions = [ "nix" ];
+    };
   }
   // lib.optionalAttrs pkgs.stdenv.isLinux {
     ghostty = {
