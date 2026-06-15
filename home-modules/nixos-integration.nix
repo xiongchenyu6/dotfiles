@@ -91,6 +91,10 @@
     chromium = {
       enable = true;
       package = pkgs.google-chrome;
+      commandLineArgs = [
+        "--enable-features=VaapiVideoDecoder,VaapiIgnoreDriverChecks,VaapiOnNvidiaGPUs"
+        "--disable-features=UseChromeOSDirectVideoDecoder"
+      ];
     };
 
     wofi = {

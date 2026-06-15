@@ -191,55 +191,50 @@ in
     };
 
     ssh = {
-      # forwardAgent moved to matchBlocks."*" as per new format
-      matchBlocks = {
+      settings = {
         # "*-tmux" = {
-        #   extraOptions = {
-        #     RequestTTY = "yes";
-        #     RemoteCommand = "tmux new -A -s xiongchenyu";
-        #   };
+        #   RequestTTY = "yes";
+        #   RemoteCommand = "tmux new -A -s xiongchenyu";
         # };
         "tcloud" = {
-          hostname = "43.156.66.157";
-          # extraOptions = {
-          #   RemoteForward = "/run/user/1000/gnupg/S.gpg-agent /run/user/1000/gnupg/S.gpg-agent.extra";
-          # };
+          HostName = "43.156.66.157";
+          # RemoteForward = "/run/user/1000/gnupg/S.gpg-agent /run/user/1000/gnupg/S.gpg-agent.extra";
         };
         "oracle-arm-001" = {
-          hostname = "138.2.95.174";
+          HostName = "138.2.95.174";
         };
         "oracle-arm-002" = {
-          hostname = "138.2.76.211";
+          HostName = "138.2.76.211";
         };
 
         "oracle-amd-001" = {
-          hostname = "213.35.97.233";
+          HostName = "213.35.97.233";
         };
         "oracle-amd-002" = {
-          hostname = "213.35.117.232";
+          HostName = "213.35.117.232";
         };
         "office" = {
-          hostname = "172.22.240.98";
+          HostName = "172.22.240.98";
         };
         "game" = {
-          hostname = "172.22.240.99";
+          HostName = "172.22.240.99";
         };
         "sg-office" = {
-          hostname = "101.78.126.6";
+          HostName = "101.78.126.6";
         };
         "sz-office" = {
-          hostname = "113.90.155.31";
-          user = "autolife";
-          port = 2222;
+          HostName = "113.90.155.31";
+          User = "autolife";
+          Port = 2222;
         };
         "gz-office" = {
-          hostname = "183.6.107.47";
-          user = "autolife";
-          port = 2222;
+          HostName = "183.6.107.47";
+          User = "autolife";
+          Port = 2222;
         };
         "lubancat" = {
-          hostname = "203.116.95.146";
-          user = "root";
+          HostName = "203.116.95.146";
+          User = "root";
         };
       };
     };

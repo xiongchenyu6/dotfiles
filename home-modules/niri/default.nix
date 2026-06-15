@@ -6,7 +6,8 @@
   ...
 }:
 let
-  noctalia = "${pkgs.noctalia-shell}/bin/noctalia-shell";
+  noctaliaPackage = inputs.noctalia.packages.${pkgs.stdenv.hostPlatform.system}.default;
+  noctalia = "${noctaliaPackage}/bin/noctalia";
 
   # niri's `spawn-at-startup` runs while niri is still initialising — its IPC
   # server (and therefore NIRI_SOCKET) is not yet exported into spawned
@@ -43,7 +44,7 @@ in
       waypipe
 
       # Shell
-      noctalia-shell # bar + notifications + OSD + launcher + lock + wallpaper + nightlight
+      noctaliaPackage # bar + notifications + OSD + launcher + lock + wallpaper + nightlight
 
       # Compositor glue Noctalia doesn't own
       xwayland-satellite
@@ -171,59 +172,59 @@ in
         hotkey-overlay.title = "Terminal (ghostty)";
       };
       "Mod+D" = {
-        action = spawn noctalia "ipc" "call" "launcher" "toggle";
+        action = spawn noctalia "msg" "panel-toggle" "launcher";
         hotkey-overlay.title = "Launcher";
       };
       "Mod+Y" = {
-        action = spawn noctalia "ipc" "call" "launcher" "clipboard";
+        action = spawn noctalia "msg" "panel-toggle" "clipboard";
         hotkey-overlay.title = "Clipboard History";
       };
       "Super+Alt+L" = {
-        action = spawn noctalia "ipc" "call" "lockScreen" "lock";
+        action = spawn noctalia "msg" "session" "lock";
         hotkey-overlay.title = "Lock Screen";
       };
       "Mod+N" = {
-        action = spawn noctalia "ipc" "call" "notifications" "toggleHistory";
+        action = spawn noctalia "msg" "panel-toggle" "control-center" "notifications";
         hotkey-overlay.title = "Notifications History";
       };
       "Mod+Shift+N" = {
-        action = spawn noctalia "ipc" "call" "notifications" "toggleDND";
+        action = spawn noctalia "msg" "notification-dnd-toggle";
         hotkey-overlay.title = "Toggle Do Not Disturb";
       };
       "Mod+Shift+S" = {
-        action = spawn noctalia "ipc" "call" "settings" "toggle";
+        action = spawn noctalia "msg" "settings-toggle";
         hotkey-overlay.title = "Shell Settings";
       };
       "Mod+M" = {
-        action = spawn noctalia "ipc" "call" "controlCenter" "toggle";
+        action = spawn noctalia "msg" "panel-toggle" "control-center";
         hotkey-overlay.title = "Control Center";
       };
 
       # Volume — routed through Noctalia so OSD appears
       "XF86AudioRaiseVolume" = {
-        action = spawn noctalia "ipc" "call" "volume" "increase";
+        action = spawn noctalia "msg" "volume-up";
         allow-when-locked = true;
       };
       "XF86AudioLowerVolume" = {
-        action = spawn noctalia "ipc" "call" "volume" "decrease";
+        action = spawn noctalia "msg" "volume-down";
         allow-when-locked = true;
       };
       "XF86AudioMute" = {
-        action = spawn noctalia "ipc" "call" "volume" "muteOutput";
+        action = spawn noctalia "msg" "volume-mute";
         allow-when-locked = true;
       };
       "XF86AudioMicMute" = {
-        action = spawn noctalia "ipc" "call" "volume" "muteInput";
+        action = spawn noctalia "msg" "mic-mute";
         allow-when-locked = true;
       };
 
       # Brightness — routed through Noctalia
       "XF86MonBrightnessUp" = {
-        action = spawn noctalia "ipc" "call" "brightness" "increase";
+        action = spawn noctalia "msg" "brightness-up";
         allow-when-locked = true;
       };
       "XF86MonBrightnessDown" = {
-        action = spawn noctalia "ipc" "call" "brightness" "decrease";
+        action = spawn noctalia "msg" "brightness-down";
         allow-when-locked = true;
       };
 
