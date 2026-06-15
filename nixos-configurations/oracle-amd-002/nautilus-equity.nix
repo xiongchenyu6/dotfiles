@@ -1,17 +1,20 @@
 {
   inputs,
+  lib,
   pkgs,
   config,
   ...
 }:
+let
+  enableNautilusEquityTrend = false;
+in
 # US-equity HonestTrend live node (NautilusTrader via Interactive Brokers), PAPER only.
 # Counterpart to oracle-arm-002/nautilus.nix, but for the equity engine. Co-located with
 # the IB Gateway container (ib-gateway.nix) on this x86_64 box.
 #
-# No sops secrets here: this node connects to the LOCAL Gateway over the mesh and places
-# only simulated paper orders. The IB account id (DUQ654554) is not a secret, and there are
-# no exchange API keys (the Gateway holds the IBKR login; see ib-gateway.nix). The node's
-# own PAPER-ONLY guardrail refuses any non-DU* account / non-paper mode.
+# No exchange API keys here: the Gateway holds the IBKR login; see ib-gateway.nix.
+# The Timescale password/template below are only installed when the retired service
+# is explicitly re-enabled, because the disabled service does not create nautilus.
 #
 # CONNECTION: ib-gateway.nix publishes the API on the WireGuard mesh address only
 # (`${wgAddr}:4002:4004`), NOT on 127.0.0.1 — so the host-local client must dial the mesh
@@ -23,7 +26,7 @@
     # nur-copied code drifted (no DB persistence) and under-sized on the SGD account.
     # amd-002 now hosts ONLY the IB Gateway (ib-gateway.nix). NEVER re-enable while the
     # game-box node runs — both use IB client id 8 on the one paper account (double-trade).
-    enable = false;
+    enable = enableNautilusEquityTrend;
     # The nur overlay isn't applied globally on this host — reference the packages directly,
     # exactly like oracle-arm-002/nautilus.nix does for the crypto services. The equity node
     # additionally needs the IB adapter's `ibapi` module (nautilus-ibapi).
@@ -47,15 +50,19 @@
 
     # Persist fills / closed positions to quant.nautilus_trades with asset_class='equity'.
     environment = "testnet"; # NAUTILUS_ENV row tag — paper, non-real money.
+  }
+  // lib.optionalAttrs enableNautilusEquityTrend {
     environmentFile = config.sops.templates."nautilus-equity.env".path;
   };
 
   # TIMESCALE_URL for the trade ledger. quant-password is in common.yaml (encrypted to all
   # hosts incl. amd-002). DB reached over the public Internet (db.panda.qzz.io), not the mesh.
-  sops.secrets."oracle-arm-002/quant-password" = { };
-  sops.templates."nautilus-equity.env" = {
+  sops.secrets."oracle-arm-002/quant-password" = lib.mkIf enableNautilusEquityTrend { };
+  sops.templates."nautilus-equity.env" = lib.mkIf enableNautilusEquityTrend {
     content = ''
-      TIMESCALE_URL=postgres://quant:${config.sops.placeholder."oracle-arm-002/quant-password"}@db.panda.qzz.io:5432/api?sslmode=require
+      TIMESCALE_URL=postgres://quant:${
+        config.sops.placeholder."oracle-arm-002/quant-password"
+      }@db.panda.qzz.io:5432/api?sslmode=require
     '';
     owner = "nautilus";
   };

@@ -9,11 +9,13 @@
   programs = {
     ssh = {
       enable = true;
-      hashKnownHosts = false;
-      compression = true;
-      matchBlocks = {
+      settings = {
+        "*" = {
+          HashKnownHosts = false;
+          Compression = true;
+        };
         "*.trontech.link" = {
-          user = lib.mkDefault "freeman.xiong";
+          User = lib.mkDefault "freeman.xiong";
         };
       };
       extraConfig = ''

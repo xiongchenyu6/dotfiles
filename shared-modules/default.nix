@@ -44,15 +44,62 @@ in
     ++ [
       (
         _: prev:
+        let
+          xorgCompat = {
+            libX11 = prev.libx11;
+            libXScrnSaver = prev.libxscrnsaver;
+            libXcomposite = prev.libxcomposite;
+            libXcursor = prev.libxcursor;
+            libXdamage = prev.libxdamage;
+            libXext = prev.libxext;
+            libXfixes = prev.libxfixes;
+            libXi = prev.libxi;
+            libXmu = prev.libxmu;
+            libXrandr = prev.libxrandr;
+            libXrender = prev.libxrender;
+            libXtst = prev.libxtst;
+            libXv = prev.libxv;
+            libxcb = prev.libxcb;
+            libxkbfile = prev.libxkbfile;
+            libxshmfence = prev.libxshmfence;
+          };
+          addPerf = kernelPackages: kernelPackages.extend (_: _: { perf = prev.perf; });
+        in
         {
           # gnupg240 = nixpkgs-stable.legacyPackages.x86_64-linux.gnupg;
           # telegram-desktop =
           #   nixpkgs-stable.legacyPackages.x86_64-linux.telegram-desktop;
           # waybar = nixpkgs-master.legacyPackages.x86_64-linux.waybar;
           claude-code = (masterPkgsFor prev.stdenv.hostPlatform.system).claude-code;
+          # cloudflared 2026.6.0's proxy SSE test can panic during checkPhase.
+          # Keep the package buildable until nixpkgs carries an upstream fix.
+          cloudflared = prev.cloudflared.overrideAttrs (_: {
+            doCheck = false;
+          });
+          feishu-lark =
+            if prev.stdenv.hostPlatform.isLinux then
+              prev.callPackage "${inputs.xiongchenyu6}/pkgs/feishu-lark/package.nix" {
+                xorg = prev.xorg // xorgCompat;
+              }
+            else
+              throw "feishu-lark is only available on Linux";
+          linuxPackages = addPerf prev.linuxPackages;
+          linuxPackages_latest = addPerf prev.linuxPackages_latest;
+          lowPrio = lib.lowPrio;
           netbird = prev.netbird.override {
             buildGoModule = prev.buildGo125Module;
           };
+          record_screen =
+            if prev.stdenv.hostPlatform.isLinux then
+              prev.callPackage "${inputs.xiongchenyu6}/pkgs/record_screen/package.nix" { }
+            else
+              throw "record_screen is only available on Linux";
+          sui =
+            if prev.stdenv.hostPlatform.isLinux then
+              prev.callPackage "${inputs.xiongchenyu6}/pkgs/sui/package.nix" { }
+            else
+              throw "sui is only available on Linux";
+          xorg = prev.xorg // xorgCompat;
         }
         // lib.optionalAttrs (prev.stdenv.hostPlatform.system == "x86_64-linux") {
           microsoft-edge = inputs.nixpkgs-stable.legacyPackages.x86_64-linux.microsoft-edge;
@@ -82,7 +129,8 @@ in
       # `wireshark.override { withQt = false; }`, which re-invokes the
       # package with the original src, bypassing an override on
       # wireshark alone.
-      (_: prev:
+      (
+        _: prev:
         let
           wiresharkSrc = prev.fetchFromGitLab {
             repo = "wireshark";
@@ -90,7 +138,11 @@ in
             tag = "v4.6.5";
             hash = "sha256-Zvrwxjp4LK2J3QnxmPxKKrU01YHQvPyp54UWzeGNCjA=";
           };
-          fixSrc = drv: drv.overrideAttrs (_: { src = wiresharkSrc; });
+          fixSrc =
+            drv:
+            drv.overrideAttrs (_: {
+              src = wiresharkSrc;
+            });
         in
         {
           wireshark = fixSrc prev.wireshark;

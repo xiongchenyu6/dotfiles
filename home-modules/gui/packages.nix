@@ -14,7 +14,7 @@
         #appimage-run
         inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.mcporter
         # inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.cc-switch-cli # temporarily disabled: hash mismatch upstream
-        inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.auto-claude
+        inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.aperant
         discord
         telegram-desktop
         cloc

@@ -51,6 +51,20 @@
     "gui"
   ];
 
+  nixpkgs.overlays = [
+    (_: prev: {
+      nvidia-vaapi-driver = prev.nvidia-vaapi-driver.overrideAttrs (_: {
+        version = "0.0.17-chrome-stream-format-switch";
+        src = prev.fetchFromGitHub {
+          owner = "imperishableSecret";
+          repo = "nvidia-vaapi-driver";
+          rev = "288a7ba79d47219ea6dea737ec8d684b53a8de36";
+          hash = "sha256-wxgdf+Gln1Tv7S/EbVUNOpxJ4Z0Ew4VudBglX7d5XD8=";
+        };
+      });
+    })
+  ];
+
   powerManagement.cpuFreqGovernor = "performance";
 
   hardware = {
@@ -84,7 +98,7 @@
       "xhci_hcd.quirks=270336"
       "usbcore.autosuspend=-1"
       #"usbcore.old_scheme_first=1"
-      "sp5100_tco.nowayout=1" # Prevent watchdog from being disabled
+      "sp5100_tco.nowayout=1" # Prefer automatic reboot over hard-freeze requiring manual power cycle
     ];
 
     extraModulePackages = with config.boot.kernelPackages; [ acpi_call ];
@@ -114,7 +128,7 @@
   # Disable NVIDIA power daemon (fails when GPU is bound to vfio/power management unsupported)
   systemd.services.nvidia-powerd.enable = false;
 
-  # Hardware watchdog configuration using new systemd options
+  # Hardware watchdog configuration: prefer automatic reboot over staying frozen.
   systemd.settings.Manager = {
     RuntimeWatchdogSec = "30s"; # Reboot if system hangs for 30 seconds
     RebootWatchdogSec = "10min"; # Allow 10 minutes for reboot to complete
@@ -128,7 +142,7 @@
       "device /dev/watchdog" = {
         timeout = 30; # Hardware watchdog timeout in seconds
         interval = 10; # Ping interval in seconds
-        safe-exit = true; # Disable watchdog on clean exit
+        safe-exit = true; # Disable watchdog on clean exit when nowayout is not active
       };
       loadavg = {
         enabled = true;
@@ -359,42 +373,68 @@
 
   home-manager = {
     users = {
-      "freeman.xiong" = {
-        systemd.user.services.codex-remote-control = {
-          Unit = {
-            Description = "Codex remote control bridge";
-            After = [ "network-online.target" ];
+      "freeman.xiong" =
+        let
+          wechatHiDpi = pkgs.writeShellScriptBin "wechat" ''
+            export QT_ENABLE_HIGHDPI_SCALING=1
+            export QT_SCALE_FACTOR=''${WECHAT_SCALE_FACTOR:-1.5}
+            exec ${pkgs.wechat}/bin/wechat "$@"
+          '';
+        in
+        {
+          home.packages = [
+            wechatHiDpi
+          ];
+
+          xdg.dataFile."applications/wechat.desktop" = {
+            text = ''
+              [Desktop Entry]
+              Type=Application
+              Name=WeChat
+              Comment=WeChat desktop client
+              Exec=wechat %U
+              Icon=${pkgs.wechat}/share/icons/hicolor/256x256/apps/wechat.png
+              Categories=Network;InstantMessaging;
+              StartupNotify=true
+              Terminal=false
+            '';
           };
 
-          Service = {
-            Type = "simple";
-            WorkingDirectory = "%h";
-            ExecStartPre = "${pkgs.writeShellScript "codex-remote-control-pre-start" ''
-              mkdir -p "$HOME/.codex"
-              ${pkgs.codex}/bin/codex features enable remote_control
-            ''}";
-            ExecStart = "${pkgs.codex}/bin/codex remote-control";
-            Restart = "always";
-            RestartSec = 5;
-            StandardOutput = "append:%h/.codex/remote-control.log";
-            StandardError = "append:%h/.codex/remote-control.log";
+          systemd.user.services.codex-remote-control = {
+            Unit = {
+              Description = "Codex remote control bridge";
+              After = [ "network-online.target" ];
+            };
+
+            Service = {
+              Type = "simple";
+              WorkingDirectory = "%h";
+              ExecStartPre = "${pkgs.writeShellScript "codex-remote-control-pre-start" ''
+                mkdir -p "$HOME/.codex"
+                ${pkgs.codex}/bin/codex features enable remote_control
+              ''}";
+              ExecStart = "${pkgs.codex}/bin/codex remote-control";
+              Restart = "always";
+              RestartSec = 5;
+              StandardOutput = "append:%h/.codex/remote-control.log";
+              StandardError = "append:%h/.codex/remote-control.log";
+            };
+
+            Install = {
+              WantedBy = [ "default.target" ];
+            };
           };
 
-          Install = {
-            WantedBy = [ "default.target" ];
-          };
-        };
-
-        programs = {
-          waybar = {
-            settings = {
-              network = {
-                interface = "wlp4s0";
+          programs = {
+            waybar = {
+              settings = {
+                network = {
+                  interface = "wlp4s0";
+                };
               };
             };
           };
         };
-      };
     };
   };
 }
