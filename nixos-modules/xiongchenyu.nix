@@ -24,9 +24,9 @@
       root = {
         programs = {
           ssh = {
-            matchBlocks = {
+            settings = {
               "*.trontech.link" = {
-                user = "freeman.xiong";
+                User = "freeman.xiong";
               };
             };
           };

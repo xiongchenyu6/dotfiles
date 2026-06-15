@@ -13,6 +13,7 @@ let
   poolName = "nixvirt-ubuntu";
   poolUuid = "62e37c8e-be0a-4cec-aab2-119dd64a1cfd";
   poolDir = "/var/lib/libvirt/images/nixvirt";
+  libvirtSecretsEncryptionKey = "/var/lib/libvirt/secrets/secrets-encryption-key.raw";
 
   networkName = "nixvirt";
   networkUuid = "7c866405-6284-4d83-a26b-c375e760fe29";
@@ -104,6 +105,33 @@ in
   systemd.tmpfiles.rules = [
     "d ${poolDir} 0755 root root -"
   ];
+
+  system.activationScripts.libvirt-secrets-encryption-key.text = ''
+    if [ ! -e ${libvirtSecretsEncryptionKey} ]; then
+      install -d -m 0755 -o root -g root /var/lib/libvirt/secrets
+      umask 0077
+      dd if=/dev/urandom of=${libvirtSecretsEncryptionKey} bs=32 count=1 status=none
+      chmod 0600 ${libvirtSecretsEncryptionKey}
+    fi
+  '';
+
+  # libvirt 12 ships a systemd unit that TPM-seals this credential with
+  # LoadCredentialEncrypted=. On this host the sealed key can become invalid
+  # across firmware/TPM state changes and blocks libvirtd before it starts.
+  systemd.services.libvirtd = {
+    requires = lib.mkForce [ ];
+    unitConfig.Requires = [
+      ""
+      "libvirtd-config.service"
+      "virtlogd.socket"
+    ];
+    serviceConfig = {
+      LoadCredentialEncrypted = [ "" ];
+      LoadCredential = [
+        "secrets-encryption-key:${libvirtSecretsEncryptionKey}"
+      ];
+    };
+  };
 
   virtualisation = {
     spiceUSBRedirection.enable = true;

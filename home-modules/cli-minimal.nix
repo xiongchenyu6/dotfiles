@@ -97,15 +97,15 @@ in
     ssh = {
       enable = true;
       enableDefaultConfig = false; # Explicitly disable defaults as recommended
-      matchBlocks = {
+      settings = {
         "*" = {
           # Move all the global options here
-          hashKnownHosts = false;
-          controlMaster = "auto";
-          controlPersist = "24h";
-          compression = true;
-          forwardAgent = true;
-          addKeysToAgent = "yes";
+          HashKnownHosts = false;
+          ControlMaster = "auto";
+          ControlPersist = "24h";
+          Compression = true;
+          ForwardAgent = true;
+          AddKeysToAgent = "yes";
           # forwardX11 = true;
           # forwardX11Trusted = true;
         };

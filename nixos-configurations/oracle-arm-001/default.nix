@@ -380,7 +380,7 @@
   };
 
   # Log rotation for Odoo logs
-  services.logrotate.settings.odoo = {
+  services.logrotate.settings.odoo = lib.mkIf config.services.odoo.enable {
     files = [ "/var/log/odoo/*.log" ];
     frequency = "weekly";
     rotate = 4;
@@ -430,12 +430,13 @@
     };
   */
 
-  # Sops secrets for Odoo
-  sops.secrets."odoo/db_password" = {
+  # Sops secrets for Odoo. Keep these conditional because the disabled Odoo
+  # module does not create the odoo user/group before sops activation.
+  sops.secrets."odoo/db_password" = lib.mkIf config.services.odoo.enable {
     owner = "odoo";
     group = "odoo";
   };
-  sops.secrets."odoo/admin_password" = {
+  sops.secrets."odoo/admin_password" = lib.mkIf config.services.odoo.enable {
     owner = "odoo";
     group = "odoo";
   };

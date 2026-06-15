@@ -25,86 +25,92 @@
       source = "${pkgs.wineWow64Packages.waylandFull}/bin/wine";
       executable = true;
     };
-    packages = with pkgs; [
-      # Linux-only GUI/desktop
-      aspell
-      antigravity
-      kiro
-      aspellDicts.en
-      supabase-cli
-      albert
-      camber
-      baidupcs-go
-      sbctl
-      #nur.repos.xddxdd.qq
-      nur.repos.xddxdd.bilibili
-      #nur.repos.xddxdd.dingtalk
-      #gimp
-      #gitkraken
-      # netbird-ui
-      #termius
-      unrar-wrapper
-      moonlight-qt # Sunshine client — stream from sg-office or any Sunshine host
-      #whatsapp-for-linux
-      karere
-      winetricks
-      wineWow64Packages.waylandFull
-      kdePackages.dolphin
-      kdePackages.qtwayland
-      kdePackages.qt6ct
-      # kdePackages.wayqt
-      # kdePackages.qtstyleplugin-kvantum
-      feishu-lark
-      feishu
-      android-studio
-      #opengl-driver
-      libsecret
-      vulkan-loader
-      vulnix
-      nix-melt
-      godot_4
-      blender
-      #microsoft-edge
-      gotron-sdk
-      #vsc-leetcode-cli
-      my2sql
-      # nix-du
-      #pg-ldap-sync
-      rustscan
-      #stow
-      ugm
-      rkdeveloptool
-      # terraform
-      # terraform-ls
-      # terracognita
-      # terranix
-      # terraformer
-      # tf2pulumi
-      #localstack
-      desktop-file-utils
-      #inputs.claude-desktop.packages.${system}.claude-desktop-with-fhs
-      gnome-software
-      gws
-      google-cloud-sdk
-      tradingview
+    packages =
+      (with pkgs; [
+        # Linux-only GUI/desktop
+        aspell
+        antigravity
+        kiro
+        aspellDicts.en
+        supabase-cli
+        albert
+        camber
+        baidupcs-go
+        sbctl
+        #nur.repos.xddxdd.qq
+        nur.repos.xddxdd.bilibili
+        #nur.repos.xddxdd.dingtalk
+        #gimp
+        #gitkraken
+        # netbird-ui
+        #termius
+        unrar-wrapper
+        moonlight-qt # Sunshine client — stream from sg-office or any Sunshine host
+        #whatsapp-for-linux
+        karere
+        winetricks
+        wineWow64Packages.waylandFull
+        kdePackages.dolphin
+        kdePackages.qtwayland
+        kdePackages.qt6ct
+        # kdePackages.wayqt
+        # kdePackages.qtstyleplugin-kvantum
+        feishu-lark
+        feishu
+        android-studio
+        #opengl-driver
+        libsecret
+        vulkan-loader
+        vulnix
+        nix-melt
+        blender
+        #microsoft-edge
+        gotron-sdk
+        #vsc-leetcode-cli
+        my2sql
+        # nix-du
+        #pg-ldap-sync
+        rustscan
+        #stow
+        ugm
+        rkdeveloptool
+        # terraform
+        # terraform-ls
+        # terracognita
+        # terranix
+        # terraformer
+        # tf2pulumi
+        #localstack
+        desktop-file-utils
+        #inputs.claude-desktop.packages.${system}.claude-desktop-with-fhs
+        gnome-software
+        gws
+        google-cloud-sdk
+        tradingview
 
-      # 成像/磁盘工具
-      ddrescue
-      smartmontools
-      hdparm
-      util-linux
-      coreutils
+        # 成像/磁盘工具
+        ddrescue
+        smartmontools
+        hdparm
+        util-linux
+        coreutils
 
-      # NTFS 只读挂载（可选但建议）
-      ntfs3g
+        # NTFS 只读挂载（可选但建议）
+        ntfs3g
 
-      # 取证（命令行）
-      sleuthkit
+        # 取证（命令行）
+        sleuthkit
 
-      # 恢复/雕刻（PhotoRec 在 testdisk 包里）
-      testdisk
-      autopsy
-    ];
+        # 恢复/雕刻（PhotoRec 在 testdisk 包里）
+        testdisk
+        autopsy
+      ])
+      ++ lib.optionals pkgs.stdenv.isLinux (
+        with pkgs;
+        [
+          godot_4
+        ]
+      );
     sessionVariables = {
       STARSHIP_LOG = "error";
       NIXPKGS_ALLOW_UNFREE = 1;
