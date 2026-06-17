@@ -14,7 +14,13 @@
         "-a exit,always -F arch=b32 -F euid=0 -S execve"
       ];
     };
-    auditd.enable = true;
+    auditd = {
+      enable = true;
+      settings = {
+        max_log_file = 50; # 50MB per file (prevent 11G单文件再次出现)
+        num_logs = 5; # keep 5 rotated files
+      };
+    };
 
     #rtkit = { enable = true; };
     sudo = {

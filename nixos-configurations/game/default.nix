@@ -105,6 +105,14 @@
     kernel = {
       sysctl = {
         "net.ipv4.ip_forward" = 1;
+        # Reboot instead of staying frozen: turn soft hangs / oops into a
+        # panic, and make panics auto-reboot (systemd RuntimeWatchdog only
+        # catches a full kernel lockup, not a GPU/compositor freeze).
+        "kernel.panic" = 10; # auto-reboot 10s after a panic
+        "kernel.panic_on_oops" = 1; # an oops becomes a panic
+        "kernel.hung_task_panic" = 1; # task stuck in D-state too long -> panic
+        "kernel.hung_task_timeout_secs" = 120;
+        "kernel.softlockup_panic" = 1; # CPU soft lockup -> panic
       };
     };
 
@@ -214,6 +222,7 @@
           22
           5173
           8080
+          8443
           8765
         ];
         interfaces.wg_ora.allowedUDPPorts = [ 22 ];

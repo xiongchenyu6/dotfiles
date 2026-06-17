@@ -90,13 +90,6 @@
     chromium = {
       enable = true;
       package = pkgs.google-chrome;
-      commandLineArgs = [
-        "--enable-features=VaapiVideoDecoder,VaapiIgnoreDriverChecks,VaapiOnNvidiaGPUs"
-        "--disable-features=UseChromeOSDirectVideoDecoder"
-        # Avoid EGLImage/native pixmap failures on NVIDIA Wayland.
-        "--disable-zero-copy"
-        "--disable-gpu-memory-buffer-compositor-resources"
-      ];
     };
 
     wofi = {

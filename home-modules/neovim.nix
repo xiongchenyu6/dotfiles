@@ -822,7 +822,7 @@ in
                 end, { "i", "s" }),
               }),
               sources = cmp.config.sources({
-                { name = "copilot", priority = 1000 },
+                ${lib.optionalString (!cfg.lightweight) ''{ name = "copilot", priority = 1000 },''}
                 { name = "nvim_lsp", priority = 1000 },
                 { name = "luasnip", priority = 750 },
                 { name = "nvim_lua", priority = 500 },
@@ -1521,38 +1521,6 @@ in
           '';
         }
 
-        {
-          plugin = pkgs.vimPlugins.copilot-lua;
-          type = "lua";
-          config = ''
-            require("copilot").setup({
-              suggestion = {
-                auto_trigger = true,
-                keymap = {
-                  accept = "<M-l>",
-                  dismiss = "<M-h>",
-                },
-              },
-              panel = {
-                enabled = true,
-                keymap = {
-                  jump_prev = "[[",
-                  jump_next = "]]",
-                  accept = "<cr>",
-                  refresh = "gr",
-                  open = "<C-c>p",
-                },
-              },
-              filetypes = {
-                markdown = true,
-                help = true,
-              },
-            })
-          '';
-        }
-
-        pkgs.vimPlugins.copilot-cmp
-
         # Terminal integration
         {
           plugin = pkgs.vimPlugins.toggleterm-nvim;
@@ -1746,6 +1714,42 @@ in
         }
 
         pkgs.vimPlugins.nvim-nio # Required dependency for nvim-dap-ui
+      ]
+      # Copilot pulls a ~200 MB closure (bundled language server + tree-sitter
+      # wasm) and needs Node.js, so it's desktop/dev-only — omitted on
+      # lightweight servers to keep the neovim closure slim.
+      ++ lib.optionals (!cfg.lightweight) [
+        {
+          plugin = pkgs.vimPlugins.copilot-lua;
+          type = "lua";
+          config = ''
+            require("copilot").setup({
+              suggestion = {
+                auto_trigger = true,
+                keymap = {
+                  accept = "<M-l>",
+                  dismiss = "<M-h>",
+                },
+              },
+              panel = {
+                enabled = true,
+                keymap = {
+                  jump_prev = "[[",
+                  jump_next = "]]",
+                  accept = "<cr>",
+                  refresh = "gr",
+                  open = "<C-c>p",
+                },
+              },
+              filetypes = {
+                markdown = true,
+                help = true,
+              },
+            })
+          '';
+        }
+
+        pkgs.vimPlugins.copilot-cmp
       ];
 
       # Ensure we have the necessary runtime dependencies
