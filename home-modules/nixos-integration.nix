@@ -19,7 +19,6 @@
       stm32cubemx
       glib
       gcc-arm-embedded
-      google-chrome
       vault
       kmon
       #gitbutler
