@@ -80,9 +80,8 @@
     ];
   };
 
-  hardware.nvidia.package = config.boot.kernelPackages.nvidiaPackages.beta;
+  hardware.nvidia.package = config.boot.kernelPackages.nvidiaPackages.latest;
   boot = {
-
     binfmt.emulatedSystems = [ "aarch64-linux" ];
     initrd.kernelModules = [
       "vfio_pci"
