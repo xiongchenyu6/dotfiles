@@ -15,6 +15,17 @@
   services.gpg-agent.pinentry.package =
     if pkgs.stdenv.isDarwin then pkgs.pinentry_mac else pkgs.pinentry-gnome3;
 
+  # Rust toolchain — managed by Nix (replaces rustup-managed install)
+  home.packages = [
+    pkgs.rustc
+    pkgs.cargo
+    pkgs.clippy
+    pkgs.rustfmt
+    pkgs.rust-analyzer
+  ];
+  # Point rust-analyzer/clippy at the stdlib source
+  home.sessionVariables.RUST_SRC_PATH = "${pkgs.rustPlatform.rustLibSrc}";
+
   # Desktop gets full neovim with all LSPs
   modules.neovim.lightweight = false;
 
@@ -626,9 +637,9 @@
       enable = true;
     };
 
-    # Rustup and grafana-loki completions (moved from zsh.nix)
+    # grafana-loki completions (moved from zsh.nix)
+    # cargo/rustc ship their own zsh completions via the Nix packages
     zsh.initContent = ''
-      eval "$(${pkgs.rustup}/bin/rustup completions zsh)"
       eval "$(${pkgs.grafana-loki}/bin/logcli --completion-script-zsh)"
     '';
   };

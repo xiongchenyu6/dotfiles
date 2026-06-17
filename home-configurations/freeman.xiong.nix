@@ -213,6 +213,9 @@ in
         "oracle-amd-002" = {
           HostName = "213.35.117.232";
         };
+        "huoshan-bj-001" = {
+          HostName = "115.190.173.250";
+        };
         "office" = {
           HostName = "172.22.240.98";
         };

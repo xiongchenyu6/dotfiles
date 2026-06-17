@@ -158,7 +158,7 @@
           extraDomainNames = [ "*.autolife-robotics.com" ];
           email = "xiongchenyu6@gmail.com";
           dnsProvider = "volcengine";
-          credentialsFile = config.sops.secrets."acme/volcengine".path;
+          environmentFile = config.sops.secrets."acme/volcengine".path;
           group = "nginx";
         };
       };
