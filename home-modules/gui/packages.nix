@@ -165,7 +165,6 @@
         kubelogin-oidc
       ]
       ++ lib.optionals pkgs.stdenv.isLinux [
-        google-chrome # Keep Chrome in Nix for Linux
         ledger-live-desktop # x86_64-linux only
         weave-gitops # Linux only
         calicoctl # Linux only
