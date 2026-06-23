@@ -786,11 +786,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1782194681,
-        "narHash": "sha256-YwARbTPLthrU/Dq9ugwPEz2kxYfcWUB1QSwIYyaQDdU=",
+        "lastModified": 1782196717,
+        "narHash": "sha256-aR2PRv/tYuvprIXtkhiJxfB0aKqp1oEgD1zhmjW1MRk=",
         "owner": "xiongchenyu6",
         "repo": "protect-carrot",
-        "rev": "4a55a15adf7277fcd01867cabe4f3c5fc17dfead",
+        "rev": "9996c88b89efd06e30687c0c9669b80f274dc3f2",
         "type": "github"
       },
       "original": {
