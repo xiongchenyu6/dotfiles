@@ -134,6 +134,16 @@
         flake-parts.follows = "flake-parts";
       };
     };
+    # 保卫萝卜 (Protect the Carrot) — Bevy WebGPU/wasm tower-defense game.
+    # Provides nixosModules.default (nginx vhost) + overlays.default
+    # (pkgs.protect-carrot-web). Served on huoshan-bj-001.
+    protect-carrot = {
+      url = "github:xiongchenyu6/protect-carrot";
+      inputs = {
+        nixpkgs.follows = "nixpkgs";
+        flake-parts.follows = "flake-parts";
+      };
+    };
     llm-agents = {
       url = "github:numtide/llm-agents.nix";
       inputs = {

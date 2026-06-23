@@ -776,6 +776,29 @@
         "type": "github"
       }
     },
+    "protect-carrot": {
+      "inputs": {
+        "flake-parts": [
+          "flake-parts"
+        ],
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1782194681,
+        "narHash": "sha256-YwARbTPLthrU/Dq9ugwPEz2kxYfcWUB1QSwIYyaQDdU=",
+        "owner": "xiongchenyu6",
+        "repo": "protect-carrot",
+        "rev": "4a55a15adf7277fcd01867cabe4f3c5fc17dfead",
+        "type": "github"
+      },
+      "original": {
+        "owner": "xiongchenyu6",
+        "repo": "protect-carrot",
+        "type": "github"
+      }
+    },
     "purescript-overlay": {
       "inputs": {
         "flake-compat": "flake-compat_2",
@@ -987,6 +1010,7 @@
         "noctalia": "noctalia",
         "nur": "nur",
         "pre-commit-hooks": "pre-commit-hooks",
+        "protect-carrot": "protect-carrot",
         "rust-web-server": "rust-web-server",
         "sops-nix": "sops-nix",
         "srvos": "srvos",

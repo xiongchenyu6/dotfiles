@@ -24,6 +24,7 @@
     rust-web-server.nixosModules.rust-web-server
     ../../nixos-modules/rust-web-server-config.nix # Our local module with sops templates
     inputs.xiongchenyu6.nixosModules.casdoor
+    protect-carrot.nixosModules.default
   ];
 
   # rust-web-server overlay applied host-locally (was previously in
@@ -31,6 +32,8 @@
   # don't need access to the private SSH repo to build).
   nixpkgs.overlays = [
     (inputs.rust-web-server.overlays.default or inputs.rust-web-server.overlay)
+    # Provides pkgs.protect-carrot-web for the protect-carrot nginx module.
+    inputs.protect-carrot.overlays.default
   ];
 
   zramSwap.enable = true;
@@ -125,6 +128,15 @@
     rust-web-server = {
       enable = true;
       configFile = config.sops.templates."rust-web-server-config".path;
+    };
+
+    # 保卫萝卜 web game — served at parrot.bj.autolife-robotics.com.
+    # *.bj.autolife-robotics.com already resolves to this host; the cert is
+    # issued per-host via ACME HTTP-01 (port 80 is open in the firewall).
+    protect-carrot = {
+      enable = true;
+      hostname = "parrot.bj.autolife-robotics.com";
+      enableACME = true;
     };
   };
 
