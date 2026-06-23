@@ -73,6 +73,15 @@
 
   services = {
     nginx = {
+      # The protect-carrot game loads hundreds of small assets over a single
+      # HTTP/2 connection. nginx's default keepalive_requests (1000) can be
+      # tripped mid-load, tearing the connection down — which bevy_asset turns
+      # into a fatal panic because it unwraps on any failed fetch. Lift the cap
+      # so a full asset load never recycles the connection.
+      commonHttpConfig = ''
+        keepalive_requests 100000;
+      '';
+
       virtualHosts."casdoor.autolife-robotics.com" = {
         forceSSL = true;
         useACMEHost = "autolife-robotics.com";
