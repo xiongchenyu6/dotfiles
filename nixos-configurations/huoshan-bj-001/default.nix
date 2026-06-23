@@ -21,23 +21,16 @@
     ezModules.mixins-nginx
     srvos.nixosModules.mixins-trusted-nix-caches
     srvos.nixosModules.mixins-nix-experimental
-    rust-web-server.nixosModules.rust-web-server
-    ../../nixos-modules/rust-web-server-config.nix # Our local module with sops templates
     inputs.xiongchenyu6.nixosModules.casdoor
     protect-carrot.nixosModules.default
   ];
 
-  # rust-web-server overlay applied host-locally (was previously in
-  # shared-modules/default.nix nixosOverlays, but moved here so other hosts
-  # don't need access to the private SSH repo to build).
+  # Provides pkgs.protect-carrot-web for the protect-carrot nginx module.
   nixpkgs.overlays = [
-    (inputs.rust-web-server.overlays.default or inputs.rust-web-server.overlay)
-    # Provides pkgs.protect-carrot-web for the protect-carrot nginx module.
     inputs.protect-carrot.overlays.default
   ];
 
   zramSwap.enable = true;
-  # rust-web-server secrets are now handled by the module itself
 
   boot = {
     kernelPackages = lib.mkForce pkgs.linuxPackages_latest;
@@ -99,8 +92,6 @@
       '';
       enableTCPIP = true;
       ensureDatabases = [
-        "rustWebServer"
-        "rustwebserver"
         "casdoor"
       ];
     };
@@ -123,11 +114,6 @@
       };
       staticBaseUrl = "https://casdoor.autolife-robotics.com";
       autoStart = true;
-    };
-
-    rust-web-server = {
-      enable = true;
-      configFile = config.sops.templates."rust-web-server-config".path;
     };
 
     # 保卫萝卜 web game — served at parrot.bj.autolife-robotics.com.
