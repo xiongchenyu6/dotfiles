@@ -33,6 +33,7 @@
     srvos.nixosModules.mixins-tracing
     # Import Hashtopolis agent module from NUR packages
     xiongchenyu6.nixosModules.hashtopolis-agent
+    xiongchenyu6.nixosModules.codexpro
     {
       topology.self.interfaces.home = {
         type = "wireguard";
@@ -41,6 +42,7 @@
     }
     ./dnf-native.nix
     ./hashtopolis-agent.nix
+    ./codexpro.nix
     # ./vast-cli.nix  # Moved to home-manager module
   ];
 
