@@ -144,6 +144,13 @@
         flake-parts.follows = "flake-parts";
       };
     };
+    # AutoLife Robotics marketing site (SvelteKit, adapter-static). Built with
+    # buildNpmPackage and served as static files on huoshan-bj-001
+    # (autolife-robotics.com). Local working tree — source only, not a flake.
+    autolife-www = {
+      url = "git+file:///home/freeman.xiong/Documents/github/autolife/www";
+      flake = false;
+    };
     llm-agents = {
       url = "github:numtide/llm-agents.nix";
       inputs = {

@@ -8,6 +8,22 @@
   shares,
   ...
 }:
+let
+  # AutoLife Robotics marketing site — SvelteKit built to static files
+  # (adapter-static). The build output is the nginx document root for
+  # autolife-robotics.com. Source comes from the autolife-www flake input.
+  autolife-www = pkgs.buildNpmPackage {
+    pname = "autolife-www";
+    version = "0.0.1";
+    src = inputs.autolife-www;
+    npmDepsHash = "sha256-dlCY7suxYsjVVM8lqM8oJ1cITnE0OJ5ilacP8e0rKQ4=";
+    installPhase = ''
+      runHook preInstall
+      cp -r build $out
+      runHook postInstall
+    '';
+  };
+in
 {
   imports = with inputs; [
     ./hardware-configuration.nix
@@ -81,6 +97,23 @@
       commonHttpConfig = ''
         keepalive_requests 100000;
       '';
+
+      # AutoLife Robotics marketing site — static SvelteKit build.
+      # try_files serves prerendered HTML (e.g. /about → /about.html,
+      # /news/<slug> → /news/<slug>.html) and falls back to the SPA shell
+      # (200.html) for any client-rendered route. brotli_static is on
+      # globally (mixins-nginx); enable gzip_static for the .gz siblings.
+      virtualHosts."autolife-robotics.com" = {
+        forceSSL = true;
+        useACMEHost = "autolife-robotics.com";
+        root = autolife-www;
+        locations."/" = {
+          tryFiles = "$uri $uri.html $uri/index.html /200.html";
+          extraConfig = ''
+            gzip_static on;
+          '';
+        };
+      };
 
       virtualHosts."casdoor.autolife-robotics.com" = {
         forceSSL = true;
