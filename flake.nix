@@ -144,6 +144,13 @@
         flake-parts.follows = "flake-parts";
       };
     };
+    # work Robotics marketing site (SvelteKit, adapter-static). Built with
+    # buildNpmPackage and served as static files on huoshan-bj-001
+    # (work-robotics.com). Local working tree — source only, not a flake.
+    work-www = {
+      url = "git+file:///home/freeman.xiong/Documents/github/work/www";
+      flake = false;
+    };
     llm-agents = {
       url = "github:numtide/llm-agents.nix";
       inputs = {
