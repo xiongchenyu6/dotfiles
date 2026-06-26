@@ -24,11 +24,11 @@ in
     enable = true;
     user = "freeman.xiong";
     group = "users";
-    root = "/home/freeman.xiong/Documents/github/xiongchenyu6/storyos";
-    allowedRoots = [ "/home/freeman.xiong/Documents/github/xiongchenyu6/storyos" ];
+    root = "/home/freeman.xiong/Documents";
+    allowedRoots = [ "/home/freeman.xiong/Documents" ];
     httpTokenFile = config.sops.secrets."codexpro/http-token".path;
     # Maximum permissions: edit any file in the workspace, run any shell command,
-    # full tool catalog. Scoped to storyos only, so the blast radius is one repo.
+    # full tool catalog. Scoped to all of ~/Documents.
     writeMode = "workspace";
     bashMode = "full";
     toolMode = "full";
