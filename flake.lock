@@ -44,6 +44,22 @@
         "url": "ssh://git@github.com/AutoLifeRobot/autolife-relay.git"
       }
     },
+    "autolife-www": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1782395381,
+        "narHash": "sha256-uLcfnXx5zEw12VILgC5bRLx/WXFGatAsDby0a87+vos=",
+        "ref": "refs/heads/main",
+        "rev": "69791822e5b268695330ce0c4748b232816f8431",
+        "revCount": 32,
+        "type": "git",
+        "url": "file:///home/freeman.xiong/Documents/github/autolife/www"
+      },
+      "original": {
+        "type": "git",
+        "url": "file:///home/freeman.xiong/Documents/github/autolife/www"
+      }
+    },
     "blueprint": {
       "inputs": {
         "nixpkgs": [
@@ -368,11 +384,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1782233665,
-        "narHash": "sha256-h/xOtrByoA/Ak1lWHn0O1lVZz4qWYbwOSLQ8YSwQO0I=",
+        "lastModified": 1782358560,
+        "narHash": "sha256-vCcLh9pw3XO/+Lxk8r6xv6QnoCrTfGqiACcI7O637Wg=",
         "owner": "nix-community",
         "repo": "home-manager",
-        "rev": "062581938b4a378a82dfbb294b494808157153a1",
+        "rev": "3a70e333f2950c302e875c44cfcfaff3f80f36bc",
         "type": "github"
       },
       "original": {
@@ -461,11 +477,11 @@
         "treefmt-nix": "treefmt-nix"
       },
       "locked": {
-        "lastModified": 1782263994,
-        "narHash": "sha256-6bhUwnv9EbIXi7x1uMAf01gqvu1IherPyy8Wu6cErBg=",
+        "lastModified": 1782366663,
+        "narHash": "sha256-hcxEl/eWQQaYkUqygP4ca8S7WlX9c6vqgvQCqtV3vuw=",
         "owner": "numtide",
         "repo": "llm-agents.nix",
-        "rev": "31dc02699e4ad2b9b53252212538f67c0ab9c686",
+        "rev": "5f9d86061f538b3f5f3568583c001fb9c0705b71",
         "type": "github"
       },
       "original": {
@@ -488,11 +504,11 @@
         "xwayland-satellite-unstable": "xwayland-satellite-unstable"
       },
       "locked": {
-        "lastModified": 1781795508,
-        "narHash": "sha256-VKrApQ3WCkEe9D8DbaeFjGqLAh7zqYGYjbQYtY5ikxc=",
+        "lastModified": 1782333733,
+        "narHash": "sha256-QYrNYMNPKErRgNlxWwk0cjNKftnq6WzSs84pcZnUskM=",
         "owner": "sodiboo",
         "repo": "niri-flake",
-        "rev": "493ce1e33e72f86312584f331c8cf52b3432ec99",
+        "rev": "a6351044a3d69877d1c23be54971d18f8531c930",
         "type": "github"
       },
       "original": {
@@ -609,11 +625,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1782166108,
-        "narHash": "sha256-/EtnQBcKbsaCAGQ5VRcplrHRkR4ryqyLMpBfkVuG9Xw=",
+        "lastModified": 1782379505,
+        "narHash": "sha256-zPvPiU+a7pqtH47xrtZLNRABJKpOjfZQclDbcvNtH+I=",
         "owner": "NixOS",
         "repo": "nixos-hardware",
-        "rev": "875776f0252fcb8618bb948640a0d1f7a5b362be",
+        "rev": "603d3afd1b6145bd66e97ae38a34d91c95df70cf",
         "type": "github"
       },
       "original": {
@@ -701,11 +717,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1782267216,
-        "narHash": "sha256-9T73SmHbFZvq+OYHFfRa0yIE9e6vdNsCxDgadbumkPQ=",
+        "lastModified": 1782384460,
+        "narHash": "sha256-m3akocDcLUFzfGhGI5RrMH5I8Z5//PVtp17GjPPLHY8=",
         "owner": "noctalia-dev",
         "repo": "noctalia",
-        "rev": "e1b6cb3386e4eb4c334dbae09555a07d240d0190",
+        "rev": "11267704b25c2605692d36e42dfa38195d856a05",
         "type": "github"
       },
       "original": {
@@ -724,11 +740,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1782267249,
-        "narHash": "sha256-FgOmOAz7B2x7M91Hu7zjjybElkuylXl1EN1FSnF1bzE=",
+        "lastModified": 1782390664,
+        "narHash": "sha256-0SD/WrpFyJZmblZhmmiG9tSiySmbEYFqg86xN2e5QXM=",
         "owner": "nix-community",
         "repo": "NUR",
-        "rev": "c9eb946624cae3ba7d8039c7792643b48151f75b",
+        "rev": "cad41308e750b70c4c8cf6c42418b093f78ae589",
         "type": "github"
       },
       "original": {
@@ -987,6 +1003,7 @@
       "inputs": {
         "NixVirt": "NixVirt",
         "autolife-relay": "autolife-relay",
+        "autolife-www": "autolife-www",
         "claude-desktop": "claude-desktop",
         "darwin": "darwin",
         "disko": "disko",
@@ -1114,11 +1131,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1782167863,
-        "narHash": "sha256-3rIhpIBgugri0yuwsF+CGXZVAxo5WuiREotd9nUcbIA=",
+        "lastModified": 1782356993,
+        "narHash": "sha256-JBLzL+O9uXG3L937TVq4HFJvgbPb3Lsqkmv0QYS1kmI=",
         "owner": "nix-community",
         "repo": "srvos",
-        "rev": "32585851f764d9cd40b8098474f3063ca8e2c785",
+        "rev": "008035f9f2be9cd727b396af79feedd6a9aa1bad",
         "type": "github"
       },
       "original": {
@@ -1276,11 +1293,11 @@
         "uv2nix": "uv2nix_3"
       },
       "locked": {
-        "lastModified": 1782200187,
-        "narHash": "sha256-9JuVNK3NQIvobvbgp2rFwZUi1lo+GoOzWRmVco9ui80=",
+        "lastModified": 1782472226,
+        "narHash": "sha256-dI66oFgQAEQNGJV27tU0bdsP4wmL4IUuYsXrcpz1bps=",
         "owner": "xiongchenyu6",
         "repo": "nur-packages",
-        "rev": "ec893b83736909d068ce17cc94fe4b36d8af7ad4",
+        "rev": "c614c6b93983edcf705a4d59f75d8e6c9cc49fa1",
         "type": "github"
       },
       "original": {

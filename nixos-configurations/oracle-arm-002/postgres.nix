@@ -81,7 +81,7 @@
     # (plan_filter, supabase_vault). All other preload-eligible extensions
     # are included; extensions that only need CREATE EXTENSION (pg_graphql,
     # pgjwt, pgtap, pgvector/pgvectorscale, pgmq, pg_repack, pg_hint_plan,
-    # pgsql-http, wal2json, rum, postgis, plv8, pg_safeupdate, hstore,
+    # pgsql-http, wal2json, rum, postgis, pg_safeupdate, hstore,
     # citext, ltree, pgcrypto, uuid-ossp, btree_gin, btree_gist, etc.) are
     # installed via `extensions` below and `CREATE EXTENSION` in the init
     # script.
@@ -111,7 +111,9 @@
         wal2json
         rum
         postgis
-        plv8
+        # plv8 removed 2026-06-26: dropped from nixpkgs (depended on insecure
+        # NodeJS 20). Verified unused — no LANGUAGE plv8 functions in any DB,
+        # only the extension's own plv8_version(). DROP EXTENSION plv8 run on `api`.
         # Packaged locally in xiongchenyu6/nur-packages — extend PG's
         # extension set via the xiongchenyu6 overlay.
         pg_plan_filter
@@ -358,7 +360,6 @@
         -- slots can specify `output_plugin => 'wal2json'`.
         CREATE EXTENSION IF NOT EXISTS rum                 SCHEMA extensions;
         CREATE EXTENSION IF NOT EXISTS postgis             SCHEMA extensions;
-        CREATE EXTENSION IF NOT EXISTS plv8;
         CREATE EXTENSION IF NOT EXISTS pg_hashids           SCHEMA extensions;
         CREATE EXTENSION IF NOT EXISTS hypopg               SCHEMA extensions;
         CREATE EXTENSION IF NOT EXISTS index_advisor        SCHEMA extensions CASCADE;
