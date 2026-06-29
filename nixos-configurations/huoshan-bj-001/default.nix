@@ -123,6 +123,22 @@ in
       enable = true;
       hostname = "parrot.bj.autolife-robotics.com";
       enableACME = true;
+      # Weak-network tolerance. The big assets (wasm ~7MB, bgm ~4.6MB) over a
+      # slow/lossy mobile link can stall between writes for longer than nginx's
+      # default 60s send_timeout, which then aborts the transfer and the game's
+      # asset fetch fails. These are server-scoped (override the http defaults
+      # for this vhost only).
+      extraConfig = ''
+        # Max gap between two successive writes to the client (not whole-response).
+        send_timeout 300s;
+        # Keep the HTTP/2 connection alive across pauses between asset bursts.
+        keepalive_timeout 120s;
+        # Be generous reading slow clients' request headers/body too.
+        client_header_timeout 120s;
+        client_body_timeout 120s;
+        # Drain a closing connection slowly instead of RST-ing a lagging client.
+        lingering_timeout 30s;
+      '';
     };
   };
 
