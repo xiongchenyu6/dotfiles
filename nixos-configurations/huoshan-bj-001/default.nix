@@ -37,7 +37,6 @@ in
     ezModules.mixins-nginx
     srvos.nixosModules.mixins-trusted-nix-caches
     srvos.nixosModules.mixins-nix-experimental
-    inputs.xiongchenyu6.nixosModules.casdoor
     protect-carrot.nixosModules.default
   ];
 
@@ -115,47 +114,6 @@ in
         };
       };
 
-      virtualHosts."casdoor.autolife-robotics.com" = {
-        forceSSL = true;
-        useACMEHost = "autolife-robotics.com";
-        locations."/" = {
-          proxyPass = "http://127.0.0.1:8000";
-          proxyWebsockets = true;
-        };
-      };
-    };
-
-    postgresql = {
-      enable = true;
-      package = pkgs.postgresql_18_jit;
-      authentication = ''
-        local all all trust
-        host  all  all 0.0.0.0/0 scram-sha-256
-      '';
-      enableTCPIP = true;
-      ensureDatabases = [
-        "casdoor"
-      ];
-    };
-
-    casdoor = {
-      enable = true;
-      appName = "casdoor";
-      port = 8000;
-      runMode = "prod";
-      database = {
-        driver = "postgres";
-        host = "localhost";
-        port = 5432;
-        username = "casdoor";
-        # password managed by sops — injected at runtime
-        name = "casdoor";
-      };
-      redis = {
-        enable = false;
-      };
-      staticBaseUrl = "https://casdoor.autolife-robotics.com";
-      autoStart = true;
     };
 
     # 保卫萝卜 web game — served at parrot.bj.autolife-robotics.com.
@@ -173,18 +131,6 @@ in
     owner = "acme";
     group = "acme";
   };
-  sops.secrets."casdoor/db_password" = { };
-
-  # Inject casdoor DB password into its config at runtime
-  systemd.services.casdoor.serviceConfig.ExecStartPre = lib.mkAfter [
-    "+${pkgs.writeShellScript "casdoor-inject-password" ''
-      cfg="/var/lib/casdoor/app.conf"
-      if [ -f "$cfg" ]; then
-        db_pass=$(cat ${config.sops.secrets."casdoor/db_password".path})
-        ${pkgs.gnused}/bin/sed -i "s|dataSourceName = .*|dataSourceName = \"user=casdoor password=$db_pass host=localhost port=5432 dbname=casdoor sslmode=disable\"|" "$cfg"
-      fi
-    ''}"
-  ];
 
   security = {
     pam.services.nginx.setEnvironment = false;
