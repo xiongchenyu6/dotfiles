@@ -79,6 +79,7 @@
       cloudflare-warp
       android-tools # Replaces programs.adb
       inputs.lazynixos.packages.${pkgs.stdenv.hostPlatform.system}.default
+      mangohud # in-game perf overlay (FPS/frametime/temps); ships 32-bit mangohud too
     ];
   };
 
@@ -374,6 +375,15 @@
 
   programs = {
     ydotool = {
+      enable = true;
+    };
+    # Gaming: Wayland micro-compositor for fullscreen/scaling/tearing control
+    # under niri, plus GameMode for on-demand CPU/GPU performance tuning.
+    gamescope = {
+      enable = true;
+      capSysNice = true;
+    };
+    gamemode = {
       enable = true;
     };
     # clash-verge = {
