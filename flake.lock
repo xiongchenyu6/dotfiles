@@ -47,11 +47,11 @@
     "autolife-www": {
       "flake": false,
       "locked": {
-        "lastModified": 1782720101,
-        "narHash": "sha256-+xxWDzo1TIoRNr+vUhFig7V5FEs//TzbGMkFhYa4hrM=",
+        "lastModified": 1782727174,
+        "narHash": "sha256-X8JCIlmP69TanHHVRkEkI3Qplh9qPrX6SN4Uwjrz49I=",
         "ref": "refs/heads/main",
-        "rev": "db358a89a98ce301a81d325c5fa3e6dc7f28c358",
-        "revCount": 34,
+        "rev": "7241864e4aeb839c1dc3a5de298ed7b7d38a6a52",
+        "revCount": 36,
         "type": "git",
         "url": "file:///home/freeman.xiong/Documents/github/autolife/www"
       },
@@ -384,11 +384,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1782522538,
-        "narHash": "sha256-CvOaUvJ+mXlxU3m2cPWKcOAhtKETsPUYhq+Xa5ewBp4=",
+        "lastModified": 1782702263,
+        "narHash": "sha256-8/MG4Su7PhnynrmsVO61IeAfrK7GuUEu+E+gwbhy1QQ=",
         "owner": "nix-community",
         "repo": "home-manager",
-        "rev": "8d8a6cc50ddc60748791a14ee1163c865ec57635",
+        "rev": "789a35fbdeb3c46b260096daa0b321c11be527ea",
         "type": "github"
       },
       "original": {
@@ -477,11 +477,11 @@
         "treefmt-nix": "treefmt-nix"
       },
       "locked": {
-        "lastModified": 1782641020,
-        "narHash": "sha256-MAK64OUHNGK9LtTSifi4HtCMoZSsHotrKWYdAKtR94U=",
+        "lastModified": 1782726074,
+        "narHash": "sha256-YiL4boKPmd7nunVTW46JgFiXObnFKdCi34Kfl3pZ/fw=",
         "owner": "numtide",
         "repo": "llm-agents.nix",
-        "rev": "8c011befc8413c46f359f242cd226a9195092958",
+        "rev": "59fe4d5f421a795503d38e9acb8b52ec2d75c6e3",
         "type": "github"
       },
       "original": {
@@ -717,11 +717,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1782647151,
-        "narHash": "sha256-754A50ysan9ipof10fSMdi+sA/vKzaVIk37CZuGg7jA=",
+        "lastModified": 1782707326,
+        "narHash": "sha256-9nEW0HmJhBnx18relGPey+5mAOP43AoJ1O9ybUJFhrA=",
         "owner": "noctalia-dev",
         "repo": "noctalia",
-        "rev": "71e15e36df1ec8f679d012ff20764ef15efe2361",
+        "rev": "8c70e95e0af0f359878529631d75fc1ab0d3bd6d",
         "type": "github"
       },
       "original": {
@@ -740,11 +740,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1782649147,
-        "narHash": "sha256-EocQZn1bYt/8VnzJMS2WE4xcf4OpJ0Ee/yy8Ad34kOk=",
+        "lastModified": 1782728330,
+        "narHash": "sha256-FJoL2Hv3n2AIPELU7KWnzdgl3BT44I/rA9Z7uVz1CeQ=",
         "owner": "nix-community",
         "repo": "NUR",
-        "rev": "b3742a42ec7a498b01981d1b5413cbc326cb227a",
+        "rev": "74922c29e24aecfd5e09f5454d95f2d52296b6a6",
         "type": "github"
       },
       "original": {
@@ -1028,7 +1028,6 @@
         "nur": "nur",
         "pre-commit-hooks": "pre-commit-hooks",
         "protect-carrot": "protect-carrot",
-        "rust-web-server": "rust-web-server",
         "sops-nix": "sops-nix",
         "srvos": "srvos",
         "systems": "systems",
@@ -1055,30 +1054,6 @@
         "owner": "oxalica",
         "repo": "rust-overlay",
         "type": "github"
-      }
-    },
-    "rust-web-server": {
-      "inputs": {
-        "flake-parts": [
-          "flake-parts"
-        ],
-        "nixpkgs": [
-          "nixpkgs"
-        ]
-      },
-      "locked": {
-        "lastModified": 1775481351,
-        "narHash": "sha256-iFOIs8ni2UuO2f2Z1YsNAQ4CfuSmKxFKVh+b9LGxoPY=",
-        "ref": "feat/nixos-improvements",
-        "rev": "8d31a51b6fccc165d0aa820b4cd57d171c2ef32b",
-        "revCount": 120,
-        "type": "git",
-        "url": "ssh://git@github.com/AutoLifeRobot/rust-web-server.git"
-      },
-      "original": {
-        "ref": "feat/nixos-improvements",
-        "type": "git",
-        "url": "ssh://git@github.com/AutoLifeRobot/rust-web-server.git"
       }
     },
     "slimlock": {
@@ -1131,11 +1106,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1782526166,
-        "narHash": "sha256-t4OVI0LJQZCtYV03nKQeEvWcIxiUN1NInmqMmJ/fI48=",
+        "lastModified": 1782700116,
+        "narHash": "sha256-E63+nvH3jkAt/hBxhMa5aykstXdqRvBSeqNRDpQNv78=",
         "owner": "nix-community",
         "repo": "srvos",
-        "rev": "9f3040c7e16880d80c1dffcfd6eb86346f3af467",
+        "rev": "d45cf79058f2d42c0b0dd7912bedb5d14faa00ed",
         "type": "github"
       },
       "original": {
