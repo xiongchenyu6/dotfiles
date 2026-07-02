@@ -60,6 +60,29 @@
         "url": "file:///home/freeman.xiong/Documents/github/autolife/www"
       }
     },
+    "bevy-open-rts": {
+      "inputs": {
+        "flake-parts": [
+          "flake-parts"
+        ],
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1782984587,
+        "narHash": "sha256-/eoynmMKKdmjjuP3uxgSxPda7pSi2gqYEF1zOX92IfQ=",
+        "owner": "xiongchenyu6",
+        "repo": "bevy-open-rts",
+        "rev": "1e1bf184ce249ac67bd666a293b97f8c5e3d98d1",
+        "type": "github"
+      },
+      "original": {
+        "owner": "xiongchenyu6",
+        "repo": "bevy-open-rts",
+        "type": "github"
+      }
+    },
     "blueprint": {
       "inputs": {
         "nixpkgs": [
@@ -1003,6 +1026,7 @@
         "NixVirt": "NixVirt",
         "autolife-relay": "autolife-relay",
         "autolife-www": "autolife-www",
+        "bevy-open-rts": "bevy-open-rts",
         "claude-desktop": "claude-desktop",
         "darwin": "darwin",
         "disko": "disko",

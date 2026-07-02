@@ -38,11 +38,13 @@ in
     srvos.nixosModules.mixins-trusted-nix-caches
     srvos.nixosModules.mixins-nix-experimental
     protect-carrot.nixosModules.default
+    bevy-open-rts.nixosModules.default
   ];
 
-  # Provides pkgs.protect-carrot-web for the protect-carrot nginx module.
+  # Prebuilt web bundles for the nginx game vhosts.
   nixpkgs.overlays = [
     inputs.protect-carrot.overlays.default
+    inputs.bevy-open-rts.overlays.default
   ];
 
   zramSwap.enable = true;
@@ -137,6 +139,21 @@ in
         client_header_timeout 120s;
         client_body_timeout 120s;
         # Drain a closing connection slowly instead of RST-ing a lagging client.
+        lingering_timeout 30s;
+      '';
+    };
+
+    # Bevy Open RTS — served at rts.bj.autolife-robotics.com (prebuilt bundle).
+    # Same weak-network timeouts: this game's wasm (~25MB) + assets are large.
+    bevy-open-rts = {
+      enable = true;
+      hostname = "rts.bj.autolife-robotics.com";
+      enableACME = true;
+      extraConfig = ''
+        send_timeout 300s;
+        keepalive_timeout 120s;
+        client_header_timeout 120s;
+        client_body_timeout 120s;
         lingering_timeout 30s;
       '';
     };
