@@ -2,10 +2,15 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
-{ pkgs, ... }:
+{ inputs, pkgs, ... }:
 {
+  imports = [
+    inputs.talon-nix.nixosModules.talon
+  ];
+
   # Add NetworkManager for nm-applet icons
   environment.systemPackages = with pkgs; [
+    fuse3
     networkmanager
   ];
 
@@ -107,6 +112,9 @@
     dbus = {
       enable = true;
     };
+    udev.extraRules = ''
+      KERNEL=="uinput", GROUP="input", MODE="0620", OPTIONS+="static_node=uinput"
+    '';
 
     gnome = {
       gnome-keyring = {
@@ -128,6 +136,9 @@
     dconf = {
       enable = true;
     };
+    fuse = {
+      enable = true;
+    };
     yubikey-touch-detector = {
       enable = true;
     };
@@ -146,6 +157,12 @@
       enable = false;
     };
     wireshark = {
+      enable = true;
+    };
+    talon = {
+      enable = true;
+    };
+    ydotool = {
       enable = true;
     };
     # proxychains = {
