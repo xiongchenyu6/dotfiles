@@ -8,6 +8,9 @@
 let
   noctaliaPackage = inputs.noctalia.packages.${pkgs.stdenv.hostPlatform.system}.default;
   noctalia = "${noctaliaPackage}/bin/noctalia";
+  voxinputToggle = pkgs.writeShellScript "voxinput-toggle" ''
+    exec ${pkgs.voxinput}/bin/voxinput toggle
+  '';
 
   # niri's `spawn-at-startup` runs while niri is still initialising — its IPC
   # server (and therefore NIRI_SOCKET) is not yet exported into spawned
@@ -178,6 +181,10 @@ in
       "Mod+Y" = {
         action = spawn noctalia "msg" "panel-toggle" "clipboard";
         hotkey-overlay.title = "Clipboard History";
+      };
+      "Mod+Shift+Space" = {
+        action = spawn "${voxinputToggle}";
+        hotkey-overlay.title = "Voice Input";
       };
       "Super+Alt+L" = {
         action = spawn noctalia "msg" "session" "lock";
