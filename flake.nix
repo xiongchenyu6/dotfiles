@@ -79,7 +79,7 @@
     };
     # Personal and project packages
     xiongchenyu6 = {
-      url = "github:xiongchenyu6/nur-packages?lfs=1";
+      url = "github:xiongchenyu6/nur-packages";
       inputs = {
         nixpkgs.follows = "nixpkgs";
         flake-parts.follows = "flake-parts";
