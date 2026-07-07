@@ -23,6 +23,24 @@ let
       runHook postInstall
     '';
   };
+
+  # Weak-network fix for the RTS game WITHOUT re-shipping the ~100MB bundle over
+  # the (lossy) Beijing link: keep the deployed bundle's pkg/ + assets/ verbatim
+  # (via symlinks — already on the host) and swap in a patched index.html whose
+  # loader downloads the 8MB wasm.gz with resumable HTTP Range requests, so a
+  # dropped connection continues instead of restarting. Tiny store path → tiny
+  # transfer. (Also fixed upstream in the game's web/index.html for future
+  # releases; drop this override once a release with the fix is deployed.)
+  bevy-open-rts-web-patched =
+    pkgs.runCommand "bevy-open-rts-web-patched" { }
+      ''
+        mkdir -p $out/share/bevy-open-rts
+        cd $out/share/bevy-open-rts
+        cp ${./rts-index.html} index.html
+        cp ${pkgs.bevy-open-rts-web}/share/bevy-open-rts/styles.css styles.css
+        ln -s ${pkgs.bevy-open-rts-web}/share/bevy-open-rts/pkg pkg
+        ln -s ${pkgs.bevy-open-rts-web}/share/bevy-open-rts/assets assets
+      '';
 in
 {
   imports = with inputs; [
@@ -149,6 +167,9 @@ in
       enable = true;
       hostname = "rts.bj.autolife-robotics.com";
       enableACME = true;
+      # Serve the patched bundle (resumable-download index.html + the real
+      # pkg/assets via symlinks). See bevy-open-rts-web-patched above.
+      package = bevy-open-rts-web-patched;
       extraConfig = ''
         send_timeout 300s;
         keepalive_timeout 120s;

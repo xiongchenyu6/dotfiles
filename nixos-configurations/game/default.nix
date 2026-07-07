@@ -79,6 +79,7 @@
       cloudflare-warp
       android-tools # Replaces programs.adb
       inputs.lazynixos.packages.${pkgs.stdenv.hostPlatform.system}.default
+      inputs.xiongchenyu6.packages.${pkgs.stdenv.hostPlatform.system}.larksuite-cli
       mangohud # in-game perf overlay (FPS/frametime/temps); ships 32-bit mangohud too
     ];
   };

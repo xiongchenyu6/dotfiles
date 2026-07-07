@@ -1,0 +1,212 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Bevy Open RTS</title>
+    <link rel="icon" href="data:," />
+    <link rel="stylesheet" href="styles.css" />
+    <style>
+      /* Loading overlay shown while the wasm bundle downloads + the engine boots. */
+      #loading {
+        position: fixed; inset: 0; z-index: 30; display: flex;
+        flex-direction: column; align-items: center; justify-content: center; gap: 1.2rem;
+        background: radial-gradient(circle at 50% 36%, #0e1a26 0%, #070d14 68%, #04070a 100%);
+        color: #cfe6f5; font-family: system-ui, sans-serif; text-align: center; padding: 2rem;
+        transition: opacity .5s ease;
+      }
+      #loading.hidden { opacity: 0; pointer-events: none; }
+      /* Radar-sweep mark — fits the RTS theme. */
+      #loading .radar {
+        width: 92px; height: 92px; border-radius: 50%;
+        border: 2px solid rgba(90, 200, 255, .35); position: relative;
+        box-shadow: 0 0 24px rgba(60, 170, 255, .25) inset;
+      }
+      #loading .radar::before {
+        content: ""; position: absolute; inset: -2px; border-radius: 50%;
+        background: conic-gradient(from 0deg, rgba(90,200,255,.55), rgba(90,200,255,0) 60%);
+        animation: sweep 1.6s linear infinite;
+      }
+      #loading .radar::after {
+        content: ""; position: absolute; left: 50%; top: 50%; width: 6px; height: 6px;
+        margin: -3px 0 0 -3px; border-radius: 50%; background: #7fd2ff;
+        box-shadow: 0 0 10px #7fd2ff;
+      }
+      @keyframes sweep { to { transform: rotate(360deg); } }
+      #loading .title {
+        font-size: 2rem; font-weight: 800; letter-spacing: .16em; color: #8fd3ff;
+        text-shadow: 0 2px 0 rgba(0,0,0,.4);
+      }
+      #loading .bar {
+        width: 280px; max-width: 64vw; height: 8px; border-radius: 6px;
+        background: rgba(255,255,255,.10); overflow: hidden;
+      }
+      #loading .bar .fill {
+        height: 100%; width: 8%; border-radius: 6px;
+        background: linear-gradient(90deg, #2aa9ff, #7fe0ff, #2aa9ff);
+        transition: width .15s ease;
+      }
+      #loading .tip { font-size: .95rem; opacity: .85; min-height: 1.2em; }
+      #loading .sub { font-size: .8rem; opacity: .5; letter-spacing: .05em; }
+      #loading.error .radar::before { animation: none; }
+      #loading.error .title { color: #ff8c6b; }
+    </style>
+  </head>
+  <body>
+    <canvas id="bevy-canvas"></canvas>
+    <div id="loading">
+      <div class="radar"></div>
+      <div class="title">BEVY OPEN RTS</div>
+      <div class="bar"><div class="fill"></div></div>
+      <div class="tip">加载中… / Loading…</div>
+      <div class="sub">RA2 / SC1 风格 · godot→bevy</div>
+    </div>
+    <div id="unsupported" hidden>
+      本游戏需要 WebGPU：请使用最新版 Chrome / Edge（113+），或在 Firefox 开启
+      <code>dom.webgpu.enabled</code>。<br />
+      WebGPU is required — use a current Chrome / Edge, or enable it in Firefox.
+    </div>
+    <script type="module">
+      const buildId = "1802f9c8e13ce3ff";
+
+      const loading = document.getElementById("loading");
+      const unsupported = document.getElementById("unsupported");
+      const fill = document.querySelector("#loading .fill");
+      const tip = document.querySelector("#loading .tip");
+      const MB = (b) => (b / 1048576).toFixed(1);
+      const setPct = (p) => {
+        if (fill) fill.style.width = Math.max(4, Math.min(100, p)).toFixed(0) + "%";
+      };
+      const fail = (zh, en) => {
+        loading.classList.add("error");
+        if (tip) tip.textContent = `${zh} / ${en}`;
+      };
+      const hideLoading = () => {
+        if (!loading || loading.classList.contains("hidden")) return;
+        loading.classList.add("hidden");
+        setTimeout(() => { loading.style.display = "none"; }, 600);
+      };
+
+      // Real wasm starts with the magic bytes \0asm — guards against a body that
+      // didn't actually decompress to a module.
+      const isWasm = (ab) => {
+        if (!ab || ab.byteLength < 8) return false;
+        const h = new Uint8Array(ab, 0, 4);
+        return h[0] === 0 && h[1] === 0x61 && h[2] === 0x73 && h[3] === 0x6d;
+      };
+
+      // Stream the raw gzip artifact (GitHub Pages serves it verbatim, so
+      // bytes-received == Content-Length == the real ~7 MB transfer → honest
+      // progress), then inflate it in the browser.
+      // Resumable, retrying download of the gzip artifact. On a weak network an
+      // ~8 MB download frequently drops mid-stream (ERR_CONNECTION_CLOSED); HTTP
+      // Range requests (server sends accept-ranges: bytes) let us RESUME from the
+      // byte reached instead of restarting. Buffer the full .gz, then inflate once.
+      function sleepMs(ms) { return new Promise((r) => setTimeout(r, ms)); }
+      async function downloadWasm(url) {
+        if (typeof DecompressionStream !== "function") return null;
+        const MAX_ATTEMPTS = 40;
+        const chunks = [];
+        let received = 0;
+        let total = 0;
+        for (let attempt = 0; attempt < MAX_ATTEMPTS; attempt++) {
+          let resp;
+          try {
+            const headers = received > 0 ? { Range: `bytes=${received}-` } : {};
+            resp = await fetch(url, { headers, cache: "no-store" });
+          } catch (_) {
+            await sleepMs(Math.min(500 * (attempt + 1), 4000));
+            continue;
+          }
+          if (resp.status !== 200 && resp.status !== 206) {
+            await sleepMs(Math.min(500 * (attempt + 1), 4000));
+            continue;
+          }
+          if (resp.status === 200 && received > 0) { chunks.length = 0; received = 0; }
+          if (!total) {
+            const cr = resp.headers.get("Content-Range");
+            const m = cr && cr.match(/\/(\d+)\s*$/);
+            if (m) total = +m[1];
+            else {
+              const len = +(resp.headers.get("Content-Length") || 0);
+              if (len) total = received + len;
+            }
+          }
+          if (!resp.body) { await sleepMs(500); continue; }
+          const reader = resp.body.getReader();
+          let dropped = false;
+          try {
+            for (;;) {
+              const { done, value } = await reader.read();
+              if (done) break;
+              chunks.push(value);
+              received += value.length;
+              if (total) setPct((received / total) * 100);
+              if (tip)
+                tip.textContent = total
+                  ? `下载 ${MB(received)} / ${MB(total)} MB`
+                  : `下载 ${MB(received)} MB`;
+            }
+          } catch (_) {
+            dropped = true;
+          }
+          if (!dropped && total && received >= total) break;
+          if (!dropped && !total) break;
+          if (tip) tip.textContent = `断线重连… / reconnecting ${MB(received)} MB`;
+          await sleepMs(Math.min(400 * (attempt + 1), 4000));
+        }
+        if (total && received < total) return null;
+        const buf = new Uint8Array(received);
+        let off = 0;
+        for (const c of chunks) { buf.set(c, off); off += c.length; }
+        try {
+          const stream = new Blob([buf]).stream().pipeThrough(new DecompressionStream("gzip"));
+          const ab = await new Response(stream).arrayBuffer();
+          return isWasm(ab) ? ab : null;
+        } catch (_) {
+          return null;
+        }
+      }
+
+      // Bevy's winit escapes its run loop by throwing this; the app IS running.
+      const isControlFlow = (e) => `${e}`.includes("Using exceptions for control flow");
+
+      async function boot() {
+        const { default: init } = await import(`./pkg/bevy_open_rts.js?v=${buildId}`);
+        // 1) progress-tracked gzip stream; 2) fall back to wasm-bindgen's own fetch.
+        const bytes = await downloadWasm(`./pkg/bevy_open_rts_bg.wasm.gz?v=${buildId}`);
+        setPct(100);
+        if (tip) tip.textContent = "初始化引擎… / Starting engine…";
+        if (bytes) {
+          await init({ module_or_path: bytes });
+        } else {
+          await init({ module_or_path: `./pkg/bevy_open_rts_bg.wasm?v=${buildId}` });
+        }
+      }
+
+      // Require an actual WebGPU adapter (not just navigator.gpu presence).
+      const adapter = "gpu" in navigator ? await navigator.gpu.requestAdapter() : null;
+      if (!adapter) {
+        unsupported.hidden = false;
+        hideLoading();
+      } else {
+        boot()
+          .then(() => {
+            // Reached only if init resolves without the control-flow throw; the
+            // engine is up — fade the loader once the first frames have rendered.
+            setTimeout(hideLoading, 800);
+          })
+          .catch((e) => {
+            if (isControlFlow(e)) {
+              setTimeout(hideLoading, 800);
+              return;
+            }
+            console.error("boot failed:", e);
+            fail("加载失败，请刷新重试", "Load failed — please reload");
+          });
+        // Safety net: never leave the loader stuck over a running game.
+        setTimeout(hideLoading, 20000);
+      }
+    </script>
+  </body>
+</html>
