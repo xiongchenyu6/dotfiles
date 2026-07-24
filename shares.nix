@@ -11,8 +11,6 @@ rec {
 
   inherit (shares) root-cas;
 
-  inherit (shares) oauth;
-
   users-dict = listToAttrs (
     map (u: {
       name = "${u.gn}.${toString u.sn}";

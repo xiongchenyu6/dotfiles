@@ -21,17 +21,6 @@
           ../profiles/cli/shell/zsh/nixos.nix
         ];
       };
-      root = {
-        programs = {
-          ssh = {
-            settings = {
-              "*.trontech.link" = {
-                User = "freeman.xiong";
-              };
-            };
-          };
-        };
-      };
     };
   };
 }
