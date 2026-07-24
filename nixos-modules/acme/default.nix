@@ -27,30 +27,26 @@
         #   ${pkgs.systemd}/bin/systemctl restart openldap
         # '';
       };
-      certs = {
-        ${config.networking.domain} = {
-          domain = "${config.networking.domain}";
-          extraDomainNames = [ "*.${config.networking.domain}" ];
+      # Only sign a wildcard for the host's own domain when it actually has one.
+      # Hosts without a domain previously fell back to the corp default and signed
+      # a cert nothing on them ever served.
+      # panda.qzz.io is listed last so its richer definition wins when a host's
+      # own domain happens to be panda.qzz.io.
+      certs =
+        lib.optionalAttrs (config.networking.domain != null) {
+          ${config.networking.domain} = {
+            domain = config.networking.domain;
+            extraDomainNames = [ "*.${config.networking.domain}" ];
+          };
+        }
+        // {
+          "panda.qzz.io" = {
+            domain = "panda.qzz.io";
+            extraDomainNames = [ "*.panda.qzz.io" ];
+            group = "nginx";
+            reloadServices = [ "nginx.service" ];
+          };
         };
-        # "autolife.com" = {
-        #   domain = "autolife.com";
-        #   extraDomainNames = [ "*.autolife.com" ];
-        #   email = "xiongchenyu6@gmail.com";
-        #   dnsProvider = "volcengine";
-        #   environmentFile = config.sops.secrets."acme/volcengine".path;
-        #   group = "kanidm";
-        # };
-        ai = {
-          domain = "autolife.ai";
-          extraDomainNames = [ "*.autolife.ai" ];
-        };
-        "panda.qzz.io" = {
-          domain = "panda.qzz.io";
-          extraDomainNames = [ "*.panda.qzz.io" ];
-          group = "nginx";
-          reloadServices = [ "nginx.service" ];
-        };
-      };
     };
   };
 }

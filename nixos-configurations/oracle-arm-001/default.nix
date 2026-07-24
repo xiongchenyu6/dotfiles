@@ -4,7 +4,6 @@
   lib,
   pkgs,
   ezModules,
-  config,
   ...
 }:
 {
@@ -19,25 +18,15 @@
     ezModules.acme
     #ezModules.datadog-agent
     #ezModules.postgrest
-    #autolife-relay.nixosModules.autolife-relay
     srvos.nixosModules.server
     ezModules.mixins-nginx
     srvos.nixosModules.mixins-trusted-nix-caches
     srvos.nixosModules.mixins-nix-experimental
     srvos.nixosModules.mixins-tracing
-    #rust-web-server.nixosModules.rust-web-server
-    # rust-web-server-config.nix reads config.services.rust-web-server, which
-    # only exists when the (disabled) rust-web-server module above is imported.
-    #../../nixos-modules/rust-web-server-config.nix
     ./disk-config.nix
     ./hardware-configuration.nix
   ];
 
-  # rust-web-server overlay applied host-locally — the input is private SSH
-  # so the overlay is scoped per-host (see also huoshan-bj-001).
-  nixpkgs.overlays = [
-    #(inputs.rust-web-server.overlays.default or inputs.rust-web-server.overlay)
-  ];
   boot = {
     loader.grub = {
       # no need to set devices, disko will add all devices that have a EF02 partition to the list already
@@ -73,7 +62,6 @@
     ]
     ++ (with pkgs; [
       nodejs_24
-      osquery # is handled by services.osquery module
     ]);
 
   networking =
@@ -83,7 +71,6 @@
     in
     {
       inherit hostName;
-      domain = "autolife.ai"; # Set corp domain
       firewall = {
         allowedTCPPorts = [
           22
@@ -94,7 +81,6 @@
           2222
           5432
           7000
-          8080 # Fleet
         ];
         allowedUDPPorts = [
           89
@@ -124,14 +110,6 @@
   };
 
   services = {
-    postgresqlBackup = {
-      enable = false;
-      databases = [
-        "rustwebserver"
-        "odoo"
-      ];
-    };
-
     postgresql = {
       enable = false;
       package = pkgs.postgresql_18_jit;
@@ -139,7 +117,6 @@
         local all all trust
         host  all  all 0.0.0.0/0 scram-sha-256
         host  all  all ::1/128 scram-sha-256
-        host odoo odoo 127.0.0.1/32 md5
       '';
 
       enableJIT = true;
@@ -167,278 +144,14 @@
             superuser = true;
           };
         }
-        {
-          name = "odoo";
-          ensureDBOwnership = true;
-        }
       ];
       ensureDatabases = [
         "freeman.xiong"
-        "odoo"
       ];
     };
-
-    rustdesk-server = {
-      enable = false;
-      openFirewall = true;
-      signal = {
-        relayHosts = [ "rustdesk.autolife.ai" ];
-      };
-    };
-
-    # Disabled with its module (see commented import above). Re-enable the
-    # autolife-relay.nixosModules.autolife-relay import to restore.
-    /*
-      autolife-relay = {
-        enable = false;
-        openFirewall = true;
-        settings = {
-          server_url = "ws://183.6.107.47:3000/ws";
-          token = "@token@";
-          region = "sg-1";
-          ip = "138.2.95.174";
-          bind_ip = "[::]";
-          video_port = 30001;
-          data_port = 30002;
-          audio_port = 30003;
-          probe_port = 30004;
-          video_port_workers = 1;
-          data_port_workers = 1;
-          audio_port_workers = 1;
-          telemetry_interval = 10;
-          debug_stats_interval = 10;
-          debug_stats_enabled = true;
-          service_auth = {
-            client = "autolife-relay";
-            secret = "@service-auth-secret@";
-          };
-          license = {
-            license_file = config.sops.secrets."autolife-relay/license".path;
-            public_key = builtins.readFile ./id_ed25519.pub;
-          };
-        };
-        sopsSecretFiles = [
-          config.sops.secrets."autolife-relay/token".path
-          config.sops.secrets."autolife-relay/service-auth-secret".path
-        ];
-      };
-    */
-
-    # Odoo ERP/CRM system
-    odoo = {
-      enable = false;
-      domain = "odoo.autolife.ai";
-      autoInit = true;
-      settings = {
-        options = {
-          # Database configuration — use unix socket (no password needed with peer/trust auth)
-          db_host = "False";
-          db_port = "5432";
-          db_user = "odoo";
-          db_maxconn = "64";
-
-          # Server configuration
-          list_db = "false";
-          proxy_mode = lib.mkForce true;
-          #workers = "4";
-          max_cron_threads = "2";
-          limit_request = "8192";
-          limit_time_cpu = "600";
-          limit_time_real = "1200";
-
-          # File storage
-          data_dir = lib.mkForce "/var/lib/odoo";
-          logfile = "/var/log/odoo/odoo.log";
-          log_level = "info";
-          log_handler = "[':INFO']";
-
-          # Security settings — admin_passwd managed by sops
-          without_demo = "true";
-
-          # Performance tuning
-          osv_memory_age_limit = "1.0";
-          osv_memory_count_limit = "0";
-        };
-      };
-    };
-
-    # Rust web server — disabled with its module (see commented import above).
-    /*
-      rust-web-server = {
-        enable = false;
-        configFile = config.sops.templates."rust-web-server-config".path;
-        licenseFile = config.sops.templates."rust-web-server-license".path;
-        publicKey = builtins.readFile ./id_ed25519.pub;
-      };
-    */
-
-    nginx = {
-      commonHttpConfig = ''
-        map $http_origin $cors_origin {
-          default "";
-          "~^https://.*\.autolife\.ai$" $http_origin;
-          "https://autolife.ai" $http_origin;
-        }
-      '';
-      virtualHosts = {
-        "odoo.autolife.ai" = {
-          forceSSL = true;
-          acmeRoot = null;
-          useACMEHost = "ai";
-          kTLS = true;
-        };
-        "rust-server.autolife.ai" = {
-          forceSSL = true;
-          acmeRoot = null;
-          useACMEHost = "ai";
-          kTLS = true;
-          locations = {
-            "/" = {
-              proxyPass = "http://localhost:3000";
-            };
-          };
-        };
-        "api.autolife.ai" = {
-          addSSL = true;
-          acmeRoot = null;
-          useACMEHost = "ai";
-          kTLS = true;
-          locations = {
-            "/" = {
-              proxyWebsockets = true;
-              proxyPass = "http://localhost:3333";
-            };
-          };
-        };
-        "auth.autolife.ai" = {
-          forceSSL = true;
-          acmeRoot = null;
-          useACMEHost = "ai";
-          kTLS = true;
-          locations = {
-            "/" = {
-              proxyWebsockets = true;
-              proxyPass = "http://127.0.0.1:8081";
-              extraConfig = ''
-                # CORS headers for auth endpoints — restrict to *.autolife.ai
-                add_header 'Access-Control-Allow-Origin' $cors_origin always;
-                add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, DELETE, OPTIONS' always;
-                add_header 'Access-Control-Allow-Headers' 'Authorization, Content-Type, X-Client-Info, apikey' always;
-                add_header 'Access-Control-Allow-Credentials' 'true' always;
-
-                # Handle preflight requests
-                if ($request_method = 'OPTIONS') {
-                  return 204;
-                }
-              '';
-            };
-          };
-        };
-        "fleet.${config.networking.domain}" = {
-          forceSSL = true;
-          acmeRoot = null;
-          useACMEHost = "${config.networking.domain}";
-          kTLS = true;
-          locations = {
-            "/" = {
-              root = "/var/www/fleet";
-              index = "index.html";
-              extraConfig = ''
-                # Placeholder for Fleet UI - would host a web interface for device management
-                try_files $uri $uri/ =404;
-              '';
-            };
-          };
-        };
-      };
-    };
-  };
-
-  # Enable osquery for device monitoring using official NixOS module
-  services.osquery = {
-    enable = false;
-    settings = {
-      options = {
-        host_identifier = "hostname";
-        schedule_splay_percent = 10;
-        schedule_timeout = 0;
-        schedule_max_drift = 60;
-        logger_plugin = "filesystem";
-        logger_path = "/var/log/osquery";
-      };
-      schedule = {
-        system_info = {
-          query = "SELECT hostname, cpu_brand, physical_memory FROM system_info;";
-          interval = 3600;
-        };
-        processes = {
-          query = "SELECT name, path, pid FROM processes;";
-          interval = 600;
-        };
-      };
-    };
-  };
-
-  # Log rotation for Odoo logs
-  services.logrotate.settings.odoo = lib.mkIf config.services.odoo.enable {
-    files = [ "/var/log/odoo/*.log" ];
-    frequency = "weekly";
-    rotate = 4;
-    compress = true;
-    delaycompress = true;
-    missingok = true;
-    notifempty = true;
-    create = "644 odoo odoo";
-    postrotate = "systemctl reload odoo.service";
   };
 
   nixpkgs = {
     hostPlatform = "aarch64-linux";
-    config.permittedInsecurePackages = [
-      "python3.12-pypdf2-3.0.1"
-    ];
-    # overlays = [
-    #   (final: prev: {
-    #     odoo = prev.odoo.overrideAttrs (old: {
-    #       patches = (old.patches or []) ++ [ ./patches/odoo-update.patch ];
-    #     });
-    #   })
-    # ];
   };
-
-  # Sops secrets for autolife-relay — disabled with the module above; their
-  # owners (rust-web-server / autolife-relay users) no longer exist, so the
-  # sops chown would fail at activation. Re-enable alongside the module.
-  /*
-    sops.templates."rust-web-server-license" = {
-      content = config.sops.placeholder."autolife-relay/license";
-      owner = "rust-web-server";
-      group = "rust-web-server";
-      mode = "0400";
-    };
-    sops.secrets."autolife-relay/license" = {
-      owner = "autolife-relay";
-      group = "autolife-relay";
-    };
-    sops.secrets."autolife-relay/token" = {
-      owner = "autolife-relay";
-      group = "autolife-relay";
-    };
-    sops.secrets."autolife-relay/service-auth-secret" = {
-      owner = "autolife-relay";
-      group = "autolife-relay";
-    };
-  */
-
-  # Sops secrets for Odoo. Keep these conditional because the disabled Odoo
-  # module does not create the odoo user/group before sops activation.
-  sops.secrets."odoo/db_password" = lib.mkIf config.services.odoo.enable {
-    owner = "odoo";
-    group = "odoo";
-  };
-  sops.secrets."odoo/admin_password" = lib.mkIf config.services.odoo.enable {
-    owner = "odoo";
-    group = "odoo";
-  };
-
 }

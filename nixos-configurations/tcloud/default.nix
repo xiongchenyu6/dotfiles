@@ -67,6 +67,11 @@ in
   ];
 
   networking = {
+    # Explicit personal domain. This used to inherit the corp-domain default from
+    # nixos-modules/core.nix; the only consumer is the DN42 bird-lg looking glass
+    # (nixos-modules/birg-lg.nix, pulled in via bird-border).
+    domain = "panda.qzz.io";
+
     nat = {
       enable = true;
       enableIPv6 = true;
@@ -192,7 +197,11 @@ in
 
     coturn = {
       enable = true;
-      realm = "tcloud.${config.networking.domain}";
+      # Pinned to the literal value this used to expand to via the old corp-domain
+      # default. TURN long-term credentials hash as MD5(user:realm:password), so
+      # changing the realm invalidates every provisioned credential — renaming it
+      # to a personal domain needs to be coordinated with the TURN clients.
+      realm = "tcloud.autolife.ai";
       extraConfig = ''
         fingerprint
         no-software-attribute

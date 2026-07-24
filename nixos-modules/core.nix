@@ -1,14 +1,15 @@
 # Edit this configuration file to define what should be installed on
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
-{ lib, ... }:
+{ ... }:
 {
 
   imports = [ ../shared-modules/core.nix ];
 
-  networking = {
-    domain = lib.mkDefault "autolife.ai";
-  };
+  # networking.domain is intentionally NOT defaulted here. It used to default to
+  # the corp domain, which silently gave every personal host a corp identity —
+  # including wildcard ACME certs for a domain they never served. Hosts that
+  # need a domain must set it explicitly.
 
   # Select internationalisation properties.
   i18n = {

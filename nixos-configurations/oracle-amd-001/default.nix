@@ -136,22 +136,6 @@
     };
   };
 
-  security = {
-    acme = {
-      certs = {
-        ${config.networking.domain} = {
-          domain = "${config.networking.domain}";
-          extraDomainNames = [ "*.${config.networking.domain}" ];
-          group = "acme";
-        };
-        ai = {
-          group = "nginx";
-          reloadServices = [ "nginx.service" ];
-        };
-      };
-    };
-  };
-
   services.hermes-agent = {
     enable = true;
     settings = {
