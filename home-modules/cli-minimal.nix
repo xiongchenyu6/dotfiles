@@ -297,17 +297,6 @@ in
 
   home = {
     file = {
-      ".ldaprc" =
-        lib.mkIf
-          (osConfig ? networking && osConfig.networking ? domain && osConfig.networking.domain != null)
-          {
-            text = ''
-              URI     ldap://mail.${osConfig.networking.domain}
-              BASE    dc=work,dc=ai
-              SASL_MECH GSSAPI
-              SASL_REALM work.TECH
-            '';
-          };
       ".curlrc" = {
         text = ''
           connect-timeout = 30
