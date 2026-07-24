@@ -139,7 +139,37 @@ Stage 1/2 是真正的价值所在，Stage 4 的搬家反而是最轻的一步�
 
 ## Stage 1: 清除死代码与前雇主遗留
 **Goal**: 删掉从未被求值的公司模块和 Tron 残留，缩小后续需要判断的面积。
-**Status**: Not Started
+**Status**: ✅ Complete
+
+### 相对计划的增补
+
+- **`nixos-modules/grafana.nix` 一并删除**：原计划只列了 `ldap.toml`，但它的唯一引用者
+  就是 grafana.nix。而 grafana.nix 自己也无人引用，且依赖现在为 null 的
+  `networking.domain` —— 留着必然求值失败。两者一起删。
+  另外确认：`ldap.toml` 是 git-crypt 加密的，而仓库里**已经没有 `.gitattributes`**，
+  git-crypt 早已不再配置，这个文件永远解不开，是纯粹的死数据。
+- **`nixos-configurations/game/default.nix` 的 frp 块删除**：`enable = false` 却
+  硬编码 `serverAddr = "autolife.ai"`，是个人机上的公司残留。
+- **`nixos-modules/ssh-harden.nix` 的注释块删除**：整段被注释的 ldapsearch，
+  引用了刚被删除的 openldap 模块和 `dc=autolife,dc=ai`。
+- **`shares.toml` 的 `digital` endpoint 删除**：`digital.autolife.ai`，与 amd-002 同样处理。
+- **`shares.nix` 的 `inherit (shares) oauth` 删除**：随 `[oauth]` 段一起。
+
+### 验证
+
+- 七台主机求值全部通过（amd-001 仍是 Stage 0 记录的既有 Node.js 20 问题）。
+- `git grep -i trontech` → **无输出**，前雇主遗留已彻底清除。
+- `grep AutoLifeRobot flake.lock` → **0**，个人 flake 不再需要公司 SSH 凭证才能求值。
+- 无任何对已删模块的悬空引用。
+
+### 残留的 autolife 引用（均为预期）
+
+| 位置 | 归属 |
+|---|---|
+| `flake.nix` 的 `autolife-www` input | Stage 3 随 huoshan 迁走 |
+| `home-configurations/freeman.xiong.nix:230,235` sz-office / gz-office 的 ssh 条目 | Stage 3 —— 与 ansible 里同样的办公室 IP 一起处理。**注意：dotfiles 若要公开，这两个公司办公室 IP + 用户名必须先移除。** |
+| `nixos-configurations/tcloud/default.nix:204` coturn realm | 刻意保留，见 Stage 0 |
+| `nixos-configurations/game/default.nix:184` 注释 | 无害，正好记录了解耦决定 |
 
 删除清单（全部已确认无活跃 import）：
 - `nixos-configurations/corp.nix`、`nixos-modules/corp-infrastructure.nix`、`samba.nix`、`fleet.nix`

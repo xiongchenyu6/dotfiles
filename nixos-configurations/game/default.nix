@@ -339,20 +339,6 @@
       ensureDatabases = [ "freeman.xiong" ];
     };
 
-    # FRP client — disabled, token managed by sops when re-enabled
-    frp = {
-      instances."" = {
-        enable = false;
-        role = "client";
-        settings = {
-          serverAddr = "autolife.ai";
-          serverPort = 7000;
-          # auth.token will be injected from sops when frp is re-enabled
-          # See: sops.secrets."frp/token"
-        };
-      };
-    };
-
     netbird.enable = true;
     babeld = {
       interfaces = {

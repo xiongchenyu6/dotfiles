@@ -21,29 +21,6 @@
         "type": "github"
       }
     },
-    "autolife-relay": {
-      "inputs": {
-        "flake-parts": [
-          "flake-parts"
-        ],
-        "nixpkgs": [
-          "nixpkgs"
-        ]
-      },
-      "locked": {
-        "lastModified": 1778670854,
-        "narHash": "sha256-14y/aiNmNCwN/a14s3qkYXx4m0Y0BjTNsXU2bNSQI3g=",
-        "ref": "refs/heads/main",
-        "rev": "46c6cddb20e9bbf058fe37d0155f2fa2e6834ff1",
-        "revCount": 39,
-        "type": "git",
-        "url": "ssh://git@github.com/AutoLifeRobot/autolife-relay.git"
-      },
-      "original": {
-        "type": "git",
-        "url": "ssh://git@github.com/AutoLifeRobot/autolife-relay.git"
-      }
-    },
     "autolife-www": {
       "flake": false,
       "locked": {
@@ -998,7 +975,6 @@
     "root": {
       "inputs": {
         "NixVirt": "NixVirt",
-        "autolife-relay": "autolife-relay",
         "autolife-www": "autolife-www",
         "bevy-open-rts": "bevy-open-rts",
         "claude-desktop": "claude-desktop",

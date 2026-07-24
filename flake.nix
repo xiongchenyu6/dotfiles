@@ -114,13 +114,6 @@
         flake-utils.follows = "flake-utils";
       };
     };
-    autolife-relay = {
-      url = "git+ssh://git@github.com/AutoLifeRobot/autolife-relay.git";
-      inputs = {
-        nixpkgs.follows = "nixpkgs";
-        flake-parts.follows = "flake-parts";
-      };
-    };
     # 保卫萝卜 (Protect the Carrot) — Bevy WebGPU/wasm tower-defense game.
     # Provides nixosModules.default (nginx vhost) + overlays.default
     # (pkgs.protect-carrot-web). Served on huoshan-bj-001.
@@ -258,9 +251,7 @@
             oracle-arm-002 = hostConfig;
             oracle-amd-001 = hostConfig;
             oracle-amd-002 = hostConfig;
-            netbird = hostConfig;
             huoshan-bj-001 = hostConfig;
-            lubancat = hostConfig;
           };
       };
 

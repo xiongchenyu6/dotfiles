@@ -1,4 +1,9 @@
-{ pkgs, lib, config, ... }:
+{
+  pkgs,
+  lib,
+  config,
+  ...
+}:
 let
   hasGuiTag =
     config ? system
@@ -22,20 +27,12 @@ in
   # Configure SSH askpass only on GUI machines
   programs.ssh = {
     enableAskPassword = hasGuiTag;
-  } // lib.optionalAttrs hasGuiTag {
+  }
+  // lib.optionalAttrs hasGuiTag {
     askPassword = "${pkgs.x11_ssh_askpass}/libexec/ssh-askpass";
   };
 
   environment.etc = {
-    # "ssh/auth" = {
-    #   mode = "0555";
-    #   text = ''
-    #           #!${pkgs.stdenv.shell}
-    #     #       ${pkgs.openldap}/bin/ldapsearch -x -D cn=admin,dc=autolife,dc=ai -w $(${pkgs.coreutils-full}/bin/cat ${
-    #       config.sops.secrets."openldap/adminPass".path
-    #     }) -b dc=autolife,dc=ai '(&(objectClass=posixAccount)(uid='"$1"'))' 'sshPublicKey' | ${pkgs.gnused}/bin/sed -n '/^ /{H;d};/sshPublicKey:/x;$g;s/\n *//g;s/sshPublicKey: //gp'
-    #   '';
-    # };
     "sudo.conf" = lib.mkIf hasGuiTag {
       mode = "0400";
       text = ''
