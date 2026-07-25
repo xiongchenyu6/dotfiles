@@ -12,7 +12,7 @@
   tasks:
     - name: Load DB / admin credentials from sops
       community.sops.load_vars:
-        file: ../../secrets/nextcloud.yaml
+        file: ../../secrets/common.yaml
       no_log: true
 
     - name: Update apt cache

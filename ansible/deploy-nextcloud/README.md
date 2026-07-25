@@ -43,7 +43,7 @@ ansible-playbook playbook.yml
 
 After deployment, access Nextcloud at:
 - http://10.171.150.101 (or your configured domain)
-- Login with the admin credentials from sops (`secrets/nextcloud.yaml`).
+- Login with the admin credentials from sops (`secrets/common.yaml`).
 
 ## Security Notes
 
@@ -51,7 +51,7 @@ After deployment, access Nextcloud at:
 
 1. **Change all default passwords** — edit the sops-encrypted file at the repo root:
    ```bash
-   sops secrets/nextcloud.yaml
+   sops secrets/common.yaml
    ```
    Keys: `nextcloud.mysql_root_password`, `nextcloud.db_password`, `nextcloud.admin_password`.
 

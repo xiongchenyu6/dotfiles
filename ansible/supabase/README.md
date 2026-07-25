@@ -11,7 +11,7 @@ adapted for a Docker host (lubancat / Ubuntu 24.04 ARM64).
 | `deploy-supabase.yml`               | Main playbook                                                        |
 | `inventory.ini`                     | Target host (`203.116.95.146`)                                       |
 | `vars/main.yml`                     | Domains, image tags, ports, casdoor refs                             |
-| `../../secrets/supabase.yaml`       | Casdoor `clientId` / `clientSecret` (sops-encrypted)                 |
+| `../../secrets/common.yaml`       | Casdoor `clientId` / `clientSecret` (sops-encrypted)                 |
 | `templates/docker-compose.yml.j2`   | postgres + postgrest + auth + realtime                               |
 | `templates/init-db.sql.j2`          | Roles, schemas, extensions (rerun-safe)                              |
 | `templates/pgsodium_getkey.sh.j2`   | 64-char hex key generator for pgsodium (persists under PGDATA)       |

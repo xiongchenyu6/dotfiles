@@ -6,7 +6,7 @@ nextcloud_version: "29.0.4"
 nextcloud_domain: "10.171.150.101"  # Change this to your domain
 
 # Database configuration
-# Passwords come from sops: secrets/nextcloud.yaml (loaded by playbook.yml).
+# Passwords come from sops: secrets/common.yaml (loaded by playbook.yml).
 nextcloud_db_name: "nextcloud"
 nextcloud_db_user: "nextcloud"
 
