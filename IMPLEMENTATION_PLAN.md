@@ -399,12 +399,16 @@ build 通过；实机 switch 后个人服务（postgresql 的 freeman.xiong 库�
 
 ### 真正会泄漏的是明文，不是密文
 
-**这一点比删 secrets 键更重要**：加密文件即使公开也不泄漏，
-但 `home-configurations/freeman.xiong.nix` 里的**三台办公室机器地址是明文的**
-（`sg-office` / `sz-office` / `gz-office`，含内网 IP 和 `User = "autolife"`）。
-连同两份写死 `*.corp.autolife.ai` 的 docs 和 `setup-gotrue-postgrest.sh` 一并移到公司仓库。
+加密文件即使公开也不泄漏，但写死 `*.corp.autolife.ai` 的两份 docs 和
+`setup-gotrue-postgrest.sh` 是明文的，已移到公司仓库。
 对应的 Nix 模块（`gotrue-supabase.nix`、`postgrest/`）**留在 dotfiles** ——
 它们用 `networking.domain` 参数化，不含公司标识。
+
+**办公室 SSH 条目按用户要求留在 dotfiles**（`sg-office` / `sz-office` / `gz-office`）：
+个人电脑要靠它们连公司机器，就该放在这些机器实际构建的配置里。
+曾一度移到公司仓库，已恢复；公司仓库那份也保留（sg-office 同样可能需要互连）。
+**代价需要明确**：这三条是明文的内网 IP + `User = "autolife"`，
+若 dotfiles 将来公开，它们会一并公开 —— 届时可考虑改用 sops 模板注入。
 
 ### 顺带修正
 
@@ -448,8 +452,10 @@ switch 后 sops 挂载正常；公司 PGP key 已从个人仓库 recipient 列�
 3. **实机 switch**：全部验证都是求值层面的，没有任何一台机器实际部署过。
    建议顺序：先个人机（game/office 本地可回滚），再 arm-001，最后 huoshan
    （它换了仓库，且是唯一对外服务的机器）。
-4. **`oracle-amd-001` 无法构建**：`Node.js 20 support was removed`，nixpkgs 升级引入的
-   既有问题，与本次分离无关，但这台机器目前部署不了，需要单独修。
+4. **`oracle-amd-001` 无法构建**：`Node.js 20 support was removed`。已定位到根因 ——
+   来自 **`hermes-agent`**，它在自己的 `nix/packages.nix:17` 里写死了 `nodejs_20`
+   （不是 cc-gateway）。dotfiles 已把该 input pin 在 v0.8.0，需要等上游修或改 pin。
+   与本次分离无关，但这台机器目前部署不了。
 
 ## 可选的后续清理（本次刻意未做）
 
