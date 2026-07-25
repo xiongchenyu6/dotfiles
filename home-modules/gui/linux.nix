@@ -561,7 +561,11 @@ in
     };
   };
 
-  sops.secrets."voxinput/terms" = lib.mkIf (pkgs.stdenv.isLinux && !isRoot) { };
+  # Split out of common.yaml: the term list is prose, and at ~2.5kB it was a
+  # quarter of that file's plaintext, so every unrelated secret edit churned it.
+  sops.secrets."voxinput/terms" = lib.mkIf (pkgs.stdenv.isLinux && !isRoot) {
+    sopsFile = ../../secrets/voxinput-terms.yaml;
+  };
 
   systemd.user.services.voxinput-listener = lib.mkIf pkgs.stdenv.isLinux {
     Unit = {

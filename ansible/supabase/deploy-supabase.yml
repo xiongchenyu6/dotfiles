@@ -11,7 +11,7 @@
   tasks:
     - name: Load OIDC credentials from sops
       community.sops.load_vars:
-        file: ../../secrets/supabase.yaml
+        file: ../../secrets/common.yaml
       no_log: true
 
     - name: Install required packages

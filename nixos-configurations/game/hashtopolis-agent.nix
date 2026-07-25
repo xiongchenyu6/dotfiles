@@ -8,7 +8,6 @@
   # SOPS secrets configuration
   sops.secrets = {
     "hashtopolis/agent/voucher" = {
-      sopsFile = ../../secrets/game-hashtopolis.yaml;
       owner = "hashtopolis-agent";
       group = "hashtopolis-agent";
       mode = "0400";
