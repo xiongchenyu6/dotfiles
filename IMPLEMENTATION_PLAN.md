@@ -189,7 +189,52 @@ Stage 1/2 是真正的价值所在，Stage 4 的搬家反而是最轻的一步�
 
 ## Stage 2: 目标仓库补基础设施
 **Goal**: `AutoLifeRobot/nixos` 具备接收新主机的能力。**必须在 Stage 3 之前完成。**
-**Status**: Not Started
+**Status**: ✅ Complete（3 个 commit：`62a6cf6` / `9ef4dff` / `bbed28e`，均未 push）
+
+### 相对计划的偏差
+
+- **input 补齐的实际内容与预想不同**。计划以为要补的是 huoshan 的依赖
+  （protect-carrot / bevy-open-rts / autolife-www），但那些属于 Stage 3、放到迁移时补更干净。
+  Stage 2 真正必须补的是 **dotfiles 自身模块引用的 input** —— 目标仓库把 dotfiles 模块
+  的 `inputs` 解析到**自己**的 input 集，所以 dotfiles 模块按名字引用的东西必须在这里存在：
+  - `talon-nix` —— dotfiles 的 `nixos-modules/gui.nix` 无条件 import 它，缺了直接求值失败。
+  - `noctalia` —— dotfiles 模块读 `inputs.noctalia`，而目标仓库叫 `noctalia-v5`
+    （上游 `noctalia-shell`，是同一项目的新名字）。用 compatInputs 做别名，
+    避免闭包里出现两份 noctalia。
+  这是薄封装架构的固有代价：**每次 dotfiles 新增模块级 input，目标仓库都要跟着镜像。**
+- **`disko` 不需要**：huoshan 用 `hardware-configuration.nix`，不用 disko。
+- **`autolife-www` 已可改远程**：`AutoLifeRobot/www` 仓库存在且本地 HEAD == origin/main
+  （`9419e04`），改远程 URL 是安全的。留到 Stage 3 随 huoshan 一起改。
+- **sops 规则从"合并密钥"变成"收紧授权"**：原计划只说补 key，但执行时发现
+  `updatekeys` 会按 creation_rules 把 **`game`（个人工作站）** 加成 `sg-office.yaml` 的
+  收件人 —— 该文件原本只有 sg-office 一把密钥。这是公私分离的反向泄漏。
+  因此把一条 `secrets/*.yaml` 通配规则拆成 per-file 规则，并把 `game` 整个移出
+  （它在本仓库没有任何配置）。最终授权：
+  `common.yaml` → sg-office + huoshan；`sg-office.yaml` → sg-office。
+  **已验证重新加密前后两个文件明文 sha256 完全一致。**
+- **格式化是必需的额外工作**：仓库从未跑过 hooks，一开就是红的。做了机械格式化
+  （单独 commit `bbed28e`），并新增 `statix.toml` 关掉 `repeated_keys`(W20) ——
+  它要求把按主题分组的 `services.*` 合并成一个大 attrset，与两个仓库的既有写法冲突。
+
+### 验证
+
+- `sg-office` 求值通过，且**跨越 dotfiles 23 个 commit + 更换 nixpkgs channel 后，
+  格式化前后 drvPath 完全一致**（`yrqkdwpcll055bqz3mry4145crvd9hrk`），
+  证明所有改动语义中性。
+- `nix build .#checks.x86_64-linux.pre-commit` **全部 hook 通过**。
+  （注：dotfiles 自己的同名门禁目前是失败的 —— shfmt 在一个游戏启动脚本上报错，
+  属既有问题，与本次无关。）
+- `flake.lock` 中 `dotfiles` pin 到 `1779017f`（Stage 1 的 commit），
+  nixpkgs 为 `nixos-unstable@e2587cae`，与 dotfiles 同 rev；无 AutoLifeRobot 私有仓库引用。
+
+### 遗留
+
+- 三个 commit **都还没 push** 到 `AutoLifeRobot/nixos`。
+- `services.logind.lidSwitch*` 系列弃用警告（来自 `server-power-management.nix`），
+  nixos-unstable 引入，不影响求值，可后续单独修。
+- 目标仓库的 `shares.toml` 现在是 dotfiles 的完整副本，携带了个人主机的 wireguard
+  公钥。sg-office 确实需要 `oracle-amd-002` 那条（wg peer），但其余（game/office/digital）
+  是多余的。**未来可收敛成公司仓库最小集** —— 本次未做，避免与迁移混在一起。
 
 1. **修 dotfiles pin（阻塞级）**：目标仓库 pin 的是 `?ref=develop`，其 rev 落后本地 `main` 21 个
    commit，而 huoshan 的全部近期工作都在 main 上。改成 `?ref=main`，或先把 main 合回 develop。
