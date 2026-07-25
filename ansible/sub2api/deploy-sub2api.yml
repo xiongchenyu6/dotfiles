@@ -5,23 +5,9 @@
   vars_files:
     - vars/main.yml
 
-  pre_tasks:
-    # Sudo password lives in secrets/sub2api-<profile>.yaml (sops). Default
-    # profile is "autolife" — override on the command line with `-e profile=...`
-    # if other deployments come online.
-    - name: Load sudo password from sops (secrets/sub2api-{{ profile | default('autolife') }}.yaml)
-      community.sops.load_vars:
-        file: "../../secrets/sub2api-{{ profile | default('autolife') }}.yaml"
-      no_log: true
-      delegate_to: localhost
-      become: false
-      run_once: true
-
-    - name: Apply ansible_become_pass from secrets if provided
-      set_fact:
-        ansible_become_pass: "{{ sub2api.become_password }}"
-      when: sub2api.become_password is defined
-      no_log: true
+  # The remaining deployment (starslab/lubancat) connects as root, so there is
+  # no sudo password to load. The autolife profile, which needed one from sops,
+  # moved to the company repo.
 
   tasks:
     - name: Install required packages
