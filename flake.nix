@@ -221,6 +221,24 @@
             oracle-amd-001 = hostConfig;
             oracle-amd-002 = hostConfig;
           };
+
+        # lubancat is an aarch64 SBC on Ubuntu — RK3588 has no mainline device
+        # tree, so it cannot run NixOS. home-manager still manages the shell
+        # there, standalone.
+        #
+        # standalone suppresses this user's ${user}@${host} outputs, which is
+        # why only `cat` uses it: turning it on for freeman.xiong would drop
+        # every existing per-host home configuration.
+        home.users.cat = {
+          importDefault = false;
+          standalone = {
+            enable = true;
+            pkgs = import inputs.nixpkgs {
+              system = "aarch64-linux";
+              config.allowUnfree = true;
+            };
+          };
+        };
       };
 
       perSystem =
