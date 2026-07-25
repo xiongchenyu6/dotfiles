@@ -21,45 +21,6 @@
         "type": "github"
       }
     },
-    "autolife-www": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1784863938,
-        "narHash": "sha256-IupA8WPTHmdOCEJEu8cVED2CK0am3rqyulULNN4dqYg=",
-        "ref": "refs/heads/main",
-        "rev": "9419e0402a19004e92e40e4ba5ee64dfa2a8c119",
-        "revCount": 55,
-        "type": "git",
-        "url": "file:///home/freeman.xiong/Documents/github/autolife/www"
-      },
-      "original": {
-        "type": "git",
-        "url": "file:///home/freeman.xiong/Documents/github/autolife/www"
-      }
-    },
-    "bevy-open-rts": {
-      "inputs": {
-        "flake-parts": [
-          "flake-parts"
-        ],
-        "nixpkgs": [
-          "nixpkgs"
-        ]
-      },
-      "locked": {
-        "lastModified": 1784929394,
-        "narHash": "sha256-e9EUGwv+NLhARbale12yQmUdOFw497flDIxy/BUt1As=",
-        "owner": "xiongchenyu6",
-        "repo": "bevy-open-rts",
-        "rev": "fd7d71a1810988027849b27fa20046cf1f8151b4",
-        "type": "github"
-      },
-      "original": {
-        "owner": "xiongchenyu6",
-        "repo": "bevy-open-rts",
-        "type": "github"
-      }
-    },
     "bun2nix": {
       "inputs": {
         "flake-parts": [
@@ -765,29 +726,6 @@
         "type": "github"
       }
     },
-    "protect-carrot": {
-      "inputs": {
-        "flake-parts": [
-          "flake-parts"
-        ],
-        "nixpkgs": [
-          "nixpkgs"
-        ]
-      },
-      "locked": {
-        "lastModified": 1783687833,
-        "narHash": "sha256-TDGfmuw9H/SaOypfD7X09a54GvjWzvvlgoVPja3+iNw=",
-        "owner": "xiongchenyu6",
-        "repo": "protect-carrot",
-        "rev": "9dbb8aa5fc1b97edec45f34c390717851273b9d9",
-        "type": "github"
-      },
-      "original": {
-        "owner": "xiongchenyu6",
-        "repo": "protect-carrot",
-        "type": "github"
-      }
-    },
     "purescript-overlay": {
       "inputs": {
         "flake-compat": "flake-compat_2",
@@ -975,8 +913,6 @@
     "root": {
       "inputs": {
         "NixVirt": "NixVirt",
-        "autolife-www": "autolife-www",
-        "bevy-open-rts": "bevy-open-rts",
         "claude-desktop": "claude-desktop",
         "darwin": "darwin",
         "disko": "disko",
@@ -1000,7 +936,6 @@
         "noctalia": "noctalia",
         "nur": "nur",
         "pre-commit-hooks": "pre-commit-hooks",
-        "protect-carrot": "protect-carrot",
         "sops-nix": "sops-nix",
         "srvos": "srvos",
         "systems": "systems",

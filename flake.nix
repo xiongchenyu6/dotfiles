@@ -114,33 +114,6 @@
         flake-utils.follows = "flake-utils";
       };
     };
-    # 保卫萝卜 (Protect the Carrot) — Bevy WebGPU/wasm tower-defense game.
-    # Provides nixosModules.default (nginx vhost) + overlays.default
-    # (pkgs.protect-carrot-web). Served on huoshan-bj-001.
-    protect-carrot = {
-      url = "github:xiongchenyu6/protect-carrot";
-      inputs = {
-        nixpkgs.follows = "nixpkgs";
-        flake-parts.follows = "flake-parts";
-      };
-    };
-    # Bevy Open RTS — Bevy WebGPU/wasm RTS. Provides nixosModules.default
-    # (nginx vhost) + overlays.default (pkgs.bevy-open-rts-web, a prebuilt bundle
-    # fetched from GitHub Releases). Served on huoshan-bj-001 (rts.bj...).
-    bevy-open-rts = {
-      url = "github:xiongchenyu6/bevy-open-rts";
-      inputs = {
-        nixpkgs.follows = "nixpkgs";
-        flake-parts.follows = "flake-parts";
-      };
-    };
-    # AutoLife Robotics marketing site (SvelteKit, adapter-static). Built with
-    # buildNpmPackage and served as static files on huoshan-bj-001
-    # (autolife-robotics.com). Local working tree — source only, not a flake.
-    autolife-www = {
-      url = "git+file:///home/freeman.xiong/Documents/github/autolife/www";
-      flake = false;
-    };
     llm-agents = {
       url = "github:numtide/llm-agents.nix";
       inputs = {
@@ -251,7 +224,6 @@
             oracle-arm-002 = hostConfig;
             oracle-amd-001 = hostConfig;
             oracle-amd-002 = hostConfig;
-            huoshan-bj-001 = hostConfig;
           };
       };
 
