@@ -237,7 +237,7 @@ in
         };
         "lubancat" = {
           HostName = "203.116.95.146";
-          User = "root";
+          User = "cat";
         };
       };
     };

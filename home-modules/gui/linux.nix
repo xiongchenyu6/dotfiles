@@ -19,11 +19,12 @@ let
     if hasNvidiaTag then
       (pkgs.whisper-cpp.override {
         cudaSupport = true;
-      }).overrideAttrs (old: {
-        cmakeFlags = (old.cmakeFlags or [ ]) ++ [
-          (lib.cmakeFeature "CMAKE_CUDA_ARCHITECTURES" "86")
-        ];
-      })
+      }).overrideAttrs
+        (old: {
+          cmakeFlags = (old.cmakeFlags or [ ]) ++ [
+            (lib.cmakeFeature "CMAKE_CUDA_ARCHITECTURES" "86")
+          ];
+        })
     else
       pkgs.whisper-cpp;
   whisperCppModel = "large-v3-turbo-q5_0";
@@ -283,11 +284,7 @@ let
   ];
   voiceTerms = lib.unique (lib.concatMap (group: group.terms) voiceTermGroups);
   voicePromptTerms = lib.unique (lib.concatMap (group: lib.take 14 group.terms) voiceTermGroups);
-  privateVoiceTermsPath =
-    if isRoot then
-      "/dev/null"
-    else
-      config.sops.secrets."voxinput/terms".path;
+  privateVoiceTermsPath = if isRoot then "/dev/null" else config.sops.secrets."voxinput/terms".path;
   voiceTermsText =
     lib.concatStringsSep "\n" (
       lib.concatMap (group: [ "# ${group.name}" ] ++ group.terms ++ [ "" ]) voiceTermGroups
@@ -374,12 +371,14 @@ let
     postFixup = (old.postFixup or "") + ''
       rm -f $out/bin/voxinput
       makeWrapper $out/bin/.voxinput-wrapped $out/bin/voxinput \
-        --prefix PATH : ${lib.makeBinPath [
-          voxinputPasteDotool
-          pkgs.wl-clipboard
-          pkgs.ydotool
-          pkgs.coreutils
-        ]}
+        --prefix PATH : ${
+          lib.makeBinPath [
+            voxinputPasteDotool
+            pkgs.wl-clipboard
+            pkgs.ydotool
+            pkgs.coreutils
+          ]
+        }
     '';
   });
   voxinputListener = pkgs.writeShellScript "voxinput-listener" ''
@@ -393,12 +392,14 @@ let
   whisperCppServer = pkgs.writeShellScript "whisper-cpp-server-local" ''
     set -euo pipefail
 
-    export PATH=${lib.makeBinPath [
-      pkgs.coreutils
-      pkgs.curl
-      pkgs.ffmpeg-full
-      whisperCppPackage
-    ]}:$PATH
+    export PATH=${
+      lib.makeBinPath [
+        pkgs.coreutils
+        pkgs.curl
+        pkgs.ffmpeg-full
+        whisperCppPackage
+      ]
+    }:$PATH
 
     mkdir -p "${whisperCppModelDir}"
     whisper-cpp-download-ggml-model ${whisperCppModel} "${whisperCppModelDir}"
@@ -565,10 +566,18 @@ in
   systemd.user.services.voxinput-listener = lib.mkIf pkgs.stdenv.isLinux {
     Unit = {
       Description = "VoxInput push-to-talk listener";
+      # Bound to the graphical session, not default.target: pasting goes through
+      # wl-copy, which needs WAYLAND_DISPLAY. On default.target this unit starts
+      # with the user manager — before the compositor imports that variable into
+      # the systemd environment — so it captured an environment without it and
+      # every paste failed with "dotool wait: exit status 1" until the next
+      # manual restart.
       After = [
+        "graphical-session.target"
         "pipewire.service"
         "whisper-cpp-server.service"
       ];
+      PartOf = [ "graphical-session.target" ];
       Wants = [ "whisper-cpp-server.service" ];
     };
 
@@ -579,7 +588,7 @@ in
     };
 
     Install = {
-      WantedBy = [ "default.target" ];
+      WantedBy = [ "graphical-session.target" ];
     };
   };
 
