@@ -369,7 +369,53 @@ build 通过；实机 switch 后个人服务（postgresql 的 freeman.xiong 库�
 
 ## Stage 4: 拆分 secrets/common.yaml
 **Goal**: 个人仓库的 secrets 里不再有公司凭证。**这是最脏的一步，放最后单独做。**
-**Status**: Not Started
+**Status**: ✅ Complete（dotfiles `20b2940b`；公司仓库 `d66a159`。**均未 push**）
+
+### 判定"哪些键是死的"用的是求值，不是 grep
+
+先对每台主机求值 `config.sops.secrets` + `home-manager.users.*.sops.secrets`，
+拿到权威的"实际被请求的键"清单。**关键陷阱**：`oracle-amd-001` 至今无法求值
+（Stage 0 记录的 nixpkgs Node.js 20 既有问题），如果只看求值结果，
+它的 `cc-gateway` 和 `zeroclaw` 会被误判成无人使用而删掉。这两个是单独 grep 确认保留的。
+
+### 删了什么、没删什么
+
+- **删除的 7 个公司键**：`autolife-relay`、`odoo`、`casdoor`、`casibase`、`sub2api`、
+  `openldap`、`rust-web-server`。用 `sops unset` 逐个删除（比解密-编辑-再加密安全），
+  删除前后核对：正好少这 7 个，其余 30 个完好。
+- **刻意保留**：`postgrest`、`database`、`cachix`、`netbird`、`kanidm` —— 这些是你自己的
+  基础设施凭证，只是对应模块当前未启用。**本阶段的目标是清除公司материал，
+  不是清理一切当前未被引用的东西。**
+- **`openfortivpn` / `falcon` 保留**：公司下发的软件，但 `office` 确实在跑，
+  且凭证是"这台机器要用的客户端配置"而非公司基础设施。没有单独拆文件 ——
+  反正都在个人仓库里，加个文件只增复杂度不增安全性。
+
+### .sops.yaml 收件人收紧
+
+移除公司同事 PGP（`autolife`、`seanhxx`、`freeman-sgoffice`）—— 他们此前**能解密
+本仓库每一份个人凭证**。同时移除已迁走的 `huoshan-bj-001` 和根本不存在配置的 `netbird`。
+四个 secrets 文件全部重新加密，明文验证一致，三个公司指纹已从密文中消失。
+最终：8 把个人主机 age 密钥 + 2 个你自己的 PGP。
+
+### 真正会泄漏的是明文，不是密文
+
+**这一点比删 secrets 键更重要**：加密文件即使公开也不泄漏，
+但 `home-configurations/freeman.xiong.nix` 里的**三台办公室机器地址是明文的**
+（`sg-office` / `sz-office` / `gz-office`，含内网 IP 和 `User = "autolife"`）。
+连同两份写死 `*.corp.autolife.ai` 的 docs 和 `setup-gotrue-postgrest.sh` 一并移到公司仓库。
+对应的 Nix 模块（`gotrue-supabase.nix`、`postgrest/`）**留在 dotfiles** ——
+它们用 `networking.domain` 参数化，不含公司标识。
+
+### 顺带修正
+
+`setup-gotrue-postgrest.sh` 把一段可复制的 curl 示例写成三行带字面反斜杠的 echo，
+shellcheck 判为引号转义错误（SC1003）。改写成引号 heredoc —— 输出完全相同，
+且不需要任何抑制。
+
+### 最终状态
+
+dotfiles 中剩余的 autolife 字符串只有 4 处说明性注释 + `tcloud` 的 coturn realm
+（Stage 0 刻意保留，改名会让所有已下发的 TURN 凭证失效）。
 
 `secrets/common.yaml` 是 `shared-modules/sops.nix:1` 和 `home-modules/default.nix:47` 的
 `defaultSopsFile`，被几乎所有主机 + home 配置共用，33 个顶层键里公司/个人混在一起。
@@ -391,6 +437,30 @@ build 通过；实机 switch 后个人服务（postgresql 的 freeman.xiong 库�
 switch 后 sops 挂载正常；公司 PGP key 已从个人仓库 recipient 列表移除。
 
 ---
+
+---
+
+## 全部阶段已完成 —— 剩余待办（都在仓库之外）
+
+1. **push**：两个仓库共 11 个 commit 尚未 push（dotfiles 5 个、公司仓库 6 个）。
+2. **DNS**：到 Cloudflare 摘掉 `api` / `odoo` / `rust-server.autolife.ai` 三条指向
+   `138.2.95.174` 的 A 记录。arm-001 清理后它们会从 502 变成连不上。
+3. **实机 switch**：全部验证都是求值层面的，没有任何一台机器实际部署过。
+   建议顺序：先个人机（game/office 本地可回滚），再 arm-001，最后 huoshan
+   （它换了仓库，且是唯一对外服务的机器）。
+4. **`oracle-amd-001` 无法构建**：`Node.js 20 support was removed`，nixpkgs 升级引入的
+   既有问题，与本次分离无关，但这台机器目前部署不了，需要单独修。
+
+## 可选的后续清理（本次刻意未做）
+
+- **coturn realm**：`tcloud.autolife.ai` 是个人机上最后一个公司字符串。改名需要同时
+  重新下发所有 TURN 凭证（摘要含 realm）。
+- **公司仓库的 `shares.toml`**：目前是 dotfiles 的完整副本，带着 game/office/digital
+  等个人主机的 wireguard 公钥。sg-office 只需要 `oracle-amd-002` 那条。
+- **`birg-lg` 的 TLS 一直是坏的**：`serverName` 比证书通配符深一级，`inner.` 那层匹配不上。
+  既有问题，与分离无关。
+- **两个 Bevy 游戏仍寄生在公司域名下**（`*.bj.autolife-robotics.com`）。
+  彻底分离需要先把它们挪到 `panda.qzz.io` 并换证书。
 
 ## 风险与注意
 
