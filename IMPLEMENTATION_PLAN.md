@@ -452,10 +452,10 @@ switch 后 sops 挂载正常；公司 PGP key 已从个人仓库 recipient 列�
 3. **实机 switch**：全部验证都是求值层面的，没有任何一台机器实际部署过。
    建议顺序：先个人机（game/office 本地可回滚），再 arm-001，最后 huoshan
    （它换了仓库，且是唯一对外服务的机器）。
-4. **`oracle-amd-001` 无法构建**：`Node.js 20 support was removed`。已定位到根因 ——
-   来自 **`hermes-agent`**，它在自己的 `nix/packages.nix:17` 里写死了 `nodejs_20`
-   （不是 cc-gateway）。dotfiles 已把该 input pin 在 v0.8.0，需要等上游修或改 pin。
-   与本次分离无关，但这台机器目前部署不了。
+4. ~~**`oracle-amd-001` 无法构建**~~ ✅ **已修复**。根因是 `hermes-agent` 被 pin 在
+   v0.8.0，而该版本拉 `nodejs_20`（nixpkgs 已按 EOL 移除）。当初 pin 是为了绕开
+   alibabacloud setuptools 和 hermes-tui npmDepsHash 两个构建问题 —— 上游都已修好。
+   解除 pin 后落到 0.19.0，**已实际构建整台 toplevel 成功**（不只是求值）。
 
 ## 可选的后续清理（本次刻意未做）
 
