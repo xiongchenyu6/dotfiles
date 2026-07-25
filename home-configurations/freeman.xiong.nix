@@ -222,19 +222,6 @@ in
         "game" = {
           HostName = "172.22.240.99";
         };
-        "sg-office" = {
-          HostName = "101.78.126.6";
-        };
-        "sz-office" = {
-          HostName = "113.90.155.31";
-          User = "autolife";
-          Port = 2222;
-        };
-        "gz-office" = {
-          HostName = "183.6.107.47";
-          User = "autolife";
-          Port = 2222;
-        };
         "lubancat" = {
           HostName = "203.116.95.146";
           User = "root";

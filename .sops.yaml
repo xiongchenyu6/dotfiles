@@ -1,9 +1,10 @@
+# Personal recipients only. The company PGP keys (autolife, seanhxx,
+# freeman-sgoffice) used to be listed here, which meant colleagues could decrypt
+# every personal credential in this repo; company secrets now live in the
+# AutoLifeRobot repo and are encrypted to those keys there instead.
 keys:
   - &xiongchenyu 4EDE451FC10722D0C6662C6FB99B8189C7C153F6
   - &yubikey 5AF06033B3CC0104450B4F25F438D971EBE848EE
-  - &autolife F2BAD15A01F1EE848F6AF6FBC3BD4932D45587F7
-  - &seanhxx 1203CE203CC38DE1511EDDB0362347A01AEB1874
-  - &freeman-sgoffice B83A3A33A74A84BCAFD6F24FE4C6A5C3681FDBC3
   - &office age1ss6yryyyma55atqs9mr823q0s9fqlu9rdh6dmkmzhxq8jvf635qssp5cuw
   - &office-mac age1urzhxxn7crgc7u9rc43dww2tfs6mggu6lukskzudrrspx4xz4sussrp3ls
   - &oracle-arm-001 age1xm5qgvpmy6whs5jqrdzde0l33qktg4azst3zpyr7lgg5qh9cqfjs56e7d5
@@ -12,45 +13,19 @@ keys:
   - &oracle-amd-002 age1e705lmnt4g006qpflm8wyefr23papuz3cq5z4dyctjp6u7qz2y0qzmmh5x
   - &tcloud age1nqkt2nakrnjxqvpr9h99hk828e8407af26yvdf7qn3ce5uydkqwqjgkt8n
   - &game age107w29mcnleyvvza8r9p3pkq6v7pqg8y3uvn9vp0pa55yrrwa757ss3xg5x
-  - &netbird age19eapwgdt8ufhzztcs84jtqyyymh5ypld39mq3kc48aruz7jmu3gqgysyle
-  - &huoshan-bj-001 age140gwsatv8ev09jwnyrt7wmhwtf652hhs07y5x4nwjfy06wphncmql2zdkj
 
 creation_rules:
-  - path_regex: secrets/[^/]+\.yaml$
+  - path_regex: secrets/[^/]+\.(yaml|env)$
     key_groups:
       - age:
           - *office
+          - *office-mac
           - *tcloud
           - *game
-          - *netbird
-          - *huoshan-bj-001
           - *oracle-arm-001
           - *oracle-arm-002
           - *oracle-amd-001
           - *oracle-amd-002
-          - *office-mac
         pgp:
           - *xiongchenyu
           - *yubikey
-          - *autolife
-          - *seanhxx
-          - *freeman-sgoffice
-  - path_regex: secrets/[^/]+\.env$
-    key_groups:
-      - age:
-          - *office
-          - *tcloud
-          - *game
-          - *netbird
-          - *huoshan-bj-001
-          - *oracle-arm-001
-          - *oracle-arm-002
-          - *oracle-amd-001
-          - *oracle-amd-002
-          - *office-mac
-        pgp:
-          - *xiongchenyu
-          - *yubikey
-          - *autolife
-          - *seanhxx
-          - *freeman-sgoffice
