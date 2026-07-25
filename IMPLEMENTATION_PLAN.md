@@ -260,7 +260,56 @@ pre-commit 在全仓库跑通。
 
 ## Stage 3: 迁移 huoshan-bj-001 与 ansible
 **Goal**: huoshan-bj-001 落到目标仓库，dotfiles 侧移除。
-**Status**: Not Started
+**Status**: ✅ Complete
+（公司仓库 `d36bd4c` + `2601ecd`；dotfiles `5670de95` + `37240bd1`。**均未 push**）
+
+### 等价性验证（不是"看起来对"，是逐项比对）
+
+huoshan 迁移前后：ACME 证书集合相同、防火墙端口相同、vhost 列表相同、
+**78 个 systemd 服务完全一致（无增无减）**、生成的 nginx.conf 是**同一个 store 路径**
+（`z0vngdiczn1g944ff4min6rqhmv1w6q1`，逐字节相同）。
+
+### 为让 headless 主机能进公司仓库，修了两个既有 bug
+
+公司仓库此前只有 sg-office 一台 GUI 主机，两处代码隐含了这个假设：
+- `home-modules/default.nix` 用 `lib.mkIf isGuiHost` 包住 `programs.niri.settings.binds`，
+  但 **mkIf 只延迟条件、不延迟属性路径查找** —— 没有 niri 模块时 `config.lib.niri` 不存在，
+  照样报错。改用 `lib.optionalAttrs` 整块裁掉。
+- `autolife-extras.nix` 无条件把 `networking.domain` 插值进 `.ldaprc`，
+  主机没有 domain 时是求值错误。加了 null 保护。
+
+### ansible 拆分的实际代价
+
+- `parseable` / `rustfs` / `vaultwarden` 无个人 profile，整目录搬。
+- `netbird` / `sub2api` 是混合的 —— **playbook 和 templates 必须复制一份**到公司仓库，
+  这是公私分离无法避免的重复（没有共享位置可放了）。
+- 两边都改成「裸命令即部署本仓库目标」：netbird 的 profile 默认从 `starslab` 翻成
+  `autolife`，sub2api 的 `vars/main.yml` 吸收了原本要 `-e @vars-autolife.yml` 传的值，
+  所有 inventory 统一命名 `inventory.ini`。
+- dotfiles 侧 sub2api 原本每次运行都去读
+  `secrets/sub2api-{{ profile | default('autolife') }}.yaml` —— 该默认值已失效，
+  而剩下的部署用 root 连接、根本不需要 sudo 密码，所以整段删除而非改指向。
+
+### secrets 的第二次收紧
+
+六个 ansible secrets 搬过去时**带着 dotfiles 的全部收件人 —— 其中 10 把个人主机密钥**。
+公司仓库没有任何 NixOS 主机读它们（由运行 playbook 的人解密），
+所以重新加密为**仅 5 个人的 PGP、零主机密钥**。明文验证一致。
+
+### 顺带修正
+
+- netbird 的 README 通篇写的是个人 starslab 部署 —— 错误的主机、错误的域名，
+  还引用了一个从不存在的 `secrets/netbird.yaml`。按 `vars/autolife.yml` 重写。
+- rustfs 的两个 shell 脚本没通过公司仓库现在强制的 hooks（dotfiles 从未真正强制过）。
+  `shfmt -s` 已应用；4 个 shellcheck 告警**全是误报或有意为之**，逐个加了带理由的定向豁免：
+  `START_TS` 在单引号 trap 内被展开、`snap_bytes` 是文档化的调用约定、
+  `RUSTFS_ALIAS` 注释已声明保留、SC2087 那个 heredoc 是故意烘焙本地值并转义远程部分。
+
+### 验证
+
+- 两仓库全部 playbook `--syntax-check` 通过；公司仓库 pre-commit 全绿。
+- dotfiles 剩余 6 台主机求值通过，`huoshan-bj-001` 已不产生 nixosConfiguration。
+- 公司仓库 ansible 目录内已无 `starslab` / `qzz.io` / `203.116.95.146` 残留。
 
 1. huoshan-bj-001：在目标仓库建 `nixos-configurations/huoshan-bj-001/`，
    加进 `ezConfigs.nixos.hosts`。本地引用的 dotfiles 模块（`ezModules.cn`、`ezModules.sing-box`、
