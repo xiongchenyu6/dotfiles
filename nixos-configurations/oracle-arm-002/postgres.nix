@@ -8,7 +8,6 @@
 
 {
   imports = [
-    inputs.xiongchenyu6.nixosModules.gotrue-supabase
     inputs.xiongchenyu6.nixosModules.supabase-realtime
   ];
 
@@ -17,7 +16,8 @@
   sops.secrets."oracle-arm-002/quant-password" = { };
   sops.secrets."oracle-arm-002/realtime-secret-key-base" = { };
   sops.secrets."oracle-arm-002/realtime-metrics-jwt-secret" = { };
-  sops.secrets."oracle-arm-002/google-oauth-secret" = { };
+  # google-oauth-secret moved to the Auth0 dashboard (Google social connection)
+  # with the GoTrue → Auth0 migration; no service on this host needs it.
 
   sops.templates."postgrest-pgpass" = {
     content = ''
@@ -28,15 +28,6 @@
 
   sops.templates."postgrest-jwt-secret" = {
     content = config.sops.placeholder."oracle-arm-002/jwt-secret";
-    mode = "0400";
-  };
-
-  sops.templates."gotrue-env" = {
-    content = ''
-      GOTRUE_JWT_SECRET=${config.sops.placeholder."oracle-arm-002/jwt-secret"}
-      DATABASE_URL=postgres://supabase_auth_admin:${config.sops.placeholder."oracle-arm-002/db-service-password"}@127.0.0.1:5432/api?search_path=auth&sslmode=disable
-      GOTRUE_EXTERNAL_GOOGLE_SECRET=${config.sops.placeholder."oracle-arm-002/google-oauth-secret"}
-    '';
     mode = "0400";
   };
 
@@ -90,7 +81,7 @@
         # preload-heavy / shared_preload_libraries members
         # pgaudit — broken in nixpkgs for PG18 (2026-04). Re-add once the
         # upstream bump lands; Supabase uses it for audit logging but it's
-        # not load-bearing for PostgREST/realtime/gotrue.
+        # not load-bearing for PostgREST/realtime.
         plpgsql_check
         pg_cron
         pg_net
@@ -230,10 +221,7 @@
     after = [ "postgresql.target" ];
     requires = [ "postgresql.target" ];
     wantedBy = [ "multi-user.target" ];
-    before = [
-      "postgrest.service"
-      "gotrue-supabase.service"
-    ];
+    before = [ "postgrest.service" ];
 
     serviceConfig = {
       Type = "oneshot";
@@ -378,59 +366,14 @@
     '';
   };
 
-  # gotrue owns auth.{users,identities,...} and the auth.{jwt,uid,role,email}
-  # helper functions. Run `auth migrate` before gotrue-supabase.service so the
-  # schema is in place on first boot and after upstream migrations are added.
-  # Also grants EXECUTE on the helper functions to the PostgREST roles —
-  # gotrue creates them, we just expose them.
-  systemd.services.gotrue-migrate = {
-    description = "Apply GoTrue database migrations";
-    after = [ "postgresql-api-init.service" ];
-    requires = [ "postgresql-api-init.service" ];
-    before = [ "gotrue-supabase.service" ];
-    wantedBy = [ "gotrue-supabase.service" ];
-
-    serviceConfig = {
-      Type = "oneshot";
-      RemainAfterExit = true;
-    };
-
-    script = ''
-      set -euo pipefail
-      EF=${config.sops.templates."gotrue-env".path}
-      DB_URL=$(${pkgs.gnugrep}/bin/grep -E '^DATABASE_URL=' "$EF" | ${pkgs.coreutils}/bin/cut -d= -f2-)
-      JWT_SECRET=$(${pkgs.gnugrep}/bin/grep -E '^GOTRUE_JWT_SECRET=' "$EF" | ${pkgs.coreutils}/bin/cut -d= -f2-)
-      ${pkgs.coreutils}/bin/env \
-        DATABASE_URL="$DB_URL" \
-        GOTRUE_DB_DRIVER=postgres \
-        GOTRUE_JWT_SECRET="$JWT_SECRET" \
-        API_EXTERNAL_URL=https://auth.panda.qzz.io \
-        GOTRUE_SITE_URL=https://auth.panda.qzz.io \
-        ${pkgs.gotrue-supabase}/bin/auth migrate
-
-      # Helper functions are owned by supabase_auth_admin after migrate. Grant
-      # EXECUTE so PostgREST roles can call them from policies/views.
-      ${pkgs.sudo}/bin/sudo -u postgres ${pkgs.postgresql_18_jit}/bin/psql \
-        -v ON_ERROR_STOP=1 -d api <<'SQL'
-        GRANT EXECUTE ON FUNCTION auth.jwt(), auth.uid(), auth.role(), auth.email()
-          TO anon, authenticated, service_role;
-      SQL
-    '';
-  };
+  # GoTrue is retired (Auth0 migration). The auth schema + auth.{jwt,uid,role,
+  # email} helper functions live on: quant/migrations/031_auth0_migration.sql
+  # rewrote them as dual-read (Auth0 namespaced claims first) and re-owned them
+  # to postgres, so no service on this host manages them anymore.
 
   systemd.services.postgrest = {
     after = [ "postgresql-api-init.service" ];
     requires = [ "postgresql-api-init.service" ];
-  };
-  systemd.services.gotrue-supabase = {
-    after = [
-      "postgresql-api-init.service"
-      "gotrue-migrate.service"
-    ];
-    requires = [
-      "postgresql-api-init.service"
-      "gotrue-migrate.service"
-    ];
   };
 
   services.postgrest = {
@@ -448,44 +391,17 @@
       db-anon-role = "anon";
       server-port = 3333;
       server-unix-socket = null;
-      jwt-role-claim-key = ".role";
-      jwt-aud = "authenticated";
+      # Auth0 access tokens carry the role in a namespaced custom claim (set by
+      # the post-login Action). The nixpkgs module quotes + escapes this value
+      # into postgrest.conf, so pass the bare jspath — it renders as
+      #   jwt-role-claim-key = ".\"https://panda.qzz.io/role\""
+      jwt-role-claim-key = ''."https://panda.qzz.io/role"'';
+      # Must match the Auth0 API identifier.
+      jwt-aud = "https://api.panda.qzz.io";
+      # First request from a fresh Auth0 signup upserts quant.users (FK target
+      # of user_preferences/backtest_jobs/...). Defined in migration 031.
+      db-pre-request = "quant.ensure_user";
       openapi-server-proxy-uri = "https://api.panda.qzz.io";
-    };
-  };
-
-  services.gotrue-supabase = {
-    enable = true;
-    listenAddress = "127.0.0.1";
-    # Module exports `apiPort` as API_PORT, but supabase/auth 2.x ignores that
-    # env key and binds the default 8081 anyway. Leave apiPort unset (=8081)
-    # and align nginx below to what the binary actually listens on.
-    siteUrl = "https://auth.panda.qzz.io";
-    apiExternalUrl = "https://auth.panda.qzz.io";
-    environmentFiles = [ config.sops.templates."gotrue-env".path ];
-    settings = {
-      GOTRUE_JWT_AUD = "authenticated";
-      GOTRUE_JWT_EXP = 3600;
-      GOTRUE_JWT_DEFAULT_GROUP_NAME = "authenticated";
-      GOTRUE_MAILER_AUTOCONFIRM = true;
-      GOTRUE_EXTERNAL_EMAIL_ENABLED = true;
-      GOTRUE_EXTERNAL_PHONE_ENABLED = false;
-      GOTRUE_DISABLE_SIGNUP = false;
-      GOTRUE_PASSWORD_MIN_LENGTH = 8;
-      DB_NAMESPACE = "auth";
-
-      # Google OAuth (client secret comes from the SOPS template above).
-      # Redirect URI below must be registered verbatim in GCP → Credentials
-      # → OAuth 2.0 Client IDs → Authorised redirect URIs.
-      GOTRUE_EXTERNAL_GOOGLE_ENABLED = true;
-      GOTRUE_EXTERNAL_GOOGLE_CLIENT_ID =
-        "903515141994-i4q7kuslcjsff955t8vt1fmre2jh9gk0.apps.googleusercontent.com";
-      GOTRUE_EXTERNAL_GOOGLE_REDIRECT_URI = "https://auth.panda.qzz.io/callback";
-
-      # Where GoTrue is allowed to redirect users after OAuth. Glob (**) so
-      # the `?next=/protected/path` pattern used for post-login bounce-back
-      # passes without tripping redirect_uri_mismatch.
-      GOTRUE_URI_ALLOW_LIST = "https://quant.panda.qzz.io/**,https://quant.xiongchenyu6.workers.dev/**";
     };
   };
 
@@ -560,31 +476,6 @@
           limit_req zone=public_preview burst=60 nodelay;
           limit_req_status 429;
           add_header Cache-Control "public, max-age=60, s-maxage=300" always;
-        '';
-      };
-    };
-    "auth.panda.qzz.io" = {
-      forceSSL = true;
-      enableACME = true;
-      locations."/" = {
-        proxyPass = "http://127.0.0.1:8081";
-        proxyWebsockets = true;
-        extraConfig = ''
-          # GoTrue emits its own Access-Control-Allow-Origin on actual
-          # responses; without proxy_hide_header those would stack on top
-          # of the add_header below, producing "header contains multiple
-          # values '*, *'" and CORS-blocking the browser. We strip the
-          # upstream copies and re-emit a single canonical set from nginx.
-          # GoTrue's preflight (OPTIONS) handler does not emit a usable
-          # Allow-Origin for our origin, so we keep nginx's own short-
-          # circuit OPTIONS response below.
-          proxy_hide_header Access-Control-Allow-Origin;
-          proxy_hide_header Access-Control-Allow-Methods;
-          proxy_hide_header Access-Control-Allow-Headers;
-          add_header 'Access-Control-Allow-Origin'      '*' always;
-          add_header 'Access-Control-Allow-Methods'     'GET, POST, PUT, PATCH, DELETE, OPTIONS' always;
-          add_header 'Access-Control-Allow-Headers'     'Authorization, Content-Type, X-Client-Info, apikey' always;
-          if ($request_method = 'OPTIONS') { return 204; }
         '';
       };
     };
