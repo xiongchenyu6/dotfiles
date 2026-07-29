@@ -39,6 +39,7 @@
   sops.templates."quant-collectors.env" = {
     content = ''
       TIMESCALE_URL=postgres://quant:${config.sops.placeholder."oracle-arm-002/quant-password"}@127.0.0.1:5432/api
+      TELEGRAM_BOT_TOKEN=${config.sops.placeholder."oracle-arm-002/telegram-bot-token"}
     '';
     owner = "nautilus";
   };
