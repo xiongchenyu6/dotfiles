@@ -26,6 +26,7 @@
   # event_dca/reactor daemons used, so alerts land in the same place.
   sops.secrets."oracle-arm-002/telegram-bot-token" = { };
   sops.secrets."oracle-arm-002/telegram-chat-id" = { };
+  sops.secrets."oracle-arm-002/financialdata-key" = { };
   sops.templates."nautilus-signal.env" = {
     content = ''
       TELEGRAM_BOT_TOKEN=${config.sops.placeholder."oracle-arm-002/telegram-bot-token"}
@@ -40,6 +41,7 @@
     content = ''
       TIMESCALE_URL=postgres://quant:${config.sops.placeholder."oracle-arm-002/quant-password"}@127.0.0.1:5432/api
       TELEGRAM_BOT_TOKEN=${config.sops.placeholder."oracle-arm-002/telegram-bot-token"}
+      FINANCIALDATA_KEY=${config.sops.placeholder."oracle-arm-002/financialdata-key"}
     '';
     owner = "nautilus";
   };
