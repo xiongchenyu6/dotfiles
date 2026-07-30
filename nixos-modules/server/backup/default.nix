@@ -7,8 +7,10 @@
   services.restic = {
     backups = {
       app = {
-        repository =
-          "s3:https://https://s3.tebi.io/freeman-bachup/${config.networking.hostName}";
+        # Scheme appears once: restic wants `s3:<endpoint-url>`, so a doubled
+        # https:// makes minio parse an empty bucket name ("Bucket name cannot
+        # be empty") and every run dies in pre-start.
+        repository = "s3:https://s3.tebi.io/freeman-bachup/${config.networking.hostName}";
         paths = [ "/home" ];
         initialize = true;
         passwordFile = config.sops.secrets."restic/pass".path;
