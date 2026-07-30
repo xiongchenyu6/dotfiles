@@ -1,7 +1,10 @@
 { pkgs, lib, ... }:
 {
+  # ./backup removed 2026-07-30: it pushed restic to Tebi, which shut the whole
+  # object-storage service down on 2026-03-31. Every run had been failing since
+  # (invalid access key), so the hosts have no backup at all until a new
+  # provider is wired up.
   imports = [
-    ./backup
     ./security.nix
   ];
   environment = {
