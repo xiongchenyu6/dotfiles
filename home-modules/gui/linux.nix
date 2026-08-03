@@ -327,7 +327,10 @@ let
     }
 
     paste_text() {
-      if ! ${pkgs.wl-clipboard}/bin/wl-copy --type text/plain; then
+      # VoxInput only needs to own the selection until the synthetic paste
+      # consumes it. Leaving wl-copy alive indefinitely makes the next manual
+      # copy race with this stale owner and can require pressing Ctrl+C twice.
+      if ! ${pkgs.wl-clipboard}/bin/wl-copy --paste-once --type text/plain; then
         log "wl-copy failed"
         return 1
       fi
