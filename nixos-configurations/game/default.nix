@@ -282,7 +282,93 @@
     # cloudflare-warp = {
     #   enable = true;
     # };
-    v2raya.enable = true;
+    v2raya = {
+      enable = true;
+      # V2Fly rejects Shadowsocks 2022 methods while parsing the generated
+      # config, preventing every selected node (including the VLESS nodes) from
+      # starting.
+      cliPackage =
+        let
+          xray = pkgs.xray;
+        in
+        pkgs.writeShellApplication {
+          name = "xray";
+          runtimeInputs = [ pkgs.jq ];
+          text = ''
+            config_path=/etc/v2raya/config.json
+
+            # Only rewrite v2rayA's generated config. All other Xray commands,
+            # including `xray version`, go straight to the current Xray binary.
+            rewrite=false
+            for arg in "$@"; do
+              if [[ "$arg" == "--config=$config_path" ]]; then
+                rewrite=true
+                break
+              fi
+            done
+            if [[ "$rewrite" != true ]]; then
+              exec ${xray}/bin/xray "$@"
+            fi
+
+            runtime_dir=/run/v2raya-xray
+            install -d -m 0700 "$runtime_dir"
+            temporary_config="$(mktemp "$runtime_dir/config.json.XXXXXX")"
+            sanitized_config="$runtime_dir/config.json"
+            trap 'rm -f "$temporary_config"' EXIT
+
+            jq '
+              # Drop malformed REALITY nodes and nodes that require bypassing
+              # certificate verification; Xray no longer accepts allowInsecure.
+              [.outbounds[]
+                | select(
+                    (((.streamSettings.security // "") == "reality")
+                      and ((.streamSettings.realitySettings.fingerprint // "") == ""))
+                    or (.streamSettings.tlsSettings.allowInsecure == true)
+                  )
+                | .tag
+              ] as $bad
+              | .outbounds |= map(select(.tag as $tag | ($bad | index($tag) | not)))
+              | .routing.balancers[]?.selector |=
+                  map(select(. as $tag | ($bad | index($tag) | not)))
+              | .multiObservatory.observers[]?.settings.subjectSelector |=
+                  map(select(. as $tag | ($bad | index($tag) | not)))
+              # multiObservatory is V2Fly-specific; Xray uses observatory.
+              | if .multiObservatory.observers[0].settings
+                then .observatory = .multiObservatory.observers[0].settings
+                else .
+                end
+              | del(.multiObservatory)
+              | walk(
+                  if type == "object" then del(.allowInsecure)
+                  elif type == "string"
+                    and . == "ext:LoyalsoldierSite.dat:geolocation-!cn"
+                    then "geosite:geolocation-!cn"
+                  elif type == "string"
+                    and . == "ext:geoip-only-cn-private.dat:cn"
+                    then "geoip:cn"
+                  elif type == "string"
+                    and . == "ext:geoip-only-cn-private.dat:private"
+                    then "geoip:private"
+                  else .
+                  end
+                )
+            ' "$config_path" > "$temporary_config"
+            chmod 0600 "$temporary_config"
+            mv -f "$temporary_config" "$sanitized_config"
+            trap - EXIT
+
+            rewritten_args=()
+            for arg in "$@"; do
+              if [[ "$arg" == "--config=$config_path" ]]; then
+                rewritten_args+=("--config=$sanitized_config")
+              else
+                rewritten_args+=("$arg")
+              fi
+            done
+            exec ${xray}/bin/xray "''${rewritten_args[@]}"
+          '';
+        };
+    };
 
     sunshine = {
       enable = true;
