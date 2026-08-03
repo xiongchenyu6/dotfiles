@@ -29,6 +29,18 @@
 
   sops.secrets."cloudflared/tunnel-credentials" = { };
 
+  # VLESS currently uses TCP on this host. Make the already-loaded BBR module
+  # effective and allow TCP autotuning to fill high-bandwidth, high-latency
+  # paths without forcing every connection to allocate the maximum buffer.
+  boot.kernel.sysctl = {
+    "net.core.default_qdisc" = "fq";
+    "net.ipv4.tcp_congestion_control" = "bbr";
+    "net.core.rmem_max" = 33554432;
+    "net.core.wmem_max" = 33554432;
+    "net.ipv4.tcp_rmem" = "4096 131072 33554432";
+    "net.ipv4.tcp_wmem" = "4096 16384 33554432";
+  };
+
   # hermes-agent moved here from amd-002 (frees amd-002 RAM + isolates the
   # EOL-nodejs build to this now-idle box). The XIAOMI_API_KEY / telegram-token
   # SOPS keys already live in secrets/common.yaml, encrypted to all hosts
