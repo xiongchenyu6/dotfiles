@@ -231,7 +231,7 @@ in
           Port = 2222;
         };
         "gz-office" = {
-          HostName = "183.6.107.47";
+          HostName = "admin.gz.autolife.ai";
           User = "autolife";
           Port = 2222;
         };
