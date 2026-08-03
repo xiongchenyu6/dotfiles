@@ -7,6 +7,7 @@
       newSession = true;
       disableConfirmationPrompt = true;
       aggressiveResize = true;
+      mouse = true;
       plugins = with pkgs; [
         tmuxPlugins.cpu
         {
