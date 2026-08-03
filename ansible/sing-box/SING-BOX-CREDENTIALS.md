@@ -63,7 +63,7 @@ ssh root@45.194.18.75 "journalctl -u sing-box -f"
 - UFW firewall is enabled and configured
 
 ## Installation Details
-- **Sing-box Version:** 1.10.7
+- **Sing-box Version:** 1.13.14
 - **Installation Path:** `/usr/local/bin/sing-box`
 - **Config Location:** `/etc/sing-box/config.json`
 - **System User:** sing-box (unprivileged)
@@ -74,7 +74,7 @@ ssh root@45.194.18.75 "journalctl -u sing-box -f"
 - Systemd service with automatic restart on failure
 - Modern encryption (2022-blake3-aes-128-gcm)
 - Multiplexing enabled for better performance
-- Ad-blocking rules included (blocks category-ads-all)
+- Uses the current direct outbound format; no legacy geosite/block outbound
 
 ## Troubleshooting
 

@@ -1,177 +1,79 @@
-# Ansible Sing-box Deployment with SOPS Encryption
+# sing-box deployment
 
-This repository contains Ansible playbooks for deploying sing-box with Shadowsocks proxy on Ubuntu servers, using SOPS for secure credential management.
+This directory deploys the same encrypted Shadowsocks service to two different
+Linux platforms:
 
-## 🔐 Security Features
+| Inventory host | Platform | Release asset | Privilege path |
+| --- | --- | --- | --- |
+| `lubancat` | Ubuntu 24.04 / ARM64 | `linux-arm64` | SSH key plus the existing SOPS-encrypted sudo password |
+| `sg-office` | NixOS / AMD64 | `linux-amd64` | Existing root SSH key |
 
-- **SOPS Encryption**: All sensitive data (passwords, keys) are encrypted using SOPS with GPG
-- **GitIgnore**: Properly configured to prevent accidental commits of sensitive data
-- **Secure Playbooks**: Credentials are never stored in plain text in the repository
+The old `ubuntu-server` entry remains in the `singbox_legacy` inventory group and
+is not targeted by this playbook.
 
-## 📋 Prerequisites
+## What the playbook guarantees
 
-1. **Ansible** installed locally
-2. **SOPS** installed locally (`nix-env -iA nixpkgs.sops` or `brew install sops`)
-3. **GPG key** for encryption (already configured)
-4. **community.sops** Ansible collection:
-   ```bash
-   ansible-galaxy collection install community.sops
-   ```
+- Reads the Shadowsocks method, password, and port from
+  `secrets/servers.yaml`; decrypted values are never written to the repository
+  or printed by Ansible.
+- Reads only `lubancat.become_password` from the repository-level
+  `../../secrets/common.yaml`. The legacy server SSH password is not applied to
+  either new host.
+- Pins the current stable sing-box 1.13.14 and verifies the official AMD64/ARM64 archives against
+  the SHA-256 values in the playbook.
+- Runs `sing-box check` before a configuration can replace the live file and
+  again after activation.
+- Accepts both native Shadowsocks TCP/UDP traffic and optional multiplexed
+  client connections without requiring multiplex padding. This avoids padding
+  overhead and keeps non-multiplexed clients compatible.
+- Installs a hardened, unprivileged systemd service and verifies both its active
+  state and its local listener.
+- Leaves UFW, the NixOS firewall, interfaces, routes, NetworkManager, WireGuard,
+  Docker, and Podman untouched.
+- Captures existing binary/config/unit files before replacement. If activation
+  or validation fails, the play rolls those files and the prior service state
+  back automatically.
 
-## 🗂️ Repository Structure
+On NixOS, `/etc/systemd/system` points into the read-only Nix store. The playbook
+therefore uses the standard local-unit path
+`/usr/local/lib/systemd/system/sing-box.service` and a persistent
+`multi-user.target.wants` link in the same unit search path. `deploy.sh`
+discovers an already-present Nix-store Python interpreter without changing the
+Nix profile.
 
-```
-ansible-sing-box/
-├── .sops.yaml              # SOPS configuration
-├── ansible.cfg             # Ansible configuration with SOPS plugin
-├── inventory.ini           # Ansible inventory
-├── secrets/
-│   └── servers.yaml        # Encrypted credentials (SOPS)
-├── deploy-singbox-secure.yml # Secure deployment playbook
-├── files/
-│   └── config.json         # Sing-box config template
-└── .gitignore             # Excludes sensitive files
-```
+## Run it
 
-## 🔑 Managing Secrets with SOPS
-
-### View Decrypted Secrets
-```bash
-sops -d secrets/servers.yaml
-```
-
-### Edit Encrypted Secrets
-```bash
-sops secrets/servers.yaml
-```
-
-### Encrypt a New File
-```bash
-sops -e -i newfile.yaml
-```
-
-### Rotate Encryption Keys
-```bash
-sops -r secrets/servers.yaml
-```
-
-## 🚀 Deployment
-
-### Run the Secure Deployment
-```bash
-ansible-playbook -i inventory.ini deploy-singbox-secure.yml
-```
-
-The playbook will:
-1. Automatically decrypt credentials using SOPS
-2. Deploy sing-box with Shadowsocks
-3. Configure firewall rules
-4. Start the service
-
-## 📝 Encrypted Credentials Structure
-
-The `secrets/servers.yaml` file contains:
-```yaml
-servers:
-  ubuntu_server:
-    host: <server-ip>
-    ssh_user: root
-    ssh_password: <encrypted>
-    
-shadowsocks:
-  password: <encrypted>
-  port: 8388
-  method: "2022-blake3-aes-128-gcm"
-```
-
-## 🔄 Adding New Servers
-
-1. Edit the encrypted file:
-   ```bash
-   sops secrets/servers.yaml
-   ```
-
-2. Add new server configuration:
-   ```yaml
-   servers:
-     new_server:
-       host: x.x.x.x
-       ssh_user: root
-       ssh_password: "password"
-   ```
-
-3. Update `inventory.ini`:
-   ```ini
-   [singbox_servers]
-   new-server ansible_host=x.x.x.x ansible_user=root
-   ```
-
-## 🛡️ Security Best Practices
-
-1. **Never commit plain text credentials**
-2. **Always use SOPS for sensitive data**
-3. **Keep your GPG key secure**
-4. **Regularly rotate passwords**
-5. **Use `.gitignore` to exclude sensitive files**
-
-## 🔧 Troubleshooting
-
-### SOPS Decryption Fails
-```bash
-# Check GPG key is available
-gpg --list-secret-keys
-
-# Check SOPS configuration
-cat .sops.yaml
-```
-
-### Ansible Can't Find SOPS Plugin
-```bash
-# Install the collection
-ansible-galaxy collection install community.sops
-
-# Verify installation
-ansible-galaxy collection list | grep sops
-```
-
-## 📊 Service Management
-
-After deployment, manage the service on the server:
+From any directory:
 
 ```bash
-# Check status
-ssh root@<server-ip> "systemctl status sing-box"
-
-# View logs
-ssh root@<server-ip> "journalctl -u sing-box -f"
-
-# Restart service
-ssh root@<server-ip> "systemctl restart sing-box"
+~/dotfiles/ansible/sing-box/deploy.sh
 ```
 
-## 🗑️ Cleanup
+Deploy one host only:
 
-To remove sensitive files before committing:
 ```bash
-# Remove any decrypted files
-rm -f secrets/*.dec.yaml
-
-# Remove temporary credentials
-rm -f credentials.txt host_vars/*.yml
-
-# Verify with git status
-git status
+~/dotfiles/ansible/sing-box/deploy.sh --limit lubancat
+~/dotfiles/ansible/sing-box/deploy.sh --limit sg-office
 ```
 
-## ⚠️ Important Notes
+Required controller tools are `ansible-playbook`, `sops`, the
+`community.sops` collection, and access to the existing decryption key.
+Host-key checking is enabled, so both targets must already have trusted
+`known_hosts` entries.
 
-- The GPG key fingerprint used: `3D7331009E93CC97A8CA809D03DFD2DEA7AF6693`
-- SOPS version: 3.10.2
-- Sing-box version: 1.10.7
-- This setup is configured for your GPG key. Other users will need access to the same GPG key or you'll need to add their keys to `.sops.yaml`
+## Non-secret verification
 
-## 📚 References
+```bash
+ssh lubancat 'systemctl is-active sing-box'
+ssh root@sg-office 'systemctl is-active sing-box'
+ssh root@sg-office \
+  'systemctl list-dependencies --plain multi-user.target | grep sing-box'
+```
 
-- [SOPS Documentation](https://github.com/mozilla/sops)
-- [Ansible SOPS Collection](https://docs.ansible.com/ansible/latest/collections/community/sops/index.html)
-- [Sing-box Documentation](https://sing-box.sagernet.org/)
+Configuration contents and decrypted credentials should not be copied into
+logs, tickets, or command-line arguments.
+
+Official upstream references:
+
+- <https://sing-box.sagernet.org/installation/package-manager/>
+- <https://github.com/SagerNet/sing-box/releases/tag/v1.13.14>
