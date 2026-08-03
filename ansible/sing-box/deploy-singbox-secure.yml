@@ -1,210 +1,509 @@
 ---
-- name: Deploy sing-box with Shadowsocks proxy (Secure)
+- name: Deploy sing-box with the encrypted Shadowsocks configuration
   hosts: singbox_servers
-  become: yes
+  gather_facts: false
+  become: "{{ inventory_hostname == 'lubancat' }}"
+
   vars:
-    sing_box_version: "1.10.7"
-    sops_secrets: "{{ lookup('community.sops.sops', 'secrets/servers.yaml') | from_yaml }}"
-    ansible_ssh_pass: "{{ sops_secrets.servers.ubuntu_server.ssh_password }}"
-    shadowsocks_password: "{{ sops_secrets.shadowsocks.password }}"
-    shadowsocks_port: "{{ sops_secrets.shadowsocks.port }}"
-    shadowsocks_method: "{{ sops_secrets.shadowsocks.method }}"
-    
+    sing_box_version: "1.13.14"
+    sing_box_binary_path: /usr/local/bin/sing-box
+    sing_box_config_path: /etc/sing-box/config.json
+    sing_box_unit_path: >-
+      {{
+        '/usr/local/lib/systemd/system/sing-box.service'
+        if inventory_hostname == 'sg-office'
+        else '/etc/systemd/system/sing-box.service'
+      }}
+    sing_box_nixos_wants_path: >-
+      /usr/local/lib/systemd/system/multi-user.target.wants/sing-box.service
+    sing_box_arch_map:
+      x86_64: amd64
+      aarch64: arm64
+    sing_box_sha256_map:
+      amd64: f48703461a15476951ac4967cdad339d986f4b8096b4eb3ff0829a500502d697
+      arm64: 4742df6a4314e8ecc41736849fca6d73b8f9e91b6e8b06ee794ff17ba180579e
+    # sg-office is NixOS and intentionally does not expose Python in PATH.
+    # deploy.sh discovers an existing store interpreter without changing the host.
+    ansible_python_interpreter: >-
+      {{
+        (lookup('env', 'SING_BOX_SG_OFFICE_PYTHON')
+          | default('/run/current-system/sw/bin/python3', true))
+        if inventory_hostname == 'sg-office'
+        else 'auto_silent'
+      }}
+
+  pre_tasks:
+    - name: Load the existing lubancat sudo secret
+      ansible.builtin.set_fact:
+        ansible_become_password: >-
+          {{
+            (lookup(
+              'community.sops.sops',
+              playbook_dir + '/../../secrets/common.yaml'
+            ) | from_yaml).lubancat.become_password
+          }}
+      when: inventory_hostname == 'lubancat'
+      become: false
+      no_log: true
+
+    - name: Gather target facts after privilege setup
+      ansible.builtin.setup:
+
+    - name: Load the existing encrypted Shadowsocks settings
+      ansible.builtin.set_fact:
+        shadowsocks_method: "{{ sing_box_secrets.shadowsocks.method }}"
+        shadowsocks_password: "{{ sing_box_secrets.shadowsocks.password }}"
+        shadowsocks_port: "{{ sing_box_secrets.shadowsocks.port | int }}"
+      vars:
+        sing_box_secrets: >-
+          {{
+            lookup(
+              'community.sops.sops',
+              playbook_dir + '/secrets/servers.yaml'
+            ) | from_yaml
+          }}
+      no_log: true
+
+    - name: Validate target architecture and encrypted settings
+      ansible.builtin.assert:
+        that:
+          - ansible_facts['architecture'] in sing_box_arch_map
+          - shadowsocks_method | length > 0
+          - shadowsocks_password | length > 0
+          - shadowsocks_port | int >= 1
+          - shadowsocks_port | int <= 65535
+        fail_msg: Target architecture or encrypted sing-box settings are invalid
+      no_log: true
+
+    - name: Select the release archive for this target
+      ansible.builtin.set_fact:
+        sing_box_arch: "{{ sing_box_arch_map[ansible_facts['architecture']] }}"
+        sing_box_backup_dir: >-
+          /var/backups/sing-box-ansible/{{ ansible_facts['date_time']['iso8601_basic_short'] }}
+
   tasks:
-    - name: Update apt cache
-      apt:
-        update_cache: yes
-        cache_valid_time: 3600
-
-    - name: Install required packages
-      apt:
+    - name: Install archive prerequisites on Debian-family hosts
+      ansible.builtin.apt:
         name:
-          - curl
+          - ca-certificates
           - tar
-          - ufw
         state: present
+        update_cache: true
+        cache_valid_time: 3600
+      when: ansible_facts['os_family'] == 'Debian'
 
-    - name: Create sing-box user
-      user:
+    - name: Create the sing-box service group
+      ansible.builtin.group:
         name: sing-box
-        system: yes
-        shell: /usr/sbin/nologin
-        home: /var/lib/sing-box
-        create_home: yes
+        system: true
 
-    - name: Create sing-box directories
-      file:
-        path: "{{ item }}"
+    - name: Create the sing-box service account
+      ansible.builtin.user:
+        name: sing-box
+        group: sing-box
+        system: true
+        shell: >-
+          {{
+            '/run/current-system/sw/bin/nologin'
+            if ansible_facts['distribution'] == 'NixOS'
+            else '/usr/sbin/nologin'
+          }}
+        home: /var/lib/sing-box
+        create_home: true
+
+    - name: Create root-owned program and configuration directories
+      ansible.builtin.file:
+        path: "{{ item.path }}"
+        state: directory
+        owner: root
+        group: "{{ item.group }}"
+        mode: "{{ item.mode }}"
+      loop:
+        - { path: /usr/local, group: root, mode: '0755' }
+        - { path: /usr/local/bin, group: root, mode: '0755' }
+        - { path: /etc/sing-box, group: sing-box, mode: '0750' }
+
+    - name: Create the sing-box state directory
+      ansible.builtin.file:
+        path: /var/lib/sing-box
         state: directory
         owner: sing-box
         group: sing-box
+        mode: '0750'
+
+    - name: Create the local systemd unit directories on NixOS
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: directory
+        owner: root
+        group: root
         mode: '0755'
       loop:
-        - /etc/sing-box
-        - /var/lib/sing-box
-        - /usr/local/bin
+        - /usr/local/lib
+        - /usr/local/lib/systemd
+        - /usr/local/lib/systemd/system
+        - /usr/local/lib/systemd/system/multi-user.target.wants
+      when: inventory_hostname == 'sg-office'
 
-    - name: Check if sing-box is installed
-      stat:
-        path: /usr/local/bin/sing-box
-      register: sing_box_binary
+    - name: Record pre-deployment files
+      ansible.builtin.stat:
+        path: "{{ item }}"
+        checksum_algorithm: sha256
+      loop:
+        - "{{ sing_box_binary_path }}"
+        - "{{ sing_box_config_path }}"
+        - "{{ sing_box_unit_path }}"
+      register: sing_box_previous_files
+      no_log: true
 
-    - name: Download sing-box binary
-      unarchive:
-        src: "https://github.com/SagerNet/sing-box/releases/download/v{{ sing_box_version }}/sing-box-{{ sing_box_version }}-linux-amd64.tar.gz"
-        dest: /tmp
-        remote_src: yes
-        creates: "/tmp/sing-box-{{ sing_box_version }}-linux-amd64/sing-box"
-      when: not sing_box_binary.stat.exists
+    - name: Record pre-deployment service state
+      ansible.builtin.command:
+        argv:
+          - systemctl
+          - show
+          - sing-box.service
+          - --property=LoadState
+          - --property=ActiveState
+          - --property=UnitFileState
+      register: sing_box_previous_service
+      changed_when: false
+      failed_when: false
 
-    - name: Install sing-box binary
-      copy:
-        src: "/tmp/sing-box-{{ sing_box_version }}-linux-amd64/sing-box"
-        dest: /usr/local/bin/sing-box
+    - name: Record the NixOS boot enablement link
+      ansible.builtin.stat:
+        path: "{{ sing_box_nixos_wants_path }}"
+        follow: false
+      register: sing_box_previous_nixos_wants
+      when: inventory_hostname == 'sg-office'
+
+    - name: Create rollback directory when an installation already exists
+      ansible.builtin.file:
+        path: "{{ sing_box_backup_dir }}"
+        state: directory
         owner: root
         group: root
-        mode: '0755'
-        remote_src: yes
-      when: not sing_box_binary.stat.exists
+        mode: '0700'
+      when: sing_box_previous_files.results | selectattr('stat.exists') | list | length > 0
 
-    - name: Create sing-box configuration
-      copy:
-        content: |
-          {
-            "log": {
-              "level": "info",
-              "timestamp": true
-            },
-            "inbounds": [
-              {
-                "type": "shadowsocks",
-                "tag": "shadowsocks-in",
-                "listen": "::",
-                "listen_port": {{ shadowsocks_port }},
-                "method": "{{ shadowsocks_method }}",
-                "password": "{{ shadowsocks_password }}",
-                "multiplex": {
-                  "enabled": true,
-                  "padding": true
-                }
-              }
-            ],
-            "outbounds": [
-              {
-                "type": "direct",
-                "tag": "direct"
-              },
-              {
-                "type": "block",
-                "tag": "block"
-              }
-            ],
-            "route": {
-              "rules": [
-                {
-                  "geosite": "category-ads-all",
-                  "outbound": "block"
-                }
-              ]
-            }
-          }
-        dest: /etc/sing-box/config.json
-        owner: sing-box
-        group: sing-box
-        mode: '0600'
-      notify: restart sing-box
-
-    - name: Create systemd service file
-      copy:
-        content: |
-          [Unit]
-          Description=sing-box service
-          Documentation=https://sing-box.sagernet.org
-          After=network.target network-online.target
-          Wants=network-online.target
-
-          [Service]
-          Type=simple
-          User=sing-box
-          Group=sing-box
-          WorkingDirectory=/var/lib/sing-box
-          ExecStart=/usr/local/bin/sing-box run -c /etc/sing-box/config.json
-          Restart=on-failure
-          RestartSec=10
-          LimitNOFILE=65536
-          
-          # Security hardening
-          NoNewPrivileges=true
-          PrivateTmp=true
-          ProtectSystem=strict
-          ProtectHome=true
-          ReadWritePaths=/var/lib/sing-box
-          ReadOnlyPaths=/etc/sing-box
-
-          [Install]
-          WantedBy=multi-user.target
-        dest: /etc/systemd/system/sing-box.service
+    - name: Back up existing sing-box files
+      ansible.builtin.copy:
+        src: "{{ item.item }}"
+        dest: "{{ sing_box_backup_dir }}/{{ item.item | basename }}"
+        remote_src: true
         owner: root
         group: root
-        mode: '0644'
-      notify: 
-        - reload systemd
-        - restart sing-box
+        mode: preserve
+      loop: "{{ sing_box_previous_files.results }}"
+      when: item.stat.exists
+      no_log: true
 
-    - name: Configure UFW firewall
-      ufw:
-        rule: allow
-        port: "{{ shadowsocks_port }}"
-        proto: tcp
-        comment: "Shadowsocks port"
+    - name: Check the installed sing-box version
+      ansible.builtin.command:
+        argv:
+          - "{{ sing_box_binary_path }}"
+          - version
+      register: sing_box_version_before
+      changed_when: false
+      failed_when: false
 
-    - name: Allow SSH through UFW
-      ufw:
-        rule: allow
-        port: '22'
-        proto: tcp
-        comment: "SSH access"
+    - name: Decide whether the binary must be installed
+      ansible.builtin.set_fact:
+        sing_box_needs_install: >-
+          {{
+            sing_box_version_before.rc != 0
+            or sing_box_version not in sing_box_version_before.stdout
+          }}
 
-    - name: Enable UFW
-      ufw:
-        state: enabled
-        default: deny
-        direction: incoming
+    - name: Install and activate sing-box
+      block:
+        - name: Download the architecture-specific official release
+          ansible.builtin.get_url:
+            url: >-
+              https://github.com/SagerNet/sing-box/releases/download/v{{ sing_box_version }}/sing-box-{{ sing_box_version }}-linux-{{ sing_box_arch }}.tar.gz
+            dest: >-
+              /tmp/sing-box-{{ sing_box_version }}-linux-{{ sing_box_arch }}.tar.gz
+            checksum: "sha256:{{ sing_box_sha256_map[sing_box_arch] }}"
+            owner: root
+            group: root
+            mode: '0644'
+          when: sing_box_needs_install
 
-    - name: Start and enable sing-box service
-      systemd:
-        name: sing-box
-        state: started
-        enabled: yes
-        daemon_reload: yes
+        - name: Extract the verified sing-box release
+          ansible.builtin.unarchive:
+            src: >-
+              /tmp/sing-box-{{ sing_box_version }}-linux-{{ sing_box_arch }}.tar.gz
+            dest: /tmp
+            remote_src: true
+          when: sing_box_needs_install
 
-    - name: Verify service is running
-      systemd:
-        name: sing-box
-        state: started
-      register: service_status
+        - name: Install the sing-box binary
+          ansible.builtin.copy:
+            src: >-
+              /tmp/sing-box-{{ sing_box_version }}-linux-{{ sing_box_arch }}/sing-box
+            dest: "{{ sing_box_binary_path }}"
+            remote_src: true
+            owner: root
+            group: root
+            mode: '0755'
+          register: sing_box_binary_install
+          when: sing_box_needs_install
 
-    - name: Display deployment status
-      debug:
-        msg: |
-          ========================================
-          Sing-box deployment status: SUCCESS
-          ========================================
-          Service is running: {{ service_status.status.ActiveState == 'active' }}
-          
-          Connection details are stored in encrypted file:
-          secrets/servers.yaml
-          
-          To view decrypted credentials:
-          sops -d secrets/servers.yaml
-          ========================================
+        - name: Verify the installed binary and version
+          ansible.builtin.command:
+            argv:
+              - "{{ sing_box_binary_path }}"
+              - version
+          register: sing_box_version_after
+          changed_when: false
+          failed_when: >-
+            sing_box_version_after.rc != 0
+            or sing_box_version not in sing_box_version_after.stdout
 
-  handlers:
-    - name: reload systemd
-      systemd:
-        daemon_reload: yes
+        - name: Install the validated sing-box configuration
+          ansible.builtin.copy:
+            content: |
+              {
+                "log": {
+                  "level": "info",
+                  "timestamp": true
+                },
+                "inbounds": [
+                  {
+                    "type": "shadowsocks",
+                    "tag": "shadowsocks-in",
+                    "listen": "::",
+                    "listen_port": {{ shadowsocks_port | int }},
+                    "method": {{ shadowsocks_method | to_json }},
+                    "password": {{ shadowsocks_password | to_json }},
+                    "multiplex": {
+                      "enabled": true,
+                      "padding": false
+                    }
+                  }
+                ],
+                "outbounds": [
+                  {
+                    "type": "direct",
+                    "tag": "direct"
+                  }
+                ]
+              }
+            dest: "{{ sing_box_config_path }}"
+            owner: root
+            group: sing-box
+            mode: '0640'
+            validate: "{{ sing_box_binary_path }} check -c %s"
+          register: sing_box_config_install
+          no_log: true
 
-    - name: restart sing-box
-      systemd:
-        name: sing-box
-        state: restarted
+        - name: Install the hardened systemd unit
+          ansible.builtin.copy:
+            content: |
+              [Unit]
+              Description=sing-box service
+              Documentation=https://sing-box.sagernet.org
+              After=network-online.target
+              Wants=network-online.target
+
+              [Service]
+              Type=simple
+              User=sing-box
+              Group=sing-box
+              WorkingDirectory=/var/lib/sing-box
+              ExecStartPre={{ sing_box_binary_path }} check -c {{ sing_box_config_path }}
+              ExecStart={{ sing_box_binary_path }} run -c {{ sing_box_config_path }}
+              Restart=on-failure
+              RestartSec=10
+              LimitNOFILE=65536
+              NoNewPrivileges=true
+              PrivateDevices=true
+              PrivateTmp=true
+              ProtectHome=true
+              ProtectSystem=strict
+              ReadOnlyPaths=/etc/sing-box
+              ReadWritePaths=/var/lib/sing-box
+              RestrictAddressFamilies=AF_INET AF_INET6 AF_UNIX AF_NETLINK
+              RestrictRealtime=true
+              SystemCallArchitectures=native
+              {% if shadowsocks_port | int < 1024 %}
+              AmbientCapabilities=CAP_NET_BIND_SERVICE
+              CapabilityBoundingSet=CAP_NET_BIND_SERVICE
+              {% else %}
+              CapabilityBoundingSet=
+              {% endif %}
+
+              [Install]
+              WantedBy=multi-user.target
+            dest: "{{ sing_box_unit_path }}"
+            owner: root
+            group: root
+            mode: '0644'
+          register: sing_box_unit_install
+          no_log: true
+
+        - name: Persistently enable the local unit on NixOS
+          ansible.builtin.file:
+            path: "{{ sing_box_nixos_wants_path }}"
+            src: ../sing-box.service
+            state: link
+            owner: root
+            group: root
+          register: sing_box_nixos_wants_install
+          when: inventory_hostname == 'sg-office'
+
+        - name: Reload systemd when the unit changed
+          ansible.builtin.systemd_service:
+            daemon_reload: true
+          when: >-
+            sing_box_unit_install.changed
+            or (sing_box_nixos_wants_install.changed | default(false))
+
+        - name: Enable and activate sing-box on standard systemd hosts
+          ansible.builtin.systemd_service:
+            name: sing-box.service
+            enabled: true
+            state: >-
+              {{
+                'restarted'
+                if (
+                  (sing_box_binary_install.changed | default(false))
+                  or sing_box_config_install.changed
+                  or sing_box_unit_install.changed
+                )
+                else 'started'
+              }}
+          when: inventory_hostname != 'sg-office'
+
+        - name: Activate sing-box on NixOS
+          ansible.builtin.systemd_service:
+            name: sing-box.service
+            state: >-
+              {{
+                'restarted'
+                if (
+                  (sing_box_binary_install.changed | default(false))
+                  or sing_box_config_install.changed
+                  or sing_box_unit_install.changed
+                  or (sing_box_nixos_wants_install.changed | default(false))
+                )
+                else 'started'
+              }}
+          when: inventory_hostname == 'sg-office'
+
+        - name: Validate the live configuration
+          ansible.builtin.command:
+            argv:
+              - "{{ sing_box_binary_path }}"
+              - check
+              - -c
+              - "{{ sing_box_config_path }}"
+          changed_when: false
+          no_log: true
+
+        - name: Verify that sing-box is active
+          ansible.builtin.command:
+            argv:
+              - systemctl
+              - is-active
+              - sing-box.service
+          register: sing_box_active
+          changed_when: false
+          until: sing_box_active.stdout | trim == 'active'
+          retries: 10
+          delay: 1
+
+        - name: Verify that the local Shadowsocks listener is accepting connections
+          ansible.builtin.wait_for:
+            host: "::1"
+            port: "{{ shadowsocks_port | int }}"
+            state: started
+            timeout: 15
+          no_log: true
+
+        # A listener on ::1 only proves the process is up. Both nodes spent a
+        # long time in exactly this state — service active, socket bound — while
+        # every inbound packet was dropped at the border, which is
+        # indistinguishable from "the node is down" to a client. This playbook
+        # otherwise leaves firewall and routing alone, so the one port it needs
+        # is opened here rather than by hand.
+        #
+        # sg-office is NixOS: its firewall is declarative and 8388 is in
+        # networking.firewall.allowedTCPPorts/allowedUDPPorts in the company
+        # repo. Poking nftables here would be silently reverted by the next
+        # nixos-rebuild, so this only covers the ufw host.
+        - name: Open the Shadowsocks port in ufw
+          community.general.ufw:
+            rule: allow
+            port: "{{ shadowsocks_port }}"
+            proto: "{{ item }}"
+            comment: "sing-box shadowsocks ({{ item }})"
+          loop:
+            - tcp
+            - udp
+          when: inventory_hostname == 'lubancat'
+
+      rescue:
+        - name: Stop a newly introduced sing-box unit
+          ansible.builtin.systemd_service:
+            name: sing-box.service
+            state: stopped
+            enabled: "{{ false if inventory_hostname != 'sg-office' else omit }}"
+          when: "'LoadState=not-found' in sing_box_previous_service.stdout"
+          failed_when: false
+
+        - name: Remove a NixOS enablement link introduced by the failed deployment
+          ansible.builtin.file:
+            path: "{{ sing_box_nixos_wants_path }}"
+            state: absent
+          when:
+            - inventory_hostname == 'sg-office'
+            - not sing_box_previous_nixos_wants.stat.exists
+
+        - name: Restore files that existed before deployment
+          ansible.builtin.copy:
+            src: "{{ sing_box_backup_dir }}/{{ item.item | basename }}"
+            dest: "{{ item.item }}"
+            remote_src: true
+            owner: root
+            group: "{{ 'sing-box' if item.item == sing_box_config_path else 'root' }}"
+            mode: "{{ '0640' if item.item == sing_box_config_path else ('0755' if item.item == sing_box_binary_path else '0644') }}"
+          loop: "{{ sing_box_previous_files.results }}"
+          when: item.stat.exists
+          no_log: true
+
+        - name: Remove files introduced by the failed deployment
+          ansible.builtin.file:
+            path: "{{ item.item }}"
+            state: absent
+          loop: "{{ sing_box_previous_files.results }}"
+          when: not item.stat.exists
+          no_log: true
+
+        - name: Reload systemd after rollback
+          ansible.builtin.systemd_service:
+            daemon_reload: true
+          failed_when: false
+
+        - name: Restore the previous service state
+          ansible.builtin.systemd_service:
+            name: sing-box.service
+            enabled: "{{ 'UnitFileState=enabled' in sing_box_previous_service.stdout }}"
+            state: >-
+              {{
+                'started'
+                if 'ActiveState=active' in sing_box_previous_service.stdout
+                else 'stopped'
+              }}
+          when: "'LoadState=not-found' not in sing_box_previous_service.stdout"
+          failed_when: false
+
+        - name: Stop after rolling back a failed deployment
+          ansible.builtin.fail:
+            msg: sing-box deployment failed and the previous files/service state were restored
+
+    - name: Report the non-sensitive deployment result
+      ansible.builtin.debug:
+        msg: >-
+          sing-box {{ sing_box_version }} is active on {{ inventory_hostname }}
+          ({{ ansible_facts['distribution'] }} {{ ansible_facts['architecture'] }});
+          firewall and routing were unchanged.
