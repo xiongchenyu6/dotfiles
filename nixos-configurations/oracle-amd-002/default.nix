@@ -48,6 +48,15 @@ in
     kernel = {
       sysctl = {
         "net.ipv4.ip_forward" = 1;
+        # VLESS is TCP-based here. BBR plus fq improves throughput on long-fat
+        # paths, while the larger maxima let TCP autotuning grow only when the
+        # measured bandwidth-delay product requires it.
+        "net.core.default_qdisc" = "fq";
+        "net.ipv4.tcp_congestion_control" = "bbr";
+        "net.core.rmem_max" = 33554432;
+        "net.core.wmem_max" = 33554432;
+        "net.ipv4.tcp_rmem" = "4096 131072 33554432";
+        "net.ipv4.tcp_wmem" = "4096 16384 33554432";
       };
     };
   };
