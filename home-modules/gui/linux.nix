@@ -427,6 +427,7 @@ in
 
   home = lib.mkIf pkgs.stdenv.isLinux {
     pointerCursor = {
+      enable = true;
       name = "Vanilla-DMZ";
       package = pkgs.vanilla-dmz;
       x11 = {
@@ -448,7 +449,7 @@ in
       (with pkgs; [
         # Linux-only GUI/desktop
         aspell
-        antigravity
+        antigravity-ide
         kiro
         aspellDicts.en
         supabase-cli
@@ -614,6 +615,10 @@ in
       type = "fcitx5";
       enable = true;
       fcitx5 = {
+        # systemd.enable defaults to true upstream and ships
+        # fcitx5-daemon.service, which is the single owner of the fcitx5
+        # process. The XDG autostart entry the fcitx5 package installs into
+        # the profile is suppressed below so the two don't race.
         addons = with pkgs; [
           #fcitx5-mozc
           fcitx5-gtk
@@ -622,6 +627,21 @@ in
         ];
       };
     };
+  };
+
+  # systemd-xdg-autostart-generator turns the profile's
+  # etc/xdg/autostart/org.fcitx.Fcitx5.desktop into a second unit under
+  # xdg-desktop-autostart.target, which niri-session activates. A user-level
+  # entry of the same name wins per the XDG autostart spec, so Hidden=true
+  # removes it and leaves fcitx5-daemon.service alone.
+  xdg.configFile = lib.mkIf pkgs.stdenv.isLinux {
+    "autostart/org.fcitx.Fcitx5.desktop".text = ''
+      [Desktop Entry]
+      Type=Application
+      Name=Fcitx 5
+      Exec=fcitx5
+      Hidden=true
+    '';
   };
   programs = {
     vastai = {
