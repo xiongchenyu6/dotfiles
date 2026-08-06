@@ -145,15 +145,11 @@ in
       # X11 compatibility shim
       { command = [ "${pkgs.xwayland-satellite}/bin/xwayland-satellite" ]; }
 
-      # Chinese input method — niri doesn't process XDG autostart, so
-      # home-manager's .config/autostart/org.fcitx.Fcitx5.desktop never fires.
-      {
-        command = [
-          "fcitx5"
-          "-d"
-          "--replace"
-        ];
-      }
+      # Chinese input method is NOT spawned here: home-manager's
+      # i18n.inputMethod.fcitx5 ships fcitx5-daemon.service, which is
+      # PartOf/WantedBy graphical-session.target and so gets pulled in by
+      # niri-session. Spawning `fcitx5 -d --replace` here as well would
+      # kill the unit's process and leave systemd restarting it in a loop.
 
       # User-space autostart
       { command = [ "${pkgs.netbird-ui}/bin/netbird-ui" ]; }
