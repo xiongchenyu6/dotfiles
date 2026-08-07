@@ -27,6 +27,17 @@
   sops.secrets."oracle-arm-002/telegram-bot-token" = { };
   sops.secrets."oracle-arm-002/telegram-chat-id" = { };
   sops.secrets."oracle-arm-002/financialdata-key" = { };
+
+  # Live trading state that exists nowhere else: each nautilus node's position
+  # bookkeeping, and the alert dispatcher's Telegram getUpdates offset (losing
+  # it replays or skips pushes). The Postgres/MySQL dumps are added by the
+  # backup module itself. A few hundred KB in total.
+  my.backup.paths = [
+    "/var/lib/nautilus-accumulator"
+    "/var/lib/nautilus-trend"
+    "/var/lib/nautilus-signal"
+    "/var/lib/quant-collectors"
+  ];
   sops.templates."nautilus-signal.env" = {
     content = ''
       TELEGRAM_BOT_TOKEN=${config.sops.placeholder."oracle-arm-002/telegram-bot-token"}
