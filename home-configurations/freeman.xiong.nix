@@ -105,7 +105,7 @@ in
     username = "freeman.xiong";
     file = {
       ".ssh/id_ed25519.pub" = {
-        text = shares.users-dict."freeman.xiong".public-key;
+        text = shares.users."freeman.xiong".public-key;
         executable = false;
       };
     };

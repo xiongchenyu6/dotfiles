@@ -34,7 +34,7 @@ in
     # Peer configuration
     peers = [
       {
-        publicKey = shares.hosts-dict.oracle-amd-002.wg.public-key;
+        publicKey = shares.hosts.oracle-amd-002.wg.public-key;
         endpoint = "213.35.117.232:22616";
         persistentKeepalive = 30;
         allowedIPs = [

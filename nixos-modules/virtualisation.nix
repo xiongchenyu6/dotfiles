@@ -36,8 +36,8 @@ let
   };
 
   sshAuthorizedKeys = [
-    shares.users-dict."freeman.xiong".public-key
-    shares.users-dict."freeman.xiong".yubikey
+    shares.users."freeman.xiong".public-key
+    shares.users."freeman.xiong".yubikey
   ];
 
   # TODO: The passwd hash below ends up in /nix/store (world-readable).
