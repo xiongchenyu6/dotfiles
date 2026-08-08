@@ -22,6 +22,26 @@ _: {
           directory = "ai-skills/.claude/commands";
           method = "symlink";
         }
+        # Codex reads the same content: .codex/prompts and .codex/skills/* in
+        # the repo are relative symlinks into .claude/, so both tools share
+        # one source of truth. ~/.codex/skills stays a real directory (it
+        # holds manually-linked skills too), so each skill links individually.
+        {
+          directory = "ai-skills/.codex/prompts";
+          method = "symlink";
+        }
+        {
+          directory = "ai-skills/.codex/skills/game-polish";
+          method = "symlink";
+        }
+        {
+          directory = "ai-skills/.codex/skills/nixos-deploy";
+          method = "symlink";
+        }
+        {
+          directory = "ai-skills/.codex/skills/autolife-docs";
+          method = "symlink";
+        }
       ];
       files = [ "auth/.authinfo.gpg" ];
     };
