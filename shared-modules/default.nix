@@ -105,6 +105,35 @@ in
           microsoft-edge = inputs.nixpkgs-stable.legacyPackages.x86_64-linux.microsoft-edge;
         }
       )
+      # nixpkgs' dd-agent/integrations-core.nix builds every integration with
+      # a short pname ("checks-base", "disk", ...) while the wheels declare
+      # the real distribution names ("datadog-checks-base", ...).
+      # pythonMetadataCheckHook looks the pname up through
+      # importlib.metadata and dies with PackageNotFoundError, so the whole
+      # datadog-agent closure fails to build. Re-invoke the upstream
+      # expression with a python3Packages whose buildPythonPackage sets
+      # dontCheckPythonMetadata; datadog-agent is re-overridden because the
+      # top-level one captured the unpatched integration set.
+      (
+        final: prev:
+        let
+          pythonPackagesNoMetadataCheck = prev.python3Packages // {
+            buildPythonPackage =
+              args: prev.python3Packages.buildPythonPackage (args // { dontCheckPythonMetadata = true; });
+          };
+        in
+        {
+          datadog-integrations-core =
+            extras:
+            prev.callPackage "${prev.path}/pkgs/tools/networking/dd-agent/integrations-core.nix" {
+              extraIntegrations = extras;
+              python3Packages = pythonPackagesNoMetadataCheck;
+            };
+          datadog-agent = prev.datadog-agent.override {
+            pythonPackages = final.datadog-integrations-core { };
+          };
+        }
+      )
       # nixpkgs-unstable as of 2026-04-25 ships python3.13-cli-helpers 2.10.0
       # whose `tests/tabular_output/test_preprocessors.py::test_style_output*`
       # tests assert ANSI escapes equal `\x1b[39m` but newer Pygments emits
