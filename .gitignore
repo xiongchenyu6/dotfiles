@@ -96,4 +96,6 @@ ansible/*/.secrets.yml
 
 # Claude Code runtime artifacts
 **/.claude/
+# ...except the personal skills/prompts maintained under stow-managed
+!stow-managed/ai-skills/.claude/
 
