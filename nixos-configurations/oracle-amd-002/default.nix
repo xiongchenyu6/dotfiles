@@ -125,9 +125,9 @@ in
             '';
             peers = [
               (mkPeer "172.22.240.98" "fd48:4b4:f3::2"
-                shares.hosts-dict.office.wg.public-key)
+                shares.hosts.office.wg.public-key)
               (mkPeer "172.22.240.99" "fd48:4b4:f3::3"
-                shares.hosts-dict.game.wg.public-key)
+                shares.hosts.game.wg.public-key)
               (mkPeer "172.22.240.100" "fd48:4b4:f3::4"
                 "nBEkTpn4kRYXS9r7beXh3uMYJBAq/534byXv8NsB8gM=")
               (mkPeer "172.22.240.101" "fd48:4b4:f3::5"

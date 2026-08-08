@@ -178,7 +178,7 @@
     with lib;
     let
       mylib = import ./lib { inherit lib; };
-      shares = import ./shares.nix { inherit lib; };
+      shares = import ./shared-modules/shares.nix { inherit lib; };
     in
     flake-parts.lib.mkFlake { inherit inputs; } {
       imports = [

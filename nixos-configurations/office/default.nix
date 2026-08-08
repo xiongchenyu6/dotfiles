@@ -152,7 +152,7 @@
               peers = [
                 {
                   endpoint = "213.35.117.232:22616";
-                  publicKey = shares.hosts-dict.oracle-amd-002.wg.public-key;
+                  publicKey = shares.hosts.oracle-amd-002.wg.public-key;
                   persistentKeepalive = 30;
                   allowedIPs = [
                     "10.0.0.0/8"

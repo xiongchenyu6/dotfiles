@@ -46,7 +46,7 @@
       };
     };
     pki = {
-      certificates = map (x: x.cert) shares.root-cas;
+      certificates = builtins.attrValues shares.root-cas;
     };
   };
   services = {
