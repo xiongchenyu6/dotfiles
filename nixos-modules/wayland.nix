@@ -1,4 +1,27 @@
 { inputs, pkgs, ... }:
+let
+  # nixpkgs removed the `libdisplay-info_0_2` attribute (replaced by a throw
+  # alias), but niri-flake's make-niri still declares it as a callPackage arg
+  # with a version assert at function level — so merely constructing
+  # `inputs.niri.packages.<sys>.niri-unstable` evaluates the throwing alias
+  # (even `.override` can't be reached). Instead, rebuild the real 0.2.0 from
+  # source (same src/hash the removed attribute used) and re-instantiate the
+  # package set via niri-flake's exported make-package-set against a pkgs
+  # where the alias points at it. Drop this once niri-flake removes the pin.
+  libdisplay-info_0_2 = pkgs.libdisplay-info.overrideAttrs (_: {
+    version = "0.2.0";
+    src = pkgs.fetchFromGitLab {
+      domain = "gitlab.freedesktop.org";
+      owner = "emersion";
+      repo = "libdisplay-info";
+      rev = "0.2.0";
+      hash = "sha256-6xmWBrPHghjok43eIDGeshpUEQTuwWLXNHg7CnBUt3Q=";
+    };
+  });
+  niriPackages = inputs.niri.lib.internal.make-package-set (
+    pkgs.extend (_: _: { inherit libdisplay-info_0_2; })
+  );
+in
 {
   imports = [
     inputs.niri.nixosModules.niri
@@ -9,7 +32,7 @@
     # Use niri-unstable (main) for `background-effect { xray ... }` and other
     # post-25.08 features. niri-flake's `niri-stable` is pinned to v25.08
     # which doesn't yet support background effects in window/layer rules.
-    package = inputs.niri.packages.${pkgs.stdenv.hostPlatform.system}.niri-unstable;
+    package = niriPackages.niri-unstable;
   };
 
   xdg = {
