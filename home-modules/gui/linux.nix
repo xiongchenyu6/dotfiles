@@ -380,6 +380,11 @@ let
             pkgs.wl-clipboard
             pkgs.ydotool
             pkgs.coreutils
+            # VoxInput signals record start/stop through beeep, which shells out
+            # to notify-send. libnotify is not in the system profile, so without
+            # it every notification failed and the recording OSD never appeared
+            # — dictation still worked, just with no visible indicator.
+            pkgs.libnotify
           ]
         }
     '';
