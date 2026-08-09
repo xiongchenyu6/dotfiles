@@ -89,6 +89,15 @@ in
           netbird = prev.netbird.override {
             buildGoModule = prev.buildGo125Module;
           };
+          # 白霜拼音方案数据；个人定制放 stow-managed/rime 的 *.custom.yaml
+          rime-frost = prev.runCommandNoCC "rime-frost" { } ''
+            mkdir -p $out/share/rime-data
+            cp -r ${inputs.rime-frost}/. $out/share/rime-data/
+            rm -rf $out/share/rime-data/others \
+              $out/share/rime-data/simplified.trime.yaml \
+              $out/share/rime-data/*.md \
+              $out/share/rime-data/LICENSE 2>/dev/null || true
+          '';
           record_screen =
             if prev.stdenv.hostPlatform.isLinux then
               prev.callPackage "${inputs.xiongchenyu6}/pkgs/record_screen/package.nix" { }

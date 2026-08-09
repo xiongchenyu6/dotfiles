@@ -1,0 +1,15 @@
+# 个人定制补丁——方案数据本体由 Nix 的 rime-frost 包提供(shared-modules overlay)
+# 升级词库: nix flake update rime-frost && 重新 rebuild + 重新部署 rime
+patch:
+  # 只启用常用方案(上游默认还有九键/五笔/墨奇等)
+  schema_list:
+    - schema: rime_frost                        # 白霜拼音(全拼)
+    - schema: rime_frost_double_pinyin          # 自然码双拼
+    - schema: rime_frost_double_pinyin_mspy     # 微软双拼
+    - schema: rime_frost_double_pinyin_sogou    # 搜狗双拼
+    - schema: rime_frost_double_pinyin_flypy    # 小鹤双拼
+  # 方案选单热键,比上游多个 F4
+  "switcher/hotkeys":
+    - F4
+    - Control+grave
+    - Control+Shift+grave
