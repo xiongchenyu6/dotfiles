@@ -123,6 +123,11 @@
       };
     };
 
+    rime-frost = {
+      url = "github:gaboolic/rime-frost";
+      flake = false;
+    };
+
     hermes-agent = {
       url = "github:NousResearch/hermes-agent";
       inputs = {

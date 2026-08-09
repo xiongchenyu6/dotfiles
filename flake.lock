@@ -893,6 +893,22 @@
         "type": "github"
       }
     },
+    "rime-frost": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1785745909,
+        "narHash": "sha256-XyOX3Vhv1Qa+0WIKrTvtZkG/eFMCa/VuHmX7ZEJxF5c=",
+        "owner": "gaboolic",
+        "repo": "rime-frost",
+        "rev": "2aedeea96c1468c1caa17cea01864419a11a4b26",
+        "type": "github"
+      },
+      "original": {
+        "owner": "gaboolic",
+        "repo": "rime-frost",
+        "type": "github"
+      }
+    },
     "root": {
       "inputs": {
         "NixVirt": "NixVirt",
@@ -919,6 +935,7 @@
         "noctalia": "noctalia",
         "nur": "nur",
         "pre-commit-hooks": "pre-commit-hooks",
+        "rime-frost": "rime-frost",
         "sops-nix": "sops-nix",
         "srvos": "srvos",
         "systems": "systems",

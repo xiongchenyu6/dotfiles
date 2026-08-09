@@ -1,34 +1,6 @@
-# Project exclude paths
-/venv/
-/cn_dicts_temp/
-/cn_dicts_dazhu/
-/cn_dicts_sancang/
-/cn_dicts_xh_cangjie/
-sancang.dict.yaml
-.DS_Store
-
-**/.idea/
-.vscode/
-dist/
-*.zip
-
+# 运行时状态,不进版本库;方案数据由 Nix 的 rime-frost 包提供
 build/
 sync/
 *.userdb/
 installation.yaml
 user.yaml
-*.custom.yaml
-!others/**/*.custom.yaml
-
-custom_phrase_double.txt
-others/script/scel2txt/out/*
-others/script/scel2txt/scel/*
-cn_dicts/temp.txt
-
-*private*
-
-rime_console
-rime_deployer
-rime_patch
-
-*.zip

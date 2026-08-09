@@ -628,7 +628,8 @@ in
           #fcitx5-mozc
           fcitx5-gtk
           #fcitx5-chinese-addons
-          fcitx5-rime
+          # 方案数据由 rime-frost 包提供,用户目录只放 *.custom.yaml 定制
+          (fcitx5-rime.override { rimeDataPkgs = [ rime-frost ]; })
         ];
       };
     };
