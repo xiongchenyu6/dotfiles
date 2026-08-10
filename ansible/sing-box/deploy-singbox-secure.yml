@@ -46,6 +46,16 @@
       become: false
       no_log: true
 
+    - name: Define the hysteria2 TLS material paths
+      ansible.builtin.set_fact:
+        sing_box_tls_dir: /etc/sing-box/tls
+        sing_box_tls_cert: /etc/sing-box/tls/hysteria2.crt
+        sing_box_tls_key: /etc/sing-box/tls/hysteria2.key
+        sing_box_tls_cn: >-
+          {{ 'hy2-lubancat.panda.qzz.io'
+             if inventory_hostname == 'lubancat'
+             else 'hy2-sg.panda.qzz.io' }}
+
     - name: Gather target facts after privilege setup
       ansible.builtin.setup:
 
@@ -54,6 +64,8 @@
         shadowsocks_method: "{{ sing_box_secrets.shadowsocks.method }}"
         shadowsocks_password: "{{ sing_box_secrets.shadowsocks.password }}"
         shadowsocks_port: "{{ sing_box_secrets.shadowsocks.port | int }}"
+        hysteria2_password: "{{ sing_box_secrets.hysteria2.password }}"
+        hysteria2_port: "{{ sing_box_secrets.hysteria2.port | int }}"
       vars:
         sing_box_secrets: >-
           {{
@@ -72,6 +84,9 @@
           - shadowsocks_password | length > 0
           - shadowsocks_port | int >= 1
           - shadowsocks_port | int <= 65535
+          - hysteria2_password | length > 0
+          - hysteria2_port | int >= 1
+          - hysteria2_port | int <= 65535
         fail_msg: Target architecture or encrypted sing-box settings are invalid
       no_log: true
 
@@ -259,6 +274,54 @@
             sing_box_version_after.rc != 0
             or sing_box_version not in sing_box_version_after.stdout
 
+        # hysteria2 需要 TLS。这两台都没有可用的 ACME 证书(lubancat 是 Ubuntu
+        # 且没装 acme.sh;sg-office 压根没有 acme 目录),而 hysteria2 的安全性
+        # 来自 users[].password 和 QUIC 加密,证书只用于握手 —— 所以用长期自签
+        # 证书,客户端侧配 insecure。这是 hysteria2 的常见部署方式。
+        - name: Create the sing-box TLS directory
+          ansible.builtin.file:
+            path: "{{ sing_box_tls_dir }}"
+            state: directory
+            owner: root
+            group: sing-box
+            mode: '0750'
+
+        - name: Check whether a self-signed certificate already exists
+          ansible.builtin.stat:
+            path: "{{ sing_box_tls_cert }}"
+          register: sing_box_tls_cert_stat
+
+        # 10 年有效期:这是自签证书,客户端不验证它,轮换只会带来无谓的中断。
+        - name: Generate the self-signed certificate for hysteria2
+          ansible.builtin.command:
+            argv:
+              - openssl
+              - req
+              - -x509
+              - -newkey
+              - rsa:2048
+              - -nodes
+              - -keyout
+              - "{{ sing_box_tls_key }}"
+              - -out
+              - "{{ sing_box_tls_cert }}"
+              - -days
+              - "3650"
+              - -subj
+              - "/CN={{ sing_box_tls_cn }}"
+          when: not sing_box_tls_cert_stat.stat.exists
+          changed_when: true
+
+        - name: Let sing-box read the certificate material
+          ansible.builtin.file:
+            path: "{{ item }}"
+            owner: root
+            group: sing-box
+            mode: '0640'
+          loop:
+            - "{{ sing_box_tls_cert }}"
+            - "{{ sing_box_tls_key }}"
+
         - name: Install the validated sing-box configuration
           ansible.builtin.copy:
             content: |
@@ -278,6 +341,20 @@
                     "multiplex": {
                       "enabled": true,
                       "padding": false
+                    }
+                  },
+                  {
+                    "type": "hysteria2",
+                    "tag": "hysteria2-in",
+                    "listen": "::",
+                    "listen_port": {{ hysteria2_port | int }},
+                    "users": [
+                      { "password": {{ hysteria2_password | to_json }} }
+                    ],
+                    "tls": {
+                      "enabled": true,
+                      "certificate_path": "{{ sing_box_tls_cert }}",
+                      "key_path": "{{ sing_box_tls_key }}"
                     }
                   }
                 ],

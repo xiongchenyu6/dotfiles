@@ -27,6 +27,16 @@
     ./hardware-configuration.nix
   ];
 
+  # 在 10086 的裸 VLESS 之外加一个 VLESS + Reality 入站(443)。
+  # 腾讯HK 的 sub2api 出海要经这里:裸 VLESS 没有 TLS,内层 SNI 明文暴露,
+  # api.openai.com 会在 TLS 握手阶段被跨境链路重置(实测 100% 复现)。
+  # Reality 把握手伪装成访问真实大站,链路上看不到真实目的地。
+  # 用 443 是因为 Oracle Cloud 安全组只放行 22/80/443/10086,且 443 空闲 —
+  # 这样既不用动云控制台,也不顶掉 10086 上给 clash-verge 用的裸 VLESS。
+  # hysteria2 出海入站(UDP 8443),给腾讯HK 上的 sub2api 用。
+  # Reality 试过但退掉了:同链路只有 83% 成功率,而 hysteria2 有 93% 且快 3.6 倍。
+  my.sing-box-hysteria2.enable = true;
+
   sops.secrets."cloudflared/tunnel-credentials" = { };
 
   # VLESS currently uses TCP on this host. Make the already-loaded BBR module
