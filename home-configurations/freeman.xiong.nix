@@ -72,8 +72,19 @@ in
           )
       );
 
+  # work-ops-data 的密文在 workDevOpsSkills 仓库(store 外),关掉 eval 期校验
+  sops.validateSopsFiles = false;
+
   # Only enable SOPS secrets on desktop (Darwin/GUI) - not on VPS servers
   sops.secrets = lib.mkIf enableHomeSops {
+    # work skills 敏感数据:rebuild 时解密到固定路径,agent 直接读明文
+    # (见 workDevOpsSkills 的 work-ops skill;密文用 sops 编辑)
+    "work-ops-data" = lib.mkIf (!isDarwin) {
+      sopsFile = "${osConfig.users.users."freeman.xiong".home}/Documents/github/work/workDevOpsSkills/skills/work-ops/ops-data.sops.yaml";
+      format = "yaml";
+      key = "";
+      path = "${osConfig.users.users."freeman.xiong".home}/.config/work/ops-data.yaml";
+    };
     "ssh/freeman.xiong/id_ed25519" = {
       path = "${osConfig.users.users."freeman.xiong".home}/.ssh/id_ed25519";
       mode = "600";
