@@ -445,6 +445,10 @@ in
       source = "${pkgs.wineWow64Packages.waylandFull}/bin/wine";
       executable = true;
     };
+    file.".local/bin/warcraft3" = {
+      source = ./warcraft3.sh;
+      executable = true;
+    };
     file.".local/bin/voxinput" = {
       source = "${voxinputClipboard}/bin/voxinput";
       executable = true;
@@ -458,7 +462,6 @@ in
         kiro
         aspellDicts.en
         supabase-cli
-        albert
         camber
         baidupcs-go
         sbctl
