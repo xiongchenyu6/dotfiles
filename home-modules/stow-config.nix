@@ -4,12 +4,8 @@ _: {
       removePrefixDirectory = true;
       allowOther = false;
       directories = [
-        "config/.config/xmonad"
         #"config/.config/nvim"
         "password-store/.local/share/password-store"
-        "albert/.local/share/albert"
-        "config/.config/albert"
-        "config/.config/Code"
         "rime/.local/share/fcitx5/rime"
         # Personal AI skills/prompts, maintained in the repo and linked into
         # ~/.claude so Claude Code picks them up in every project. Symlink
@@ -40,6 +36,18 @@ _: {
         }
         {
           directory = "ai-skills/.codex/skills/autolife-docs";
+          method = "symlink";
+        }
+        {
+          directory = "ai-skills/.codex/skills/browser-automation";
+          method = "symlink";
+        }
+        {
+          directory = "ai-skills/.codex/skills/token-saving";
+          method = "symlink";
+        }
+        {
+          directory = "ai-skills/.codex/skills/tui-automation";
           method = "symlink";
         }
       ];
