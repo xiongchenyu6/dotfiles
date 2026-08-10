@@ -72,8 +72,19 @@ in
           )
       );
 
+  # autolife-ops-data 的密文在 AutolifeDevOpsSkills 仓库(store 外),关掉 eval 期校验
+  sops.validateSopsFiles = false;
+
   # Only enable SOPS secrets on desktop (Darwin/GUI) - not on VPS servers
   sops.secrets = lib.mkIf enableHomeSops {
+    # autolife skills 敏感数据:rebuild 时解密到固定路径,agent 直接读明文
+    # (见 AutolifeDevOpsSkills 的 autolife-ops skill;密文用 sops 编辑)
+    "autolife-ops-data" = lib.mkIf (!isDarwin) {
+      sopsFile = "${osConfig.users.users."freeman.xiong".home}/Documents/github/autolife/AutolifeDevOpsSkills/skills/autolife-ops/ops-data.sops.yaml";
+      format = "yaml";
+      key = "";
+      path = "${osConfig.users.users."freeman.xiong".home}/.config/autolife/ops-data.yaml";
+    };
     "ssh/freeman.xiong/id_ed25519" = {
       path = "${osConfig.users.users."freeman.xiong".home}/.ssh/id_ed25519";
       mode = "600";
