@@ -1,6 +1,6 @@
 ---
 name: nixos-deploy
-description: dotfiles 仓库的 NixOS/darwin 部署、主机迁移、secrets 管理惯例。用于 nixos-rebuild、部署到远程主机、服务从一台机器迁到另一台、sops 密钥操作时。
+description: dotfiles 仓库(个人主机)的 NixOS/darwin 部署、主机迁移、secrets 管理惯例。用于 nixos-rebuild、部署个人主机、sops 密钥操作时。autolife 服务器(gz/sg-office 等)的部署不用本 skill,用 autolife-ops。
 ---
 
 # NixOS 部署与迁移(dotfiles 仓库)

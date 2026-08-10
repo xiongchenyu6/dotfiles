@@ -50,6 +50,14 @@ _: {
           directory = "ai-skills/.codex/skills/tui-automation";
           method = "symlink";
         }
+        {
+          directory = "ai-skills/.codex/skills/comfyui-assets";
+          method = "symlink";
+        }
+        {
+          directory = "ai-skills/.codex/skills/long-task-babysit";
+          method = "symlink";
+        }
       ];
       files = [ "auth/.authinfo.gpg" ];
     };
