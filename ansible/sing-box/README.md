@@ -1,12 +1,19 @@
 # sing-box deployment
 
-This directory deploys the same encrypted Shadowsocks service to two different
-Linux platforms:
+This directory deploys sing-box (Shadowsocks on 8388 plus hysteria2 on
+8443/udp) to one host:
 
 | Inventory host | Platform | Release asset | Privilege path |
 | --- | --- | --- | --- |
 | `lubancat` | Ubuntu 24.04 / ARM64 | `linux-arm64` | SSH key plus the existing SOPS-encrypted sudo password |
-| `sg-office` | NixOS / AMD64 | `linux-amd64` | Existing root SSH key |
+
+`sg-office` used to be deployed from here too. It is not any more: its
+sing-box is now declared in the autolife nixos repo
+(`nixos-configurations/sg-office/default.nix`, `services.sing-box`) and
+deployed with `nixos-rebuild`. Do not add it back to `singbox_servers` —
+this playbook installs a unit under `/etc/systemd/system/`, which takes
+precedence over the one NixOS generates and would silently shadow the whole
+declarative config.
 
 The old `ubuntu-server` entry remains in the `singbox_legacy` inventory group and
 is not targeted by this playbook.
@@ -53,21 +60,18 @@ Deploy one host only:
 
 ```bash
 ~/dotfiles/ansible/sing-box/deploy.sh --limit lubancat
-~/dotfiles/ansible/sing-box/deploy.sh --limit sg-office
 ```
 
 Required controller tools are `ansible-playbook`, `sops`, the
 `community.sops` collection, and access to the existing decryption key.
-Host-key checking is enabled, so both targets must already have trusted
-`known_hosts` entries.
+Host-key checking is enabled, so the target must already have a trusted
+`known_hosts` entry.
 
 ## Non-secret verification
 
 ```bash
 ssh lubancat 'systemctl is-active sing-box'
-ssh root@sg-office 'systemctl is-active sing-box'
-ssh root@sg-office \
-  'systemctl list-dependencies --plain multi-user.target | grep sing-box'
+ssh lubancat 'ss -ltn | grep 8388; ss -lun | grep 8443'
 ```
 
 Configuration contents and decrypted credentials should not be copied into
