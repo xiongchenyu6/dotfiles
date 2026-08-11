@@ -46,9 +46,14 @@
         sing_box_tls_dir: /etc/sing-box/tls
         sing_box_tls_cert: /etc/sing-box/tls/hysteria2.crt
         sing_box_tls_key: /etc/sing-box/tls/hysteria2.key
-        # 证书是自签的,客户端配 insecure 并不校验它;CN 按主机名派生只是
-        # 为了排查时一眼能认出是哪台机器签的。
-        sing_box_tls_cn: "hy2-{{ inventory_hostname }}.panda.qzz.io"
+        # 证书由 lego 经 Cloudflare DNS-01 签发的 *.panda.qzz.io 通配证书,
+        # 覆盖客户端用的 hy2-<host>.panda.qzz.io SNI —— 客户端无需 insecure。
+        # DNS-01 不占 80/443,和机器上其他 web 服务不冲突。
+        acme_domain: "*.panda.qzz.io"
+        acme_email: xiongchenyu6@gmail.com
+        lego_dir: /etc/sing-box/lego
+        lego_bin: /usr/local/bin/lego
+        lego_version: "4.21.0"
 
     - name: Gather target facts after privilege setup
       ansible.builtin.setup:
@@ -57,6 +62,7 @@
       ansible.builtin.set_fact:
         hysteria2_password: "{{ sing_box_secrets.hysteria2.password }}"
         hysteria2_port: "{{ sing_box_secrets.hysteria2.port | int }}"
+        cloudflare_dns_api_token: "{{ sing_box_secrets.cloudflare.dns_api_token }}"
       vars:
         sing_box_secrets: >-
           {{
@@ -237,10 +243,10 @@
             sing_box_version_after.rc != 0
             or sing_box_version not in sing_box_version_after.stdout
 
-        # hysteria2 需要 TLS,但 lubancat 是 Ubuntu 且没装 acme.sh。
-        # hysteria2 的安全性来自 users[].password 和 QUIC 加密,证书只承担
-        # 握手,所以用长期自签证书、客户端侧配 insecure —— 这是它的常见部署
-        # 方式,不必为此引入一套 ACME。
+        # hysteria2 需要 TLS。用 lego 经 Cloudflare DNS-01 签发 *.panda.qzz.io
+        # 的正式证书(Let's Encrypt),客户端因此不必再配 insecure。DNS-01 不
+        # 碰 80/443,和机器上其他 web 服务(如 Caddy)不打架。续期由 systemd
+        # timer 每天跑 lego renew,只在实际续期时通过 hook 重装证书并重启服务。
         - name: Create the sing-box TLS directory
           ansible.builtin.file:
             path: "{{ sing_box_tls_dir }}"
@@ -249,41 +255,104 @@
             group: sing-box
             mode: '0750'
 
-        - name: Check whether a self-signed certificate already exists
-          ansible.builtin.stat:
-            path: "{{ sing_box_tls_cert }}"
-          register: sing_box_tls_cert_stat
+        - name: Detect CPU architecture for the lego download
+          ansible.builtin.set_fact:
+            lego_arch: "{{ 'arm64' if ansible_facts['architecture'] == 'aarch64' else 'amd64' }}"
 
-        # 10 年有效期:这是自签证书,客户端不验证它,轮换只会带来无谓的中断。
-        - name: Generate the self-signed certificate for hysteria2
-          ansible.builtin.command:
-            argv:
-              - openssl
-              - req
-              - -x509
-              - -newkey
-              - rsa:2048
-              - -nodes
-              - -keyout
-              - "{{ sing_box_tls_key }}"
-              - -out
-              - "{{ sing_box_tls_cert }}"
-              - -days
-              - "3650"
-              - -subj
-              - "/CN={{ sing_box_tls_cn }}"
-          when: not sing_box_tls_cert_stat.stat.exists
-          changed_when: true
+        - name: Install the lego ACME client
+          ansible.builtin.unarchive:
+            src: "https://github.com/go-acme/lego/releases/download/v{{ lego_version }}/lego_v{{ lego_version }}_linux_{{ lego_arch }}.tar.gz"
+            dest: /usr/local/bin
+            include: [lego]
+            remote_src: true
+            creates: "{{ lego_bin }}"
+            mode: '0755'
 
-        - name: Let sing-box read the certificate material
-          ansible.builtin.file:
-            path: "{{ item }}"
+        - name: Write the Cloudflare credentials for lego
+          ansible.builtin.copy:
+            content: "CF_DNS_API_TOKEN={{ cloudflare_dns_api_token }}\n"
+            dest: /etc/sing-box/lego.env
             owner: root
-            group: sing-box
-            mode: '0640'
-          loop:
-            - "{{ sing_box_tls_cert }}"
-            - "{{ sing_box_tls_key }}"
+            group: root
+            mode: '0600'
+          no_log: true
+
+        # 续期/首签时由 lego 的 hook 调用:把签好的证书装到 sing-box 路径并
+        # try-restart(服务没起时是空操作,避免首签阶段误重启半配好的服务)。
+        - name: Install the lego cert-install hook
+          ansible.builtin.copy:
+            dest: /etc/sing-box/lego-install.sh
+            owner: root
+            group: root
+            mode: '0700'
+            content: |
+              #!/usr/bin/env bash
+              set -euo pipefail
+              install -m 0640 -g sing-box '{{ lego_dir }}/certificates/_.panda.qzz.io.crt' '{{ sing_box_tls_cert }}'
+              install -m 0640 -g sing-box '{{ lego_dir }}/certificates/_.panda.qzz.io.key' '{{ sing_box_tls_key }}'
+              systemctl try-restart sing-box || true
+
+        - name: Install the lego issue/renew driver
+          ansible.builtin.copy:
+            dest: /etc/sing-box/lego-renew.sh
+            owner: root
+            group: root
+            mode: '0700'
+            content: |
+              #!/usr/bin/env bash
+              # 由 ansible 生成。首次 run、之后 renew(未到窗口自动跳过);
+              # 只有实际签发/续期才触发 lego-install.sh。
+              set -euo pipefail
+              set -a; . /etc/sing-box/lego.env; set +a
+              common=(--accept-tos --email '{{ acme_email }}' --dns cloudflare
+                      --domains '{{ acme_domain }}' --path '{{ lego_dir }}')
+              if [ -f '{{ lego_dir }}/certificates/_.panda.qzz.io.crt' ]; then
+                '{{ lego_bin }}' "${common[@]}" renew --days 30 --renew-hook /etc/sing-box/lego-install.sh
+              else
+                '{{ lego_bin }}' "${common[@]}" run --run-hook /etc/sing-box/lego-install.sh
+              fi
+
+        - name: Install the cert-renewal systemd service
+          ansible.builtin.copy:
+            dest: /etc/systemd/system/sing-box-cert.service
+            mode: '0644'
+            content: |
+              [Unit]
+              Description=Renew sing-box hysteria2 TLS cert via lego (Cloudflare DNS-01)
+              After=network-online.target
+              Wants=network-online.target
+              [Service]
+              Type=oneshot
+              ExecStart=/etc/sing-box/lego-renew.sh
+
+        - name: Install the cert-renewal systemd timer
+          ansible.builtin.copy:
+            dest: /etc/systemd/system/sing-box-cert.timer
+            mode: '0644'
+            content: |
+              [Unit]
+              Description=Daily sing-box TLS cert renewal
+              [Timer]
+              OnCalendar=daily
+              RandomizedDelaySec=6h
+              Persistent=true
+              [Install]
+              WantedBy=timers.target
+
+        - name: Enable the cert-renewal timer
+          ansible.builtin.systemd_service:
+            name: sing-box-cert.timer
+            enabled: true
+            state: started
+            daemon_reload: true
+
+        # 首签同步完成,证书就位后下面的 sing-box 才能带 TLS 起来。creates 用
+        # lego 自己的输出而非 sing_box_tls_cert —— 后者可能还是上一轮的自签证书,
+        # 那样会误判"已签"而跳过,把自签证书留下。
+        - name: Issue the certificate now if lego has not signed one yet
+          ansible.builtin.command: /etc/sing-box/lego-renew.sh
+          args:
+            creates: "{{ lego_dir }}/certificates/_.panda.qzz.io.crt"
 
         - name: Install the validated sing-box configuration
           ansible.builtin.copy:
