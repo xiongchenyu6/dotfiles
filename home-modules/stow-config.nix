@@ -68,6 +68,10 @@ _: {
           directory = "noctalia/.config/noctalia/plugins/web-search";
           method = "symlink";
         }
+        {
+          directory = "noctalia/.config/noctalia/plugins/ticker";
+          method = "symlink";
+        }
       ];
       files = [ "auth/.authinfo.gpg" ];
     };
