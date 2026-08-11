@@ -1,0 +1,17 @@
+id = "xiongchenyu6/web-search"
+name = "Web Search"
+version = "2.0.0"
+plugin_api = 9
+author = "xiongchenyu6"
+license = "MIT"
+dependencies = []
+tags = ["launcher"]
+icon = "world-search"
+description = "Prefix web searches ported from albert: /s g <query>, /s hm <query>, …"
+
+[[launcher_provider]]
+id = "search"
+entry = "search.luau"
+prefix = "s"
+glyph = "world-search"
+include_in_global_search = false
