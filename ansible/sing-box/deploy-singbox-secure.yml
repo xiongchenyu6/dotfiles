@@ -2,35 +2,20 @@
 - name: Deploy sing-box with the encrypted Shadowsocks configuration
   hosts: singbox_servers
   gather_facts: false
-  become: "{{ inventory_hostname == 'lubancat' }}"
+  become: true
 
   vars:
     sing_box_version: "1.13.14"
     sing_box_binary_path: /usr/local/bin/sing-box
     sing_box_config_path: /etc/sing-box/config.json
-    sing_box_unit_path: >-
-      {{
-        '/usr/local/lib/systemd/system/sing-box.service'
-        if inventory_hostname == 'sg-office'
-        else '/etc/systemd/system/sing-box.service'
-      }}
-    sing_box_nixos_wants_path: >-
-      /usr/local/lib/systemd/system/multi-user.target.wants/sing-box.service
+    sing_box_unit_path: /etc/systemd/system/sing-box.service
     sing_box_arch_map:
       x86_64: amd64
       aarch64: arm64
     sing_box_sha256_map:
       amd64: f48703461a15476951ac4967cdad339d986f4b8096b4eb3ff0829a500502d697
       arm64: 4742df6a4314e8ecc41736849fca6d73b8f9e91b6e8b06ee794ff17ba180579e
-    # sg-office is NixOS and intentionally does not expose Python in PATH.
-    # deploy.sh discovers an existing store interpreter without changing the host.
-    ansible_python_interpreter: >-
-      {{
-        (lookup('env', 'SING_BOX_SG_OFFICE_PYTHON')
-          | default('/run/current-system/sw/bin/python3', true))
-        if inventory_hostname == 'sg-office'
-        else 'auto_silent'
-      }}
+    ansible_python_interpreter: auto_silent
 
   pre_tasks:
     - name: Load the existing lubancat sudo secret
@@ -42,7 +27,6 @@
               playbook_dir + '/../../secrets/common.yaml'
             ) | from_yaml).lubancat.become_password
           }}
-      when: inventory_hostname == 'lubancat'
       become: false
       no_log: true
 
@@ -51,10 +35,9 @@
         sing_box_tls_dir: /etc/sing-box/tls
         sing_box_tls_cert: /etc/sing-box/tls/hysteria2.crt
         sing_box_tls_key: /etc/sing-box/tls/hysteria2.key
-        sing_box_tls_cn: >-
-          {{ 'hy2-lubancat.panda.qzz.io'
-             if inventory_hostname == 'lubancat'
-             else 'hy2-sg.panda.qzz.io' }}
+        # 证书是自签的,客户端配 insecure 并不校验它;CN 取这台机器的 DNS 名
+        # 只是为了排查时一眼能认出是谁。
+        sing_box_tls_cn: hy2-lubancat.panda.qzz.io
 
     - name: Gather target facts after privilege setup
       ansible.builtin.setup:
@@ -117,12 +100,7 @@
         name: sing-box
         group: sing-box
         system: true
-        shell: >-
-          {{
-            '/run/current-system/sw/bin/nologin'
-            if ansible_facts['distribution'] == 'NixOS'
-            else '/usr/sbin/nologin'
-          }}
+        shell: /usr/sbin/nologin
         home: /var/lib/sing-box
         create_home: true
 
@@ -146,19 +124,6 @@
         group: sing-box
         mode: '0750'
 
-    - name: Create the local systemd unit directories on NixOS
-      ansible.builtin.file:
-        path: "{{ item }}"
-        state: directory
-        owner: root
-        group: root
-        mode: '0755'
-      loop:
-        - /usr/local/lib
-        - /usr/local/lib/systemd
-        - /usr/local/lib/systemd/system
-        - /usr/local/lib/systemd/system/multi-user.target.wants
-      when: inventory_hostname == 'sg-office'
 
     - name: Record pre-deployment files
       ansible.builtin.stat:
@@ -184,12 +149,6 @@
       changed_when: false
       failed_when: false
 
-    - name: Record the NixOS boot enablement link
-      ansible.builtin.stat:
-        path: "{{ sing_box_nixos_wants_path }}"
-        follow: false
-      register: sing_box_previous_nixos_wants
-      when: inventory_hostname == 'sg-office'
 
     - name: Create rollback directory when an installation already exists
       ansible.builtin.file:
@@ -274,10 +233,10 @@
             sing_box_version_after.rc != 0
             or sing_box_version not in sing_box_version_after.stdout
 
-        # hysteria2 需要 TLS。这两台都没有可用的 ACME 证书(lubancat 是 Ubuntu
-        # 且没装 acme.sh;sg-office 压根没有 acme 目录),而 hysteria2 的安全性
-        # 来自 users[].password 和 QUIC 加密,证书只用于握手 —— 所以用长期自签
-        # 证书,客户端侧配 insecure。这是 hysteria2 的常见部署方式。
+        # hysteria2 需要 TLS,但 lubancat 是 Ubuntu 且没装 acme.sh。
+        # hysteria2 的安全性来自 users[].password 和 QUIC 加密,证书只承担
+        # 握手,所以用长期自签证书、客户端侧配 insecure —— 这是它的常见部署
+        # 方式,不必为此引入一套 ACME。
         - name: Create the sing-box TLS directory
           ansible.builtin.file:
             path: "{{ sing_box_tls_dir }}"
@@ -418,22 +377,12 @@
           register: sing_box_unit_install
           no_log: true
 
-        - name: Persistently enable the local unit on NixOS
-          ansible.builtin.file:
-            path: "{{ sing_box_nixos_wants_path }}"
-            src: ../sing-box.service
-            state: link
-            owner: root
-            group: root
-          register: sing_box_nixos_wants_install
-          when: inventory_hostname == 'sg-office'
-
-        - name: Reload systemd when the unit changed
+        # 不改成 handler:本 playbook 用 block/rescue 做回滚,而 handler 只在
+        # play 末尾统一触发 —— 回滚路径上它可能根本不执行,或在错误的时刻执行。
+        - name: Reload systemd when the unit changed # noqa: no-handler
           ansible.builtin.systemd_service:
             daemon_reload: true
-          when: >-
-            sing_box_unit_install.changed
-            or (sing_box_nixos_wants_install.changed | default(false))
+          when: sing_box_unit_install.changed
 
         - name: Enable and activate sing-box on standard systemd hosts
           ansible.builtin.systemd_service:
@@ -449,23 +398,6 @@
                 )
                 else 'started'
               }}
-          when: inventory_hostname != 'sg-office'
-
-        - name: Activate sing-box on NixOS
-          ansible.builtin.systemd_service:
-            name: sing-box.service
-            state: >-
-              {{
-                'restarted'
-                if (
-                  (sing_box_binary_install.changed | default(false))
-                  or sing_box_config_install.changed
-                  or sing_box_unit_install.changed
-                  or (sing_box_nixos_wants_install.changed | default(false))
-                )
-                else 'started'
-              }}
-          when: inventory_hostname == 'sg-office'
 
         - name: Validate the live configuration
           ansible.builtin.command:
@@ -503,11 +435,6 @@
         # indistinguishable from "the node is down" to a client. This playbook
         # otherwise leaves firewall and routing alone, so the one port it needs
         # is opened here rather than by hand.
-        #
-        # sg-office is NixOS: its firewall is declarative and 8388 is in
-        # networking.firewall.allowedTCPPorts/allowedUDPPorts in the company
-        # repo. Poking nftables here would be silently reverted by the next
-        # nixos-rebuild, so this only covers the ufw host.
         - name: Open the Shadowsocks port in ufw
           community.general.ufw:
             rule: allow
@@ -517,24 +444,26 @@
           loop:
             - tcp
             - udp
-          when: inventory_hostname == 'lubancat'
+
+        # hysteria2 是 UDP/QUIC。漏了这条的话服务端一切正常(端口在监听、
+        # 证书就位、日志无错),但客户端一个包都进不来 —— 排查时正是这样:
+        # 从腾讯 HK 打过来 0/10,而本机 ss -lun 显示 8443 好好地听着。
+        - name: Open the hysteria2 port in ufw
+          community.general.ufw:
+            rule: allow
+            port: "{{ hysteria2_port }}"
+            proto: udp
+            comment: hysteria2 egress for sub2api
 
       rescue:
         - name: Stop a newly introduced sing-box unit
           ansible.builtin.systemd_service:
             name: sing-box.service
             state: stopped
-            enabled: "{{ false if inventory_hostname != 'sg-office' else omit }}"
+            enabled: false
           when: "'LoadState=not-found' in sing_box_previous_service.stdout"
           failed_when: false
 
-        - name: Remove a NixOS enablement link introduced by the failed deployment
-          ansible.builtin.file:
-            path: "{{ sing_box_nixos_wants_path }}"
-            state: absent
-          when:
-            - inventory_hostname == 'sg-office'
-            - not sing_box_previous_nixos_wants.stat.exists
 
         - name: Restore files that existed before deployment
           ansible.builtin.copy:
