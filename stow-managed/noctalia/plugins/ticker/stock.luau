@@ -39,7 +39,7 @@ function onQuery(query)
   for index, symbol in symbols do
     noctalia.http({ url = chartUrl(symbol), headers = { "User-Agent: Mozilla/5.0" } }, function(res)
       done += 1
-      if res.ok then
+      if res.ok and (res.status == nil or res.status < 400) then
         local data = noctalia.json.decode(res.body)
         local meta = data and data.chart and data.chart.result and data.chart.result[1] and data.chart.result[1].meta
         if meta and meta.symbol then
