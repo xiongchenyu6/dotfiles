@@ -48,6 +48,19 @@
       ];
 
       initContent = ''
+        # 代理开关(sing-box 本地 mixed 端口);差旅时不 pon 就是全直连
+        function pon {
+          export http_proxy=http://127.0.0.1:20171 https_proxy=http://127.0.0.1:20171
+          export HTTP_PROXY=$http_proxy HTTPS_PROXY=$https_proxy
+          export all_proxy=socks5://127.0.0.1:20170 ALL_PROXY=socks5://127.0.0.1:20170
+          export no_proxy="localhost,127.0.0.1,::1,.local" NO_PROXY=$no_proxy
+          echo "proxy on ($http_proxy)"
+        }
+        function poff {
+          unset http_proxy https_proxy HTTP_PROXY HTTPS_PROXY all_proxy ALL_PROXY no_proxy NO_PROXY
+          echo "proxy off"
+        }
+
         function gre {
            VERSION=$(git describe --abbrev=0 --tags)
 
