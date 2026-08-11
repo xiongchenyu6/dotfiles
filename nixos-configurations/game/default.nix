@@ -304,7 +304,33 @@
             listen_port = 20171;
           }
         ];
+        # Clash API + metacubexd 面板:http://127.0.0.1:9090/ui
+        # cache_file 记住面板里手选的节点,重启不丢
+        experimental = {
+          clash_api = {
+            external_controller = "127.0.0.1:9090";
+            external_ui = "${pkgs.metacubexd}";
+          };
+          cache_file.enabled = true;
+        };
         outbounds = [
+          {
+            # 面板上的总开关:默认走 auto 测速,可手动切到具体节点或 direct
+            type = "selector";
+            tag = "proxy";
+            outbounds = [
+              "auto"
+              "hy2-jtti"
+              "direct"
+            ];
+            default = "auto";
+          }
+          {
+            # 以后加节点:outbounds 塞进这个列表即可自动测速选优
+            type = "urltest";
+            tag = "auto";
+            outbounds = [ "hy2-jtti" ];
+          }
           {
             type = "hysteria2";
             tag = "hy2-jtti";
@@ -325,7 +351,7 @@
           }
         ];
         route = {
-          final = "hy2-jtti";
+          final = "proxy";
           rules = [
             {
               ip_is_private = true;
