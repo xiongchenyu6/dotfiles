@@ -53,11 +53,8 @@
     - name: Gather target facts after privilege setup
       ansible.builtin.setup:
 
-    - name: Load the existing encrypted Shadowsocks settings
+    - name: Load the encrypted hysteria2 settings
       ansible.builtin.set_fact:
-        shadowsocks_method: "{{ sing_box_secrets.shadowsocks.method }}"
-        shadowsocks_password: "{{ sing_box_secrets.shadowsocks.password }}"
-        shadowsocks_port: "{{ sing_box_secrets.shadowsocks.port | int }}"
         hysteria2_password: "{{ sing_box_secrets.hysteria2.password }}"
         hysteria2_port: "{{ sing_box_secrets.hysteria2.port | int }}"
       vars:
@@ -74,10 +71,6 @@
       ansible.builtin.assert:
         that:
           - ansible_facts['architecture'] in sing_box_arch_map
-          - shadowsocks_method | length > 0
-          - shadowsocks_password | length > 0
-          - shadowsocks_port | int >= 1
-          - shadowsocks_port | int <= 65535
           - hysteria2_password | length > 0
           - hysteria2_port | int >= 1
           - hysteria2_port | int <= 65535
@@ -302,18 +295,6 @@
                 },
                 "inbounds": [
                   {
-                    "type": "shadowsocks",
-                    "tag": "shadowsocks-in",
-                    "listen": "::",
-                    "listen_port": {{ shadowsocks_port | int }},
-                    "method": {{ shadowsocks_method | to_json }},
-                    "password": {{ shadowsocks_password | to_json }},
-                    "multiplex": {
-                      "enabled": true,
-                      "padding": false
-                    }
-                  },
-                  {
                     "type": "hysteria2",
                     "tag": "hysteria2-in",
                     "listen": "::",
@@ -372,7 +353,7 @@
               RestrictAddressFamilies=AF_INET AF_INET6 AF_UNIX AF_NETLINK
               RestrictRealtime=true
               SystemCallArchitectures=native
-              {% if shadowsocks_port | int < 1024 %}
+              {% if hysteria2_port | int < 1024 %}
               AmbientCapabilities=CAP_NET_BIND_SERVICE
               CapabilityBoundingSet=CAP_NET_BIND_SERVICE
               {% else %}
@@ -432,30 +413,11 @@
           retries: 10
           delay: 1
 
-        - name: Verify that the local Shadowsocks listener is accepting connections
-          ansible.builtin.wait_for:
-            host: "::1"
-            port: "{{ shadowsocks_port | int }}"
-            state: started
-            timeout: 15
-          no_log: true
-
         # A listener on ::1 only proves the process is up. Both nodes spent a
-        # long time in exactly this state — service active, socket bound — while
-        # every inbound packet was dropped at the border, which is
-        # indistinguishable from "the node is down" to a client. This playbook
-        # otherwise leaves firewall and routing alone, so the one port it needs
-        # is opened here rather than by hand.
-        - name: Open the Shadowsocks port in ufw
-          community.general.ufw:
-            rule: allow
-            port: "{{ shadowsocks_port }}"
-            proto: "{{ item }}"
-            comment: "sing-box shadowsocks ({{ item }})"
-          loop:
-            - tcp
-            - udp
-
+        # long time with service active and socket bound while every inbound
+        # packet was dropped at the border — indistinguishable from "the node
+        # is down" to a client. This playbook otherwise leaves firewall and
+        # routing alone, so the one port it needs is opened here by ufw.
         # hysteria2 是 UDP/QUIC。漏了这条的话服务端一切正常(端口在监听、
         # 证书就位、日志无错),但客户端一个包都进不来 —— 排查时正是这样:
         # 从腾讯 HK 打过来 0/10,而本机 ss -lun 显示 8443 好好地听着。
