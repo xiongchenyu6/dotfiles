@@ -1,0 +1,24 @@
+id = "xiongchenyu6/ticker"
+name = "Price Ticker"
+version = "2.0.0"
+plugin_api = 9
+author = "xiongchenyu6"
+license = "MIT"
+dependencies = []
+tags = ["launcher", "finance"]
+icon = "chart-line"
+description = "Crypto (/cc) and stock (/st) prices via CoinGecko and Yahoo Finance."
+
+[[launcher_provider]]
+id = "crypto"
+entry = "crypto.luau"
+prefix = "cc"
+glyph = "currency-bitcoin"
+include_in_global_search = false
+
+[[launcher_provider]]
+id = "stock"
+entry = "stock.luau"
+prefix = "st"
+glyph = "chart-line"
+include_in_global_search = false

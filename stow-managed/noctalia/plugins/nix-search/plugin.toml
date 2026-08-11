@@ -1,0 +1,19 @@
+# 本仓库作为 noctalia 本地插件源使用(一次性注册):
+#   noctalia msg plugins source add dotfiles path ~/dotfiles/stow-managed/noctalia/plugins
+id = "xiongchenyu6/nix-search"
+name = "Nix Package Search"
+version = "2.0.0"
+plugin_api = 9
+author = "xiongchenyu6"
+license = "MIT"
+dependencies = []
+tags = ["launcher", "development"]
+icon = "package"
+description = "Search nixpkgs from the launcher (/nx <query>); Enter copies the attribute name."
+
+[[launcher_provider]]
+id = "nx"
+entry = "nx.luau"
+prefix = "nx"
+glyph = "package"
+include_in_global_search = false
