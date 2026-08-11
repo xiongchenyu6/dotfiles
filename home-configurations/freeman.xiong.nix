@@ -233,6 +233,10 @@ in
         "game" = {
           HostName = "172.22.240.99";
         };
+        "jtti-sg" = {
+          HostName = "45.194.18.75";
+          User = "root";
+        };
         "sg-office" = {
           HostName = "101.78.126.6";
         };
