@@ -18,15 +18,26 @@
     ansible_python_interpreter: auto_silent
 
   pre_tasks:
-    - name: Load the existing lubancat sudo secret
+    # sudo 密码按主机名查。以 root 登录的主机(jtti-sg)提权不需要密码,
+    # 给它别人的密码反而会让 become 失败,所以查不到就整个跳过设置 ——
+    # 注意不能用 omit:那会让 set_fact 一个键都不剩,ansible 直接报
+    # "No key/value pairs provided"。
+    - name: Load this host's entry from the encrypted secrets
       ansible.builtin.set_fact:
-        ansible_become_password: >-
+        sing_box_host_secrets: >-
           {{
             (lookup(
               'community.sops.sops',
               playbook_dir + '/../../secrets/common.yaml'
-            ) | from_yaml).lubancat.become_password
+            ) | from_yaml).get(inventory_hostname, {})
           }}
+      become: false
+      no_log: true
+
+    - name: Use a sudo password only on hosts that need one
+      ansible.builtin.set_fact:
+        ansible_become_password: "{{ sing_box_host_secrets.become_password }}"
+      when: sing_box_host_secrets.become_password is defined
       become: false
       no_log: true
 
@@ -35,9 +46,9 @@
         sing_box_tls_dir: /etc/sing-box/tls
         sing_box_tls_cert: /etc/sing-box/tls/hysteria2.crt
         sing_box_tls_key: /etc/sing-box/tls/hysteria2.key
-        # 证书是自签的,客户端配 insecure 并不校验它;CN 取这台机器的 DNS 名
-        # 只是为了排查时一眼能认出是谁。
-        sing_box_tls_cn: hy2-lubancat.panda.qzz.io
+        # 证书是自签的,客户端配 insecure 并不校验它;CN 按主机名派生只是
+        # 为了排查时一眼能认出是哪台机器签的。
+        sing_box_tls_cn: "hy2-{{ inventory_hostname }}.panda.qzz.io"
 
     - name: Gather target facts after privilege setup
       ansible.builtin.setup:
