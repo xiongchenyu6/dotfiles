@@ -1,92 +1,57 @@
-# Sing-box Shadowsocks Server Documentation
+# Sing-box Server Documentation (hysteria2-only)
 
-## Deployment Status
-✅ **Successfully deployed** on 2025-08-18
+## Protocol
 
-## Server Details
-- **Server IP:** 45.194.18.75
-- **Port:** 8388
-- **Protocol:** Shadowsocks
-- **Encryption Method:** 2022-blake3-aes-128-gcm
-- **Service Status:** Active and running
+自 2026-08 起服务端只跑 **hysteria2**(shadowsocks 已下线):
+
+- **Servers:** jtti-sg (45.194.18.75)、lubancat (203.116.95.146)
+- **Port:** 8443/udp (QUIC)
+- **TLS:** ansible 生成的自签证书,CN `hy2-<host>.panda.qzz.io`;客户端跳过校验(hysteria2 有密码认证)
 
 ## 🔐 Accessing Credentials
 
-Credentials are securely stored using SOPS encryption. To view them:
+Credentials are stored with SOPS:
 
 ```bash
-# View all credentials
 sops -d secrets/servers.yaml
-
-# Extract just the Shadowsocks password
-sops -d secrets/servers.yaml | grep -A1 "shadowsocks:" | grep "password:" | awk '{print $2}' | tr -d '"'
 ```
 
-## Client Configuration
+`hysteria2.password` / `hysteria2.port` 就是客户端所需的全部参数。
 
-To generate client configuration:
-```bash
-# Get the password
-PASSWORD=$(sops -d secrets/servers.yaml | grep -A3 "shadowsocks:" | grep "password:" | awk '{print $2}' | tr -d '"')
+## Clients
 
-# Create client config
-cat << EOF
-{
-  "server": "45.194.18.75",
-  "server_port": 8388,
-  "method": "2022-blake3-aes-128-gcm",
-  "password": "$PASSWORD"
-}
-EOF
-```
+- **game 主机**:声明式 sing-box 客户端(`nixos-configurations/game/default.nix`,
+  services.sing-box),本地 mixed 代理端口 127.0.0.1:20170 / 20171,
+  国内流量走 geoip-cn/geosite-cn 规则直连。密码经 sops-nix 注入,不落明文
+- 其他客户端:任何支持 hysteria2 的内核(sing-box / clash.meta),
+  server_name 填 `hy2-<host>.panda.qzz.io`,allow-insecure 开启
 
 ## Service Management
 
-### Check service status
 ```bash
-ssh root@45.194.18.75 "systemctl status sing-box"
+ssh jtti-sg "systemctl status sing-box"
+ssh jtti-sg "systemctl restart sing-box"
+ssh jtti-sg "journalctl -u sing-box -f"
 ```
 
-### Restart service
-```bash
-ssh root@45.194.18.75 "systemctl restart sing-box"
-```
+## Firewall
 
-### View logs
-```bash
-ssh root@45.194.18.75 "journalctl -u sing-box -f"
-```
-
-## Firewall Configuration
-- Port 8388/tcp - Open for Shadowsocks
-- Port 22/tcp - Open for SSH management
-- UFW firewall is enabled and configured
+- 8443/udp — hysteria2 (ufw,由 playbook 管理)
+- 22/tcp — SSH
 
 ## Installation Details
-- **Sing-box Version:** 1.13.14
+
 - **Installation Path:** `/usr/local/bin/sing-box`
 - **Config Location:** `/etc/sing-box/config.json`
 - **System User:** sing-box (unprivileged)
-- **Working Directory:** `/var/lib/sing-box`
-
-## Security Features
-- Running as unprivileged system user
-- Systemd service with automatic restart on failure
-- Modern encryption (2022-blake3-aes-128-gcm)
-- Multiplexing enabled for better performance
-- Uses the current direct outbound format; no legacy geosite/block outbound
+- **Deploy:** `ansible-playbook -i inventory.ini deploy-singbox-secure.yml`
+  (jtti-sg 单独部署加 `-l jtti-sg`)
 
 ## Troubleshooting
 
-If connection issues occur:
-1. Verify service is running: `ssh root@45.194.18.75 "systemctl status sing-box"`
-2. Check firewall: `ssh root@45.194.18.75 "ufw status"`
-3. Review logs: `ssh root@45.194.18.75 "journalctl -u sing-box -n 50"`
-
-## Files Created During Deployment
-- `/home/freeman.xiong/dotfiles/ansible-sing-box/inventory.ini` - Ansible inventory
-- `/home/freeman.xiong/dotfiles/ansible-sing-box/deploy-singbox.yml` - Ansible playbook
-- `/home/freeman.xiong/dotfiles/ansible-sing-box/files/config.json` - Config template
-- `/home/freeman.xiong/dotfiles/ansible-sing-box/quick-deploy.sh` - Quick deployment script
-- `/home/freeman.xiong/dotfiles/ansible-sing-box/credentials.txt` - Basic credentials file
-- `/home/freeman.xiong/dotfiles/ansible-sing-box/host_vars/ubuntu-server.yml` - Server SSH credentials
+1. 服务状态:`ssh jtti-sg "systemctl status sing-box"`
+2. 防火墙(hysteria2 是 UDP,漏 ufw 规则时服务端看着一切正常但客户端不通):
+   `ssh jtti-sg "ufw status"`
+3. 日志:`ssh jtti-sg "journalctl -u sing-box -n 50"`
+4. 本机客户端:`systemctl status sing-box`,测试
+   `curl -x socks5h://127.0.0.1:20170 https://www.google.com`

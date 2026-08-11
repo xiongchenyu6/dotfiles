@@ -47,6 +47,7 @@
   ];
 
   sops.secrets."wireguard/game" = { };
+  sops.secrets."sing-box/HYSTERIA2_PASSWORD" = { };
 
   system.nixos.tags = [
     "nvidia"
@@ -282,92 +283,78 @@
     # cloudflare-warp = {
     #   enable = true;
     # };
-    v2raya = {
+    # 声明式代理客户端(替代 v2rayA):服务端(jtti-sg)只跑 hysteria2,
+    # xray 不支持 hysteria2,直接用 sing-box。端口沿用 v2rayA 的
+    # 20170/20171(mixed 同时接受 socks5 和 http),消费方不用改。
+    sing-box = {
       enable = true;
-      # V2Fly rejects Shadowsocks 2022 methods while parsing the generated
-      # config, preventing every selected node (including the VLESS nodes) from
-      # starting.
-      cliPackage =
-        let
-          xray = pkgs.xray;
-        in
-        pkgs.writeShellApplication {
-          name = "xray";
-          runtimeInputs = [ pkgs.jq ];
-          text = ''
-            config_path=/etc/v2raya/config.json
-
-            # Only rewrite v2rayA's generated config. All other Xray commands,
-            # including `xray version`, go straight to the current Xray binary.
-            rewrite=false
-            for arg in "$@"; do
-              if [[ "$arg" == "--config=$config_path" ]]; then
-                rewrite=true
-                break
-              fi
-            done
-            if [[ "$rewrite" != true ]]; then
-              exec ${xray}/bin/xray "$@"
-            fi
-
-            runtime_dir=/run/v2raya-xray
-            install -d -m 0700 "$runtime_dir"
-            temporary_config="$(mktemp "$runtime_dir/config.json.XXXXXX")"
-            sanitized_config="$runtime_dir/config.json"
-            trap 'rm -f "$temporary_config"' EXIT
-
-            jq '
-              # Drop malformed REALITY nodes and nodes that require bypassing
-              # certificate verification; Xray no longer accepts allowInsecure.
-              [.outbounds[]
-                | select(
-                    (((.streamSettings.security // "") == "reality")
-                      and ((.streamSettings.realitySettings.fingerprint // "") == ""))
-                    or (.streamSettings.tlsSettings.allowInsecure == true)
-                  )
-                | .tag
-              ] as $bad
-              | .outbounds |= map(select(.tag as $tag | ($bad | index($tag) | not)))
-              | .routing.balancers[]?.selector |=
-                  map(select(. as $tag | ($bad | index($tag) | not)))
-              | .multiObservatory.observers[]?.settings.subjectSelector |=
-                  map(select(. as $tag | ($bad | index($tag) | not)))
-              # multiObservatory is V2Fly-specific; Xray uses observatory.
-              | if .multiObservatory.observers[0].settings
-                then .observatory = .multiObservatory.observers[0].settings
-                else .
-                end
-              | del(.multiObservatory)
-              | walk(
-                  if type == "object" then del(.allowInsecure)
-                  elif type == "string"
-                    and . == "ext:LoyalsoldierSite.dat:geolocation-!cn"
-                    then "geosite:geolocation-!cn"
-                  elif type == "string"
-                    and . == "ext:geoip-only-cn-private.dat:cn"
-                    then "geoip:cn"
-                  elif type == "string"
-                    and . == "ext:geoip-only-cn-private.dat:private"
-                    then "geoip:private"
-                  else .
-                  end
-                )
-            ' "$config_path" > "$temporary_config"
-            chmod 0600 "$temporary_config"
-            mv -f "$temporary_config" "$sanitized_config"
-            trap - EXIT
-
-            rewritten_args=()
-            for arg in "$@"; do
-              if [[ "$arg" == "--config=$config_path" ]]; then
-                rewritten_args+=("--config=$sanitized_config")
-              else
-                rewritten_args+=("$arg")
-              fi
-            done
-            exec ${xray}/bin/xray "''${rewritten_args[@]}"
-          '';
+      settings = {
+        log.level = "warn";
+        inbounds = [
+          {
+            type = "mixed";
+            tag = "in-20170";
+            listen = "127.0.0.1";
+            listen_port = 20170;
+          }
+          {
+            type = "mixed";
+            tag = "in-20171";
+            listen = "127.0.0.1";
+            listen_port = 20171;
+          }
+        ];
+        outbounds = [
+          {
+            type = "hysteria2";
+            tag = "hy2-jtti";
+            server = "45.194.18.75";
+            server_port = 8443;
+            password._secret = config.sops.secrets."sing-box/HYSTERIA2_PASSWORD".path;
+            tls = {
+              enabled = true;
+              # 服务端是 ansible 生成的自签证书(CN hy2-jtti-sg.panda.qzz.io),
+              # 无法走公共 CA 校验;hysteria2 本身有密码认证
+              server_name = "hy2-jtti-sg.panda.qzz.io";
+              insecure = true;
+            };
+          }
+          {
+            type = "direct";
+            tag = "direct";
+          }
+        ];
+        route = {
+          final = "hy2-jtti";
+          rules = [
+            {
+              ip_is_private = true;
+              outbound = "direct";
+            }
+            {
+              rule_set = [
+                "geoip-cn"
+                "geosite-cn"
+              ];
+              outbound = "direct";
+            }
+          ];
+          rule_set = [
+            {
+              tag = "geoip-cn";
+              type = "local";
+              format = "binary";
+              path = "${pkgs.sing-geoip}/share/sing-box/rule-set/geoip-cn.srs";
+            }
+            {
+              tag = "geosite-cn";
+              type = "local";
+              format = "binary";
+              path = "${pkgs.sing-geosite}/share/sing-box/rule-set/geosite-cn.srs";
+            }
+          ];
         };
+      };
     };
 
     sunshine = {
