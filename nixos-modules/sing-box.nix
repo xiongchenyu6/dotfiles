@@ -42,50 +42,27 @@ in
   };
 
   config = {
-    sops.secrets =
-      let
-        singBoxOwned = {
-          owner = config.users.users.sing-box.name or "root";
-          mode = "0400";
-        };
-      in
-      {
-        "sing-box/V2RAY" = singBoxOwned;
-      }
-      // lib.optionalAttrs cfg.enable {
-        "sing-box/HYSTERIA2_PASSWORD" = singBoxOwned;
+    sops.secrets = lib.optionalAttrs cfg.enable {
+      "sing-box/HYSTERIA2_PASSWORD" = {
+        owner = config.users.users.sing-box.name or "root";
+        mode = "0400";
       };
+    };
 
     # ACME 把 panda.qzz.io 的证书目录设成 acme:nginx 750，sing-box 默认只在
     # 自己的组里，读不到。加进 nginx 组是最小改动 —— 另一条路是改
     # security.acme.certs.<name>.group，但那会牵动 nginx 自己的读取。
     users.users.sing-box.extraGroups = lib.mkIf cfg.enable [ "nginx" ];
 
+    # 2026-08: 裸 VLESS(10086)全线下线,个人客户端和 sub2api 统一走 hysteria2。
     networking.firewall = {
-      # 10086 是给 clash-verge 等个人客户端的裸 VLESS，与 sub2api 无关。
-      allowedTCPPorts = [ 10086 ];
       allowedUDPPorts = lib.optional cfg.enable cfg.port;
     };
 
     services.sing-box = {
       enable = true;
       settings = {
-        inbounds = [
-          {
-            type = "vless";
-            listen = "::";
-            listen_port = 10086;
-            users = [
-              {
-                uuid = {
-                  _secret = config.sops.secrets."sing-box/V2RAY".path;
-                };
-                flow = "";
-              }
-            ];
-          }
-        ]
-        ++ lib.optional cfg.enable {
+        inbounds = lib.optional cfg.enable {
           type = "hysteria2";
           tag = "hysteria2-in";
           listen = "::";

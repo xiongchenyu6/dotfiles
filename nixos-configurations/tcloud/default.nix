@@ -22,7 +22,6 @@ in
     ezModules.dn42
     ezModules.bird-inner
     ezModules.datadog-agent
-    ezModules.sing-box
     srvos.nixosModules.server
     ezModules.mixins-nginx
     srvos.nixosModules.mixins-trusted-nix-caches
@@ -101,7 +100,6 @@ in
         7000 # frp
         8000
         8888
-        10086
         18000
       ];
       allowedUDPPorts = [
