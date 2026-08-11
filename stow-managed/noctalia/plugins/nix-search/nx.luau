@@ -33,26 +33,25 @@ local function parseResults()
   local data = text and noctalia.json.decode(text) or nil
   local out = {}
   if data then
-    for attr, info in data do
-      -- legacyPackages.x86_64-linux.foo.bar -> foo.bar
-      local short = attr:gsub("^legacyPackages%.[^%.]+%.", "")
+    for _, entry in data do
       table.insert(out, {
-        id = short,
-        title = short .. (info.version ~= "" and (" (" .. info.version .. ")") or ""),
-        subtitle = info.description or "",
+        id = entry.a,
+        title = entry.a .. (entry.v ~= "" and (" (" .. entry.v .. ")") or ""),
+        subtitle = entry.d,
         glyph = "package",
       })
-      if #out >= MAX_RESULTS then
-        break
-      end
     end
   end
   return out
 end
 
+-- 结果 JSON 可能有几 MB,Luau 回调有 CPU 预算,裁剪必须在 jq 里做完
+local JQ_TRIM = [[jq -c 'to_entries | .[:%d] | map({a: (.key | split(".")[2:] | join(".")), v: (.value.version // ""), d: ((.value.description // "") | .[0:120])})']]
+
 local function startSearch(query)
   running = true
-  local cmd = "nix search nixpkgs --json " .. sanitize(query) .. " > " .. TMP .. " 2>/dev/null"
+  local cmd = "nix search nixpkgs --json " .. sanitize(query) .. " 2>/dev/null | "
+    .. string.format(JQ_TRIM, MAX_RESULTS) .. " > " .. TMP
   noctalia.runAsync(cmd, function(success)
     running = false
     rows = success and parseResults() or {}
@@ -86,7 +85,10 @@ function onQuery(query)
     launcher.setResults(query, shown)
     return
   end
-  launcher.setResults(query, { hintRow("Searching nixpkgs for \"" .. text .. "\"…", "first search after boot can take a while") })
+  launcher.setResults(query, {
+    hintRow("Searching nixpkgs for \"" .. text .. "\"…", "first search after boot can take a while"),
+    webRow(text),
+  })
   if not running then
     startSearch(text)
   end
