@@ -58,6 +58,12 @@ _: {
           directory = "ai-skills/.codex/skills/long-task-babysit";
           method = "symlink";
         }
+        # 自写的 noctalia launcher 插件(>nx 搜 nixpkgs);市场插件仍在
+        # ~/.config/noctalia/plugins 本地,只有这个是仓库管理的
+        {
+          directory = "noctalia/.config/noctalia/plugins/nix-search";
+          method = "symlink";
+        }
       ];
       files = [ "auth/.authinfo.gpg" ];
     };
