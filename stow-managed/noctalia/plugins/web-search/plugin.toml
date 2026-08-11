@@ -1,17 +1,102 @@
+# 由 gen-engines.sh 生成,不要手改;改引擎表后重跑脚本
 id = "xiongchenyu6/web-search"
 name = "Web Search"
-version = "2.0.0"
+version = "2.1.0"
 plugin_api = 9
 author = "xiongchenyu6"
 license = "MIT"
 dependencies = []
 tags = ["launcher"]
 icon = "world-search"
-description = "Prefix web searches ported from albert: /s g <query>, /s hm <query>, …"
+description = "albert-style web searches: /g /gh /hm … each engine has its own prefix."
 
 [[launcher_provider]]
-id = "search"
-entry = "search.luau"
-prefix = "s"
-glyph = "world-search"
+id = "g"
+entry = "engine-g.luau"
+prefix = "g"
+glyph = "brand-google"
+include_in_global_search = false
+
+[[launcher_provider]]
+id = "gh"
+entry = "engine-gh.luau"
+prefix = "gh"
+glyph = "brand-github"
+include_in_global_search = false
+
+[[launcher_provider]]
+id = "gpt"
+entry = "engine-gpt.luau"
+prefix = "gpt"
+glyph = "brand-openai"
+include_in_global_search = false
+
+[[launcher_provider]]
+id = "dd"
+entry = "engine-dd.luau"
+prefix = "dd"
+glyph = "search"
+include_in_global_search = false
+
+[[launcher_provider]]
+id = "yt"
+entry = "engine-yt.luau"
+prefix = "yt"
+glyph = "brand-youtube"
+include_in_global_search = false
+
+[[launcher_provider]]
+id = "gt"
+entry = "engine-gt.luau"
+prefix = "gt"
+glyph = "language"
+include_in_global_search = false
+
+[[launcher_provider]]
+id = "maps"
+entry = "engine-maps.luau"
+prefix = "maps"
+glyph = "map-pin"
+include_in_global_search = false
+
+[[launcher_provider]]
+id = "scholar"
+entry = "engine-scholar.luau"
+prefix = "scholar"
+glyph = "school"
+include_in_global_search = false
+
+[[launcher_provider]]
+id = "wa"
+entry = "engine-wa.luau"
+prefix = "wa"
+glyph = "math-function"
+include_in_global_search = false
+
+[[launcher_provider]]
+id = "ama"
+entry = "engine-ama.luau"
+prefix = "ama"
+glyph = "brand-amazon"
+include_in_global_search = false
+
+[[launcher_provider]]
+id = "eb"
+entry = "engine-eb.luau"
+prefix = "eb"
+glyph = "shopping-cart"
+include_in_global_search = false
+
+[[launcher_provider]]
+id = "af"
+entry = "engine-af.luau"
+prefix = "af"
+glyph = "packages"
+include_in_global_search = false
+
+[[launcher_provider]]
+id = "hm"
+entry = "engine-hm.luau"
+prefix = "hm"
+glyph = "settings"
 include_in_global_search = false

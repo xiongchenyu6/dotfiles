@@ -2,7 +2,7 @@
 #   noctalia msg plugins source add dotfiles path ~/dotfiles/stow-managed/noctalia/plugins
 id = "xiongchenyu6/nix-search"
 name = "Nix Package Search"
-version = "2.0.0"
+version = "2.0.1"
 plugin_api = 9
 author = "xiongchenyu6"
 license = "MIT"
