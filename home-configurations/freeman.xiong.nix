@@ -14,6 +14,7 @@ let
   hasNixOSTags = osConfig ? system && osConfig.system ? nixos && osConfig.system.nixos ? tags;
   hasGuiTag = hasNixOSTags && (builtins.elem "gui" osConfig.system.nixos.tags);
   hasNvidiaTag = hasNixOSTags && (builtins.elem "nvidia" osConfig.system.nixos.tags);
+  hasNvidiaOffload = hasNixOSTags && (osConfig.hardware.nvidia.prime.offload.enable or false);
   isDarwin = !hasNixOSTags;
   hostName = if hasNixOSTags then osConfig.networking.hostName else "";
   isVps =
@@ -63,7 +64,7 @@ in
               ]
           )
           ++ (
-            if hasNvidiaTag then
+            if hasNvidiaTag && !hasNvidiaOffload then
               [
                 ezModules.nvidia
               ]

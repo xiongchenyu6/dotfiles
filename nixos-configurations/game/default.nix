@@ -28,7 +28,7 @@
     ezModules.openfortivpn-config
     ezModules.nas
     lanzaboote.nixosModules.lanzaboote
-    nixos-hardware.nixosModules.lenovo-legion-16ach6h
+    nixos-hardware.nixosModules.lenovo-legion-16ach6h-hybrid
     srvos.nixosModules.desktop
     srvos.nixosModules.mixins-tracing
     # Import Hashtopolis agent module from NUR packages
@@ -43,6 +43,7 @@
     ./dnf-native.nix
     ./hashtopolis-agent.nix
     ./codexpro.nix
+    ./waydroid.nix
     # ./vast-cli.nix  # Moved to home-manager module
   ];
 
@@ -139,6 +140,27 @@
 
   # Disable NVIDIA power daemon (fails when GPU is bound to vfio/power management unsupported)
   systemd.services.nvidia-powerd.enable = false;
+
+  # sing-box is an opt-in travel VPN. Keep both the service and its TUN absent
+  # at boot; pon/poff are the only normal start/stop path.
+  systemd.services.sing-box = {
+    wantedBy = lib.mkForce [ ];
+    unitConfig.X-OnlyManualStart = true;
+  };
+
+  # Let this user toggle only the sing-box unit without a password prompt.
+  security.polkit.extraConfig = ''
+    polkit.addRule(function(action, subject) {
+      if (action.id == "org.freedesktop.systemd1.manage-units" &&
+          subject.user == "freeman.xiong" &&
+          action.lookup("unit") == "sing-box.service" &&
+          (action.lookup("verb") == "start" ||
+           action.lookup("verb") == "restart" ||
+           action.lookup("verb") == "stop")) {
+        return polkit.Result.YES;
+      }
+    });
+  '';
 
   # Hardware watchdog configuration: prefer automatic reboot over staying frozen.
   systemd.settings.Manager = {
@@ -283,78 +305,180 @@
     # cloudflare-warp = {
     #   enable = true;
     # };
-    # 声明式代理客户端(替代 v2rayA):服务端(jtti-sg)只跑 hysteria2,
-    # xray 不支持 hysteria2,直接用 sing-box。端口沿用 v2rayA 的
-    # 20170/20171(mixed 同时接受 socks5 和 http),消费方不用改。
+    # 声明式代理客户端(替代 v2rayA):服务默认不启动。pon 启动分流 TUN,
+    # poff 停止服务并移除 TUN。
     sing-box = {
       enable = true;
-      settings = {
+      settings =
+        let
+          # Non-secret node metadata imported from
+          # ~/Downloads/karing-hy2/links.txt. All five links use the same
+          # password, which remains encrypted in SOPS instead of entering the
+          # Nix store.
+          hy2Nodes = [
+            {
+              tag = "hy2-lubancat";
+              server = "203.116.95.146";
+              serverName = "hy2-lubancat.panda.qzz.io";
+            }
+            {
+              tag = "hy2-oracle-amd-001";
+              server = "213.35.97.233";
+              serverName = "panda.qzz.io";
+            }
+            {
+              tag = "hy2-oracle-amd-002";
+              server = "213.35.117.232";
+              serverName = "panda.qzz.io";
+            }
+            {
+              tag = "hy2-sg-office";
+              server = "101.78.126.6";
+              serverName = "hy2-sg.panda.qzz.io";
+            }
+            {
+              # Lowest-priority emergency fallback: this node has the lowest
+              # latency but measured only ~150 KB/s and had the 16:00 outage.
+              tag = "hy2-jtti-sg";
+              server = "45.194.18.75";
+              serverName = "hy2-jtti-sg.panda.qzz.io";
+            }
+          ];
+        in
+        {
         log.level = "warn";
+        dns = {
+          servers = [
+            {
+              # DHCP discovery times out on some travel routers. Use AliDNS
+              # directly for mainland domains instead of inheriting fake-IP DNS.
+              type = "https";
+              tag = "dns-direct";
+              server = "223.5.5.5";
+              detour = "direct";
+              tls.server_name = "dns.alidns.com";
+            }
+            {
+              type = "https";
+              tag = "dns-proxy";
+              server = "1.1.1.1";
+              detour = "proxy";
+              tls.server_name = "cloudflare-dns.com";
+            }
+          ];
+          rules = [
+            {
+              # Never let a mainland resolver synthesize fake IPs for Claude.
+              domain_suffix = [
+                "anthropic.com"
+                "claude.ai"
+                "claude.com"
+                "claudeusercontent.com"
+              ];
+              action = "route";
+              server = "dns-proxy";
+            }
+            {
+              # Keep mainland sites fast while foreign DNS uses DoH over Hysteria2.
+              rule_set = [ "geosite-cn" ];
+              action = "route";
+              server = "dns-direct";
+            }
+          ];
+          final = "dns-proxy";
+          # This host has no public IPv6 route. Returning AAAA made Bun/Claude
+          # report IPv6 reachability failures as certificate verification errors.
+          strategy = "ipv4_only";
+          reverse_mapping = true;
+        };
         inbounds = [
           {
-            type = "mixed";
-            tag = "in-20170";
-            listen = "127.0.0.1";
-            listen_port = 20170;
-          }
-          {
-            type = "mixed";
-            tag = "in-20171";
-            listen = "127.0.0.1";
-            listen_port = 20171;
+            type = "tun";
+            tag = "tun-in";
+            interface_name = "sing-tun";
+            # Avoid the LAN, Docker, libvirt, NetBird, and WireGuard ranges.
+            address = [ "10.255.0.1/30" ];
+            stack = "system";
+            auto_route = true;
+            auto_redirect = true;
+            strict_route = true;
           }
         ];
         # Clash API + metacubexd 面板:http://127.0.0.1:9090/ui
-        # cache_file 记住面板里手选的节点,重启不丢
-        experimental = {
-          clash_api = {
-            external_controller = "127.0.0.1:9090";
-            external_ui = "${pkgs.metacubexd}";
-          };
-          cache_file.enabled = true;
+        experimental.clash_api = {
+          external_controller = "127.0.0.1:9090";
+          external_ui = "${pkgs.metacubexd}";
         };
-        outbounds = [
-          {
-            # 面板上的总开关:默认走 auto 测速,可手动切到具体节点或 direct
-            type = "selector";
-            tag = "proxy";
-            outbounds = [
-              "auto"
-              "hy2-jtti"
-              "direct"
-            ];
-            default = "auto";
-          }
-          {
-            # 以后加节点:outbounds 塞进这个列表即可自动测速选优
-            type = "urltest";
-            tag = "auto";
-            outbounds = [ "hy2-jtti" ];
-          }
-          {
+        outbounds =
+          [
+            {
+              # Native URLTest has no bandwidth metric. Keep the measured
+              # high-quality nodes first and use a wide latency tolerance as
+              # ordered failover; an unavailable node is removed immediately.
+              type = "urltest";
+              tag = "proxy";
+              outbounds = map (node: node.tag) hy2Nodes;
+              url = "https://api.anthropic.com/";
+              interval = "15s";
+              tolerance = 2000;
+              idle_timeout = "10m";
+              interrupt_exist_connections = true;
+            }
+          ]
+          ++ map (node: {
             type = "hysteria2";
-            tag = "hy2-jtti";
-            server = "45.194.18.75";
+            inherit (node) tag server;
             server_port = 8443;
             password._secret = config.sops.secrets."sing-box/HYSTERIA2_PASSWORD".path;
             tls = {
               enabled = true;
-              # 服务端是 ansible 生成的自签证书(CN hy2-jtti-sg.panda.qzz.io),
-              # 无法走公共 CA 校验;hysteria2 本身有密码认证
-              server_name = "hy2-jtti-sg.panda.qzz.io";
-              insecure = true;
+              # Every node uses a public Let's Encrypt certificate.
+              server_name = node.serverName;
             };
-          }
-          {
-            type = "direct";
-            tag = "direct";
-          }
-        ];
+          }) hy2Nodes
+          ++ [
+            {
+              type = "direct";
+              tag = "direct";
+              domain_resolver = "dns-direct";
+            }
+          ];
         route = {
+          # TUN 出站必须绑定系统检测到的默认物理接口,否则会套娃回 TUN。
+          auto_detect_interface = true;
+          # Private and mainland traffic is bypassed below; everything else
+          # uses Hysteria2 while the opt-in service is running.
           final = "proxy";
           rules = [
             {
+              action = "sniff";
+            }
+            {
+              protocol = "dns";
+              action = "hijack-dns";
+            }
+            {
+              # Claude 官方网络清单中的核心服务。显式放在 CN 分流前,
+              # 避免污染 DNS、GeoIP 误判或 CDN 漂移导致偶发直连。
+              domain_suffix = [
+                "anthropic.com"
+                "claude.ai"
+                "claude.com"
+                "claudeusercontent.com"
+              ];
+              action = "route";
+              outbound = "proxy";
+            }
+            {
+              # NetBird uses RFC 6598 CGNAT addresses, which ip_is_private
+              # deliberately does not include.
+              ip_cidr = [ "100.64.0.0/10" ];
+              action = "bypass";
+              outbound = "direct";
+            }
+            {
               ip_is_private = true;
+              action = "bypass";
               outbound = "direct";
             }
             {
@@ -362,6 +486,7 @@
                 "geoip-cn"
                 "geosite-cn"
               ];
+              action = "bypass";
               outbound = "direct";
             }
           ];

@@ -91,6 +91,12 @@
     chromium = {
       enable = true;
       package = pkgs.google-chrome;
+      commandLineArgs = [
+        "--enable-gpu-rasterization"
+        "--enable-native-gpu-memory-buffers"
+        "--enable-zero-copy"
+        "--enable-features=AcceleratedVideoDecodeLinuxZeroCopyGL,AcceleratedVideoEncoder"
+      ];
     };
 
     wofi = {
