@@ -327,10 +327,26 @@ let
     }
 
     paste_text() {
+      local text
+      text="$(${pkgs.coreutils}/bin/cat)"
+
+      # wtype injects unicode directly through the wayland virtual-keyboard
+      # protocol: it types Chinese (dotool/ydotool can't — they map keysyms
+      # and choke on non-layout characters), works in ANY focused window, and
+      # needs neither the clipboard nor a paste shortcut. The old clipboard +
+      # Ctrl+Shift+V path only pasted in terminals (browsers/inputs use
+      # Ctrl+V) and raced ghostty's clipboard owner — hence dictation silently
+      # produced nothing. Keep that path as a fallback for compositors without
+      # virtual-keyboard support.
+      if ${pkgs.wtype}/bin/wtype -- "$text"; then
+        return 0
+      fi
+
+      log "wtype failed, falling back to clipboard + Ctrl+Shift+V"
       # VoxInput only needs to own the selection until the synthetic paste
       # consumes it. Leaving wl-copy alive indefinitely makes the next manual
       # copy race with this stale owner and can require pressing Ctrl+C twice.
-      if ! ${pkgs.wl-clipboard}/bin/wl-copy --paste-once --type text/plain; then
+      if ! printf '%s' "$text" | ${pkgs.wl-clipboard}/bin/wl-copy --paste-once --type text/plain; then
         log "wl-copy failed"
         return 1
       fi
@@ -345,7 +361,7 @@ let
         return 0
       fi
 
-      log "ydotool paste shortcut failed"
+      log "all paste methods failed"
       return 1
     }
 
@@ -377,6 +393,7 @@ let
         --prefix PATH : ${
           lib.makeBinPath [
             voxinputPasteDotool
+            pkgs.wtype
             pkgs.wl-clipboard
             pkgs.ydotool
             pkgs.coreutils
