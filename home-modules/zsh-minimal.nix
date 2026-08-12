@@ -48,17 +48,91 @@
       ];
 
       initContent = ''
-        # 代理开关(sing-box 本地 mixed 端口);差旅时不 pon 就是全直连
-        function pon {
-          export http_proxy=http://127.0.0.1:20171 https_proxy=http://127.0.0.1:20171
-          export HTTP_PROXY=$http_proxy HTTPS_PROXY=$https_proxy
-          export all_proxy=socks5://127.0.0.1:20170 ALL_PROXY=socks5://127.0.0.1:20170
-          export no_proxy="localhost,127.0.0.1,::1,.local" NO_PROXY=$no_proxy
-          echo "proxy on ($http_proxy)"
+        # System-wide sing-box TUN switch. The service is disabled at boot:
+        # pon creates the TUN, while poff removes it completely.
+        function _sing_box_wait_api {
+          local api=http://127.0.0.1:9090
+          local attempt
+
+          for attempt in {1..50}; do
+            ${pkgs.curl}/bin/curl --disable --noproxy '*' --fail --silent \
+              --output /dev/null "$api/configs" && return 0
+            sleep 0.1
+          done
+
+          echo "sing-box did not become ready; TUN has been stopped" >&2
+          return 1
         }
+
+        function _sing_box_check_url {
+          local url=$1
+          local attempts=$2
+          local attempt=1
+
+          while (( attempt <= attempts )); do
+            ${pkgs.curl}/bin/curl --disable --noproxy '*' --ipv4 \
+              --connect-timeout 8 --max-time 20 \
+              --silent --show-error --output /dev/null "$url" && return 0
+            (( attempt < attempts )) && sleep 2
+            (( attempt++ ))
+          done
+
+          return 1
+        }
+
+        function _sing_box_selected_node {
+          ${pkgs.curl}/bin/curl --disable --noproxy '*' --fail --silent \
+            http://127.0.0.1:9090/proxies/proxy 2>/dev/null |
+            ${pkgs.jq}/bin/jq --raw-output '.now // empty' 2>/dev/null
+        }
+
+        function pon {
+          unset http_proxy https_proxy HTTP_PROXY HTTPS_PROXY all_proxy ALL_PROXY no_proxy NO_PROXY
+
+          if ! ${pkgs.iproute2}/bin/ip route show default | ${pkgs.gnugrep}/bin/grep -q '^default '; then
+            echo "No IPv4 default route; connect to a network before running pon" >&2
+            return 1
+          fi
+
+          if ${pkgs.systemd}/bin/systemctl is-active --quiet sing-box.service; then
+            local node=$(_sing_box_selected_node)
+            echo "Proxy already ON: existing connections kept; node: ''${node:-selecting}"
+            return 0
+          fi
+
+          # start is deliberately idempotent: running pon from another terminal
+          # must not reset existing Claude streams.
+          ${pkgs.systemd}/bin/systemctl start sing-box.service || return 1
+          _sing_box_wait_api || {
+            ${pkgs.systemd}/bin/systemctl stop sing-box.service >/dev/null 2>&1 || true
+            return 1
+          }
+
+          if command -v resolvectl >/dev/null; then
+            resolvectl flush-caches >/dev/null 2>&1 || true
+          fi
+
+          # Verify the real data path, not just the local control socket. The
+          # retries give URLTest enough time to mark a bad node and select the
+          # next one. curl exits successfully for expected 4xx root responses.
+          _sing_box_check_url https://api.anthropic.com/ 3 &&
+            _sing_box_check_url https://www.baidu.com/ 2 || {
+            echo "sing-box data-path check failed; TUN has been stopped" >&2
+            ${pkgs.systemd}/bin/systemctl stop sing-box.service >/dev/null 2>&1 || true
+            return 1
+          }
+
+          local node=$(_sing_box_selected_node)
+          echo "Proxy ON: overseas via Hysteria2; mainland/private direct; node: ''${node:-selecting}"
+        }
+
         function poff {
           unset http_proxy https_proxy HTTP_PROXY HTTPS_PROXY all_proxy ALL_PROXY no_proxy NO_PROXY
-          echo "proxy off"
+          ${pkgs.systemd}/bin/systemctl stop sing-box.service || return 1
+          if command -v resolvectl >/dev/null; then
+            resolvectl flush-caches >/dev/null 2>&1 || true
+          fi
+          echo "Proxy OFF: sing-box stopped (no TUN)"
         }
 
         function gre {
