@@ -1,4 +1,10 @@
-{ config, pkgs, lib, inputs, ... }:
+{
+  config,
+  pkgs,
+  lib,
+  inputs,
+  ...
+}:
 
 {
   imports = [
@@ -16,11 +22,24 @@
   # crash-looping tongyi_gate. Disable podman's docker shims so the real
   # docker CLI/daemon owns the `docker` command and /var/run/docker.sock.
   virtualisation = {
-    docker.enable = true;
+    docker = {
+      enable = true;
+      enableOnBoot = false;
+    };
+    oci-containers.containers = {
+      mysql.autoStart = false;
+      dnf-1.autoStart = false;
+    };
     podman = {
       dockerCompat = lib.mkForce false;
       dockerSocket.enable = lib.mkForce false;
     };
+  };
+
+  # Keep the DNF environment available on demand without waking Docker at boot.
+  systemd.services = {
+    create-dnf-env.wantedBy = lib.mkForce [ ];
+    create-dnf-network.wantedBy = lib.mkForce [ ];
   };
 
   # Per upstream 1995chen/dnf FAQ: 统一登陆器5.x requires start.dnf.tw to

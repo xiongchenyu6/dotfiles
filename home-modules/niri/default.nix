@@ -89,6 +89,7 @@ in
     outputs = {
       "eDP-1" = {
         scale = 1.5;
+        variable-refresh-rate = "on-demand";
       };
       "HDMI-A-1" = {
         scale = 1.0;
@@ -130,6 +131,15 @@ in
           bottom-right = 6.0;
         };
         clip-to-geometry = true;
+      }
+      {
+        matches = [
+          {
+            # Cover gamescope, native Steam games, and Wine/Proton games.
+            app-id = ''(?i)^(gamescope|steam_app_[0-9]+|.*\.exe)$'';
+          }
+        ];
+        variable-refresh-rate = true;
       }
     ];
 

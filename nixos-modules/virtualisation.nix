@@ -253,8 +253,8 @@ in
                   };
                 }
               );
-            active = true;
-            restart = true;
+            active = false;
+            restart = false;
           }
         ];
       };
