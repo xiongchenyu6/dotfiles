@@ -170,6 +170,8 @@
         calicoctl # Linux only
         jp2a # Marked broken on Darwin
         lm_sensors # Linux-only hardware monitoring
+        amdgpu_top # AMD GPU usage monitor
+        nvtopPackages.full # Multi-vendor GPU process monitor (AMD/NVIDIA)
         fwupd # Firmware update daemon (Linux-only)
         gparted # Disk partitioning GUI (Linux-only)
         pciutils # PCI utilities (mostly Linux-specific)

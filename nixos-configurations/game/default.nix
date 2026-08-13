@@ -86,7 +86,10 @@
     ];
   };
 
-  hardware.nvidia.package = config.boot.kernelPackages.nvidiaPackages.latest;
+  hardware.nvidia = {
+    package = config.boot.kernelPackages.nvidiaPackages.latest;
+    dynamicBoost.enable = true;
+  };
   boot = {
     binfmt.emulatedSystems = [ "aarch64-linux" ];
     initrd.kernelModules = [
@@ -138,8 +141,6 @@
 
   systemd.services.ModemManager.enable = false;
 
-  # Disable NVIDIA power daemon (fails when GPU is bound to vfio/power management unsupported)
-  systemd.services.nvidia-powerd.enable = false;
 
   # sing-box is an opt-in travel VPN. Keep both the service and its TUN absent
   # at boot; pon/poff are the only normal start/stop path.
