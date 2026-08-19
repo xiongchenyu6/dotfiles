@@ -17,7 +17,7 @@
 
   # Rust toolchain — managed by Nix (replaces rustup-managed install)
   home.packages = [
-    inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.cc-switch-cli
+    inputs.xiongchenyu6.packages.${pkgs.stdenv.hostPlatform.system}.cc-switch
     inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.ccusage
     inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.ccstatusline
     inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.rtk
