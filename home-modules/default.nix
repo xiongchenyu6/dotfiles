@@ -25,6 +25,7 @@ in
       inputs.sops-nix.homeManagerModules.sops
       inputs.impermanence.homeManagerModules.impermanence
       inputs.vast-cli.homeManagerModules.default
+      inputs.xiongchenyu6.homeModules.cc-switch
     ]
     ++ (
       if hasGuiTag then

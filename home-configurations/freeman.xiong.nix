@@ -81,7 +81,9 @@ in
     # work skills 敏感数据:rebuild 时解密到固定路径,agent 直接读明文
     # (见 workDevOpsSkills 的 work-ops skill;密文用 sops 编辑)
     "work-ops-data" = lib.mkIf (!isDarwin) {
-      sopsFile = "${osConfig.users.users."freeman.xiong".home}/Documents/github/work/workDevOpsSkills/skills/work-ops/ops-data.sops.yaml";
+      sopsFile = "${
+        osConfig.users.users."freeman.xiong".home
+      }/Documents/github/work/workDevOpsSkills/skills/work-ops/ops-data.sops.yaml";
       format = "yaml";
       key = "";
       path = "${osConfig.users.users."freeman.xiong".home}/.config/work/ops-data.yaml";
@@ -277,6 +279,11 @@ in
   };
 
   # Load API keys from sops into shell environment
+  programs.cc-switch = {
+    enable = true;
+    desktopIntegration = true;
+  };
+
   programs.zsh = {
     initContent = lib.optionalString enableHomeSops ''
       # Source API keys from sops if the file exists
