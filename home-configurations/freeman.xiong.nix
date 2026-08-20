@@ -81,7 +81,9 @@ in
     # autolife skills 敏感数据:rebuild 时解密到固定路径,agent 直接读明文
     # (见 AutolifeDevOpsSkills 的 autolife-ops skill;密文用 sops 编辑)
     "autolife-ops-data" = lib.mkIf (!isDarwin) {
-      sopsFile = "${osConfig.users.users."freeman.xiong".home}/Documents/github/autolife/AutolifeDevOpsSkills/skills/autolife-ops/ops-data.sops.yaml";
+      sopsFile = "${
+        osConfig.users.users."freeman.xiong".home
+      }/Documents/github/autolife/AutolifeDevOpsSkills/skills/autolife-ops/ops-data.sops.yaml";
       format = "yaml";
       key = "";
       path = "${osConfig.users.users."freeman.xiong".home}/.config/autolife/ops-data.yaml";
@@ -277,6 +279,11 @@ in
   };
 
   # Load API keys from sops into shell environment
+  programs.cc-switch = {
+    enable = true;
+    desktopIntegration = true;
+  };
+
   programs.zsh = {
     initContent = lib.optionalString enableHomeSops ''
       # Source API keys from sops if the file exists

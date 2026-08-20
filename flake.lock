@@ -1196,11 +1196,11 @@
         "uv2nix": "uv2nix_2"
       },
       "locked": {
-        "lastModified": 1787135032,
-        "narHash": "sha256-yet/Fn+2d+2tKTOZ/3Ed+wBF1zx0Rg/0ve5Wx644/0Y=",
+        "lastModified": 1787265075,
+        "narHash": "sha256-+O8SAQ9p51eFclv8snoHozpxA0EgSNiEnV4y9Y7bpSU=",
         "owner": "xiongchenyu6",
         "repo": "nur-packages",
-        "rev": "0acaaa818151cd40327f1f60e2bab28c21862e6d",
+        "rev": "7d673c38b5ed8241562aac962a891fad5cf35fd8",
         "type": "github"
       },
       "original": {
