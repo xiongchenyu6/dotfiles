@@ -16,14 +16,14 @@
     ezModules."freeman.xiong"
     ezModules.core
     ezModules.server
-    ezModules.sops
+    sops-nix.nixosModules.sops
     srvos.nixosModules.mixins-trusted-nix-caches
     srvos.nixosModules.mixins-nix-experimental
   ];
 
   sops.secrets."wireguard/digital" = { };
   sops.secrets."authentik/env" = { };
-  
+
   boot.loader.grub = {
     enable = true;
     devices = [ "/dev/vda" ];
