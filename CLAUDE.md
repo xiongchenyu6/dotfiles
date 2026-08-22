@@ -70,14 +70,14 @@ cli-minimal       → base CLI tools (all users including root)
 | oracle-amd-001/002 | x86_64-linux | Oracle Cloud |
 | oracle-arm-001/002 | aarch64-linux | Oracle Cloud |
 | tcloud | x86_64-linux | Tencent Cloud |
-| huoshan-bj-001 | x86_64-linux | Huoshan (Beijing) |
 | game | x86_64-linux | Local desktop (NVIDIA GPU passthrough; niri compositor) |
 | office | x86_64-linux | Local workstation (niri compositor) |
-| lubancat | aarch64-linux | LubanCat SBC |
-| netbird | x86_64-linux | NetBird VPN |
+| work-robot-260 | x86_64-linux | Robot onboard host (minimal bootstrap) |
 | office-mac | aarch64-darwin | macOS (nix-darwin) |
 
-Hosts in `nixos-configurations/` that aren't in `ezConfigs.nixos.hosts` (`iso`, `corp`, `digital`, `digitalocean`, `generic-nixos`, `office-windows`) are templates/modules imported by other hosts or used to build images, not standalone deploy targets.
+`lubancat` (RK3588 SBC) runs Ubuntu — no mainline device tree — and is managed only via standalone home-manager (user `cat`) plus `ansible/`, not as a NixOS host.
+
+Entries in `nixos-configurations/` that aren't in `ezConfigs.nixos.hosts` (`iso`, `digital`, `digitalocean`, `generic-nixos`) are templates/image builders, not standalone deploy targets. Per-host software inventory: [`docs/HOSTS.md`](./docs/HOSTS.md).
 
 ### Secrets
 
@@ -85,7 +85,7 @@ Uses `sops-nix` with age encryption. Each host has its own age key defined in `.
 
 ### Peripheral Systems
 
-- **`ansible/`** — deployment playbooks for sing-box, Nextcloud, Wazuh, VersityGW
+- **`ansible/`** — deployment playbooks for sing-box, Nextcloud, NetBird, Casdoor, sub2api, Supabase
 - **`scripts/`** — GPU passthrough management, NixOS bootstrap, nixos-infect (note: `scripts/README.md` still references Hyprland; the active compositor is now niri — the IOMMU/VFIO bind logic remains compositor-agnostic)
 - **`stow-managed/`** — GNU Stow dotfiles (iTerm, IntelliJ, Rime, etc.)
 - **`lazynixos`** (flake input, `github:xiongchenyu6/lazynixos`) — staged/lazy deployment helper used by the user; check there before reinventing deploy logic
