@@ -29,3 +29,9 @@ agent-browser is visible @e1      # 可见性检查
 - 机器可读输出加 `--json`(如 `snapshot --json`)
 - 元素引用(@eN)在页面变化后会失效,操作后重新 `snapshot`
 - 不确定的子命令用 `agent-browser --help` 查
+
+## 移动端视口
+
+体验 harness 要桌面 + 手机两套视口各跑一遍(手机端遮挡、滑动、tooltip、
+取消选中是重灾区)。用 `agent-browser` 的视口/窗口尺寸参数切换,截图分开命名,
+方便前后对比。
