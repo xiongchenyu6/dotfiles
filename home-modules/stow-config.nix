@@ -1,4 +1,24 @@
-_: {
+_:
+let
+  # Codex reads the same content: .codex/skills/* in the repo are relative
+  # symlinks into .claude/, so both tools share one source of truth.
+  # ~/.codex/skills stays a real directory (it holds manually-linked skills
+  # too), so each skill is linked individually.
+  codexSkills = [
+    "asset-gen"
+    "autolife-docs"
+    "browser-automation"
+    "game-balance-sim"
+    "game-polish"
+    "kiss-design"
+    "long-task-babysit"
+    "nixos-deploy"
+    "proxy-nodes"
+    "token-saving"
+    "tui-automation"
+  ];
+in
+{
   home = {
     persistence."/home/freeman.xiong/dotfiles/stow-managed/" = {
       removePrefixDirectory = true;
@@ -18,47 +38,15 @@ _: {
           directory = "ai-skills/.claude/commands";
           method = "symlink";
         }
-        # Codex reads the same content: .codex/prompts and .codex/skills/* in
-        # the repo are relative symlinks into .claude/, so both tools share
-        # one source of truth. ~/.codex/skills stays a real directory (it
-        # holds manually-linked skills too), so each skill links individually.
         {
           directory = "ai-skills/.codex/prompts";
           method = "symlink";
         }
-        {
-          directory = "ai-skills/.codex/skills/game-polish";
-          method = "symlink";
-        }
-        {
-          directory = "ai-skills/.codex/skills/nixos-deploy";
-          method = "symlink";
-        }
-        {
-          directory = "ai-skills/.codex/skills/autolife-docs";
-          method = "symlink";
-        }
-        {
-          directory = "ai-skills/.codex/skills/browser-automation";
-          method = "symlink";
-        }
-        {
-          directory = "ai-skills/.codex/skills/token-saving";
-          method = "symlink";
-        }
-        {
-          directory = "ai-skills/.codex/skills/tui-automation";
-          method = "symlink";
-        }
-        {
-          directory = "ai-skills/.codex/skills/comfyui-assets";
-          method = "symlink";
-        }
-        {
-          directory = "ai-skills/.codex/skills/long-task-babysit";
-          method = "symlink";
-        }
-      ];
+      ]
+      ++ map (name: {
+        directory = "ai-skills/.codex/skills/${name}";
+        method = "symlink";
+      }) codexSkills;
       files = [ "auth/.authinfo.gpg" ];
     };
   };
