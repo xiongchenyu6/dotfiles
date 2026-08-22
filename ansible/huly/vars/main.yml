@@ -1,0 +1,49 @@
+---
+# =============================================================================
+# Huly (self-hosted) deployment variables — lubancat
+# =============================================================================
+# The upstream compose keeps its own nginx container to route the dozen
+# internal services; the host nginx only terminates TLS in front of it.
+
+huly_deploy_dir: /opt/huly
+# Upstream's example config still names v0.6.501, but hulykvs was only ever
+# published from 0.7.x onwards — that tag does not exist for it. Keep every
+# hardcoreeng image on one tag that all nine of them actually have.
+huly_version: v0.7.432
+
+huly_domain: huly.starslab.qzz.io
+huly_bind_host: 127.0.0.1
+huly_port: 8087
+
+huly_ssl_cert: /etc/nginx/ssl/huly.crt
+huly_ssl_key: /etc/nginx/ssl/huly.key
+
+huly_title: Huly
+huly_default_language: en
+huly_last_name_first: true
+
+# CockroachDB
+huly_cr_database: defaultdb
+huly_cr_username: selfhost
+
+# Redpanda
+huly_redpanda_admin_user: superadmin
+
+# Images pinned alongside the upstream compose
+huly_cockroach_image: cockroachdb/cockroach:latest-v24.2
+huly_redpanda_image: docker.redpanda.com/redpandadata/redpanda:v24.3.6
+huly_elastic_image: elasticsearch:7.14.2
+huly_minio_image: minio/minio
+huly_nginx_image: nginx:1.21.3
+
+# lubancat has 16 GB shared with several other stacks; cap the two JVM/native
+# memory hogs so Huly cannot starve the rest of the box.
+huly_elastic_heap: 1024m
+huly_elastic_mem_limit: 1600M
+# Redpanda warns below 1 GiB and aborts on allocation failure; leave headroom
+# over the limit it asks for rather than sitting exactly on it.
+huly_redpanda_mem_limit: 1536M
+huly_rekoni_mem_limit: 500M
+
+huly_oidc_enabled: true
+huly_tz: Asia/Shanghai

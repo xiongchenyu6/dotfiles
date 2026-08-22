@@ -1,0 +1,238 @@
+---
+# Deploy ntfy behind the host nginx on lubancat.
+# ntfy has no OIDC support of its own, so Auth0 sits in front as an
+# oauth2-proxy gate over the browser surface; see README.md.
+- name: Deploy ntfy
+  hosts: ntfy_servers
+  become: yes
+  # Facts would be gathered before the sudo password is loaded from sops, and
+  # nothing here needs them.
+  gather_facts: false
+  vars_files:
+    - vars/main.yml
+
+  tasks:
+    - name: Load host secrets from the repository sops store
+      ansible.builtin.set_fact:
+        ntfy_common_secrets: >-
+          {{
+            lookup(
+              'community.sops.sops',
+              playbook_dir + '/../../secrets/common.yaml'
+            ) | from_yaml
+          }}
+      become: false
+      no_log: true
+
+    - name: Use a sudo password on hosts that need one
+      ansible.builtin.set_fact:
+        ansible_become_password: "{{ ntfy_common_secrets[inventory_hostname].become_password }}"
+      when: ntfy_common_secrets[inventory_hostname].become_password is defined
+      become: false
+      no_log: true
+
+    - name: Resolve the Auth0 gate settings
+      ansible.builtin.set_fact:
+        ntfy_auth0_domain: "{{ ntfy_common_secrets.auth0.domain | default('') }}"
+        ntfy_oidc_client_id: "{{ ntfy_common_secrets.auth0.ntfy.client_id | default('') }}"
+        ntfy_oidc_client_secret: "{{ ntfy_common_secrets.auth0.ntfy.client_secret | default('') }}"
+      no_log: true
+
+    - name: Decide whether the Auth0 gate is active
+      ansible.builtin.set_fact:
+        ntfy_gate_enabled: "{{ ntfy_oauth2_proxy_enabled and (ntfy_oidc_client_id | length > 0) }}"
+
+    - name: Warn when the Auth0 application has not been registered yet
+      ansible.builtin.debug:
+        msg: >-
+          auth0.ntfy.client_id is missing from secrets/common.yaml — deploying
+          without the Auth0 gate; ntfy's own deny-all ACL is the only thing
+          protecting it. Run scripts/auth0-setup.sh, then re-run this playbook.
+      when: not ntfy_gate_enabled
+
+    - name: Install required packages
+      ansible.builtin.apt:
+        name: [curl, docker.io, docker-compose-v2, nginx]
+        state: present
+        update_cache: yes
+        cache_valid_time: 3600
+
+    - name: Start and enable Docker
+      ansible.builtin.systemd:
+        name: docker
+        state: started
+        enabled: yes
+
+    - name: Create the deployment and data directories
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: directory
+        owner: root
+        group: root
+        mode: '0755'
+      loop:
+        - "{{ ntfy_deploy_dir }}"
+        - "{{ ntfy_deploy_dir }}/data"
+
+    - name: Check for previously persisted secrets
+      ansible.builtin.stat:
+        path: "{{ ntfy_deploy_dir }}/.secrets.yml"
+      register: ntfy_secrets_stat
+
+    - name: Load previously persisted secrets
+      ansible.builtin.slurp:
+        src: "{{ ntfy_deploy_dir }}/.secrets.yml"
+      register: ntfy_secrets_blob
+      when: ntfy_secrets_stat.stat.exists
+      no_log: true
+
+    - name: Parse persisted secrets into facts
+      ansible.builtin.set_fact:
+        ntfy_persisted: "{{ ntfy_secrets_blob.content | b64decode | from_yaml }}"
+      when: ntfy_secrets_stat.stat.exists
+      no_log: true
+
+    - name: Resolve the admin password
+      ansible.builtin.set_fact:
+        ntfy_admin_password: "{{ ntfy_admin_password
+          | default(ntfy_persisted.ntfy_admin_password
+                    | default(lookup('ansible.builtin.pipe', 'openssl rand -hex 16'))) }}"
+      no_log: true
+
+    # oauth2-proxy insists on exactly 16, 24 or 32 raw bytes.
+    - name: Resolve the oauth2-proxy cookie secret
+      ansible.builtin.set_fact:
+        ntfy_cookie_secret: "{{ ntfy_cookie_secret
+          | default(ntfy_persisted.ntfy_cookie_secret
+                    | default(lookup('ansible.builtin.pipe', 'openssl rand -base64 32 | tr -d \"\\n\" | tr \"+/\" \"-_\"'))) }}"
+      no_log: true
+
+    - name: Persist secrets to {{ ntfy_deploy_dir }}/.secrets.yml
+      ansible.builtin.copy:
+        content: |
+          ---
+          ntfy_admin_password: "{{ ntfy_admin_password }}"
+          ntfy_cookie_secret: "{{ ntfy_cookie_secret }}"
+        dest: "{{ ntfy_deploy_dir }}/.secrets.yml"
+        owner: root
+        group: root
+        mode: '0600'
+      no_log: true
+
+    - name: Deploy server.yml
+      ansible.builtin.template:
+        src: templates/server.yml.j2
+        dest: "{{ ntfy_deploy_dir }}/server.yml"
+        owner: root
+        group: root
+        mode: '0644'
+      notify: restart ntfy
+
+    - name: Deploy docker-compose.yml
+      ansible.builtin.template:
+        src: templates/docker-compose.yml.j2
+        dest: "{{ ntfy_deploy_dir }}/docker-compose.yml"
+        owner: root
+        group: root
+        mode: '0600'
+      notify: restart ntfy
+
+    - name: Pull images (best-effort; tolerates registry flakiness)
+      ansible.builtin.command: docker compose pull --ignore-pull-failures
+      args:
+        chdir: "{{ ntfy_deploy_dir }}"
+      register: ntfy_pull
+      changed_when: "'Pull complete' in ntfy_pull.stdout or 'Downloaded' in ntfy_pull.stdout"
+      failed_when: false
+
+    - name: Start the stack
+      ansible.builtin.command: docker compose up -d --remove-orphans
+      args:
+        chdir: "{{ ntfy_deploy_dir }}"
+      register: ntfy_up
+      changed_when: "'Started' in ntfy_up.stderr or 'Created' in ntfy_up.stderr"
+
+    - name: Wait for ntfy to answer
+      ansible.builtin.uri:
+        url: "http://127.0.0.1:{{ ntfy_port }}/v1/health"
+        status_code: 200
+      register: ntfy_health
+      retries: 24
+      delay: 5
+      until: ntfy_health.status == 200
+      ignore_errors: yes
+
+    - name: List existing ntfy users
+      ansible.builtin.command: docker exec ntfy ntfy user list
+      register: ntfy_user_list
+      changed_when: false
+      failed_when: false
+
+    - name: Create the ntfy admin user
+      ansible.builtin.shell:
+        cmd: >-
+          docker exec -e NTFY_PASSWORD="{{ ntfy_admin_password }}"
+          ntfy ntfy user add --role=admin "{{ ntfy_admin_user }}"
+      # `ntfy user list` prints "user admin (role: admin, ...)". Matched as a
+      # plain substring including the paren, so `admin` cannot match `admin2`
+      # and no regex escaping is involved.
+      when: "'user ' ~ ntfy_admin_user ~ ' (' not in ntfy_user_list.stdout"
+      no_log: true
+
+    - name: Ensure the TLS cert is in place
+      ansible.builtin.stat:
+        path: "{{ ntfy_ssl_cert }}"
+      register: ntfy_cert_stat
+
+    - name: Fail if the TLS cert is missing
+      ansible.builtin.fail:
+        msg: "TLS cert not found at {{ ntfy_ssl_cert }}. Issue it via acme.sh first (see README)."
+      when: not ntfy_cert_stat.stat.exists
+
+    - name: Deploy the nginx vhost
+      ansible.builtin.template:
+        src: templates/nginx-ntfy.conf.j2
+        dest: /etc/nginx/sites-available/ntfy
+        owner: root
+        group: root
+        mode: '0644'
+      notify: reload nginx
+
+    - name: Enable the nginx vhost
+      ansible.builtin.file:
+        src: /etc/nginx/sites-available/ntfy
+        dest: /etc/nginx/sites-enabled/ntfy
+        state: link
+      notify: reload nginx
+
+    - name: Validate the nginx config
+      ansible.builtin.command: nginx -t
+      changed_when: false
+
+    - name: Flush handlers
+      ansible.builtin.meta: flush_handlers
+
+    - name: Report deployment status
+      ansible.builtin.debug:
+        msg: |
+          ========================================
+          ntfy: {{ 'SUCCESS' if ntfy_health.status | default(0) == 200 else 'STARTING/FAILED' }}
+          ========================================
+          Deploy dir: {{ ntfy_deploy_dir }}
+          Public URL: https://{{ ntfy_domain }}
+          Auth0 gate: {{ 'ON (' + ntfy_auth0_domain + ')' if ntfy_gate_enabled else 'OFF' }}
+          ntfy admin: {{ ntfy_admin_user }} (password in {{ ntfy_deploy_dir }}/.secrets.yml)
+          ========================================
+          Topic ACLs stay in ntfy: docker exec -it ntfy ntfy access ...
+          ========================================
+
+  handlers:
+    - name: restart ntfy
+      ansible.builtin.command: docker compose up -d --remove-orphans
+      args:
+        chdir: "{{ ntfy_deploy_dir }}"
+
+    - name: reload nginx
+      ansible.builtin.systemd:
+        name: nginx
+        state: reloaded

@@ -1,0 +1,45 @@
+---
+# =============================================================================
+# Tuwunel (Matrix homeserver) deployment variables — lubancat
+# =============================================================================
+
+tuwunel_deploy_dir: /opt/tuwunel
+tuwunel_image: ghcr.io/matrix-construct/tuwunel:latest
+
+# server_name is baked into every MXID and can never change afterwards. It is
+# the apex so MXIDs read @you:starslab.qzz.io; the homeserver itself lives on
+# tuwunel_host_name and the apex only delegates to it via /.well-known/matrix.
+tuwunel_server_name: starslab.qzz.io
+tuwunel_host_name: matrix.starslab.qzz.io
+tuwunel_domain: "{{ tuwunel_host_name }}"
+
+# Client-Server API bind (host nginx terminates TLS in front of it)
+tuwunel_bind_host: 127.0.0.1
+tuwunel_port: 8008
+
+tuwunel_ssl_cert: /etc/nginx/ssl/tuwunel.crt
+tuwunel_ssl_key: /etc/nginx/ssl/tuwunel.key
+
+# Cloudflare's free plan caps a proxied request body at 100 MB; keep the
+# homeserver limit under it so uploads fail in the client with a clear error
+# rather than at the edge.
+tuwunel_max_request_size: 90 MiB
+
+tuwunel_allow_federation: true
+tuwunel_trusted_servers: ["matrix.org"]
+
+# Registration stays token-gated: Auth0 is the intended entry point, the token
+# only exists so a local account can be created out-of-band when needed.
+tuwunel_allow_registration: true
+
+# Auth0 identity provider. Credentials come from secrets/common.yaml
+# (auth0.tuwunel.{client_id,client_secret}); when absent the provider block is
+# omitted and the server runs without SSO.
+tuwunel_oidc_enabled: true
+tuwunel_oidc_brand: auth0
+tuwunel_oidc_name: Auth0
+tuwunel_oidc_scope: ["openid", "email", "profile"]
+# Auth0 is self-controlled, so claim matching may bind to an existing account.
+tuwunel_oidc_trusted: true
+
+tuwunel_tz: Asia/Shanghai

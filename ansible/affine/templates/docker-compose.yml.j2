@@ -1,0 +1,72 @@
+# Managed by ansible/affine — do not edit on the host.
+name: affine
+services:
+  affine:
+    image: {{ affine_image }}
+    container_name: affine_server
+    restart: unless-stopped
+    ports:
+      - "{{ affine_bind_host }}:{{ affine_port }}:3010"
+    depends_on:
+      redis:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+      affine_migration:
+        condition: service_completed_successfully
+    volumes:
+      - ./data/storage:/root/.affine/storage
+      - ./config:/root/.affine/config
+    environment:
+      - REDIS_SERVER_HOST=redis
+      - REDIS_SERVER_PASSWORD={{ affine_redis_password }}
+      - DATABASE_URL=postgresql://affine:{{ affine_postgres_password }}@postgres:5432/affine
+      - AFFINE_SERVER_EXTERNAL_URL=https://{{ affine_domain }}
+      - TZ={{ affine_tz }}
+
+  affine_migration:
+    image: {{ affine_image }}
+    container_name: affine_migration_job
+    volumes:
+      - ./data/storage:/root/.affine/storage
+      - ./config:/root/.affine/config
+    command: ['sh', '-c', 'node ./scripts/self-host-predeploy.js']
+    environment:
+      - REDIS_SERVER_HOST=redis
+      - REDIS_SERVER_PASSWORD={{ affine_redis_password }}
+      - DATABASE_URL=postgresql://affine:{{ affine_postgres_password }}@postgres:5432/affine
+      - TZ={{ affine_tz }}
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  redis:
+    image: {{ affine_redis_image }}
+    container_name: affine_redis
+    restart: unless-stopped
+    command: ["redis-server", "--requirepass", "{{ affine_redis_password }}"]
+    healthcheck:
+      test: ["CMD", "redis-cli", "-a", "{{ affine_redis_password }}", "--raw", "incr", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  postgres:
+    image: {{ affine_postgres_image }}
+    container_name: affine_postgres
+    restart: unless-stopped
+    volumes:
+      - ./data/postgres:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: affine
+      POSTGRES_DB: affine
+      POSTGRES_PASSWORD: "{{ affine_postgres_password }}"
+      POSTGRES_INITDB_ARGS: '--data-checksums'
+      TZ: {{ affine_tz }}
+    healthcheck:
+      test: ['CMD', 'pg_isready', '-U', 'affine', '-d', 'affine']
+      interval: 10s
+      timeout: 5s
+      retries: 5

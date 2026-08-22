@@ -1,0 +1,18 @@
+# Deployed by scripts/cloudflare-matrix-delegation.sh, which supplies
+# CLOUDFLARE_ACCOUNT_ID (this Cloudflare login owns several accounts, so
+# wrangler cannot pick one on its own).
+name = "matrix-well-known"
+main = "src/index.js"
+compatibility_date = "2026-01-01"
+
+routes = [
+  { pattern = "starslab.qzz.io/.well-known/matrix/*", zone_name = "starslab.qzz.io" }
+]
+
+[vars]
+HOMESERVER = "matrix.starslab.qzz.io"
+
+# No observability, no KV, no bindings: this Worker answers two static
+# documents and nothing else.
+[observability]
+enabled = false

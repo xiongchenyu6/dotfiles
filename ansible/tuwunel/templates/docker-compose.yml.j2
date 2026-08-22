@@ -1,0 +1,18 @@
+# Managed by ansible/tuwunel — do not edit on the host.
+name: tuwunel
+services:
+  tuwunel:
+    image: {{ tuwunel_image }}
+    container_name: tuwunel
+    restart: unless-stopped
+    ports:
+      - "{{ tuwunel_bind_host }}:{{ tuwunel_port }}:{{ tuwunel_port }}"
+    volumes:
+      - ./data:/var/lib/tuwunel
+      - ./tuwunel.toml:/etc/tuwunel/tuwunel.toml:ro
+    environment:
+      - TUWUNEL_CONFIG=/etc/tuwunel/tuwunel.toml
+      - TZ={{ tuwunel_tz }}
+    # No healthcheck: the image is distroless, with neither a shell nor curl to
+    # run one with. nginx's upstream check and the playbook's own probe of
+    # /_matrix/client/versions cover it.

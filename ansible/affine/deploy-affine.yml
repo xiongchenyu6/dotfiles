@@ -1,0 +1,222 @@
+---
+# Deploy AFFiNE Community Edition behind the host nginx on lubancat.
+# Auth0 is the identity provider; see README.md for the app registration.
+- name: Deploy AFFiNE
+  hosts: affine_servers
+  become: yes
+  # Facts would be gathered before the sudo password is loaded from sops, and
+  # nothing here needs them.
+  gather_facts: false
+  vars_files:
+    - vars/main.yml
+
+  tasks:
+    - name: Load host secrets from the repository sops store
+      ansible.builtin.set_fact:
+        affine_common_secrets: >-
+          {{
+            lookup(
+              'community.sops.sops',
+              playbook_dir + '/../../secrets/common.yaml'
+            ) | from_yaml
+          }}
+      become: false
+      no_log: true
+
+    - name: Use a sudo password on hosts that need one
+      ansible.builtin.set_fact:
+        ansible_become_password: "{{ affine_common_secrets[inventory_hostname].become_password }}"
+      when: affine_common_secrets[inventory_hostname].become_password is defined
+      become: false
+      no_log: true
+
+    - name: Resolve the Auth0 identity provider settings
+      ansible.builtin.set_fact:
+        affine_auth0_domain: "{{ affine_common_secrets.auth0.domain | default('') }}"
+        affine_oidc_client_id: "{{ affine_common_secrets.auth0.affine.client_id | default('') }}"
+        affine_oidc_client_secret: "{{ affine_common_secrets.auth0.affine.client_secret | default('') }}"
+      no_log: true
+
+    - name: Warn when the Auth0 application has not been registered yet
+      ansible.builtin.debug:
+        msg: >-
+          auth0.affine.client_id is missing from secrets/common.yaml — deploying
+          without SSO. Run scripts/auth0-setup.sh, then re-run this playbook.
+      when: affine_oidc_client_id | length == 0
+
+    - name: Install required packages
+      ansible.builtin.apt:
+        name: [curl, docker.io, docker-compose-v2, nginx]
+        state: present
+        update_cache: yes
+        cache_valid_time: 3600
+
+    - name: Start and enable Docker
+      ansible.builtin.systemd:
+        name: docker
+        state: started
+        enabled: yes
+
+    - name: Create the deployment and data directories
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: directory
+        owner: root
+        group: root
+        mode: '0755'
+      loop:
+        - "{{ affine_deploy_dir }}"
+        - "{{ affine_deploy_dir }}/config"
+        - "{{ affine_deploy_dir }}/data"
+        - "{{ affine_deploy_dir }}/data/storage"
+        # data/postgres is deliberately absent: the postgres image chowns its
+        # data directory to its own uid on every start, so managing the owner
+        # here just makes the two fight over it on each run.
+
+    # Generated once and kept: rotating the postgres password on a re-run would
+    # lock the server out of its own database.
+    - name: Check for previously persisted secrets
+      ansible.builtin.stat:
+        path: "{{ affine_deploy_dir }}/.secrets.yml"
+      register: affine_secrets_stat
+
+    - name: Load previously persisted secrets
+      ansible.builtin.slurp:
+        src: "{{ affine_deploy_dir }}/.secrets.yml"
+      register: affine_secrets_blob
+      when: affine_secrets_stat.stat.exists
+      no_log: true
+
+    - name: Parse persisted secrets into facts
+      ansible.builtin.set_fact:
+        affine_persisted: "{{ affine_secrets_blob.content | b64decode | from_yaml }}"
+      when: affine_secrets_stat.stat.exists
+      no_log: true
+
+    - name: Resolve POSTGRES_PASSWORD
+      ansible.builtin.set_fact:
+        affine_postgres_password: "{{ affine_postgres_password
+          | default(affine_persisted.affine_postgres_password
+                    | default(lookup('ansible.builtin.pipe', 'openssl rand -hex 32'))) }}"
+      no_log: true
+
+    - name: Resolve REDIS_PASSWORD
+      ansible.builtin.set_fact:
+        affine_redis_password: "{{ affine_redis_password
+          | default(affine_persisted.affine_redis_password
+                    | default(lookup('ansible.builtin.pipe', 'openssl rand -hex 32'))) }}"
+      no_log: true
+
+    - name: Persist secrets to {{ affine_deploy_dir }}/.secrets.yml
+      ansible.builtin.copy:
+        content: |
+          ---
+          affine_postgres_password: "{{ affine_postgres_password }}"
+          affine_redis_password: "{{ affine_redis_password }}"
+        dest: "{{ affine_deploy_dir }}/.secrets.yml"
+        owner: root
+        group: root
+        mode: '0600'
+      no_log: true
+
+    - name: Deploy config.json
+      ansible.builtin.template:
+        src: templates/config.json.j2
+        dest: "{{ affine_deploy_dir }}/config/config.json"
+        owner: root
+        group: root
+        mode: '0600'
+      notify: restart affine
+
+    - name: Deploy docker-compose.yml
+      ansible.builtin.template:
+        src: templates/docker-compose.yml.j2
+        dest: "{{ affine_deploy_dir }}/docker-compose.yml"
+        owner: root
+        group: root
+        mode: '0600'
+      notify: restart affine
+
+    - name: Pull images (best-effort; tolerates registry flakiness)
+      ansible.builtin.command: docker compose pull --ignore-pull-failures
+      args:
+        chdir: "{{ affine_deploy_dir }}"
+      register: affine_pull
+      changed_when: "'Pull complete' in affine_pull.stdout or 'Downloaded' in affine_pull.stdout"
+      failed_when: false
+
+    - name: Start the stack
+      ansible.builtin.command: docker compose up -d
+      args:
+        chdir: "{{ affine_deploy_dir }}"
+      register: affine_up
+      changed_when: "'Started' in affine_up.stderr or 'Created' in affine_up.stderr"
+
+    - name: Ensure the TLS cert is in place
+      ansible.builtin.stat:
+        path: "{{ affine_ssl_cert }}"
+      register: affine_cert_stat
+
+    - name: Fail if the TLS cert is missing
+      ansible.builtin.fail:
+        msg: "TLS cert not found at {{ affine_ssl_cert }}. Issue it via acme.sh first (see README)."
+      when: not affine_cert_stat.stat.exists
+
+    - name: Deploy the nginx vhost
+      ansible.builtin.template:
+        src: templates/nginx-affine.conf.j2
+        dest: /etc/nginx/sites-available/affine
+        owner: root
+        group: root
+        mode: '0644'
+      notify: reload nginx
+
+    - name: Enable the nginx vhost
+      ansible.builtin.file:
+        src: /etc/nginx/sites-available/affine
+        dest: /etc/nginx/sites-enabled/affine
+        state: link
+      notify: reload nginx
+
+    - name: Validate the nginx config
+      ansible.builtin.command: nginx -t
+      changed_when: false
+
+    - name: Flush handlers so the health check sees the final state
+      ansible.builtin.meta: flush_handlers
+
+    - name: Wait for AFFiNE to answer
+      ansible.builtin.uri:
+        url: "http://127.0.0.1:{{ affine_port }}/"
+        status_code: [200, 302]
+      register: affine_health
+      retries: 36
+      delay: 5
+      until: affine_health.status in [200, 302]
+      ignore_errors: yes
+
+    - name: Report deployment status
+      ansible.builtin.debug:
+        msg: |
+          ========================================
+          AFFiNE: {{ 'SUCCESS' if affine_health.status | default(0) in [200, 302] else 'STARTING/FAILED' }}
+          ========================================
+          Deploy dir: {{ affine_deploy_dir }}
+          Public URL: https://{{ affine_domain }}
+          Admin UI:   https://{{ affine_domain }}/admin
+          SSO:        {{ 'Auth0 (' + affine_auth0_domain + ')' if affine_oidc_client_id | length > 0 else 'NOT CONFIGURED' }}
+          Secrets:    {{ affine_deploy_dir }}/.secrets.yml (mode 0600)
+          ========================================
+          First run: open /admin to create the initial owner account.
+          ========================================
+
+  handlers:
+    - name: restart affine
+      ansible.builtin.command: docker compose up -d --force-recreate affine
+      args:
+        chdir: "{{ affine_deploy_dir }}"
+
+    - name: reload nginx
+      ansible.builtin.systemd:
+        name: nginx
+        state: reloaded

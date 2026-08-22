@@ -1,0 +1,45 @@
+# Huly reverse proxy for {{ huly_domain }}
+# Managed by ansible/huly. Path routing lives in the stack's own nginx
+# container; this vhost only terminates TLS in front of it.
+
+upstream huly_backend { server 127.0.0.1:{{ huly_port }}; }
+
+server {
+    listen 80;
+    listen [::]:80;
+    server_name {{ huly_domain }};
+    return 301 https://$host$request_uri;
+}
+
+server {
+    listen 443 ssl http2;
+    listen [::]:443 ssl http2;
+    server_name {{ huly_domain }};
+
+    ssl_certificate     {{ huly_ssl_cert }};
+    ssl_certificate_key {{ huly_ssl_key }};
+    ssl_protocols       TLSv1.2 TLSv1.3;
+    ssl_ciphers         HIGH:!aNULL:!MD5;
+
+    access_log /var/log/nginx/huly.access.log;
+    error_log  /var/log/nginx/huly.error.log;
+
+    client_max_body_size 100M;
+
+    proxy_set_header Host              $host;
+    proxy_set_header X-Real-IP         $remote_addr;
+    proxy_set_header X-Forwarded-For   $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto https;
+    proxy_http_version 1.1;
+
+    # The transactor and collaborator sockets stay open for the whole session.
+    proxy_set_header Upgrade    $http_upgrade;
+    proxy_set_header Connection $connection_upgrade;
+    proxy_read_timeout 1h;
+    proxy_send_timeout 1h;
+    proxy_buffering    off;
+
+    location / {
+        proxy_pass http://huly_backend;
+    }
+}
