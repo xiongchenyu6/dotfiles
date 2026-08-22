@@ -1,5 +1,10 @@
 # Server CLI tier — extends cli-minimal with dev/ops tools
-{ config, pkgs, lib, ... }:
+{
+  config,
+  pkgs,
+  lib,
+  ...
+}:
 {
   home.packages = [
     pkgs.mosh
@@ -67,12 +72,15 @@
       settings = {
         misc = {
           pre_sudo = false;
+          first = [ "git_repos" ];
           only = [
             "system"
             "tldr"
           ];
         };
-        linux = { };
+        linux = {
+          nix_arguments = "--flake ${config.home.homeDirectory}/dotfiles";
+        };
       };
     };
 
