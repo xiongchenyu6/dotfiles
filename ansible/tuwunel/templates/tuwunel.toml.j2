@@ -1,0 +1,48 @@
+# Managed by ansible/tuwunel — do not edit on the host.
+[global]
+server_name = "{{ tuwunel_server_name }}"
+database_path = "/var/lib/tuwunel"
+
+address = ["0.0.0.0"]
+port = {{ tuwunel_port }}
+
+# nginx terminates TLS and is the only thing talking to the container.
+trusted_servers = {{ tuwunel_trusted_servers | to_json }}
+allow_federation = {{ tuwunel_allow_federation | lower }}
+max_request_size = "{{ tuwunel_max_request_size }}"
+
+allow_registration = {{ tuwunel_allow_registration | lower }}
+registration_token = "{{ tuwunel_registration_token }}"
+
+allow_public_room_directory_without_auth = false
+allow_public_room_directory_over_federation = false
+
+# Cloudflare proxies this hostname, so the real client IP is the one the edge
+# stamps into CF-Connecting-IP; nginx forwards that header untouched.
+ip_source = "cf_connecting_ip"
+
+[global.well_known]
+# Delegation: server_name is the apex, but the homeserver answers on
+# tuwunel_host_name. Tuwunel serves these two documents on its own vhost; a
+# Cloudflare redirect rule points the apex at them (see README). The server
+# entry also moves federation off 8448 onto 443, the only port the Cloudflare
+# edge in front proxies.
+client = "https://{{ tuwunel_host_name }}"
+server = "{{ tuwunel_host_name }}:443"
+
+{% if tuwunel_oidc_enabled and tuwunel_oidc_client_id | default('') | length > 0 %}
+[[global.identity_provider]]
+# `brand` is required even though the shipped example comments it out. Auth0
+# is not one of the brands Tuwunel special-cases, so nothing is inferred from
+# it and every endpoint comes from issuer_url discovery.
+brand = "{{ tuwunel_oidc_brand }}"
+name = "{{ tuwunel_oidc_name }}"
+client_id = "{{ tuwunel_oidc_client_id }}"
+client_secret = "{{ tuwunel_oidc_client_secret }}"
+issuer_url = "https://{{ tuwunel_auth0_domain }}/"
+callback_url = "https://{{ tuwunel_host_name }}/_matrix/client/unstable/login/sso/callback/{{ tuwunel_oidc_client_id }}"
+scope = {{ tuwunel_oidc_scope | to_json }}
+default = true
+trusted = {{ tuwunel_oidc_trusted | lower }}
+registration = true
+{% endif %}

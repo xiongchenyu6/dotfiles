@@ -1,0 +1,260 @@
+---
+# Deploy Huly behind the host nginx on lubancat.
+# Auth0 is the identity provider; see README.md for the app registration.
+- name: Deploy Huly
+  hosts: huly_servers
+  become: yes
+  # Facts would be gathered before the sudo password is loaded from sops, and
+  # nothing here needs them.
+  gather_facts: false
+  vars_files:
+    - vars/main.yml
+
+  tasks:
+    - name: Load host secrets from the repository sops store
+      ansible.builtin.set_fact:
+        huly_common_secrets: >-
+          {{
+            lookup(
+              'community.sops.sops',
+              playbook_dir + '/../../secrets/common.yaml'
+            ) | from_yaml
+          }}
+      become: false
+      no_log: true
+
+    - name: Use a sudo password on hosts that need one
+      ansible.builtin.set_fact:
+        ansible_become_password: "{{ huly_common_secrets[inventory_hostname].become_password }}"
+      when: huly_common_secrets[inventory_hostname].become_password is defined
+      become: false
+      no_log: true
+
+    - name: Resolve the Auth0 identity provider settings
+      ansible.builtin.set_fact:
+        huly_auth0_domain: "{{ huly_common_secrets.auth0.domain | default('') }}"
+        huly_oidc_client_id: "{{ huly_common_secrets.auth0.huly.client_id | default('') }}"
+        huly_oidc_client_secret: "{{ huly_common_secrets.auth0.huly.client_secret | default('') }}"
+      no_log: true
+
+    - name: Warn when the Auth0 application has not been registered yet
+      ansible.builtin.debug:
+        msg: >-
+          auth0.huly.client_id is missing from secrets/common.yaml — deploying
+          without SSO. Run scripts/auth0-setup.sh, then re-run this playbook.
+      when: huly_oidc_client_id | length == 0
+
+    - name: Install required packages
+      ansible.builtin.apt:
+        name: [curl, docker.io, docker-compose-v2, nginx]
+        state: present
+        update_cache: yes
+        cache_valid_time: 3600
+
+    - name: Start and enable Docker
+      ansible.builtin.systemd:
+        name: docker
+        state: started
+        enabled: yes
+
+    - name: Create the deployment and data directories
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: directory
+        owner: root
+        group: root
+        mode: '0755'
+      loop:
+        - "{{ huly_deploy_dir }}"
+        - "{{ huly_deploy_dir }}/data"
+        - "{{ huly_deploy_dir }}/data/cr_data"
+        - "{{ huly_deploy_dir }}/data/cr_certs"
+        - "{{ huly_deploy_dir }}/data/files"
+        # data/elastic and data/redpanda are created by the next task instead,
+        # which owns them as the uids those two containers run as; creating
+        # them root-owned here would just flip the ownership back on every run.
+
+    # Elasticsearch (uid 1000) and Redpanda (uid 101) both run unprivileged and
+    # refuse to start on a root-owned bind mount.
+    - name: Hand the bind mounts to the uids their containers run as
+      ansible.builtin.file:
+        path: "{{ huly_deploy_dir }}/data/{{ item.dir }}"
+        state: directory
+        owner: "{{ item.uid }}"
+        group: '0'
+        mode: '0770'
+      loop:
+        - { dir: elastic,  uid: '1000' }
+        - { dir: redpanda, uid: '101' }
+
+    # Every one of these is baked into the databases on first boot; rotating
+    # any of them on a re-run would lock Huly out of its own state.
+    - name: Check for previously persisted secrets
+      ansible.builtin.stat:
+        path: "{{ huly_deploy_dir }}/.secrets.yml"
+      register: huly_secrets_stat
+
+    - name: Load previously persisted secrets
+      ansible.builtin.slurp:
+        src: "{{ huly_deploy_dir }}/.secrets.yml"
+      register: huly_secrets_blob
+      when: huly_secrets_stat.stat.exists
+      no_log: true
+
+    - name: Parse persisted secrets into facts
+      ansible.builtin.set_fact:
+        huly_persisted: "{{ huly_secrets_blob.content | b64decode | from_yaml }}"
+      when: huly_secrets_stat.stat.exists
+      no_log: true
+
+    - name: Resolve the platform token secret
+      ansible.builtin.set_fact:
+        huly_secret: "{{ huly_secret
+          | default(huly_persisted.huly_secret
+                    | default(lookup('ansible.builtin.pipe', 'openssl rand -hex 32'))) }}"
+      no_log: true
+
+    - name: Resolve the CockroachDB password
+      ansible.builtin.set_fact:
+        huly_cr_password: "{{ huly_cr_password
+          | default(huly_persisted.huly_cr_password
+                    | default(lookup('ansible.builtin.pipe', 'openssl rand -hex 24'))) }}"
+      no_log: true
+
+    - name: Resolve the Redpanda superuser password
+      ansible.builtin.set_fact:
+        huly_redpanda_password: "{{ huly_redpanda_password
+          | default(huly_persisted.huly_redpanda_password
+                    | default(lookup('ansible.builtin.pipe', 'openssl rand -hex 24'))) }}"
+      no_log: true
+
+    - name: Resolve the MinIO credentials
+      ansible.builtin.set_fact:
+        huly_minio_access_key: "{{ huly_minio_access_key
+          | default(huly_persisted.huly_minio_access_key | default('hulyminio')) }}"
+        huly_minio_secret_key: "{{ huly_minio_secret_key
+          | default(huly_persisted.huly_minio_secret_key
+                    | default(lookup('ansible.builtin.pipe', 'openssl rand -hex 24'))) }}"
+      no_log: true
+
+    - name: Persist secrets to {{ huly_deploy_dir }}/.secrets.yml
+      ansible.builtin.copy:
+        content: |
+          ---
+          huly_secret: "{{ huly_secret }}"
+          huly_cr_password: "{{ huly_cr_password }}"
+          huly_redpanda_password: "{{ huly_redpanda_password }}"
+          huly_minio_access_key: "{{ huly_minio_access_key }}"
+          huly_minio_secret_key: "{{ huly_minio_secret_key }}"
+        dest: "{{ huly_deploy_dir }}/.secrets.yml"
+        owner: root
+        group: root
+        mode: '0600'
+      no_log: true
+
+    - name: Build the derived connection strings
+      ansible.builtin.set_fact:
+        huly_cr_db_url: "postgres://{{ huly_cr_username }}:{{ huly_cr_password }}@cockroach:26257/{{ huly_cr_database }}"
+        huly_storage_config: "minio|minio?accessKey={{ huly_minio_access_key }}&secretKey={{ huly_minio_secret_key }}"
+      no_log: true
+
+    - name: Deploy the internal nginx router
+      ansible.builtin.template:
+        src: templates/huly.nginx.conf.j2
+        dest: "{{ huly_deploy_dir }}/huly.nginx.conf"
+        owner: root
+        group: root
+        mode: '0644'
+      notify: restart huly
+
+    - name: Deploy docker-compose.yml
+      ansible.builtin.template:
+        src: templates/docker-compose.yml.j2
+        dest: "{{ huly_deploy_dir }}/docker-compose.yml"
+        owner: root
+        group: root
+        mode: '0600'
+      notify: restart huly
+
+    - name: Pull images (best-effort; tolerates registry flakiness)
+      ansible.builtin.command: docker compose pull --ignore-pull-failures
+      args:
+        chdir: "{{ huly_deploy_dir }}"
+      register: huly_pull
+      changed_when: "'Pull complete' in huly_pull.stdout or 'Downloaded' in huly_pull.stdout"
+      failed_when: false
+
+    - name: Start the stack
+      ansible.builtin.command: docker compose up -d --remove-orphans
+      args:
+        chdir: "{{ huly_deploy_dir }}"
+      register: huly_up
+      changed_when: "'Started' in huly_up.stderr or 'Created' in huly_up.stderr"
+
+    - name: Ensure the TLS cert is in place
+      ansible.builtin.stat:
+        path: "{{ huly_ssl_cert }}"
+      register: huly_cert_stat
+
+    - name: Fail if the TLS cert is missing
+      ansible.builtin.fail:
+        msg: "TLS cert not found at {{ huly_ssl_cert }}. Issue it via acme.sh first (see README)."
+      when: not huly_cert_stat.stat.exists
+
+    - name: Deploy the nginx vhost
+      ansible.builtin.template:
+        src: templates/nginx-huly.conf.j2
+        dest: /etc/nginx/sites-available/huly
+        owner: root
+        group: root
+        mode: '0644'
+      notify: reload nginx
+
+    - name: Enable the nginx vhost
+      ansible.builtin.file:
+        src: /etc/nginx/sites-available/huly
+        dest: /etc/nginx/sites-enabled/huly
+        state: link
+      notify: reload nginx
+
+    - name: Validate the nginx config
+      ansible.builtin.command: nginx -t
+      changed_when: false
+
+    - name: Flush handlers so the health check sees the final state
+      ansible.builtin.meta: flush_handlers
+
+    # Huly's dozen services take a while to settle on this box; the front end
+    # is the last thing to answer.
+    - name: Wait for the Huly front end
+      ansible.builtin.uri:
+        url: "http://127.0.0.1:{{ huly_port }}/"
+        status_code: 200
+      register: huly_health
+      retries: 60
+      delay: 10
+      until: huly_health.status == 200
+      ignore_errors: yes
+
+    - name: Report deployment status
+      ansible.builtin.debug:
+        msg: |
+          ========================================
+          Huly: {{ 'SUCCESS' if huly_health.status | default(0) == 200 else 'STARTING/FAILED' }}
+          ========================================
+          Deploy dir: {{ huly_deploy_dir }}
+          Public URL: https://{{ huly_domain }}
+          SSO:        {{ 'Auth0 (' + huly_auth0_domain + ')' if huly_oidc_client_id | length > 0 else 'NOT CONFIGURED' }}
+          Secrets:    {{ huly_deploy_dir }}/.secrets.yml (mode 0600)
+          ========================================
+
+  handlers:
+    - name: restart huly
+      ansible.builtin.command: docker compose up -d --remove-orphans
+      args:
+        chdir: "{{ huly_deploy_dir }}"
+
+    - name: reload nginx
+      ansible.builtin.systemd:
+        name: nginx
+        state: reloaded

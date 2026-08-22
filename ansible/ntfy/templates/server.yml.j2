@@ -1,0 +1,20 @@
+# Managed by ansible/ntfy — do not edit on the host.
+base-url: "https://{{ ntfy_domain }}"
+listen-http: ":80"
+behind-proxy: true
+
+cache-file: /var/lib/ntfy/cache.db
+cache-duration: "{{ ntfy_cache_duration }}"
+
+auth-file: /var/lib/ntfy/user.db
+auth-default-access: "{{ ntfy_auth_default_access }}"
+
+attachment-cache-dir: /var/lib/ntfy/attachments
+attachment-total-size-limit: "{{ ntfy_attachment_total_size_limit }}"
+attachment-file-size-limit: "{{ ntfy_attachment_file_size_limit }}"
+attachment-expiry-duration: "{{ ntfy_attachment_expiry_duration }}"
+
+enable-signup: {{ ntfy_enable_signup | lower }}
+enable-login: {{ ntfy_enable_login | lower }}
+
+keepalive-interval: "{{ ntfy_keepalive_interval }}"

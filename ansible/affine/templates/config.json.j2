@@ -1,0 +1,25 @@
+{
+  "$comment": "Managed by ansible/affine — do not edit on the host.",
+  "server": {
+    "name": "{{ affine_server_title }}",
+    "externalUrl": "https://{{ affine_domain }}"
+  },
+  "auth": {
+    "allowSignup": {{ affine_allow_signup | lower }},
+    "allowSignupForOauth": {{ affine_allow_signup_for_oauth | lower }}
+  },
+  "copilot": {
+    "enabled": {{ affine_copilot_enabled | lower }}
+  },
+  "indexer": {
+    "enabled": {{ affine_indexer_enabled | lower }},
+    "provider.type": "{{ affine_indexer_provider }}"
+  }{% if affine_oidc_enabled and affine_oidc_client_id | default('') | length > 0 %},
+  "oauth": {
+    "providers.oidc": {
+      "issuer": "https://{{ affine_auth0_domain }}/",
+      "clientId": "{{ affine_oidc_client_id }}",
+      "clientSecret": "{{ affine_oidc_client_secret }}"
+    }
+  }{% endif %}
+}

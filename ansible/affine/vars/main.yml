@@ -1,0 +1,34 @@
+---
+# =============================================================================
+# AFFiNE Community Edition deployment variables — lubancat
+# =============================================================================
+
+affine_deploy_dir: /opt/affine
+affine_image: ghcr.io/toeverything/affine:stable
+affine_postgres_image: pgvector/pgvector:pg16
+affine_redis_image: redis:7-alpine
+
+affine_domain: affine.starslab.qzz.io
+affine_bind_host: 127.0.0.1
+affine_port: 3010
+
+affine_ssl_cert: /etc/nginx/ssl/affine.crt
+affine_ssl_key: /etc/nginx/ssl/affine.key
+
+affine_server_title: AFFiNE
+
+# Auth0 is the only intended way in, so a stray password signup should not be
+# able to create an account; OAuth signups stay open so first login provisions.
+affine_allow_signup: false
+affine_allow_signup_for_oauth: true
+
+# The embedded indexer keeps full-text search in-process — no Elasticsearch on
+# a box that already runs one for Huly.
+affine_indexer_enabled: true
+affine_indexer_provider: embedded
+
+# Copilot needs a third-party model key; leave it off until one is configured.
+affine_copilot_enabled: false
+
+affine_oidc_enabled: true
+affine_tz: Asia/Shanghai

@@ -1,0 +1,49 @@
+# Managed by ansible/ntfy — do not edit on the host.
+name: ntfy
+services:
+  ntfy:
+    image: {{ ntfy_image }}
+    container_name: ntfy
+    restart: unless-stopped
+    command: serve
+    ports:
+      - "{{ ntfy_bind_host }}:{{ ntfy_port }}:80"
+    volumes:
+      - ./server.yml:/etc/ntfy/server.yml:ro
+      - ./data:/var/lib/ntfy
+    environment:
+      - TZ={{ ntfy_tz }}
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q -O - http://localhost/v1/health | grep -Eo '\"healthy\"\\s*:\\s*true' || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
+
+{% if ntfy_oauth2_proxy_enabled and ntfy_oidc_client_id | default('') | length > 0 %}
+  oauth2-proxy:
+    image: {{ ntfy_oauth2_proxy_image }}
+    container_name: ntfy-oauth2-proxy
+    restart: unless-stopped
+    ports:
+      - "{{ ntfy_bind_host }}:{{ ntfy_oauth2_proxy_port }}:4180"
+    environment:
+      - TZ={{ ntfy_tz }}
+    command:
+      - --provider=oidc
+      - --oidc-issuer-url=https://{{ ntfy_auth0_domain }}/
+      - --client-id={{ ntfy_oidc_client_id }}
+      - --client-secret={{ ntfy_oidc_client_secret }}
+      - --cookie-secret={{ ntfy_cookie_secret }}
+      - --redirect-url=https://{{ ntfy_domain }}/oauth2/callback
+      - --http-address=0.0.0.0:4180
+      - --reverse-proxy=true
+      - --email-domain=*
+      - --cookie-secure=true
+      - --cookie-domain={{ ntfy_domain }}
+      - --whitelist-domain={{ ntfy_domain }}
+      - --skip-provider-button=true
+      # Nothing is proxied through it; nginx forwards the request itself once
+      # the auth subrequest passes.
+      - --upstream=static://202
+{% endif %}

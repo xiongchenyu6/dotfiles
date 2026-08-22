@@ -1,0 +1,41 @@
+---
+# =============================================================================
+# ntfy deployment variables — lubancat
+# =============================================================================
+
+ntfy_deploy_dir: /opt/ntfy
+ntfy_image: binwiederhier/ntfy:latest
+ntfy_oauth2_proxy_image: quay.io/oauth2-proxy/oauth2-proxy:latest
+
+ntfy_domain: ntfy.starslab.qzz.io
+ntfy_bind_host: 127.0.0.1
+ntfy_port: 8090
+
+# oauth2-proxy only ever answers nginx's auth subrequest and its own
+# /oauth2/* endpoints, so it needs no upstream of its own.
+ntfy_oauth2_proxy_port: 4180
+
+ntfy_ssl_cert: /etc/nginx/ssl/ntfy.crt
+ntfy_ssl_key: /etc/nginx/ssl/ntfy.key
+
+# Nothing is readable or publishable without an ntfy account; Auth0 gates the
+# browser surface on top of that. See README.md for the split.
+ntfy_auth_default_access: deny-all
+ntfy_enable_signup: false
+ntfy_enable_login: true
+
+# Admin account created on first deploy; the password is generated and kept in
+# {{ ntfy_deploy_dir }}/.secrets.yml.
+ntfy_admin_user: admin
+
+ntfy_attachment_total_size_limit: 2G
+ntfy_attachment_file_size_limit: 90M
+ntfy_attachment_expiry_duration: 24h
+ntfy_cache_duration: 12h
+ntfy_keepalive_interval: 45s
+
+# Auth0 gate in front of the browser surface. Requests that already carry an
+# ntfy credential skip it — see the nginx template.
+ntfy_oauth2_proxy_enabled: true
+
+ntfy_tz: Asia/Shanghai
