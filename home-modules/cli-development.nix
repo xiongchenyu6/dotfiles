@@ -24,6 +24,8 @@
     inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.agent-browser
     inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.terminal-use
     inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.ck
+    # gpg-agent 用绝对 store 路径,但 rbw 等工具是按名字在 PATH 里找 pinentry
+    (if pkgs.stdenv.isDarwin then pkgs.pinentry_mac else pkgs.pinentry-gnome3)
     pkgs.rustc
     pkgs.cargo
     pkgs.clippy
@@ -574,6 +576,7 @@
       # Override server topgrade with desktop settings
       settings = {
         misc = {
+          first = lib.mkForce [ "git_repos" ];
           only = lib.mkForce [
             "system"
             "git_repos"
@@ -583,11 +586,11 @@
         git = {
           max_concurrency = 10;
           repos = [
-            "~/workspace/*/"
-            "~/git/*/"
-            "~/private/*/"
+            "~/dotfiles"
+            "~/Documents/github/*/"
+            "~/Documents/github/*/*/"
           ];
-          arguments = "--rebase --autostash";
+          fetch_only = true;
         };
         commands = { };
       };
