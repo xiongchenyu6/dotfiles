@@ -219,6 +219,7 @@
           {
             game = hostConfig;
             office = hostConfig;
+            autolife-robot-260 = hostConfig;
 
             tcloud = hostConfig;
             oracle-arm-001 = hostConfig;

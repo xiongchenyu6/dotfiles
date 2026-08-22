@@ -1,6 +1,6 @@
 # Dotfiles
 
-A Nix flake managing every machine I touch — local desktops, an SBC, a fleet of cloud hosts (Oracle / Tencent / Huoshan), my macOS laptop, and the home-manager profile that follows me onto each of them.
+A Nix flake managing every machine I touch — local desktops, a fleet of cloud hosts (Oracle / Tencent), my macOS laptop, and the home-manager profile that follows me onto each of them.
 
 ![terminal](previews/terminal.png)
 
@@ -224,21 +224,25 @@ Because `inputs.follows` is mirrored, upstream updates only change behavior of t
 ├── secrets/                  sops-encrypted secrets
 ├── scripts/                  GPU passthrough, NixOS bootstrap, nixos-infect
 ├── stow-managed/             GNU Stow dotfiles (iTerm, IntelliJ, Rime, …)
-└── ansible/                  Out-of-band playbooks (Nextcloud, Wazuh, sing-box, VersityGW)
+└── ansible/                  Out-of-band playbooks (sing-box, Nextcloud, NetBird, Casdoor, sub2api,
+                          Supabase, Tuwunel, Huly, AFFiNE, ntfy)
 ```
 
 ## Hosts
 
 | Host | Platform | Role |
 |---|---|---|
-| `game` | x86_64-linux | Local desktop with NVIDIA GPU passthrough |
+| `game` | x86_64-linux | Gaming desktop with NVIDIA GPU passthrough |
 | `office` | x86_64-linux | Local workstation |
 | `office-mac` | aarch64-darwin | macOS laptop |
 | `oracle-{amd,arm}-00{1,2}` | x86/arm-linux | Oracle Cloud servers |
 | `tcloud` | x86_64-linux | Tencent Cloud |
-| `huoshan-bj-001` | x86_64-linux | Huoshan (Beijing) |
-| `netbird` | x86_64-linux | NetBird VPN coordinator |
-| `lubancat` | aarch64-linux | LubanCat SBC |
+| `autolife-robot-260` | x86_64-linux | Robot onboard host (minimal bootstrap) |
+
+`lubancat` (RK3588 SBC) runs Ubuntu — no mainline device tree — and is managed only via standalone home-manager (user `cat`) plus `ansible/`, not as a NixOS host.
+Its self-hosted services — Tuwunel (Matrix), Huly, AFFiNE and ntfy, all signing in through Auth0 — live under `ansible/<service>/`. `scripts/auth0-setup.sh` registers their Auth0 applications, and `scripts/cloudflare-matrix-delegation.sh` publishes the apex `/.well-known/matrix` delegation that lets Matrix IDs read `@user:starslab.qzz.io`.
+
+Per-host software inventory: [`docs/HOSTS.md`](./docs/HOSTS.md).
 
 ## Module Tiers
 
