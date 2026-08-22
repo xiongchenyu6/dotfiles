@@ -52,7 +52,8 @@
   # Enable native DNF server with OCI container
   services.dnf-server-native = {
     enable = true;
-    publicIP = "127.0.0.1"; # local-only play; docker port-forwards all game ports
+    # Advertise game as the LAN address so clients on 192.168.50.0/24 can join.
+    publicIP = "192.168.50.90";
     mysqlHost = "host.containers.internal"; # Use host network from container
     mysqlPort = 3000;
     rootPasswordFile = config.sops.secrets."dnf/root_password".path;
