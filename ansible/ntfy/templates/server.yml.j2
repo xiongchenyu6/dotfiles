@@ -16,5 +16,37 @@ attachment-expiry-duration: "{{ ntfy_attachment_expiry_duration }}"
 
 enable-signup: {{ ntfy_enable_signup | lower }}
 enable-login: {{ ntfy_enable_login | lower }}
+require-login: {{ ntfy_require_login | lower }}
+
+# Users, their ACLs and their tokens are declared here rather than typed into
+# the auth database, so the roster is reproducible and a rebuilt host comes
+# back with the same people on it. The roster itself lives in the repository's
+# sops store (ntfy.users), because this repository is public.
+{% if ntfy_provisioned_users | length > 0 %}
+auth-users:
+{% for u in ntfy_provisioned_users %}
+  - "{{ u.name }}:{{ u.password_hash }}:{{ u.role | default('user') }}"
+{% endfor %}
+{% endif %}
+{% set access_entries = [] %}
+{% for u in ntfy_provisioned_users %}
+{% for a in u.access | default([]) %}
+{% set _ = access_entries.append(u.name ~ ':' ~ a.topic ~ ':' ~ a.permission) %}
+{% endfor %}
+{% endfor %}
+{% for a in ntfy_anonymous_access | default([]) %}
+{% set _ = access_entries.append('everyone:' ~ a.topic ~ ':' ~ a.permission) %}
+{% endfor %}
+{% if access_entries | length > 0 %}
+auth-access:
+{% for entry in access_entries %}
+  - "{{ entry }}"
+{% endfor %}
+{% endif %}
 
 keepalive-interval: "{{ ntfy_keepalive_interval }}"
+{% if ntfy_upstream_base_url | length > 0 %}
+
+# Required for iOS push on a self-hosted server; see vars/main.yml.
+upstream-base-url: "{{ ntfy_upstream_base_url }}"
+{% endif %}

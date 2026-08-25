@@ -24,7 +24,6 @@
         plugins = [
           "aliases"
           "alias-finder"
-          "1password"
           "catimg"
           "colored-man-pages"
           "copypath"

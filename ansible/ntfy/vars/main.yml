@@ -5,28 +5,24 @@
 
 ntfy_deploy_dir: /opt/ntfy
 ntfy_image: binwiederhier/ntfy:latest
-ntfy_oauth2_proxy_image: quay.io/oauth2-proxy/oauth2-proxy:latest
 
 ntfy_domain: ntfy.starslab.qzz.io
 ntfy_bind_host: 127.0.0.1
 ntfy_port: 8090
 
-# oauth2-proxy only ever answers nginx's auth subrequest and its own
-# /oauth2/* endpoints, so it needs no upstream of its own.
-ntfy_oauth2_proxy_port: 4180
-
 ntfy_ssl_cert: /etc/nginx/ssl/ntfy.crt
 ntfy_ssl_key: /etc/nginx/ssl/ntfy.key
 
-# Nothing is readable or publishable without an ntfy account; Auth0 gates the
-# browser surface on top of that. See README.md for the split.
+# Nothing is readable or publishable without an ntfy account. ntfy has no OIDC
+# support, so this is the one service in the stack that does not use Auth0 —
+# see README.md for why fronting it with an auth proxy was a bad trade.
 ntfy_auth_default_access: deny-all
+# Self-service signup would be open to the whole internet; the roster is
+# provisioned instead. require-login sends the web app straight to the login
+# form rather than an empty anonymous view.
 ntfy_enable_signup: false
 ntfy_enable_login: true
-
-# Admin account created on first deploy; the password is generated and kept in
-# {{ ntfy_deploy_dir }}/.secrets.yml.
-ntfy_admin_user: admin
+ntfy_require_login: true
 
 ntfy_attachment_total_size_limit: 2G
 ntfy_attachment_file_size_limit: 90M
@@ -34,8 +30,26 @@ ntfy_attachment_expiry_duration: 24h
 ntfy_cache_duration: 12h
 ntfy_keepalive_interval: 45s
 
-# Auth0 gate in front of the browser surface. Requests that already carry an
-# ntfy credential skip it — see the nginx template.
-ntfy_oauth2_proxy_enabled: true
+# iOS cannot hold a background connection, so its push has to arrive through
+# APNs — and only ntfy.sh may push to the App Store build of the app. Without
+# this, a self-hosted server can never wake an iPhone: messages appear only
+# while the app is open, with no banner and no badge.
+#
+# What leaves this host is a poll trigger, not the message: the upstream gets
+# the message ID and the SHA256 of the topic URL, and the phone then fetches
+# the real content from here over its authenticated session. Set to "" to turn
+# it off and accept that iOS clients stay silent.
+ntfy_upstream_base_url: "https://ntfy.sh"
+
+# UnifiedPush endpoints for Matrix. Element registers its pusher with the URL
+# ntfy advertises for its built-in Matrix gateway, and a homeserver cannot
+# attach credentials to that call — so the gateway has to be reachable without
+# them. Write-only is the whole grant: the endpoints are random `up…` strings
+# the ntfy app hands out, a publisher who guesses one can only wake a device
+# (Element still fetches the real event from the homeserver), and reading a
+# topic still requires an account. This is how ntfy.sh runs UnifiedPush too.
+ntfy_anonymous_access:
+  - topic: "up*"
+    permission: wo
 
 ntfy_tz: Asia/Shanghai

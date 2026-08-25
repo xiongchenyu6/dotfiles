@@ -8,9 +8,7 @@
 let
   noctaliaPackage = inputs.noctalia.packages.${pkgs.stdenv.hostPlatform.system}.default;
   noctalia = "${noctaliaPackage}/bin/noctalia";
-  voxinputToggle = pkgs.writeShellScript "voxinput-toggle" ''
-    exec ${pkgs.voxinput}/bin/voxinput toggle
-  '';
+  voxtypePackage = inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.voxtype;
 
   # niri's `spawn-at-startup` runs while niri is still initialising — its IPC
   # server (and therefore NIRI_SOCKET) is not yet exported into spawned
@@ -34,7 +32,12 @@ let
   '';
 in
 {
-  home = lib.mkIf pkgs.stdenv.isLinux {
+  home = lib.mkIf pkgs.stdenv.hostPlatform.isLinux {
+    file.".config/noctalia/osd.toml".text = ''
+      [osd.kinds]
+      privacy = false
+    '';
+
     packages = with pkgs; [
       # Core Wayland utilities
       grim
@@ -189,7 +192,7 @@ in
         hotkey-overlay.title = "Clipboard History";
       };
       "Mod+Shift+Space" = {
-        action = spawn "${voxinputToggle}";
+        action = spawn "${voxtypePackage}/bin/voxtype" "record" "toggle";
         hotkey-overlay.title = "Voice Input";
       };
       "Super+Alt+L" = {

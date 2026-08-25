@@ -15,6 +15,9 @@
         inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.mcporter
         inputs.xiongchenyu6.packages.${pkgs.stdenv.hostPlatform.system}.cc-switch
         inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.aperant
+        inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.agentsview
+        bitwarden-desktop
+        bitwarden-cli
         discord
         telegram-desktop
         cloc
@@ -164,7 +167,7 @@
         kube-score
         kubelogin-oidc
       ]
-      ++ lib.optionals pkgs.stdenv.isLinux [
+      ++ lib.optionals pkgs.stdenv.hostPlatform.isLinux [
         ledger-live-desktop # x86_64-linux only
         weave-gitops # Linux only
         calicoctl # Linux only
@@ -183,7 +186,7 @@
       enable = true;
     };
   }
-  // lib.optionalAttrs pkgs.stdenv.isLinux {
+  // lib.optionalAttrs pkgs.stdenv.hostPlatform.isLinux {
     ghostty = {
       enable = true;
       enableZshIntegration = true;

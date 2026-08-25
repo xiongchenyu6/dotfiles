@@ -20,11 +20,11 @@
     group = if (config.users.groups ? keys) then config.users.groups.keys.name else "wheel";
   };
   environment = {
-    systemPackages = lib.optionals pkgs.stdenv.isLinux [
+    systemPackages = lib.optionals pkgs.stdenv.hostPlatform.isLinux [
       pkgs.ghostty.terminfo
     ];
 
-    etc = lib.mkIf pkgs.stdenv.isLinux {
+    etc = lib.mkIf pkgs.stdenv.hostPlatform.isLinux {
       "ppp/options".text = ''
         ipcp-accept-remote
       '';
@@ -63,6 +63,10 @@
         "flakes"
         #"ca-derivations"
         "parse-toml-timestamps"
+      ];
+      extra-substituters = [ "https://cache.numtide.com" ];
+      extra-trusted-public-keys = [
+        "niks3.numtide.com-1:DTx8wZduET09hRmMtKdQDxNNthLQETkc/yaX7M4qK0g="
       ];
       trusted-users = [
         "freeman.xiong"

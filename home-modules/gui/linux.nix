@@ -29,6 +29,8 @@ let
       pkgs.whisper-cpp;
   whisperCppModel = "large-v3-turbo-q5_0";
   whisperCppModelDir = "$HOME/.local/share/whisper-cpp/models";
+  agentsviewPackage = inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.agentsview;
+  voxtypePackage = inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.voxtype;
   voiceTermGroups = [
     {
       name = "Nix / Home Manager";
@@ -97,7 +99,7 @@ let
     {
       name = "Voice Input";
       terms = [
-        "VoxInput"
+        "Voxtype"
         "Talon"
         "whisper.cpp"
         "whisper-server"
@@ -282,14 +284,8 @@ let
       ];
     }
   ];
-  voiceTerms = lib.unique (lib.concatMap (group: group.terms) voiceTermGroups);
   voicePromptTerms = lib.unique (lib.concatMap (group: lib.take 14 group.terms) voiceTermGroups);
-  privateVoiceTermsPath = if isRoot then "/dev/null" else config.sops.secrets."voxinput/terms".path;
-  voiceTermsText =
-    lib.concatStringsSep "\n" (
-      lib.concatMap (group: [ "# ${group.name}" ] ++ group.terms ++ [ "" ]) voiceTermGroups
-    )
-    + "\n";
+  privateVoiceTermsPath = if isRoot then "/dev/null" else config.sops.secrets."voxtype/terms".path;
   voicePrompt = "中英混合编程口述。保留英文项目名、命令名、文件名和技术术语。常见公开术语包括: ${lib.concatStringsSep " " voicePromptTerms}.";
   voicePromptRuntime = ''
     build_voice_prompt() {
@@ -317,102 +313,14 @@ let
       printf '%s' "$prompt"
     }
   '';
-  voxinputPasteDotool = pkgs.writeShellScriptBin "dotool" ''
-    set -euo pipefail
-
-    export YDOTOOL_SOCKET="''${YDOTOOL_SOCKET:-/run/ydotoold/socket}"
-
-    log() {
-      printf 'voxinput-dotool: %s\n' "$*" >&2
-    }
-
-    paste_text() {
-      local text
-      text="$(${pkgs.coreutils}/bin/cat)"
-
-      # wtype injects unicode directly through the wayland virtual-keyboard
-      # protocol: it types Chinese (dotool/ydotool can't — they map keysyms
-      # and choke on non-layout characters), works in ANY focused window, and
-      # needs neither the clipboard nor a paste shortcut. The old clipboard +
-      # Ctrl+Shift+V path only pasted in terminals (browsers/inputs use
-      # Ctrl+V) and raced ghostty's clipboard owner — hence dictation silently
-      # produced nothing. Keep that path as a fallback for compositors without
-      # virtual-keyboard support.
-      if ${pkgs.wtype}/bin/wtype -- "$text"; then
-        return 0
-      fi
-
-      log "wtype failed, falling back to clipboard + Ctrl+Shift+V"
-      # VoxInput only needs to own the selection until the synthetic paste
-      # consumes it. Leaving wl-copy alive indefinitely makes the next manual
-      # copy race with this stale owner and can require pressing Ctrl+C twice.
-      if ! printf '%s' "$text" | ${pkgs.wl-clipboard}/bin/wl-copy --paste-once --type text/plain; then
-        log "wl-copy failed"
-        return 1
-      fi
-      ${pkgs.coreutils}/bin/sleep 0.08
-
-      if printf 'key ctrl+shift+v\n' | ${pkgs.dotool}/bin/dotool; then
-        return 0
-      fi
-
-      log "dotool paste shortcut failed, trying ydotool"
-      if ${pkgs.ydotool}/bin/ydotool key 29:1 42:1 47:1 47:0 42:0 29:0; then
-        return 0
-      fi
-
-      log "all paste methods failed"
-      return 1
-    }
-
-    if [ "$#" -gt 0 ]; then
-      if [ "$1" = "type" ]; then
-        shift
-        printf '%s' "$*" | paste_text
-        exit 0
-      fi
-      exec ${pkgs.dotool}/bin/dotool "$@"
-    fi
-
-    input="$(${pkgs.coreutils}/bin/cat)"
-    first_line="''${input%%$'\n'*}"
-    rest="''${input#"$first_line"}"
-    if [[ "$first_line" == type\ * && ( -z "$rest" || "$rest" == $'\n' ) ]]; then
-      text="''${first_line#type }"
-      printf '%s' "$text" | paste_text
-      exit 0
-    fi
-
-    log "falling back to original dotool for non-type command batch"
-    printf '%s\n' "$input" | ${pkgs.dotool}/bin/dotool
-  '';
-  voxinputClipboard = pkgs.voxinput.overrideAttrs (old: {
-    postFixup = (old.postFixup or "") + ''
-      rm -f $out/bin/voxinput
-      makeWrapper $out/bin/.voxinput-wrapped $out/bin/voxinput \
-        --prefix PATH : ${
-          lib.makeBinPath [
-            voxinputPasteDotool
-            pkgs.wtype
-            pkgs.wl-clipboard
-            pkgs.ydotool
-            pkgs.coreutils
-            # VoxInput signals record start/stop through beeep, which shells out
-            # to notify-send. libnotify is not in the system profile, so without
-            # it every notification failed and the recording OSD never appeared
-            # — dictation still worked, just with no visible indicator.
-            pkgs.libnotify
-          ]
-        }
-    '';
-  });
-  voxinputListener = pkgs.writeShellScript "voxinput-listener" ''
+  voxtypeDaemon = pkgs.writeShellScript "voxtype-daemon" ''
     set -euo pipefail
 
     ${voicePromptRuntime}
 
-    export VOXINPUT_PROMPT="$(build_voice_prompt)"
-    exec ${voxinputClipboard}/bin/voxinput listen --no-realtime
+    exec ${voxtypePackage}/bin/voxtype \
+      --initial-prompt "$(build_voice_prompt)" \
+      -q daemon
   '';
   whisperCppServer = pkgs.writeShellScript "whisper-cpp-server-local" ''
     set -euo pipefail
@@ -428,8 +336,6 @@ let
 
     mkdir -p "${whisperCppModelDir}"
     whisper-cpp-download-ggml-model ${whisperCppModel} "${whisperCppModelDir}"
-
-    ${voicePromptRuntime}
 
     exec whisper-server \
       --model "${whisperCppModelDir}/ggml-${whisperCppModel}.bin" \
@@ -447,7 +353,7 @@ in
     enable = true;
   };
 
-  home = lib.mkIf pkgs.stdenv.isLinux {
+  home = lib.mkIf pkgs.stdenv.hostPlatform.isLinux {
     pointerCursor = {
       enable = true;
       name = "Vanilla-DMZ";
@@ -466,11 +372,36 @@ in
       source = ./warcraft3.sh;
       executable = true;
     };
-    file.".local/bin/voxinput" = {
-      source = "${voxinputClipboard}/bin/voxinput";
-      executable = true;
-    };
-    file.".config/voxinput/terms.txt".text = voiceTermsText;
+    file.".config/voxtype/config.toml".text = ''
+      state_file = "auto"
+
+      [hotkey]
+      enabled = false
+      mode = "toggle"
+
+      [audio]
+      device = "default"
+      sample_rate = 16000
+      max_duration_secs = 60
+
+      [whisper]
+      mode = "remote"
+      language = "auto"
+      translate = false
+      remote_endpoint = "http://127.0.0.1:8080"
+      remote_model = "whisper-1"
+      remote_timeout_secs = 60
+
+      [output]
+      mode = "type"
+      fallback_to_clipboard = true
+      driver_order = ["wtype", "dotool", "ydotool", "clipboard"]
+
+      [output.notification]
+      on_recording_start = true
+      on_recording_stop = true
+      on_transcription = true
+    '';
     packages =
       (with pkgs; [
         # Linux-only GUI/desktop
@@ -534,14 +465,9 @@ in
         tradingview
 
         # Voice coding and dictation
-        dotool
-        openai-whisper
         pavucontrol
-        sox
-        voxinputClipboard
+        voxtypePackage
         whisperCppPackage
-        wl-clipboard
-        ydotool
 
         # 成像/磁盘工具
         ddrescue
@@ -560,7 +486,7 @@ in
         testdisk
         autopsy
       ])
-      ++ lib.optionals pkgs.stdenv.isLinux (
+      ++ lib.optionals pkgs.stdenv.hostPlatform.isLinux (
         with pkgs;
         [
           godot_4
@@ -573,7 +499,7 @@ in
     sessionPath = [ "$HOME/.local/bin" ];
   };
 
-  systemd.user.services.whisper-cpp-server = lib.mkIf pkgs.stdenv.isLinux {
+  systemd.user.services.whisper-cpp-server = lib.mkIf pkgs.stdenv.hostPlatform.isLinux {
     Unit = {
       Description = "Local whisper.cpp OpenAI-compatible transcription server";
       After = [ "pipewire.service" ];
@@ -590,21 +516,27 @@ in
     };
   };
 
-  # Split out of common.yaml: the term list is prose, and at ~2.5kB it was a
-  # quarter of that file's plaintext, so every unrelated secret edit churned it.
-  sops.secrets."voxinput/terms" = lib.mkIf (pkgs.stdenv.isLinux && !isRoot) {
-    sopsFile = ../../secrets/voxinput-terms.yaml;
+  systemd.user.services.agentsview = lib.mkIf (pkgs.stdenv.hostPlatform.isLinux && !isRoot) {
+    Unit.Description = "Local AI coding agent session viewer";
+
+    Service = {
+      ExecStart = "${agentsviewPackage}/bin/agentsview serve --host 127.0.0.1 --port 8788 --no-browser --no-update-check";
+      Restart = "on-failure";
+      RestartSec = 5;
+    };
+
+    Install.WantedBy = [ "default.target" ];
   };
 
-  systemd.user.services.voxinput-listener = lib.mkIf pkgs.stdenv.isLinux {
+  # Split out of common.yaml: the term list is prose, and at ~2.5kB it was a
+  # quarter of that file's plaintext, so every unrelated secret edit churned it.
+  sops.secrets."voxtype/terms" = lib.mkIf (pkgs.stdenv.hostPlatform.isLinux && !isRoot) {
+    sopsFile = ../../secrets/voxtype-terms.yaml;
+  };
+
+  systemd.user.services.voxtype = lib.mkIf pkgs.stdenv.hostPlatform.isLinux {
     Unit = {
-      Description = "VoxInput push-to-talk listener";
-      # Bound to the graphical session, not default.target: pasting goes through
-      # wl-copy, which needs WAYLAND_DISPLAY. On default.target this unit starts
-      # with the user manager — before the compositor imports that variable into
-      # the systemd environment — so it captured an environment without it and
-      # every paste failed with "dotool wait: exit status 1" until the next
-      # manual restart.
+      Description = "Voxtype push-to-talk voice-to-text daemon";
       After = [
         "graphical-session.target"
         "pipewire.service"
@@ -615,7 +547,7 @@ in
     };
 
     Service = {
-      ExecStart = "${voxinputListener}";
+      ExecStart = "${voxtypeDaemon}";
       Restart = "on-failure";
       RestartSec = 2;
     };
@@ -625,7 +557,7 @@ in
     };
   };
 
-  gtk = lib.mkIf pkgs.stdenv.isLinux {
+  gtk = lib.mkIf pkgs.stdenv.hostPlatform.isLinux {
     enable = true;
     gtk4 = {
       extraConfig = {
@@ -635,7 +567,7 @@ in
     };
   };
 
-  i18n = lib.mkIf pkgs.stdenv.isLinux {
+  i18n = lib.mkIf pkgs.stdenv.hostPlatform.isLinux {
     inputMethod = {
       type = "fcitx5";
       enable = true;
@@ -660,7 +592,7 @@ in
   # xdg-desktop-autostart.target, which niri-session activates. A user-level
   # entry of the same name wins per the XDG autostart spec, so Hidden=true
   # removes it and leaves fcitx5-daemon.service alone.
-  xdg.configFile = lib.mkIf pkgs.stdenv.isLinux {
+  xdg.configFile = lib.mkIf pkgs.stdenv.hostPlatform.isLinux {
     "autostart/org.fcitx.Fcitx5.desktop".text = ''
       [Desktop Entry]
       Type=Application
@@ -727,7 +659,7 @@ in
     # comodoro.enable = true;
     mpv.enable = true;
 
-    obs-studio = lib.mkIf pkgs.stdenv.isLinux {
+    obs-studio = lib.mkIf pkgs.stdenv.hostPlatform.isLinux {
       enable = true;
       plugins = with pkgs.obs-studio-plugins; [
         wlrobs

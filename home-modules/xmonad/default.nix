@@ -182,7 +182,7 @@
       '';
     };
   };
-  services = lib.mkIf pkgs.stdenv.isLinux {
+  services = lib.mkIf pkgs.stdenv.hostPlatform.isLinux {
     xscreensaver = {
       enable = true;
       settings = {

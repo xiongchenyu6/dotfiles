@@ -93,9 +93,7 @@ in
       mode = "600";
     };
     # Define API key secrets (they'll be used by the template)
-    "api-keys/SILICON_FLOW" = { };
     "api-keys/OPENROUTER_API_KEY" = { };
-    "api-keys/GEMINI_API_KEY" = { };
     "api-keys/Github_Access_Token" = { };
     "api-keys/SLACK_BOT_TOKEN" = { };
     "api-keys/SLACK_TEAM_ID" = { };
@@ -104,9 +102,7 @@ in
   # Use sops template for environment variables - much cleaner!
   sops.templates."api-keys-env" = lib.mkIf enableHomeSops {
     content = ''
-      OPENAI_API_KEY=${config.sops.placeholder."api-keys/SILICON_FLOW"}
       OPENROUTER_API_KEY=${config.sops.placeholder."api-keys/OPENROUTER_API_KEY"}
-      GEMINI_API_KEY=${config.sops.placeholder."api-keys/GEMINI_API_KEY"}
       GITHUB_PERSONAL_ACCESS_TOKEN=${config.sops.placeholder."api-keys/Github_Access_Token"}
       SLACK_BOT_TOKEN=${config.sops.placeholder."api-keys/SLACK_BOT_TOKEN"}
       SLACK_TEAM_ID=${config.sops.placeholder."api-keys/SLACK_TEAM_ID"}
@@ -125,7 +121,6 @@ in
     };
     # Session variables are now managed by systemd user service
     sessionVariables = {
-      OPENAI_API_BASE = "https://api.siliconflow.cn/v1";
       EDITOR = lib.mkForce "nvim";
     };
     homeDirectory = osConfig.users.users."freeman.xiong".home;

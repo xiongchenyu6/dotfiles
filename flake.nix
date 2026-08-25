@@ -270,7 +270,7 @@
                 yq-go
                 nixos-rebuild
               ]
-              ++ lib.optionals pkgs.stdenv.isDarwin [
+              ++ lib.optionals pkgs.stdenv.hostPlatform.isDarwin [
                 # Darwin-specific build tools
                 inputs.darwin.packages.${system}.darwin-rebuild
               ];

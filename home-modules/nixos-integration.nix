@@ -1,7 +1,6 @@
 {
   pkgs,
   config,
-  lib,
   ...
 }:
 {
@@ -57,6 +56,8 @@
         "x-scheme-handler/about" = "google-chrome.desktop";
         "x-scheme-handler/unknown" = "google-chrome.desktop";
         "x-scheme-handler/claude" = "claude-desktop.desktop";
+        # SSO login bounces back from the browser as bitwarden://sso-callback
+        "x-scheme-handler/bitwarden" = "bitwarden.desktop";
       };
     };
     userDirs = {
