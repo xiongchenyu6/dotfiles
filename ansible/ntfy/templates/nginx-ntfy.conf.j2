@@ -2,27 +2,6 @@
 # Managed by ansible/ntfy.
 
 upstream ntfy_backend { server 127.0.0.1:{{ ntfy_port }}; }
-{% if ntfy_gate_enabled %}
-upstream ntfy_oauth2_proxy { server 127.0.0.1:{{ ntfy_oauth2_proxy_port }}; }
-
-# A request that already carries an ntfy credential is an API client (the
-# Android app, a curl publisher, an EventSource with ?auth=). Those cannot run
-# an interactive Auth0 login, so they skip the gate and are left to ntfy's own
-# deny-all ACL. The gate exists to keep the anonymous browser surface closed.
-map $http_authorization $ntfy_authz_credential {
-    default        0;
-    "~*^Bearer\s+" 1;
-    "~*^Basic\s+"  1;
-}
-map $arg_auth $ntfy_query_credential {
-    default 0;
-    "~.+"   1;
-}
-map "$ntfy_authz_credential$ntfy_query_credential" $ntfy_api_client {
-    default 1;
-    "00"    0;
-}
-{% endif %}
 
 server {
     listen 80;
@@ -61,37 +40,7 @@ server {
     proxy_send_timeout  3m;
     proxy_connect_timeout 3s;
 
-{% if ntfy_gate_enabled %}
-    location /oauth2/ {
-        proxy_pass http://ntfy_oauth2_proxy;
-        proxy_set_header X-Auth-Request-Redirect $scheme://$host$request_uri;
-    }
-
-    location = /oauth2/auth {
-        internal;
-        # API clients never reach oauth2-proxy; the subrequest short-circuits.
-        if ($ntfy_api_client) {
-            return 200;
-        }
-        proxy_pass http://ntfy_oauth2_proxy;
-        proxy_pass_request_body off;
-        proxy_set_header Content-Length "";
-        proxy_set_header X-Original-URI $request_uri;
-    }
-
-    location / {
-        auth_request /oauth2/auth;
-        error_page 401 = @ntfy_signin;
-        proxy_pass http://ntfy_backend;
-    }
-
-    location @ntfy_signin {
-        internal;
-        return 302 https://$host/oauth2/start?rd=$scheme://$host$request_uri;
-    }
-{% else %}
     location / {
         proxy_pass http://ntfy_backend;
     }
-{% endif %}
 }

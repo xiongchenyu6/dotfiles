@@ -111,6 +111,74 @@ The provider is configured `trusted = true`: Auth0 is self-operated, so a
 claim that matches an existing local account is allowed to bind to it rather
 than being pushed onto a freshly generated username.
 
+## Push notifications through ntfy (UnifiedPush)
+
+Matrix clients normally receive push through Google's FCM or Apple's APNs. On
+Android that can be replaced with the ntfy deployment next door, so a message
+notification never leaves the two hosts in this repository:
+
+```
+Tuwunel ──pusher──▶ ntfy /_matrix/push/v1/notify ──▶ up… topic ──▶ ntfy app ──▶ Element
+```
+
+Nothing has to be configured on the Tuwunel side — pushers are registered by
+the client, and the homeserver already serves the standard
+`notification_push_path`. ntfy carries a Matrix push gateway of its own, so
+there is no third component either.
+
+### On the phone (Android)
+
+1. Install the ntfy app and sign in to `https://ntfy.starslab.qzz.io` with the
+   account from `scripts/ntfy-user.sh`.
+2. In Element (or FluffyChat / SchildiChat), the ntfy app is picked up as a
+   UnifiedPush distributor. Select it in the client's notification settings.
+3. The client registers a pusher pointing at ntfy's gateway, and ntfy hands out
+   a random `up…` topic as the endpoint.
+
+### Why ntfy allows anonymous writes to `up*`
+
+The ntfy server runs `auth-default-access: deny-all`, but the pusher call comes
+from the *homeserver*, which has nowhere to put credentials — the Matrix push
+API has no field for them. The gateway therefore has to accept an
+unauthenticated call, which `ansible/ntfy` grants as narrowly as possible:
+
+```yaml
+auth-access:
+  - "everyone:up*:wo"     # write-only, and only on the up* prefix
+```
+
+Write-only is the entire grant. The endpoints are random strings the ntfy app
+issues, reading one still requires an account, and a publisher who guessed an
+endpoint could only wake the device — Element fetches the actual event from the
+homeserver, so no content can be injected. Public ntfy.sh runs UnifiedPush the
+same way.
+
+Verified end to end against this deployment:
+
+```console
+$ curl -X POST https://ntfy.starslab.qzz.io/_matrix/push/v1/notify \
+      -d '{"notification":{"devices":[{"pushkey":"https://ntfy.starslab.qzz.io/upXXXX"}]}}'
+{"rejected":[]}                                  # anonymous gateway call works
+
+$ curl https://ntfy.starslab.qzz.io/upXXXX/json?poll=1
+403                                              # anonymous read still denied
+
+$ curl -d x https://ntfy.starslab.qzz.io/test
+403                                              # everything outside up* still closed
+```
+
+If a client ever needs to authenticate to the gateway, ntfy accepts
+`?auth=<base64url of the Authorization header>` on the gateway URL — worth
+knowing, because a `deny-all` server otherwise answers 403 with no hint.
+
+### iOS is not covered
+
+UnifiedPush has no iOS distributor: only Apple may push to an App Store build,
+so Element iOS goes through Element's own APNs gateway no matter what this
+server does. Self-hosting Matrix push for iPhones would mean an Apple developer
+account and a custom build of the client. ntfy's *own* iOS notifications are a
+separate mechanism and do work — see `ansible/ntfy/README.md`.
+
 ## Registration
 
 `allow_registration` is on but gated behind a token, so the SSO flow can

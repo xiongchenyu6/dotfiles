@@ -141,7 +141,6 @@
 
   systemd.services.ModemManager.enable = false;
 
-
   # sing-box is an opt-in travel VPN. Keep both the service and its TUN absent
   # at boot; pon/poff are the only normal start/stop path.
   systemd.services.sing-box = {
@@ -347,71 +346,70 @@
           ];
         in
         {
-        log.level = "warn";
-        dns = {
-          servers = [
+          log.level = "warn";
+          dns = {
+            servers = [
+              {
+                # DHCP discovery times out on some travel routers. Use AliDNS
+                # directly for mainland domains instead of inheriting fake-IP DNS.
+                type = "https";
+                tag = "dns-direct";
+                server = "223.5.5.5";
+                detour = "direct";
+                tls.server_name = "dns.alidns.com";
+              }
+              {
+                type = "https";
+                tag = "dns-proxy";
+                server = "1.1.1.1";
+                detour = "proxy";
+                tls.server_name = "cloudflare-dns.com";
+              }
+            ];
+            rules = [
+              {
+                # Never let a mainland resolver synthesize fake IPs for Claude.
+                domain_suffix = [
+                  "anthropic.com"
+                  "claude.ai"
+                  "claude.com"
+                  "claudeusercontent.com"
+                ];
+                action = "route";
+                server = "dns-proxy";
+              }
+              {
+                # Keep mainland sites fast while foreign DNS uses DoH over Hysteria2.
+                rule_set = [ "geosite-cn" ];
+                action = "route";
+                server = "dns-direct";
+              }
+            ];
+            final = "dns-proxy";
+            # This host has no public IPv6 route. Returning AAAA made Bun/Claude
+            # report IPv6 reachability failures as certificate verification errors.
+            strategy = "ipv4_only";
+            reverse_mapping = true;
+          };
+          inbounds = [
             {
-              # DHCP discovery times out on some travel routers. Use AliDNS
-              # directly for mainland domains instead of inheriting fake-IP DNS.
-              type = "https";
-              tag = "dns-direct";
-              server = "223.5.5.5";
-              detour = "direct";
-              tls.server_name = "dns.alidns.com";
-            }
-            {
-              type = "https";
-              tag = "dns-proxy";
-              server = "1.1.1.1";
-              detour = "proxy";
-              tls.server_name = "cloudflare-dns.com";
+              type = "tun";
+              tag = "tun-in";
+              interface_name = "sing-tun";
+              # Avoid the LAN, Docker, libvirt, NetBird, and WireGuard ranges.
+              address = [ "10.255.0.1/30" ];
+              stack = "system";
+              auto_route = true;
+              auto_redirect = true;
+              strict_route = true;
             }
           ];
-          rules = [
-            {
-              # Never let a mainland resolver synthesize fake IPs for Claude.
-              domain_suffix = [
-                "anthropic.com"
-                "claude.ai"
-                "claude.com"
-                "claudeusercontent.com"
-              ];
-              action = "route";
-              server = "dns-proxy";
-            }
-            {
-              # Keep mainland sites fast while foreign DNS uses DoH over Hysteria2.
-              rule_set = [ "geosite-cn" ];
-              action = "route";
-              server = "dns-direct";
-            }
-          ];
-          final = "dns-proxy";
-          # This host has no public IPv6 route. Returning AAAA made Bun/Claude
-          # report IPv6 reachability failures as certificate verification errors.
-          strategy = "ipv4_only";
-          reverse_mapping = true;
-        };
-        inbounds = [
-          {
-            type = "tun";
-            tag = "tun-in";
-            interface_name = "sing-tun";
-            # Avoid the LAN, Docker, libvirt, NetBird, and WireGuard ranges.
-            address = [ "10.255.0.1/30" ];
-            stack = "system";
-            auto_route = true;
-            auto_redirect = true;
-            strict_route = true;
-          }
-        ];
-        # Clash API + metacubexd 面板:http://127.0.0.1:9090/ui
-        experimental.clash_api = {
-          external_controller = "127.0.0.1:9090";
-          external_ui = "${pkgs.metacubexd}";
-        };
-        outbounds =
-          [
+          # Clash API + metacubexd 面板:http://127.0.0.1:9090/ui
+          experimental.clash_api = {
+            external_controller = "127.0.0.1:9090";
+            external_ui = "${pkgs.metacubexd}";
+          };
+          outbounds = [
             {
               # Native URLTest has no bandwidth metric. Keep the measured
               # high-quality nodes first and use a wide latency tolerance as
@@ -444,69 +442,69 @@
               domain_resolver = "dns-direct";
             }
           ];
-        route = {
-          # TUN 出站必须绑定系统检测到的默认物理接口,否则会套娃回 TUN。
-          auto_detect_interface = true;
-          # Private and mainland traffic is bypassed below; everything else
-          # uses Hysteria2 while the opt-in service is running.
-          final = "proxy";
-          rules = [
-            {
-              action = "sniff";
-            }
-            {
-              protocol = "dns";
-              action = "hijack-dns";
-            }
-            {
-              # Claude 官方网络清单中的核心服务。显式放在 CN 分流前,
-              # 避免污染 DNS、GeoIP 误判或 CDN 漂移导致偶发直连。
-              domain_suffix = [
-                "anthropic.com"
-                "claude.ai"
-                "claude.com"
-                "claudeusercontent.com"
-              ];
-              action = "route";
-              outbound = "proxy";
-            }
-            {
-              # NetBird uses RFC 6598 CGNAT addresses, which ip_is_private
-              # deliberately does not include.
-              ip_cidr = [ "100.64.0.0/10" ];
-              action = "bypass";
-              outbound = "direct";
-            }
-            {
-              ip_is_private = true;
-              action = "bypass";
-              outbound = "direct";
-            }
-            {
-              rule_set = [
-                "geoip-cn"
-                "geosite-cn"
-              ];
-              action = "bypass";
-              outbound = "direct";
-            }
-          ];
-          rule_set = [
-            {
-              tag = "geoip-cn";
-              type = "local";
-              format = "binary";
-              path = "${pkgs.sing-geoip}/share/sing-box/rule-set/geoip-cn.srs";
-            }
-            {
-              tag = "geosite-cn";
-              type = "local";
-              format = "binary";
-              path = "${pkgs.sing-geosite}/share/sing-box/rule-set/geosite-cn.srs";
-            }
-          ];
+          route = {
+            # TUN 出站必须绑定系统检测到的默认物理接口,否则会套娃回 TUN。
+            auto_detect_interface = true;
+            # Private and mainland traffic is bypassed below; everything else
+            # uses Hysteria2 while the opt-in service is running.
+            final = "proxy";
+            rules = [
+              {
+                action = "sniff";
+              }
+              {
+                protocol = "dns";
+                action = "hijack-dns";
+              }
+              {
+                # Claude 官方网络清单中的核心服务。显式放在 CN 分流前,
+                # 避免污染 DNS、GeoIP 误判或 CDN 漂移导致偶发直连。
+                domain_suffix = [
+                  "anthropic.com"
+                  "claude.ai"
+                  "claude.com"
+                  "claudeusercontent.com"
+                ];
+                action = "route";
+                outbound = "proxy";
+              }
+              {
+                # NetBird uses RFC 6598 CGNAT addresses, which ip_is_private
+                # deliberately does not include.
+                ip_cidr = [ "100.64.0.0/10" ];
+                action = "bypass";
+                outbound = "direct";
+              }
+              {
+                ip_is_private = true;
+                action = "bypass";
+                outbound = "direct";
+              }
+              {
+                rule_set = [
+                  "geoip-cn"
+                  "geosite-cn"
+                ];
+                action = "bypass";
+                outbound = "direct";
+              }
+            ];
+            rule_set = [
+              {
+                tag = "geoip-cn";
+                type = "local";
+                format = "binary";
+                path = "${pkgs.sing-geoip}/share/sing-box/rule-set/geoip-cn.srs";
+              }
+              {
+                tag = "geosite-cn";
+                type = "local";
+                format = "binary";
+                path = "${pkgs.sing-geosite}/share/sing-box/rule-set/geosite-cn.srs";
+              }
+            ];
+          };
         };
-      };
     };
 
     sunshine = {
@@ -607,6 +605,9 @@
     users = {
       "freeman.xiong" =
         let
+          elementDesktop = pkgs.element-desktop.override {
+            commandLineArgs = "--password-store=gnome-libsecret";
+          };
           wechatHiDpi = pkgs.writeShellScriptBin "wechat" ''
             export QT_ENABLE_HIGHDPI_SCALING=1
             export QT_SCALE_FACTOR=''${WECHAT_SCALE_FACTOR:-1.5}
@@ -615,8 +616,17 @@
         in
         {
           home.packages = [
+            elementDesktop
             wechatHiDpi
           ];
+
+          xdg.mimeApps = {
+            enable = true;
+            defaultApplications = {
+              "x-scheme-handler/element" = [ "element-desktop.desktop" ];
+              "x-scheme-handler/io.element.desktop" = [ "element-desktop.desktop" ];
+            };
+          };
 
           xdg.dataFile."applications/wechat.desktop" = {
             text = ''

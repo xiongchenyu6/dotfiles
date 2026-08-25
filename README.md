@@ -240,7 +240,7 @@ Because `inputs.follows` is mirrored, upstream updates only change behavior of t
 | `autolife-robot-260` | x86_64-linux | Robot onboard host (minimal bootstrap) |
 
 `lubancat` (RK3588 SBC) runs Ubuntu — no mainline device tree — and is managed only via standalone home-manager (user `cat`) plus `ansible/`, not as a NixOS host.
-Its self-hosted services — Tuwunel (Matrix), Huly, AFFiNE and ntfy, all signing in through Auth0 — live under `ansible/<service>/`. `scripts/auth0-setup.sh` registers their Auth0 applications, and `scripts/cloudflare-matrix-delegation.sh` publishes the apex `/.well-known/matrix` delegation that lets Matrix IDs read `@user:starslab.qzz.io`.
+Its self-hosted services live under `ansible/<service>/`: Tuwunel (Matrix), Huly and AFFiNE sign in through Auth0, registered by `scripts/auth0-setup.sh`; ntfy stays on its own tokens because it has no OIDC support. `scripts/cloudflare-matrix-delegation.sh` publishes the apex `/.well-known/matrix` delegation that lets Matrix IDs read `@user:starslab.qzz.io`.
 
 Per-host software inventory: [`docs/HOSTS.md`](./docs/HOSTS.md).
 

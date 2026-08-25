@@ -13,7 +13,7 @@ set -euo pipefail
 
 usage() {
 	echo "Usage: $0 [--dry-run]"
-	echo "Creates/updates the Tuwunel, Huly, AFFiNE and ntfy applications in Auth0"
+	echo "Creates/updates the Tuwunel, Huly and AFFiNE applications in Auth0"
 	echo "and stores their credentials in secrets/common.yaml."
 }
 
@@ -81,7 +81,6 @@ APPS=(
 	"tuwunel|Tuwunel (Matrix)|https://matrix.starslab.qzz.io/_matrix/client/unstable/login/sso/callback/@CLIENT_ID@"
 	"huly|Huly|https://huly.starslab.qzz.io/_accounts/auth/openid/callback"
 	"affine|AFFiNE|https://affine.starslab.qzz.io/oauth/callback"
-	"ntfy|ntfy|https://ntfy.starslab.qzz.io/oauth2/callback"
 )
 
 for entry in "${APPS[@]}"; do
@@ -103,7 +102,8 @@ for entry in "${APPS[@]}"; do
 		created="$(api POST '/clients' --data "$(jq -n --arg name "$display" \
 			'{name: $name, app_type: "regular_web", oidc_conformant: true,
               grant_types: ["authorization_code", "refresh_token"],
-              token_endpoint_auth_method: "client_secret_post"}')")"
+              token_endpoint_auth_method: "client_secret_post",
+              jwt_configuration: {alg: "RS256"}}')")"
 		existing="$(echo "$created" | jq -r '.client_id // empty')"
 		[[ -n "$existing" ]] || {
 			echo "    failed: $(echo "$created" | jq -c .)" >&2
@@ -115,9 +115,14 @@ for entry in "${APPS[@]}"; do
 	fi
 
 	resolved_callback="${callback//@CLIENT_ID@/$existing}"
+	# jwt_configuration.alg is re-asserted on every run, not just at creation.
+	# An Auth0 application that leaves it unset signs id_tokens with HS256,
+	# which every client in this stack rejects — and the rejection surfaces as
+	# a silent bounce back to the login page rather than as an error.
 	api PATCH "/clients/$existing" --data "$(jq -n \
 		--arg cb "$resolved_callback" --arg origin "$origin" \
 		'{callbacks: [$cb], allowed_logout_urls: [$origin], web_origins: [$origin],
+          jwt_configuration: {alg: "RS256"},
           allowed_origins: [$origin]}')" >/dev/null
 	echo "    callback: $resolved_callback"
 
@@ -129,6 +134,6 @@ done
 
 echo
 echo "Done. Re-run the playbooks so the services pick the credentials up:"
-echo "  for s in tuwunel huly affine ntfy; do"
+echo "  for s in tuwunel huly affine; do"
 echo "    (cd $REPO_ROOT/ansible/\$s && ansible-playbook -i inventory.ini deploy-\$s.yml)"
 echo "  done"

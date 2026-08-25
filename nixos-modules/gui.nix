@@ -146,13 +146,6 @@
       enable = true;
       fontPackages = with pkgs; [ source-han-sans ];
     };
-    _1password = {
-      enable = true;
-    };
-    _1password-gui = {
-      enable = true;
-      polkitPolicyOwners = [ "freeman.xiong" ];
-    };
     nm-applet = {
       enable = false;
     };

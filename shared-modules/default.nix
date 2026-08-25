@@ -20,7 +20,8 @@ let
       nix-alien
       sops-nix
       nix-topology
-    ];
+    ]
+    ++ [ llm-agents.overlays.shared-nixpkgs ];
 
   # Additional overlays for NixOS — applied to ALL nixos hosts.
   # rust-web-server intentionally NOT in this list: it's a private SSH
@@ -59,18 +60,18 @@ in
             libXrender = prev.libxrender;
             libXtst = prev.libxtst;
             libXv = prev.libxv;
-            libxcb = prev.libxcb;
-            libxkbfile = prev.libxkbfile;
-            libxshmfence = prev.libxshmfence;
+            inherit (prev) libxcb;
+            inherit (prev) libxkbfile;
+            inherit (prev) libxshmfence;
           };
-          addPerf = kernelPackages: kernelPackages.extend (_: _: { perf = prev.perf; });
+          addPerf = kernelPackages: kernelPackages.extend (_: _: { inherit (prev) perf; });
         in
         {
           # gnupg240 = nixpkgs-stable.legacyPackages.x86_64-linux.gnupg;
           # telegram-desktop =
           #   nixpkgs-stable.legacyPackages.x86_64-linux.telegram-desktop;
           # waybar = nixpkgs-master.legacyPackages.x86_64-linux.waybar;
-          claude-code = (masterPkgsFor prev.stdenv.hostPlatform.system).claude-code;
+          inherit ((masterPkgsFor prev.stdenv.hostPlatform.system)) claude-code;
           # cloudflared 2026.6.0's proxy SSE test can panic during checkPhase.
           # Keep the package buildable until nixpkgs carries an upstream fix.
           cloudflared = prev.cloudflared.overrideAttrs (_: {
@@ -85,12 +86,12 @@ in
               throw "feishu-lark is only available on Linux";
           linuxPackages = addPerf prev.linuxPackages;
           linuxPackages_latest = addPerf prev.linuxPackages_latest;
-          lowPrio = lib.lowPrio;
+          inherit (lib) lowPrio;
           netbird = prev.netbird.override {
             buildGoModule = prev.buildGo125Module;
           };
           # 白霜拼音方案数据；个人定制放 stow-managed/rime 的 *.custom.yaml
-          rime-frost = prev.runCommandNoCC "rime-frost" { } ''
+          rime-frost = prev.runCommand "rime-frost" { } ''
             mkdir -p $out/share/rime-data
             cp -r ${inputs.rime-frost}/. $out/share/rime-data/
             rm -rf $out/share/rime-data/others \

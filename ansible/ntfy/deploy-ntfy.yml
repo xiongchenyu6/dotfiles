@@ -1,7 +1,8 @@
 ---
 # Deploy ntfy behind the host nginx on lubancat.
-# ntfy has no OIDC support of its own, so Auth0 sits in front as an
-# oauth2-proxy gate over the browser surface; see README.md.
+# ntfy authenticates against its own user database and per-topic ACLs; it has
+# no OIDC support, so unlike the rest of the stack it does not use Auth0.
+# See README.md.
 - name: Deploy ntfy
   hosts: ntfy_servers
   become: yes
@@ -31,24 +32,17 @@
       become: false
       no_log: true
 
-    - name: Resolve the Auth0 gate settings
+    - name: Load the provisioned ntfy roster from the sops store
       ansible.builtin.set_fact:
-        ntfy_auth0_domain: "{{ ntfy_common_secrets.auth0.domain | default('') }}"
-        ntfy_oidc_client_id: "{{ ntfy_common_secrets.auth0.ntfy.client_id | default('') }}"
-        ntfy_oidc_client_secret: "{{ ntfy_common_secrets.auth0.ntfy.client_secret | default('') }}"
+        ntfy_provisioned_users: "{{ ntfy_common_secrets.ntfy.users | default([]) }}"
       no_log: true
 
-    - name: Decide whether the Auth0 gate is active
-      ansible.builtin.set_fact:
-        ntfy_gate_enabled: "{{ ntfy_oauth2_proxy_enabled and (ntfy_oidc_client_id | length > 0) }}"
-
-    - name: Warn when the Auth0 application has not been registered yet
+    - name: Warn when no roster is provisioned
       ansible.builtin.debug:
         msg: >-
-          auth0.ntfy.client_id is missing from secrets/common.yaml — deploying
-          without the Auth0 gate; ntfy's own deny-all ACL is the only thing
-          protecting it. Run scripts/auth0-setup.sh, then re-run this playbook.
-      when: not ntfy_gate_enabled
+          ntfy.users is empty in secrets/common.yaml — deploying with nobody
+          able to log in. Add people with scripts/ntfy-user.sh.
+      when: ntfy_provisioned_users | length == 0
 
     - name: Install required packages
       ansible.builtin.apt:
@@ -73,51 +67,6 @@
       loop:
         - "{{ ntfy_deploy_dir }}"
         - "{{ ntfy_deploy_dir }}/data"
-
-    - name: Check for previously persisted secrets
-      ansible.builtin.stat:
-        path: "{{ ntfy_deploy_dir }}/.secrets.yml"
-      register: ntfy_secrets_stat
-
-    - name: Load previously persisted secrets
-      ansible.builtin.slurp:
-        src: "{{ ntfy_deploy_dir }}/.secrets.yml"
-      register: ntfy_secrets_blob
-      when: ntfy_secrets_stat.stat.exists
-      no_log: true
-
-    - name: Parse persisted secrets into facts
-      ansible.builtin.set_fact:
-        ntfy_persisted: "{{ ntfy_secrets_blob.content | b64decode | from_yaml }}"
-      when: ntfy_secrets_stat.stat.exists
-      no_log: true
-
-    - name: Resolve the admin password
-      ansible.builtin.set_fact:
-        ntfy_admin_password: "{{ ntfy_admin_password
-          | default(ntfy_persisted.ntfy_admin_password
-                    | default(lookup('ansible.builtin.pipe', 'openssl rand -hex 16'))) }}"
-      no_log: true
-
-    # oauth2-proxy insists on exactly 16, 24 or 32 raw bytes.
-    - name: Resolve the oauth2-proxy cookie secret
-      ansible.builtin.set_fact:
-        ntfy_cookie_secret: "{{ ntfy_cookie_secret
-          | default(ntfy_persisted.ntfy_cookie_secret
-                    | default(lookup('ansible.builtin.pipe', 'openssl rand -base64 32 | tr -d \"\\n\" | tr \"+/\" \"-_\"'))) }}"
-      no_log: true
-
-    - name: Persist secrets to {{ ntfy_deploy_dir }}/.secrets.yml
-      ansible.builtin.copy:
-        content: |
-          ---
-          ntfy_admin_password: "{{ ntfy_admin_password }}"
-          ntfy_cookie_secret: "{{ ntfy_cookie_secret }}"
-        dest: "{{ ntfy_deploy_dir }}/.secrets.yml"
-        owner: root
-        group: root
-        mode: '0600'
-      no_log: true
 
     - name: Deploy server.yml
       ansible.builtin.template:
@@ -162,23 +111,6 @@
       until: ntfy_health.status == 200
       ignore_errors: yes
 
-    - name: List existing ntfy users
-      ansible.builtin.command: docker exec ntfy ntfy user list
-      register: ntfy_user_list
-      changed_when: false
-      failed_when: false
-
-    - name: Create the ntfy admin user
-      ansible.builtin.shell:
-        cmd: >-
-          docker exec -e NTFY_PASSWORD="{{ ntfy_admin_password }}"
-          ntfy ntfy user add --role=admin "{{ ntfy_admin_user }}"
-      # `ntfy user list` prints "user admin (role: admin, ...)". Matched as a
-      # plain substring including the paren, so `admin` cannot match `admin2`
-      # and no regex escaping is involved.
-      when: "'user ' ~ ntfy_admin_user ~ ' (' not in ntfy_user_list.stdout"
-      no_log: true
-
     - name: Ensure the TLS cert is in place
       ansible.builtin.stat:
         path: "{{ ntfy_ssl_cert }}"
@@ -220,15 +152,18 @@
           ========================================
           Deploy dir: {{ ntfy_deploy_dir }}
           Public URL: https://{{ ntfy_domain }}
-          Auth0 gate: {{ 'ON (' + ntfy_auth0_domain + ')' if ntfy_gate_enabled else 'OFF' }}
-          ntfy admin: {{ ntfy_admin_user }} (password in {{ ntfy_deploy_dir }}/.secrets.yml)
+          Auth:       ntfy's own users and tokens (no Auth0 — see README)
+          Roster:     {{ ntfy_provisioned_users | length }} provisioned user(s), from secrets/common.yaml
           ========================================
-          Topic ACLs stay in ntfy: docker exec -it ntfy ntfy access ...
+          Add or change people with scripts/ntfy-user.sh, then re-run this
+          playbook. Nothing is typed into the auth database by hand.
           ========================================
 
   handlers:
+    # server.yml is a bind mount that ntfy reads only at startup, and
+    # `up -d` alone leaves the container running when only that file changed.
     - name: restart ntfy
-      ansible.builtin.command: docker compose up -d --remove-orphans
+      ansible.builtin.command: docker compose up -d --remove-orphans --force-recreate
       args:
         chdir: "{{ ntfy_deploy_dir }}"
 

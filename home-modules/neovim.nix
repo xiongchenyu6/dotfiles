@@ -1790,7 +1790,7 @@ in
           # Clipboard support
           xclip # for x11
         ]
-        ++ lib.optionals (!cfg.lightweight && pkgs.stdenv.isLinux) [
+        ++ lib.optionals (!cfg.lightweight && pkgs.stdenv.hostPlatform.isLinux) [
           wl-clipboard # for wayland (Linux only)
         ];
     };

@@ -47,7 +47,10 @@ in
           default = [ "gtk" ];
         };
         niri = {
-          default = [ "gnome" "gtk" ];
+          default = [
+            "gnome"
+            "gtk"
+          ];
           # xdg-desktop-portal-gnome 46+ delegates FileChooser/AppChooser to
           # Nautilus (org.gnome.NautilusPortal). Without Nautilus installed,
           # the D-Bus name isn't activatable and every file picker fails with
@@ -84,6 +87,8 @@ in
         "x-scheme-handler/about" = "google-chrome.desktop";
         "x-scheme-handler/unknown" = "google-chrome.desktop";
         "x-scheme-handler/claude" = "claude-desktop.desktop";
+        # SSO login bounces back from the browser as bitwarden://sso-callback
+        "x-scheme-handler/bitwarden" = "bitwarden.desktop";
       };
     };
   };
