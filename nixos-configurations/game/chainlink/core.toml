@@ -35,5 +35,6 @@ ChainID = '5'
 
 [[EVM.Nodes]]
 Name = 'primary-0-5'
-WSURL = 'wss://eth-goerli.g.alchemy.com/v2/[REDACTED-ALCHEMY]'
-HTTPURL = 'https://eth-goerli.g.alchemy.com/v2/[REDACTED-ALCHEMY]'
+# Goerli is deprecated; keep this example free of provider credentials.
+WSURL = 'wss://ethereum-goerli.publicnode.com'
+HTTPURL = 'https://ethereum-goerli.publicnode.com'
