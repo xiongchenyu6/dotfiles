@@ -8,7 +8,6 @@
     "git.openRepositoryInParentFolders": "never",
     "explorer.confirmDelete": false,
     "cmake.configureOnOpen": true,
-    "gocodeo.authToken": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE3MjUzNDY3NzIsImlhdCI6MTY5NDI0Mjc3Miwic3ViIjoiNjRmYzEzOWVjYWNmZTE0MTVmZTY2ZWQ3IiwibmFtZSI6Ilhpb25nIGNoZW55dSIsImlzX3ZlcmlmaWVkIjp0cnVlfQ.nYO5SF18wcAUkT9STO-iNpoU3WqfqFy6wPFty0UTilU",
     "gocodeo.pythonTestFramework": "pytest",
     "easycode-canary.userEmail": "xiongchenyu6@gmail.com",
     "yaml.customTags": [
@@ -201,5 +200,5 @@
     "github.copilot.chat.newWorkspace.useContext7": true,
     "chat.mcp.assisted.nuget.enabled": true,
     "chat.mcp.autostart": "newAndOutdated",
-    "workbench.secondarySideBar.defaultVisibility": "hidden",
+    "workbench.secondarySideBar.defaultVisibility": "hidden"
 }
