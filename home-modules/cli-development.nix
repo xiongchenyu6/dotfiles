@@ -696,4 +696,134 @@
       '';
     };
   };
+
+  # Codex 的 SQLite 日志库只删行、从不回收空闲页(实测涨到 11 GB 时 97% 是空闲页)。
+  # 每周挑一次:跳过正被进程打开的库,其余用 VACUUM INTO + 原子替换压实。
+  systemd.user = lib.mkIf pkgs.stdenv.hostPlatform.isLinux {
+    services.codex-compact-logs = {
+      Unit.Description = "Compact Codex SQLite databases (reclaim free pages)";
+      Service = {
+        Type = "oneshot";
+        ExecStart = "${pkgs.writers.writePython3 "codex-compact-logs" { } ''
+          """Reclaim free pages from Codex SQLite databases."""
+
+          import glob
+          import os
+          import sqlite3
+          import sys
+
+          CODEX_HOME = os.path.expanduser("~/.codex")
+          # 低于这个阈值不值得动
+          MIN_RECLAIM_BYTES = 200 * 1024 * 1024
+
+
+          def holders(path):
+              """PID 列表:当前打开了 path 的进程。"""
+              name = os.path.basename(path)
+              found = []
+              for pid in os.listdir("/proc"):
+                  if not pid.isdigit():
+                      continue
+                  fd_dir = f"/proc/{pid}/fd"
+                  try:
+                      for fd in os.listdir(fd_dir):
+                          try:
+                              target = os.readlink(f"{fd_dir}/{fd}")
+                          except OSError:
+                              continue
+                          if os.path.basename(target).startswith(name):
+                              found.append(pid)
+                              break
+                  except OSError:
+                      continue
+              return found
+
+
+          def free_bytes(path):
+              conn = sqlite3.connect(f"file:{path}?mode=ro", uri=True, timeout=5)
+              try:
+                  page_size = conn.execute("pragma page_size").fetchone()[0]
+                  freelist = conn.execute("pragma freelist_count").fetchone()[0]
+                  return page_size * freelist
+              finally:
+                  conn.close()
+
+
+          def compact(path):
+              tmp = f"{path}.compact.new"
+              for leftover in (tmp, f"{tmp}-wal", f"{tmp}-shm"):
+                  if os.path.exists(leftover):
+                      os.remove(leftover)
+
+              conn = sqlite3.connect(f"file:{path}?mode=ro", uri=True, timeout=120)
+              try:
+                  conn.execute("vacuum into ?", (tmp,))
+              finally:
+                  conn.close()
+
+              check = sqlite3.connect(f"file:{tmp}?mode=ro", uri=True)
+              try:
+                  if check.execute("pragma quick_check").fetchone()[0] != "ok":
+                      raise RuntimeError("integrity check failed on compacted copy")
+              finally:
+                  check.close()
+
+              # 压缩期间可能有进程重新打开,替换前再确认一次
+              if holders(path):
+                  os.remove(tmp)
+                  return False
+
+              os.replace(tmp, path)
+              for sidecar in (f"{path}-wal", f"{path}-shm"):
+                  if os.path.exists(sidecar):
+                      os.remove(sidecar)
+              return True
+
+
+          def main():
+              for path in sorted(glob.glob(f"{CODEX_HOME}/*.sqlite")):
+                  name = os.path.basename(path)
+                  try:
+                      reclaimable = free_bytes(path)
+                  except sqlite3.Error as err:
+                      print(f"{name}: 跳过,无法读取 ({err})")
+                      continue
+
+                  if reclaimable < MIN_RECLAIM_BYTES:
+                      continue
+
+                  if holders(path):
+                      print(f"{name}: 跳过,正被使用(可回收 {reclaimable / 1e9:.2f} GB)")
+                      continue
+
+                  before = os.path.getsize(path)
+                  try:
+                      done = compact(path)
+                  except Exception as err:  # noqa: BLE001 - 单个库失败不应中断其余
+                      print(f"{name}: 压缩失败 ({err})", file=sys.stderr)
+                      continue
+
+                  if not done:
+                      print(f"{name}: 跳过,压缩期间被重新打开")
+                      continue
+
+                  after = os.path.getsize(path)
+                  print(f"{name}: {before / 1e9:.2f} GB -> {after / 1e9:.3f} GB")
+
+
+          main()
+        ''}";
+      };
+    };
+
+    timers.codex-compact-logs = {
+      Unit.Description = "Weekly compaction of Codex SQLite databases";
+      Timer = {
+        OnCalendar = "weekly";
+        Persistent = true;
+        RandomizedDelaySec = "1h";
+      };
+      Install.WantedBy = [ "timers.target" ];
+    };
+  };
 }
