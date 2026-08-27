@@ -98,12 +98,18 @@ jobs:
             nix eval --raw ".#$1.$2.config.system.build.toplevel.drvPath"
           }
 
+          # generic-nixos 是引导新主机用的模板,imports ./hardware-configuration.nix
+          # —— 那个文件由装机时 nixos-generate-config 生成,不在仓库里。所以它
+          # 本来就不可求值,不是缺陷。
+          skip=" generic-nixos "
+
           failed=""
           for kind in nixosConfigurations darwinConfigurations; do
             hosts=$(nix eval --raw ".#$kind" \
               --apply 'cs: builtins.concatStringsSep " " (builtins.attrNames cs)')
             echo "$kind: $hosts"
             for h in $hosts; do
+              case "$skip" in *" $h "*) echo "跳过 $h(模板,非真实主机)"; continue;; esac
               echo "::group::eval $h"
               if ! try_eval "$kind" "$h"; then
                 echo "重试 $h(可能是 GitHub API 限流)"
