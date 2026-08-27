@@ -65,7 +65,14 @@ jobs:
   # 门禁。构建整机在 GitHub runner 上装不下(单机闭包 70+ GiB),所以求值到
   # drvPath 为止 —— 足以抓到 input 升级最常见的坏法:选项被删、属性改名、
   # 模块签名变更。一台失败不早退,一次把所有坏的主机报全。
-  eval-nixos:
+  # 门禁。构建整机在 GitHub runner 上装不下(单机闭包 70+ GiB),所以求值到
+  # drvPath 为止 —— 足以抓到 input 升级最常见的坏法:选项被删、属性改名、
+  # 模块签名变更。一台失败不早退,一次把所有坏的主机报全。
+  #
+  # darwin 配置也在这个 Linux runner 上求值:nix 求值本身与宿主平台无关,
+  # 只要指定了 system。曾经以为必须用 macos runner,那是被 office-mac 自身
+  # 的缺陷(引用了 Linux-only 的包)误导 —— 修掉之后 Linux 上求值得很干净。
+  eval:
     needs: update
     if: needs.update.outputs.changed == 'true'
     runs-on: ubuntu-latest
@@ -80,67 +87,41 @@ jobs:
             experimental-features = nix-command flakes
             access-tokens = github.com=${{ secrets.CASCADE_TOKEN || secrets.GITHUB_TOKEN }}
 
-      - name: Evaluate every NixOS host
+      - name: Evaluate every host
         run: |
           set -Eeuo pipefail
-          hosts=$(nix eval --raw .#nixosConfigurations \
-            --apply 'cs: builtins.concatStringsSep " " (builtins.attrNames cs)')
-          echo "主机: $hosts"
-          failed=""
-          for h in $hosts; do
-            echo "::group::eval $h"
-            if nix eval --raw ".#nixosConfigurations.$h.config.system.build.toplevel.drvPath"; then
-              echo
-            else
-              failed="$failed $h"
-            fi
-            echo "::endgroup::"
-          done
-          if [ -n "$failed" ]; then
-            echo "::error::这些主机求值失败:$failed"
-            exit 1
-          fi
 
-  # darwin 配置在 Linux 上求值不了(input 缺 darwin 平台的包),得用真 macOS
-  # runner。本仓库是公开的,macos runner 免费。
-  eval-darwin:
-    needs: update
-    if: needs.update.outputs.changed == 'true'
-    runs-on: macos-latest
-    steps:
-      - uses: actions/checkout@v6
-      - uses: actions/download-artifact@v4
-        with:
-          name: flake-lock
-      - uses: cachix/install-nix-action@v30
-        with:
-          extra_nix_config: |
-            experimental-features = nix-command flakes
-            access-tokens = github.com=${{ secrets.CASCADE_TOKEN || secrets.GITHUB_TOKEN }}
+          # 求值期会拉到一些没被 flake.lock 锁住的传递依赖(如 hermes-agent
+          # 的上游),走的是匿名 api.github.com,而 runner 出口 IP 是共享的,
+          # 偶发 429。真正的配置错误重试两次照样失败,不会被掩盖。
+          try_eval() {
+            nix eval --raw ".#$1.$2.config.system.build.toplevel.drvPath"
+          }
 
-      - name: Evaluate every darwin host
-        run: |
-          set -Eeuo pipefail
-          hosts=$(nix eval --raw .#darwinConfigurations \
-            --apply 'cs: builtins.concatStringsSep " " (builtins.attrNames cs)')
-          echo "主机: $hosts"
           failed=""
-          for h in $hosts; do
-            echo "::group::eval $h"
-            if nix eval --raw ".#darwinConfigurations.$h.config.system.build.toplevel.drvPath"; then
+          for kind in nixosConfigurations darwinConfigurations; do
+            hosts=$(nix eval --raw ".#$kind" \
+              --apply 'cs: builtins.concatStringsSep " " (builtins.attrNames cs)')
+            echo "$kind: $hosts"
+            for h in $hosts; do
+              echo "::group::eval $h"
+              if ! try_eval "$kind" "$h"; then
+                echo "重试 $h(可能是 GitHub API 限流)"
+                sleep 45
+                try_eval "$kind" "$h" || failed="$failed $h"
+              fi
               echo
-            else
-              failed="$failed $h"
-            fi
-            echo "::endgroup::"
+              echo "::endgroup::"
+            done
           done
+
           if [ -n "$failed" ]; then
             echo "::error::这些主机求值失败:$failed"
             exit 1
           fi
 
   merge:
-    needs: [update, eval-nixos, eval-darwin]
+    needs: [update, eval]
     if: needs.update.outputs.changed == 'true'
     runs-on: ubuntu-latest
     steps:
@@ -196,7 +177,7 @@ jobs:
   # 这条链自己合并自己的成果,不主动说就没人知道它坏了。失败时只留一个 issue,
   # 下次绿了自动关掉,免得一个月失败攒出三十个 issue。
   report:
-    needs: [update, eval-nixos, eval-darwin, merge]
+    needs: [update, eval, merge]
     if: >-
       always() && (needs.update.result == 'failure'
       || needs.update.outputs.changed == 'true')
