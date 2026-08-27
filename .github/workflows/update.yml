@@ -40,7 +40,7 @@ jobs:
         with:
           extra_nix_config: |
             experimental-features = nix-command flakes
-            access-tokens = github.com=${{ secrets.GITHUB_TOKEN }}
+            access-tokens = github.com=${{ secrets.CASCADE_TOKEN || secrets.GITHUB_TOKEN }}
 
       - name: Bump the upstream input
         id: update
@@ -78,7 +78,7 @@ jobs:
         with:
           extra_nix_config: |
             experimental-features = nix-command flakes
-            access-tokens = github.com=${{ secrets.GITHUB_TOKEN }}
+            access-tokens = github.com=${{ secrets.CASCADE_TOKEN || secrets.GITHUB_TOKEN }}
 
       - name: Evaluate every NixOS host
         run: |
@@ -116,7 +116,7 @@ jobs:
         with:
           extra_nix_config: |
             experimental-features = nix-command flakes
-            access-tokens = github.com=${{ secrets.GITHUB_TOKEN }}
+            access-tokens = github.com=${{ secrets.CASCADE_TOKEN || secrets.GITHUB_TOKEN }}
 
       - name: Evaluate every darwin host
         run: |
@@ -215,6 +215,10 @@ jobs:
           if [ -n "$existing" ]; then
             gh issue comment "$existing" --repo "$GITHUB_REPOSITORY" --body "又失败了:$run_url"
           else
+            gh label create automation --repo "$GITHUB_REPOSITORY" \
+              --description "开给自动化流程的" --color ededed --force
+            gh label create dependencies --repo "$GITHUB_REPOSITORY" \
+              --description "依赖更新" --color 0366d6 --force
             gh issue create --repo "$GITHUB_REPOSITORY" --title "$TITLE" \
               --label automation --label dependencies \
               --body "nur-packages 级联下来的更新没能通过门禁。

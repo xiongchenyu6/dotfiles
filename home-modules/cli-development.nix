@@ -18,16 +18,6 @@
   # Rust toolchain — managed by Nix (replaces rustup-managed install)
   home.packages = [
     inputs.xiongchenyu6.packages.${pkgs.stdenv.hostPlatform.system}.cc-switch
-    inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.ccusage
-    inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.ccstatusline
-    inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.rtk
-    inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.agent-browser
-    inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.terminal-use
-    inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.ck
-    inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.openspec
-    inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.jscpd
-    inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.chatgpt
-    inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.workmux
     # gpg-agent 用绝对 store 路径,但 rbw 等工具是按名字在 PATH 里找 pinentry
     (if pkgs.stdenv.hostPlatform.isDarwin then pkgs.pinentry_mac else pkgs.pinentry-gnome3)
     pkgs.rbw
@@ -36,7 +26,29 @@
     pkgs.clippy
     pkgs.rustfmt
     pkgs.rust-analyzer
-  ];
+  ]
+  # llm-agents 各平台提供的工具并不齐:aarch64-darwin 没有 chatgpt,
+  # x86_64-darwin 一个都没有。直接点名取属性会让 office-mac 求值失败
+  # (error: attribute 'chatgpt' missing),所以按实际存在的挑。
+  ++ (
+    let
+      agents = inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system} or { };
+    in
+    map (name: agents.${name}) (
+      builtins.filter (name: agents ? ${name}) [
+        "ccusage"
+        "ccstatusline"
+        "rtk"
+        "agent-browser"
+        "terminal-use"
+        "ck"
+        "openspec"
+        "jscpd"
+        "chatgpt"
+        "workmux"
+      ]
+    )
+  );
   # Point rust-analyzer/clippy at the stdlib source
   home.sessionVariables.RUST_SRC_PATH = "${pkgs.rustPlatform.rustLibSrc}";
 
