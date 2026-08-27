@@ -82,7 +82,6 @@
         procs
         ansible.out
         #qemu_kvm
-        tpm2-tools
 
         # Cross-platform GUI apps (moved from Linux-only)
         keepassxc
@@ -178,6 +177,7 @@
         fwupd # Firmware update daemon (Linux-only)
         gparted # Disk partitioning GUI (Linux-only)
         pciutils # PCI utilities (mostly Linux-specific)
+        tpm2-tools # TPM 2.0 工具,meta.platforms 只有 Linux
       ];
   };
 
