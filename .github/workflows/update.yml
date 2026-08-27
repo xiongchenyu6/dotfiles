@@ -1,0 +1,237 @@
+# 级联更新的中间一层:nur-packages 动了 -> 这里只 bump xiongchenyu6 这一个 input
+# -> eval 所有主机做门禁 -> 自动合并 -> 通知 AutoLifeRobot/nixos。
+#
+# 只更新必须的:这里刻意不做全量 nix flake update。nixpkgs 等上游由
+# nur-packages 的 daily update 负责,级联下来时会随 xiongchenyu6 一起到位。
+name: Cascade update from nur-packages
+
+on:
+  # 上游 nur-packages 合并完自己的更新后打过来的
+  repository_dispatch:
+    types: [nur-packages-updated]
+  workflow_dispatch:
+  schedule:
+    # 23:00 UTC,排在 nur-packages 的 22:00 之后。dispatch 丢了时的兜底,
+    # 上游没动就是空跑,不会开 PR。
+    - cron: "0 23 * * *"
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+
+concurrency:
+  group: cascade-update
+  cancel-in-progress: false
+
+jobs:
+  # 只在这里解析一次上游版本,产物给后面所有 job 用。分开跑会各自解析,
+  # 上游若在两次之间又推了一版,门禁验的就不是最终合并的那份 lock。
+  update:
+    runs-on: ubuntu-latest
+    outputs:
+      changed: ${{ steps.update.outputs.changed }}
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - uses: cachix/install-nix-action@v30
+        with:
+          extra_nix_config: |
+            experimental-features = nix-command flakes
+            access-tokens = github.com=${{ secrets.GITHUB_TOKEN }}
+
+      - name: Bump the upstream input
+        id: update
+        run: |
+          set -Eeuo pipefail
+          nix flake update xiongchenyu6
+          if git diff --quiet flake.lock; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            echo "flake.lock 未变化,上游没有新提交。"
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+            git --no-pager diff --stat flake.lock
+          fi
+
+      - uses: actions/upload-artifact@v4
+        if: steps.update.outputs.changed == 'true'
+        with:
+          name: flake-lock
+          path: flake.lock
+          retention-days: 1
+
+  # 门禁。构建整机在 GitHub runner 上装不下(单机闭包 70+ GiB),所以求值到
+  # drvPath 为止 —— 足以抓到 input 升级最常见的坏法:选项被删、属性改名、
+  # 模块签名变更。一台失败不早退,一次把所有坏的主机报全。
+  eval-nixos:
+    needs: update
+    if: needs.update.outputs.changed == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/download-artifact@v4
+        with:
+          name: flake-lock
+      - uses: cachix/install-nix-action@v30
+        with:
+          extra_nix_config: |
+            experimental-features = nix-command flakes
+            access-tokens = github.com=${{ secrets.GITHUB_TOKEN }}
+
+      - name: Evaluate every NixOS host
+        run: |
+          set -Eeuo pipefail
+          hosts=$(nix eval --raw .#nixosConfigurations \
+            --apply 'cs: builtins.concatStringsSep " " (builtins.attrNames cs)')
+          echo "主机: $hosts"
+          failed=""
+          for h in $hosts; do
+            echo "::group::eval $h"
+            if nix eval --raw ".#nixosConfigurations.$h.config.system.build.toplevel.drvPath"; then
+              echo
+            else
+              failed="$failed $h"
+            fi
+            echo "::endgroup::"
+          done
+          if [ -n "$failed" ]; then
+            echo "::error::这些主机求值失败:$failed"
+            exit 1
+          fi
+
+  # darwin 配置在 Linux 上求值不了(input 缺 darwin 平台的包),得用真 macOS
+  # runner。本仓库是公开的,macos runner 免费。
+  eval-darwin:
+    needs: update
+    if: needs.update.outputs.changed == 'true'
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/download-artifact@v4
+        with:
+          name: flake-lock
+      - uses: cachix/install-nix-action@v30
+        with:
+          extra_nix_config: |
+            experimental-features = nix-command flakes
+            access-tokens = github.com=${{ secrets.GITHUB_TOKEN }}
+
+      - name: Evaluate every darwin host
+        run: |
+          set -Eeuo pipefail
+          hosts=$(nix eval --raw .#darwinConfigurations \
+            --apply 'cs: builtins.concatStringsSep " " (builtins.attrNames cs)')
+          echo "主机: $hosts"
+          failed=""
+          for h in $hosts; do
+            echo "::group::eval $h"
+            if nix eval --raw ".#darwinConfigurations.$h.config.system.build.toplevel.drvPath"; then
+              echo
+            else
+              failed="$failed $h"
+            fi
+            echo "::endgroup::"
+          done
+          if [ -n "$failed" ]; then
+            echo "::error::这些主机求值失败:$failed"
+            exit 1
+          fi
+
+  merge:
+    needs: [update, eval-nixos, eval-darwin]
+    if: needs.update.outputs.changed == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+      - uses: actions/download-artifact@v4
+        with:
+          name: flake-lock
+
+      - uses: peter-evans/create-pull-request@v8
+        id: cpr
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          branch: automation/cascade-update
+          base: main
+          delete-branch: true
+          commit-message: "chore: bump xiongchenyu6 (nur-packages)"
+          title: "chore: cascade update from nur-packages"
+          body: |
+            上游 `xiongchenyu6/nur-packages` 有新提交,只 bump 了 `xiongchenyu6`
+            这一个 input,其余 input 未动。
+
+            门禁:全部 nixosConfigurations 与 darwinConfigurations 求值通过。
+            求值到 `drvPath` 为止,不构建 —— GitHub runner 放不下整机闭包。
+          labels: |
+            dependencies
+            automated
+
+      - name: Merge the update
+        if: steps.cpr.outputs.pull-request-number != ''
+        run: gh pr merge "$PR" --squash --delete-branch
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR: ${{ steps.cpr.outputs.pull-request-number }}
+
+      # 级联下一跳。GITHUB_TOKEN 按设计无法触发别的仓库,所以这里必须用 PAT。
+      # 没配 CASCADE_TOKEN 时跳过而不是失败 —— 下游 cron 兜底会捡起来。
+      - name: Notify AutoLifeRobot/nixos
+        if: steps.cpr.outputs.pull-request-number != ''
+        run: |
+          set -Eeuo pipefail
+          if [ -z "${GH_TOKEN:-}" ]; then
+            echo "::warning::未配置 CASCADE_TOKEN,跳过级联通知,下游靠 cron 兜底。"
+            exit 0
+          fi
+          gh api repos/AutoLifeRobot/nixos/dispatches \
+            -f event_type=dotfiles-updated
+          echo "已通知 AutoLifeRobot/nixos"
+        env:
+          GH_TOKEN: ${{ secrets.CASCADE_TOKEN }}
+
+  # 这条链自己合并自己的成果,不主动说就没人知道它坏了。失败时只留一个 issue,
+  # 下次绿了自动关掉,免得一个月失败攒出三十个 issue。
+  report:
+    needs: [update, eval-nixos, eval-darwin, merge]
+    if: >-
+      always() && (needs.update.result == 'failure'
+      || needs.update.outputs.changed == 'true')
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      TITLE: "Cascade update from nur-packages is failing"
+    steps:
+      - name: Report failure
+        if: contains(needs.*.result, 'failure')
+        run: |
+          set -Eeuo pipefail
+          run_url="$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
+          existing=$(gh issue list --repo "$GITHUB_REPOSITORY" --label automation --state open \
+            --search "in:title $TITLE" --json number --jq '.[0].number // empty')
+          if [ -n "$existing" ]; then
+            gh issue comment "$existing" --repo "$GITHUB_REPOSITORY" --body "又失败了:$run_url"
+          else
+            gh issue create --repo "$GITHUB_REPOSITORY" --title "$TITLE" \
+              --label automation --label dependencies \
+              --body "nur-packages 级联下来的更新没能通过门禁。
+
+          Run: $run_url
+
+          门禁是对全部主机求值,所以这通常意味着上游某个变更把某台主机的配置弄坏了,
+          而不是 workflow 本身有问题。下次跑绿时这个 issue 会自动关闭。"
+          fi
+
+      - name: Close the failure issue
+        if: "!contains(needs.*.result, 'failure')"
+        run: |
+          set -Eeuo pipefail
+          gh issue list --repo "$GITHUB_REPOSITORY" --label automation --state open \
+            --search "in:title $TITLE" --json number --jq '.[].number' \
+          | while read -r n; do
+              gh issue close "$n" --repo "$GITHUB_REPOSITORY" \
+                --comment "又绿了:$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
+            done
