@@ -406,7 +406,6 @@ in
       (with pkgs; [
         # Linux-only GUI/desktop
         aspell
-        antigravity-ide
         kiro
         aspellDicts.en
         supabase-cli
@@ -432,7 +431,12 @@ in
         # kdePackages.wayqt
         # kdePackages.qtstyleplugin-kvantum
         feishu-lark
-        feishu
+        # 原生 Wayland 启动:XWayland 下 wtype(voxtype 语音输入)打中文会因
+        # xwayland-satellite 不转发临时 keymap 而变成数字;enable-wayland-ime
+        # 让 fcitx5 走 text-input-v3
+        (feishu.override {
+          commandLineArgs = "--ozone-platform-hint=auto --enable-wayland-ime --wayland-text-input-version=3";
+        })
         android-studio
         #opengl-driver
         libsecret
