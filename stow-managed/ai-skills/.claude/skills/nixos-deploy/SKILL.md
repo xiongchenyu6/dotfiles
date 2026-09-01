@@ -19,17 +19,17 @@ description: dotfiles 仓库(个人主机)的 NixOS/darwin 部署、远程构建
 
 ## 部署流程
 
-1. **先求值再切换**——切换前必须确认能构建,别让用户拿密码去试错:
-   ```bash
-   nix build .#nixosConfigurations.<host>.config.system.build.toplevel --no-link
-   ```
+1. **不要单独先求值**——直接 `nixos-rebuild switch`,求值失败它自己会停,
+   不会切到坏配置;单独跑 `nix build ...toplevel` 纯属浪费时间(用户明确要求)
 2. 本机切换需要 sudo,让用户自己跑(提示用 `! ` 前缀在会话内执行):
    ```bash
    sudo nixos-rebuild switch --flake .#<host>
    ```
-3. 远程主机直接推:
+3. 远程主机直接推线上;大闭包主机(CUDA 等)加 `--build-host` 在目标机上构建,
+   避免把几十 GB 闭包拉到本地:
    ```bash
-   nixos-rebuild switch --flake .#<host> --target-host root@<host名>
+   nixos-rebuild switch --flake .#<host> --target-host root@<host名> \
+     --build-host root@<host名> --use-substitutes
    ```
    SSH 主机名优先用 ssh config 里的名字,不用裸 IP
 4. macOS: `darwin-rebuild switch --flake .#office-mac`(整机求值在 Linux 上
