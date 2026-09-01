@@ -1,0 +1,14 @@
+# 全拼方案定制:启用万象 LTS 语法模型(octagram)
+# 模型文件 wanxiang-lts-zh-hans.gram 由 Nix 的 rime-frost 包提供(flake input rime-wanxiang-gram)
+# 依赖 librime 编译了 octagram 插件(nixpkgs 当前默认已带)
+patch:
+  grammar:
+    language: wanxiang-lts-zh-hans
+    non_collocation_penalty: -4
+    collocation_max_length: 5
+    collocation_min_length: 2
+    collocation_penalty: -14
+  # 结合上文语境调整候选排序,配合语法模型使用
+  "translator/contextual_suggestions": true
+  "translator/max_homophones": 4
+  "translator/max_homographs": 2

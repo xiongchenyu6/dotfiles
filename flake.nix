@@ -128,6 +128,12 @@
       flake = false;
     };
 
+    # 万象 LTS 语法模型(octagram),整句/长句准确率优于自带的 zh-moqi
+    rime-wanxiang-gram = {
+      url = "file+https://github.com/amzxyz/RIME-LMDG/releases/download/LTS/wanxiang-lts-zh-hans.gram";
+      flake = false;
+    };
+
     hermes-agent = {
       url = "github:NousResearch/hermes-agent";
       inputs = {
