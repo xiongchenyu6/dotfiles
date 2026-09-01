@@ -98,6 +98,8 @@ in
               $out/share/rime-data/simplified.trime.yaml \
               $out/share/rime-data/*.md \
               $out/share/rime-data/LICENSE 2>/dev/null || true
+            # 万象语法模型,rime_frost.custom.yaml 里 grammar.language 指向它
+            cp ${inputs.rime-wanxiang-gram} $out/share/rime-data/wanxiang-lts-zh-hans.gram
           '';
           record_screen =
             if prev.stdenv.hostPlatform.isLinux then
