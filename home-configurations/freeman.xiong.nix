@@ -97,6 +97,7 @@ in
     "api-keys/Github_Access_Token" = { };
     "api-keys/SLACK_BOT_TOKEN" = { };
     "api-keys/SLACK_TEAM_ID" = { };
+    "api-keys/OPENAI_API_KEY" = { };
   };
 
   # Use sops template for environment variables - much cleaner!
@@ -106,6 +107,8 @@ in
       GITHUB_PERSONAL_ACCESS_TOKEN=${config.sops.placeholder."api-keys/Github_Access_Token"}
       SLACK_BOT_TOKEN=${config.sops.placeholder."api-keys/SLACK_BOT_TOKEN"}
       SLACK_TEAM_ID=${config.sops.placeholder."api-keys/SLACK_TEAM_ID"}
+      # codex CLI 的 api-key 模式只认环境变量,不读 ~/.codex/auth.json
+      OPENAI_API_KEY=${config.sops.placeholder."api-keys/OPENAI_API_KEY"}
     '';
     path = "${config.home.homeDirectory}/.config/environment.d/50-api-keys.conf";
     mode = "600";
