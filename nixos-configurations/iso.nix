@@ -4,6 +4,7 @@
   pkgs,
   lib,
   modulesPath,
+  shares,
   ...
 }:
 {
@@ -17,6 +18,30 @@
     zfs = lib.mkForce false;
     bcachefs = true;
   };
+
+  # **装机介质必须能远程进。**
+  # 不开 sshd 的话，装机全程只能趴在物理机前一个字一个字敲——分区、看日志、
+  # 排错都得手打，出了问题连日志都拷不出来。开了之后插上网线/连上 WiFi 就能
+  # 从工位 SSH 进去，装机器本身照常在屏幕上跑。
+  #
+  # 公钥来源和 nixos-modules/root.nix 同一个（shares），不另写一份——两处各自
+  # 维护迟早会分叉，而分叉的那一半正好是救援时要用的。
+  services.openssh = {
+    enable = true;
+    settings = {
+      PermitRootLogin = "prohibit-password";
+      PasswordAuthentication = false;
+    };
+  };
+  users.users.root.openssh.authorizedKeys.keys = [
+    shares.users."freeman.xiong".public-key
+    shares.users."freeman.xiong".yubikey
+  ];
+  # live ISO 的默认用户，图形会话就是它——同样铺上钥匙，免得只能用 root。
+  users.users.nixos.openssh.authorizedKeys.keys = [
+    shares.users."freeman.xiong".public-key
+    shares.users."freeman.xiong".yubikey
+  ];
 
   nixpkgs.hostPlatform = "x86_64-linux";
 
