@@ -16,7 +16,10 @@
 # 三个国内源的实测延迟与取舍见 nixos-modules/cn.nix。
 { lib, ... }:
 {
-  imports = [ ./iso.nix ];
+  imports = [
+    ./iso.nix
+    ../nixos-modules/calamares-no-manual.nix
+  ];
 
   nix.settings = {
     substituters = lib.mkForce [
