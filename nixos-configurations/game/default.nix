@@ -9,6 +9,9 @@
   shares,
   ...
 }:
+let
+  codexPackage = inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.codex;
+in
 {
   imports = with inputs; [
     ./hardware-configuration.nix
@@ -655,9 +658,9 @@
               WorkingDirectory = "%h";
               ExecStartPre = "${pkgs.writeShellScript "codex-remote-control-pre-start" ''
                 mkdir -p "$HOME/.codex"
-                ${pkgs.codex}/bin/codex features enable remote_control
+                ${codexPackage}/bin/codex features enable remote_control
               ''}";
-              ExecStart = "${pkgs.codex}/bin/codex remote-control";
+              ExecStart = "${codexPackage}/bin/codex remote-control";
               Restart = "always";
               RestartSec = 5;
               StandardOutput = "append:%h/.codex/remote-control.log";
