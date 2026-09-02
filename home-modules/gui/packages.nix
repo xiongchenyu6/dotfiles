@@ -192,7 +192,7 @@
       settings = {
         fonts = {
           family = "Hack Nerd Font";
-          size = 10;
+          size = 16;
         };
         cursor = {
           shape = "beam";
