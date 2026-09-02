@@ -180,8 +180,8 @@ in
       "Mod+Shift+Slash".action = show-hotkey-overlay;
 
       "Mod+T" = {
-        action = spawn "${pkgs.ghostty}/bin/ghostty";
-        hotkey-overlay.title = "Terminal (ghostty)";
+        action = spawn "${pkgs.rio}/bin/rio";
+        hotkey-overlay.title = "Terminal (rio)";
       };
       "Mod+D" = {
         action = spawn noctalia "msg" "panel-toggle" "launcher";

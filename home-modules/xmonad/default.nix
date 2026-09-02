@@ -106,7 +106,7 @@
         kb-primary-paste = "Control+V,Shift+Insert";
         kb-secondary-paste = "Control+v,Insert";
       };
-      terminal = "ghostty";
+      terminal = "rio";
     };
 
     xmobar = {
@@ -287,8 +287,6 @@
       vSync = true;
 
       opacityRules = [
-        "85:class_g = 'kitty'"
-        "95:class_g = 'Alacritty'"
         "90:class_g = 'Wine'"
         "90:class_g = 'Thunderbird'"
       ];

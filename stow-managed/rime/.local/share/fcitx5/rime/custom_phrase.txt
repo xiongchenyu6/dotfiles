@@ -76,7 +76,7 @@ XWayland	xwayland
 PipeWire	pipewire
 WirePlumber	wireplumber
 fcitx5	fcitx
-Ghostty	ghostty
+Rio	rio
 Noctalia	noctalia
 Hyprland	hyprland
 XMonad	xmonad
