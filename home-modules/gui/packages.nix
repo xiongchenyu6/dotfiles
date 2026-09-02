@@ -195,7 +195,7 @@
           size = 10;
         };
         cursor = {
-          shape = "bar";
+          shape = "beam";
           blinking = true;
         };
         window = {
