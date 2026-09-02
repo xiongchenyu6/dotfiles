@@ -193,6 +193,21 @@
         fonts = {
           family = "Hack Nerd Font";
           size = 16;
+          emoji.family = "Noto Color Emoji";
+          # rio 内置 Symbols Nerd Font Mono 做符号回退，图标会被压成单格；
+          # 把 Nerd Font 的两段私有区钉回 Hack Nerd Font 本身。
+          symbol-map = [
+            {
+              start = "E000";
+              end = "F8FF";
+              font-family = "Hack Nerd Font";
+            }
+            {
+              start = "F0000";
+              end = "FFFFD";
+              font-family = "Hack Nerd Font";
+            }
+          ];
         };
         cursor = {
           shape = "beam";
