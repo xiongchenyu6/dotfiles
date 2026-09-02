@@ -125,7 +125,7 @@ let
         "Cursor"
         "VS Code"
         "Zed"
-        "Kiro"
+        "pi"
         "Antigravity"
         "Copilot"
         "Claude"
@@ -407,7 +407,6 @@ in
       (with pkgs; [
         # Linux-only GUI/desktop
         aspell
-        kiro
         aspellDicts.en
         supabase-cli
         camber

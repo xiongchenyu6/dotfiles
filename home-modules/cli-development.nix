@@ -46,6 +46,7 @@
         "jscpd"
         "chatgpt"
         "workmux"
+        "pi"
       ]
     )
   );
