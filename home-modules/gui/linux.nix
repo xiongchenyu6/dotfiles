@@ -395,6 +395,7 @@ in
       [output]
       mode = "type"
       fallback_to_clipboard = true
+      shift_enter_newlines = true
       driver_order = ["wtype", "dotool", "ydotool", "clipboard"]
 
       [output.notification]
