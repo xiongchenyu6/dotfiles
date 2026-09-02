@@ -187,21 +187,26 @@
     };
   }
   // lib.optionalAttrs pkgs.stdenv.hostPlatform.isLinux {
-    ghostty = {
+    rio = {
       enable = true;
-      enableZshIntegration = true;
-      systemd.enable = true;
       settings = {
-        font-family = "Hack Nerd Font";
-        font-size = 10;
-        cursor-style = "bar";
-        cursor-style-blink = true;
-        background-opacity = 0.9;
-        working-directory = "inherit";
-        window-inherit-working-directory = true;
-        tab-inherit-working-directory = true;
-        split-inherit-working-directory = true;
-        shell-integration = "zsh";
+        fonts = {
+          family = "Hack Nerd Font";
+          size = 10;
+        };
+        cursor = {
+          shape = "bar";
+          blinking = true;
+        };
+        window = {
+          opacity = 0.9;
+          blur = false;
+        };
+        shell = {
+          program = "zsh";
+          args = [ ];
+        };
+        confirm-before-quit = false;
       };
     };
   };

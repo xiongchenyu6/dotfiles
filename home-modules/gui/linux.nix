@@ -76,7 +76,7 @@ let
         "PulseAudio"
         "fcitx5"
         "Rime"
-        "Ghostty"
+        "Rio"
         "wl-clipboard"
         "wl-copy"
         "wl-paste"

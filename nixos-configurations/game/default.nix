@@ -211,7 +211,7 @@ in
       inherit hostName;
       # game is a local workstation, not part of the autolife.ai inner zone.
       # Unsetting the domain keeps gethostname() == $HOST (short name) so
-      # ghostty's OSC 7 isLocal() check accepts cwd reports from the shell.
+      # the terminal's OSC 7 isLocal() check accepts cwd reports from the shell.
       domain = null;
       nameservers = [ "1.1.1.1" ];
 

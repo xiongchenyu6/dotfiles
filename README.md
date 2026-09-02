@@ -60,7 +60,7 @@ Create your own flake and add this repo as an input. **Mirror `inputs.follows` f
     srvos.url        = "github:nix-community/srvos";
     ez-configs.url   = "github:ehllie/ez-configs";
     nixos-hardware.url = "github:NixOS/nixos-hardware/master";
-    # …whatever else upstream needs (niri, ghostty, lanzaboote, etc. — see this repo's flake.nix)
+    # …whatever else upstream needs (niri, lanzaboote, etc. — see this repo's flake.nix)
 
     dotfiles = {
       url = "github:xiongchenyu6/dotfiles";

@@ -21,7 +21,7 @@
   };
   environment = {
     systemPackages = lib.optionals pkgs.stdenv.hostPlatform.isLinux [
-      pkgs.ghostty.terminfo
+      pkgs.rio.terminfo
     ];
 
     etc = lib.mkIf pkgs.stdenv.hostPlatform.isLinux {
@@ -85,14 +85,12 @@
         "https://xddxdd.cachix.org"
         "https://xiongchenyu6.cachix.org"
         "https://hyprland.cachix.org"
-        "https://ghostty.cachix.org"
         "https://noctalia.cachix.org"
       ];
       trusted-public-keys = [
         "xddxdd.cachix.org-1:ay1HJyNDYmlSwj5NXQG065C8LfoqqKaTNCyzeixGjf8="
         "xiongchenyu6.cachix.org-1:mpOGlINmMwc2gb3xb1BjVmhzR8BYWzWYlg4xlTiBr7Q="
         "hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc="
-        "ghostty.cachix.org-1:QB389yTa6gTyneehvqG58y0WnHjQOqgnA+wBnpWWxns="
         "noctalia.cachix.org-1:pCOR47nnMEo5thcxNDtzWpOxNFQsBRglJzxWPp3dkU4="
       ];
     };
