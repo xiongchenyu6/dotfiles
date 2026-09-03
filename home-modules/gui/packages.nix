@@ -16,6 +16,7 @@
         inputs.xiongchenyu6.packages.${pkgs.stdenv.hostPlatform.system}.cc-switch
         inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.aperant
         inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.agentsview
+        kitty.kitten # 独立的 kitten 二进制（icat/ssh/clipboard 等小工具），不装 kitty 本体
         bitwarden-desktop
         bitwarden-cli
         discord
