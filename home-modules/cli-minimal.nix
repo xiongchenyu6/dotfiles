@@ -7,7 +7,6 @@
   ...
 }:
 let
-  isRoot = config.home.username == "root";
   hasNixOSTags = osConfig ? system && osConfig.system ? nixos && osConfig.system.nixos ? tags;
   hostName =
     if osConfig ? networking && osConfig.networking ? hostName then
@@ -31,9 +30,9 @@ in
     ./neovim.nix
   ];
 
-  sops.secrets."wakatime/api_key" = lib.mkIf (!isRoot && !isVps) { };
+  sops.secrets."wakatime/api_key" = lib.mkIf (config.dotfiles.personalSecrets && !isVps) { };
 
-  sops.templates."wakatime-cfg" = lib.mkIf (!isRoot && !isVps) {
+  sops.templates."wakatime-cfg" = lib.mkIf (config.dotfiles.personalSecrets && !isVps) {
     content = ''
       [settings]
       debug         = false
