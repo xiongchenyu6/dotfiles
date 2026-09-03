@@ -472,23 +472,6 @@ in
         pavucontrol
         voxtypePackage
         whisperCppPackage
-
-        # 成像/磁盘工具
-        ddrescue
-        smartmontools
-        hdparm
-        util-linux
-        coreutils
-
-        # NTFS 只读挂载（可选但建议）
-        ntfs3g
-
-        # 取证（命令行）
-        sleuthkit
-
-        # 恢复/雕刻（PhotoRec 在 testdisk 包里）
-        testdisk
-        autopsy
       ])
       ++ lib.optionals pkgs.stdenv.hostPlatform.isLinux (
         with pkgs;
