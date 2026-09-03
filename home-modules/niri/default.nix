@@ -10,6 +10,33 @@ let
   noctalia = "${noctaliaPackage}/bin/noctalia";
   voxtypePackage = inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.voxtype;
 
+  # Mod+T 从当前聚焦终端所在目录打开新 rio 窗口。compositor 起的是全新进程，
+  # 本身不知道目录，所以先问 niri 聚焦窗口的 pid，沿子进程链走到最深的那个
+  # （终端 -> shell -> 前台程序），读它的 /proc cwd 再传给 rio。
+  rioHere = pkgs.writeShellApplication {
+    name = "rio-here";
+    runtimeInputs = [
+      config.programs.niri.package
+      pkgs.jq
+      pkgs.procps
+      pkgs.coreutils
+      pkgs.rio
+    ];
+    text = ''
+      pid=$(niri msg --json focused-window 2>/dev/null | jq -r '.pid // empty')
+      dir=""
+      if [ -n "$pid" ]; then
+        cur=$pid
+        while child=$(pgrep -P "$cur" -n 2>/dev/null) && [ -n "$child" ]; do
+          cur=$child
+        done
+        dir=$(readlink "/proc/$cur/cwd" 2>/dev/null || true)
+      fi
+      [ -d "$dir" ] || dir=$HOME
+      exec rio --working-dir "$dir"
+    '';
+  };
+
   # niri's `spawn-at-startup` runs while niri is still initialising — its IPC
   # server (and therefore NIRI_SOCKET) is not yet exported into spawned
   # children's environments. Without NIRI_SOCKET, noctalia falls back to the
@@ -180,8 +207,8 @@ in
       "Mod+Shift+Slash".action = show-hotkey-overlay;
 
       "Mod+T" = {
-        action = spawn "${pkgs.rio}/bin/rio";
-        hotkey-overlay.title = "Terminal (rio)";
+        action = spawn "${rioHere}/bin/rio-here";
+        hotkey-overlay.title = "Terminal (rio, 继承当前目录)";
       };
       "Mod+D" = {
         action = spawn noctalia "msg" "panel-toggle" "launcher";
