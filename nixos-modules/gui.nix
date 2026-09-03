@@ -51,12 +51,8 @@
       noto-fonts
       noto-fonts-cjk-sans
       noto-fonts-cjk-serif
-      sarasa-gothic # 更纱黑体
-      wqy_microhei
-      wqy_zenhei
+      sarasa-gothic # 更纱黑体，rio 里的中文回退
       nerd-fonts.hack
-      # jetbrains-mono  # Temporarily disabled: picosvg test failure in nixpkgs
-      font-awesome
     ];
   };
 
