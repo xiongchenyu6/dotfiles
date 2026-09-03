@@ -25,6 +25,7 @@ in
 {
   imports = [
     inputs.niri.nixosModules.niri
+    ./lan-mouse.nix
   ];
 
   programs.niri = {
