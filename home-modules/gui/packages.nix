@@ -190,24 +190,62 @@
     rio = {
       enable = true;
       settings = {
+        # rio 自带的 xterm-rio terminfo 声明只有 8 色，zsh 的 %F{8} 之类
+        # 直接不输出，自动补全的灰色会变白；改回通用的 256 色 TERM。
+        env-vars = [ "TERM=xterm-256color" ];
         fonts = {
           family = "Hack Nerd Font";
           size = 16;
-          emoji.family = "Noto Color Emoji";
-          # rio 内置 Symbols Nerd Font Mono 做符号回退，图标会被压成单格；
-          # 把 Nerd Font 的两段私有区钉回 Hack Nerd Font 本身。
-          symbol-map = [
-            {
-              start = "E000";
-              end = "F8FF";
-              font-family = "Hack Nerd Font";
-            }
-            {
-              start = "F0000";
-              end = "FFFFD";
-              font-family = "Hack Nerd Font";
-            }
-          ];
+          # rio 的 emoji 回退走 fontconfig 单字符查找，会把 ☁️ 交给 CJK
+          # 字体、😀 交给 FontAwesome；把 emoji 区段显式钉到 Noto Color Emoji。
+          symbol-map =
+            map
+              (r: {
+                inherit (r) start end;
+                font-family = "Noto Color Emoji";
+              })
+              [
+                {
+                  start = "2600";
+                  end = "2604";
+                }
+                {
+                  start = "26A0";
+                  end = "26A1";
+                }
+                {
+                  start = "2705";
+                  end = "2705";
+                }
+                {
+                  start = "2728";
+                  end = "2728";
+                }
+                {
+                  start = "274C";
+                  end = "274C";
+                }
+                {
+                  start = "2764";
+                  end = "2764";
+                }
+                {
+                  start = "1F300";
+                  end = "1F64F";
+                }
+                {
+                  start = "1F680";
+                  end = "1F6FF";
+                }
+                {
+                  start = "1F900";
+                  end = "1F9FF";
+                }
+                {
+                  start = "1FA70";
+                  end = "1FAFF";
+                }
+              ];
         };
         cursor = {
           shape = "beam";
