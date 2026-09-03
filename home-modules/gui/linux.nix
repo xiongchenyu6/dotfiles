@@ -287,7 +287,8 @@ let
     }
   ];
   voicePromptTerms = lib.unique (lib.concatMap (group: lib.take 14 group.terms) voiceTermGroups);
-  privateVoiceTermsPath = if isRoot then "/dev/null" else config.sops.secrets."voxtype/terms".path;
+  privateVoiceTermsPath =
+    if config.dotfiles.personalSecrets then config.sops.secrets."voxtype/terms".path else "/dev/null";
   voicePrompt = "中英混合编程口述。保留英文项目名、命令名、文件名和技术术语。常见公开术语包括: ${lib.concatStringsSep " " voicePromptTerms}.";
   voicePromptRuntime = ''
     build_voice_prompt() {
@@ -519,9 +520,11 @@ in
 
   # Split out of common.yaml: the term list is prose, and at ~2.5kB it was a
   # quarter of that file's plaintext, so every unrelated secret edit churned it.
-  sops.secrets."voxtype/terms" = lib.mkIf (pkgs.stdenv.hostPlatform.isLinux && !isRoot) {
-    sopsFile = ../../secrets/voxtype-terms.yaml;
-  };
+  sops.secrets."voxtype/terms" =
+    lib.mkIf (pkgs.stdenv.hostPlatform.isLinux && config.dotfiles.personalSecrets)
+      {
+        sopsFile = ../../secrets/voxtype-terms.yaml;
+      };
 
   systemd.user.services.voxtype = lib.mkIf pkgs.stdenv.hostPlatform.isLinux {
     Unit = {

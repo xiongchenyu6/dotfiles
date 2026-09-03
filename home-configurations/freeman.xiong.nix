@@ -29,6 +29,8 @@ let
   enableHomeSops = (isDarwin || hasGuiTag) && !isVps;
 in
 {
+  dotfiles.personalSecrets = true;
+
   imports =
     # Import mac-app-util only on macOS for proper application linking
     (lib.optionals isDarwin [
