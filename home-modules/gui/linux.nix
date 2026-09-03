@@ -29,8 +29,10 @@ let
       pkgs.whisper-cpp;
   whisperCppModel = "large-v3-turbo-q5_0";
   whisperCppModelDir = "$HOME/.local/share/whisper-cpp/models";
-  agentsviewPackage = inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.agentsview;
-  voxtypePackage = inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.voxtype;
+  llmAgentPackages = inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system};
+  agentsviewPackage = llmAgentPackages.agentsview;
+  claudeDesktopPackage = llmAgentPackages.claude-desktop;
+  voxtypePackage = llmAgentPackages.voxtype;
   voiceTermGroups = [
     {
       name = "Nix / Home Manager";
@@ -462,7 +464,7 @@ in
         # tf2pulumi
         #localstack
         desktop-file-utils
-        #inputs.claude-desktop.packages.${system}.claude-desktop-with-fhs
+        claudeDesktopPackage
         gnome-software
         gws
         google-cloud-sdk
@@ -580,6 +582,24 @@ in
   # entry of the same name wins per the XDG autostart spec, so Hidden=true
   # removes it and leaves fcitx5-daemon.service alone.
   xdg.configFile = lib.mkIf pkgs.stdenv.hostPlatform.isLinux {
+    "fcitx5/profile".text = ''
+      [Groups/0]
+      Name=Default
+      Default Layout=us
+      DefaultIM=rime
+
+      [Groups/0/Items/0]
+      Name=keyboard-us
+      Layout=
+
+      [Groups/0/Items/1]
+      Name=rime
+      Layout=
+
+      [GroupOrder]
+      0=Default
+    '';
+
     "autostart/org.fcitx.Fcitx5.desktop".text = ''
       [Desktop Entry]
       Type=Application

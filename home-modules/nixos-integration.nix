@@ -21,8 +21,6 @@
       vault
       kmon
       #gitbutler
-      unityhub
-      unity-cli
       # anydesk  # upstream 404: 8.0.2 tarball removed from AnyDesk CDN; re-enable after a version bump
       v4l-utils
       pcsc-tools

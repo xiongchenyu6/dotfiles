@@ -106,14 +106,6 @@
         flake-parts.follows = "flake-parts";
       };
     };
-    #claude
-    claude-desktop = {
-      url = "github:k3d3/claude-desktop-linux-flake";
-      inputs = {
-        nixpkgs.follows = "nixpkgs";
-        flake-utils.follows = "flake-utils";
-      };
-    };
     llm-agents = {
       url = "github:numtide/llm-agents.nix";
       inputs = {

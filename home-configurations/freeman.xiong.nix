@@ -13,8 +13,6 @@ let
   # If osConfig doesn't have system.nixos, we're likely on Darwin
   hasNixOSTags = osConfig ? system && osConfig.system ? nixos && osConfig.system.nixos ? tags;
   hasGuiTag = hasNixOSTags && (builtins.elem "gui" osConfig.system.nixos.tags);
-  hasNvidiaTag = hasNixOSTags && (builtins.elem "nvidia" osConfig.system.nixos.tags);
-  hasNvidiaOffload = hasNixOSTags && (osConfig.hardware.nvidia.prime.offload.enable or false);
   isDarwin = !hasNixOSTags;
   hostName = if hasNixOSTags then osConfig.networking.hostName else "";
   isVps =
@@ -44,33 +42,14 @@ in
             ezModules.cli-development
             ezModules.gui
           ]
+        else if hasGuiTag then
+          [ ezModules.workstation ]
         else
-          (
-            if hasGuiTag then
-              [
-                ezModules.zsh
-                ezModules.cli-development
-                ezModules.gui
-                #ezModules.mpd
-                ezModules.stow-config
-                ezModules.niri
-                ezModules.tmux
-              ]
-            else
-              [
-                ezModules.zsh
-                ezModules.cli-server
-                ezModules.tmux
-              ]
-          )
-          ++ (
-            if hasNvidiaTag && !hasNvidiaOffload then
-              [
-                ezModules.nvidia
-              ]
-            else
-              [ ]
-          )
+          [
+            ezModules.zsh
+            ezModules.cli-server
+            ezModules.tmux
+          ]
       );
 
   # autolife-ops-data 的密文在 AutolifeDevOpsSkills 仓库(store 外),关掉 eval 期校验
