@@ -29,6 +29,7 @@ in
     #ezModules.falcon-sensor
     ezModules.wayland
     ezModules.openfortivpn-config
+    ezModules.sing-box-client
     ezModules.nas
     lanzaboote.nixosModules.lanzaboote
     nixos-hardware.nixosModules.lenovo-legion-16ach6h-hybrid
@@ -53,7 +54,11 @@ in
   ];
 
   sops.secrets."wireguard/game" = { };
-  sops.secrets."sing-box/HYSTERIA2_PASSWORD" = { };
+
+  my.sing-box-client = {
+    enable = true;
+    toggleUsers = [ "freeman.xiong" ];
+  };
 
   system.nixos.tags = [
     "nvidia"
@@ -145,27 +150,6 @@ in
   };
 
   systemd.services.ModemManager.enable = false;
-
-  # sing-box is an opt-in travel VPN. Keep both the service and its TUN absent
-  # at boot; pon/poff are the only normal start/stop path.
-  systemd.services.sing-box = {
-    wantedBy = lib.mkForce [ ];
-    unitConfig.X-OnlyManualStart = true;
-  };
-
-  # Let this user toggle only the sing-box unit without a password prompt.
-  security.polkit.extraConfig = ''
-    polkit.addRule(function(action, subject) {
-      if (action.id == "org.freedesktop.systemd1.manage-units" &&
-          subject.user == "freeman.xiong" &&
-          action.lookup("unit") == "sing-box.service" &&
-          (action.lookup("verb") == "start" ||
-           action.lookup("verb") == "restart" ||
-           action.lookup("verb") == "stop")) {
-        return polkit.Result.YES;
-      }
-    });
-  '';
 
   # Hardware watchdog configuration: prefer automatic reboot over staying frozen.
   systemd.settings.Manager = {
@@ -307,211 +291,6 @@ in
     };
 
   services = {
-
-    # cloudflare-warp = {
-    #   enable = true;
-    # };
-    # 声明式代理客户端(替代 v2rayA):服务默认不启动。pon 启动分流 TUN,
-    # poff 停止服务并移除 TUN。
-    sing-box = {
-      enable = true;
-      settings =
-        let
-          # Non-secret node metadata imported from
-          # ~/Downloads/karing-hy2/links.txt. All five links use the same
-          # password, which remains encrypted in SOPS instead of entering the
-          # Nix store.
-          hy2Nodes = [
-            {
-              tag = "hy2-lubancat";
-              server = "203.116.95.146";
-              serverName = "hy2-lubancat.panda.qzz.io";
-            }
-            {
-              tag = "hy2-oracle-amd-001";
-              server = "213.35.97.233";
-              serverName = "panda.qzz.io";
-            }
-            {
-              tag = "hy2-oracle-amd-002";
-              server = "213.35.117.232";
-              serverName = "panda.qzz.io";
-            }
-            {
-              tag = "hy2-sg-office";
-              server = "101.78.126.6";
-              serverName = "hy2-sg.panda.qzz.io";
-            }
-            {
-              # Lowest-priority emergency fallback: this node has the lowest
-              # latency but measured only ~150 KB/s and had the 16:00 outage.
-              tag = "hy2-jtti-sg";
-              server = "45.194.18.75";
-              serverName = "hy2-jtti-sg.panda.qzz.io";
-            }
-          ];
-        in
-        {
-          log.level = "warn";
-          dns = {
-            servers = [
-              {
-                # DHCP discovery times out on some travel routers. Use AliDNS
-                # directly for mainland domains instead of inheriting fake-IP DNS.
-                type = "https";
-                tag = "dns-direct";
-                server = "223.5.5.5";
-                detour = "direct";
-                tls.server_name = "dns.alidns.com";
-              }
-              {
-                type = "https";
-                tag = "dns-proxy";
-                server = "1.1.1.1";
-                detour = "proxy";
-                tls.server_name = "cloudflare-dns.com";
-              }
-            ];
-            rules = [
-              {
-                # Never let a mainland resolver synthesize fake IPs for Claude.
-                domain_suffix = [
-                  "anthropic.com"
-                  "claude.ai"
-                  "claude.com"
-                  "claudeusercontent.com"
-                ];
-                action = "route";
-                server = "dns-proxy";
-              }
-              {
-                # Keep mainland sites fast while foreign DNS uses DoH over Hysteria2.
-                rule_set = [ "geosite-cn" ];
-                action = "route";
-                server = "dns-direct";
-              }
-            ];
-            final = "dns-proxy";
-            # This host has no public IPv6 route. Returning AAAA made Bun/Claude
-            # report IPv6 reachability failures as certificate verification errors.
-            strategy = "ipv4_only";
-            reverse_mapping = true;
-          };
-          inbounds = [
-            {
-              type = "tun";
-              tag = "tun-in";
-              interface_name = "sing-tun";
-              # Avoid the LAN, Docker, libvirt, NetBird, and WireGuard ranges.
-              address = [ "10.255.0.1/30" ];
-              stack = "system";
-              auto_route = true;
-              auto_redirect = true;
-              strict_route = true;
-            }
-          ];
-          # Clash API + metacubexd 面板:http://127.0.0.1:9090/ui
-          experimental.clash_api = {
-            external_controller = "127.0.0.1:9090";
-            external_ui = "${pkgs.metacubexd}";
-          };
-          outbounds = [
-            {
-              # Native URLTest has no bandwidth metric. Keep the measured
-              # high-quality nodes first and use a wide latency tolerance as
-              # ordered failover; an unavailable node is removed immediately.
-              type = "urltest";
-              tag = "proxy";
-              outbounds = map (node: node.tag) hy2Nodes;
-              url = "https://api.anthropic.com/";
-              interval = "15s";
-              tolerance = 2000;
-              idle_timeout = "10m";
-              interrupt_exist_connections = true;
-            }
-          ]
-          ++ map (node: {
-            type = "hysteria2";
-            inherit (node) tag server;
-            server_port = 8443;
-            password._secret = config.sops.secrets."sing-box/HYSTERIA2_PASSWORD".path;
-            tls = {
-              enabled = true;
-              # Every node uses a public Let's Encrypt certificate.
-              server_name = node.serverName;
-            };
-          }) hy2Nodes
-          ++ [
-            {
-              type = "direct";
-              tag = "direct";
-              domain_resolver = "dns-direct";
-            }
-          ];
-          route = {
-            # TUN 出站必须绑定系统检测到的默认物理接口,否则会套娃回 TUN。
-            auto_detect_interface = true;
-            # Private and mainland traffic is bypassed below; everything else
-            # uses Hysteria2 while the opt-in service is running.
-            final = "proxy";
-            rules = [
-              {
-                action = "sniff";
-              }
-              {
-                protocol = "dns";
-                action = "hijack-dns";
-              }
-              {
-                # Claude 官方网络清单中的核心服务。显式放在 CN 分流前,
-                # 避免污染 DNS、GeoIP 误判或 CDN 漂移导致偶发直连。
-                domain_suffix = [
-                  "anthropic.com"
-                  "claude.ai"
-                  "claude.com"
-                  "claudeusercontent.com"
-                ];
-                action = "route";
-                outbound = "proxy";
-              }
-              {
-                # NetBird uses RFC 6598 CGNAT addresses, which ip_is_private
-                # deliberately does not include.
-                ip_cidr = [ "100.64.0.0/10" ];
-                action = "bypass";
-                outbound = "direct";
-              }
-              {
-                ip_is_private = true;
-                action = "bypass";
-                outbound = "direct";
-              }
-              {
-                rule_set = [
-                  "geoip-cn"
-                  "geosite-cn"
-                ];
-                action = "bypass";
-                outbound = "direct";
-              }
-            ];
-            rule_set = [
-              {
-                tag = "geoip-cn";
-                type = "local";
-                format = "binary";
-                path = "${pkgs.sing-geoip}/share/sing-box/rule-set/geoip-cn.srs";
-              }
-              {
-                tag = "geosite-cn";
-                type = "local";
-                format = "binary";
-                path = "${pkgs.sing-geosite}/share/sing-box/rule-set/geosite-cn.srs";
-              }
-            ];
-          };
-        };
-    };
 
     sunshine = {
       enable = true;
