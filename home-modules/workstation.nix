@@ -13,7 +13,6 @@ in
     ./zsh.nix
     ./cli-development.nix
     ./gui
-    ./stow-config.nix
     ./niri
     ./tmux.nix
     ./lan-mouse.nix
