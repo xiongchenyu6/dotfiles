@@ -582,23 +582,26 @@ in
   # entry of the same name wins per the XDG autostart spec, so Hidden=true
   # removes it and leaves fcitx5-daemon.service alone.
   xdg.configFile = lib.mkIf pkgs.stdenv.hostPlatform.isLinux {
-    "fcitx5/profile".text = ''
-      [Groups/0]
-      Name=Default
-      Default Layout=us
-      DefaultIM=rime
+    "fcitx5/profile" = {
+      force = true;
+      text = ''
+        [Groups/0]
+        Name=Default
+        Default Layout=us
+        DefaultIM=rime
 
-      [Groups/0/Items/0]
-      Name=keyboard-us
-      Layout=
+        [Groups/0/Items/0]
+        Name=keyboard-us
+        Layout=
 
-      [Groups/0/Items/1]
-      Name=rime
-      Layout=
+        [Groups/0/Items/1]
+        Name=rime
+        Layout=
 
-      [GroupOrder]
-      0=Default
-    '';
+        [GroupOrder]
+        0=Default
+      '';
+    };
 
     "autostart/org.fcitx.Fcitx5.desktop".text = ''
       [Desktop Entry]
