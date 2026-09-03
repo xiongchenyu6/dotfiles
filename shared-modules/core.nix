@@ -20,10 +20,6 @@
     group = if (config.users.groups ? keys) then config.users.groups.keys.name else "wheel";
   };
   environment = {
-    systemPackages = lib.optionals pkgs.stdenv.hostPlatform.isLinux [
-      pkgs.rio.terminfo
-    ];
-
     etc = lib.mkIf pkgs.stdenv.hostPlatform.isLinux {
       "ppp/options".text = ''
         ipcp-accept-remote
