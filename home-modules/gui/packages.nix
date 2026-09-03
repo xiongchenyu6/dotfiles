@@ -201,7 +201,7 @@
         env-vars = [ "TERM=xterm-256color" ];
         fonts = {
           family = "Hack Nerd Font";
-          size = 16;
+          size = 14;
           # rio 的 emoji 回退走 fontconfig 单字符查找，会把 ☁️ 交给 CJK
           # 字体、😀 交给 FontAwesome；把 emoji 区段显式钉到 Noto Color Emoji。
           symbol-map =
