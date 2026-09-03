@@ -5,95 +5,106 @@
   config,
   ...
 }:
+let
+  cfg = config.dotfiles.nixAccessTokens;
+in
 {
-  nixpkgs.config = {
-    allowUnfree = true;
-    android_sdk.accept_license = true;
-    permittedInsecurePackages = [
-      "openssl-1.1.1w"
-      "libxml2-2.13.8"
-    ];
+  options.dotfiles.nixAccessTokens.enable = lib.mkOption {
+    type = lib.types.bool;
+    default = true;
+    description = "Whether to load the host Nix access token secret";
   };
 
-  sops.secrets.nixAccessTokens = {
-    mode = "0440";
-    group = if (config.users.groups ? keys) then config.users.groups.keys.name else "wheel";
-  };
-  environment = {
-    etc = lib.mkIf pkgs.stdenv.hostPlatform.isLinux {
-      "ppp/options".text = ''
-        ipcp-accept-remote
+  config = {
+    nixpkgs.config = {
+      allowUnfree = true;
+      android_sdk.accept_license = true;
+      permittedInsecurePackages = [
+        "openssl-1.1.1w"
+        "libxml2-2.13.8"
+      ];
+    };
+
+    sops.secrets.nixAccessTokens = lib.mkIf cfg.enable {
+      mode = "0440";
+      group = if (config.users.groups ? keys) then config.users.groups.keys.name else "wheel";
+    };
+    environment = {
+      etc = lib.mkIf pkgs.stdenv.hostPlatform.isLinux {
+        "ppp/options".text = ''
+          ipcp-accept-remote
+        '';
+      };
+    };
+
+    programs = {
+      zsh = {
+        enable = true;
+      };
+    };
+
+    nix = {
+      # sshServe = {
+      #   enable = true;
+      #   write = true;
+      # };
+      optimise = {
+        automatic = true;
+      };
+
+      gc = {
+        automatic = true;
+        options = "--delete-older-than 1d";
+      };
+
+      extraOptions = lib.mkIf cfg.enable ''
+        !include ${config.sops.secrets.nixAccessTokens.path}
       '';
+
+      settings = {
+        accept-flake-config = true;
+        allow-import-from-derivation = true;
+        experimental-features = [
+          "nix-command"
+          "flakes"
+          #"ca-derivations"
+          "parse-toml-timestamps"
+        ];
+        extra-substituters = [ "https://cache.numtide.com" ];
+        extra-trusted-public-keys = [
+          "niks3.numtide.com-1:DTx8wZduET09hRmMtKdQDxNNthLQETkc/yaX7M4qK0g="
+        ];
+        trusted-users = [
+          "freeman.xiong"
+          "freeman"
+          "@wheel"
+          "@admin"
+        ];
+        allowed-users = [
+          "root"
+          "freeman"
+          "freeman.xiong"
+          "@wheel"
+          "@admin"
+        ];
+        substituters = [
+          "https://xddxdd.cachix.org"
+          "https://xiongchenyu6.cachix.org"
+          "https://hyprland.cachix.org"
+          "https://noctalia.cachix.org"
+        ];
+        trusted-public-keys = [
+          "xddxdd.cachix.org-1:ay1HJyNDYmlSwj5NXQG065C8LfoqqKaTNCyzeixGjf8="
+          "xiongchenyu6.cachix.org-1:mpOGlINmMwc2gb3xb1BjVmhzR8BYWzWYlg4xlTiBr7Q="
+          "hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc="
+          "noctalia.cachix.org-1:pCOR47nnMEo5thcxNDtzWpOxNFQsBRglJzxWPp3dkU4="
+        ];
+      };
+      distributedBuilds = lib.mkDefault true;
     };
-  };
 
-  programs = {
-    zsh = {
-      enable = true;
+    time = {
+      timeZone = "Asia/Singapore";
     };
-  };
-
-  nix = {
-    # sshServe = {
-    #   enable = true;
-    #   write = true;
-    # };
-    optimise = {
-      automatic = true;
-    };
-
-    gc = {
-      automatic = true;
-      options = "--delete-older-than 1d";
-    };
-
-    extraOptions = ''
-      !include ${config.sops.secrets.nixAccessTokens.path}
-    '';
-
-    settings = {
-      accept-flake-config = true;
-      allow-import-from-derivation = true;
-      experimental-features = [
-        "nix-command"
-        "flakes"
-        #"ca-derivations"
-        "parse-toml-timestamps"
-      ];
-      extra-substituters = [ "https://cache.numtide.com" ];
-      extra-trusted-public-keys = [
-        "niks3.numtide.com-1:DTx8wZduET09hRmMtKdQDxNNthLQETkc/yaX7M4qK0g="
-      ];
-      trusted-users = [
-        "freeman.xiong"
-        "freeman"
-        "@wheel"
-        "@admin"
-      ];
-      allowed-users = [
-        "root"
-        "freeman"
-        "freeman.xiong"
-        "@wheel"
-        "@admin"
-      ];
-      substituters = [
-        "https://xddxdd.cachix.org"
-        "https://xiongchenyu6.cachix.org"
-        "https://hyprland.cachix.org"
-        "https://noctalia.cachix.org"
-      ];
-      trusted-public-keys = [
-        "xddxdd.cachix.org-1:ay1HJyNDYmlSwj5NXQG065C8LfoqqKaTNCyzeixGjf8="
-        "xiongchenyu6.cachix.org-1:mpOGlINmMwc2gb3xb1BjVmhzR8BYWzWYlg4xlTiBr7Q="
-        "hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc="
-        "noctalia.cachix.org-1:pCOR47nnMEo5thcxNDtzWpOxNFQsBRglJzxWPp3dkU4="
-      ];
-    };
-    distributedBuilds = lib.mkDefault true;
-  };
-
-  time = {
-    timeZone = "Asia/Singapore";
   };
 }
