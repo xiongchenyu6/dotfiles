@@ -121,6 +121,11 @@ in
 
     extraModulePackages = with config.boot.kernelPackages; [ acpi_call ];
 
+    # MT7921 (wlp4s0): PCIe ASPM lets the card doze between packets and the
+    # wake-up shows as 10-20 ms latency spikes on an otherwise idle link.
+    # Cost is a little battery; the WiFi is what lan-mouse rides on.
+    extraModprobeConfig = "options mt7921e disable_aspm=1";
+
     kernel = {
       sysctl = {
         "net.ipv4.ip_forward" = 1;
