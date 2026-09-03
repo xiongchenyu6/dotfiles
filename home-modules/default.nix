@@ -14,8 +14,6 @@ let
   isRoot = config.home.username == "root";
 in
 {
-  options.dotfiles.personalSecrets = lib.mkEnableOption "personal workstation secrets";
-
   imports =
     lib.attrValues {
       inherit (ezModules)

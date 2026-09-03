@@ -27,6 +27,7 @@ let
 in
 {
   imports = [
+    ./personal-secrets.nix
     ./neovim.nix
   ];
 
