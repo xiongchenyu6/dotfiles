@@ -45,7 +45,10 @@ in
             ezModules.gui
           ]
         else if hasGuiTag then
-          [ ezModules.workstation ]
+          [
+            ezModules.workstation
+            ezModules.stow-config
+          ]
         else
           [
             ezModules.zsh
