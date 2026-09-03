@@ -15,7 +15,7 @@ in
     ./gui
     ./niri
     ./tmux.nix
-    ./lan-mouse.nix
+    ./lan-mouse
   ]
   ++ lib.optionals (hasNvidiaTag && !hasNvidiaOffload) [ ./nvidia.nix ];
 }

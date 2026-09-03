@@ -229,7 +229,6 @@ in
           6119
           6696
           33434
-          4242 # lan-mouse (software KVM with gz-pc)
         ];
         trustedInterfaces = [
           "virbr0"
