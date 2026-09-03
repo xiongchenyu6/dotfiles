@@ -204,54 +204,77 @@
           size = 14;
           # rio 的 emoji 回退走 fontconfig 单字符查找，会把 ☁️ 交给 CJK
           # 字体、😀 交给 FontAwesome；把 emoji 区段显式钉到 Noto Color Emoji。
+          # 中文回退默认落到 Noto Sans CJK，它的 hhea ascent 是 1.16em 而 Hack 是
+          # 0.93em，rio 按各字体自己的 ascent 定基线，中文会比英文低几像素。
+          # 更纱黑体（0.97em）是给终端配的，基线基本对齐，且系统里已经装了。
           symbol-map =
             map
               (r: {
                 inherit (r) start end;
-                font-family = "Noto Color Emoji";
+                font-family = "Sarasa Mono SC";
               })
               [
                 {
-                  start = "2600";
-                  end = "2604";
+                  start = "2E80";
+                  end = "9FFF";
                 }
                 {
-                  start = "26A0";
-                  end = "26A1";
+                  start = "F900";
+                  end = "FAFF";
                 }
                 {
-                  start = "2705";
-                  end = "2705";
+                  start = "FF00";
+                  end = "FFEF";
                 }
-                {
-                  start = "2728";
-                  end = "2728";
-                }
-                {
-                  start = "274C";
-                  end = "274C";
-                }
-                {
-                  start = "2764";
-                  end = "2764";
-                }
-                {
-                  start = "1F300";
-                  end = "1F64F";
-                }
-                {
-                  start = "1F680";
-                  end = "1F6FF";
-                }
-                {
-                  start = "1F900";
-                  end = "1F9FF";
-                }
-                {
-                  start = "1FA70";
-                  end = "1FAFF";
-                }
-              ];
+              ]
+            ++
+              map
+                (r: {
+                  inherit (r) start end;
+                  font-family = "Noto Color Emoji";
+                })
+                [
+                  {
+                    start = "2600";
+                    end = "2604";
+                  }
+                  {
+                    start = "26A0";
+                    end = "26A1";
+                  }
+                  {
+                    start = "2705";
+                    end = "2705";
+                  }
+                  {
+                    start = "2728";
+                    end = "2728";
+                  }
+                  {
+                    start = "274C";
+                    end = "274C";
+                  }
+                  {
+                    start = "2764";
+                    end = "2764";
+                  }
+                  {
+                    start = "1F300";
+                    end = "1F64F";
+                  }
+                  {
+                    start = "1F680";
+                    end = "1F6FF";
+                  }
+                  {
+                    start = "1F900";
+                    end = "1F9FF";
+                  }
+                  {
+                    start = "1FA70";
+                    end = "1FAFF";
+                  }
+                ];
         };
         cursor = {
           shape = "beam";
