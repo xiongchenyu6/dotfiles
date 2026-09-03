@@ -36,7 +36,12 @@
         slack
         zoom-us
         jitsi-meet-electron
+        # 终端内看图/视频/PDF 的一套：yazi 包装器自带一份，这里再放进
+        # PATH 是给 pi 之类 CLI agent 直接调用（ffmpeg-full、imagemagick 在下面）
         ueberzugpp
+        chafa
+        resvg
+        poppler-utils
         #ytfzf
         usbutils
         zip
