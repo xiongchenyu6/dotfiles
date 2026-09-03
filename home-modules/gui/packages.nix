@@ -291,6 +291,9 @@
           args = [ ];
         };
         confirm-before-quit = false;
+        # 标签栏标题只按首字符选字体，中文标题会变方块（上游 bug）；
+        # 单标签时干脆不显示标签栏，和 macOS 默认一致。
+        navigation.hide-if-single = true;
       };
     };
   };
