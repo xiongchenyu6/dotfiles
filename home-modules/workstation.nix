@@ -16,6 +16,7 @@ in
     ./stow-config.nix
     ./niri
     ./tmux.nix
+    ./lan-mouse.nix
   ]
   ++ lib.optionals (hasNvidiaTag && !hasNvidiaOffload) [ ./nvidia.nix ];
 }
