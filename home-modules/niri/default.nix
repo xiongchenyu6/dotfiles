@@ -129,7 +129,7 @@ in
     input = {
       keyboard.xkb = {
         layout = "us";
-        options = "caps:ctrl_modifier";
+        options = "ctrl:nocaps";
       };
       touchpad = {
         tap = true;
