@@ -259,6 +259,7 @@ What hosts are actually pulling in when they import these:
 | `server` | server CLI toolset (python3, eza, mtr, ldns, websocat…), rust-motd banner, backup + security submodules |
 | `client-cli` | pcscd, npm, nix-ld (client-side CLI extras) |
 | `gui` | desktop application stack |
+| `disk-recovery` | disk imaging, diagnostics, forensics, and recovery tools |
 | `wayland` | niri compositor + XDG portals |
 | `greetd` | login manager |
 | `misc` | misc system tweaks |

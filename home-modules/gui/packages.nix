@@ -254,6 +254,8 @@
         window = {
           opacity = 0.9;
           blur = false;
+          # niri 没有服务端装饰，rio 会自己画一条带最小化/最大化/关闭的标题栏
+          decorations = "disabled";
         };
         shell = {
           program = "zsh";

@@ -18,6 +18,7 @@
     ezModules.misc
     ezModules.client-cli
     ezModules.gui
+    ezModules.disk-recovery
     ezModules.core
     ezModules.greetd
     ezModules.dn42
