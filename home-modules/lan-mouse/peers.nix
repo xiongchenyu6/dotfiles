@@ -6,7 +6,11 @@
   # Layout, left to right: game | gz-pc
   peers = {
     game = {
-      ips = [ "192.168.64.245" ];
+      # eno1 (wired, preferred) first, then WiFi; both are DHCP leases.
+      ips = [
+        "192.168.65.43"
+        "192.168.64.245"
+      ];
       fingerprint = "66:1c:4b:12:e2:4a:b1:b0:8f:2a:fe:c9:99:2a:02:9c:e0:25:aa:46:7d:27:c8:39:66:45:ec:be:23:13:0d:3e";
     };
     gz-pc = {
