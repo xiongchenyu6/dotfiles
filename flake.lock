@@ -118,7 +118,10 @@
           "nixpkgs"
         ],
         "purescript-overlay": "purescript-overlay",
-        "pyproject-nix": "pyproject-nix_2"
+        "pyproject-nix": [
+          "hermes-agent",
+          "pyproject-nix"
+        ]
       },
       "locked": {
         "lastModified": 1779999259,
@@ -172,22 +175,6 @@
         "type": "github"
       }
     },
-    "flake-compat_2": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1696426674,
-        "narHash": "sha256-kvjfFW7WAETZlt09AgDn1MrtKzP7t90Vf7vypd3OL1U=",
-        "owner": "edolstra",
-        "repo": "flake-compat",
-        "rev": "0f9255e01c2351cc7d116c072cb317785dd33b33",
-        "type": "github"
-      },
-      "original": {
-        "owner": "edolstra",
-        "repo": "flake-compat",
-        "type": "github"
-      }
-    },
     "flake-parts": {
       "inputs": {
         "nixpkgs-lib": "nixpkgs-lib"
@@ -231,7 +218,9 @@
         "flake-parts": [
           "flake-parts"
         ],
-        "home-manager": "home-manager",
+        "home-manager": [
+          "home-manager"
+        ],
         "nixpkgs": [
           "nixpkgs"
         ],
@@ -255,27 +244,6 @@
       }
     },
     "home-manager": {
-      "inputs": {
-        "nixpkgs": [
-          "hermes-agent",
-          "nixpkgs"
-        ]
-      },
-      "locked": {
-        "lastModified": 1786487128,
-        "narHash": "sha256-ad60hrRVhH/bo3Jl1YLzO+QcS3mUNZr9LNJdzhMO2P4=",
-        "owner": "nix-community",
-        "repo": "home-manager",
-        "rev": "f404edbfa4117810c96b97048299242fc50e5362",
-        "type": "github"
-      },
-      "original": {
-        "owner": "nix-community",
-        "repo": "home-manager",
-        "type": "github"
-      }
-    },
-    "home-manager_2": {
       "inputs": {
         "nixpkgs": [
           "nixpkgs"
@@ -732,7 +700,9 @@
     },
     "purescript-overlay": {
       "inputs": {
-        "flake-compat": "flake-compat_2",
+        "flake-compat": [
+          "flake-compat"
+        ],
         "nixpkgs": [
           "xiongchenyu6",
           "dream2nix",
@@ -804,28 +774,6 @@
         "type": "github"
       }
     },
-    "pyproject-nix_2": {
-      "inputs": {
-        "nixpkgs": [
-          "xiongchenyu6",
-          "dream2nix",
-          "nixpkgs"
-        ]
-      },
-      "locked": {
-        "lastModified": 1763017646,
-        "narHash": "sha256-Z+R2lveIp6Skn1VPH3taQIuMhABg1IizJd8oVdmdHsQ=",
-        "owner": "pyproject-nix",
-        "repo": "pyproject.nix",
-        "rev": "47bd6f296502842643078d66128f7b5e5370790c",
-        "type": "github"
-      },
-      "original": {
-        "owner": "pyproject-nix",
-        "repo": "pyproject.nix",
-        "type": "github"
-      }
-    },
     "rime-frost": {
       "flake": false,
       "locked": {
@@ -864,7 +812,7 @@
         "flake-parts": "flake-parts",
         "flake-utils": "flake-utils",
         "hermes-agent": "hermes-agent",
-        "home-manager": "home-manager_2",
+        "home-manager": "home-manager",
         "impermanence": "impermanence",
         "lanzaboote": "lanzaboote",
         "lazynixos": "lazynixos",
@@ -1084,17 +1032,20 @@
         "flake-parts": [
           "flake-parts"
         ],
+        "llm-agents": [
+          "llm-agents"
+        ],
         "nixpkgs": [
           "nixpkgs"
         ],
         "pkgs-by-name-for-flake-parts": "pkgs-by-name-for-flake-parts"
       },
       "locked": {
-        "lastModified": 1788426108,
-        "narHash": "sha256-SUAfSK+i8CHhkcu2ben5WGQtitk5fQpYiAlhy4jZvho=",
+        "lastModified": 1788504557,
+        "narHash": "sha256-ry3llC6MpnHUBhOsEW9lPMyHXvQm4+U+sa3kEzhYOlw=",
         "owner": "xiongchenyu6",
         "repo": "nur-packages",
-        "rev": "ca130886407796e0bc347ba63f1d20a1b30ef424",
+        "rev": "08804240f724d4944c5215a6689afba4d822439c",
         "type": "github"
       },
       "original": {

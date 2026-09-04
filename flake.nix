@@ -83,6 +83,9 @@
       inputs = {
         nixpkgs.follows = "nixpkgs";
         flake-parts.follows = "flake-parts";
+        llm-agents.follows = "llm-agents";
+        dream2nix.inputs.pyproject-nix.follows = "hermes-agent/pyproject-nix";
+        dream2nix.inputs.purescript-overlay.inputs.flake-compat.follows = "flake-compat";
       };
     };
     vast-cli = {
@@ -131,6 +134,7 @@
       inputs = {
         nixpkgs.follows = "nixpkgs";
         flake-parts.follows = "flake-parts";
+        home-manager.follows = "home-manager";
       };
     };
 
