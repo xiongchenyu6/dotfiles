@@ -7,6 +7,7 @@ keys:
   - &yubikey 5AF06033B3CC0104450B4F25F438D971EBE848EE
   - &office age1ss6yryyyma55atqs9mr823q0s9fqlu9rdh6dmkmzhxq8jvf635qssp5cuw
   - &office-mac age1urzhxxn7crgc7u9rc43dww2tfs6mggu6lukskzudrrspx4xz4sussrp3ls
+  - &gz-pc age1fup5a97996zfxkkg29xlgz9evg2kks0uk7uhguhtzcgajkrsse7qpjxf26
   - &oracle-arm-001 age1xm5qgvpmy6whs5jqrdzde0l33qktg4azst3zpyr7lgg5qh9cqfjs56e7d5
   - &oracle-arm-002 age1ferch3rq8xyvdqmvws8qg247s2uxsjf4pul6430436rg32tchq7q3aj98d
   - &oracle-amd-001 age1gzyuqqta5820q5ve2udpuf9ccdqd3le7rgtcxz8zxa92cv66qp6s46ukq5
@@ -20,6 +21,7 @@ creation_rules:
       - age:
           - *office
           - *office-mac
+          - *gz-pc
           - *tcloud
           - *game
           - *oracle-arm-001

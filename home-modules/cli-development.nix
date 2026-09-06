@@ -6,6 +6,45 @@
   inputs,
   ...
 }:
+let
+  sub2apiBaseUrl = "https://sub2api.autolife.ai/v1";
+  codexUpstream = inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.codex;
+  codexSub2apiArgs = lib.escapeShellArgs [
+    "-c"
+    ''model_provider="OpenAI"''
+    "-c"
+    ''model="gpt-6-astra"''
+    "-c"
+    ''model_reasoning_effort="xhigh"''
+    "-c"
+    "disable_response_storage=true"
+    "-c"
+    ''service_tier="fast"''
+    "-c"
+    "features.remote_control=true"
+    "-c"
+    ''model_providers.OpenAI.name="Sub2API"''
+    "-c"
+    ''model_providers.OpenAI.base_url="${sub2apiBaseUrl}"''
+    "-c"
+    ''model_providers.OpenAI.wire_api="responses"''
+    "-c"
+    "model_providers.OpenAI.requires_openai_auth=false"
+    "-c"
+    ''model_providers.OpenAI.env_key="OPENAI_API_KEY"''
+    "-c"
+    ''model_providers.OpenAI.http_headers.x-openai-actor-authorization="local-image-extension"''
+  ];
+  codexSub2api = pkgs.symlinkJoin {
+    name = codexUpstream.name;
+    paths = [ codexUpstream ];
+    nativeBuildInputs = [ pkgs.makeWrapper ];
+    postBuild = ''
+      wrapProgram "$out/bin/codex" --add-flags ${lib.escapeShellArg codexSub2apiArgs}
+    '';
+    meta = codexUpstream.meta;
+  };
+in
 {
   imports = [
     ./cli-server.nix
@@ -50,6 +89,40 @@
       ]
     )
   );
+  home.sessionVariables.OPENCODE_CONFIG_CONTENT = builtins.toJSON {
+    model = "openai/gpt-5.6-sol";
+    small_model = "openai/gpt-5.6-luna";
+    provider.openai.options = {
+      baseURL = sub2apiBaseUrl;
+      apiKey = "{env:OPENAI_API_KEY}";
+      headers."x-openai-actor-authorization" = "local-image-extension";
+    };
+  };
+
+  home.activation.configurePiSub2apiDefaults = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+    settings="$HOME/.pi/agent/settings.json"
+    $DRY_RUN_CMD ${pkgs.coreutils}/bin/mkdir -p "$HOME/.pi/agent"
+
+    if [[ -f "$settings" ]]; then
+      source="$settings"
+    else
+      source=/dev/null
+    fi
+
+    if [[ "$source" == /dev/null ]]; then
+      ${pkgs.jq}/bin/jq -n \
+        '{ defaultProvider: "openai", defaultModel: "gpt-5.6-sol", defaultThinkingLevel: "xhigh" }' \
+        > "$settings.tmp"
+    else
+      ${pkgs.jq}/bin/jq \
+        '.defaultProvider = "openai" | .defaultModel = "gpt-5.6-sol" | .defaultThinkingLevel = "xhigh"' \
+        "$source" > "$settings.tmp"
+    fi
+
+    $DRY_RUN_CMD ${pkgs.coreutils}/bin/chmod 600 "$settings.tmp"
+    $DRY_RUN_CMD ${pkgs.coreutils}/bin/mv -f "$settings.tmp" "$settings"
+  '';
+
   # Point rust-analyzer/clippy at the stdlib source
   home.sessionVariables.RUST_SRC_PATH = "${pkgs.rustPlatform.rustLibSrc}";
 
@@ -75,7 +148,7 @@
     };
     codex = {
       enable = true;
-      package = inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.codex;
+      package = codexSub2api;
     };
     opencode = {
       enable = true;
@@ -673,8 +746,18 @@
     '';
   };
 
+  home.file = {
+    # Pi keeps user preferences mutable, while provider routing stays declarative.
+    ".pi/agent/models.json".text = builtins.toJSON {
+      providers.openai = {
+        baseUrl = sub2apiBaseUrl;
+        apiKey = "$OPENAI_API_KEY";
+        headers."x-openai-actor-authorization" = "local-image-extension";
+      };
+    };
+  }
   # Electron flags config files — Linux/Wayland only
-  home.file = lib.mkIf pkgs.stdenv.hostPlatform.isLinux {
+  // lib.optionalAttrs pkgs.stdenv.hostPlatform.isLinux {
     ".config/electron-flags.conf" = {
       text = ''
         --enable-wayland-ime
