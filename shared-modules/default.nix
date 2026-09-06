@@ -87,9 +87,6 @@ in
           linuxPackages = addPerf prev.linuxPackages;
           linuxPackages_latest = addPerf prev.linuxPackages_latest;
           inherit (lib) lowPrio;
-          netbird = prev.netbird.override {
-            buildGoModule = prev.buildGo125Module;
-          };
           # 白霜拼音方案数据；个人定制放 stow-managed/rime 的 *.custom.yaml
           rime-frost = prev.runCommand "rime-frost" { } ''
             mkdir -p $out/share/rime-data
