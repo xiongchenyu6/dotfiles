@@ -89,16 +89,6 @@ in
       ]
     )
   );
-  home.sessionVariables.OPENCODE_CONFIG_CONTENT = builtins.toJSON {
-    model = "openai/gpt-5.6-sol";
-    small_model = "openai/gpt-5.6-luna";
-    provider.openai.options = {
-      baseURL = sub2apiBaseUrl;
-      apiKey = "{env:OPENAI_API_KEY}";
-      headers."x-openai-actor-authorization" = "local-image-extension";
-    };
-  };
-
   home.activation.configurePiSub2apiDefaults = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
     settings="$HOME/.pi/agent/settings.json"
     $DRY_RUN_CMD ${pkgs.coreutils}/bin/mkdir -p "$HOME/.pi/agent"
@@ -152,6 +142,15 @@ in
     };
     opencode = {
       enable = true;
+      settings = {
+        model = "openai/gpt-5.6-sol";
+        small_model = "openai/gpt-5.6-luna";
+        provider.openai.options = {
+          baseURL = sub2apiBaseUrl;
+          apiKey = "{env:OPENAI_API_KEY}";
+          headers."x-openai-actor-authorization" = "local-image-extension";
+        };
+      };
     };
     k9s = {
       enable = true;
