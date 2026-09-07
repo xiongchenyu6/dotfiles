@@ -25,6 +25,7 @@
     srvos.nixosModules.mixins-nix-experimental
     srvos.nixosModules.mixins-tracing
     ./hardware-configuration.nix
+    ./sex-qd-je.nix
   ];
 
   # hysteria2 出海入站(UDP 8443):sub2api 跨境 + 个人客户端统一走这个。
