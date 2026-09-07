@@ -14,10 +14,17 @@ in
 {
   systemd.tmpfiles.rules = [ "d ${root} 0755 freeman.xiong users -" ];
 
+  # Let's Encrypt counts qd.je as one registered domain shared by every free
+  # subdomain, so its 50/week limit is permanently exhausted; ZeroSSL (EAB
+  # credentials in sops, lego reads LEGO_EAB_* from the environment file) instead.
+  sops.secrets."acme/zerossl" = { owner = "acme"; group = "acme"; mode = "0440"; };
   security.acme.certs."sex.qd.je" = {
     dnsProvider = lib.mkForce null;
-    environmentFile = lib.mkForce null;
     webroot = lib.mkForce "/var/lib/acme/acme-challenge";
+    server = "https://acme.zerossl.com/v2/DV90";
+    email = "zhihuiguo24@gmail.com";
+    environmentFile = lib.mkForce config.sops.secrets."acme/zerossl".path;
+    extraLegoFlags = [ "--eab" ];
   };
 
   services.nginx.virtualHosts."sex.qd.je" = {
