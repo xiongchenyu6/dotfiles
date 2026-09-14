@@ -208,11 +208,9 @@ in
       no-cli = true;
     };
 
-    journald = {
-      extraConfig = ''
-        Storage=volatile
-        RuntimeMaxUse=30M
-      '';
+    journald.settings.Journal = {
+      Storage = "volatile";
+      RuntimeMaxUse = "30M";
     };
 
     openssh =
