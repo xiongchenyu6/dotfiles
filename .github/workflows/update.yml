@@ -38,6 +38,10 @@ jobs:
 
       - uses: cachix/install-nix-action@v31
         with:
+          # 2.24 (v30) cannot update nested follows overrides; 2.35.2 (v31's
+          # default) crashes on a CanonPath::push assertion evaluating Autolife's
+          # gz-pc. Stay on the release that works for both repos.
+          install_url: https://releases.nixos.org/nix/nix-2.34.8/install
           extra_nix_config: |
             experimental-features = nix-command flakes
             access-tokens = github.com=${{ secrets.CASCADE_TOKEN || secrets.GITHUB_TOKEN }}
@@ -83,6 +87,10 @@ jobs:
           name: flake-lock
       - uses: cachix/install-nix-action@v31
         with:
+          # 2.24 (v30) cannot update nested follows overrides; 2.35.2 (v31's
+          # default) crashes on a CanonPath::push assertion evaluating Autolife's
+          # gz-pc. Stay on the release that works for both repos.
+          install_url: https://releases.nixos.org/nix/nix-2.34.8/install
           extra_nix_config: |
             experimental-features = nix-command flakes
             access-tokens = github.com=${{ secrets.CASCADE_TOKEN || secrets.GITHUB_TOKEN }}
