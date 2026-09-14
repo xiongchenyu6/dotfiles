@@ -1041,11 +1041,11 @@
         "pkgs-by-name-for-flake-parts": "pkgs-by-name-for-flake-parts"
       },
       "locked": {
-        "lastModified": 1788504557,
-        "narHash": "sha256-ry3llC6MpnHUBhOsEW9lPMyHXvQm4+U+sa3kEzhYOlw=",
+        "lastModified": 1789368910,
+        "narHash": "sha256-Cs5Iks+k5iHHCw2jHWioThige09lrxG4p1SR69aVAKQ=",
         "owner": "xiongchenyu6",
         "repo": "nur-packages",
-        "rev": "08804240f724d4944c5215a6689afba4d822439c",
+        "rev": "990eb71bf28caeff4e5a5b628e4498c14251568c",
         "type": "github"
       },
       "original": {
