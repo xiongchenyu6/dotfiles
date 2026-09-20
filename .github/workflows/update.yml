@@ -50,7 +50,9 @@ jobs:
         id: update
         run: |
           set -Eeuo pipefail
-          nix flake update xiongchenyu6
+          # rime-wanxiang-gram 是一个会被原地覆盖的 release 资产(LTS tag),
+          # 不重新锁的话 narHash 一过期,所有主机求值都会失败。
+          nix flake update xiongchenyu6 rime-wanxiang-gram
           if git diff --quiet flake.lock; then
             echo "changed=false" >> "$GITHUB_OUTPUT"
             echo "flake.lock 未变化,上游没有新提交。"
