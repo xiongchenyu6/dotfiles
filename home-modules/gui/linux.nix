@@ -416,7 +416,7 @@ in
         baidupcs-go
         sbctl
         #nur.repos.xddxdd.qq
-        nur.repos.xddxdd.bilibili
+        bilibili
         #nur.repos.xddxdd.dingtalk
         #gimp
         #gitkraken
