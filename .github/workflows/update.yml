@@ -1,8 +1,9 @@
-# 级联更新的中间一层:nur-packages 动了 -> 这里只 bump xiongchenyu6 这一个 input
+# 级联更新的中间一层:nur-packages 动了(或每晚 cron)-> 全量 nix flake update
 # -> eval 所有主机做门禁 -> 自动合并 -> 通知 AutoLifeRobot/nixos。
 #
-# 只更新必须的:这里刻意不做全量 nix flake update。nixpkgs 等上游由
-# nur-packages 的 daily update 负责,级联下来时会随 xiongchenyu6 一起到位。
+# 全量更新:每个仓库有自己的 nixpkgs 等锁定节点,上游更新并不会"级联下来",
+# 只 bump xiongchenyu6 的那段时间其余 input 一直冻结着。要钉住的版本写在
+# flake.nix 的 url 里(rev/tag),不要靠"不去更新 lock"来钉。
 name: Cascade update from nur-packages
 
 on:
@@ -46,13 +47,11 @@ jobs:
             experimental-features = nix-command flakes
             access-tokens = github.com=${{ secrets.CASCADE_TOKEN || secrets.GITHUB_TOKEN }}
 
-      - name: Bump the upstream input
+      - name: Update every input
         id: update
         run: |
           set -Eeuo pipefail
-          # rime-wanxiang-gram 是一个会被原地覆盖的 release 资产(LTS tag),
-          # 不重新锁的话 narHash 一过期,所有主机求值都会失败。
-          nix flake update xiongchenyu6 rime-wanxiang-gram
+          nix flake update
           if git diff --quiet flake.lock; then
             echo "changed=false" >> "$GITHUB_OUTPUT"
             echo "flake.lock 未变化,上游没有新提交。"
@@ -155,11 +154,10 @@ jobs:
           branch: automation/cascade-update
           base: main
           delete-branch: true
-          commit-message: "chore: bump xiongchenyu6 (nur-packages)"
-          title: "chore: cascade update from nur-packages"
+          commit-message: "chore: update flake inputs"
+          title: "chore: update flake inputs"
           body: |
-            上游 `xiongchenyu6/nur-packages` 有新提交,只 bump 了 `xiongchenyu6`
-            这一个 input,其余 input 未动。
+            全量 `nix flake update`。
 
             门禁:全部 nixosConfigurations 与 darwinConfigurations 求值通过。
             求值到 `drvPath` 为止,不构建 —— GitHub runner 放不下整机闭包。
