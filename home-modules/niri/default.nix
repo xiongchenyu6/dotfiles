@@ -6,7 +6,7 @@
   ...
 }:
 let
-  noctaliaPackage = inputs.noctalia.packages.${pkgs.stdenv.hostPlatform.system}.default;
+  noctaliaPackage = pkgs.noctalia;
   noctalia = "${noctaliaPackage}/bin/noctalia";
   voxtypePackage = inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.voxtype;
 
