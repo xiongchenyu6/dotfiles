@@ -8,42 +8,7 @@
 }:
 let
   sub2apiBaseUrl = "https://sub2api.autolife.ai/v1";
-  codexUpstream = inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.codex;
-  codexSub2apiArgs = lib.escapeShellArgs [
-    "-c"
-    ''model_provider="OpenAI"''
-    "-c"
-    ''model="gpt-6-astra"''
-    "-c"
-    ''model_reasoning_effort="xhigh"''
-    "-c"
-    "disable_response_storage=true"
-    "-c"
-    ''service_tier="fast"''
-    "-c"
-    "features.remote_control=true"
-    "-c"
-    ''model_providers.OpenAI.name="Sub2API"''
-    "-c"
-    ''model_providers.OpenAI.base_url="${sub2apiBaseUrl}"''
-    "-c"
-    ''model_providers.OpenAI.wire_api="responses"''
-    "-c"
-    "model_providers.OpenAI.requires_openai_auth=false"
-    "-c"
-    ''model_providers.OpenAI.env_key="OPENAI_API_KEY"''
-    "-c"
-    ''model_providers.OpenAI.http_headers.x-openai-actor-authorization="local-image-extension"''
-  ];
-  codexSub2api = pkgs.symlinkJoin {
-    name = codexUpstream.name;
-    paths = [ codexUpstream ];
-    nativeBuildInputs = [ pkgs.makeWrapper ];
-    postBuild = ''
-      wrapProgram "$out/bin/codex" --add-flags ${lib.escapeShellArg codexSub2apiArgs}
-    '';
-    meta = codexUpstream.meta;
-  };
+  codexPackage = inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.codex;
 in
 {
   imports = [
@@ -138,7 +103,7 @@ in
     };
     codex = {
       enable = true;
-      package = codexSub2api;
+      package = codexPackage;
     };
     opencode = {
       enable = true;
