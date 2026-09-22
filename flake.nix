@@ -154,11 +154,6 @@
       };
     };
 
-    noctalia = {
-      url = "github:noctalia-dev/noctalia";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
     talon-nix = {
       url = "github:nix-community/talon-nix";
       inputs.nixpkgs.follows = "nixpkgs";
