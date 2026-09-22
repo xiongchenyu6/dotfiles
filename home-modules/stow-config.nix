@@ -1,4 +1,4 @@
-_:
+{ pkgs, lib, ... }:
 let
   # Codex reads the same content: shared .codex/skills/* entries in the repo
   # are relative symlinks into .claude/. spec is a Codex-only entry because
@@ -19,9 +19,24 @@ let
     "token-saving"
     "tui-automation"
   ];
+  copilotSettingsMerge = pkgs.writeShellScript "copilot-settings-merge" ''
+    set -euo pipefail
+    settings="$HOME/.copilot/settings.json"
+    mkdir -p "$HOME/.copilot"
+    [[ -s "$settings" ]] || echo '{}' > "$settings"
+    ${pkgs.jq}/bin/jq '.disabledSkills = ["docs", "import-memory"]' "$settings" > "$settings.tmp"
+    mv -f "$settings.tmp" "$settings"
+  '';
 in
 {
   home = {
+    # ~/.copilot/settings.json is also written by Copilot itself (model, theme),
+    # so merge our keys in instead of owning the file. docs/import-memory come
+    # from claude.ai-synced skills and only work with Claude's own tools.
+    activation.configureCopilotSettings = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+      run ${copilotSettingsMerge}
+    '';
+
     persistence."/home/freeman.xiong/dotfiles/stow-managed/" = {
       removePrefixDirectory = true;
       allowOther = false;
@@ -38,6 +53,12 @@ in
         }
         {
           directory = "ai-skills/.claude/commands";
+          method = "symlink";
+        }
+        # Copilot CLI no longer reads ~/.claude/skills; .copilot/skills in the
+        # repo is a relative symlink to the same .claude/skills tree.
+        {
+          directory = "ai-skills/.copilot/skills";
           method = "symlink";
         }
         {
