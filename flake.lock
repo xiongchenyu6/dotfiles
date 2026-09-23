@@ -230,11 +230,11 @@
         "uv2nix": "uv2nix"
       },
       "locked": {
-        "lastModified": 1790161394,
-        "narHash": "sha256-aeo4VTfwW2F3bi+4cAsftGqHfnQYraAg5UYy6XIBbjU=",
+        "lastModified": 1790181683,
+        "narHash": "sha256-ZAznyda2QrapEM0NchFh/KeJj9LwIgbbUeYrRisF5oY=",
         "owner": "NousResearch",
         "repo": "hermes-agent",
-        "rev": "c80d12b9b98e36178aa41d496e8dd555399fc286",
+        "rev": "c9dca726514b709cf6e677d236a79fc8d0627f37",
         "type": "github"
       },
       "original": {
@@ -627,11 +627,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1790162168,
-        "narHash": "sha256-n+FU/A+4pe0nIXJjjq5vbCZturgeUDTd1LE3ZwVlfcw=",
+        "lastModified": 1790179863,
+        "narHash": "sha256-6OLUYGUWI7UpYZ3eeIJsMaI1Ic0wgczRQYrm9tTcKx4=",
         "owner": "nix-community",
         "repo": "NUR",
-        "rev": "0ed9c1a1e46fd38145e61f7766eb32d747be68cf",
+        "rev": "b00be7374d16469074a10f15c1db9089550e4a1a",
         "type": "github"
       },
       "original": {
@@ -1020,11 +1020,11 @@
         "pkgs-by-name-for-flake-parts": "pkgs-by-name-for-flake-parts"
       },
       "locked": {
-        "lastModified": 1790162408,
-        "narHash": "sha256-0CTeFKiWy0uayLWvjaWevbdRLNN44UbrOXYIsYrxY1s=",
+        "lastModified": 1790181843,
+        "narHash": "sha256-SUOUeVoWwrCwKKFzoYEChrp/st0asJNdst2Wnck1QVA=",
         "owner": "xiongchenyu6",
         "repo": "nur-packages",
-        "rev": "0d2933b3e44842d8fca520d5099dd0d5c130bd88",
+        "rev": "8ae1d5c499fed1e486c13e759d376ebed420e249",
         "type": "github"
       },
       "original": {
