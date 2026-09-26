@@ -52,6 +52,7 @@
     content = ''
       TIMESCALE_URL=postgres://quant:${config.sops.placeholder."oracle-arm-002/quant-password"}@127.0.0.1:5432/api
       TELEGRAM_BOT_TOKEN=${config.sops.placeholder."oracle-arm-002/telegram-bot-token"}
+      TELEGRAM_CHAT_ID=${config.sops.placeholder."oracle-arm-002/telegram-chat-id"}
       FINANCIALDATA_KEY=${config.sops.placeholder."oracle-arm-002/financialdata-key"}
     '';
     owner = "nautilus";
