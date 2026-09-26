@@ -31,6 +31,11 @@
     "pipewire"
   ];
 
+  # Agent 7.5x runs live-process collection inside the core agent; the standalone
+  # process-agent just logs "process-agent is not enabled, exiting..." and the
+  # module's Restart=always turns that into a ~38k/day restart loop.
+  systemd.services.datadog-process-agent.enable = false;
+
   services = {
     datadog-agent = {
       enable = true;
