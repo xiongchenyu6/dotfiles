@@ -81,12 +81,8 @@
   services.nautilus-trend = {
     enable = true;
     package = inputs.xiongchenyu6.packages.${pkgs.stdenv.hostPlatform.system}.nautilus-trader;
-    testnet = true;
-    instruments = [ "ETHUSDT.BINANCE" "BTCUSDT.BINANCE" "SOLUSDT.BINANCE" ];
-    barSpec = "1-HOUR-LAST-EXTERNAL";
-    riskFrac = 0.0667;
-    entryLb = 168;
-    exitLb = 72;
+    # Mirrors the public house signals (quant.strategy_signals) on all 13 coins, testnet only.
+    notionalUsdt = 500.0;
     environmentFile = config.sops.templates."nautilus-accumulator.env".path;
   };
 
