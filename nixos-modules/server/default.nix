@@ -18,6 +18,9 @@
       websocat
     ];
   };
+  # Cap the journal: on the small Oracle AMD boxes (40G disk) it had grown to 3.9G.
+  services.journald.extraConfig = "SystemMaxUse=500M";
+
   # systemd.services.datadog-agent.serviceConfig.User = lib.mkForce "root";
   # systemd.services.datadog-agent.serviceConfig.Group = lib.mkForce "root";
 
