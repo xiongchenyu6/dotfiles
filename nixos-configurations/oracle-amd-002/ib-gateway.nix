@@ -1,4 +1,4 @@
-{ config, ... }:
+{ config, pkgs, ... }:
 # Headless Interactive Brokers Gateway (PAPER) for the quant US-equity engine.
 #
 # Why here: IB Gateway is an x86_64 GUI Java app with no real headless mode; it must
@@ -75,5 +75,22 @@ in
       # ports = [ "${wgAddr}:4002:4002" "${wgAddr}:5900:5900" ];
       extraOptions = [ "--pull=newer" ];
     };
+  };
+
+  # Daily COLD restart. IBC's in-place auto-restart (23:59 ET) and IB's Sunday re-auth can
+  # leave the Gateway logged in but demanding the paper-trading disclaimer again (API error
+  # 10141) or stuck at a login dialog — both seen 2026-09. A cold start does a full login and
+  # IBC clicks the disclaimer. 00:10 ET: after the nightly restart, before the equity node's
+  # own 00:30 ET restart (quant-equity-daily-restart.timer on the game box).
+  systemd.services.ib-gateway-cold-restart = {
+    description = "Cold-restart the IB Gateway container (fresh login + paper disclaimer)";
+    serviceConfig = {
+      Type = "oneshot";
+      ExecStart = "${pkgs.systemd}/bin/systemctl restart podman-ib-gateway.service";
+    };
+  };
+  systemd.timers.ib-gateway-cold-restart = {
+    wantedBy = [ "timers.target" ];
+    timerConfig.OnCalendar = "*-*-* 00:10:00 America/New_York";
   };
 }
