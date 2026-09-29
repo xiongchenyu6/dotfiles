@@ -230,11 +230,11 @@
         "uv2nix": "uv2nix"
       },
       "locked": {
-        "lastModified": 1790705561,
-        "narHash": "sha256-rCMcjAgrah8m0q6eYWrjS38KDXS0oypUA/60kdimHas=",
+        "lastModified": 1790722193,
+        "narHash": "sha256-/jFW1DNhmSjWQKcqdUHN6zYR7Buc7ynRDSrYFURdwAM=",
         "owner": "NousResearch",
         "repo": "hermes-agent",
-        "rev": "99721dca80a58830a7b04b954fa5cb58ccb51a4a",
+        "rev": "d23cc6b06455b8551fb6f61d3cad040a0e82f5b6",
         "type": "github"
       },
       "original": {
@@ -342,11 +342,11 @@
         "treefmt-nix": "treefmt-nix"
       },
       "locked": {
-        "lastModified": 1790658851,
-        "narHash": "sha256-eAXfN6HiUUMTY5Le1PvnxZlGpxMO4RgTDPkr7xzPo4A=",
+        "lastModified": 1790722739,
+        "narHash": "sha256-ysKhW7ivzrDKMGoYVbwYGH/oQmzsUbrUuK5FoWwbyfk=",
         "owner": "numtide",
         "repo": "llm-agents.nix",
-        "rev": "a621acfa43a25731694a8ef64fcbd5a00241e085",
+        "rev": "cdc47b6495d24e22e21c8e724b97b1d7b479df76",
         "type": "github"
       },
       "original": {
@@ -627,11 +627,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1790706278,
-        "narHash": "sha256-NEgrpCsYnvxuZpvVJRAYx9yCIWQXOm4r1BRWQ3hosRw=",
+        "lastModified": 1790721072,
+        "narHash": "sha256-SQSLSgpD8hhH8NYaidTFypRrLGwRIjd8w/2ByKCI/bs=",
         "owner": "nix-community",
         "repo": "NUR",
-        "rev": "aab47704072a112b645a80d0fbb2978054ca18ed",
+        "rev": "a7e2f64894742443989a021c6be474fa51213340",
         "type": "github"
       },
       "original": {
@@ -773,7 +773,7 @@
     "rime-wanxiang-gram": {
       "flake": false,
       "locked": {
-        "narHash": "sha256-Y3j4ZJWLuKtUAMNm+ZTixXYacV4qfw/DnH+LzFEvyWE=",
+        "narHash": "sha256-xnZsBf4MdeTTJG8S9PtDv/ysP3vFjbDIEk/Vdyp6dMs=",
         "type": "file",
         "url": "https://github.com/amzxyz/RIME-LMDG/releases/download/LTS/wanxiang-lts-zh-hans.gram"
       },
@@ -1020,11 +1020,11 @@
         "pkgs-by-name-for-flake-parts": "pkgs-by-name-for-flake-parts"
       },
       "locked": {
-        "lastModified": 1790707032,
-        "narHash": "sha256-YFeo9kkWdBNmCAb4KcFlPko1/LCdxX5I0UAWO/xrPFs=",
+        "lastModified": 1790722943,
+        "narHash": "sha256-8UVzX40FVeEeNeSp+G7+0okM8x/VyIQk/SWm1QBMQY4=",
         "owner": "xiongchenyu6",
         "repo": "nur-packages",
-        "rev": "97148907b36759327bbc188d5886b7e02766c290",
+        "rev": "f882c03c44f13ba964856f3581dc5e541056bdbc",
         "type": "github"
       },
       "original": {
