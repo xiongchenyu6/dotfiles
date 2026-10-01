@@ -230,11 +230,11 @@
         "uv2nix": "uv2nix"
       },
       "locked": {
-        "lastModified": 1790818388,
-        "narHash": "sha256-rDyCujp6myuCIDK0mhuu7SmQXy7L0rGhzlsP5/KcTkE=",
+        "lastModified": 1790838371,
+        "narHash": "sha256-U9n5xo37bRgR7f/1RsQ6vQFOd/8AXIriXqJwZ4z6fbM=",
         "owner": "NousResearch",
         "repo": "hermes-agent",
-        "rev": "eb8d21f482142c236550762ebdb5df4004c39696",
+        "rev": "aeff051a1828c2aa09563c411deed0aa47b219d1",
         "type": "github"
       },
       "original": {
@@ -250,11 +250,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1790802803,
-        "narHash": "sha256-pna6bbbXEqnAWb3GuioIEKu+yFxSVFR0UX+2QjxI6eg=",
+        "lastModified": 1790819692,
+        "narHash": "sha256-rvubAPbh3QCliic3sAK+CXTrPCGgJstY52OTs/5H1J4=",
         "owner": "nix-community",
         "repo": "home-manager",
-        "rev": "e4122ec2a3cf7fede335e5c9975639d1e84dc04d",
+        "rev": "c8ecc29e5175452bee4a2aa1ba2383856d795338",
         "type": "github"
       },
       "original": {
@@ -342,11 +342,11 @@
         "treefmt-nix": "treefmt-nix"
       },
       "locked": {
-        "lastModified": 1790814856,
-        "narHash": "sha256-MLYoDU/GvvNFS5NmG5FqG2YG88Dc7ESDNix+qnE4JdE=",
+        "lastModified": 1790832743,
+        "narHash": "sha256-ho6vTx7+GLxXZNzp9eCq/X+49s16KLO1EEEGYCkMjQ0=",
         "owner": "numtide",
         "repo": "llm-agents.nix",
-        "rev": "5ee7c2b107f6b218b764e907ed49070170895108",
+        "rev": "3a994324e0a724f3eb043200368f0b60c06862e3",
         "type": "github"
       },
       "original": {
@@ -627,11 +627,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1790815601,
-        "narHash": "sha256-M6IWV730bMZFE1Qcl8zixWR57NR+nqVeqcc8dYlyk+I=",
+        "lastModified": 1790837319,
+        "narHash": "sha256-rjNIH8KbNfjEG7AjBOi7U6rBggc8wINCYOuzTIgry7I=",
         "owner": "nix-community",
         "repo": "NUR",
-        "rev": "85499d702cbe5a7ba67e09496b0de90768e14858",
+        "rev": "3df0836b5fa2e33f0d929333a7d40380f3d7e0b2",
         "type": "github"
       },
       "original": {
@@ -757,11 +757,11 @@
     "rime-frost": {
       "flake": false,
       "locked": {
-        "lastModified": 1790741678,
-        "narHash": "sha256-ugbDTkeDsA/7tTM8uQZqUGGn8K5HQFt7hhnbpsWmPpM=",
+        "lastModified": 1790827788,
+        "narHash": "sha256-vgfborH+zNYyt6DE8RahmB5iYzOqQ3CMbT5O0KtHP9g=",
         "owner": "gaboolic",
         "repo": "rime-frost",
-        "rev": "2a027a0affdadd43194e6b3dc12cfffdd1426379",
+        "rev": "87f9d40ce51eeb912d156b27bd2918c340110b03",
         "type": "github"
       },
       "original": {
@@ -773,7 +773,7 @@
     "rime-wanxiang-gram": {
       "flake": false,
       "locked": {
-        "narHash": "sha256-3OExrXi9CB+qJVRfl4jCpHw3XObFzDJrfW8dn91e6/8=",
+        "narHash": "sha256-JowXjnpOL/lZo4kWKotEPA/Ws7yOWS2ZaoDCm94QBSM=",
         "type": "file",
         "url": "https://github.com/amzxyz/RIME-LMDG/releases/download/LTS/wanxiang-lts-zh-hans.gram"
       },
@@ -887,11 +887,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1790562510,
-        "narHash": "sha256-3Si9IwlvnXCZ97Ydrq+Kn27cFFxltvordUnMfPepaDk=",
+        "lastModified": 1790822410,
+        "narHash": "sha256-ORn2HoU2LAhYyaGKtnGz0KeXYcA9sQ9XeI5Uo0lelBQ=",
         "owner": "nix-community",
         "repo": "srvos",
-        "rev": "f23ea50b9ce9fd20ffd69fe016a5ccf2e0e30a86",
+        "rev": "2478513e412ec606b0aba85828860f1cc930c7db",
         "type": "github"
       },
       "original": {
@@ -1020,11 +1020,11 @@
         "pkgs-by-name-for-flake-parts": "pkgs-by-name-for-flake-parts"
       },
       "locked": {
-        "lastModified": 1790814645,
-        "narHash": "sha256-e6nqk93I58usJgpoknUCyn2/HN5zHq0G6ebS0D1YuGA=",
+        "lastModified": 1790838804,
+        "narHash": "sha256-HHvzj/ppYDdVL5LOwBjzUjkXvNRphuv+dsPurJxvSdI=",
         "owner": "xiongchenyu6",
         "repo": "nur-packages",
-        "rev": "158f0999751953ddaf1fa3651e6daa53da1bc852",
+        "rev": "ef8a2a203777cf7f0ede73969203f4d3cd9bc2fb",
         "type": "github"
       },
       "original": {
