@@ -230,11 +230,11 @@
         "uv2nix": "uv2nix"
       },
       "locked": {
-        "lastModified": 1790800492,
-        "narHash": "sha256-yeUPnBbU/51ZqwHIBXVgmgg0dcXOGY4JhukdZ64qjuA=",
+        "lastModified": 1790813403,
+        "narHash": "sha256-UfJTlgBeN9dU2hjCA1z9rbAK0WBQbM/9HtoROnaBI3E=",
         "owner": "NousResearch",
         "repo": "hermes-agent",
-        "rev": "7239625ae1b786827c952a8ace41fa6fd7f2eec5",
+        "rev": "663362680b6ffa4fbffeb58f6682564239a1953b",
         "type": "github"
       },
       "original": {
@@ -250,11 +250,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1790799977,
-        "narHash": "sha256-WzSrmE8HZn5yipLz1zdsNQDLh0fC8SzBobKQ0z4wZYQ=",
+        "lastModified": 1790802803,
+        "narHash": "sha256-pna6bbbXEqnAWb3GuioIEKu+yFxSVFR0UX+2QjxI6eg=",
         "owner": "nix-community",
         "repo": "home-manager",
-        "rev": "cb2f28657ddb45fc924ac981518ecba8fc82cdef",
+        "rev": "e4122ec2a3cf7fede335e5c9975639d1e84dc04d",
         "type": "github"
       },
       "original": {
@@ -342,11 +342,11 @@
         "treefmt-nix": "treefmt-nix"
       },
       "locked": {
-        "lastModified": 1790801161,
-        "narHash": "sha256-8LtbvQVKsyMJl5MrUCSpGbWLqcZum/WFjpJ+4y5Bz+Q=",
+        "lastModified": 1790807026,
+        "narHash": "sha256-vxdAr1zB0m06cCGRkZfLEaILm0hlCKi58wjr16OcCIY=",
         "owner": "numtide",
         "repo": "llm-agents.nix",
-        "rev": "5e3786469b6c50ec98c3139bcd7e75d425f1a5ad",
+        "rev": "0f516e096fff59313dbce7276752a677b70db8af",
         "type": "github"
       },
       "original": {
@@ -627,11 +627,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1790800271,
-        "narHash": "sha256-1tGFmvRDnLQ6N+7LkU2C8G0l2O3EaAWZxmBcKtyZg4k=",
+        "lastModified": 1790812847,
+        "narHash": "sha256-R2qjTICXSdTWQHIEphfs+2BchCSAUhm7sUb10+jeL4I=",
         "owner": "nix-community",
         "repo": "NUR",
-        "rev": "91326c454657f825179b77ba8dc9b6b717502dad",
+        "rev": "8f7e6de92066ec058c31dc7d01c2a2657519f444",
         "type": "github"
       },
       "original": {
@@ -773,7 +773,7 @@
     "rime-wanxiang-gram": {
       "flake": false,
       "locked": {
-        "narHash": "sha256-xnZsBf4MdeTTJG8S9PtDv/ysP3vFjbDIEk/Vdyp6dMs=",
+        "narHash": "sha256-3OExrXi9CB+qJVRfl4jCpHw3XObFzDJrfW8dn91e6/8=",
         "type": "file",
         "url": "https://github.com/amzxyz/RIME-LMDG/releases/download/LTS/wanxiang-lts-zh-hans.gram"
       },
@@ -1020,11 +1020,11 @@
         "pkgs-by-name-for-flake-parts": "pkgs-by-name-for-flake-parts"
       },
       "locked": {
-        "lastModified": 1790801170,
-        "narHash": "sha256-0mrnjoDEH6gVEnsJN1kAHS+6wpWjdcPIN1cbCwUJyug=",
+        "lastModified": 1790814645,
+        "narHash": "sha256-e6nqk93I58usJgpoknUCyn2/HN5zHq0G6ebS0D1YuGA=",
         "owner": "xiongchenyu6",
         "repo": "nur-packages",
-        "rev": "257af1cb5206a3edf8f806f8eac5c1f59ed3d760",
+        "rev": "158f0999751953ddaf1fa3651e6daa53da1bc852",
         "type": "github"
       },
       "original": {
