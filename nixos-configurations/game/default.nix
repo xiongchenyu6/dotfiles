@@ -295,6 +295,7 @@ in
     };
 
   services = {
+    todesk.enable = true;
 
     sunshine = {
       enable = true;
