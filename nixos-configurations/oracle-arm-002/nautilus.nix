@@ -17,7 +17,9 @@
     content = ''
       BINANCE_API_KEY=${config.sops.placeholder."oracle-arm-002/binance-api-key"}
       BINANCE_API_SECRET_FILE=${config.sops.secrets."oracle-arm-002/binance-api-secret".path}
-      TIMESCALE_URL=postgres://quant:${config.sops.placeholder."oracle-arm-002/quant-password"}@127.0.0.1:5432/api
+      TIMESCALE_URL=postgres://quant:${
+        config.sops.placeholder."oracle-arm-002/quant-password"
+      }@127.0.0.1:5432/api
     '';
     owner = "nautilus";
   };
@@ -50,7 +52,9 @@
   # run 7×24 next to the DB. Only need the local TimescaleDB DSN, no exchange keys.
   sops.templates."quant-collectors.env" = {
     content = ''
-      TIMESCALE_URL=postgres://quant:${config.sops.placeholder."oracle-arm-002/quant-password"}@127.0.0.1:5432/api
+      TIMESCALE_URL=postgres://quant:${
+        config.sops.placeholder."oracle-arm-002/quant-password"
+      }@127.0.0.1:5432/api
       TELEGRAM_BOT_TOKEN=${config.sops.placeholder."oracle-arm-002/telegram-bot-token"}
       TELEGRAM_CHAT_ID=${config.sops.placeholder."oracle-arm-002/telegram-chat-id"}
       FINANCIALDATA_KEY=${config.sops.placeholder."oracle-arm-002/financialdata-key"}
@@ -59,6 +63,10 @@
   };
   services.quant-collectors = {
     enable = true;
+    # House strategies on Gate/HTX (strategies/ccxt_executor.py). dry_run until a Gate
+    # testnet key is added; HTX has no testnet.
+    ccxtPackage = inputs.xiongchenyu6.packages.${pkgs.stdenv.hostPlatform.system}.ccxt;
+    executorVenues = "gate:dry_run,htx:dry_run";
     environmentFile = config.sops.templates."quant-collectors.env".path;
   };
 
@@ -92,7 +100,11 @@
   services.nautilus-signal = {
     enable = true;
     package = inputs.xiongchenyu6.packages.${pkgs.stdenv.hostPlatform.system}.nautilus-trader;
-    instruments = [ "BTCUSDT.BINANCE" "ETHUSDT.BINANCE" "SOLUSDT.BINANCE" ];
+    instruments = [
+      "BTCUSDT.BINANCE"
+      "ETHUSDT.BINANCE"
+      "SOLUSDT.BINANCE"
+    ];
     barSpec = "1-MINUTE-LAST-EXTERNAL";
     environmentFile = config.sops.templates."nautilus-signal.env".path;
   };
