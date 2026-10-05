@@ -2,6 +2,7 @@
   config,
   inputs,
   pkgs,
+  lib,
   ...
 }:
 {
@@ -63,11 +64,24 @@
   };
   services.quant-collectors = {
     enable = true;
-    # House strategies on Gate/HTX (strategies/ccxt_executor.py). dry_run until a Gate
-    # testnet key is added; HTX has no testnet.
+    # Gate stays dry-run; HTX live uses confirmed funding and a durable order journal.
     ccxtPackage = inputs.xiongchenyu6.packages.${pkgs.stdenv.hostPlatform.system}.ccxt;
-    executorVenues = "gate:dry_run,htx:dry_run";
+    executorVenues = "gate:dry_run,htx:live";
     environmentFile = config.sops.templates."quant-collectors.env".path;
+  };
+
+  # User-funded HTX spot account. Runtime keys are temporary until migrated to SOPS.
+  systemd.services.quant-executor = {
+    environment = {
+      EXEC_ALLOW_LIVE = "1";
+      HTX_SUBACCOUNT_UID = "597216794";
+      HTX_SPOT_ACCOUNT_ID = "73961187";
+    };
+    unitConfig.ConditionPathExists = "/run/quant-htx-runtime.env";
+    serviceConfig.EnvironmentFile = lib.mkForce [
+      config.sops.templates."quant-collectors.env".path
+      "/run/quant-htx-runtime.env"
+    ];
   };
 
   services.nautilus-accumulator = {
