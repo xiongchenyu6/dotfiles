@@ -1,0 +1,1 @@
+../../../../.claude/skills/resume-codex/scripts/read_session.py

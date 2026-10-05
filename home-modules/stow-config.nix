@@ -1,8 +1,8 @@
 { pkgs, lib, ... }:
 let
   # Codex reads the same content: shared .codex/skills/* entries in the repo
-  # are relative symlinks into .claude/. spec is a Codex-only entry because
-  # its loader requires a regular SKILL.md; Claude remains command-only.
+  # are relative symlinks into .claude/. spec and resume-claude are Codex-only
+  # entries; the reverse handoff, resume-codex, is in Claude's skill tree.
   # ~/.codex/skills stays a real directory (it holds manually-linked skills
   # too), so each skill is linked individually.
   codexSkills = [
@@ -15,6 +15,7 @@ let
     "long-task-babysit"
     "nixos-deploy"
     "proxy-nodes"
+    "resume-claude"
     "spec"
     "token-saving"
     "tui-automation"
