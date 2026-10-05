@@ -91,7 +91,8 @@
 
         # Cross-platform GUI apps (moved from Linux-only)
         keepassxc
-        zotero
+        # Keep Zotero and its Gecko runtime together until upstream supports ESR 153.
+        inputs.nixpkgs-zotero.legacyPackages.${pkgs.stdenv.hostPlatform.system}.zotero
         yubikey-manager
 
         # Cross-platform CLI/DevOps tools (moved from Linux-only)
