@@ -8,6 +8,8 @@
     systems.url = "github:nix-systems/default";
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     nixpkgs-stable.url = "github:NixOS/nixpkgs/nixos-24.11";
+    # Zotero still requires Gecko 140; newer nixpkgs incorrectly supplies ESR 153.
+    nixpkgs-zotero.url = "github:NixOS/nixpkgs/363fdbe57ed052c76e816e6270206b0cb348e53a";
     #nixpkgs-master.url = "github:NixOS/nixpkgs/master";
     nixos-hardware = {
       url = "github:NixOS/nixos-hardware/master";

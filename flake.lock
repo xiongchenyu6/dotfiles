@@ -596,6 +596,22 @@
         "type": "github"
       }
     },
+    "nixpkgs-zotero": {
+      "locked": {
+        "lastModified": 1789322069,
+        "narHash": "sha256-eaIzbbImStaHMgxftbumWoZuMC+Xm7TraQSsf6da+VI=",
+        "owner": "NixOS",
+        "repo": "nixpkgs",
+        "rev": "363fdbe57ed052c76e816e6270206b0cb348e53a",
+        "type": "github"
+      },
+      "original": {
+        "owner": "NixOS",
+        "repo": "nixpkgs",
+        "rev": "363fdbe57ed052c76e816e6270206b0cb348e53a",
+        "type": "github"
+      }
+    },
     "npm-lockfile-fix": {
       "inputs": {
         "nixpkgs": [
@@ -804,6 +820,7 @@
         "nixos-wsl": "nixos-wsl",
         "nixpkgs": "nixpkgs",
         "nixpkgs-stable": "nixpkgs-stable",
+        "nixpkgs-zotero": "nixpkgs-zotero",
         "nur": "nur",
         "pre-commit-hooks": "pre-commit-hooks",
         "rime-frost": "rime-frost",
