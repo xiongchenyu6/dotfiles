@@ -113,11 +113,27 @@ class HTX:
             rates = (.002, .002)
         if side=='buy':
             allocation = min(allocation,float(free.get('USDT') or 0))
-            cost = float(self.ex.cost_to_precision(symbol,allocation/1.003))
-            qty = float(self.ex.amount_to_precision(symbol,cost/price))
+            raw_cost=allocation/1.003
+            if raw_cost<minimum or raw_cost<=0 or raw_cost/price<min_qty:
+                return False
+            cost = float(self.ex.cost_to_precision(symbol,raw_cost))
+            if cost<minimum or cost<=0:
+                return False
+            raw_qty=cost/price
         else:
-            qty = float(self.ex.amount_to_precision(symbol,min(allocation,float(free.get(asset) or 0))))
-            cost = qty*price
+            raw_qty=min(allocation,float(free.get(asset) or 0))
+            if raw_qty<min_qty or raw_qty<=0 or raw_qty*price<minimum:
+                return False
+        try:
+            qty = float(self.ex.amount_to_precision(symbol,raw_qty))
+        except Exception as cause:
+            # CCXT locally rejects amounts truncated to zero before any order API.
+            from ccxt.base.errors import InvalidOrder
+            if isinstance(cause,InvalidOrder):
+                return False
+            raise
+        if side=='sell':
+            cost=qty*price
         if cost<minimum or qty<min_qty or qty<=0 or cost<=0:
             return False
         number(cost)
