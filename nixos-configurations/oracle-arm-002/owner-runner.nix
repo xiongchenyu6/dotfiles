@@ -10,6 +10,10 @@ let
     cp ${./starslab-runner}/* $out/starslab_runner/
   '';
 in {
+  environment.systemPackages = [ (pkgs.writeShellScriptBin "starslab-runner" ''
+    export PYTHONPATH=${source}
+    exec ${python}/bin/python -m starslab_runner "$@"
+  '') ];
   users.groups.starslab-runner = { };
   users.users.starslab-runner = {
     isSystemUser = true;
