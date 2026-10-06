@@ -24,6 +24,9 @@ def load(home):
 
 
 def exchange(home, config):
+    from .config import machine_identity
+    if config['mode']=='live' and config['account_lock_owner']['machine_id']!=machine_identity():
+        raise RuntimeError('Run live account operations on the designated owner server over SSH')
     import ccxt
     options = {'enableRateLimit':True,'timeout':20000}
     if config['mode']=='live':
