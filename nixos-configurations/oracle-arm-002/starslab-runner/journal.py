@@ -16,23 +16,11 @@ def finite(value):
     return number
 
 
-class Journal:
-    def __init__(self, path):
-        path = Path(path)
-        path.parent.mkdir(parents=True, exist_ok=True, mode=0o700)
-        self.lock = path.with_suffix(path.suffix + '.lock').open('a')
-        path.with_suffix(path.suffix + '.lock').chmod(0o600)
-        try:
-            fcntl.flock(self.lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
-        except BlockingIOError:
-            self.lock.close()
-            raise RuntimeError("Another executor owns this journal") from None
-        self.db = sqlite3.connect(path, isolation_level=None)
-        path.chmod(0o600)
-        self.db.row_factory = sqlite3.Row
-        self.db.execute("PRAGMA journal_mode=WAL")
-        self.db.execute("PRAGMA synchronous=FULL")
-        self.db.executescript("""
+def initialize_schema(db):
+    db.executescript(SCHEMA)
+
+
+SCHEMA = """
             CREATE TABLE IF NOT EXISTS funding (
                 month TEXT PRIMARY KEY, trend REAL NOT NULL, dca REAL NOT NULL
             );
@@ -56,7 +44,27 @@ class Journal:
                 cash_delta REAL NOT NULL, created_at TEXT NOT NULL
             );
             CREATE TABLE IF NOT EXISTS metadata (key TEXT PRIMARY KEY, value TEXT NOT NULL);
-        """)
+"""
+
+
+class Journal:
+    def __init__(self, path):
+        path = Path(path)
+        self.path = path.resolve()
+        path.parent.mkdir(parents=True, exist_ok=True, mode=0o700)
+        self.lock = path.with_suffix(path.suffix + '.lock').open('a')
+        path.with_suffix(path.suffix + '.lock').chmod(0o600)
+        try:
+            fcntl.flock(self.lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
+        except BlockingIOError:
+            self.lock.close()
+            raise RuntimeError("Another executor owns this journal") from None
+        self.db = sqlite3.connect(path, isolation_level=None)
+        path.chmod(0o600)
+        self.db.row_factory = sqlite3.Row
+        self.db.execute("PRAGMA journal_mode=WAL")
+        self.db.execute("PRAGMA synchronous=FULL")
+        initialize_schema(self.db)
 
     @contextmanager
     def transaction(self):
@@ -92,7 +100,7 @@ class Journal:
     def exists(self, action):
         return self.db.execute('SELECT 1 FROM orders WHERE action=?', (action,)).fetchone() is not None
 
-    def fund(self, month, trend, dca):
+    def fund(self, month, trend, dca, confirmed_at=None):
         parsed = date.fromisoformat(month)
         if parsed.day != 1 or parsed.isoformat() != month:
             raise ValueError("Funding month must start on day one")
@@ -106,6 +114,11 @@ class Journal:
                     raise ValueError("Funding already confirmed with different amounts")
                 return
             self.db.execute("INSERT INTO funding VALUES (?,?,?)", (month, trend, dca))
+            if confirmed_at is not None:
+                stamp=datetime.fromisoformat(confirmed_at)
+                if stamp.tzinfo is None:
+                    raise ValueError('Confirmation time needs a timezone')
+                self.db.execute("INSERT INTO metadata VALUES (?,?)", ('funded-at:'+month,stamp.astimezone(timezone.utc).isoformat()))
 
     def reserve(self, client_id, action, position, kind, asset, side, requested,
                 quoted_taker_rate=None, quoted_basic_rate=None):
@@ -242,8 +255,6 @@ class Journal:
                 raise ValueError('Adjustment exceeds available strategy allocation')
             if -total>self.cash()+1e-8:
                 raise ValueError('Withdrawal exceeds tracked cash')
-            if self.net_funding()+total<0:
-                raise ValueError('Withdrawal of profits requires separate accounting')
             self.db.execute('INSERT INTO cash_flows VALUES (?,?,?,?,?,?)',
                 (reference,month,trend_delta,dca_delta,total,datetime.now(timezone.utc).isoformat()))
 

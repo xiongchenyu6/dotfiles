@@ -107,24 +107,21 @@ def restore(path, home, config, original_stopped=False):
         if not identity or identity[0]!=expected:
             raise ValueError('Backup account differs from destination configuration')
         target = home/f"{config['venue']}-{config['mode']}.sqlite"
-        if any(Path(str(target)+suffix).exists() for suffix in ('','-wal','-shm','.lock')):
+        if any(Path(str(target)+suffix).exists() for suffix in ('','-wal','-shm')):
             raise ValueError('Destination journal already exists; never overwrite execution state')
-        from .account_lock import acquire
-        lock = acquire(config)
-        from .journal import Journal
-        store = None
-        try:
-            # Exclusive creation prevents concurrent restore from replacing a journal.
-            target.parent.mkdir(parents=True,exist_ok=True,mode=0o700)
+        from .setup import stopped,private_home
+        home=private_home(home)
+        with stopped(home,config):
+            # Stale lock files are normal after installation; held locks refuse
+            # restore. Exclusive creation still prevents replacing any database.
             target.touch(mode=0o600,exist_ok=False)
-            store = Journal(target)
-            source.backup(store.db)
-            store.bind(expected)
-            if store.db.execute('PRAGMA integrity_check').fetchone()[0]!='ok':
-                raise ValueError('Restored journal integrity failed')
-        finally:
-            if store is not None:
-                store.close()
-            if lock is not None:
-                lock.close()
+            with sqlite3.connect(target) as restored:
+                source.backup(restored)
+                from .journal import initialize_schema
+                initialize_schema(restored)
+                if restored.execute('PRAGMA integrity_check').fetchone()[0]!='ok':
+                    raise ValueError('Restored journal integrity failed')
+                identity=restored.execute("SELECT value FROM metadata WHERE key='account'").fetchone()
+                if not identity or identity[0]!=expected:
+                    raise ValueError('Restored account identity differs')
     return verify_backup(path)
