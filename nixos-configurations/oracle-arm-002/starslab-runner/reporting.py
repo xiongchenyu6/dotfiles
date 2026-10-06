@@ -30,7 +30,7 @@ def rpc(base, function, body):
         return json.loads(raw)
 
 
-def report(store, config, prices, status):
+def report(store, config, prices, status, decisions=None, price_as_of=None):
     positions = []
     equity = store.cash()
     for row in store.holdings():
@@ -50,14 +50,21 @@ def report(store, config, prices, status):
             fills.append({'client_id':row['client_id'],'strategy':row['kind'],'asset':row['asset'],
                 'side':row['side'],'quantity':row['amount'],'quote_usdt':row['cost'],
                 'fee_usdt':fee,'fee_rate':rate,'finished_at':row['finished_at']})
-    funded = store.db.execute('SELECT coalesce(sum(trend+dca),0) FROM funding').fetchone()[0]
+    funded = store.net_funding()
     now = datetime.now(timezone.utc)
-    return {'version':1,'sequence':store.next_sequence(),'observed_at':now.isoformat(),
+    sequence = store.next_sequence()
+    if price_as_of is not None:
+        from .history import record_snapshot
+        record_snapshot(store,sequence,now.isoformat(),price_as_of,equity,store.cash(),funded,total_fee)
+    from .history import history
+    return {'version':1,'sequence':sequence,'observed_at':now.isoformat(),
         'status':status,'venue':config['venue'],'environment':config['mode'],
         'cash_usdt':max(0,store.cash()),'equity_usdt':max(0,equity),'funded_usdt':funded,
         'trend_available_usdt':store.budget('trend',now.strftime('%Y-%m-01')),
         'dca_available_usdt':store.budget('dca',now.strftime('%Y-%m-01')),
-        'fees_usdt':total_fee,'positions':positions,'fills':fills}
+        'fees_usdt':total_fee,'positions':positions,'fills':fills,
+        'history':history(store)['points'],
+        'decisions':[{key:row[key] for key in ('strategy','asset','reason')} for row in (decisions or [])]}
 
 
 def upload(path, data):

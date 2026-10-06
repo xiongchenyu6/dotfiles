@@ -45,6 +45,16 @@ class Journal:
                 asset_delta REAL, cash_delta REAL, amount REAL, cost REAL,
                 created_at TEXT NOT NULL, finished_at TEXT
             );
+            CREATE TABLE IF NOT EXISTS equity_snapshots (
+                sequence INTEGER PRIMARY KEY, observed_at TEXT NOT NULL,
+                price_as_of TEXT NOT NULL, equity REAL NOT NULL,
+                cash REAL NOT NULL, net_funding REAL NOT NULL, fees REAL NOT NULL
+            );
+            CREATE TABLE IF NOT EXISTS cash_flows (
+                reference TEXT PRIMARY KEY, month TEXT NOT NULL,
+                trend_delta REAL NOT NULL, dca_delta REAL NOT NULL,
+                cash_delta REAL NOT NULL, created_at TEXT NOT NULL
+            );
             CREATE TABLE IF NOT EXISTS metadata (key TEXT PRIMARY KEY, value TEXT NOT NULL);
         """)
 
@@ -61,6 +71,9 @@ class Journal:
     def close(self):
         self.db.close()
         self.lock.close()
+        account_lock = getattr(self,'account_lock',None)
+        if account_lock is not None:
+            account_lock.close()
 
     def bind(self, identity):
         with self.transaction():
@@ -181,7 +194,8 @@ class Journal:
     def cash(self):
         credit = self.db.execute("SELECT coalesce(sum(trend+dca),0) FROM funding").fetchone()[0]
         delta = self.db.execute("SELECT coalesce(sum(cash_delta),0) FROM orders WHERE status='done'").fetchone()[0]
-        return credit + delta
+        flow = self.db.execute("SELECT coalesce(sum(cash_delta),0) FROM cash_flows").fetchone()[0]
+        return credit + delta + flow
 
     def holdings(self):
         return [dict(r) for r in self.db.execute("""SELECT position,kind,asset,
@@ -200,4 +214,40 @@ class Journal:
         else:
             credit = self.db.execute("SELECT coalesce(sum(dca),0) FROM funding WHERE month=?", (month,)).fetchone()[0]
             delta = self.db.execute("SELECT coalesce(sum(cash_delta),0) FROM orders WHERE kind='dca' AND status='done' AND substr(created_at,1,7)=?", (month[:7],)).fetchone()[0]
-        return max(0.0, credit + delta)
+        if kind=='trend':
+            adjustment = self.db.execute('SELECT coalesce(sum(trend_delta),0) FROM cash_flows WHERE month<=?',(month,)).fetchone()[0]
+        else:
+            adjustment = self.db.execute('SELECT coalesce(sum(dca_delta),0) FROM cash_flows WHERE month=?',(month,)).fetchone()[0]
+        return max(0.0, credit + delta + adjustment)
+
+    def cash_flow(self, reference, month, trend_delta, dca_delta):
+        """Record an owner-confirmed withdrawal or allocation transfer, never an order."""
+        if not isinstance(reference,str) or not re.fullmatch(r'[A-Za-z0-9:_-]{1,128}',reference):
+            raise ValueError('Invalid cash-flow reference')
+        if month!=datetime.now(timezone.utc).strftime('%Y-%m-01'):
+            raise ValueError('Only the current month can be adjusted')
+        trend_delta, dca_delta = finite(trend_delta), finite(dca_delta)
+        total = trend_delta+dca_delta
+        if total>1e-8 or (trend_delta==0 and dca_delta==0):
+            raise ValueError('Only withdrawals or allocation transfers are supported')
+        with self.transaction():
+            prior = self.db.execute('SELECT month,trend_delta,dca_delta FROM cash_flows WHERE reference=?',(reference,)).fetchone()
+            if prior:
+                if tuple(prior)!=(month,trend_delta,dca_delta):
+                    raise ValueError('Cash-flow reference already has different amounts')
+                return
+            if self.pending():
+                raise ValueError('Reconcile pending orders before changing cash allocation')
+            if -trend_delta>self.budget('trend',month)+1e-8 or -dca_delta>self.budget('dca',month)+1e-8:
+                raise ValueError('Adjustment exceeds available strategy allocation')
+            if -total>self.cash()+1e-8:
+                raise ValueError('Withdrawal exceeds tracked cash')
+            if self.net_funding()+total<0:
+                raise ValueError('Withdrawal of profits requires separate accounting')
+            self.db.execute('INSERT INTO cash_flows VALUES (?,?,?,?,?,?)',
+                (reference,month,trend_delta,dca_delta,total,datetime.now(timezone.utc).isoformat()))
+
+    def net_funding(self):
+        funding = self.db.execute('SELECT coalesce(sum(trend+dca),0) FROM funding').fetchone()[0]
+        movements = self.db.execute('SELECT coalesce(sum(cash_delta),0) FROM cash_flows').fetchone()[0]
+        return funding+movements
