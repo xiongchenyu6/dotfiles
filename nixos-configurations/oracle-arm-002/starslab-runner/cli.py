@@ -13,6 +13,7 @@ import time
 
 from .config import DEFAULT, credentials, private_json, read_private_json, validate
 from .engine import tick
+from .errors import RunnerValidationError
 from .exchange import HTX
 from .journal import Journal
 from .reporting import report, paused_report, rpc, upload
@@ -120,7 +121,7 @@ def run(home, config, once=False):
                 status = tick(store,venue,config,snapshot,decisions=decisions)
             except Exception as cause:
                 # Exchange exception messages can include signed URLs and keys.
-                decisions.append({'strategy':'account','asset':None,'reason':stage+'_failed','error_class':type(cause).__name__})
+                decisions.append({'strategy':'account','asset':None,'reason':cause.reason if isinstance(cause,RunnerValidationError) else stage+'_failed','error_class':type(cause).__name__})
                 print(f'Execution paused ({type(cause).__name__}); pending intents are preserved.',flush=True)
             private_json(home/'decisions.json',{'observed_at':datetime.now(timezone.utc).isoformat(),
                 'status':status,'decisions':decisions})
@@ -129,7 +130,9 @@ def run(home, config, once=False):
                 price_as_of = min(timestamp(row['last_ts']) for row in snapshot['assets'] if row['asset'] in prices).isoformat()
                 display = report(store,config,prices,status,decisions,price_as_of)
             elif (home/'status.json').exists():
-                display = paused_report(store,read_private_json(home/'status.json'),config,status,decisions)
+                previous=read_private_json(home/'status.json')
+                if previous.get('venue')==config['venue'] and previous.get('environment')==config['mode']:
+                    display = paused_report(store,previous,config,status,decisions)
             if display is not None:
                 private_json(home/'status.json',display)
                 if config['display_file']:
@@ -169,10 +172,13 @@ def main(argv=None):
     execute = commands.add_parser('run')
     execute.add_argument('--once',action='store_true')
     commands.add_parser('status')
-    commands.add_parser('doctor')
+    doctor_command=commands.add_parser('doctor')
+    doctor_command.add_argument('--offline',action='store_true')
     commands.add_parser('decisions')
     commands.add_parser('history')
     commands.add_parser('funding-history')
+    commands.add_parser('pending-orders')
+    commands.add_parser('reconcile')
     carry = commands.add_parser('carry-dca')
     carry.add_argument('--reference',required=True)
     carry.add_argument('--from-month',required=True)
@@ -219,7 +225,7 @@ def main(argv=None):
             return 0
         if args.command=='doctor':
             from .recovery import diagnose
-            checks = diagnose(home)
+            checks = diagnose(home,args.offline)
             print(json.dumps(checks,indent=2))
             return int(any(row['status']!='ok' for row in checks))
         if args.command=='verify-backup':
@@ -243,7 +249,7 @@ def main(argv=None):
             finally:
                 lock.close()
             return 0
-        if args.command in ('history','funding-history'):
+        if args.command in ('history','funding-history','pending-orders'):
             import sqlite3
             from types import SimpleNamespace
             from .history import history
@@ -252,7 +258,8 @@ def main(argv=None):
                 db.row_factory = sqlite3.Row
                 from .funding_history import funding_history
                 reader=SimpleNamespace(db=db)
-                result=history(reader) if args.command=='history' else funding_history(reader)
+                from .reporting import pending_orders
+                result=history(reader) if args.command=='history' else pending_orders(reader) if args.command=='pending-orders' else funding_history(reader)
                 print(json.dumps(result,indent=2,allow_nan=False))
             return 0
         if args.command=='restore':
@@ -294,7 +301,14 @@ def main(argv=None):
                 return 0
         store = journal(home,config)
         try:
-            if args.command=='carry-dca':
+            if args.command=='reconcile':
+                venue=exchange(home,config)
+                ready=venue.reconcile(store)
+                if ready: venue.check(store)
+                print('Existing orders reconciled; no new order was submitted.' if ready else
+                    'Existing orders remain pending; new orders stay blocked.')
+                return 0 if ready else 1
+            elif args.command=='carry-dca':
                 if config['mode']=='live':
                     venue = exchange(home,config)
                     if not venue.reconcile(store):
@@ -361,7 +375,8 @@ def main(argv=None):
             store.close()
         return 0
     except Exception as cause:
-        print(f'Runner stopped safely ({type(cause).__name__}). Check local settings, permissions and account state.',file=sys.stderr)
+        reason=cause.reason if isinstance(cause,RunnerValidationError) else type(cause).__name__
+        print(f'Runner stopped safely ({reason}). Check local settings, permissions and account state.',file=sys.stderr)
         return 1
 
 

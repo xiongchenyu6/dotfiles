@@ -2,6 +2,21 @@
 
 import math
 from .fills import deltas
+from .errors import (AccountIdentityMismatch, WalletCashMismatch,
+                     WalletHoldingsMismatch, InvalidWalletData, InvalidFeeQuote)
+
+
+def wallet_values(balance, field):
+    try:
+        values = balance[field]
+        if not isinstance(values, dict):
+            raise ValueError
+        result = {key: float(value or 0) for key, value in values.items()}
+        if any(not math.isfinite(value) or value < 0 for value in result.values()):
+            raise ValueError
+        return result
+    except (KeyError, TypeError, ValueError, OverflowError):
+        raise InvalidWalletData() from None
 
 
 def number(value):
@@ -20,10 +35,10 @@ class HTX:
             identity = self.ex.spot_private_get_v2_user_uid()
             accounts = self.ex.spot_private_get_v1_account_accounts()
             if identity.get('code') != 200 or str(identity.get('data')) != uid:
-                raise ValueError('HTX account UID does not match local configuration')
+                raise AccountIdentityMismatch()
             if accounts.get('status') != 'ok' or not any(str(row['id'])==account_id
                 and row['type']=='spot' and row['state']=='working' for row in accounts.get('data', [])):
-                raise ValueError('HTX spot account does not match local configuration')
+                raise AccountIdentityMismatch()
 
     def balance(self):
         return self.ex.fetch_balance({'type':'spot','accountId':self.account_id})
@@ -33,17 +48,15 @@ class HTX:
         check(store)
         if self.mode!='live':
             return
-        balance = self.balance()['total']
-        if any(not math.isfinite(float(value or 0)) or float(value or 0)<0 for value in balance.values()):
-            raise ValueError('Invalid exchange balance')
+        balance = wallet_values(self.balance(), 'total')
         if float(balance.get('USDT') or 0)+.01 < store.cash():
-            raise ValueError('Exchange cash is below journal cash')
+            raise WalletCashMismatch()
         expected = {}
         for row in store.holdings():
             expected[row['asset']] = expected.get(row['asset'],0) + row['quantity']
         for asset in set(expected) | {a for a,q in balance.items() if a!='USDT' and q}:
             if not math.isclose(float(balance.get(asset) or 0),expected.get(asset,0),rel_tol=1e-7,abs_tol=1e-12):
-                raise ValueError('Exchange holdings differ from the local journal')
+                raise WalletHoldingsMismatch()
 
     def reconcile(self, store):
         from .account_lock import check
@@ -87,16 +100,17 @@ class HTX:
             raise ValueError('Invalid exchange order limits')
         if self.mode=='live':
             fee = self.ex.fetch_trading_fee(symbol)
-            rates = (fee.get('taker'),(fee.get('info') or {}).get('takerFeeRate',fee.get('taker')))
-            if fee.get('symbol')!=symbol or any(v is None or not math.isfinite(float(v))
-                or not 0<=float(v)<=.003 for v in rates):
-                raise ValueError('Authenticated fee unavailable or above safety ceiling')
-            free = self.balance()['free']
+            try:
+                rates = (fee.get('taker'), (fee.get('info') or {}).get('takerFeeRate', fee.get('taker')))
+                if fee.get('symbol') != symbol or any(v is None or not math.isfinite(float(v))
+                    or not 0 <= float(v) <= .003 for v in rates):
+                    raise ValueError
+            except (AttributeError, TypeError, ValueError, OverflowError):
+                raise InvalidFeeQuote() from None
+            free = wallet_values(self.balance(), 'free')
         else:
-            free = {'USDT':store.cash(),asset:allocation}
-            rates = (.002,.002)
-        if any(not math.isfinite(float(v or 0)) or float(v or 0)<0 for v in free.values()):
-            raise ValueError('Invalid available exchange balance')
+            free = wallet_values({'free': {'USDT': store.cash(), asset: allocation}}, 'free')
+            rates = (.002, .002)
         if side=='buy':
             allocation = min(allocation,float(free.get('USDT') or 0))
             cost = float(self.ex.cost_to_precision(symbol,allocation/1.003))

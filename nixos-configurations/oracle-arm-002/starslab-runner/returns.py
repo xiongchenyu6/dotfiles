@@ -16,6 +16,13 @@ def _timestamp(value):
     return stamp.astimezone(timezone.utc)
 
 
+def _sum(values):
+    try:
+        return math.fsum(values)
+    except OverflowError:
+        return math.inf
+
+
 def observed_period_return(store):
     """Return a nullable, non-annualized percentage; perform no journal writes.
 
@@ -42,7 +49,7 @@ def observed_period_return(store):
         valuations = [(_timestamp(row[0]), float(row[1]), float(row[2]))
                       for row in snapshots]
         result.update(start_at=valuations[0][0].isoformat(),end_at=valuations[-1][0].isoformat())
-        if any(not math.isfinite(equity) or not math.isfinite(funding)
+        if any(not math.isfinite(equity) or equity < 0 or not math.isfinite(funding)
                for _, equity, funding in valuations):
             return unavailable('invalid_valuation')
         if any(b[0] <= a[0] for a, b in zip(valuations, valuations[1:])):
@@ -51,7 +58,10 @@ def observed_period_return(store):
         flows = []
         legacy = []
         for month, trend, dca in store.db.execute('SELECT month,trend,dca FROM funding'):
-            amount = float(trend) + float(dca)
+            trend, dca = float(trend), float(dca)
+            if not all(math.isfinite(value) and value >= 0 for value in (trend, dca)):
+                return unavailable('invalid_cash_flow')
+            amount = trend + dca
             if amount == 0:
                 continue
             row = store.db.execute('SELECT value FROM metadata WHERE key=?',
@@ -72,25 +82,33 @@ def observed_period_return(store):
         return unavailable('invalid_timestamps_or_amounts')
 
     start, beginning, opening_funding = valuations[0]
-    opening_known = math.fsum(amount for time, amount in flows if time <= start)
-    opening_total = math.fsum(legacy) + opening_known
+    opening_known = _sum(amount for time, amount in flows if time <= start)
+    opening_total = _sum(legacy) + opening_known
+    if not math.isfinite(opening_total):
+        return unavailable('invalid_cash_flow')
     if not math.isclose(opening_total, opening_funding, rel_tol=1e-9, abs_tol=1e-7):
         return unavailable('unknown_flow_timing' if legacy else 'unreconciled_cash_flows')
     # Check every recorded funding balance: an unexplained or mistimed movement
     # must not turn into apparent investment profit (even if later offset).
+    remaining = sorted((time, amount) for time, amount in flows if time > start)
+    flow_index = 0
+    known = opening_total
     for stamp, _, funding in valuations:
-        known = opening_total + math.fsum(
-            amount for time, amount in flows if start < time <= stamp)
+        newly_observed = []
+        while flow_index < len(remaining) and remaining[flow_index][0] <= stamp:
+            newly_observed.append(remaining[flow_index][1])
+            flow_index += 1
+        known = _sum([known, *newly_observed])
         if not math.isclose(known, funding, rel_tol=1e-9, abs_tol=1e-7):
             return unavailable('unreconciled_cash_flows')
     end, ending, _ = valuations[-1]
     period = (end - start).total_seconds()
     during = [(time, amount) for time, amount in flows if start < time <= end]
-    denominator = beginning + math.fsum(
+    denominator = beginning + _sum(
         amount * (end - time).total_seconds() / period for time, amount in during)
     if not math.isfinite(denominator) or denominator <= 0:
         return unavailable('nonpositive_capital')
-    percentage = (ending - beginning - math.fsum(amount for _, amount in during)) / denominator * 100
+    percentage = (ending - beginning - _sum(amount for _, amount in during)) / denominator * 100
     if not math.isfinite(percentage):
         return unavailable('invalid_return')
     result['return_pct'] = percentage

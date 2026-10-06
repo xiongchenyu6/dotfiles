@@ -9,7 +9,7 @@ import sqlite3
 from .config import credentials, read_private_json, validate
 
 
-def diagnose(home):
+def diagnose(home, offline=False):
     checks = []
     def check(name, action, remedy):
         try:
@@ -27,6 +27,11 @@ def diagnose(home):
     if config is None:
         return checks
     if config['mode']=='live':
+        def owner_context():
+            from .config import is_owner_process
+            if not is_owner_process(config,home): raise ValueError()
+            return 'Designated machine, OS user and state directory verified'
+        check('owner_context',owner_context,'Run live commands on the designated owner machine as its OS user, using its original state directory.')
         check('credentials',lambda: 'Private credentials present' if credentials(home/config['credentials_file']) else None,
               'Provide a valid credential file with permission 600; do not paste keys into chat.')
     path = home/f"{config['venue']}-{config['mode']}.sqlite"
@@ -51,7 +56,23 @@ def diagnose(home):
         if not 0<=age<=300 or data.get('status')!='healthy':
             raise ValueError()
         return 'Healthy report observed within five minutes'
-    check('heartbeat',heartbeat,'Check the owner runner service and its logs. A stale report alone does not prove execution stopped.')
+    if not offline:
+        check('heartbeat',heartbeat,'Check the owner runner service and its logs. A stale report alone does not prove execution stopped.')
+    if not offline and (home/'decisions.json').exists():
+        try:
+            last=read_private_json(home/'decisions.json')
+            reasons={row.get('reason') for row in last.get('decisions',[])}
+            remedies={'account_identity_mismatch':'Restore credentials for the configured dedicated account; do not change the journal identity.',
+                'wallet_cash_below_journal':'Confirm completed withdrawals with cash-flow while execution is stopped.',
+                'wallet_holdings_mismatch':'Review manual trades or transfers with HTX; never delete the journal to bypass this check.',
+                'invalid_wallet_data':'Wait for valid exchange wallet data and inspect the owner service.',
+                'fee_quote_unavailable_or_excessive':'Verify the authenticated taker rate and the existing fee ceiling before resuming.',
+                'signal_feed_failed':'Check signal API reachability; prior valuations stay dated.',
+                'pending_reconciliation':'Stop the owner service, inspect pending-orders, then run reconcile. No new orders are submitted.'}
+            for reason in sorted(reasons & remedies.keys()):
+                checks.append({'check':reason,'status':'attention','remedy':remedies[reason]})
+        except Exception:
+            checks.append({'check':'decisions','status':'attention','remedy':'Check the private local decisions.json file.'})
     return checks
 
 
