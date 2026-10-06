@@ -33,6 +33,7 @@
     ./hashtopolis.nix
     ./postgres.nix
     ./freqtrade-ohlc.nix
+    ./owner-runner.nix
     ./nautilus.nix
   ];
 
