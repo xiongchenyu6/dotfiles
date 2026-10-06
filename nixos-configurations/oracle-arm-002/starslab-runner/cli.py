@@ -153,6 +153,14 @@ def main(argv=None):
     commands.add_parser('doctor')
     commands.add_parser('decisions')
     commands.add_parser('history')
+    carry = commands.add_parser('carry-dca')
+    carry.add_argument('--reference',required=True)
+    carry.add_argument('--from-month',required=True)
+    carry.add_argument('--amount',type=float,required=True)
+    deposit = commands.add_parser('deposit')
+    deposit.add_argument('--reference',required=True)
+    deposit.add_argument('--trend',type=float,required=True)
+    deposit.add_argument('--dca',type=float,required=True)
     adjust = commands.add_parser('cash-flow')
     adjust.add_argument('--reference',required=True)
     adjust.add_argument('--trend',type=float,required=True)
@@ -236,7 +244,28 @@ def main(argv=None):
                 return 0
         store = journal(home,config)
         try:
-            if args.command=='cash-flow':
+            if args.command=='carry-dca':
+                if config['mode']=='live':
+                    venue = exchange(home,config)
+                    if not venue.reconcile(store):
+                        raise ValueError('Reconcile pending orders before carrying allocation')
+                    venue.check(store)
+                store.carry_dca(args.reference,args.from_month,args.amount)
+                print('Unused DCA allocation carried to the current month; cash and contributions are unchanged.')
+            elif args.command=='deposit':
+                month = datetime.now(timezone.utc).strftime('%Y-%m-01')
+                prior = store.db.execute('SELECT 1 FROM cash_flows WHERE reference=?',(args.reference,)).fetchone()
+                if config['mode']=='live' and not prior:
+                    venue = exchange(home,config)
+                    if not venue.reconcile(store):
+                        raise ValueError('Reconcile pending orders before confirming a deposit')
+                    venue.check(store)
+                    if float(venue.balance()['free'].get('USDT') or 0)+1e-8<store.cash()+args.trend+args.dca:
+                        raise ValueError('Confirmed additional deposit is absent')
+                store.deposit(args.reference,month,args.trend,args.dca,
+                    config['monthly_trend_usdt'],config['monthly_dca_usdt'])
+                print('Additional funding confirmed locally; no transfer or order submitted.')
+            elif args.command=='cash-flow':
                 month = datetime.now(timezone.utc).strftime('%Y-%m-01')
                 prior = store.db.execute('SELECT 1 FROM cash_flows WHERE reference=?',(args.reference,)).fetchone()
                 if config['mode']=='live' and not prior:
@@ -261,6 +290,10 @@ def main(argv=None):
                 if not 0<=trend<=config['monthly_trend_usdt'] or not 0<=dca<=config['monthly_dca_usdt']:
                     raise ValueError('Funding exceeds local monthly limits')
                 prior = store.db.execute('SELECT trend,dca FROM funding WHERE month=?',(args.month,)).fetchone()
+                if not prior:
+                    added = store.db.execute('SELECT coalesce(sum(trend_delta),0),coalesce(sum(dca_delta),0) FROM cash_flows WHERE month=? AND cash_delta>0',(args.month,)).fetchone()
+                    if trend+added[0]>config['monthly_trend_usdt']+1e-8 or dca+added[1]>config['monthly_dca_usdt']+1e-8:
+                        raise ValueError('Combined deposits exceed monthly funding caps')
                 if config['mode']=='live' and not prior:
                     venue = exchange(home,config)
                     if not venue.reconcile(store):
