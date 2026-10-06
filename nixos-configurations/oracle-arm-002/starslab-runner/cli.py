@@ -15,7 +15,7 @@ from .config import DEFAULT, credentials, private_json, read_private_json, valid
 from .engine import tick
 from .exchange import HTX
 from .journal import Journal
-from .reporting import report, rpc, upload
+from .reporting import report, paused_report, rpc, upload
 from .signals import validate_snapshot, timestamp
 
 
@@ -118,9 +118,13 @@ def run(home, config, once=False):
                 print(f'Execution paused ({type(cause).__name__}); pending intents are preserved.',flush=True)
             private_json(home/'decisions.json',{'observed_at':datetime.now(timezone.utc).isoformat(),
                 'status':status,'decisions':decisions})
+            display = None
             if prices:
                 price_as_of = min(timestamp(row['last_ts']) for row in snapshot['assets'] if row['asset'] in prices).isoformat()
                 display = report(store,config,prices,status,decisions,price_as_of)
+            elif (home/'status.json').exists():
+                display = paused_report(store,read_private_json(home/'status.json'),config,status,decisions)
+            if display is not None:
                 private_json(home/'status.json',display)
                 if config['display_file']:
                     try:
@@ -141,6 +145,8 @@ def main(argv=None):
     commands = parser.add_subparsers(dest='command',required=True)
     commands.add_parser('init')
     commands.add_parser('configure-live')
+    lock_server = commands.add_parser('hold-account-lock')
+    lock_server.add_argument('--fingerprint',required=True)
     attach = commands.add_parser('connect-display')
     attach.add_argument('file',type=Path)
     fund = commands.add_parser('fund')
@@ -180,7 +186,9 @@ def main(argv=None):
                 validate(read_private_json(home/'config.json'))
                 print('Existing local configuration verified; preserved.')
             else:
-                private_json(home/'config.json',copy.deepcopy(DEFAULT))
+                initial = copy.deepcopy(DEFAULT)
+                initial['account_lock_owner']['home'] = str(home)
+                private_json(home/'config.json',initial)
                 print(f'Simulation configuration created at {home}/config.json. No live orders are enabled.')
             return 0
         if args.command=='decisions':
@@ -196,6 +204,21 @@ def main(argv=None):
             print(json.dumps(verify_backup(args.file)))
             return 0
         config = load(home)
+        if args.command=='hold-account-lock':
+            from .account_lock import acquire_local, fingerprint
+            if config['mode']!='live' or args.fingerprint!=fingerprint(config):
+                raise ValueError('Requested account differs from the owner configuration')
+            lock = acquire_local(config)
+            try:
+                print('READY',flush=True)
+                for line in sys.stdin:
+                    import re
+                    if not re.fullmatch(r'PING [a-f0-9]{32}\n',line):
+                        raise ValueError('Invalid lock channel request')
+                    print('PONG '+line[5:].strip(),flush=True)
+            finally:
+                lock.close()
+            return 0
         if args.command=='history':
             import sqlite3
             from types import SimpleNamespace
