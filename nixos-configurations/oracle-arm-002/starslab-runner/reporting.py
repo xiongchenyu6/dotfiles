@@ -57,13 +57,14 @@ def report(store, config, prices, status, decisions=None, price_as_of=None):
         from .history import record_snapshot
         record_snapshot(store,sequence,now.isoformat(),price_as_of,equity,store.cash(),funded,total_fee)
     from .history import history
+    from .attribution import attribution
     return {'version':1,'sequence':sequence,'observed_at':now.isoformat(),
         'status':status,'venue':config['venue'],'environment':config['mode'],
         'cash_usdt':max(0,store.cash()),'equity_usdt':max(0,equity),'funded_usdt':funded,
         'trend_available_usdt':store.budget('trend',now.strftime('%Y-%m-01')),
         'dca_available_usdt':store.budget('dca',now.strftime('%Y-%m-01')),
         'fees_usdt':total_fee,'positions':positions,'fills':fills,
-        'history':history(store)['points'],
+        'history':history(store)['points'],'attribution':attribution(store,prices),
         'decisions':[{key:row[key] for key in ('strategy','asset','reason')} for row in (decisions or [])]}
 
 

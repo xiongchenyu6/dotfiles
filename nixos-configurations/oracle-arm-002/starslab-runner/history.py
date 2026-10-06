@@ -26,7 +26,7 @@ def history(store, limit=168):
     # Latest observation in each UTC hour. Every minute remains in the private journal.
     rows = store.db.execute('''SELECT s.* FROM equity_snapshots s JOIN
         (SELECT max(sequence) sequence FROM equity_snapshots GROUP BY substr(observed_at,1,13)) h
-        ON s.sequence=h.sequence ORDER BY s.sequence DESC LIMIT ?''',(limit,)).fetchall()
+        ON s.sequence=h.sequence ORDER BY s.observed_at DESC LIMIT ?''',(limit,)).fetchall()
     return {'valuation_source':'hourly_research_close','points':[
         {'observed_at':row['observed_at'],'price_as_of':row['price_as_of'],
          'equity_usdt':row['equity'],'cash_usdt':row['cash'],
