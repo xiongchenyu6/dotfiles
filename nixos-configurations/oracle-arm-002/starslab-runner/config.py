@@ -1,17 +1,29 @@
 """Private local configuration. Platform reports never contain these settings."""
 
 import json
+import socket
+import getpass
+import hashlib
 import math
 from pathlib import Path
 import re
 from urllib.parse import urlparse
+
+def machine_identity():
+    path = Path('/etc/machine-id')
+    value = path.read_text().strip() if path.exists() else socket.gethostname()
+    return hashlib.sha256(value.encode()).hexdigest()
+
 
 ASSETS = ['BTC','ETH','SOL','XRP','DOGE','ADA','AVAX','SUI','NEAR','UNI','ZEC','PEPE','WLD']
 DEFAULT = {'venue':'htx','mode':'dry_run','allow_live':False,'assets':ASSETS,
     'trend':True,'dca':True,'monthly_trend_usdt':100,'monthly_dca_usdt':100,
     'order_usdt':20,'api_base':'https://api.panda.qzz.io',
     'account_uid':None,'spot_account_id':None,'credentials_file':'credentials.env',
-    'display_file':None,'proxy_url':None}
+    'display_file':None,'proxy_url':None,
+    'account_lock_owner':{'machine_id':machine_identity(),'host':socket.gethostname(),'ssh':getpass.getuser()+'@'+socket.gethostname(),
+        'user':getpass.getuser(),'home':str(Path.home()/'.config/starslab-runner'),
+        'executable':'/run/current-system/sw/bin/starslab-runner' if Path('/run/current-system/sw/bin/starslab-runner').exists() else str(Path.home()/'.local/bin/starslab-runner')}}
 
 
 def private_json(path, data):
@@ -47,6 +59,16 @@ def validate(data):
         not all(isinstance(data[key],str) and re.fullmatch(r'[0-9]+',data[key])
                 for key in ['account_uid','spot_account_id'])):
         raise ValueError('Live mode requires explicit local authorization and account identity')
+    owner = data['account_lock_owner']
+    if not isinstance(owner,dict) or set(owner)!={'machine_id','host','ssh','user','home','executable'}:
+        raise ValueError('Invalid account lock owner')
+    if not isinstance(owner['machine_id'],str) or not re.fullmatch(r'[a-f0-9]{64}',owner['machine_id']):
+        raise ValueError('Invalid lock owner machine identity')
+    for key in ('host','ssh','user'):
+        if not isinstance(owner[key],str) or not re.fullmatch(r'[A-Za-z0-9_][A-Za-z0-9_.@-]{0,200}',owner[key]):
+            raise ValueError('Invalid owner SSH setting')
+    if any(not isinstance(owner[key],str) or not Path(owner[key]).is_absolute() for key in ('home','executable')):
+        raise ValueError('Owner state directory must be absolute')
     assets = data['assets']
     if not isinstance(assets,list) or not assets or len(assets)!=len(set(assets)) or not set(assets).issubset(ASSETS):
         raise ValueError('Invalid locally selected universe')

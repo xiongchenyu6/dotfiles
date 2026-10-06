@@ -29,6 +29,8 @@ class HTX:
         return self.ex.fetch_balance({'type':'spot','accountId':self.account_id})
 
     def check(self, store):
+        from .account_lock import check
+        check(store)
         if self.mode!='live':
             return
         balance = self.balance()['total']
@@ -44,6 +46,8 @@ class HTX:
                 raise ValueError('Exchange holdings differ from the local journal')
 
     def reconcile(self, store):
+        from .account_lock import check
+        check(store)
         for row in store.pending():
             if self.mode != 'live':
                 # Simulations never leave a remote ambiguous order. A crash after
@@ -69,6 +73,8 @@ class HTX:
 
     def submit(self, store, kind, asset, side, action, position, allocation):
         import uuid
+        from .account_lock import check
+        check(store)
         symbol = asset+'/USDT'
         market = self.ex.market(symbol)
         if not market.get('spot') or market.get('active') is False:
@@ -114,6 +120,7 @@ class HTX:
             else:
                 store.finish(cid,-qty,cost*.998,qty,cost)
             return True
+        check(store)
         params = {'clientOrderId':cid,'account-id':self.account_id}
         order = self.ex.create_market_buy_order_with_cost(symbol,cost,params) if side=='buy' else self.ex.create_market_sell_order(symbol,qty,params)
         if order.get('id'):

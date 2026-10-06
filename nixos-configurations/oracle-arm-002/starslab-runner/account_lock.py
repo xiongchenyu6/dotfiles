@@ -7,7 +7,7 @@ import os
 from pathlib import Path
 
 
-def acquire(config, directory=None):
+def acquire_local(config, directory=None):
     if config['mode']!='live':
         return None
     directory = Path(directory) if directory else Path.home()/'.local/state/starslab-runner/account-locks'
@@ -27,3 +27,22 @@ def acquire(config, directory=None):
     except BaseException:
         handle.close()
         raise RuntimeError('Another executor owns this account on this machine') from None
+
+
+def fingerprint(config):
+    return hashlib.sha256(json.dumps([config['venue'],config['account_uid'],config['spot_account_id']]).encode()).hexdigest()
+
+
+def acquire(config, directory=None):
+    from .config import machine_identity
+    owner = config.get('account_lock_owner')
+    if config['mode']!='live' or directory is not None or not owner or owner['machine_id']==machine_identity():
+        return acquire_local(config,directory)
+    from .remote_lock import RemoteLock
+    return RemoteLock(owner,fingerprint(config))
+
+
+def check(store):
+    lock = getattr(store,'account_lock',None)
+    if hasattr(lock,'check'):
+        lock.check()

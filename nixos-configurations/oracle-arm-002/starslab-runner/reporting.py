@@ -74,3 +74,17 @@ def upload(path, data):
         raise ValueError('Invalid display configuration')
     return rpc(settings['api_base'],'upload_runner_report',
         {'upload_token':settings['upload_token'],'report':data})
+
+
+def paused_report(store, previous, config, status, decisions):
+    """Reuse a dated valuation to report failure without pretending prices refreshed."""
+    if previous.get('venue')!=config['venue'] or previous.get('environment')!=config['mode']:
+        raise ValueError('Previous report belongs to another execution mode')
+    import copy
+    result = copy.deepcopy(previous)
+    result['sequence'] = store.next_sequence()
+    result['status'] = status
+    result['decisions'] = [{key:row[key] for key in ('strategy','asset','reason')} for row in decisions]
+    # observed_at and the entire valuation/history stay dated. The server will
+    # reject snapshots older than its window; stale-report alerts still apply.
+    return result
