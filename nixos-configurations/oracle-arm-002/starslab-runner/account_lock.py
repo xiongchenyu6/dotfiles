@@ -34,9 +34,9 @@ def fingerprint(config):
 
 
 def acquire(config, directory=None):
-    from .config import machine_identity
+    from .config import is_owner_process
     owner = config.get('account_lock_owner')
-    if config['mode']!='live' or directory is not None or not owner or owner['machine_id']==machine_identity():
+    if config['mode']!='live' or directory is not None or not owner or is_owner_process(config):
         return acquire_local(config,directory)
     from .remote_lock import RemoteLock
     return RemoteLock(owner,fingerprint(config))

@@ -2,7 +2,8 @@
 
 import json
 import socket
-import getpass
+import pwd
+import os
 import hashlib
 import math
 from pathlib import Path
@@ -15,14 +16,19 @@ def machine_identity():
     return hashlib.sha256(value.encode()).hexdigest()
 
 
+def is_owner_process(config):
+    owner = config['account_lock_owner']
+    return owner['machine_id']==machine_identity() and owner['user']==pwd.getpwuid(os.getuid()).pw_name
+
+
 ASSETS = ['BTC','ETH','SOL','XRP','DOGE','ADA','AVAX','SUI','NEAR','UNI','ZEC','PEPE','WLD']
 DEFAULT = {'venue':'htx','mode':'dry_run','allow_live':False,'assets':ASSETS,
     'trend':True,'dca':True,'monthly_trend_usdt':100,'monthly_dca_usdt':100,
     'order_usdt':20,'api_base':'https://api.panda.qzz.io',
     'account_uid':None,'spot_account_id':None,'credentials_file':'credentials.env',
     'display_file':None,'proxy_url':None,
-    'account_lock_owner':{'machine_id':machine_identity(),'host':socket.gethostname(),'ssh':getpass.getuser()+'@'+socket.gethostname(),
-        'user':getpass.getuser(),'home':str(Path.home()/'.config/starslab-runner'),
+    'account_lock_owner':{'machine_id':machine_identity(),'host':socket.gethostname(),'ssh':pwd.getpwuid(os.getuid()).pw_name+'@'+socket.gethostname(),
+        'user':pwd.getpwuid(os.getuid()).pw_name,'home':str(Path.home()/'.config/starslab-runner'),
         'executable':'/run/current-system/sw/bin/starslab-runner' if Path('/run/current-system/sw/bin/starslab-runner').exists() else str(Path.home()/'.local/bin/starslab-runner')}}
 
 
