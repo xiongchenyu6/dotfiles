@@ -25,7 +25,7 @@ def load(home):
 
 def exchange(home, config):
     from .config import is_owner_process
-    if config['mode']=='live' and not is_owner_process(config):
+    if config['mode']=='live' and not is_owner_process(config,home):
         raise RuntimeError('Run live account operations on the designated owner server over SSH')
     import ccxt
     options = {'enableRateLimit':True,'timeout':20000}
@@ -60,6 +60,9 @@ def journal(home, config):
 
 def configure_live(home):
     config = load(home)
+    from .config import is_owner_process
+    if not is_owner_process(config,home):
+        raise RuntimeError('Use the designated owner machine, OS user and state directory')
     if config['mode']=='live':
         raise ValueError('Live mode is already configured')
     print('Use a dedicated HTX spot account with Read and Trade permissions, without withdrawal permission.')
@@ -144,9 +147,16 @@ def run(home, config, once=False):
 
 def main(argv=None):
     parser = argparse.ArgumentParser(description='Account-owner execution and private display reporting')
+    from . import __version__
+    parser.add_argument('--version',action='version',version='starslab-runner '+__version__)
     parser.add_argument('--home',type=Path,default=Path.home()/'.config/starslab-runner')
     commands = parser.add_subparsers(dest='command',required=True)
     commands.add_parser('init')
+    setup_command=commands.add_parser('setup')
+    setup_command.add_argument('--live',action='store_true')
+    upgrade_command=commands.add_parser('upgrade-owner')
+    upgrade_command.add_argument('--confirm-original-stopped',action='store_true')
+    upgrade_command.add_argument('--confirm-this-is-original-owner',action='store_true')
     commands.add_parser('configure-live')
     lock_server = commands.add_parser('hold-account-lock')
     lock_server.add_argument('--fingerprint',required=True)
@@ -162,6 +172,7 @@ def main(argv=None):
     commands.add_parser('doctor')
     commands.add_parser('decisions')
     commands.add_parser('history')
+    commands.add_parser('funding-history')
     carry = commands.add_parser('carry-dca')
     carry.add_argument('--reference',required=True)
     carry.add_argument('--from-month',required=True)
@@ -185,14 +196,23 @@ def main(argv=None):
     home = args.home.expanduser().resolve()
     try:
         if args.command=='init':
-            if (home/'config.json').exists():
-                validate(read_private_json(home/'config.json'))
-                print('Existing local configuration verified; preserved.')
-            else:
-                initial = copy.deepcopy(DEFAULT)
-                initial['account_lock_owner']['home'] = str(home)
-                private_json(home/'config.json',initial)
-                print(f'Simulation configuration created at {home}/config.json. No live orders are enabled.')
+            from .setup import initialize
+            existed=(home/'config.json').exists()
+            initialize(home)
+            print('Existing local configuration verified; preserved.' if existed else
+                f'Simulation configuration created at {home}/config.json. No live orders are enabled.')
+            return 0
+        if args.command=='setup':
+            from .setup import guided_setup
+            guided_setup(home,live=args.live,configure_live=configure_live)
+            print('Local setup complete. No funding, transfer, service or order was started.')
+            print('Next: confirm deposited funding with fund; attach an upload-only file with connect-display; then run on this owner machine.')
+            return 0
+        if args.command=='upgrade-owner':
+            from .setup import upgrade,local_owner
+            original=local_owner(home) if args.confirm_this_is_original_owner else None
+            upgrade(home,original_stopped=args.confirm_original_stopped,original_owner=original)
+            print('Original owner configuration upgraded; account, journal and spending limits preserved. No service or order started.')
             return 0
         if args.command=='decisions':
             print(json.dumps(read_private_json(home/'decisions.json'),indent=2))
@@ -223,14 +243,17 @@ def main(argv=None):
             finally:
                 lock.close()
             return 0
-        if args.command=='history':
+        if args.command in ('history','funding-history'):
             import sqlite3
             from types import SimpleNamespace
             from .history import history
             path = home/f"{config['venue']}-{config['mode']}.sqlite"
             with sqlite3.connect(path.as_uri()+'?mode=ro',uri=True) as db:
                 db.row_factory = sqlite3.Row
-                print(json.dumps(history(SimpleNamespace(db=db)),indent=2,allow_nan=False))
+                from .funding_history import funding_history
+                reader=SimpleNamespace(db=db)
+                result=history(reader) if args.command=='history' else funding_history(reader)
+                print(json.dumps(result,indent=2,allow_nan=False))
             return 0
         if args.command=='restore':
             from .recovery import restore
@@ -328,7 +351,7 @@ def main(argv=None):
                     venue.check(store)
                     if float(venue.balance()['free'].get('USDT') or 0)+1e-8<store.cash()+trend+dca:
                         raise ValueError('Confirmed additional funding is not present in the spot wallet')
-                store.fund(args.month,trend,dca)
+                store.fund(args.month,trend,dca,datetime.now(timezone.utc).isoformat())
                 print('Funding confirmed locally; no transfer or order was submitted.')
             else:
                 result = {'venue':config['venue'],'mode':config['mode'],'cash_usdt':store.cash(),

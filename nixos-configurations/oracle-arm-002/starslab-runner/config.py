@@ -5,20 +5,33 @@ import socket
 import pwd
 import os
 import hashlib
+import sys
+import subprocess
 import math
 from pathlib import Path
 import re
 from urllib.parse import urlparse
 
 def machine_identity():
-    path = Path('/etc/machine-id')
-    value = path.read_text().strip() if path.exists() else socket.gethostname()
+    if sys.platform=='darwin':
+        result=subprocess.run(['/usr/sbin/ioreg','-rd1','-c','IOPlatformExpertDevice'],
+            capture_output=True,text=True,check=True,timeout=5)
+        match=re.search(r'"IOPlatformUUID"\s*=\s*"([0-9A-Fa-f-]+)"',result.stdout)
+        if not match:
+            raise RuntimeError('Stable owner machine identity is unavailable')
+        value=match[1].lower()
+    else:
+        path=Path('/etc/machine-id')
+        value=path.read_text().strip() if path.exists() else ''
+        if not re.fullmatch(r'[a-fA-F0-9]{32}',value):
+            raise RuntimeError('A stable Linux machine ID is required')
     return hashlib.sha256(value.encode()).hexdigest()
 
 
-def is_owner_process(config):
+def is_owner_process(config, home=None):
     owner = config['account_lock_owner']
-    return owner['machine_id']==machine_identity() and owner['user']==pwd.getpwuid(os.getuid()).pw_name
+    return (owner['machine_id']==machine_identity() and owner['user']==pwd.getpwuid(os.getuid()).pw_name
+        and (home is None or Path(home).resolve()==Path(owner['home']).resolve()))
 
 
 ASSETS = ['BTC','ETH','SOL','XRP','DOGE','ADA','AVAX','SUI','NEAR','UNI','ZEC','PEPE','WLD']

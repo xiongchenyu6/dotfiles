@@ -10,8 +10,10 @@ def record_snapshot(store, sequence, observed_at, price_as_of, equity, cash, fun
     if observed.tzinfo is None or price_time.tzinfo is None or not 0<=(observed-price_time).total_seconds()<=10830:
         raise ValueError('Valuation timestamp is invalid or stale')
     values = (equity,cash,funded,fees)
-    if any(type(v) not in (int,float) or not math.isfinite(v) or v<0 for v in values):
+    if any(type(v) not in (int,float) or not math.isfinite(v) for v in values):
         raise ValueError('Invalid historical account amount')
+    if min(equity,cash,fees)<0:
+        raise ValueError('Negative equity, cash or fees')
     if type(sequence) is not int or sequence<1:
         raise ValueError('Invalid snapshot sequence')
     with store.transaction():

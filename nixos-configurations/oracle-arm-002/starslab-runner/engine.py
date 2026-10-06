@@ -12,7 +12,7 @@ def tick(store, venue, config, snapshot, now=None, decisions=None):
     def note(strategy, asset, reason):
         decisions.append({'strategy':strategy,'asset':asset,'reason':reason})
     validate(config)
-    if config['mode']=='live' and not is_owner_process(config):
+    if config['mode']=='live' and not is_owner_process(config,store.path.parent):
         raise RuntimeError('Live execution belongs to the designated owner server')
     if venue.mode != config['mode']:
         raise ValueError('Exchange mode differs from local authorization')
