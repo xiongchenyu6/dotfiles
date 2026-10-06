@@ -7,7 +7,7 @@ let
   ]);
   source = pkgs.runCommand "owner-starslab-runner-source" { } ''
     mkdir -p $out/starslab_runner
-    cp ${./starslab-runner}/*.py $out/starslab_runner/
+    cp ${./starslab-runner}/* $out/starslab_runner/
   '';
 in {
   users.groups.starslab-runner = { };
