@@ -66,7 +66,7 @@ def report(store, config, prices, status, decisions=None, price_as_of=None):
         'trend_available_usdt':store.budget('trend',now.strftime('%Y-%m-01')),
         'dca_available_usdt':store.budget('dca',now.strftime('%Y-%m-01')),
         'fees_usdt':total_fee,'positions':positions,'fills':fills,
-        'funding_history':funding_history(store),'return_summary':observed_period_return(store),
+        'pending_orders':pending_orders(store),'funding_history':funding_history(store),'return_summary':observed_period_return(store),
         'history':history(store)['points'],'attribution':attribution(store,prices),
         'decisions':[{key:row[key] for key in ('strategy','asset','reason')} for row in (decisions or [])]}
 
@@ -88,7 +88,15 @@ def paused_report(store, previous, config, status, decisions):
     result = copy.deepcopy(previous)
     result['sequence'] = store.next_sequence()
     result['status'] = status
+    result['pending_orders'] = pending_orders(store)
     result['decisions'] = [{key:row[key] for key in ('strategy','asset','reason')} for row in decisions]
     # observed_at and the entire valuation/history stay dated. The server will
     # reject snapshots older than its window; stale-report alerts still apply.
     return result
+
+
+def pending_orders(store):
+    return [{'client_id':row['client_id'],'exchange_id':row['exchange_id'],
+        'strategy':row['kind'],'asset':row['asset'],'side':row['side'],
+        'requested':row['requested'],'created_at':row['created_at']}
+        for row in store.db.execute("SELECT * FROM orders WHERE status='pending' ORDER BY created_at LIMIT 100")]
