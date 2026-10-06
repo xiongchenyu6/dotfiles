@@ -24,8 +24,8 @@ def load(home):
 
 
 def exchange(home, config):
-    from .config import machine_identity
-    if config['mode']=='live' and config['account_lock_owner']['machine_id']!=machine_identity():
+    from .config import is_owner_process
+    if config['mode']=='live' and not is_owner_process(config):
         raise RuntimeError('Run live account operations on the designated owner server over SSH')
     import ccxt
     options = {'enableRateLimit':True,'timeout':20000}
@@ -209,7 +209,8 @@ def main(argv=None):
         config = load(home)
         if args.command=='hold-account-lock':
             from .account_lock import acquire_local, fingerprint
-            if config['mode']!='live' or args.fingerprint!=fingerprint(config):
+            from .config import is_owner_process
+            if config['mode']!='live' or not is_owner_process(config) or args.fingerprint!=fingerprint(config):
                 raise ValueError('Requested account differs from the owner configuration')
             lock = acquire_local(config)
             try:

@@ -4,7 +4,7 @@ import calendar
 from datetime import datetime, timezone
 import uuid
 from .signals import validate_snapshot
-from .config import validate, machine_identity
+from .config import validate, is_owner_process
 
 
 def tick(store, venue, config, snapshot, now=None, decisions=None):
@@ -12,7 +12,7 @@ def tick(store, venue, config, snapshot, now=None, decisions=None):
     def note(strategy, asset, reason):
         decisions.append({'strategy':strategy,'asset':asset,'reason':reason})
     validate(config)
-    if config['mode']=='live' and config['account_lock_owner']['machine_id']!=machine_identity():
+    if config['mode']=='live' and not is_owner_process(config):
         raise RuntimeError('Live execution belongs to the designated owner server')
     if venue.mode != config['mode']:
         raise ValueError('Exchange mode differs from local authorization')
