@@ -52,10 +52,18 @@ class HTX:
         if float(balance.get('USDT') or 0)+.01 < store.cash():
             raise WalletCashMismatch()
         expected = {}
+        rounding = {}
         for row in store.holdings():
             expected[row['asset']] = expected.get(row['asset'],0) + row['quantity']
+            # A tiny remainder after selling millions of tokens inherits the
+            # floating-point resolution of the original holding, not the dust.
+            # Bound that cancellation error by a few representable steps;
+            # exchange quantity precision would permit a much larger mismatch.
+            rounding[row['asset']] = rounding.get(row['asset'],0) + 4 * math.ulp(
+                max(abs(row['quantity']), abs(row.get('bought', row['quantity']))))
         for asset in set(expected) | {a for a,q in balance.items() if a!='USDT' and q}:
-            if not math.isclose(float(balance.get(asset) or 0),expected.get(asset,0),rel_tol=1e-7,abs_tol=1e-12):
+            if not math.isclose(float(balance.get(asset) or 0),expected.get(asset,0),
+                                rel_tol=1e-7,abs_tol=max(1e-12,rounding.get(asset,0))):
                 raise WalletHoldingsMismatch()
 
     def reconcile(self, store):
