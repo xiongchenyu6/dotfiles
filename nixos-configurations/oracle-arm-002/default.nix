@@ -34,6 +34,7 @@
     ./postgres.nix
     ./freqtrade-ohlc.nix
     ./owner-runner.nix
+    ./trend-shadow.nix
     ./nautilus.nix
   ];
 

@@ -1,0 +1,53 @@
+{
+  "version": 1,
+  "start": "2026-10-07T18:00:00+00:00",
+  "assets": [
+    "BTC",
+    "ETH",
+    "SOL",
+    "XRP",
+    "DOGE",
+    "ADA",
+    "AVAX",
+    "SUI",
+    "NEAR",
+    "UNI",
+    "ZEC",
+    "PEPE",
+    "WLD"
+  ],
+  "monthly": 100,
+  "order_cap": 20,
+  "minimum": 5,
+  "rules": [
+    {
+      "name": "baseline",
+      "entry": 168,
+      "exit": 72,
+      "buffer": 0
+    },
+    {
+      "name": "slower",
+      "entry": 336,
+      "exit": 144,
+      "buffer": 0
+    },
+    {
+      "name": "cost_buffer",
+      "entry": 168,
+      "exit": 72,
+      "buffer": 0.005016546369417174
+    }
+  ],
+  "costs": [
+    {
+      "fee": 0.002,
+      "slippage": 0.0005
+    },
+    {
+      "fee": 0.003,
+      "slippage": 0.001
+    }
+  ],
+  "implementation_sha256": "6df02b46481ff1b07724b6385df41285f1cd09cf39508a0f26c26d4e7af6459e"
+}
