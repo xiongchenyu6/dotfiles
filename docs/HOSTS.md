@@ -49,6 +49,11 @@ Lenovo Legion 16ACH6h (hybrid graphics), tagged `nvidia,gui`.
 - Gaming runtime: gamescope (with `capSysNice`), GameMode, MangoHud perf overlay,
   ydotool input injection.
 - Sunshine game-streaming host with NVENC fix (`LD_LIBRARY_PATH` to opengl-driver).
+- RustDesk unattended-Wayland 1.5.0 remote desktop, using the company server
+  `rustdesk.gz.autolife.ai` (ID port 7916, relay port 7917, API HTTPS port 8444).
+  Set a permanent password in RustDesk Security settings after activation.
+  Operators sign in through Casdoor/Feishu; capture and input need verification
+  from a second device, including after reboot.
 - Waydroid Android container, with a pre-start property-refresh workaround for NVIDIA.
 - WeChat with HiDPI scaling wrapper + desktop entry.
 
@@ -148,6 +153,9 @@ Domain `panda.qzz.io`. The network/routing node of the fleet.
 ### `oracle-amd-002` — Oracle Cloud x86 (mesh hub + quant sidecar)
 
 The WireGuard hub every other machine peers with.
+
+- RustDesk relay (`hbbr`), using the company's server public key:
+  `rustdesk.sg.autolife.ai:443` (native TCP relay).
 
 **Networking**
 - WireGuard hub `wg0` (listen port 22616): peers = office, game, and three more

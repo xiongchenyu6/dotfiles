@@ -32,6 +32,7 @@ in
     ./hardware-configuration.nix
     ./ib-gateway.nix
     ./nautilus-equity.nix
+    ./rustdesk.nix
     {
       topology.self.interfaces.home = {
         type = "wireguard";
@@ -49,6 +50,12 @@ in
   # hysteria2 出海入站(UDP 8443),给腾讯HK 上的 sub2api 用。
   # Reality 试过但退掉了:同链路只有 83% 成功率,而 hysteria2 有 93% 且快 3.6 倍。
   my.sing-box-hysteria2.enable = true;
+  swapDevices = [
+    {
+      device = "/var/lib/swapfile";
+      size = 2048;
+    }
+  ];
 
   boot.initrd.kernelModules = [ "nvme" ];
 
