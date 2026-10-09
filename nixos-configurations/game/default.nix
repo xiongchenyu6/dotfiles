@@ -240,14 +240,27 @@ in
           "virbr0"
           "virbr10"
         ]; # for libvirt
+        # Sunshine (47984/47989/47990/48010 TCP, 47998-48002/48010 UDP) is
+        # reachable only over the WireGuard mesh, not LAN/WiFi.
         interfaces.wg_ora.allowedTCPPorts = [
           22
           5173
           8080
           8443
           8765
+          47984 # Sunshine HTTPS
+          47989 # Sunshine HTTP (Moonlight pairing/serverinfo)
+          47990 # Sunshine web UI
+          48010 # Sunshine RTSP
         ];
-        interfaces.wg_ora.allowedUDPPorts = [ 22 ];
+        interfaces.wg_ora.allowedUDPPorts = [
+          22
+          47998 # Sunshine video
+          47999 # Sunshine control
+          48000 # Sunshine audio
+          48002 # Sunshine mic
+          48010
+        ];
         interfaces.wt0.allowedTCPPorts = [ 22 ];
         interfaces.wt0.allowedUDPPorts = [ 22 ];
       };
@@ -298,7 +311,8 @@ in
   services = {
     sunshine = {
       enable = true;
-      openFirewall = true;
+      # Ports are opened on wg_ora only (see networking.firewall above).
+      openFirewall = false;
       capSysAdmin = true;
     };
     # litellm = {
