@@ -48,10 +48,12 @@ in
         "ck"
         "openspec"
         "jscpd"
-        "chatgpt"
         "workmux"
         "pi"
       ]
+      # ChatGPT desktop is a brew cask on macOS; the llm-agents build there
+      # fetches an upstream zip that has already been pulled.
+      ++ lib.optionals pkgs.stdenv.hostPlatform.isLinux [ "chatgpt" ]
     )
   );
   home.activation.configurePiSub2apiDefaults = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
