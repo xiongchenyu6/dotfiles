@@ -21,7 +21,33 @@ let
       sops-nix
       nix-topology
     ]
-    ++ [ llm-agents.overlays.shared-nixpkgs ];
+    ++ [
+      llm-agents.overlays.shared-nixpkgs
+      # AnyIO 4.14.2 on Python 3.12 fails these TLS, eager-backend, uvloop and
+      # nested pytest tests (Darwin trips two more than Linux). Keep the
+      # remaining test suite enabled. Shared because python312Packages.
+      # huggingface-hub pulls it in on every desktop, macOS included.
+      (_: prev: {
+        python312 = prev.python312.override {
+          packageOverrides = lib.composeExtensions (prev.python312.packageOverrides or (_: _: { })) (
+            _: pyprev: {
+              anyio = pyprev.anyio.overridePythonAttrs (old: {
+                disabledTests = (old.disabledTests or [ ]) ++ [
+                  "test_tls_connectable"
+                  "test_propagates_inner_exception"
+                  "test_checkpoints_empty_inputs"
+                  "test_autouse_async_fixture"
+                  "test_hypothesis_module_mark"
+                  "test_hypothesis_function_mark"
+                  "test_start_with_value"
+                  "test_stepwise"
+                ];
+              });
+            }
+          );
+        };
+      })
+    ];
 
   # Additional overlays for NixOS — applied to ALL nixos hosts.
   # rust-web-server intentionally NOT in this list: it's a private SSH
@@ -157,26 +183,6 @@ in
             });
           }
         );
-      })
-      # AnyIO 4.14.2 on Python 3.12 fails these TLS, eager-backend and
-      # nested pytest tests. Keep the remaining test suite enabled.
-      (_: prev: {
-        python312 = prev.python312.override {
-          packageOverrides = lib.composeExtensions (prev.python312.packageOverrides or (_: _: { })) (
-            _: pyprev: {
-              anyio = pyprev.anyio.overridePythonAttrs (old: {
-                disabledTests = (old.disabledTests or [ ]) ++ [
-                  "test_tls_connectable"
-                  "test_propagates_inner_exception"
-                  "test_checkpoints_empty_inputs"
-                  "test_autouse_async_fixture"
-                  "test_hypothesis_module_mark"
-                  "test_hypothesis_function_mark"
-                ];
-              });
-            }
-          );
-        };
       })
       # nixpkgs pins wireshark 4.6.5 via fetchFromGitLab using a tag
       # ref. GitLab regenerated the v4.6.5 archive, so the recorded
