@@ -270,6 +270,25 @@ in
         wifi = {
           powersave = true;
         };
+        # This laptop sits in the office: eno1 gets the fixed office address
+        # at boot instead of a DHCP lease (the office segment hands out leases
+        # with no uplink). dad-timeout fails activation if the address is taken.
+        ensureProfiles.profiles.office-eno1 = {
+          connection = {
+            id = "office-eno1";
+            type = "ethernet";
+            interface-name = "eno1";
+            autoconnect = true;
+            autoconnect-priority = 10;
+          };
+          ipv4 = {
+            method = "manual";
+            address1 = "10.171.150.103/24,10.171.150.1";
+            dns = "8.8.8.8;8.8.4.4;";
+            dad-timeout = 3000;
+          };
+          ipv6.method = "disabled";
+        };
       };
       enableIPv6 = true;
       wg-quick = {
@@ -471,51 +490,21 @@ in
           };
 
           programs = {
-            # Office wired switch for eno1, like pon/poff. eno1 normally uses DHCP
-            # (home); the office segment hands out leases with no uplink, so
-            # officeon pins a fixed address and officeoff goes back to DHCP. The
-            # profile uses save=no, so nothing is written to disk.
+            # eno1 lives on the office segment (see networkmanager.ensureProfiles
+            # office-eno1, autoconnected at boot). officeoff swaps it to an
+            # unsaved DHCP profile until the next reboot; officeon puts it back.
             zsh.initContent = ''
-              function officeoff {
-                nmcli connection delete office-eno1 >/dev/null 2>&1 || true
-                # Reconnect with the automatic DHCP profile when the cable is in.
-                if [[ "$(cat /sys/class/net/eno1/carrier 2>/dev/null)" == 1 ]]; then
-                  nmcli device connect eno1 >/dev/null 2>&1 || true
-                fi
-                [[ $1 == --quiet ]] || echo "Office OFF: eno1 back to DHCP"
+              function officeon {
+                nmcli --wait 20 connection up office-eno1 >/dev/null || return 1
+                echo "Office ON: eno1 10.171.150.103"
               }
 
-              function officeon {
-                if [[ "$(cat /sys/class/net/eno1/carrier 2>/dev/null)" != 1 ]]; then
-                  echo "No cable on eno1; plug it in before running officeon" >&2
-                  return 1
-                fi
-
-                nmcli connection delete office-eno1 >/dev/null 2>&1 || true
-                nmcli connection add type ethernet ifname eno1 con-name office-eno1 \
-                  ipv4.method manual ipv4.addresses 10.171.150.103/24 \
-                  ipv4.gateway 10.171.150.1 ipv4.dns "8.8.8.8 8.8.4.4" \
-                  ipv4.dad-timeout 3000 ipv6.method disabled \
+              function officeoff {
+                nmcli connection delete dhcp-eno1 >/dev/null 2>&1 || true
+                nmcli connection add type ethernet ifname eno1 con-name dhcp-eno1 \
                   connection.autoconnect no save no >/dev/null || return 1
-
-                # Replaces the DHCP connection on eno1. dad-timeout makes activation
-                # fail when the fixed address is already taken.
-                if ! nmcli --wait 20 connection up office-eno1 >/dev/null; then
-                  echo "eno1 did not come up (address in use?); back to DHCP" >&2
-                  officeoff --quiet
-                  return 1
-                fi
-
-                # Verify the real data path, not just link state.
-                if ! ${pkgs.iproute2}/bin/ip route get 1.1.1.1 | ${pkgs.gnugrep}/bin/grep -q ' dev eno1 ' ||
-                  ! ${pkgs.curl}/bin/curl --disable --noproxy '*' --ipv4 --connect-timeout 5 \
-                    --max-time 10 --silent --output /dev/null https://cache.nixos.org/nix-cache-info; then
-                  echo "eno1 has no working uplink with the fixed address; back to DHCP" >&2
-                  officeoff --quiet
-                  return 1
-                fi
-
-                echo "Office ON: all traffic via eno1 10.171.150.103"
+                nmcli --wait 20 connection up dhcp-eno1 >/dev/null || return 1
+                echo "Office OFF: eno1 on DHCP until reboot"
               }
             '';
 
