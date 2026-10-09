@@ -50,6 +50,7 @@ in
     ./codexpro.nix
     ./happier.nix
     ./waydroid.nix
+    ./rustdesk.nix
     # ./vast-cli.nix  # Moved to home-manager module
   ];
 
@@ -295,8 +296,6 @@ in
     };
 
   services = {
-    todesk.enable = true;
-
     sunshine = {
       enable = true;
       openFirewall = true;

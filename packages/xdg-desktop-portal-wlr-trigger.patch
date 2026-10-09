@@ -1,0 +1,9 @@
+diff --git a/src/screencast/pipewire_screencast.c b/src/screencast/pipewire_screencast.c
+--- a/src/screencast/pipewire_screencast.c
++++ b/src/screencast/pipewire_screencast.c
+@@ -328,2 +328,3 @@
+-	cast->current_frame.xdpw_buffer = NULL;
+-	cast->current_frame.pw_buffer = NULL;
++	cast->current_frame.xdpw_buffer = NULL;
++	cast->current_frame.pw_buffer = NULL;
++	pw_stream_trigger_process(cast->stream);
