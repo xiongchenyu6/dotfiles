@@ -146,6 +146,7 @@ in
               (mkPeer "172.22.240.100" "fd48:4b4:f3::4" "nBEkTpn4kRYXS9r7beXh3uMYJBAq/534byXv8NsB8gM=")
               (mkPeer "172.22.240.101" "fd48:4b4:f3::5" "CAW6+atqM9xmCAZUaev3OZWbYKwjDNCHezyiBpiHmSg=")
               (mkPeer "172.22.240.102" "fd48:4b4:f3::6" "9WkAJx+EG3VifVLiMgD8+6CoCsBwSyWAMwtajoy/OTk=")
+              (mkPeer "172.22.240.103" "fd48:4b4:f3::7" shares.hosts.mac-pro.wg.public-key)
             ];
           };
           wg_kioubit = {
