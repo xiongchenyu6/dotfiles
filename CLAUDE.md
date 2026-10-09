@@ -95,3 +95,4 @@ Uses `sops-nix` with age encryption. Each host has its own age key defined in `.
 - Commit messages use conventional prefixes: `feat:`, `fix:`, `chore:`
 - Philosophy: incremental progress, composition over inheritance, clear intent over clever code, simplicity
 - Platform-specific packages use `lib.optionals` with `stdenv.isDarwin` / `stdenv.isLinux`
+- macOS split: GUI apps are Homebrew casks (`darwin-modules/client-gui.nix`, always latest upstream); the dev environment (CLI tools, toolchains, editor plugins, fonts) stays in Nix via home-manager. Don't add macOS GUI apps to nixpkgs lists.
