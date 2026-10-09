@@ -158,7 +158,7 @@ The WireGuard hub every other machine peers with.
   `rustdesk.sg.autolife.ai:443` (native TCP relay).
 
 **Networking**
-- WireGuard hub `wg0` (listen port 22616): peers = office, game, and three more
+- WireGuard hub `wg0` (listen port 22616): peers = office, game, mac-pro, and three more
   clients; NAT (v4+v6) for VPN clients; multicast enabled for mDNS/babel.
 - Second tunnel `wg_kioubit` to Kioubit (`hk1.g-load.eu`) carrying DN42/ULA ranges.
 - BBR + large TCP buffers; IP forwarding.
