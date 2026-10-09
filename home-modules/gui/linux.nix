@@ -445,6 +445,7 @@ in
         libsecret
         vulkan-loader
         vulnix
+        auth0-cli
         nix-melt
         blender
         #microsoft-edge
