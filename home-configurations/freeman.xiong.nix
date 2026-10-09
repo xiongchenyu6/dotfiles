@@ -129,6 +129,9 @@ in
       capture = kms
       encoder = nvenc
       origin_web_ui_allowed = wan
+      # Web UI is reached over WireGuard by its wg_ora address; Sunshine's
+      # CSRF check rejects form posts from any origin not listed here.
+      csrf_allowed_origins = https://172.22.240.99:47990
     '';
   };
 
