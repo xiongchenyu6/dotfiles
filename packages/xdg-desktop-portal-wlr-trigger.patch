@@ -1,9 +1,31 @@
-diff --git a/src/screencast/pipewire_screencast.c b/src/screencast/pipewire_screencast.c
---- a/src/screencast/pipewire_screencast.c
-+++ b/src/screencast/pipewire_screencast.c
-@@ -328,2 +328,3 @@
--	cast->current_frame.xdpw_buffer = NULL;
--	cast->current_frame.pw_buffer = NULL;
-+	cast->current_frame.xdpw_buffer = NULL;
-+	cast->current_frame.pw_buffer = NULL;
+PipeWire >= 1.4 only runs process() on a driving stream when the driver
+triggers a graph cycle. The ext-image-copy backend already calls
+pw_stream_trigger_process() after returning a frame; the zwlr_screencopy
+backend does not, so the stream delivers one frame and then stalls.
+
+Trigger from the screencopy frame callbacks, after wlr_frame_finish(),
+so the (synchronous) process() callback captures a new frame only when
+the stream is actually streaming. Triggering from inside
+xdpw_pwr_enqueue_buffer() instead is wrong: the PAUSED state handler
+enqueues before clearing pwr_stream_state, so process() dequeues a
+buffer while pausing and the next STREAMING transition trips
+assert(!cast->current_frame.pw_buffer).
+
+--- a/src/screencast/wlr_screencopy.c
++++ b/src/screencast/wlr_screencopy.c
+@@ -203,6 +203,7 @@ static void wlr_frame_ready(void *data, struct zwlr_screencopy_frame_v1 *frame,
+ 
+ 	xdpw_pwr_enqueue_buffer(cast);
+ 	wlr_frame_finish(cast);
 +	pw_stream_trigger_process(cast->stream);
+ }
+ 
+ static void wlr_frame_failed(void *data,
+@@ -215,6 +216,7 @@ static void wlr_frame_failed(void *data,
+ 
+ 	xdpw_pwr_enqueue_buffer(cast);
+ 	wlr_frame_finish(cast);
++	pw_stream_trigger_process(cast->stream);
+ }
+ 
+ static const struct zwlr_screencopy_frame_v1_listener wlr_frame_listener = {
