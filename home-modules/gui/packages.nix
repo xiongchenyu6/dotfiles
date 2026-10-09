@@ -16,12 +16,8 @@
         inputs.xiongchenyu6.packages.${pkgs.stdenv.hostPlatform.system}.cc-switch
         inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.aperant
         inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.agentsview
-        opencode-desktop
         kitty.kitten # 独立的 kitten 二进制（icat/ssh/clipboard 等小工具），不装 kitty 本体
-        bitwarden-desktop
         bitwarden-cli
-        discord
-        telegram-desktop
         cloc
         claude-monitor
         minicom
@@ -33,9 +29,6 @@
         #dmidecode
         # jetbrains.idea-ultimate
         # jetbrains.rider
-        xournalpp
-        slack
-        zoom-us
         # 终端内看图/视频/PDF 的一套：yazi 包装器自带一份，这里再放进
         # PATH 是给 pi 之类 CLI agent 直接调用（ffmpeg-full、imagemagick 在下面）
         ueberzugpp
@@ -89,10 +82,6 @@
         ansible.out
         #qemu_kvm
 
-        # Cross-platform GUI apps (moved from Linux-only)
-        keepassxc
-        # Keep Zotero and its Gecko runtime together until upstream supports ESR 153.
-        inputs.nixpkgs-zotero.legacyPackages.${pkgs.stdenv.hostPlatform.system}.zotero
         yubikey-manager
 
         # Cross-platform CLI/DevOps tools (moved from Linux-only)
@@ -174,6 +163,17 @@
         kubelogin-oidc
       ]
       ++ lib.optionals pkgs.stdenv.hostPlatform.isLinux [
+        # GUI apps: on macOS these come from Homebrew casks (darwin-modules/client-gui.nix)
+        opencode-desktop
+        bitwarden-desktop
+        discord
+        telegram-desktop
+        xournalpp
+        slack
+        zoom-us
+        keepassxc
+        # Keep Zotero and its Gecko runtime together until upstream supports ESR 153.
+        inputs.nixpkgs-zotero.legacyPackages.${pkgs.stdenv.hostPlatform.system}.zotero
         ledger-live-desktop # x86_64-linux only
         weave-gitops # Linux only
         calicoctl # Linux only
