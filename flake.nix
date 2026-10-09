@@ -206,6 +206,11 @@
               "freeman.xiong"
             ];
           };
+          mac-pro = {
+            userHomeModules = [
+              "freeman.xiong"
+            ];
+          };
         };
         nixos.hosts =
           let

@@ -21,7 +21,8 @@ in
     ezModules.client-gui
     ../shared-modules/core.nix
     ../shared-modules/sops.nix
-  ] ++ darwin-modules;
+  ]
+  ++ darwin-modules;
 
   system = {
     stateVersion = 6;
