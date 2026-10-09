@@ -158,6 +158,26 @@ in
           }
         );
       })
+      # AnyIO 4.14.2 on Python 3.12 fails these TLS, eager-backend and
+      # nested pytest tests. Keep the remaining test suite enabled.
+      (_: prev: {
+        python312 = prev.python312.override {
+          packageOverrides = lib.composeExtensions (prev.python312.packageOverrides or (_: _: { })) (
+            _: pyprev: {
+              anyio = pyprev.anyio.overridePythonAttrs (old: {
+                disabledTests = (old.disabledTests or [ ]) ++ [
+                  "test_tls_connectable"
+                  "test_propagates_inner_exception"
+                  "test_checkpoints_empty_inputs"
+                  "test_autouse_async_fixture"
+                  "test_hypothesis_module_mark"
+                  "test_hypothesis_function_mark"
+                ];
+              });
+            }
+          );
+        };
+      })
       # nixpkgs pins wireshark 4.6.5 via fetchFromGitLab using a tag
       # ref. GitLab regenerated the v4.6.5 archive, so the recorded
       # hash drifted (`U30OJ8m+L/...` → `Zvrwxjp4LK2J3...`) and every
