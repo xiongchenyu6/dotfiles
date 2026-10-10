@@ -6,12 +6,11 @@ _: {
   system.darwinLabel = "gui";
   system.primaryUser = "freeman.xiong";
 
+  # DNS stays on DHCP: this laptop roams between networks.
   networking = {
     hostName = "mac-pro";
     computerName = "mac-pro";
     localHostName = "mac-pro";
-    knownNetworkServices = [ "Wi-Fi" ];
-    dns = [ "1.1.1.1" ];
   };
 
   ids.gids.nixbld = 350;
