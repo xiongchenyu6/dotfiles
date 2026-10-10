@@ -32,10 +32,7 @@
     ];
   };
 
-  homebrew.masApps = {
-    WireGuard = 1451685025;
-    Xcode = 497799835;
-  };
+  homebrew.masApps.Xcode = 497799835;
 
   ids.gids.nixbld = 350;
   users.users."freeman.xiong" = {
