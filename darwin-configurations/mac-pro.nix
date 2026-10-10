@@ -13,6 +13,11 @@ _: {
     localHostName = "mac-pro";
   };
 
+  homebrew.masApps = {
+    WireGuard = 1451685025;
+    Xcode = 497799835;
+  };
+
   ids.gids.nixbld = 350;
   users.users."freeman.xiong" = {
     createHome = true;
