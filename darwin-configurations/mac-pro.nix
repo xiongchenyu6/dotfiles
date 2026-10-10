@@ -6,11 +6,18 @@ _: {
   system.darwinLabel = "gui";
   system.primaryUser = "freeman.xiong";
 
-  # DNS stays on DHCP: this laptop roams between networks.
+  # Static public resolvers like office-mac: the DHCP DNS here is a China
+  # Mobile resolver that NXDOMAINs brew cask hosts and breaks TLS to
+  # itunes.apple.com, so `mas` (App Store installs) cannot even look apps up.
   networking = {
     hostName = "mac-pro";
     computerName = "mac-pro";
     localHostName = "mac-pro";
+    knownNetworkServices = [ "Wi-Fi" ];
+    dns = [
+      "1.1.1.1"
+      "8.8.8.8"
+    ];
   };
 
   homebrew.masApps = {
