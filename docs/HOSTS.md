@@ -234,8 +234,7 @@ environment. `shared-modules/core.nix` already runs `nix.gc` / `nix.optimise`.
 - WireGuard via the `wireguard` darwin module (wg-quick, key in sops).
 
 ### `mac-pro` — M5 Max MacBook Pro, personal daily driver
-- Mesh `172.22.240.103` / `fd48:4b4:f3::7` through WireGuard.app (App Store);
-  the tunnel key lives only in that app, so the wg-quick module is not imported.
+- Mesh `172.22.240.103` / `fd48:4b4:f3::7` via the `wireguard` darwin module (wg-quick, key in sops, keepalive 30 s).
 - sops age key derives from `/etc/ssh/ssh_host_ed25519_key`; home-manager
   secrets decrypt with the personal GPG key (`~/.gnupg`), which must be
   imported by hand on a fresh install.

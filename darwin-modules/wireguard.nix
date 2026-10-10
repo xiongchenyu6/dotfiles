@@ -1,37 +1,15 @@
+# WireGuard mesh client for macOS hosts: wg-quick on wireguard-go, run by
+# launchd. Each host sets its own `address` list and `privateKeyFile` (sops)
+# on `networking.wg-quick.interfaces.wg_ora`; the hub peer lives here.
+{ pkgs, shares, ... }:
 {
-  config,
-  pkgs,
-  lib,
-  shares,
-  ...
-}:
-let
-  wgInterface = "wg_ora";
-in
-{
-  sops.secrets."wireguard/office" = { };
-
   environment.systemPackages = with pkgs; [
     wireguard-tools
     wireguard-go # WireGuard userspace implementation for macOS
   ];
 
-  # Use the built-in networking.wg-quick.interfaces for WireGuard configuration
   networking.wg-quick.interfaces.wg_ora = {
-    # Private key from sops secrets
-    privateKeyFile = config.sops.secrets."wireguard/office".path;
-
-    # Interface addresses
-    address = [
-      "fe80::101/64"
-      "172.22.240.98/32"
-      "fd48:4b4:f3::2/128"
-    ];
-
-    # Let WireGuard manage routes automatically (default behavior)
-    # Routes will be created for all allowedIPs
-
-    # Peer configuration
+    # Routes for all allowedIPs are created by wg-quick.
     peers = [
       {
         publicKey = shares.hosts.oracle-amd-002.wg.public-key;

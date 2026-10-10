@@ -18,7 +18,7 @@ public-key = 'trmPW+CV8BbXfDMbe7I7IFwRh5ke8vpbDlgisSoH6ng='
 public-key = '9TXI2YQ0cdhW3xBhxzuHpPuISR7k2NwTjZ2Sq/lwoE0='
 
 [hosts.mac-pro.wg]
-public-key = '9TXiFtqTJauZN0WYA7z1EpYtdvVV5+3fV/CvIfL6byA='
+public-key = '2bljDzFa753wDjgT8EN7Z+tgrXpCnGWKrH0Dotjn8xA='
 
 # Extra root CAs trusted system-wide (security.pki). Public CAs that already
 # ship in the standard Mozilla bundle don't belong here.
