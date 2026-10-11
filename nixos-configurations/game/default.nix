@@ -477,7 +477,7 @@ in
                 mkdir -p "$HOME/.codex"
                 ${codexPackage}/bin/codex features enable remote_control
               ''}";
-              ExecStart = "${codexPackage}/bin/codex remote-control";
+              ExecStart = "${codexPackage}/bin/codex remote-control --no-daemon";
               Restart = "always";
               RestartSec = 5;
               StandardOutput = "append:%h/.codex/remote-control.log";
