@@ -230,11 +230,11 @@
         "uv2nix": "uv2nix"
       },
       "locked": {
-        "lastModified": 1791694873,
-        "narHash": "sha256-PF5W2OAUTtXO3Ego95BYhmQwWq7nRDanRp9c75RGt1s=",
+        "lastModified": 1791720586,
+        "narHash": "sha256-EjO38ksPyLRv9QA6B2a41R6ki7LF0e1N7ExdqczC0XE=",
         "owner": "NousResearch",
         "repo": "hermes-agent",
-        "rev": "d4d2ab7b5d104166e7e22a02cafd12f1fe456a31",
+        "rev": "7bc05085f09ee9bfa9cecaaa3cf44758bdff96a6",
         "type": "github"
       },
       "original": {
@@ -342,11 +342,11 @@
         "treefmt-nix": "treefmt-nix"
       },
       "locked": {
-        "lastModified": 1791694029,
-        "narHash": "sha256-b+mFzz9j9T3PntDAT4Jw3PzgzGVY/XJXJ2/k6c9s9To=",
+        "lastModified": 1791710361,
+        "narHash": "sha256-1TxMulxgMf8k2m5WRtaO9NLRXclEk8i7O7bEvblZKPg=",
         "owner": "numtide",
         "repo": "llm-agents.nix",
-        "rev": "45773c4749ca4cc1ca87d2afe15ef6adfc463b97",
+        "rev": "fdd62d577cdb5fcef6ba9505833d2a3600a68afd",
         "type": "github"
       },
       "original": {
@@ -643,11 +643,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1791696222,
-        "narHash": "sha256-9xAFq43Wqk1FRWdbrlGGHkBJpK6CZXdQiYzCIFzdlYs=",
+        "lastModified": 1791721579,
+        "narHash": "sha256-AYJKG8MxjfDzdJITbcqzpvOMxcAfmu4Bry3OsUcTdtI=",
         "owner": "nix-community",
         "repo": "NUR",
-        "rev": "19e29a8f35486ea9f76198fea3dfe8adc0442975",
+        "rev": "85f6405686fc4b0cfda6c64e1a87ef02d31ed21e",
         "type": "github"
       },
       "original": {
@@ -789,7 +789,7 @@
     "rime-wanxiang-gram": {
       "flake": false,
       "locked": {
-        "narHash": "sha256-5AZrv/Sr98aQObDHW0pe1T4zr/d+vCxUvcrz1lGhFOg=",
+        "narHash": "sha256-kQe1XkrrNpMLxNst9lAKOt2TrY3P9pStMg9bmdIluYg=",
         "type": "file",
         "url": "https://github.com/amzxyz/RIME-LMDG/releases/download/LTS/wanxiang-lts-zh-hans.gram"
       },
@@ -884,11 +884,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1791639265,
-        "narHash": "sha256-51gxD0eLcJkxH2TYdhE+Qsf04yg3PRV7anCAqOFX70E=",
+        "lastModified": 1791710405,
+        "narHash": "sha256-mVD4XIc5JkqMW2K04IkFUzHgHmyJZlzw5ktfgMDCbKU=",
         "owner": "Mic92",
         "repo": "sops-nix",
-        "rev": "a8be3b14935d3532604c51c8dfe3021c73d1a885",
+        "rev": "ee48786c6f9160d2c1a084aac841f68195b8420c",
         "type": "github"
       },
       "original": {
@@ -1037,11 +1037,11 @@
         "pkgs-by-name-for-flake-parts": "pkgs-by-name-for-flake-parts"
       },
       "locked": {
-        "lastModified": 1791696380,
-        "narHash": "sha256-jG78j8R2qbx0UFG2RKAPHzSm1SyaQEbnRiS5xKrEeQg=",
+        "lastModified": 1791722139,
+        "narHash": "sha256-zDR/TXiOj7Vej34tzVmFWCSA8BAXy9DOhsWyZqsDK3Q=",
         "owner": "xiongchenyu6",
         "repo": "nur-packages",
-        "rev": "4aa56d3645d6557ae2cbd702cc0bd2ac063b7c57",
+        "rev": "50da61ffdb1af15d9b08462d67f2c2e053d3ca93",
         "type": "github"
       },
       "original": {
