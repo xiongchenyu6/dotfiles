@@ -8,10 +8,11 @@
     allowSignedApp = true;
   };
 
-  # `mas` (App Store installs run by `brew bundle` during activation) calls
-  # sudo for every install and has no terminal to ask for a password.
+  # `brew bundle` runs during activation without a terminal, but `mas` (App
+  # Store installs) and pkg-based casks (nextcloud, zoom, squirrel) call sudo
+  # for every install. SETENV because brew invokes the installer with `-E`.
   security.sudo.extraConfig = ''
-    ${config.system.primaryUser} ALL=(root) NOPASSWD: /opt/homebrew/bin/mas
+    ${config.system.primaryUser} ALL=(root) NOPASSWD:SETENV: /opt/homebrew/bin/mas, /usr/sbin/installer
   '';
 
   fonts = {
