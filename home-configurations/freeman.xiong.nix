@@ -193,10 +193,13 @@ in
 
     ssh = {
       settings = {
-        # "*-tmux" = {
-        #   RequestTTY = "yes";
-        #   RemoteCommand = "tmux new -A -s xiongchenyu";
-        # };
+        # Plain key, no agent: gpg-agent's ssh support refuses to sign when the
+        # YubiKey is absent and git then aborts instead of trying the file key.
+        "github.com" = {
+          IdentityFile = "~/.ssh/id_ed25519";
+          IdentitiesOnly = "yes";
+          IdentityAgent = "none";
+        };
         "tcloud" = {
           HostName = "43.156.66.157";
           # RemoteForward = "/run/user/1000/gnupg/S.gpg-agent /run/user/1000/gnupg/S.gpg-agent.extra";

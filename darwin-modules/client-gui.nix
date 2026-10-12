@@ -1,6 +1,12 @@
 # macOS GUI services — fonts, Homebrew, PostgreSQL
-{ pkgs, ... }:
+{ config, pkgs, ... }:
 {
+  # `mas` (App Store installs run by `brew bundle` during activation) calls
+  # sudo for every install and has no terminal to ask for a password.
+  security.sudo.extraConfig = ''
+    ${config.system.primaryUser} ALL=(root) NOPASSWD: /opt/homebrew/bin/mas
+  '';
+
   fonts = {
     packages = with pkgs; [
       nerd-fonts.hack
