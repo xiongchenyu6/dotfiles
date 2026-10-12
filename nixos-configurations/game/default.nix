@@ -330,6 +330,9 @@ in
   services = {
     sunshine = {
       enable = true;
+      # NVENC needs CUDA compiled in; without it Sunshine falls back to the
+      # GPU -> RAM -> GPU path and then to the Vulkan encoder.
+      package = pkgs.sunshine.override { cudaSupport = true; };
       # Ports are opened on wg_ora only (see networking.firewall above).
       openFirewall = false;
       capSysAdmin = true;
