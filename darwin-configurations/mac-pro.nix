@@ -32,7 +32,11 @@
     ];
   };
 
-  homebrew.masApps.Xcode = 497799835;
+  homebrew = {
+    masApps.Xcode = 497799835;
+    # Nextcloud has no App Store client; the cask tracks upstream releases.
+    casks = [ "nextcloud" ];
+  };
 
   # Stay awake on the charger so the mesh tunnel and ssh keep working; the
   # macOS default puts the laptop to sleep one minute after the display.
