@@ -47,6 +47,20 @@ let
           );
         };
       })
+      # 白霜拼音方案数据 (fcitx5-rime on Linux, Squirrel's ~/Library/Rime on
+      # macOS); personal patches live in stow-managed/rime as *.custom.yaml.
+      (_: prev: {
+        rime-frost = prev.runCommand "rime-frost" { } ''
+          mkdir -p $out/share/rime-data
+          cp -r ${inputs.rime-frost}/. $out/share/rime-data/
+          rm -rf $out/share/rime-data/others \
+            $out/share/rime-data/simplified.trime.yaml \
+            $out/share/rime-data/*.md \
+            $out/share/rime-data/LICENSE 2>/dev/null || true
+          # 万象语法模型,rime_frost.custom.yaml 里 grammar.language 指向它
+          cp ${inputs.rime-wanxiang-gram} $out/share/rime-data/wanxiang-lts-zh-hans.gram
+        '';
+      })
     ];
 
   # Additional overlays for NixOS — applied to ALL nixos hosts.
@@ -113,17 +127,6 @@ in
           linuxPackages = addPerf prev.linuxPackages;
           linuxPackages_latest = addPerf prev.linuxPackages_latest;
           inherit (lib) lowPrio;
-          # 白霜拼音方案数据；个人定制放 stow-managed/rime 的 *.custom.yaml
-          rime-frost = prev.runCommand "rime-frost" { } ''
-            mkdir -p $out/share/rime-data
-            cp -r ${inputs.rime-frost}/. $out/share/rime-data/
-            rm -rf $out/share/rime-data/others \
-              $out/share/rime-data/simplified.trime.yaml \
-              $out/share/rime-data/*.md \
-              $out/share/rime-data/LICENSE 2>/dev/null || true
-            # 万象语法模型,rime_frost.custom.yaml 里 grammar.language 指向它
-            cp ${inputs.rime-wanxiang-gram} $out/share/rime-data/wanxiang-lts-zh-hans.gram
-          '';
           record_screen =
             if prev.stdenv.hostPlatform.isLinux then
               prev.callPackage "${inputs.xiongchenyu6}/pkgs/record_screen/package.nix" { }

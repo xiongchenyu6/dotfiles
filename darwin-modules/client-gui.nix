@@ -1,6 +1,13 @@
 # macOS GUI services — fonts, Homebrew, PostgreSQL
 { config, pkgs, ... }:
 {
+  networking.applicationFirewall = {
+    enable = true;
+    enableStealthMode = true;
+    allowSigned = true;
+    allowSignedApp = true;
+  };
+
   # `mas` (App Store installs run by `brew bundle` during activation) calls
   # sudo for every install and has no terminal to ask for a password.
   security.sudo.extraConfig = ''

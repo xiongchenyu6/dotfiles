@@ -4,6 +4,7 @@
   pkgs,
   ezModules,
   lib,
+  shares,
   ...
 }:
 let
@@ -31,4 +32,12 @@ in
   home-manager = sharedConfig.homeManagerConfig;
 
   security.pam.services.sudo_local.touchIdAuth = true;
+
+  # Remote Login stays on; keys come from shares so every machine with the
+  # sops-deployed id_ed25519 or the YubiKey can log in.
+  services.openssh.enable = true;
+  users.users."freeman.xiong".openssh.authorizedKeys.keys = [
+    shares.users."freeman.xiong".public-key
+    shares.users."freeman.xiong".yubikey
+  ];
 }
