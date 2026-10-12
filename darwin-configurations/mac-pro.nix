@@ -34,6 +34,13 @@
 
   homebrew.masApps.Xcode = 497799835;
 
+  # Stay awake on the charger so the mesh tunnel and ssh keep working; the
+  # macOS default puts the laptop to sleep one minute after the display.
+  # Battery behaviour is left at the default.
+  system.activationScripts.postActivation.text = ''
+    pmset -c sleep 0
+  '';
+
   ids.gids.nixbld = 350;
   users.users."freeman.xiong" = {
     createHome = true;
