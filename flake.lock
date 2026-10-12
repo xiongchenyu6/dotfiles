@@ -230,11 +230,11 @@
         "uv2nix": "uv2nix"
       },
       "locked": {
-        "lastModified": 1791775030,
-        "narHash": "sha256-iQV83yt6UXPdN/6D/iea79vb5w1BeSlO+8SQYjUEp84=",
+        "lastModified": 1791792904,
+        "narHash": "sha256-f6DuVtmUqwCO3+MAgbU4VfJ5kgPtA335Syoo4/6l9TM=",
         "owner": "NousResearch",
         "repo": "hermes-agent",
-        "rev": "71d34bad1045610252eda02ee79549436896e784",
+        "rev": "3569e8461ea721623fa16e6f01fb636157989fe6",
         "type": "github"
       },
       "original": {
@@ -291,11 +291,11 @@
         "rust-overlay": "rust-overlay"
       },
       "locked": {
-        "lastModified": 1791455435,
-        "narHash": "sha256-rFrQjxiLAPkG9xgTI4yki6QFcswxn+wzUbtPZbvFCUE=",
+        "lastModified": 1791795551,
+        "narHash": "sha256-wEgLr0c1X27BAc4V7JW1XI12XcDUO64RgP0jbuyjTic=",
         "owner": "nix-community",
         "repo": "lanzaboote",
-        "rev": "5bc59941ad05cfa434501ab20770bc6c6e824d4a",
+        "rev": "5b5719bd925664fb5f7f1771d9e36fd35cc9fc17",
         "type": "github"
       },
       "original": {
@@ -314,11 +314,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1782481644,
-        "narHash": "sha256-lxs6i3ua4qMB+3KEUcEyQeQ8vQfEgopDDBPSXv2hbyk=",
+        "lastModified": 1791778691,
+        "narHash": "sha256-CAojk6DUj7MNFEhlzu7qtTXrZhrucfH+mrsv5GdpOWA=",
         "owner": "xiongchenyu6",
         "repo": "lazynixos",
-        "rev": "391ce14ec6d887daa4233f81534195a4af7129a7",
+        "rev": "31f1ba614940ed07d40999bc2dc9be3f63818f2b",
         "type": "github"
       },
       "original": {
@@ -342,11 +342,11 @@
         "treefmt-nix": "treefmt-nix"
       },
       "locked": {
-        "lastModified": 1791756485,
-        "narHash": "sha256-52Zi0EPiYgzXHN3dBHROoYRqT6K9SZ4jES4H9jAQKZs=",
+        "lastModified": 1791781982,
+        "narHash": "sha256-lvEyxEmXv/8gwiWE2+rxTuL59EFq5wwXxX+rtbxjwLo=",
         "owner": "numtide",
         "repo": "llm-agents.nix",
-        "rev": "0080f911989ebe6385bffbd2d4f2b1259a16f4cf",
+        "rev": "493c34b1bed086861b0e968a40d00bd06522f003",
         "type": "github"
       },
       "original": {
@@ -643,11 +643,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1791774476,
-        "narHash": "sha256-/lHGrbvdT7k1yafCBSNxIDAwkI0AtCYn6pj4YtbaQ7k=",
+        "lastModified": 1791794621,
+        "narHash": "sha256-gSu5xLwwp9vJOPpo0m7XpirOZ0TLjGsnQhQSnFrP0sw=",
         "owner": "nix-community",
         "repo": "NUR",
-        "rev": "317a372246ac66e44005d26e030f23f7c3e1f1fc",
+        "rev": "8a5759fa8007311f6c3fa597a29c9b3b97de66dd",
         "type": "github"
       },
       "original": {
@@ -773,11 +773,11 @@
     "rime-frost": {
       "flake": false,
       "locked": {
-        "lastModified": 1791605301,
-        "narHash": "sha256-5A1+dDCZJZAjbQgPRbDk7qniRn3bEy/YSeIWyHvQF+4=",
+        "lastModified": 1791778421,
+        "narHash": "sha256-nSWoM6/QZVink7cuxtv/Ov53MecBZVlB9pMTajo4ucU=",
         "owner": "gaboolic",
         "repo": "rime-frost",
-        "rev": "64d24e89341aee133c0ad0f09b5f47a695e3d508",
+        "rev": "f1bc68b308adcca916c51bcaad25a267876e6efe",
         "type": "github"
       },
       "original": {
@@ -789,7 +789,7 @@
     "rime-wanxiang-gram": {
       "flake": false,
       "locked": {
-        "narHash": "sha256-V3BdZbdfvGKY/MND3xVVKCIwkHRitYbtmDdOYOChK4g=",
+        "narHash": "sha256-rpYql80BHx9sld8R0XZcZxUKPwxjndy9cgNeeN0oLMM=",
         "type": "file",
         "url": "https://github.com/amzxyz/RIME-LMDG/releases/download/LTS/wanxiang-lts-zh-hans.gram"
       },
@@ -841,11 +841,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1791101754,
-        "narHash": "sha256-y/GF+9B0t0TZ0nQiSRMqDXpr76yT7sdDbS/3GNLhzkE=",
+        "lastModified": 1791448976,
+        "narHash": "sha256-HJ4TEF3j7HmLYeEP/PtqjeiBX/6TppXB2qY53HcrWbs=",
         "owner": "oxalica",
         "repo": "rust-overlay",
-        "rev": "dbc715a4b7c0ace63b9769a032d1dd34cd89e5bd",
+        "rev": "f91010a5c1b6125b715eb78a84fb5dd8fb74a2b0",
         "type": "github"
       },
       "original": {
@@ -1037,11 +1037,11 @@
         "pkgs-by-name-for-flake-parts": "pkgs-by-name-for-flake-parts"
       },
       "locked": {
-        "lastModified": 1791767432,
-        "narHash": "sha256-bodikSm4OkDFT9gr5+pPfD6HNuZa+P+gOhmg5axvjog=",
+        "lastModified": 1791795680,
+        "narHash": "sha256-JdsrMkjOuLmjphcAGtHPh5d6aWMSUfEgRHBNVHEcUlE=",
         "owner": "xiongchenyu6",
         "repo": "nur-packages",
-        "rev": "319400531fa3adf8b93efbcafe6d6d8b8a2ab93d",
+        "rev": "555b2c043a95bf44992b7636dee55a29ba786471",
         "type": "github"
       },
       "original": {
