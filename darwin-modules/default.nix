@@ -35,7 +35,14 @@ in
 
   # Remote Login stays on; keys come from shares so every machine with the
   # sops-deployed id_ed25519 or the YubiKey can log in.
-  services.openssh.enable = true;
+  services.openssh = {
+    enable = true;
+    # Keys only; both Macs are reachable over the mesh and on foreign Wi-Fi.
+    extraConfig = ''
+      PasswordAuthentication no
+      KbdInteractiveAuthentication no
+    '';
+  };
   users.users."freeman.xiong".openssh.authorizedKeys.keys = [
     shares.users."freeman.xiong".public-key
     shares.users."freeman.xiong".yubikey
