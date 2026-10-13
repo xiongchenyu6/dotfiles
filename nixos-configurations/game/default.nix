@@ -330,9 +330,13 @@ in
   services = {
     sunshine = {
       enable = true;
-      # NVENC needs CUDA compiled in; without it Sunshine falls back to the
-      # GPU -> RAM -> GPU path and then to the Vulkan encoder.
-      package = pkgs.sunshine.override { cudaSupport = true; };
+      # NVENC needs CUDA compiled in. The panel (eDP-1) hangs off the AMD
+      # iGPU while NVENC lives on the RTX 3070, and NVIDIA's EGL cannot import
+      # the iGPU's scanout buffers, so the patch makes KMS capture take the
+      # GPU -> RAM -> GPU path whenever the monitor is not on the NVIDIA card.
+      package = (pkgs.sunshine.override { cudaSupport = true; }).overrideAttrs (old: {
+        patches = (old.patches or [ ]) ++ [ ../../packages/sunshine-hybrid-gpu-nvenc.patch ];
+      });
       # Ports are opened on wg_ora only (see networking.firewall above).
       openFirewall = false;
       capSysAdmin = true;

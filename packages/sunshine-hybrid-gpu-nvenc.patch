@@ -1,0 +1,19 @@
+diff --git a/src/platform/linux/kmsgrab.cpp b/src/platform/linux/kmsgrab.cpp
+index 8a08576..c830ce8 100644
+--- a/src/platform/linux/kmsgrab.cpp
++++ b/src/platform/linux/kmsgrab.cpp
+@@ -2035,6 +2035,14 @@ namespace platf {
+           BOOST_LOG(warning) << "Attempting to use NVENC without CUDA support. Reverting back to GPU -> RAM -> GPU"sv;
+           return -1;
+         }
++#else
++        // Hybrid GPU laptops often drive the panel from the iGPU while NVENC lives on the
++        // NVIDIA dGPU. NVIDIA's EGL cannot import the iGPU's scanout buffers (eglCreateImage
++        // fails with EGL_BAD_ATTRIBUTE on every frame), so copy through system memory instead.
++        if (mem_type == mem_type_e::cuda && !card.is_nvidia()) {
++          BOOST_LOG(warning) << "Monitor "sv << display_name << " is not driven by the NVIDIA GPU. Reverting back to GPU -> RAM -> GPU"sv;
++          return -1;
++        }
+ #endif
+ 
+         return 0;
