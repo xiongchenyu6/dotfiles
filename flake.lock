@@ -230,11 +230,11 @@
         "uv2nix": "uv2nix"
       },
       "locked": {
-        "lastModified": 1792253501,
-        "narHash": "sha256-knuxBs4Zu2nf5jsGfcFKP0bmMrs2o4F1NWoQ6nSHLjE=",
+        "lastModified": 1792273906,
+        "narHash": "sha256-I8/6QgW4PBfn5bEGjYvd0Uh8C8MXJ9ABAY5E3wVautM=",
         "owner": "NousResearch",
         "repo": "hermes-agent",
-        "rev": "18c525b669b6ea4ba62e6967d228af21d89aa9d3",
+        "rev": "e6cf2a9b1e8f98d40408b09a9a55993c8459b4b4",
         "type": "github"
       },
       "original": {
@@ -291,11 +291,11 @@
         "rust-overlay": "rust-overlay"
       },
       "locked": {
-        "lastModified": 1792099399,
-        "narHash": "sha256-GZXltf6mtqBYRuyMX2Bg+9VNvgyynHrXCNcmbkhgHuA=",
+        "lastModified": 1792270892,
+        "narHash": "sha256-aefPlhND0AelMxBw8g1R0JZKpm/Wkamhj49sbR60pHw=",
         "owner": "nix-community",
         "repo": "lanzaboote",
-        "rev": "bca381a05c2b2cde9e322a6fdba82b8984aa95b8",
+        "rev": "4b98333073bdaf9b1b5dd7d87c2dab96883b234e",
         "type": "github"
       },
       "original": {
@@ -342,11 +342,11 @@
         "treefmt-nix": "treefmt-nix"
       },
       "locked": {
-        "lastModified": 1792226690,
-        "narHash": "sha256-IFe04Zpq0aJ/sLYPBABcW7EZlqky4Bb46wubC8A50cs=",
+        "lastModified": 1792270277,
+        "narHash": "sha256-iRxe+vZ4N4+TbersbF/V3n347y4A1K3tjmyoggmxQgg=",
         "owner": "numtide",
         "repo": "llm-agents.nix",
-        "rev": "c250766160603f5ef582adecb4f453b009f63365",
+        "rev": "ff769daa133979172e76efbca37f045275b8357d",
         "type": "github"
       },
       "original": {
@@ -643,11 +643,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1792255094,
-        "narHash": "sha256-X7gd9B04rR13qDqwiiM1yBn86Ek5qLblYlFnfOM5baM=",
+        "lastModified": 1792273930,
+        "narHash": "sha256-sfIgPsiv4gE6n497gNMtZnXTIz7T8/ssw7JQewA+Vos=",
         "owner": "nix-community",
         "repo": "NUR",
-        "rev": "a4fc96e8b8a7d47e12f1bf9ca54ce412151f1fc4",
+        "rev": "55dbac15016ed3123a0974578f9cd9754ec8bf58",
         "type": "github"
       },
       "original": {
@@ -1037,11 +1037,11 @@
         "pkgs-by-name-for-flake-parts": "pkgs-by-name-for-flake-parts"
       },
       "locked": {
-        "lastModified": 1792256320,
-        "narHash": "sha256-r2BYLVS2CppMMKUvMI7AnMt74LwXlao7dPSZ85YQqic=",
+        "lastModified": 1792274995,
+        "narHash": "sha256-s6d30G3hD+qyj3WVvkFzdxwaioWuKNZ3b+RdM+XWDqg=",
         "owner": "xiongchenyu6",
         "repo": "nur-packages",
-        "rev": "89668eaf1e9428ac339e7d4648adf5bdfeeee158",
+        "rev": "44982710fab88ed587692ba3b86b716ce9e83016",
         "type": "github"
       },
       "original": {
