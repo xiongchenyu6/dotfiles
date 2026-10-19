@@ -78,6 +78,9 @@ in
     };
   };
 
+  # Same VCN as oracle-amd-001: dial its private address, not the public one.
+  services.wgmesh.nodes.oracle-amd-001.endpoint = lib.mkForce "10.0.0.199:51821";
+
   networking = {
     nat = {
       enable = true;
