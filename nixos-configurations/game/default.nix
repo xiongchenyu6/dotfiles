@@ -9,9 +9,6 @@
   shares,
   ...
 }:
-let
-  codexPackage = inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.codex;
-in
 {
   imports = with inputs; [
     ./hardware-configuration.nix
@@ -469,31 +466,6 @@ in
               StartupNotify=true
               Terminal=false
             '';
-          };
-
-          systemd.user.services.codex-remote-control = {
-            Unit = {
-              Description = "Codex remote control bridge";
-              After = [ "network-online.target" ];
-            };
-
-            Service = {
-              Type = "simple";
-              WorkingDirectory = "%h";
-              ExecStartPre = "${pkgs.writeShellScript "codex-remote-control-pre-start" ''
-                mkdir -p "$HOME/.codex"
-                ${codexPackage}/bin/codex features enable remote_control
-              ''}";
-              ExecStart = "${codexPackage}/bin/codex remote-control --no-daemon";
-              Restart = "always";
-              RestartSec = 5;
-              StandardOutput = "append:%h/.codex/remote-control.log";
-              StandardError = "append:%h/.codex/remote-control.log";
-            };
-
-            Install = {
-              WantedBy = [ "default.target" ];
-            };
           };
 
           programs = {
