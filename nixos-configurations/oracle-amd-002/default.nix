@@ -20,6 +20,7 @@ in
     ezModules.root
     ezModules."freeman.xiong"
     ezModules.core
+    ezModules.wgmesh
     ezModules.server
     ezModules.acme
     ezModules.bird-border
@@ -119,7 +120,7 @@ in
     wg-quick = {
       interfaces =
         let
-          privateKeyFile = config.sops.secrets."wireguard/tcloud".path;
+          privateKeyFile = config.sops.secrets."wireguard/oracle-amd-002".path;
           table = "off";
           mkPeer = mesh4: mesh6: publicKey: {
             inherit publicKey;
@@ -179,7 +180,7 @@ in
     };
   };
 
-  sops.secrets."wireguard/tcloud" = { };
+  sops.secrets."wireguard/oracle-amd-002" = { };
 
   sops.templates."s3fs-passwd" = {
     content = "${config.sops.placeholder."s3fs/access_key"}:${

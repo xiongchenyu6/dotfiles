@@ -27,32 +27,27 @@ wgmesh 是纯 IPv4 overlay,每个 peer 只能拿 `/32`,这些都承载不了。�
 结论:**DN42 对外现在大概率已经断了**,内部 /27 hub 是通的。所以"不断"要以
 Stage 0 先修好的基线为准,否则没法判断迁移有没有把它搞坏。
 
-## wgmesh 当前的能力缺口(决定了计划怎么排)
+## wgmesh 的形态(2026-10-19 重写)
 
-| 缺口 | 影响 | 处理 |
-|---|---|---|
-| 只有 Linux agent(`ip`/`wg` + NixOS 模块) | mac-pro、office-mac 接不进来 | 留在旧 hub 的 `wg0` 上(见最终形态) |
-| 只有 IPv4、`/32` AllowedIPs、没有子网路由 | 跑不了 babel/BGP/DN42 | DN42 平面保持 wg-quick |
-| IP 按注册顺序分配(`store.rs` 里的 `allocate_locked`) | mesh IP 不在 git 里,ssh/bind/CSRF 写死的 IP 没法提前定 | **wgmesh 加功能 A**:按 SSH pubkey 静态预留 IP |
-| `skipInterfaces` 只能精确匹配 | `br-<hash>`、`veth*`、`wt0`、`wg_ora` 的地址会被当成 LAN 候选上报;每个坏候选要白等 60 秒 probe 窗口 | **wgmesh 加功能 B**:按前缀匹配(`br-`、`veth`、`docker`、`virbr`、`wg`、`wt`、`podman`) |
-| 默认接口名 `wg0` | 和 amd-002 现有的 hub `wg0` 冲突 | 两端都用 `interface = "wgmesh"` |
+wgmesh 仓库已经不再有自己的 Rust 守护进程,只剩一个 NixOS 模块:
 
-功能 A、B 都很小,按 wgmesh 仓库的惯例写:先写单元测试,`cargo test --workspace`,
-需要碰内核的部分进 `tests/kernel-mesh.sh`,README 中英文两份同步更新。
+- `networking.wireguard.interfaces.wgmesh` 建接口,唯一的静态 peer 是中继 amd-002,AllowedIPs 是整个 `10.42.0.0/24`
+- nixpkgs 里的 `services.wgautomesh` 负责其余节点:gossip 交换 endpoint、局域网广播发现、经中继看到的地址双向打洞
+- 一个约 20 行的补丁给 wgautomesh 加了 `relay_fallback`:握手新鲜时才给对端 `/32`,否则流量走中继的 `/24`
+- 节点表 = `shares.toml` 里带 `mesh-ip` 的主机;密钥复用已有的 `wireguard/<host>`(sops);gossip 密钥 `wgmesh/gossip-secret`
+- dotfiles 侧入口:`nixos-modules/wgmesh.nix`
+
+原计划里的 coordinator、nginx 虚拟主机 `mesh.panda.qzz.io`、SSH host key 派生密钥、`staticIPs`、`skipInterfaces` 全部随 Rust 代码一起删除。
+
+已知限制:只做 IPv4、单中继、wgautomesh 30 秒一轮(新直连最多 30 秒两端才稳定),
+对端消失后直连路由最多保留 5 分钟才回落到中继。
 
 ## 地址与端口规划
 
-- mesh CIDR:`10.42.0.0/24`(wgmesh 默认值,和上面所有已占用网段都不冲突)。
-  在 10.0.0.0/8 里,而 DN42 过滤器允许 `10.0.0.0/8{15,24}`,所以 border 的 import filter
-  要加 `if net ~ [10.42.0.0/16+] then reject;`,防止 DN42 里有人宣告这段把它劫持走。
-- 预留(功能 A):coord `10.42.0.1`、amd-001 `.10`、game `.20`、office `.21`、
-  后续主机按需加。
-- 接口 `wgmesh`,WG 端口 UDP 51820(和 22616 不冲突)。
-- 控制面:coord 监听 `127.0.0.1:8443`(明文 HTTP),外面套 nginx 虚拟主机
-  `mesh.panda.qzz.io`,用 amd-002 上已有的 `*.panda.qzz.io` 通配证书
-  (`useACMEHost`)→ TCP 不用新开端口,只走 443。
-- 主机身份:`shares.toml` 里新增 `hosts.<name>.ssh-host-key`(即 `/etc/ssh/ssh_host_ed25519_key.pub`)。
-  coord 的 `authorizedSigners` 和 IP 预留都从这一个字段生成,做到单一事实来源。
+- mesh CIDR:`10.42.0.0/24`。DN42 的 import filter 已拒收 `10.42.0.0/16+`。
+- 地址:amd-002(中继)`.1`、amd-001 `.10`、game `.20`、office `.21`。
+- 接口 `wgmesh`,WireGuard UDP 51821(51820 是桌面机上 netbird `wt0` 的;OCI 安全列表放行 51821,实测),gossip UDP 1666。
+- 中继 endpoint `213.35.117.232:51821`;amd-001 同 VCN,改拨 `10.0.0.246:51821`。
 
 ## Stage 0: DN42 基线 + 前置清理
 **Goal**: 先把要"保持不断"的东西修到已知正常,再把 wgmesh 的两个小功能做完。
@@ -66,7 +61,6 @@ Stage 0 先修好的基线为准,否则没法判断迁移有没有把它搞坏�
 - [x] game docker `default-address-pools` → 10.201.0.0/16(已上线),占 DN42 段的空闲网络已删
 - [x] office-mac 有了独立私钥 `wireguard/office-mac` 和地址 172.22.240.105 / fd48:4b4:f3::9;hub 侧 peer 已上线,
       office-mac 本机 `darwin-rebuild switch` 待机器上线后执行
-- [x] wgmesh 功能 A(`services.wgmesh-coord.staticIPs`)、B(`skipInterfaces` 前缀匹配):PR #2 已合并(`964ae431`)
 - [ ] **Kioubit peering 重建(需要本人登录 Kioubit 后台)**:对端 `hk1.g-load.eu:22616` 回 ICMP port unreachable,peering 已被对方删除。
       填写:AS4242422616,我方 WG 公钥 `9TXI2YQ0cdhW3xBhxzuHpPuISR7k2NwTjZ2Sq/lwoE0=`,
       我方 endpoint 留空(我方主动拨号 + keepalive),link-local `fe80::100`,MP-BGP + extended next hop
@@ -74,40 +68,25 @@ Stage 0 先修好的基线为准,否则没法判断迁移有没有把它搞坏�
 `drill @172.20.0.53 burble.dn42`、`wg show wg_kioubit latest-handshakes` 不为 0。
 **Status**: In Progress(只剩 Kioubit 后台这一步)
 
-## Stage 1: amd-002 上并行起 coordinator
-**Goal**: wgmesh 控制面 + 中继在 hub 上和现有 `wg0`/`wg_kioubit` 并存运行。
-**Success Criteria**:
-- `flake.nix` 加 input `wgmesh`(`inputs.nixpkgs.follows = "nixpkgs"`)
-- amd-002 配置 `services.wgmesh-coord = { enable; interface = "wgmesh"; meshCidr = "10.42.0.0/24"; listenAddr = "127.0.0.1:8443"; authorizedSigners = …; }`
-- nginx 虚拟主机 `mesh.panda.qzz.io` 反代到 127.0.0.1:8443;DNS 加 A 记录指向 hub 公网 IP
-- NixOS 防火墙放行 UDP 51820,**OCI 安全列表也要放行 UDP 51820**(需要在 OCI 控制台/CLI 操作)
-- border import filter 加上 10.42/16 的 reject
-- `wg0` / `wg_kioubit` / bird 完全不动
-**Tests**: `curl https://mesh.panda.qzz.io/healthz`;`wg show wgmesh` 有接口、端口是 51820;
-`wg show wg0 latest-handshakes` 和改动前一致;DN42 检查清单通过。
-**Status**: Not Started
+## Stage 1: amd-002 上线中继
+**Goal**: `wgmesh` 接口和中继在 hub 上与 `wg0`/`wg_kioubit` 并存运行。
+**Success Criteria**: `wg show wgmesh` 监听 51821,`wgautomesh` active,`wg0` 握手不变,bird 不受影响。
+**Tests**: 同上;DN42 检查清单通过。
+**Status**: Complete(2026-10-19:`wgmesh` 监听 51821,`wgautomesh` active,`wg0`/bird 照常)
 
-## Stage 2: 试点 oracle-amd-001
-**Goal**: 第一个 agent 选还没接入旧 mesh 的主机 —— 出问题零影响。
-**Success Criteria**:
-- 用 `services.wgmesh = { enable; coordinator = "https://mesh.panda.qzz.io"; interface = "wgmesh"; }`
-  替换暂存区里新加的 `wg_ora` 那段(以及 `wireguard/oracle-amd-001` secret 和 shares 里的 wg 公钥)
-- IB Gateway 4002 改成 `interfaces.wgmesh.allowedTCPPorts`
-- 两台在同一个 VCN 里 → 应该通过 LAN 候选(10.0.0.x)直连 hub
-**Tests**: `ping 10.42.0.1`;hub 上 `wg show wgmesh endpoints` 看到 amd-001 的 10.0.0.x;
-从 hub 访问 `nc -z 10.42.0.10 4002`;重启 coord 后 amd-001 的 IP 不变。
-**Status**: Not Started
+## Stage 2: oracle-amd-001 接入
+**Goal**: 第一个普通节点,经 VCN 内网直连中继。
+**Success Criteria**: amd-001 `ping 10.42.0.1` 通;hub 上 amd-001 的 endpoint 是 10.0.0.x。
+**Tests**: 同上。
+**Status**: Complete(hub 上 amd-001 endpoint `10.0.0.199:51821`,互 ping 通)
 
-## Stage 3: game、office 双栈运行
-**Goal**: 桌面机加上 wgmesh agent,`wg_ora` + babel + bird 原样保留。
+## Stage 3: game、office 接入
+**Goal**: 桌面机加上 wgmesh,`wg_ora` 原样保留。
 **Success Criteria**:
-- 两台都跑起 agent(`skipInterfaces` 用功能 B 的前缀列表)
-- game ↔ office 走 **DIRECT**(以前所有流量都绕道 Oracle hub;这是这次迁移最大的收益)
-- 需要的服务在 `wg_ora` 和 `wgmesh` 两个接口上都放行(SSH 22、Sunshine 端口、office 的 2222)
-**Tests**: `wg show wgmesh` 里对方 peer 的 AllowedIPs 是 `/32` 且 endpoint 是对方的公网/LAN 地址;
-`ping 10.42.0.21` 的 RTT 比经 hub 的 `ping 172.22.240.98` 低;Moonlight 能经 10.42.0.20 推流;
-把 hub 上的 `wgmesh` 关掉,已有的直连不受影响;DN42 检查清单通过。
-**Status**: Not Started
+- game、office 都能 `ping 10.42.0.1` 和其他节点
+- game ↔ office 在同一局域网时走直连(对方 peer 有 `/32`,endpoint 是 LAN 地址)
+**Tests**: `wg show wgmesh allowed-ips`、`wg show wgmesh endpoints`;DN42 检查清单通过。
+**Status**: In Progress(game 已接入,经中继 ping 通 .1/.10;office 离线,配置已就绪,上线后 `nixos-rebuild switch --flake .#office`)
 
 ## Stage 4: 业务流量切到 wgmesh 并观察一周
 **Goal**: 所有写死旧 mesh IP 的地方改用新地址,旧地址只留给 DN42。
@@ -116,7 +95,7 @@ Stage 0 先修好的基线为准,否则没法判断迁移有没有把它搞坏�
 - Sunshine `csrf_allowed_origins` → `https://10.42.0.20:47990`
 - `nixos-modules/bind.nix` 的 inner 区 `office`/`game` A 记录 → 10.42.0.x
 - 防火墙的业务端口只留 `interfaces.wgmesh`(`wg_ora` 只放 babel/BGP)
-- 观察 7 天:agent/coord 没有重启循环,`journalctl -u wgmesh-agent` 没有 DIRECT↔RELAY 来回抖动
+- 观察 7 天:`wgautomesh` 没有重启循环,`journalctl -u wgautomesh` 里同一个 peer 没有反复 `Configure … with endpoint`
 **Tests**: `ssh game`、`ssh office` 走的是 10.42 地址;Moonlight 推流正常;DN42 检查清单通过。
 **Status**: Not Started
 
@@ -133,15 +112,13 @@ Stage 0 先修好的基线为准,否则没法判断迁移有没有把它搞坏�
 
 ## 回滚
 
-每个 Stage 都是新增并行平面(新接口名、新网段、新端口),回滚就是对相关主机设
-`services.wgmesh.enable = false` 再 rebuild;旧的 `wg_ora` 在 Stage 5 之前一直是完整可用的。
-coord 挂了也不影响已经建好的直连隧道(内核 WG 不依赖 coord),只是新节点加不进来、
-endpoint 变化无法同步。每次部署前备份 `/var/lib/wgmesh-coord/state.json`
-(有了功能 A,丢了也能按预留重建)。
+wgmesh 是新增的并行平面(新接口名、新网段、新端口)。回滚就是把对应主机的 `ezModules.wgmesh`
+import 去掉再 rebuild;旧的 `wg_ora` 在 Stage 5 之前一直完整可用。中继挂了不影响已经建好的直连
+(内核 WireGuard 不依赖它),只是直连不通的节点对之间暂时不通。
 
 ## 默认采用的假设(不同意的话改这里)
 
 1. game/office 在本次迁移中**保留** DN42 内网身份(Stage 5 再决定要不要去掉)。
-2. 两台 Mac 留在 wg-quick 上;给 wgmesh 做 macOS agent(wireguard-go + `ifconfig`/`route`)是另一个项目。
-3. coord 和现有 hub 放在同一台 amd-002 上;可用内存约 157 MB,coord 常驻约 3.5 MB,够用。
+2. 两台 Mac 留在 wg-quick 上(wgautomesh 只支持 Linux)。
+3. 中继和现有 hub 放在同一台 amd-002 上。
 4. mesh 用 10.42.0.0/24,不从自己的 DN42 /27 里切。
