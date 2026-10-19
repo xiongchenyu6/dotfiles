@@ -165,8 +165,7 @@ The WireGuard hub every other machine peers with.
 **Networking**
 - wgmesh relay `172.22.240.97/27` (UDP 51821): owns the IPv4 /27 for the NixOS hosts.
 - wgmesh static peer for the phone (`172.22.240.101`, no wgautomesh on phones).
-- WireGuard hub `wg0` (listen port 22616): IPv4 `/32`s for office-mac and the `.100`/`.102`
-  clients, IPv6 for office and oracle-amd-001; NAT (v4+v6, uplink `ens3`) for `wg0` and wgmesh.
+- NAT (v4+v6, uplink `ens3`) for wgmesh clients; wgmesh is a trusted interface.
 - DN42 border router: `bird-border` + `dn42` (ROA refresh); eBGP to Kioubit
   (AS4242423914) over the second tunnel `wg_kioubit` (`hk1.g-load.eu`).
 - BBR + large TCP buffers; IP forwarding.
