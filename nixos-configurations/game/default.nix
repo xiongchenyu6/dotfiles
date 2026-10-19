@@ -418,6 +418,32 @@
             '';
           };
 
+          # Claude Code Remote Control: lets the Claude mobile app / claude.ai/code
+          # drive sessions on this machine. Outbound HTTPS only, no listening
+          # port; runs fine without a TTY. New sessions spawn in the working
+          # directory, which must already be trusted (home dir is never
+          # trusted, hence ~/Documents/github rather than %h).
+          systemd.user.services.claude-remote-control = {
+            Unit = {
+              Description = "Claude Code remote control";
+              After = [ "network-online.target" ];
+            };
+
+            Service = {
+              Type = "simple";
+              WorkingDirectory = "%h/Documents/github";
+              ExecStart = "${
+                config.home-manager.users."freeman.xiong".programs.claude-code.package
+              }/bin/claude remote-control --name game";
+              Restart = "always";
+              RestartSec = 10;
+            };
+
+            Install = {
+              WantedBy = [ "default.target" ];
+            };
+          };
+
           programs = {
             # Codex remote control lives in the ChatGPT desktop app (llm-agents
             # `chatgpt`, bundles Codex). Launch it with the session so the phone
