@@ -22,6 +22,8 @@ in
     ezModules.core
     ezModules.server
     ezModules.acme
+    ezModules.bird-border
+    ezModules.dn42
     ezModules.sing-box
     srvos.nixosModules.server
     ezModules.mixins-nginx
@@ -153,6 +155,9 @@ in
             peers = [
               {
                 endpoint = "hk1.g-load.eu:22616";
+                # We dial out and nothing else sends on this link until bird's
+                # BGP session is up, so keep the handshake alive ourselves.
+                persistentKeepalive = 25;
                 publicKey = "sLbzTRr2gfLFb24NPzDOpy8j09Y6zI+a7NkeVMdVSR8=";
                 allowedIPs = [
                   "10.0.0.0/8"

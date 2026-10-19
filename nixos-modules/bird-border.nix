@@ -1,6 +1,4 @@
 {
-  imports = [ ./birg-lg.nix ];
-
   services = {
     prometheus.exporters = {
       bird = {
@@ -189,20 +187,6 @@
         #       export all;
         #   };
         # }
-
-        protocol babel int_babel {
-        interface "wg_*" {
-          type wired;
-        };
-        ipv4 {
-                import all;
-                export all;
-        };
-        ipv6 {
-                import all;
-                export all;
-        };
-        };
 
         # protocol direct {
         # ipv4;
