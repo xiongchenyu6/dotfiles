@@ -81,7 +81,8 @@ in
     nat = {
       enable = true;
       enableIPv6 = true;
-      externalInterface = "ens5";
+      # Oracle shapes name the uplink ens3; "ens5" never existed here, so NAT was a no-op.
+      externalInterface = "ens3";
       internalInterfaces = [ vpn-dev ];
     };
 
