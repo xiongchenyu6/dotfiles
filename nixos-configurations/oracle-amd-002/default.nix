@@ -137,19 +137,16 @@ in
         let
           privateKeyFile = config.sops.secrets."wireguard/oracle-amd-002".path;
           table = "off";
-          # The NixOS hosts carry their IPv4 on wgmesh (the /27 lives there), so
-          # here they only get IPv6; the rest keep a /32 routed over wg0.
+          # What wgmesh does not carry yet: office-mac and the .100/.102 clients
+          # (IPv4 /32s routed over wg0) and IPv6 for office and oracle-amd-001.
           mkPeer = mesh4: mesh6: publicKey: {
             inherit publicKey;
             allowedIPs = lib.optional (mesh4 != null) "${mesh4}/32" ++ [ "${mesh6}/128" ];
           };
           peers = [
             (mkPeer null "fd48:4b4:f3::2" shares.hosts.office.wg.public-key)
-            (mkPeer null "fd48:4b4:f3::3" shares.hosts.game.wg.public-key)
             (mkPeer "172.22.240.100" "fd48:4b4:f3::4" "nBEkTpn4kRYXS9r7beXh3uMYJBAq/534byXv8NsB8gM=")
-            (mkPeer "172.22.240.101" "fd48:4b4:f3::5" "CAW6+atqM9xmCAZUaev3OZWbYKwjDNCHezyiBpiHmSg=")
             (mkPeer "172.22.240.102" "fd48:4b4:f3::6" "9WkAJx+EG3VifVLiMgD8+6CoCsBwSyWAMwtajoy/OTk=")
-            (mkPeer "172.22.240.103" "fd48:4b4:f3::7" shares.hosts.mac-pro.wg.public-key)
             (mkPeer null "fd48:4b4:f3::8" shares.hosts.oracle-amd-001.wg.public-key)
             (mkPeer "172.22.240.105" "fd48:4b4:f3::9" shares.hosts.office-mac.wg.public-key)
           ];

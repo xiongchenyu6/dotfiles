@@ -112,7 +112,11 @@ office 离线,配置已就绪,上线后 `nixos-rebuild switch --flake .#office`�
   `wireguard/game`、`wireguard/office` secret,shares 里的 wg 公钥 —— 直接删,不留兼容层
 - 更新 `docs/HOSTS.md`;等所有 Stage 完成后删掉本文件
 **Tests**: `nix flake check`;每台主机 `nixos-rebuild build` 都过;DN42 检查清单通过;macOS 上的 `wg_ora` 正常。
-**Status**: Not Started
+**进度**(2026-10-19):
+- [x] game 删掉 `wg_ora`(不再要 IPv6);mac-pro 改成 wgmesh 节点(nix-darwin + launchd wgautomesh),删掉 `wg_ora`
+- [x] 手机 `.101` 改成中继上的静态 wgmesh peer(只改 endpoint 端口到 51821),hub `wg0` 去掉 game、mac-pro、手机
+- [ ] `wg0` 剩 office-mac、`.100`、`.102`(IPv4)和 office、amd-001(IPv6);office/Kioubit 暂缓
+**Status**: In Progress
 
 ## 回滚
 
@@ -123,5 +127,5 @@ import 去掉再 rebuild;旧的 `wg_ora` 在 Stage 5 之前一直完整可用。
 ## 默认采用的假设(不同意的话改这里)
 
 1. 所有主机保留原有 DN42 段地址(v4 /27、v6 fd48:4b4:f3::/48),不重新编址。
-2. 两台 Mac 留在 wg-quick 上(wgautomesh 只支持 Linux)。
+2. Mac 也跑 wgautomesh(它只调 `wg`,在 wireguard-go 上可用);手机不能跑,是中继上的静态 peer。
 3. 中继和现有 hub 放在同一台 amd-002 上。

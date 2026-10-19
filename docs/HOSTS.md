@@ -76,7 +76,7 @@ Lenovo Legion 16ACH6h (hybrid graphics), tagged `nvidia,gui`.
 **Networking**
 - wgmesh node `172.22.240.99` (`nixos-modules/wgmesh.nix`, UDP 51821); DN42 IPv4
   goes through the relay (the hub is the border router).
-- WireGuard `wg_ora` to the hub for IPv6 only (`fd48:4b4:f3::3`, DN42 `fd00::/8`).
+- No IPv6 overlay (`wg_ora` removed); DN42 IPv6 is not reachable for now.
 - libvirt virtualization with VFIO/GPU-passthrough initrd modules; trusted
   virbr interfaces; binfmt emulation for aarch64.
 
@@ -164,9 +164,9 @@ The WireGuard hub every other machine peers with.
 
 **Networking**
 - wgmesh relay `172.22.240.97/27` (UDP 51821): owns the IPv4 /27 for the NixOS hosts.
-- WireGuard hub `wg0` (listen port 22616): IPv4 `/32`s for the Macs and three more
-  clients, IPv6 for everyone (office, game, oracle-amd-001 included); NAT (v4+v6,
-  uplink `ens3`) for VPN clients.
+- wgmesh static peer for the phone (`172.22.240.101`, no wgautomesh on phones).
+- WireGuard hub `wg0` (listen port 22616): IPv4 `/32`s for office-mac and the `.100`/`.102`
+  clients, IPv6 for office and oracle-amd-001; NAT (v4+v6, uplink `ens3`) for `wg0` and wgmesh.
 - DN42 border router: `bird-border` + `dn42` (ROA refresh); eBGP to Kioubit
   (AS4242423914) over the second tunnel `wg_kioubit` (`hk1.g-load.eu`).
 - BBR + large TCP buffers; IP forwarding.
@@ -236,7 +236,7 @@ environment. `shared-modules/core.nix` already runs `nix.gc` / `nix.optimise`.
 - WireGuard via the `wireguard` darwin module (wg-quick, key in sops).
 
 ### `mac-pro` — M5 Max MacBook Pro, personal daily driver
-- Mesh `172.22.240.103` / `fd48:4b4:f3::7` via the `wireguard` darwin module (wg-quick, key in sops, keepalive 30 s).
+- wgmesh node `172.22.240.103` (`darwin-modules/wgmesh.nix`: wg-quick `wgmesh` + launchd wgautomesh, UDP 51821, MTU 1280); no IPv6.
 - sops age key derives from `/etc/ssh/ssh_host_ed25519_key`; home-manager
   secrets decrypt with the personal GPG key (`~/.gnupg`), which must be
   imported by hand on a fresh install.
