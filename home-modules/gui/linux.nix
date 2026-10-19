@@ -631,8 +631,9 @@ in
       enable = true;
     };
 
+    # Its meson tests need xvfb-run, so it no longer builds on darwin.
     zathura = {
-      enable = true;
+      enable = pkgs.stdenv.hostPlatform.isLinux;
     };
 
     texlive = {
