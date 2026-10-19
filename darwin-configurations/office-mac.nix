@@ -19,13 +19,15 @@
 
   networking.dns = [ "1.1.1.1" ];
 
-  sops.secrets."wireguard/office" = { };
+  # Own key and address; this used to share the NixOS office host's identity,
+  # so only one of the two could be on the mesh at a time.
+  sops.secrets."wireguard/office-mac" = { };
   networking.wg-quick.interfaces.wg_ora = {
-    privateKeyFile = config.sops.secrets."wireguard/office".path;
+    privateKeyFile = config.sops.secrets."wireguard/office-mac".path;
     address = [
-      "fe80::101/64"
-      "172.22.240.98/32"
-      "fd48:4b4:f3::2/128"
+      "fe80::105/64"
+      "172.22.240.105/32"
+      "fd48:4b4:f3::9/128"
     ];
   };
 

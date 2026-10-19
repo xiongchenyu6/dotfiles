@@ -148,6 +148,7 @@ in
               (mkPeer "172.22.240.102" "fd48:4b4:f3::6" "9WkAJx+EG3VifVLiMgD8+6CoCsBwSyWAMwtajoy/OTk=")
               (mkPeer "172.22.240.103" "fd48:4b4:f3::7" shares.hosts.mac-pro.wg.public-key)
               (mkPeer "172.22.240.104" "fd48:4b4:f3::8" shares.hosts.oracle-amd-001.wg.public-key)
+              (mkPeer "172.22.240.105" "fd48:4b4:f3::9" shares.hosts.office-mac.wg.public-key)
             ];
           };
           wg_kioubit = {
