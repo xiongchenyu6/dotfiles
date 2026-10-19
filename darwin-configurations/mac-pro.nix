@@ -25,7 +25,12 @@
   networking.wg-quick.interfaces.wgmesh.mtu = 1280;
 
   homebrew = {
-    masApps.Xcode = 497799835;
+    # Declared so cleanup = "zap" keeps them.
+    masApps = {
+      Xcode = 497799835;
+      WeChat = 836500024;
+      WhatsApp = 310633997;
+    };
     # Nextcloud's desktop clients (Files, Talk) are not in the App Store; the
     # casks track upstream releases. Calendar/Contacts go through the native apps.
     casks = [
