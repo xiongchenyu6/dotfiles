@@ -84,6 +84,12 @@ in
 
     atuin = {
       enable = true;
+      # The e2e_capture pty test times out in the darwin sandbox.
+      package =
+        if pkgs.stdenv.hostPlatform.isDarwin then
+          pkgs.atuin.overrideAttrs { doCheck = false; }
+        else
+          pkgs.atuin;
       settings = {
         auto_sync = true;
         sync_frequency = "1m";
