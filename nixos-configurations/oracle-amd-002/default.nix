@@ -28,10 +28,7 @@ in
     srvos.nixosModules.mixins-trusted-nix-caches
     srvos.nixosModules.mixins-nix-experimental
     srvos.nixosModules.mixins-tracing
-    xiongchenyu6.nixosModules.nautilus-equity-trend
     ./hardware-configuration.nix
-    ./ib-gateway.nix
-    ./nautilus-equity.nix
     ./rustdesk.nix
     {
       topology.self.interfaces.home = {
@@ -147,6 +144,7 @@ in
               (mkPeer "172.22.240.101" "fd48:4b4:f3::5" "CAW6+atqM9xmCAZUaev3OZWbYKwjDNCHezyiBpiHmSg=")
               (mkPeer "172.22.240.102" "fd48:4b4:f3::6" "9WkAJx+EG3VifVLiMgD8+6CoCsBwSyWAMwtajoy/OTk=")
               (mkPeer "172.22.240.103" "fd48:4b4:f3::7" shares.hosts.mac-pro.wg.public-key)
+              (mkPeer "172.22.240.104" "fd48:4b4:f3::8" shares.hosts.oracle-amd-001.wg.public-key)
             ];
           };
           wg_kioubit = {
@@ -199,7 +197,12 @@ in
     };
   };
 
-  environment.systemPackages = with pkgs; [ s3fs ];
+  # fuse ships the mount.fuse helper; without it mount(8) hands the s3fs options straight to
+  # the kernel fuse driver ("Unknown parameter 'use_path_request_style'").
+  environment.systemPackages = with pkgs; [
+    fuse
+    s3fs
+  ];
 
   # S3 FUSE mount for iDrive e2 docs bucket
   fileSystems."/mnt/s3/docs" = {

@@ -86,7 +86,6 @@
         nixpkgs.follows = "nixpkgs";
         flake-parts.follows = "flake-parts";
         llm-agents.follows = "llm-agents";
-        dream2nix.inputs.pyproject-nix.follows = "hermes-agent/pyproject-nix";
         dream2nix.inputs.purescript-overlay.inputs.flake-compat.follows = "flake-compat";
       };
     };
@@ -129,15 +128,6 @@
     rime-wanxiang-gram = {
       url = "file+https://github.com/amzxyz/RIME-LMDG/releases/download/LTS/wanxiang-lts-zh-hans.gram";
       flake = false;
-    };
-
-    hermes-agent = {
-      url = "github:NousResearch/hermes-agent";
-      inputs = {
-        nixpkgs.follows = "nixpkgs";
-        flake-parts.follows = "flake-parts";
-        home-manager.follows = "home-manager";
-      };
     };
 
     lanzaboote = {
