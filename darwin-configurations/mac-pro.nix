@@ -1,7 +1,7 @@
 # mac-pro: M5 Max MacBook Pro, personal daily driver.
-{ config, ezModules, ... }:
+{ ezModules, ... }:
 {
-  imports = [ ezModules.wireguard ];
+  imports = [ ezModules.wgmesh ];
 
   nixpkgs.hostPlatform = "aarch64-darwin";
   system.darwinLabel = "gui";
@@ -21,16 +21,8 @@
     ];
   };
 
-  # Mesh peer of the oracle-amd-002 hub (public key in shares.toml).
-  sops.secrets."wireguard/mac-pro" = { };
-  networking.wg-quick.interfaces.wg_ora = {
-    privateKeyFile = config.sops.secrets."wireguard/mac-pro".path;
-    address = [
-      "fe80::107/64"
-      "172.22.240.103/32"
-      "fd48:4b4:f3::7/128"
-    ];
-  };
+  # Route-monitor recalculation would otherwise raise the tunnel MTU.
+  networking.wg-quick.interfaces.wgmesh.mtu = 1280;
 
   homebrew = {
     masApps.Xcode = 497799835;
