@@ -3,8 +3,9 @@
 #
 # Why here: IB Gateway is an x86_64 GUI Java app with no real headless mode; it must
 # run under a virtual display with IBC driving the login. oracle-arm-002 (aarch64) can't
-# run it without emulation, so this x86_64 box is the sidecar. nautilus_equity on the mesh
-# (download_ib.py now, the live equity node later) connects over wg0 to 172.22.240.97:4002.
+# run it without emulation, so this x86_64 box is the sidecar (moved off the busier hub
+# oracle-amd-002). The game-box quant-equity node and the quant scripts connect over the
+# WireGuard mesh to 172.22.240.104:4002.
 #
 # Implementation: the gnzsnz/ib-gateway image bundles Gateway + IBC + Xvfb + VNC and tracks
 # IBKR's installer/version churn, which a hand-rolled buildFHSEnv derivation cannot. Still
@@ -15,8 +16,8 @@
 # phone prompt. Paper accounts permit this; live never would.
 let
   # Bind the API to the WireGuard mesh address ONLY — never the public interface.
-  # wg0 is a trustedInterface on this host, so no firewall port needs opening.
-  wgAddr = "172.22.240.97";
+  # default.nix opens 4002 on wg_ora only.
+  wgAddr = "172.22.240.104";
 in
 {
   # IB paper credentials. Add the values (never plaintext in the repo) with:
@@ -56,15 +57,13 @@ in
         # Auto-accept incoming API connections (the socat relay arrives as 127.0.0.1 = trusted).
         TWS_ACCEPT_INCOMING = "accept";
         TIME_ZONE = "America/New_York";
+        # 1GB box: lower Gateway heap (768m->512m) so it stops swap-thrashing. The image
+        # rewrites the current Gateway version's .vmoptions, so this survives version bumps.
+        JAVA_HEAP_SIZE = "512";
       };
-      # Tune for the 956MB box: lower Gateway heap (768m->512m) so it stops swap-thrashing,
-      # and raise IBC's login-dialog timeout (60->180s) so the slow GUI renders before IBC
-      # gives up (the exit-1112 loop). Mounted over the image's files; the .vmoptions path
-      # pins Gateway version 10.45.1g — revisit on a major Gateway bump.
-      volumes = [
-        "${./ibgateway.vmoptions}:/home/ibgateway/Jts/ibgateway/10.45.1g/ibgateway.vmoptions:ro"
-        "${./ibc-config.ini.tmpl}:/home/ibgateway/ibc/config.ini.tmpl:ro"
-      ];
+      # Raise IBC's login-dialog timeout (60->180s) so the slow GUI renders before IBC
+      # gives up (the exit-1112 loop).
+      volumes = [ "${./ibc-config.ini.tmpl}:/home/ibgateway/ibc/config.ini.tmpl:ro" ];
       # Publish the paper API on the mesh IP only. The gnzsnz image binds Gateway's API to
       # 127.0.0.1:4002 INSIDE the container (localhost-trusted) and runs a socat relay on
       # container port 4004 -> 127.0.0.1:4002 so external clients appear as localhost. So we
@@ -75,6 +74,12 @@ in
       # ports = [ "${wgAddr}:4002:4002" "${wgAddr}:5900:5900" ];
       extraOptions = [ "--pull=newer" ];
     };
+  };
+
+  # The API port binds to the wg_ora address, which only exists once the tunnel is up.
+  systemd.services.podman-ib-gateway = {
+    after = [ "wg-quick-wg_ora.service" ];
+    requires = [ "wg-quick-wg_ora.service" ];
   };
 
   # Daily COLD restart. IBC's in-place auto-restart (23:59 ET) and IB's Sunday re-auth can

@@ -25,8 +25,8 @@ zram swap, nftables firewall, and systemd-resolved.
 | `office` | x86_64-linux | Work laptop (Dell Latitude 5520) | niri desktop, PostgreSQL 17, corp tooling (Falcon, Fortinet VPN), mesh router |
 | `autolife-robot-260` | x86_64-linux | Robot onboard host | Minimal bootstrap: sshd + NetworkManager only |
 | `tcloud` | x86_64-linux | Tencent Cloud VPS | DN42 border router, coturn TURN, deepseek-free-api container, HE.net IPv6 tunnel |
-| `oracle-amd-001` | x86_64-linux | Oracle Cloud | hermes-agent Telegram bot, sing-box hysteria2 inbound |
-| `oracle-amd-002` | x86_64-linux | Oracle Cloud, mesh hub | WireGuard hub, IB Gateway (paper) container, hysteria2 inbound, s3fs docs mount |
+| `oracle-amd-001` | x86_64-linux | Oracle Cloud, IB sidecar | IB Gateway (paper) container, mesh peer, hysteria2 inbound |
+| `oracle-amd-002` | x86_64-linux | Oracle Cloud, mesh hub | WireGuard hub, RustDesk relay, hysteria2 inbound, s3fs docs mount |
 | `oracle-arm-001` | aarch64-linux | Oracle Cloud, mostly idle | Base server profile, Node.js 24 |
 | `oracle-arm-002` | aarch64-linux | App & data workhorse | Supabase-style stack (PostgREST/Realtime/TimescaleDB), Dify, Hashtopolis server, NautilusTrader quant stack |
 | `iso` | x86_64-linux | Image builder | GNOME Calamares installer ISO (`.#packages.x86_64-linux.iso`) |
@@ -138,10 +138,15 @@ Domain `panda.qzz.io`. The network/routing node of the fleet.
 
 ---
 
-### `oracle-amd-001` — Oracle Cloud x86 (light duty)
+### `oracle-amd-001` — Oracle Cloud x86 (IB Gateway sidecar)
 
-- **hermes-agent** (NousResearch) — Telegram bot backed by Xiaomi's MiMo model
-  (`mimo-v2.5-pro`), external custom-skills directory, secrets via sops env template.
+- **IB Gateway (paper trading)** — Podman container
+  (`ghcr.io/gnzsnz/ib-gateway:stable` bundling Gateway + IBC + Xvfb), 512m heap
+  (`JAVA_HEAP_SIZE`) for the small instance, daily cold restart at 00:10 ET. Paper API
+  published on the mesh address only: `172.22.240.104:4002`. Consumers: the game-box
+  `quant-equity` user service and the quant repo scripts.
+- WireGuard `wg_ora` peer of the oracle-amd-002 hub (`172.22.240.104`), dialing the
+  hub's VCN-private address; 2G swapfile on top of zram.
 - **sing-box hysteria2 inbound** (`my.sing-box-hysteria2`, UDP 8443) — egress
   endpoint for cross-border clients (replaced earlier VLESS/VLESS+Reality setups).
 - `cloudflared` installed with tunnel credentials in sops.
@@ -150,7 +155,7 @@ Domain `panda.qzz.io`. The network/routing node of the fleet.
 
 ---
 
-### `oracle-amd-002` — Oracle Cloud x86 (mesh hub + quant sidecar)
+### `oracle-amd-002` — Oracle Cloud x86 (mesh hub)
 
 The WireGuard hub every other machine peers with.
 
@@ -158,18 +163,12 @@ The WireGuard hub every other machine peers with.
   `rustdesk.sg.autolife.ai:443` (native TCP relay).
 
 **Networking**
-- WireGuard hub `wg0` (listen port 22616): peers = office, game, mac-pro, and three more
-  clients; NAT (v4+v6) for VPN clients; multicast enabled for mDNS/babel.
+- WireGuard hub `wg0` (listen port 22616): peers = office, game, mac-pro, oracle-amd-001,
+  and three more clients; NAT (v4+v6) for VPN clients; multicast enabled for mDNS/babel.
 - Second tunnel `wg_kioubit` to Kioubit (`hk1.g-load.eu`) carrying DN42/ULA ranges.
 - BBR + large TCP buffers; IP forwarding.
 
 **Services**
-- **IB Gateway (paper trading)** — Podman container
-  (`ghcr.io/gnzsnz/ib-gateway:stable` bundling Gateway + IBC + Xvfb), tuned heap
-  for the small instance, daily self-restart outside US market hours. Paper API
-  published on the mesh address only: `172.22.240.97:4002`.
-- `nautilus-equity-trend` node is **retired/disabled** (2026-06-10; execution
-  moved to the game box) — kept in tree but off.
 - sing-box hysteria2 inbound (UDP 8443), same rationale as amd-001.
 - SSH authorized keys resolved via Kanidm (`authorizedKeysCommand`).
 - **s3fs** FUSE mount of an iDrive e2 "docs" bucket at `/mnt/s3/docs`

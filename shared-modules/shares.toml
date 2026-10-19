@@ -14,6 +14,9 @@ public-key = 'pvInS7gtW3H8JN3wzkdK8HM1qqFE/LpRXP36+z5EGEc='
 [hosts.office.wg]
 public-key = 'trmPW+CV8BbXfDMbe7I7IFwRh5ke8vpbDlgisSoH6ng='
 
+[hosts.oracle-amd-001.wg]
+public-key = 'S0KMNkR8DWEV7XfoNVSrpRQGwE/A2G3tM2tnDZR76Cs='
+
 [hosts.oracle-amd-002.wg]
 public-key = '9TXI2YQ0cdhW3xBhxzuHpPuISR7k2NwTjZ2Sq/lwoE0='
 

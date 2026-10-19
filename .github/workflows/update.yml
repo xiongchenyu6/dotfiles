@@ -100,8 +100,8 @@ jobs:
         run: |
           set -Eeuo pipefail
 
-          # 求值期会拉到一些没被 flake.lock 锁住的传递依赖(如 hermes-agent
-          # 的上游),走的是匿名 api.github.com,而 runner 出口 IP 是共享的,
+          # 求值期会拉到一些没被 flake.lock 锁住的传递依赖,走的是匿名
+          # api.github.com,而 runner 出口 IP 是共享的,
           # 偶发 429。真正的配置错误重试两次照样失败,不会被掩盖。
           try_eval() {
             nix eval --raw ".#$1.$2.config.system.build.toplevel.drvPath"
