@@ -30,6 +30,7 @@ mesh-ip = '172.22.240.97'
 
 [hosts.mac-pro.wg]
 public-key = '2bljDzFa753wDjgT8EN7Z+tgrXpCnGWKrH0Dotjn8xA='
+mesh-ip = '172.22.240.103'
 
 # Extra root CAs trusted system-wide (security.pki). Public CAs that already
 # ship in the standard Mozilla bundle don't belong here.

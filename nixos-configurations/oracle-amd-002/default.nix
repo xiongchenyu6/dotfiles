@@ -84,7 +84,22 @@ in
       enableIPv6 = true;
       # Oracle shapes name the uplink ens3; "ens5" never existed here, so NAT was a no-op.
       externalInterface = "ens3";
-      internalInterfaces = [ vpn-dev ];
+      internalInterfaces = [
+        vpn-dev
+        config.services.wgmesh.interface
+      ];
+    };
+
+    # The phone cannot run wgautomesh, so it is a plain peer of the relay. The
+    # mesh /27 is already routed into wgmesh, so no per-peer route either.
+    wireguard.interfaces.${config.services.wgmesh.interface} = {
+      allowedIPsAsRoutes = false;
+      peers = [
+        {
+          publicKey = "CAW6+atqM9xmCAZUaev3OZWbYKwjDNCHezyiBpiHmSg=";
+          allowedIPs = [ "172.22.240.101/32" ];
+        }
+      ];
     };
 
     firewall = {
