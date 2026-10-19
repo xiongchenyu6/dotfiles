@@ -26,8 +26,12 @@
 
   homebrew = {
     masApps.Xcode = 497799835;
-    # Nextcloud has no App Store client; the cask tracks upstream releases.
-    casks = [ "nextcloud" ];
+    # Nextcloud's desktop clients (Files, Talk) are not in the App Store; the
+    # casks track upstream releases. Calendar/Contacts go through the native apps.
+    casks = [
+      "nextcloud"
+      "nextcloud-talk"
+    ];
   };
 
   # Stay awake on the charger so the mesh tunnel and ssh keep working; the
