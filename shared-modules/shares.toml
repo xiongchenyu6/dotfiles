@@ -6,9 +6,10 @@
 public-key = 'ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIABVd0cIdwKzf4yLoRXQwjaaVYPFv8ZfYvTUMOMTFJ/p freeman@nixos'
 yubikey = 'ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILd3Wv8qfOx+hg+W/UMLArHvcBPBsPArOLamGARcZhbT cardno:32_087_478'
 
-# WireGuard mesh peers. Only public keys live here — endpoints and ports are
-# per-host concerns and stay in each host's own config. `mesh-ip` puts a host
-# on wgmesh (nixos-modules/wgmesh.nix).
+# WireGuard mesh peers. `mesh-ip` puts a host on wgmesh
+# (shared-modules/wgmesh.nix). `mesh-endpoint` is a fixed public address for
+# hosts that can be dialed directly: the relay, and Oracle hosts whose NIC only
+# has the VCN address behind Oracle's 1:1 NAT, so gossip alone cannot find them.
 [hosts.game.wg]
 public-key = 'pvInS7gtW3H8JN3wzkdK8HM1qqFE/LpRXP36+z5EGEc='
 mesh-ip = '172.22.240.99'
@@ -24,10 +25,12 @@ mesh-ip = '172.22.240.105'
 [hosts.oracle-amd-001.wg]
 public-key = 'S0KMNkR8DWEV7XfoNVSrpRQGwE/A2G3tM2tnDZR76Cs='
 mesh-ip = '172.22.240.104'
+mesh-endpoint = '213.35.97.233:51821'
 
 [hosts.oracle-amd-002.wg]
 public-key = '9TXI2YQ0cdhW3xBhxzuHpPuISR7k2NwTjZ2Sq/lwoE0='
 mesh-ip = '172.22.240.97'
+mesh-endpoint = '213.35.117.232:51821'
 
 # Configured in AutoLifeRobot/nixos; listed here for its mesh membership.
 [hosts.sg-office.wg]

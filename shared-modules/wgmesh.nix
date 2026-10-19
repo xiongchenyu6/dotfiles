@@ -18,10 +18,10 @@ in
     relayPrefixes = [ "172.20.0.0/14" ];
     # 51820 is netbird's (wt0) on the desktops.
     listenPort = 51821;
-    nodes = lib.mapAttrs (name: host: {
+    nodes = lib.mapAttrs (_: host: {
       address = host.wg.mesh-ip;
       publicKey = host.wg.public-key;
-      endpoint = if name == "oracle-amd-002" then "213.35.117.232:51821" else null;
+      endpoint = host.wg.mesh-endpoint or null;
     }) (lib.filterAttrs (_: host: host ? wg && host.wg ? mesh-ip) shares.hosts);
   };
 }
