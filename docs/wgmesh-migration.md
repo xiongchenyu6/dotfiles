@@ -56,17 +56,23 @@ Stage 0 先修好的基线为准,否则没法判断迁移有没有把它搞坏�
 
 ## Stage 0: DN42 基线 + 前置清理
 **Goal**: 先把要"保持不断"的东西修到已知正常,再把 wgmesh 的两个小功能做完。
-**Success Criteria**:
-- amd-002 上 bird 在跑,`birdc show proto` 里 `kioubit_v6` 是 `Established`
-  (把 `bird-border` + `dn42` 从 tcloud 挪到实际持有 `wg_kioubit` 的 amd-002,
-  或者确认 tcloud 才是 border、把隧道挪回去 —— 二选一,配置和运行状态要对上)
-- game 上 `ping 172.20.0.53` 能通;docker `default-address-pools` 挪出 172.20.0.0/14
-- office / office-mac 各用一把独立的 WG 私钥
-- wgmesh 功能 A、B 合入,CI 通过
-**Tests**: `birdc show proto all kioubit_v6`、`ping 172.20.0.53`、`drill @172.20.0.53 burble.dn42`、
-`wg show wg_kioubit latest-handshakes` 不为 0;wgmesh 侧 `cargo test --workspace --locked` + `tests/kernel-mesh.sh`。
-记录下这份 DN42 检查清单,后面每个 Stage 结束都重跑一遍。
-**Status**: Not Started
+**Success Criteria / 进度**(2026-10-19):
+- [x] 根因:4 月把 hub(含 `wg_kioubit`)从 tcloud 迁到 amd-002 时 bird 没跟过来,隧道上 0 字节
+- [x] amd-002 跑 `bird-border` + `dn42`,ROA 已加载(v4 2801 / v6 2900),已上线
+- [x] tcloud 已被重装成 Ubuntu(SSH banner `OpenSSH_9.6p1 Ubuntu`),上面没有我们的 bird;NixOS 配置里也已摘掉 bird
+- [x] import filter 拒收 `10.42.0.0/16+`(已上线)
+- [x] 顺带修复:amd-002 的 NAT `externalInterface` 是不存在的 `ens5` → `ens3`(已上线)
+- [x] game/office 改为经 `wg_ora` 的静态 DN42 路由(原 bird-inner/babel 绑在不存在的 `wg_mail` 上,是死配置,已删);game 已上线
+- [x] game docker `default-address-pools` → 10.201.0.0/16(已上线),占 DN42 段的空闲网络已删
+- [x] office-mac 有了独立私钥 `wireguard/office-mac` 和地址 172.22.240.105 / fd48:4b4:f3::9;hub 侧 peer 已上线,
+      office-mac 本机 `darwin-rebuild switch` 待机器上线后执行
+- [x] wgmesh 功能 A(`services.wgmesh-coord.staticIPs`)、B(`skipInterfaces` 前缀匹配):PR #2 已合并(`964ae431`)
+- [ ] **Kioubit peering 重建(需要本人登录 Kioubit 后台)**:对端 `hk1.g-load.eu:22616` 回 ICMP port unreachable,peering 已被对方删除。
+      填写:AS4242422616,我方 WG 公钥 `9TXI2YQ0cdhW3xBhxzuHpPuISR7k2NwTjZ2Sq/lwoE0=`,
+      我方 endpoint 留空(我方主动拨号 + keepalive),link-local `fe80::100`,MP-BGP + extended next hop
+**Tests**: `birdc show proto all kioubit_v6` 为 Established、game 上 `ping 172.20.0.53`、
+`drill @172.20.0.53 burble.dn42`、`wg show wg_kioubit latest-handshakes` 不为 0。
+**Status**: In Progress(只剩 Kioubit 后台这一步)
 
 ## Stage 1: amd-002 上并行起 coordinator
 **Goal**: wgmesh 控制面 + 中继在 hub 上和现有 `wg0`/`wg_kioubit` 并存运行。
