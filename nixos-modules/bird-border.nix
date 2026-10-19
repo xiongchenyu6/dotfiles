@@ -120,6 +120,8 @@
         path metric 1;
           ipv4 {
             import filter {
+              # 10.42.0.0/24 is the wgmesh overlay; never let DN42 routes shadow it.
+              if net ~ [10.42.0.0/16+] then reject;
               if is_valid_network() && !is_self_net() then {
                 if (roa_check(dn42_roa, net, bgp_path.last) != ROA_VALID) then {
                   print "[dn42] ROA check failed for ", net, " ASN ", bgp_path.last;
