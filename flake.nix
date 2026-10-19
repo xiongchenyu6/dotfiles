@@ -89,6 +89,11 @@
         dream2nix.inputs.purescript-overlay.inputs.flake-compat.follows = "flake-compat";
       };
     };
+    # Private mesh (wireguard + patched wgautomesh); see docs/wgmesh-migration.md
+    wgmesh = {
+      url = "github:xiongchenyu6/wgmesh/feat/wgautomesh";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     vast-cli = {
       url = "github:dialohq/vast-cli.nix";
       inputs = {

@@ -19,6 +19,7 @@
     ezModules.gui
     ezModules.disk-recovery
     ezModules.core
+    ezModules.wgmesh
     ezModules.greetd
     ezModules.tlp
     ezModules.falcon-sensor

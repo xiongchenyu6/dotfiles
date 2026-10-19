@@ -747,6 +747,7 @@
         "systems": "systems",
         "talon-nix": "talon-nix",
         "vast-cli": "vast-cli",
+        "wgmesh": "wgmesh",
         "xiongchenyu6": "xiongchenyu6"
       }
     },
@@ -911,6 +912,27 @@
       "original": {
         "owner": "dialohq",
         "repo": "vast-cli.nix",
+        "type": "github"
+      }
+    },
+    "wgmesh": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1792397527,
+        "narHash": "sha256-48Y8LTq8MgV0+vjMRG+5p3lpRswMwkucozVe6U3ZUKk=",
+        "owner": "xiongchenyu6",
+        "repo": "wgmesh",
+        "rev": "3313addc67edaf37de30ebf5b8a2d720fc6cf421",
+        "type": "github"
+      },
+      "original": {
+        "owner": "xiongchenyu6",
+        "ref": "feat/wgautomesh",
+        "repo": "wgmesh",
         "type": "github"
       }
     },

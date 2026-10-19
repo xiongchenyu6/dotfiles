@@ -16,6 +16,7 @@
     ezModules.root
     ezModules."freeman.xiong"
     ezModules.core
+    ezModules.wgmesh
     ezModules.server
     ezModules.acme
     ezModules.sing-box
@@ -63,6 +64,9 @@
       pkgs.nix
     ];
   };
+
+  # Same VCN as the relay: dial its private address, not the public one.
+  services.wgmesh.nodes.oracle-amd-002.endpoint = lib.mkForce "10.0.0.246:51821";
 
   networking = {
     firewall = {

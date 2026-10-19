@@ -18,6 +18,7 @@
     ezModules.gui
     ezModules.vr
     ezModules.core
+    ezModules.wgmesh
     ezModules.greetd
     ezModules.virtualisation
     #ezModules.falcon-sensor

@@ -26,7 +26,7 @@ zram swap, nftables firewall, and systemd-resolved.
 | `autolife-robot-260` | x86_64-linux | Robot onboard host | Minimal bootstrap: sshd + NetworkManager only |
 | `tcloud` | x86_64-linux | Tencent Cloud VPS | **Now runs Ubuntu (seen 2026-10-19), not deployable with this config.** Was: coturn TURN, deepseek-free-api container, HE.net IPv6 tunnel |
 | `oracle-amd-001` | x86_64-linux | Oracle Cloud, IB sidecar | IB Gateway (paper) container, mesh peer, hysteria2 inbound |
-| `oracle-amd-002` | x86_64-linux | Oracle Cloud, mesh hub | WireGuard hub, DN42 border router, RustDesk relay, hysteria2 inbound, s3fs docs mount |
+| `oracle-amd-002` | x86_64-linux | Oracle Cloud, mesh hub | WireGuard hub, wgmesh relay (`10.42.0.1`), DN42 border router, RustDesk relay, hysteria2 inbound, s3fs docs mount |
 | `oracle-arm-001` | aarch64-linux | Oracle Cloud, mostly idle | Base server profile, Node.js 24 |
 | `oracle-arm-002` | aarch64-linux | App & data workhorse | Supabase-style stack (PostgREST/Realtime/TimescaleDB), Dify, Hashtopolis server, NautilusTrader quant stack |
 | `iso` | x86_64-linux | Image builder | GNOME Calamares installer ISO (`.#packages.x86_64-linux.iso`) |
@@ -76,6 +76,7 @@ Lenovo Legion 16ACH6h (hybrid graphics), tagged `nvidia,gui`.
 **Networking**
 - WireGuard peer `wg_ora` of the oracle-amd-002 hub; DN42 prefixes are static
   routes over `wg_ora` (the hub is the border router).
+- wgmesh node `10.42.0.20` (`nixos-modules/wgmesh.nix`, UDP 51821).
 - libvirt virtualization with VFIO/GPU-passthrough initrd modules; trusted
   virbr interfaces; binfmt emulation for aarch64.
 
@@ -103,6 +104,7 @@ Dell Latitude 5520 (`nixos-hardware` module), tagged `gui`.
 **Services & networking**
 - PostgreSQL 17 JIT (postgis, pg_repack, pg_cron with background workers).
 - WireGuard `wg_ora` mesh peer with static DN42 routes via the hub; NetBird client.
+- wgmesh node `10.42.0.21` (`nixos-modules/wgmesh.nix`, UDP 51821).
 - NFS4 filesystem support; binfmt aarch64 emulation; IP forwarding enabled.
 
 ---
@@ -143,8 +145,8 @@ Domain `panda.qzz.io`. The network/routing node of the fleet.
   (`JAVA_HEAP_SIZE`) for the small instance, daily cold restart at 00:10 ET. Paper API
   published on the mesh address only: `172.22.240.104:4002`. Consumers: the game-box
   `quant-equity` user service and the quant repo scripts.
-- WireGuard `wg_ora` peer of the oracle-amd-002 hub (`172.22.240.104`), dialing the
-  hub's VCN-private address; 2G swapfile on top of zram.
+- WireGuard `wg_ora` peer of the oracle-amd-002 hub (`172.22.240.104`) and wgmesh
+  node `10.42.0.10`, both dialing the hub's VCN-private address; 2G swapfile on top of zram.
 - **sing-box hysteria2 inbound** (`my.sing-box-hysteria2`, UDP 8443) — egress
   endpoint for cross-border clients (replaced earlier VLESS/VLESS+Reality setups).
 - `cloudflared` installed with tunnel credentials in sops.
