@@ -11,22 +11,22 @@ yubikey = 'ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILd3Wv8qfOx+hg+W/UMLArHvcBPBsPArO
 # on wgmesh (nixos-modules/wgmesh.nix).
 [hosts.game.wg]
 public-key = 'pvInS7gtW3H8JN3wzkdK8HM1qqFE/LpRXP36+z5EGEc='
-mesh-ip = '10.42.0.20'
+mesh-ip = '172.22.240.99'
 
 [hosts.office.wg]
 public-key = 'trmPW+CV8BbXfDMbe7I7IFwRh5ke8vpbDlgisSoH6ng='
-mesh-ip = '10.42.0.21'
+mesh-ip = '172.22.240.98'
 
 [hosts.office-mac.wg]
 public-key = '60wqMOcQzgieP8zPBajXirGbAS+n98P68P6u3EDfXnE='
 
 [hosts.oracle-amd-001.wg]
 public-key = 'S0KMNkR8DWEV7XfoNVSrpRQGwE/A2G3tM2tnDZR76Cs='
-mesh-ip = '10.42.0.10'
+mesh-ip = '172.22.240.104'
 
 [hosts.oracle-amd-002.wg]
 public-key = '9TXI2YQ0cdhW3xBhxzuHpPuISR7k2NwTjZ2Sq/lwoE0='
-mesh-ip = '10.42.0.1'
+mesh-ip = '172.22.240.97'
 
 [hosts.mac-pro.wg]
 public-key = '2bljDzFa753wDjgT8EN7Z+tgrXpCnGWKrH0Dotjn8xA='

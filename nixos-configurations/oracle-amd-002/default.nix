@@ -87,18 +87,6 @@ in
       internalInterfaces = [ vpn-dev ];
     };
 
-    # The Macs stay on wg0 (wgautomesh is Linux-only) and already route 10.0.0.0/8
-    # here. wgmesh peers only accept 10.42 sources, so hide them behind the relay.
-    nftables.tables.wgmesh-nat = {
-      family = "ip";
-      content = ''
-        chain post {
-          type nat hook postrouting priority srcnat; policy accept;
-          iifname "${vpn-dev}" oifname "${config.services.wgmesh.interface}" masquerade
-        }
-      '';
-    };
-
     firewall = {
       enable = true;
       trustedInterfaces = [ vpn-dev ];
@@ -134,35 +122,38 @@ in
         let
           privateKeyFile = config.sops.secrets."wireguard/oracle-amd-002".path;
           table = "off";
+          # The NixOS hosts carry their IPv4 on wgmesh (the /27 lives there), so
+          # here they only get IPv6; the rest keep a /32 routed over wg0.
           mkPeer = mesh4: mesh6: publicKey: {
             inherit publicKey;
-            allowedIPs = [
-              "${mesh4}/32"
-              "${mesh6}/128"
-            ];
+            allowedIPs = lib.optional (mesh4 != null) "${mesh4}/32" ++ [ "${mesh6}/128" ];
           };
+          peers = [
+            (mkPeer null "fd48:4b4:f3::2" shares.hosts.office.wg.public-key)
+            (mkPeer null "fd48:4b4:f3::3" shares.hosts.game.wg.public-key)
+            (mkPeer "172.22.240.100" "fd48:4b4:f3::4" "nBEkTpn4kRYXS9r7beXh3uMYJBAq/534byXv8NsB8gM=")
+            (mkPeer "172.22.240.101" "fd48:4b4:f3::5" "CAW6+atqM9xmCAZUaev3OZWbYKwjDNCHezyiBpiHmSg=")
+            (mkPeer "172.22.240.102" "fd48:4b4:f3::6" "9WkAJx+EG3VifVLiMgD8+6CoCsBwSyWAMwtajoy/OTk=")
+            (mkPeer "172.22.240.103" "fd48:4b4:f3::7" shares.hosts.mac-pro.wg.public-key)
+            (mkPeer null "fd48:4b4:f3::8" shares.hosts.oracle-amd-001.wg.public-key)
+            (mkPeer "172.22.240.105" "fd48:4b4:f3::9" shares.hosts.office-mac.wg.public-key)
+          ];
+          routes4 = lib.filter (lib.hasSuffix "/32") (lib.concatMap (p: p.allowedIPs) peers);
         in
         {
           ${vpn-dev} = {
-            inherit privateKeyFile table;
+            inherit privateKeyFile table peers;
             listenPort = port;
             address = [
-              "172.22.240.97/27"
+              "172.22.240.97/32"
               "fd48:4b4:f3::1/64"
             ];
             postUp = ''
               ${pkgs.iproute2}/bin/ip link set multicast on dev ${vpn-dev}
-            '';
-            peers = [
-              (mkPeer "172.22.240.98" "fd48:4b4:f3::2" shares.hosts.office.wg.public-key)
-              (mkPeer "172.22.240.99" "fd48:4b4:f3::3" shares.hosts.game.wg.public-key)
-              (mkPeer "172.22.240.100" "fd48:4b4:f3::4" "nBEkTpn4kRYXS9r7beXh3uMYJBAq/534byXv8NsB8gM=")
-              (mkPeer "172.22.240.101" "fd48:4b4:f3::5" "CAW6+atqM9xmCAZUaev3OZWbYKwjDNCHezyiBpiHmSg=")
-              (mkPeer "172.22.240.102" "fd48:4b4:f3::6" "9WkAJx+EG3VifVLiMgD8+6CoCsBwSyWAMwtajoy/OTk=")
-              (mkPeer "172.22.240.103" "fd48:4b4:f3::7" shares.hosts.mac-pro.wg.public-key)
-              (mkPeer "172.22.240.104" "fd48:4b4:f3::8" shares.hosts.oracle-amd-001.wg.public-key)
-              (mkPeer "172.22.240.105" "fd48:4b4:f3::9" shares.hosts.office-mac.wg.public-key)
-            ];
+            ''
+            + lib.concatMapStrings (r: ''
+              ${pkgs.iproute2}/bin/ip route add ${r} dev ${vpn-dev}
+            '') routes4;
           };
           wg_kioubit = {
             inherit privateKeyFile table;

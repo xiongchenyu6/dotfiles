@@ -2,8 +2,9 @@
 
 ## 目标形态(一句话)
 
-**Linux NixOS 主机之间的私有流量走 wgmesh(P2P 直连 + oracle-amd-002 中继);
-DN42 的 eBGP 隧道和内部路由面继续用 wg-quick,两套平面并存、互不依赖。**
+**自己 DN42 段 172.22.240.96/27 的 IPv4 在 Linux NixOS 主机之间走 wgmesh(P2P 直连 +
+oracle-amd-002 中继,中继同时是 DN42 border,DN42 IPv4 经它转发);IPv6 和 Mac 继续走
+wg-quick。地址一个不改,将来正式接入 DN42 时网段和 IP 原样可用。**
 
 wgmesh 不是 DN42 隧道的替代品:DN42 对等是双方手写 pubkey/endpoint 的静态隧道,
 而且要用 IPv6 link-local、组播(babel `ff02::1:6`)和任意前缀的 AllowedIPs。
@@ -31,9 +32,10 @@ Stage 0 先修好的基线为准,否则没法判断迁移有没有把它搞坏�
 
 wgmesh 仓库已经不再有自己的 Rust 守护进程,只剩一个 NixOS 模块:
 
-- `networking.wireguard.interfaces.wgmesh` 建接口,唯一的静态 peer 是中继 amd-002,AllowedIPs 是整个 `10.42.0.0/24`
+- `networking.wireguard.interfaces.wgmesh` 建接口,唯一的静态 peer 是中继 amd-002,AllowedIPs 是整个 mesh 段加 `relayPrefixes`
 - nixpkgs 里的 `services.wgautomesh` 负责其余节点:gossip 交换 endpoint、局域网广播发现、经中继看到的地址双向打洞
 - 一个约 20 行的补丁给 wgautomesh 加了 `relay_fallback`:握手新鲜时才给对端 `/32`,否则流量走中继的 `/24`
+- `relayPrefixes` 让普通节点把 mesh 外的网段(这里是 DN42 `172.20.0.0/14`)也经中继路由
 - 节点表 = `shares.toml` 里带 `mesh-ip` 的主机;密钥复用已有的 `wireguard/<host>`(sops);gossip 密钥 `wgmesh/gossip-secret`
 - dotfiles 侧入口:`nixos-modules/wgmesh.nix`
 
@@ -44,8 +46,12 @@ wgmesh 仓库已经不再有自己的 Rust 守护进程,只剩一个 NixOS 模�
 
 ## 地址与端口规划
 
-- mesh CIDR:`10.42.0.0/24`。DN42 的 import filter 已拒收 `10.42.0.0/16+`。
-- 地址:amd-002(中继)`.1`、amd-001 `.10`、game `.20`、office `.21`。
+- mesh CIDR 就是自己的 DN42 段 `172.22.240.96/27`,**地址沿用原有分配,不改**:
+  amd-002(中继)`.97`、office `.98`、game `.99`、amd-001 `.104`。
+- hub 上 `/27` 归 `wgmesh`;`wg0` 地址收成 `172.22.240.97/32`,只给 Mac(.103/.105)和
+  非 NixOS 客户端(.100–.102)各一条 `/32` 路由。三台 NixOS 主机在 `wg0` 上只剩 IPv6。
+- 普通节点的 `wg_ora` 只保留 IPv6(`fd48:4b4:f3::/48`、DN42 `fd00::/8`);DN42 IPv4 走 wgmesh 的中继 peer。
+- Mac 还是 wg-quick 连 hub,hub 在 `wg0` 和 `wgmesh` 之间直接转发(同一个 /27,不需要 NAT)。
 - 接口 `wgmesh`,WireGuard UDP 51821(51820 是桌面机上 netbird `wt0` 的;OCI 安全列表放行 51821,实测),gossip UDP 1666。
 - 中继 endpoint `213.35.117.232:51821`;amd-001 同 VCN,改拨 `10.0.0.246:51821`。
 
@@ -55,18 +61,17 @@ wgmesh 仓库已经不再有自己的 Rust 守护进程,只剩一个 NixOS 模�
 - [x] 根因:4 月把 hub(含 `wg_kioubit`)从 tcloud 迁到 amd-002 时 bird 没跟过来,隧道上 0 字节
 - [x] amd-002 跑 `bird-border` + `dn42`,ROA 已加载(v4 2801 / v6 2900),已上线
 - [x] tcloud 已被重装成 Ubuntu(SSH banner `OpenSSH_9.6p1 Ubuntu`),上面没有我们的 bird;NixOS 配置里也已摘掉 bird
-- [x] import filter 拒收 `10.42.0.0/16+`(已上线)
 - [x] 顺带修复:amd-002 的 NAT `externalInterface` 是不存在的 `ens5` → `ens3`(已上线)
 - [x] game/office 改为经 `wg_ora` 的静态 DN42 路由(原 bird-inner/babel 绑在不存在的 `wg_mail` 上,是死配置,已删);game 已上线
 - [x] game docker `default-address-pools` → 10.201.0.0/16(已上线),占 DN42 段的空闲网络已删
 - [x] office-mac 有了独立私钥 `wireguard/office-mac` 和地址 172.22.240.105 / fd48:4b4:f3::9;hub 侧 peer 已上线,
       office-mac 本机 `darwin-rebuild switch` 待机器上线后执行
-- [ ] **Kioubit peering 重建(需要本人登录 Kioubit 后台)**:对端 `hk1.g-load.eu:22616` 回 ICMP port unreachable,peering 已被对方删除。
+- [ ] **(暂缓,先做自己的机器)Kioubit peering 重建(需要本人登录 Kioubit 后台)**:对端 `hk1.g-load.eu:22616` 回 ICMP port unreachable,peering 已被对方删除。
       填写:AS4242422616,我方 WG 公钥 `9TXI2YQ0cdhW3xBhxzuHpPuISR7k2NwTjZ2Sq/lwoE0=`,
       我方 endpoint 留空(我方主动拨号 + keepalive),link-local `fe80::100`,MP-BGP + extended next hop
 **Tests**: `birdc show proto all kioubit_v6` 为 Established、game 上 `ping 172.20.0.53`、
 `drill @172.20.0.53 burble.dn42`、`wg show wg_kioubit latest-handshakes` 不为 0。
-**Status**: In Progress(只剩 Kioubit 后台这一步)
+**Status**: In Progress(只剩 Kioubit 后台这一步,已暂缓)
 
 ## Stage 1: amd-002 上线中继
 **Goal**: `wgmesh` 接口和中继在 hub 上与 `wg0`/`wg_kioubit` 并存运行。
@@ -76,33 +81,32 @@ wgmesh 仓库已经不再有自己的 Rust 守护进程,只剩一个 NixOS 模�
 
 ## Stage 2: oracle-amd-001 接入
 **Goal**: 第一个普通节点,经 VCN 内网直连中继。
-**Success Criteria**: amd-001 `ping 10.42.0.1` 通;hub 上 amd-001 的 endpoint 是 10.0.0.x。
+**Success Criteria**: amd-001 `ping 172.22.240.97` 通;hub 上 amd-001 的 endpoint 是 10.0.0.x。
 **Tests**: 同上。
-**Status**: Complete(hub 上 amd-001 endpoint `10.0.0.199:51821`,互 ping 通)
+**Status**: Complete(hub 上 amd-001 endpoint `10.0.0.199:51821`,互 ping 通;ib-gateway 4002 绑在 wgmesh 的 `.104` 上,game 可连)
 
 ## Stage 3: game、office 接入
 **Goal**: 桌面机加上 wgmesh,`wg_ora` 原样保留。
 **Success Criteria**:
-- game、office 都能 `ping 10.42.0.1` 和其他节点
+- game、office 都能 `ping 172.22.240.97` 和其他节点
 - game ↔ office 在同一局域网时走直连(对方 peer 有 `/32`,endpoint 是 LAN 地址)
 **Tests**: `wg show wgmesh allowed-ips`、`wg show wgmesh endpoints`;DN42 检查清单通过。
-**Status**: In Progress(game 已接入,经中继 ping 通 .1/.10;office 离线,配置已就绪,上线后 `nixos-rebuild switch --flake .#office`)
+**Status**: In Progress(game 已接入:ping 通 .97/.104,经 hub 到 Mac `.103:22` 通,IPv6 `fd48:4b4:f3::1` 通;
+office 离线,配置已就绪,上线后 `nixos-rebuild switch --flake .#office`。office 的 build 目前卡在与本迁移无关的 `falcon-sensor` 单元)
 
-## Stage 4: 业务流量切到 wgmesh 并观察一周
-**Goal**: 所有写死旧 mesh IP 的地方改用新地址,旧地址只留给 DN42。
+## Stage 4: 业务端口收到 wgmesh 并观察一周
+**Goal**: 地址不变,业务端口只在 `wgmesh` 上开。
 **Success Criteria**:
-- `home-configurations/freeman.xiong.nix` 里 ssh matchBlocks 的 `office`/`game` HostName → 10.42.0.x
-- Sunshine `csrf_allowed_origins` → `https://10.42.0.20:47990`
-- `nixos-modules/bind.nix` 的 inner 区 `office`/`game` A 记录 → 10.42.0.x
-- 防火墙的业务端口只留 `interfaces.wgmesh`(`wg_ora` 只放 babel/BGP)
-- 观察 7 天:`wgautomesh` 没有重启循环,`journalctl -u wgautomesh` 里同一个 peer 没有反复 `Configure … with endpoint`
-**Tests**: `ssh game`、`ssh office` 走的是 10.42 地址;Moonlight 推流正常;DN42 检查清单通过。
-**Status**: Not Started
+- [x] game(Sunshine、ssh 等)、office(2222)、amd-001(4002)的防火墙端口从 `wg_ora` 挪到 `interfaces.wgmesh`
+- [x] ssh matchBlocks、Sunshine `csrf_allowed_origins` 用的就是原地址,无需改
+- [ ] 观察 7 天:`wgautomesh` 没有重启循环,`journalctl -u wgautomesh` 里同一个 peer 没有反复 `Configure … with endpoint`
+**Tests**: Mac 上 `ssh game` 正常;Moonlight 推流正常;DN42 检查清单通过。
+**Status**: In Progress(观察期从 2026-10-19 开始)
 
 ## Stage 5: 收缩旧 mesh
 **Goal**: wg-quick 只保留 wgmesh 做不了的部分。
 **Success Criteria**:
-- hub 的 `wg0` 只留:mac-pro、office-mac、非 NixOS 的 .101/.102,以及仍要接入 DN42 的内部主机
+- hub 的 `wg0` 已经只给 mac-pro、office-mac、.100–.102 留 IPv4;剩下决定 IPv6 是否也要挪
 - 删掉从未握手的 peer(.100,以及 Stage 0 之后仍然离线的)
 - 如果决定 game/office 不再需要 DN42 地址:去掉它们的 `wg_ora`、`bird-inner`、`dn42` 模块,
   `wireguard/game`、`wireguard/office` secret,shares 里的 wg 公钥 —— 直接删,不留兼容层
@@ -118,7 +122,6 @@ import 去掉再 rebuild;旧的 `wg_ora` 在 Stage 5 之前一直完整可用。
 
 ## 默认采用的假设(不同意的话改这里)
 
-1. game/office 在本次迁移中**保留** DN42 内网身份(Stage 5 再决定要不要去掉)。
+1. 所有主机保留原有 DN42 段地址(v4 /27、v6 fd48:4b4:f3::/48),不重新编址。
 2. 两台 Mac 留在 wg-quick 上(wgautomesh 只支持 Linux)。
 3. 中继和现有 hub 放在同一台 amd-002 上。
-4. mesh 用 10.42.0.0/24,不从自己的 DN42 /27 里切。

@@ -5,7 +5,7 @@
 # run under a virtual display with IBC driving the login. oracle-arm-002 (aarch64) can't
 # run it without emulation, so this x86_64 box is the sidecar (moved off the busier hub
 # oracle-amd-002). The game-box quant-equity node and the quant scripts connect over the
-# WireGuard mesh to 172.22.240.104:4002.
+# wgmesh to 172.22.240.104:4002.
 #
 # Implementation: the gnzsnz/ib-gateway image bundles Gateway + IBC + Xvfb + VNC and tracks
 # IBKR's installer/version churn, which a hand-rolled buildFHSEnv derivation cannot. Still
@@ -15,8 +15,8 @@
 # Secure Login System → exclude the paper user) or every daily restart blocks forever on a
 # phone prompt. Paper accounts permit this; live never would.
 let
-  # Bind the API to the WireGuard mesh address ONLY — never the public interface.
-  # default.nix opens 4002 on wg_ora only.
+  # Bind the API to the wgmesh address ONLY — never the public interface.
+  # default.nix opens 4002 on wgmesh only.
   wgAddr = "172.22.240.104";
 in
 {
@@ -76,10 +76,11 @@ in
     };
   };
 
-  # The API port binds to the wg_ora address, which only exists once the tunnel is up.
+  # The API port binds to the wgmesh address, which only exists once networkd has
+  # configured the interface.
   systemd.services.podman-ib-gateway = {
-    after = [ "wg-quick-wg_ora.service" ];
-    requires = [ "wg-quick-wg_ora.service" ];
+    after = [ "systemd-networkd-wait-online@wgmesh.service" ];
+    requires = [ "systemd-networkd-wait-online@wgmesh.service" ];
   };
 
   # Daily COLD restart. IBC's in-place auto-restart (23:59 ET) and IB's Sunday re-auth can
