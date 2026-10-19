@@ -18,9 +18,6 @@ in
     ezModules.core
     ezModules.server
     ezModules.acme
-    ezModules.bird-border
-    ezModules.dn42
-    ezModules.bird-inner
     ezModules.datadog-agent
     srvos.nixosModules.server
     ezModules.mixins-nginx
@@ -67,8 +64,7 @@ in
 
   networking = {
     # Explicit personal domain. This used to inherit the corp-domain default from
-    # nixos-modules/core.nix; the only consumer is the DN42 bird-lg looking glass
-    # (nixos-modules/birg-lg.nix, pulled in via bird-border).
+    # nixos-modules/core.nix.
     domain = "panda.qzz.io";
 
     nat = {
@@ -89,7 +85,6 @@ in
         80 # ui
         88 # kerberos
         89
-        179 # bgp
         389
         443
         464 # kerberos change password
@@ -108,7 +103,6 @@ in
         80
         89
         88 # kerberos
-        179 # bird
         389 # ldap
         636
         5353 # mdns
@@ -238,10 +232,5 @@ in
           TrustedUserCAKeys ${file}
         '';
       };
-
-    babeld.extraConfig = ''
-      redistribute ip 172.20.0.0/14
-      redistribute if ens5 deny
-    '';
   };
 }

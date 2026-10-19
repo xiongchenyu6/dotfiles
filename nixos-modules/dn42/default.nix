@@ -19,8 +19,14 @@ in
       };
     };
     services = {
+      # bird includes the ROA files, so the first fetch must land before it starts.
+      bird = {
+        wants = [ "dn42-roa.service" ];
+        after = [ "dn42-roa.service" ];
+      };
       dn42-roa = {
-        after = [ "network.target" ];
+        wants = [ "network-online.target" ];
+        after = [ "network-online.target" ];
         description = "DN42 ROA Updated";
         serviceConfig = {
           Type = "oneshot";

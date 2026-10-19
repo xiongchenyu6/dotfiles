@@ -5,7 +5,6 @@
   ezModules,
   config,
   pkgs,
-  mylib,
   shares,
   ...
 }:
@@ -20,8 +19,6 @@
     ezModules.vr
     ezModules.core
     ezModules.greetd
-    ezModules.dn42
-    ezModules.bird-inner
     ezModules.virtualisation
     #ezModules.falcon-sensor
     ezModules.wayland
@@ -298,6 +295,9 @@
               ${pkgs.iproute2}/bin/ip addr add dev wg_ora 172.22.240.99/32 peer 172.22.240.96/27
               ${pkgs.iproute2}/bin/ip addr add dev wg_ora fd48:4b4:f3::3/128 peer fd48:4b4:f3::1/128
               ${pkgs.iproute2}/bin/ip link set multicast on dev wg_ora
+              # DN42 is reached through the hub (oracle-amd-002 is the border router).
+              ${pkgs.iproute2}/bin/ip route add 172.20.0.0/14 dev wg_ora
+              ${pkgs.iproute2}/bin/ip -6 route add fd00::/8 dev wg_ora
             '';
 
             peers = [
@@ -389,19 +389,6 @@
     };
 
     netbird.enable = true;
-    babeld = {
-      interfaces = {
-        wg_ora = {
-          hello-interval = 5;
-          split-horizon = "auto";
-          type = "wired";
-        };
-      };
-    };
-    bird = {
-      enable = true;
-      config = mylib.bird2-inner-config "172.22.240.99" "fd48:4b4:f3::3";
-    };
   };
 
   # Sunshine's NVENC encoder dlopen()s libcuda.so.1, which lives in
