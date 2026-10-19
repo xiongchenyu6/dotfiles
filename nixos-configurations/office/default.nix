@@ -3,9 +3,7 @@
   inputs,
   lib,
   ezModules,
-  config,
   pkgs,
-  shares,
   ...
 }:
 {
@@ -57,7 +55,6 @@
 
   zramSwap.enable = true;
 
-  sops.secrets."wireguard/office" = { };
 
   hardware = {
     enableRedistributableFirmware = true;
@@ -132,40 +129,6 @@
       };
       enableIPv6 = true;
 
-      wg-quick =
-        let
-          privateKeyFile = config.sops.secrets."wireguard/office".path;
-          table = "off";
-        in
-        {
-          interfaces = {
-            wg_ora = {
-              inherit privateKeyFile table;
-              address = [ "fe80::101/64" ];
-              postUp = ''
-                ${pkgs.iproute2}/bin/ip addr add dev wg_ora fd48:4b4:f3::2/128 peer fd48:4b4:f3::1/128
-                ${pkgs.iproute2}/bin/ip link set multicast on dev wg_ora
-                # DN42 IPv6 is reached through the hub; IPv4 goes over wgmesh.
-                ${pkgs.iproute2}/bin/ip -6 route add fd00::/8 dev wg_ora
-              '';
-
-              peers = [
-                {
-                  endpoint = "213.35.117.232:22616";
-                  publicKey = shares.hosts.oracle-amd-002.wg.public-key;
-                  persistentKeepalive = 30;
-                  allowedIPs = [
-                    "fd00::/8"
-                    "fe80::/10"
-                    "fd48:4b4:f3::/48"
-                    "ff02::1:6/128" # babeld
-                    "ff02::fb/128" # avahi
-                  ];
-                }
-              ];
-            };
-          };
-        };
       useDHCP = lib.mkDefault true;
 
     };

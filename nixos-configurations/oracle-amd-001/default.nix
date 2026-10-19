@@ -1,11 +1,9 @@
 {
-  config,
   inputs,
   modulesPath,
   lib,
   pkgs,
   ezModules,
-  shares,
   ...
 }:
 {
@@ -36,7 +34,6 @@
   my.sing-box-hysteria2.enable = true;
 
   sops.secrets."cloudflared/tunnel-credentials" = { };
-  sops.secrets."wireguard/oracle-amd-001" = { };
 
   # 1GB RAM box running the IB Gateway JVM — zram alone can't absorb its spikes.
   swapDevices = [
@@ -78,26 +75,6 @@
       allowedUDPPorts = [ 53 ];
       # IB Gateway paper API, published on the mesh address only (ib-gateway.nix).
       interfaces.wgmesh.allowedTCPPorts = [ 4002 ];
-    };
-
-    # Mesh peer of the oracle-amd-002 hub. Both hosts share the Oracle VCN, so dial the
-    # hub's private address instead of hairpinning through its public IP.
-    wg-quick.interfaces.wg_ora = {
-      privateKeyFile = config.sops.secrets."wireguard/oracle-amd-001".path;
-      table = "off";
-      address = [
-        "fd48:4b4:f3::8/64"
-      ];
-      peers = [
-        {
-          endpoint = "10.0.0.246:22616";
-          publicKey = shares.hosts.oracle-amd-002.wg.public-key;
-          persistentKeepalive = 25;
-          allowedIPs = [
-            "fd48:4b4:f3::/64"
-          ];
-        }
-      ];
     };
   };
 }

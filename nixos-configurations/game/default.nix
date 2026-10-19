@@ -5,7 +5,6 @@
   ezModules,
   config,
   pkgs,
-  shares,
   ...
 }:
 {
