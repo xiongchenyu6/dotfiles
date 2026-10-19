@@ -87,6 +87,18 @@ in
       internalInterfaces = [ vpn-dev ];
     };
 
+    # The Macs stay on wg0 (wgautomesh is Linux-only) and already route 10.0.0.0/8
+    # here. wgmesh peers only accept 10.42 sources, so hide them behind the relay.
+    nftables.tables.wgmesh-nat = {
+      family = "ip";
+      content = ''
+        chain post {
+          type nat hook postrouting priority srcnat; policy accept;
+          iifname "${vpn-dev}" oifname "${config.services.wgmesh.interface}" masquerade
+        }
+      '';
+    };
+
     firewall = {
       enable = true;
       trustedInterfaces = [ vpn-dev ];

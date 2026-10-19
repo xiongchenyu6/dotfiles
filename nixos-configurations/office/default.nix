@@ -116,8 +116,8 @@
           6696
           33434
         ];
-        interfaces.wg_ora.allowedTCPPorts = [ 2222 ];
-        interfaces.wg_ora.allowedUDPPorts = [ 2222 ];
+        interfaces.wgmesh.allowedTCPPorts = [ 2222 ];
+        interfaces.wgmesh.allowedUDPPorts = [ 2222 ];
       };
 
       networkmanager = {

@@ -236,8 +236,8 @@
           "virbr10"
         ]; # for libvirt
         # Sunshine (47984/47989/47990/48010 TCP, 47998-48002/48010 UDP) is
-        # reachable only over the WireGuard mesh, not LAN/WiFi.
-        interfaces.wg_ora.allowedTCPPorts = [
+        # reachable only over wgmesh, not LAN/WiFi.
+        interfaces.wgmesh.allowedTCPPorts = [
           22
           5173
           8080
@@ -248,7 +248,7 @@
           47990 # Sunshine web UI
           48010 # Sunshine RTSP
         ];
-        interfaces.wg_ora.allowedUDPPorts = [
+        interfaces.wgmesh.allowedUDPPorts = [
           22
           47998 # Sunshine video
           47999 # Sunshine control
@@ -335,7 +335,7 @@
       package = (pkgs.sunshine.override { cudaSupport = true; }).overrideAttrs (old: {
         patches = (old.patches or [ ]) ++ [ ../../packages/sunshine-hybrid-gpu-nvenc.patch ];
       });
-      # Ports are opened on wg_ora only (see networking.firewall above).
+      # Ports are opened on wgmesh only (see networking.firewall above).
       openFirewall = false;
       capSysAdmin = true;
     };
@@ -457,6 +457,17 @@
           };
 
           programs = {
+            # Codex remote control lives in the ChatGPT desktop app (llm-agents
+            # `chatgpt`, bundles Codex). Launch it with the session so the phone
+            # can reach this machine without anyone opening the app first.
+            niri.settings.spawn-at-startup = [
+              {
+                command = [
+                  "${inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.chatgpt}/bin/chatgpt"
+                ];
+              }
+            ];
+
             # eno1 lives on the office segment (see networkmanager.ensureProfiles
             # office-eno1, autoconnected at boot). officeoff swaps it to an
             # unsaved DHCP profile until the next reboot; officeon puts it back.
