@@ -55,7 +55,6 @@
 
   zramSwap.enable = true;
 
-
   hardware = {
     enableRedistributableFirmware = true;
   };

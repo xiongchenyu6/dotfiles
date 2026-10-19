@@ -5,12 +5,9 @@
   pkgs,
   config,
   ezModules,
-  shares,
   ...
 }:
 let
-  vpn-dev = "wg0";
-  port = 22616;
 in
 {
   imports = with inputs; [
@@ -87,10 +84,7 @@ in
       enableIPv6 = true;
       # Oracle shapes name the uplink ens3; "ens5" never existed here, so NAT was a no-op.
       externalInterface = "ens3";
-      internalInterfaces = [
-        vpn-dev
-        config.services.wgmesh.interface
-      ];
+      internalInterfaces = [ config.services.wgmesh.interface ];
     };
 
     # The phone cannot run wgautomesh, so it is a plain peer of the relay. The
@@ -107,7 +101,7 @@ in
 
     firewall = {
       enable = true;
-      trustedInterfaces = [ vpn-dev ];
+      trustedInterfaces = [ config.services.wgmesh.interface ];
       allowedTCPPorts = [
         22
         53
@@ -119,7 +113,6 @@ in
         993
       ];
       allowedUDPPorts = [
-        port
         53
         80
         179
@@ -135,66 +128,33 @@ in
       ];
     };
 
-    wg-quick = {
-      interfaces =
-        let
-          privateKeyFile = config.sops.secrets."wireguard/oracle-amd-002".path;
-          table = "off";
-          # What wgmesh does not carry yet: office-mac and the .100/.102 clients
-          # (IPv4 /32s routed over wg0) and IPv6 for office and oracle-amd-001.
-          mkPeer = mesh4: mesh6: publicKey: {
-            inherit publicKey;
-            allowedIPs = lib.optional (mesh4 != null) "${mesh4}/32" ++ [ "${mesh6}/128" ];
-          };
-          peers = [
-            (mkPeer null "fd48:4b4:f3::2" shares.hosts.office.wg.public-key)
-            (mkPeer "172.22.240.100" "fd48:4b4:f3::4" "nBEkTpn4kRYXS9r7beXh3uMYJBAq/534byXv8NsB8gM=")
-            (mkPeer "172.22.240.102" "fd48:4b4:f3::6" "9WkAJx+EG3VifVLiMgD8+6CoCsBwSyWAMwtajoy/OTk=")
-            (mkPeer null "fd48:4b4:f3::8" shares.hosts.oracle-amd-001.wg.public-key)
-            (mkPeer "172.22.240.105" "fd48:4b4:f3::9" shares.hosts.office-mac.wg.public-key)
-          ];
-          routes4 = lib.filter (lib.hasSuffix "/32") (lib.concatMap (p: p.allowedIPs) peers);
-        in
-        {
-          ${vpn-dev} = {
-            inherit privateKeyFile table peers;
-            listenPort = port;
-            address = [
-              "172.22.240.97/32"
-              "fd48:4b4:f3::1/64"
+    # DN42 eBGP to Kioubit: a static link-local tunnel that wgmesh cannot carry.
+    wg-quick.interfaces = {
+      wg_kioubit = {
+        privateKeyFile = config.sops.secrets."wireguard/oracle-amd-002".path;
+        table = "off";
+        address = [ "fe80::100/64" ];
+        peers = [
+          {
+            endpoint = "hk1.g-load.eu:22616";
+            # We dial out and nothing else sends on this link until bird's
+            # BGP session is up, so keep the handshake alive ourselves.
+            persistentKeepalive = 25;
+            publicKey = "sLbzTRr2gfLFb24NPzDOpy8j09Y6zI+a7NkeVMdVSR8=";
+            allowedIPs = [
+              "10.0.0.0/8"
+              "172.20.0.0/14"
+              "172.31.0.0/16"
+              "fd00::/8"
+              "fe80::/64"
+              "fd48:4b4:f3::/48"
+              "ff02::1:6/128"
+              "224.0.0.251/32"
+              "ff02::fb/128"
             ];
-            postUp = ''
-              ${pkgs.iproute2}/bin/ip link set multicast on dev ${vpn-dev}
-            ''
-            + lib.concatMapStrings (r: ''
-              ${pkgs.iproute2}/bin/ip route add ${r} dev ${vpn-dev}
-            '') routes4;
-          };
-          wg_kioubit = {
-            inherit privateKeyFile table;
-            address = [ "fe80::100/64" ];
-            peers = [
-              {
-                endpoint = "hk1.g-load.eu:22616";
-                # We dial out and nothing else sends on this link until bird's
-                # BGP session is up, so keep the handshake alive ourselves.
-                persistentKeepalive = 25;
-                publicKey = "sLbzTRr2gfLFb24NPzDOpy8j09Y6zI+a7NkeVMdVSR8=";
-                allowedIPs = [
-                  "10.0.0.0/8"
-                  "172.20.0.0/14"
-                  "172.31.0.0/16"
-                  "fd00::/8"
-                  "fe80::/64"
-                  "fd48:4b4:f3::/48"
-                  "ff02::1:6/128"
-                  "224.0.0.251/32"
-                  "ff02::fb/128"
-                ];
-              }
-            ];
-          };
-        };
+          }
+        ];
+      };
     };
   };
 
