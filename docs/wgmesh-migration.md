@@ -114,6 +114,7 @@ office 离线,配置已就绪,上线后 `nixos-rebuild switch --flake .#office`�
 **Tests**: `nix flake check`;每台主机 `nixos-rebuild build` 都过;DN42 检查清单通过;macOS 上的 `wg_ora` 正常。
 **进度**(2026-10-19):
 - [x] game 删掉 `wg_ora`(不再要 IPv6);mac-pro 改成 wgmesh 节点(nix-darwin + launchd wgautomesh),删掉 `wg_ora`
+      (实测:mac-pro ↔ game 直连,game 上 mac-pro 有 `/32`、endpoint 是 Mac 的公网地址)
 - [x] 手机 `.101` 改成中继上的静态 wgmesh peer(只改 endpoint 端口到 51821),hub `wg0` 去掉 game、mac-pro、手机
 - [ ] `wg0` 剩 office-mac、`.100`、`.102`(IPv4)和 office、amd-001(IPv6);office/Kioubit 暂缓
 **Status**: In Progress
