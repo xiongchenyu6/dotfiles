@@ -113,12 +113,14 @@ office 离线,配置已就绪,上线后 `nixos-rebuild switch --flake .#office`�
 - 更新 `docs/HOSTS.md`;等所有 Stage 完成后删掉本文件
 **Tests**: `nix flake check`;每台主机 `nixos-rebuild build` 都过;DN42 检查清单通过;macOS 上的 `wg_ora` 正常。
 **进度**(2026-10-19):
-- [x] game 删掉 `wg_ora`(不再要 IPv6);mac-pro 改成 wgmesh 节点(nix-darwin + launchd wgautomesh),删掉 `wg_ora`
-      (实测:mac-pro ↔ game 直连,game 上 mac-pro 有 `/32`、endpoint 是 Mac 的公网地址)
-- [x] 手机 `.101` 改成中继上的静态 wgmesh peer(只改 endpoint 端口到 51821),hub `wg0` 去掉 game、mac-pro、手机
-- [x] `.100`、`.102` 不迁移,原样留在 `wg0`(不在本次范围)
-- [ ] `wg0` 上的 office-mac(IPv4)和 office、amd-001(IPv6):随 office 一起做,office/Kioubit 暂缓
-**Status**: In Progress
+- [x] game、mac-pro、oracle-amd-001 删掉 `wg_ora`;mac-pro 跑 nix-darwin 的 wgautomesh
+- [x] 手机 `.101` 改成中继上的静态 wgmesh peer(endpoint 端口改 51821)
+- [x] sg-office `.102` 在 workRobot/nixos 里接入(直接 import 本仓库 `shared-modules/wgmesh.nix`),已部署
+- [x] hub 的 `wg0` 整个删掉;`.100` 从未握手,不迁移
+- [x] 直连实测:game↔mac-pro、game↔oracle-amd-001(给 amd-001 加了公网 `mesh-endpoint`,之前中继只会 gossip 它的 VCN 地址)
+- [ ] office、office-mac 配置已就绪,上线后各自 switch 一次(office-mac 需要本人 sudo)
+- [ ] sg-office 的 dotfiles lock 还在 4affdf7f,下次 bump 后它才知道 amd-001 的公网 endpoint(在那之前 sg-office↔amd-001 走中继)
+**Status**: In Progress(只剩离线的 office、office-mac)
 
 ## 回滚
 
