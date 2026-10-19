@@ -293,11 +293,9 @@
             table = "off";
             address = [ "fe80::102/64" ];
             postUp = ''
-              ${pkgs.iproute2}/bin/ip addr add dev wg_ora 172.22.240.99/32 peer 172.22.240.96/27
               ${pkgs.iproute2}/bin/ip addr add dev wg_ora fd48:4b4:f3::3/128 peer fd48:4b4:f3::1/128
               ${pkgs.iproute2}/bin/ip link set multicast on dev wg_ora
-              # DN42 is reached through the hub (oracle-amd-002 is the border router).
-              ${pkgs.iproute2}/bin/ip route add 172.20.0.0/14 dev wg_ora
+              # DN42 IPv6 is reached through the hub; IPv4 goes over wgmesh.
               ${pkgs.iproute2}/bin/ip -6 route add fd00::/8 dev wg_ora
             '';
 
@@ -307,14 +305,10 @@
                 publicKey = shares.hosts.oracle-amd-002.wg.public-key;
                 persistentKeepalive = 30;
                 allowedIPs = [
-                  "10.0.0.0/8"
-                  "172.20.0.0/14"
-                  "172.31.0.0/16"
                   "fd00::/8"
                   "fe80::/10"
                   "fd48:4b4:f3::/48"
                   "ff02::1:6/128"
-                  "224.0.0.251/32" # avahi
                   "ff02::fb/128" # avahi
                 ];
               }

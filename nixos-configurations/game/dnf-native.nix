@@ -26,8 +26,7 @@
       enable = true;
       enableOnBoot = false;
       # Docker's default pools start at 172.17/16 and walk into 172.20/14, which
-      # is DN42 space routed over wg_ora. Keep compose networks clear of DN42 and
-      # of the wgmesh overlay (10.42.0.0/24).
+      # is DN42 space (routed over wgmesh). Keep compose networks clear of it.
       daemon.settings.default-address-pools = [
         {
           base = "10.201.0.0/16";

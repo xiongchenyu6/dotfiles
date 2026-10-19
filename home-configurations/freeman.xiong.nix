@@ -131,7 +131,7 @@ in
       origin_web_ui_allowed = lan
       # Web UI is reached over wgmesh by its mesh address; Sunshine's
       # CSRF check rejects form posts from any origin not listed here.
-      csrf_allowed_origins = https://10.42.0.20:47990
+      csrf_allowed_origins = https://172.22.240.99:47990
     '';
   };
 
@@ -221,10 +221,10 @@ in
           HostName = "115.190.173.250";
         };
         "office" = {
-          HostName = "10.42.0.21";
+          HostName = "172.22.240.98";
         };
         "game" = {
-          HostName = "10.42.0.20";
+          HostName = "172.22.240.99";
         };
         "jtti-sg" = {
           HostName = "45.194.18.75";

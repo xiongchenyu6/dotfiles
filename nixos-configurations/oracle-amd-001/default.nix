@@ -77,7 +77,7 @@
       ];
       allowedUDPPorts = [ 53 ];
       # IB Gateway paper API, published on the mesh address only (ib-gateway.nix).
-      interfaces.wg_ora.allowedTCPPorts = [ 4002 ];
+      interfaces.wgmesh.allowedTCPPorts = [ 4002 ];
     };
 
     # Mesh peer of the oracle-amd-002 hub. Both hosts share the Oracle VCN, so dial the
@@ -86,7 +86,6 @@
       privateKeyFile = config.sops.secrets."wireguard/oracle-amd-001".path;
       table = "off";
       address = [
-        "172.22.240.104/27"
         "fd48:4b4:f3::8/64"
       ];
       peers = [
@@ -95,7 +94,6 @@
           publicKey = shares.hosts.oracle-amd-002.wg.public-key;
           persistentKeepalive = 25;
           allowedIPs = [
-            "172.22.240.96/27"
             "fd48:4b4:f3::/64"
           ];
         }
