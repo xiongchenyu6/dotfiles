@@ -36,7 +36,18 @@ in
   # (error: attribute 'chatgpt' missing),所以按实际存在的挑。
   ++ (
     let
-      agents = inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system} or { };
+      upstream = inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system} or { };
+      # ChatGPT 26.1013.40934's remote-control-device-key.node links the TPM
+      # libraries (libtss2-*), which the llm-agents build does not provide yet.
+      agents =
+        upstream
+        // lib.optionalAttrs (upstream ? chatgpt) {
+          chatgpt = upstream.chatgpt.override {
+            chatgpt-unwrapped = upstream.chatgpt.unwrapped.overrideAttrs (old: {
+              buildInputs = (old.buildInputs or [ ]) ++ [ pkgs.tpm2-tss ];
+            });
+          };
+        };
     in
     map (name: agents.${name}) (
       builtins.filter (name: agents ? ${name}) [

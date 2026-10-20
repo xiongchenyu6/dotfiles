@@ -480,7 +480,9 @@ in
       ++ lib.optionals pkgs.stdenv.hostPlatform.isLinux (
         with pkgs;
         [
-          godot_4
+          # Godot 4.7 needs harfbuzz built with vector support too; drop
+          # this override once nixpkgs includes NixOS/nixpkgs#575619.
+          (godot_4.override { harfbuzz = harfbuzz.override { withVector = true; }; })
         ]
       );
     sessionVariables = {

@@ -65,7 +65,7 @@ wgmesh 仓库已经不再有自己的 Rust 守护进程,只剩一个 NixOS 模�
 - [x] game/office 改为经 `wg_ora` 的静态 DN42 路由(原 bird-inner/babel 绑在不存在的 `wg_mail` 上,是死配置,已删);game 已上线
 - [x] game docker `default-address-pools` → 10.201.0.0/16(已上线),占 DN42 段的空闲网络已删
 - [x] office-mac 有了独立私钥 `wireguard/office-mac` 和地址 172.22.240.105 / fd48:4b4:f3::9;hub 侧 peer 已上线,
-      office-mac 本机 `darwin-rebuild switch` 待机器上线后执行
+      (office-mac 已于 2026-10-20 出售,该私钥和地址已删除)
 - [ ] **(暂缓,先做自己的机器)Kioubit peering 重建(需要本人登录 Kioubit 后台)**:对端 `hk1.g-load.eu:22616` 回 ICMP port unreachable,peering 已被对方删除。
       填写:AS4242422616,我方 WG 公钥 `9TXI2YQ0cdhW3xBhxzuHpPuISR7k2NwTjZ2Sq/lwoE0=`,
       我方 endpoint 留空(我方主动拨号 + keepalive),link-local `fe80::100`,MP-BGP + extended next hop
@@ -98,9 +98,11 @@ wgmesh 仓库已经不再有自己的 Rust 守护进程,只剩一个 NixOS 模�
 **Success Criteria**:
 - [x] game(Sunshine、ssh 等)、office(2222)、amd-001(4002)的防火墙端口从 `wg_ora` 挪到 `interfaces.wgmesh`
 - [x] ssh matchBlocks、Sunshine `csrf_allowed_origins` 用的就是原地址,无需改
-- [ ] 观察 7 天:`wgautomesh` 没有重启循环,`journalctl -u wgautomesh` 里同一个 peer 没有反复 `Configure … with endpoint`
+- [ ] 观察 7 天(到 2026-10-26):`wgautomesh` 没有重启循环,`journalctl -u wgautomesh` 里同一个 peer 没有反复 `Configure … with endpoint`。
+  已知例外:mac-pro 在 SG 办公室 NAT 后面端口会变,它的直连会周期性重新握手;mac-pro↔sg-office 永久走中继。
+- [x] 各节点接口上残留的 office / office-mac 两个 peer 已手动 `wg set … remove`(hub、game、amd-001、sg-office、mac-pro,2026-10-20)
 **Tests**: Mac 上 `ssh game` 正常;Moonlight 推流正常;DN42 检查清单通过。
-**Status**: In Progress(观察期从 2026-10-19 开始)
+**Status**: In Progress(观察期 2026-10-19 → 2026-10-26)
 
 ## Stage 5: 收缩旧 mesh
 **Goal**: wg-quick 只保留 wgmesh 做不了的部分。
