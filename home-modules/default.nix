@@ -10,7 +10,6 @@
 let
   hasNixOSTags = osConfig ? system && osConfig.system ? nixos && osConfig.system.nixos ? tags;
   hasGuiTag = hasNixOSTags && (builtins.elem "gui" osConfig.system.nixos.tags);
-  isDarwin = !hasNixOSTags;
   isRoot = config.home.username == "root";
 in
 {
