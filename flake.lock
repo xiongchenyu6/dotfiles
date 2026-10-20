@@ -922,11 +922,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1792418663,
-        "narHash": "sha256-gx9Hx1GVzG13gyQiIKzTCLX6PwuE+68m4B6DfQhe/xw=",
+        "lastModified": 1792478632,
+        "narHash": "sha256-nDmB16u55pnuB93qE1syGkXiQ9LQPt+oLMyFaLOYt6I=",
         "owner": "xiongchenyu6",
         "repo": "wgmesh",
-        "rev": "437698458b6fcd949fd16897cf8980ee1c24e706",
+        "rev": "88609a75f041ff684a00071d74ee28dc29925e21",
         "type": "github"
       },
       "original": {
