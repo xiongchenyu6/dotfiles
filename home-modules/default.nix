@@ -34,14 +34,6 @@ in
         ]
       else
         [ ]
-    )
-    ++ (
-      if isDarwin then
-        [
-          ./macos-app-fix.nix
-        ]
-      else
-        [ ]
     );
 
   sops = lib.mkIf (!isRoot) {
