@@ -119,7 +119,11 @@ office 离线,配置已就绪,上线后 `nixos-rebuild switch --flake .#office`�
 - [x] hub 的 `wg0` 整个删掉;`.100` 从未握手,不迁移
 - [x] 直连实测:game↔mac-pro、game↔oracle-amd-001(给 amd-001 加了公网 `mesh-endpoint`,之前中继只会 gossip 它的 VCN 地址)
 - [ ] office、office-mac 配置已就绪,上线后各自 switch 一次(office-mac 需要本人 sudo)
-- [ ] sg-office 的 dotfiles lock 还在 4affdf7f,下次 bump 后它才知道 amd-001 的公网 endpoint(在那之前 sg-office↔amd-001 走中继)
+- [x] sg-office 的 dotfiles lock bump 到 8b52af60;sg-office↔game、sg-office↔oracle-amd-001 直连(3–4 ms)
+- [x] mac-pro 直连 sg-office、oracle-amd-001(对端 `/32` 指向 Mac 的公网 endpoint,TCP 22 通;Mac 开了防火墙隐身模式,入站 ping 不回)
+- [ ] mac-pro 的直连约 258 ms:Clash Verge 的 TUN 接管了默认路由,wireguard-go 的 UDP 也被送进代理。
+  要在 Clash 规则最前面加 `PROCESS-NAME,wireguard-go,DIRECT`、`PROCESS-NAME,wgautomesh,DIRECT`、
+  `IP-CIDR,172.22.240.96/27,DIRECT,no-resolve`(Clash 配置不归 dotfiles 管)
 **Status**: In Progress(只剩离线的 office、office-mac)
 
 ## 回滚
