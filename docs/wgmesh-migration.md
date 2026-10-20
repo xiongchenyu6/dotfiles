@@ -130,7 +130,7 @@ office 离线,配置已就绪,上线后 `nixos-rebuild switch --flake .#office`�
 - [x] 修了 `relay_fallback` 补丁的一个洞(wgmesh 88609a7):上游对"候选 endpoint 和当前一样"的掉线 peer
   直接跳过,单候选的 peer 就永远留着连通时装的 `/32`,中继回退不生效——经 hub 转来的包被 wireguard-go
   按来源丢掉。现在跳过时也清 `/32`;VM 测试新增"掐断直连后 300 s 内回退到中继"的子测试。
-  game/hub/amd-001/mac-pro 已部署(2026-10-20)
+  game/hub/amd-001/mac-pro/sg-office 都已部署(2026-10-20;sg-office 经 AutoLifeRobot/nixos f2c4f3a 手动 switch)
 **Status**: In Progress(只剩离线的 office、office-mac)
 
 ## 回滚
