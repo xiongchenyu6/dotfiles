@@ -7,7 +7,7 @@
   system.darwinLabel = "gui";
   system.primaryUser = "freeman.xiong";
 
-  # Static public resolvers like office-mac: the DHCP DNS here is a China
+  # Static public resolvers: the DHCP DNS here is a China
   # Mobile resolver that NXDOMAINs brew cask hosts and breaks TLS to
   # itunes.apple.com, so `mas` (App Store installs) cannot even look apps up.
   networking = {

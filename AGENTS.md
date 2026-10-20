@@ -4,7 +4,7 @@ This file provides guidance to Codex (Codex.ai/code) when working with code in t
 
 ## What This Is
 
-Nix Flake monorepo managing NixOS hosts, nix-darwin (macOS), and home-manager configurations across cloud servers (Oracle, Tencent, Huoshan) and local machines (desktop, office, gaming). Uses `ez-configs` flake-parts module for convention-based host/module discovery.
+Nix Flake monorepo managing NixOS hosts, nix-darwin (macOS), and home-manager configurations across cloud servers (Oracle, Tencent, Huoshan) and local machines (desktop, gaming). Uses `ez-configs` flake-parts module for convention-based host/module discovery.
 
 ## Common Commands
 
@@ -17,7 +17,7 @@ nixos-rebuild switch --flake .#<hostname>
 nixos-rebuild switch --flake .#<hostname> --target-host root@<ip>
 
 # Build/deploy macOS
-darwin-rebuild switch --flake .#office-mac
+darwin-rebuild switch --flake .#mac-pro
 
 # Build ISO
 nix build .#packages.x86_64-linux.iso
@@ -71,9 +71,8 @@ cli-minimal       → base CLI tools (all users including root)
 | oracle-arm-001/002 | aarch64-linux | Oracle Cloud |
 | tcloud | x86_64-linux | Tencent Cloud |
 | game | x86_64-linux | Local desktop (NVIDIA GPU passthrough; niri compositor) |
-| office | x86_64-linux | Local workstation (niri compositor) |
 | autolife-robot-260 | x86_64-linux | Robot onboard host (minimal bootstrap) |
-| office-mac | aarch64-darwin | macOS (nix-darwin) |
+| mac-pro | aarch64-darwin | macOS (nix-darwin) |
 
 `lubancat` (RK3588 SBC) runs Ubuntu — no mainline device tree — and is managed only via standalone home-manager (user `cat`) plus `ansible/`, not as a NixOS host.
 

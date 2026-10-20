@@ -196,11 +196,6 @@
         globalArgs = { inherit inputs shares mylib; };
         root = ./.;
         darwin.hosts = {
-          office-mac = {
-            userHomeModules = [
-              "freeman.xiong"
-            ];
-          };
           mac-pro = {
             userHomeModules = [
               "freeman.xiong"
@@ -217,7 +212,6 @@
           in
           {
             game = hostConfig;
-            office = hostConfig;
             autolife-robot-260 = hostConfig;
 
             tcloud = hostConfig;

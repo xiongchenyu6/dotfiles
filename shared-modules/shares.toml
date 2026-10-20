@@ -14,14 +14,6 @@ yubikey = 'ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILd3Wv8qfOx+hg+W/UMLArHvcBPBsPArO
 public-key = 'pvInS7gtW3H8JN3wzkdK8HM1qqFE/LpRXP36+z5EGEc='
 mesh-ip = '172.22.240.99'
 
-[hosts.office.wg]
-public-key = 'trmPW+CV8BbXfDMbe7I7IFwRh5ke8vpbDlgisSoH6ng='
-mesh-ip = '172.22.240.98'
-
-[hosts.office-mac.wg]
-public-key = '60wqMOcQzgieP8zPBajXirGbAS+n98P68P6u3EDfXnE='
-mesh-ip = '172.22.240.105'
-
 [hosts.oracle-amd-001.wg]
 public-key = 'S0KMNkR8DWEV7XfoNVSrpRQGwE/A2G3tM2tnDZR76Cs='
 mesh-ip = '172.22.240.104'
