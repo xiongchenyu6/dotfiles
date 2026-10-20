@@ -59,6 +59,27 @@
   ];
 
   nixpkgs.overlays = [
+    # aw-core imports playhouse.sqlite_ext, which peewee 4 no longer ships;
+    # nixpkgs moved peewee to 4.x but keeps peewee_3, so build aw-core on it.
+    (_: prev: {
+      pythonPackagesExtensions = prev.pythonPackagesExtensions ++ [
+        (pyfinal: pyprev: {
+          aw-core = pyprev.aw-core.override { peewee = pyfinal.peewee_3; };
+        })
+      ];
+    })
+    # nixpkgs passes aw-qt's "--suffix PATH : …" as one string; the binary
+    # wrapper Python apps now get rejects it. Pass the words separately.
+    (_: prev: {
+      aw-qt = prev.aw-qt.overridePythonAttrs (_: {
+        makeWrapperArgs = [
+          "--suffix"
+          "PATH"
+          ":"
+          (prev.lib.makeBinPath [ prev.xdg-utils ])
+        ];
+      });
+    })
     (_: prev: {
       nvidia-vaapi-driver = prev.nvidia-vaapi-driver.overrideAttrs (_: {
         version = "0.0.17-chrome-stream-format-switch";
@@ -69,6 +90,22 @@
           hash = "sha256-wxgdf+Gln1Tv7S/EbVUNOpxJ4Z0Ew4VudBglX7d5XD8=";
         };
       });
+    })
+    # The hashtopolis agent pulls in the merged cudatoolkit. With patchelf
+    # 0.19.2, addDriverRunpath aborts (shiftFile assertion) on binaries in
+    # CUDA 13.4's cuda_gdb and cuda_sanitizer_api. Those are debugging tools
+    # hashcat never loads, so leave them out of the merged toolkit.
+    (_: prev: {
+      cudaPackages = prev.cudaPackages.overrideScope (
+        _: cprev: {
+          # cudart stands in for the dropped packages (the toolkit's
+          # arguments may not be null); symlinkJoin tolerates the duplicate.
+          cudatoolkit = cprev.cudatoolkit.override {
+            cuda_gdb = cprev.cuda_cudart;
+            cuda_sanitizer_api = cprev.cuda_cudart;
+          };
+        }
+      );
     })
   ];
 
@@ -450,7 +487,9 @@
             niri.settings.spawn-at-startup = [
               {
                 command = [
-                  "${inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.chatgpt}/bin/chatgpt"
+                  # From home.packages (cli-development.nix patches it), not
+                  # the raw llm-agents build.
+                  "chatgpt"
                 ];
               }
             ];
