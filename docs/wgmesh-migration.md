@@ -121,8 +121,16 @@ office 离线,配置已就绪,上线后 `nixos-rebuild switch --flake .#office`�
 - [ ] office、office-mac 配置已就绪,上线后各自 switch 一次(office-mac 需要本人 sudo)
 - [x] sg-office 的 dotfiles lock bump 到 8b52af60;sg-office↔game、sg-office↔oracle-amd-001 直连(3–4 ms)
 - [x] mac-pro 直连 sg-office、oracle-amd-001(对端 `/32` 指向 Mac 的公网 endpoint,TCP 22 通;Mac 开了防火墙隐身模式,入站 ping 不回)
-- mac-pro 人在国内,mesh 延迟约 260 ms 是跨境链路本身。Clash Verge 的 TUN 把 wireguard-go 的 UDP
-  送进代理,这条路是通的;试过给 UDP 51821 加 DIRECT 规则,直出后握手全断,不要再加
+- mac-pro 在广州办公室(LAN 10.1.63.x),mesh 延迟约 260 ms 是跨境链路本身。它的 WireGuard UDP 经公司
+  网络从新加坡侧 NAT(203.116.95.146)出去,且该 NAT 的端口映射会变,直连会周期性抖到下一次握手。
+  试过给 Clash 加 UDP 51821 DIRECT 规则:直出变成广州本地出口(112.94.x),握手全断,不要再加
+- mac-pro↔sg-office 直连不通:Mac 发往 101.78.126.6:51821 或 10.31.16.114:51821 的 UDP(直出、经代理、
+  经公司内网三条路都试过)一个都到不了 sg-office,反向拨 Mac 的 NAT 口也被过滤。TCP(ssh)是通的,
+  只有 UDP 不行,属于公司网络问题。这一对永久走 hub 中继,靠 `relay_fallback` 兜底
+- [x] 修了 `relay_fallback` 补丁的一个洞(wgmesh 88609a7):上游对"候选 endpoint 和当前一样"的掉线 peer
+  直接跳过,单候选的 peer 就永远留着连通时装的 `/32`,中继回退不生效——经 hub 转来的包被 wireguard-go
+  按来源丢掉。现在跳过时也清 `/32`;VM 测试新增"掐断直连后 300 s 内回退到中继"的子测试。
+  game/hub/amd-001/mac-pro 已部署(2026-10-20)
 **Status**: In Progress(只剩离线的 office、office-mac)
 
 ## 回滚
