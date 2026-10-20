@@ -36,8 +36,8 @@ stdenv.mkDerivation {
   version = "1.5.0";
 
   src = fetchurl {
-    url = "https://github.com/rustdesk/rustdesk/releases/download/nightly/rustdesk-unattended-wayland-1.5.0-x86_64.deb";
-    hash = "sha256-crZErjNO0OpVrFZlGFZ9sQkiNVolBtaqAYc4jibZv+4=";
+    url = "https://github.com/rustdesk/rustdesk/releases/download/1.5.0/rustdesk-unattended-wayland-1.5.0-x86_64.deb";
+    hash = "sha256-nu1en0tHr47UFYXDmcssDShw6AHJlkUzDeoQY62ETgk=";
   };
 
   nativeBuildInputs = [
