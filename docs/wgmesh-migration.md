@@ -121,9 +121,8 @@ office 离线,配置已就绪,上线后 `nixos-rebuild switch --flake .#office`�
 - [ ] office、office-mac 配置已就绪,上线后各自 switch 一次(office-mac 需要本人 sudo)
 - [x] sg-office 的 dotfiles lock bump 到 8b52af60;sg-office↔game、sg-office↔oracle-amd-001 直连(3–4 ms)
 - [x] mac-pro 直连 sg-office、oracle-amd-001(对端 `/32` 指向 Mac 的公网 endpoint,TCP 22 通;Mac 开了防火墙隐身模式,入站 ping 不回)
-- [ ] mac-pro 的直连约 258 ms:Clash Verge 的 TUN 接管了默认路由,wireguard-go 的 UDP 也被送进代理。
-  要在 Clash 规则最前面加 `PROCESS-NAME,wireguard-go,DIRECT`、`PROCESS-NAME,wgautomesh,DIRECT`、
-  `IP-CIDR,172.22.240.96/27,DIRECT,no-resolve`(Clash 配置不归 dotfiles 管)
+- mac-pro 人在国内,mesh 延迟约 260 ms 是跨境链路本身。Clash Verge 的 TUN 把 wireguard-go 的 UDP
+  送进代理,这条路是通的;试过给 UDP 51821 加 DIRECT 规则,直出后握手全断,不要再加
 **Status**: In Progress(只剩离线的 office、office-mac)
 
 ## 回滚
