@@ -43,6 +43,13 @@ let
                   "test_stepwise"
                 ];
               });
+              # Reads the macOS system proxy through urllib's getproxies(), so
+              # it fails on any Mac running Clash with the system proxy on.
+              aiohttp = pyprev.aiohttp.overridePythonAttrs (old: {
+                disabledTests = (old.disabledTests or [ ]) ++ [
+                  "test_get_env_proxy_for_url_negative"
+                ];
+              });
             }
           );
         };
@@ -73,6 +80,36 @@ let
     with inputs;
     map (x: x.overlays.default or x.overlay) [
       nur
+    ]
+    ++ [
+      # nixpkgs 09063bd's module aggregator cats a signing cert for every
+      # external module, but sysdig, zenpower and acpi_call build none, so
+      # every kernel dies on `cat: ….ko.cer: No such file`. No host enforces
+      # module signatures, so skip the certs that are not there.
+      (_: prev: {
+        aggregateModules =
+          modules:
+          (prev.aggregateModules modules).override {
+            buildEnv =
+              args:
+              prev.buildEnv (
+                args
+                // {
+                  postBuild =
+                    let
+                      catCerts = "| xargs -d'\\n' cat >> modules.cer";
+                    in
+                    assert lib.hasInfix catCerts args.postBuild;
+                    builtins.replaceStrings
+                      [ catCerts ]
+                      [
+                        "| xargs -d'\\n' sh -c 'for f; do [ -e \"$f\" ] && cat -- \"$f\"; done; :' _ >> modules.cer"
+                      ]
+                      args.postBuild;
+                }
+              );
+          };
+      })
     ];
 in
 {
