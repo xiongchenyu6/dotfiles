@@ -22,7 +22,6 @@ zram swap, nftables firewall, and systemd-resolved.
 | Host | Platform | Role | Highlights |
 |---|---|---|---|
 | `game` | x86_64-linux | Gaming desktop (Legion 16ACH6h) | niri desktop, NVIDIA + VFIO passthrough, Sunshine, Waydroid, sing-box travel VPN, Hashtopolis agent, DNF private server, codexpro tunnel |
-| `office` | x86_64-linux | Work laptop (Dell Latitude 5520) | niri desktop, PostgreSQL 17, corp tooling (Falcon, Fortinet VPN), mesh router |
 | `work-robot-260` | x86_64-linux | Robot onboard host | Minimal bootstrap: sshd + NetworkManager only |
 | `tcloud` | x86_64-linux | Tencent Cloud VPS | **Now runs Ubuntu (seen 2026-10-19), not deployable with this config.** Was: coturn TURN, deepseek-free-api container, HE.net IPv6 tunnel |
 | `oracle-amd-001` | x86_64-linux | Oracle Cloud, IB sidecar | IB Gateway (paper) container, mesh peer, hysteria2 inbound |
@@ -85,27 +84,6 @@ Lenovo Legion 16ACH6h (hybrid graphics), tagged `nvidia,gui`.
   trigger reboot; sysctls turn hangs/oopses into panics with 10 s auto-reboot.
 - Secure boot via lanzaboote; `acpi_call` module to clear Lenovo's persistent
   camera-disable EC flag; AMD watchdog driver tweaks.
-
----
-
-### `office` — work laptop
-
-Dell Latitude 5520 (`nixos-hardware` module), tagged `gui`.
-
-**Desktop**
-- Same GUI stack as `game`: `gui` + `wayland` (niri) + `greetd`, Dvorak layout.
-- Laptop tuning: TLP power management, deep suspend, i915 PSR, NVMe ACPI quirk,
-  lid-switch policy, performance governor, latest kernel, zram.
-
-**Corp integration**
-- CrowdStrike `falcon-sensor`.
-- `openfortivpn-config` (Fortinet corporate VPN client config).
-
-**Services & networking**
-- PostgreSQL 17 JIT (postgis, pg_repack, pg_cron with background workers).
-- wgmesh node `172.22.240.98` (`nixos-modules/wgmesh.nix`, UDP 51821); DN42 IPv4
-  through the relay. WireGuard `wg_ora` to the hub for IPv6 only; NetBird client.
-- NFS4 filesystem support; binfmt aarch64 emulation; IP forwarding enabled.
 
 ---
 
@@ -227,12 +205,9 @@ for API-level details of the backend stack.
 
 ## Darwin hosts (`darwin-configurations/`)
 
-Both Macs share `darwin-modules/` (nix-darwin + home-manager `freeman.xiong`).
+mac-pro uses `darwin-modules/` (nix-darwin + home-manager `freeman.xiong`).
 GUI apps are Homebrew casks (`client-gui.nix`); Nix provides the dev
 environment. `shared-modules/core.nix` already runs `nix.gc` / `nix.optimise`.
-
-### `office-mac` — work Mac
-- WireGuard via the `wireguard` darwin module (wg-quick, key in sops).
 
 ### `mac-pro` — M5 Max MacBook Pro, personal daily driver
 - wgmesh node `172.22.240.103` (`darwin-modules/wgmesh.nix`: wg-quick `wgmesh` + launchd wgautomesh, UDP 51821, MTU 1280); no IPv6.

@@ -23,7 +23,7 @@ Created `nixos-modules/openfortivpn-config.nix` which:
 
 ### Add to Your NixOS Configuration
 
-Add the module to your system configuration (e.g., in `nixos-configurations/office/default.nix`):
+Add the module to your system configuration (e.g., in `nixos-configurations/game/default.nix`):
 
 ```nix
 {
@@ -37,7 +37,7 @@ Add the module to your system configuration (e.g., in `nixos-configurations/offi
 ### Rebuild Your System
 
 ```bash
-sudo nixos-rebuild switch --flake .#office
+sudo nixos-rebuild switch --flake .#game
 ```
 
 ### Connect to VPN

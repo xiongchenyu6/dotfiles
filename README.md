@@ -30,7 +30,7 @@ nixos-rebuild switch --flake .#<hostname>
 nixos-rebuild switch --flake .#<hostname> --target-host root@<ip>
 
 # Build/deploy macOS
-darwin-rebuild switch --flake .#office-mac
+darwin-rebuild switch --flake .#mac-pro
 
 # Edit a SOPS-encrypted secret
 sops secrets/common.yaml
@@ -233,8 +233,7 @@ Because `inputs.follows` is mirrored, upstream updates only change behavior of t
 | Host | Platform | Role |
 |---|---|---|
 | `game` | x86_64-linux | Gaming desktop with NVIDIA GPU passthrough |
-| `office` | x86_64-linux | Local workstation |
-| `office-mac` | aarch64-darwin | macOS laptop |
+| `mac-pro` | aarch64-darwin | macOS laptop |
 | `oracle-{amd,arm}-00{1,2}` | x86/arm-linux | Oracle Cloud servers |
 | `tcloud` | x86_64-linux | Tencent Cloud |
 | `work-robot-260` | x86_64-linux | Robot onboard host (minimal bootstrap) |

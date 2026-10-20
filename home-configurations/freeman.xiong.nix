@@ -220,9 +220,6 @@ in
         "huoshan-bj-001" = {
           HostName = "115.190.173.250";
         };
-        "office" = {
-          HostName = "172.22.240.98";
-        };
         "game" = {
           HostName = "172.22.240.99";
         };

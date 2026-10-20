@@ -91,8 +91,7 @@ wgmesh 仓库已经不再有自己的 Rust 守护进程,只剩一个 NixOS 模�
 - game、office 都能 `ping 172.22.240.97` 和其他节点
 - game ↔ office 在同一局域网时走直连(对方 peer 有 `/32`,endpoint 是 LAN 地址)
 **Tests**: `wg show wgmesh allowed-ips`、`wg show wgmesh endpoints`;DN42 检查清单通过。
-**Status**: In Progress(game 已接入:ping 通 .97/.104,经 hub 到 Mac `.103:22` 通,IPv6 `fd48:4b4:f3::1` 通;
-office 离线,配置已就绪,上线后 `nixos-rebuild switch --flake .#office`。office 的 build 目前卡在与本迁移无关的 `falcon-sensor` 单元)
+**Status**: Complete(game 已接入:ping 通 .97/.104,经 hub 到 Mac `.103:22` 通;office 于 2026-10-20 出售,不再接入)
 
 ## Stage 4: 业务端口收到 wgmesh 并观察一周
 **Goal**: 地址不变,业务端口只在 `wgmesh` 上开。
@@ -118,7 +117,7 @@ office 离线,配置已就绪,上线后 `nixos-rebuild switch --flake .#office`�
 - [x] sg-office `.102` 在 workRobot/nixos 里接入(直接 import 本仓库 `shared-modules/wgmesh.nix`),已部署
 - [x] hub 的 `wg0` 整个删掉;`.100` 从未握手,不迁移
 - [x] 直连实测:game↔mac-pro、game↔oracle-amd-001(给 amd-001 加了公网 `mesh-endpoint`,之前中继只会 gossip 它的 VCN 地址)
-- [ ] office、office-mac 配置已就绪,上线后各自 switch 一次(office-mac 需要本人 sudo)
+- [x] office、office-mac 于 2026-10-20 二手卖掉:主机配置、shares 条目、sops 收件人、`wireguard/{office,game-office,office-mac}` 私钥全部删除,secrets 重新加密
 - [x] sg-office 的 dotfiles lock bump 到 8b52af60;sg-office↔game、sg-office↔oracle-amd-001 直连(3–4 ms)
 - [x] mac-pro 直连 sg-office、oracle-amd-001(对端 `/32` 指向 Mac 的公网 endpoint,TCP 22 通;Mac 开了防火墙隐身模式,入站 ping 不回)
 - mac-pro 在广州办公室(LAN 10.1.63.x),mesh 延迟约 260 ms 是跨境链路本身。它的 WireGuard UDP 经公司
@@ -131,7 +130,7 @@ office 离线,配置已就绪,上线后 `nixos-rebuild switch --flake .#office`�
   直接跳过,单候选的 peer 就永远留着连通时装的 `/32`,中继回退不生效——经 hub 转来的包被 wireguard-go
   按来源丢掉。现在跳过时也清 `/32`;VM 测试新增"掐断直连后 300 s 内回退到中继"的子测试。
   game/hub/amd-001/mac-pro/sg-office 都已部署(2026-10-20;sg-office 经 workRobot/nixos f2c4f3a 手动 switch)
-**Status**: In Progress(只剩离线的 office、office-mac)
+**Status**: Complete(2026-10-20:hub 上只剩 `wgmesh` 和 `wg_kioubit`;office、office-mac 已出售并从仓库删除)
 
 ## 回滚
 
