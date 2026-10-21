@@ -922,16 +922,15 @@
         ]
       },
       "locked": {
-        "lastModified": 1792478632,
-        "narHash": "sha256-nDmB16u55pnuB93qE1syGkXiQ9LQPt+oLMyFaLOYt6I=",
+        "lastModified": 1792590739,
+        "narHash": "sha256-ELhEtvKj1pMixhbBHqmAKtq1lwATjdocEQbOR49v9PQ=",
         "owner": "xiongchenyu6",
         "repo": "wgmesh",
-        "rev": "88609a75f041ff684a00071d74ee28dc29925e21",
+        "rev": "b4da313a98172de2b53d857df331f124d4f723b1",
         "type": "github"
       },
       "original": {
         "owner": "xiongchenyu6",
-        "ref": "feat/wgautomesh",
         "repo": "wgmesh",
         "type": "github"
       }

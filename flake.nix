@@ -91,7 +91,7 @@
     };
     # Private mesh (wireguard + patched wgautomesh); see docs/wgmesh-migration.md
     wgmesh = {
-      url = "github:xiongchenyu6/wgmesh/feat/wgautomesh";
+      url = "github:xiongchenyu6/wgmesh";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     vast-cli = {
