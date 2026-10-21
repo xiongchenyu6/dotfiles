@@ -47,6 +47,7 @@
       "zotero"
       "rustdesk"
       "chatgpt"
+      "claude"
     ];
     global = {
       autoUpdate = true;
