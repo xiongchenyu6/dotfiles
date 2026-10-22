@@ -2,9 +2,7 @@
 # hole punching works and relayed through oracle-amd-002 (the hub and DN42
 # border) otherwise. Members are the shares.toml hosts with a `mesh-ip`.
 #
-# No secrets here, so other flakes (workRobot/nixos for sg-office) import
-# this file by path and set privateKeyFile/gossipSecretFile themselves. In
-# this repo that is shared-modules/wgmesh-keys.nix.
+# No secrets here; the keys come from shared-modules/wgmesh-keys.nix.
 { lib, ... }:
 let
   shares = import ./shares.nix { inherit lib; };

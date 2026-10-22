@@ -99,7 +99,10 @@ wgmesh 仓库已经不再有自己的 Rust 守护进程,只剩一个 NixOS 模�
 - [x] game(Sunshine、ssh 等)、office(2222)、amd-001(4002)的防火墙端口从 `wg_ora` 挪到 `interfaces.wgmesh`
 - [x] ssh matchBlocks、Sunshine `csrf_allowed_origins` 用的就是原地址,无需改
 - [ ] 观察 7 天(到 2026-10-26):`wgautomesh` 没有重启循环,`journalctl -u wgautomesh` 里同一个 peer 没有反复 `Configure … with endpoint`。
-  已知例外:mac-pro 在 SG 办公室 NAT 后面端口会变,它的直连会周期性重新握手;mac-pro↔sg-office 永久走中继。
+  已知例外:mac-pro 在 SG 办公室 NAT 后面端口会变,它的直连会周期性重新握手。
+- [x] sg-office `.102` 于 2026-10-22 退出 wgmesh:它是 work 公司机器,改走公司 NetBird(`wt0`,
+  早已在线)。workRobot/nixos 删了 wgmesh import、`wgmesh` input 和 sops 里的
+  `wireguard/sg-office`、`wgmesh/gossip-secret`;本仓库 shares.toml 删了它的条目
 - [x] 各节点接口上残留的 office / office-mac 两个 peer 已手动 `wg set … remove`(hub、game、amd-001、sg-office、mac-pro,2026-10-20)
 **Tests**: Mac 上 `ssh game` 正常;Moonlight 推流正常;DN42 检查清单通过。
 **Status**: In Progress(观察期 2026-10-19 → 2026-10-26)

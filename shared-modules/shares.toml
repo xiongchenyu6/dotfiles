@@ -24,11 +24,6 @@ public-key = '9TXI2YQ0cdhW3xBhxzuHpPuISR7k2NwTjZ2Sq/lwoE0='
 mesh-ip = '172.22.240.97'
 mesh-endpoint = '213.35.117.232:51821'
 
-# Configured in workRobot/nixos; listed here for its mesh membership.
-[hosts.sg-office.wg]
-public-key = '9WkAJx+EG3VifVLiMgD8+6CoCsBwSyWAMwtajoy/OTk='
-mesh-ip = '172.22.240.102'
-
 [hosts.mac-pro.wg]
 public-key = '2bljDzFa753wDjgT8EN7Z+tgrXpCnGWKrH0Dotjn8xA='
 mesh-ip = '172.22.240.103'
