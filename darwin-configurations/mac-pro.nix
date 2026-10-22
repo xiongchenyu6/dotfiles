@@ -41,8 +41,14 @@
       # `netbird up --management-url <company>`.
       "netbirdio/tap/netbird-ui"
     ];
-    brews = [ "netbird" ];
-    taps = [ "netbirdio/tap" ];
+    brews = [ "netbirdio/tap/netbird" ];
+    # Homebrew refuses formulae from untrusted third-party taps.
+    taps = [
+      {
+        name = "netbirdio/tap";
+        trusted = true;
+      }
+    ];
   };
 
   # brew bundle runs the netbird-ui postflight with `sudo -E` and no terminal.
