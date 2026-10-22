@@ -109,6 +109,7 @@ wgmesh 仓库已经不再有自己的 Rust 守护进程,只剩一个 NixOS 模�
   `Configure … with no known endpoint` 全是已卖掉的 office/office-mac 两把 key,2026-10-20 删除后归零。
   game 在 10-21 之后的 Configure 只有 mac-pro(已知例外)和它自己的重启/部署。mac-pro 的
   `/var/log/wgautomesh.log` 从 2026-10-20 17:12 起没有新行,和 hub 那边对它没有变更一致。
+  Mac 经 wgmesh `ssh 172.22.240.99 hostname` 回 `game`;DN42 清单里只有 Kioubit 未过(见 Stage 0,需本人登录后台)。
 **Tests**: Mac 上 `ssh game` 正常;Moonlight 推流正常;DN42 检查清单通过。
 **Status**: In Progress(观察期 2026-10-19 → 2026-10-26;中期检查通过)
 
