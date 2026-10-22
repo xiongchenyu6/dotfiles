@@ -59,9 +59,9 @@
           #delaycompress = true;
           missingok = true;
           notifempty = true;
-          postrotate = ''
-            systemctl restart auditd
-          '';
+          # auditd refuses manual stops (RefuseManualStop), so a postrotate
+          # restart always fails; truncate in place so it keeps its fd.
+          copytruncate = true;
         };
       };
     };

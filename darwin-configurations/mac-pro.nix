@@ -1,5 +1,10 @@
 # mac-pro: M5 Max MacBook Pro, personal daily driver.
-{ ezModules, ... }:
+{
+  config,
+  ezModules,
+  lib,
+  ...
+}:
 {
   imports = [ ezModules.wgmesh ];
 
@@ -39,11 +44,17 @@
     ];
   };
 
+  # Company NetBird; log in once with `netbird up --management-url <company>`.
+  services.netbird.enable = true;
+
   # Stay awake on the charger so the mesh tunnel and ssh keep working; the
   # macOS default puts the laptop to sleep one minute after the display.
-  # Battery behaviour is left at the default.
+  # Battery behaviour is left at the default. The application firewall would
+  # drop NetBird peers dialing in directly; its binary is an unsigned store path.
   system.activationScripts.postActivation.text = ''
     pmset -c sleep 0
+    /usr/libexec/ApplicationFirewall/socketfilterfw --add ${lib.getExe config.services.netbird.package} >/dev/null
+    /usr/libexec/ApplicationFirewall/socketfilterfw --unblockapp ${lib.getExe config.services.netbird.package} >/dev/null
   '';
 
   ids.gids.nixbld = 350;
