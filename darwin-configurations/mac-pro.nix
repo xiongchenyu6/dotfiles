@@ -1,10 +1,5 @@
 # mac-pro: M5 Max MacBook Pro, personal daily driver.
-{
-  config,
-  ezModules,
-  lib,
-  ...
-}:
+{ config, ezModules, ... }:
 {
   imports = [ ezModules.wgmesh ];
 
@@ -41,20 +36,30 @@
     casks = [
       "nextcloud"
       "nextcloud-talk"
+      # Company NetBird: upstream's signed UI; its postflight installs the
+      # daemon from the netbird formula as a launchd service. Log in once with
+      # `netbird up --management-url <company>`.
+      "netbirdio/tap/netbird-ui"
     ];
+    brews = [ "netbird" ];
+    taps = [ "netbirdio/tap" ];
   };
 
-  # Company NetBird; log in once with `netbird up --management-url <company>`.
-  services.netbird.enable = true;
+  # brew bundle runs the netbird-ui postflight with `sudo -E` and no terminal.
+  security.sudo.extraConfig = ''
+    ${config.system.primaryUser} ALL=(root) NOPASSWD:SETENV: /Applications/Netbird\ UI.app/installer.sh
+  '';
 
   # Stay awake on the charger so the mesh tunnel and ssh keep working; the
   # macOS default puts the laptop to sleep one minute after the display.
   # Battery behaviour is left at the default. The application firewall would
-  # drop NetBird peers dialing in directly; its binary is an unsigned store path.
+  # drop NetBird peers dialing in directly; brew's netbird is not Apple-signed.
   system.activationScripts.postActivation.text = ''
     pmset -c sleep 0
-    /usr/libexec/ApplicationFirewall/socketfilterfw --add ${lib.getExe config.services.netbird.package} >/dev/null
-    /usr/libexec/ApplicationFirewall/socketfilterfw --unblockapp ${lib.getExe config.services.netbird.package} >/dev/null
+    if nb=$(readlink -f /opt/homebrew/bin/netbird); then
+      /usr/libexec/ApplicationFirewall/socketfilterfw --add "$nb" >/dev/null
+      /usr/libexec/ApplicationFirewall/socketfilterfw --unblockapp "$nb" >/dev/null
+    fi
   '';
 
   ids.gids.nixbld = 350;
