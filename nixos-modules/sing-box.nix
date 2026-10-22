@@ -34,8 +34,7 @@ in
       type = lib.types.str;
       default = "panda.qzz.io";
       description = ''
-        用哪张 ACME 证书。oracle-amd-00x.work-robotics.me 那张早在
-        2025-04 就过期没再续，只有 panda.qzz.io 的 acme 定时器还在跑。
+        用哪张 ACME 证书。只有 panda.qzz.io 的 acme 定时器还在跑。
         证书目录属组是 nginx，所以下面把 sing-box 加进了 nginx 组。
       '';
     };

@@ -237,7 +237,7 @@
     in
     {
       inherit hostName;
-      # game is a local workstation, not part of the work.ai inner zone.
+      # game is a local workstation, not part of any company DNS zone.
       # Unsetting the domain keeps gethostname() == $HOST (short name) so
       # the terminal's OSC 7 isLocal() check accepts cwd reports from the shell.
       domain = null;

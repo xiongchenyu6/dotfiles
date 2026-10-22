@@ -1,5 +1,4 @@
 {
-  modulesPath,
   inputs,
   lib,
   ezModules,
@@ -189,11 +188,9 @@ in
 
     coturn = {
       enable = true;
-      # Pinned to the literal value this used to expand to via the old corp-domain
-      # default. TURN long-term credentials hash as MD5(user:realm:password), so
-      # changing the realm invalidates every provisioned credential — renaming it
-      # to a personal domain needs to be coordinated with the TURN clients.
-      realm = "tcloud.work.ai";
+      # The credential in sops is a plaintext password, so coturn derives
+      # MD5(user:realm:password) itself and the realm is free to change.
+      realm = "tcloud";
       extraConfig = ''
         fingerprint
         no-software-attribute

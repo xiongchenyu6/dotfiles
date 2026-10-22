@@ -1,5 +1,5 @@
 # Declared in its own module at the lowest tier so every consumer sees it,
-# including the work flake, which imports homeModules.workstation without
+# including the company flake, which imports homeModules.workstation without
 # ever loading home-modules/default.nix.
 { lib, ... }:
 {

@@ -1,19 +1,22 @@
-{ lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 let
   rustdesk = pkgs.callPackage ../../packages/rustdesk-wayland.nix { };
-  serverConfig = (pkgs.formats.toml { }).generate "RustDesk2.toml" {
-    rendezvous_server = "rustdesk.gz.work.ai:7916";
-    nat_type = 0;
-    serial = 0;
-    options = {
-      custom-rendezvous-server = "rustdesk.gz.work.ai:7916";
-      relay-server = "rustdesk.gz.work.ai:7917";
-      api-server = "https://rustdesk.gz.work.ai:8444";
-      key = "lhxyZ6yuHEmEvU5MMQ3xjt0j4NjRWRMWIc+O06obPtk=";
-    };
-  };
+  # Initial RustDesk2.toml pointing at the work server (rendezvous, relay,
+  # API, key); encrypted because this repo is public.
+  serverConfig = config.sops.secrets.rustdesk-config.path;
 in
 {
+  sops.secrets.rustdesk-config = {
+    sopsFile = ../../secrets/work.yaml;
+    owner = "freeman.xiong";
+    mode = "0400";
+  };
+
   environment.systemPackages = [ rustdesk ];
   boot.kernelModules = [ "uinput" ];
   networking.firewall.interfaces = {

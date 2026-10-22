@@ -100,8 +100,8 @@ wgmesh 仓库已经不再有自己的 Rust 守护进程,只剩一个 NixOS 模�
 - [x] ssh matchBlocks、Sunshine `csrf_allowed_origins` 用的就是原地址,无需改
 - [ ] 观察 7 天(到 2026-10-26):`wgautomesh` 没有重启循环,`journalctl -u wgautomesh` 里同一个 peer 没有反复 `Configure … with endpoint`。
   已知例外:mac-pro 在 SG 办公室 NAT 后面端口会变,它的直连会周期性重新握手。
-- [x] sg-office `.102` 于 2026-10-22 退出 wgmesh:它是 work 公司机器,改走公司 NetBird(`wt0`,
-  早已在线)。workRobot/nixos 删了 wgmesh import、`wgmesh` input 和 sops 里的
+- [x] sg-office `.102` 于 2026-10-22 退出 wgmesh:它是公司机器,改走公司的 NetBird(`wt0`,
+  早已在线)。公司仓库删了 wgmesh import、`wgmesh` input 和 sops 里的
   `wireguard/sg-office`、`wgmesh/gossip-secret`;本仓库 shares.toml 删了它的条目
 - [x] 各节点接口上残留的 office / office-mac 两个 peer 已手动 `wg set … remove`(hub、game、amd-001、sg-office、mac-pro,2026-10-20)
   中期检查(2026-10-22 14:xx):hub、amd-001、game 的 `wgautomesh` `NRestarts=0`,启动只出现在部署和重启时。
@@ -125,7 +125,7 @@ wgmesh 仓库已经不再有自己的 Rust 守护进程,只剩一个 NixOS 模�
 **进度**(2026-10-19):
 - [x] game、mac-pro、oracle-amd-001 删掉 `wg_ora`;mac-pro 跑 nix-darwin 的 wgautomesh
 - [x] 手机 `.101` 改成中继上的静态 wgmesh peer(endpoint 端口改 51821)
-- [x] sg-office `.102` 在 workRobot/nixos 里接入(直接 import 本仓库 `shared-modules/wgmesh.nix`),已部署
+- [x] sg-office `.102` 在公司仓库里接入(直接 import 本仓库 `shared-modules/wgmesh.nix`),已部署
 - [x] hub 的 `wg0` 整个删掉;`.100` 从未握手,不迁移
 - [x] 直连实测:game↔mac-pro、game↔oracle-amd-001(给 amd-001 加了公网 `mesh-endpoint`,之前中继只会 gossip 它的 VCN 地址)
 - [x] office、office-mac 于 2026-10-20 二手卖掉:主机配置、shares 条目、sops 收件人、`wireguard/{office,game-office,office-mac}` 私钥全部删除,secrets 重新加密
@@ -140,7 +140,7 @@ wgmesh 仓库已经不再有自己的 Rust 守护进程,只剩一个 NixOS 模�
 - [x] 修了 `relay_fallback` 补丁的一个洞(wgmesh 88609a7):上游对"候选 endpoint 和当前一样"的掉线 peer
   直接跳过,单候选的 peer 就永远留着连通时装的 `/32`,中继回退不生效——经 hub 转来的包被 wireguard-go
   按来源丢掉。现在跳过时也清 `/32`;VM 测试新增"掐断直连后 300 s 内回退到中继"的子测试。
-  game/hub/amd-001/mac-pro/sg-office 都已部署(2026-10-20;sg-office 经 workRobot/nixos f2c4f3a 手动 switch)
+  game/hub/amd-001/mac-pro/sg-office 都已部署(2026-10-20;sg-office 从公司仓库手动 switch)
 **Status**: Complete(2026-10-20:hub 上只剩 `wgmesh` 和 `wg_kioubit`;office、office-mac 已出售并从仓库删除)
 
 ## 回滚

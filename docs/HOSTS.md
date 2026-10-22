@@ -22,7 +22,6 @@ zram swap, nftables firewall, and systemd-resolved.
 | Host | Platform | Role | Highlights |
 |---|---|---|---|
 | `game` | x86_64-linux | Gaming desktop (Legion 16ACH6h) | niri desktop, NVIDIA + VFIO passthrough, Sunshine, Waydroid, sing-box travel VPN, Hashtopolis agent, DNF private server, codexpro tunnel |
-| `work-robot-260` | x86_64-linux | Robot onboard host | Minimal bootstrap: sshd + NetworkManager only |
 | `tcloud` | x86_64-linux | Tencent Cloud VPS | **Now runs Ubuntu (seen 2026-10-19), not deployable with this config.** Was: coturn TURN, deepseek-free-api container, HE.net IPv6 tunnel |
 | `oracle-amd-001` | x86_64-linux | Oracle Cloud, IB sidecar | IB Gateway (paper) container, mesh peer, hysteria2 inbound |
 | `oracle-amd-002` | x86_64-linux | Oracle Cloud, mesh hub | WireGuard hub, wgmesh relay (`172.22.240.97`), DN42 border router, RustDesk relay, hysteria2 inbound, s3fs docs mount |
@@ -48,8 +47,8 @@ Lenovo Legion 16ACH6h (hybrid graphics), tagged `nvidia,gui`.
 - Gaming runtime: gamescope (with `capSysNice`), GameMode, MangoHud perf overlay,
   ydotool input injection.
 - Sunshine game-streaming host with NVENC fix (`LD_LIBRARY_PATH` to opengl-driver).
-- RustDesk unattended-Wayland 1.5.0 remote desktop, using the company server
-  `rustdesk.gz.work.ai` (ID port 7916, relay port 7917, API HTTPS port 8444).
+- RustDesk unattended-Wayland 1.5.0 remote desktop. The server settings
+  (rendezvous, relay, API, key) come from `secrets/work.yaml`.
   Set a permanent password in RustDesk Security settings after activation.
   Operators sign in through Casdoor/Feishu; capture and input need verification
   from a second device, including after reboot.
@@ -87,16 +86,6 @@ Lenovo Legion 16ACH6h (hybrid graphics), tagged `nvidia,gui`.
 
 ---
 
-### `work-robot-260` — robot onboard host
-
-Deliberately minimal bootstrap config:
-
-- Disko-managed disks, GRUB with removable EFI, OpenSSH, NetworkManager.
-- Only `curl` and `gitMinimal` as system packages.
-- `root` + `freeman.xiong` home-manager profiles; nothing else.
-
----
-
 ### `tcloud` — Tencent Cloud VPS
 
 Domain `panda.qzz.io`. The network/routing node of the fleet.
@@ -106,7 +95,7 @@ Domain `panda.qzz.io`. The network/routing node of the fleet.
 
 **Services**
 - **coturn** TURN/STUN server — long-term credentials injected from sops at
-  runtime; realm pinned to `tcloud.work.ai`.
+  runtime; realm `tcloud`.
 - **deepseek-free-api** OCI container published on port 8000.
 - PostgreSQL (default package) with a `freeman.xiong` superuser database.
 - SSH host certificates: three host key types + `TrustedUserCAKeys` CA trust.
@@ -137,8 +126,7 @@ Domain `panda.qzz.io`. The network/routing node of the fleet.
 
 The WireGuard hub every other machine peers with.
 
-- RustDesk relay (`hbbr`), using the company's server public key:
-  `rustdesk.sg.work.ai:443` (native TCP relay).
+- RustDesk relay (`hbbr`), using the work server's public key (native TCP relay).
 
 **Networking**
 - wgmesh relay `172.22.240.97/27` (UDP 51821): owns the IPv4 /27 for the NixOS hosts.

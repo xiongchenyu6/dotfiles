@@ -212,7 +212,6 @@
           in
           {
             game = hostConfig;
-            work-robot-260 = hostConfig;
 
             tcloud = hostConfig;
             oracle-arm-001 = hostConfig;

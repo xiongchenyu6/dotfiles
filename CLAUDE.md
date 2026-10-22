@@ -71,7 +71,6 @@ cli-minimal       → base CLI tools (all users including root)
 | oracle-arm-001/002 | aarch64-linux | Oracle Cloud |
 | tcloud | x86_64-linux | Tencent Cloud |
 | game | x86_64-linux | Local desktop (NVIDIA GPU passthrough; niri compositor) |
-| work-robot-260 | x86_64-linux | Robot onboard host (minimal bootstrap) |
 | mac-pro | aarch64-darwin | macOS (nix-darwin) |
 
 `lubancat` (RK3588 SBC) runs Ubuntu — no mainline device tree — and is managed only via standalone home-manager (user `cat`) plus `ansible/`, not as a NixOS host.

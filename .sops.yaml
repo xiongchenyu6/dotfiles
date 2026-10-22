@@ -1,7 +1,5 @@
-# Personal recipients only. The company PGP keys (work, seanhxx,
-# freeman-sgoffice) used to be listed here, which meant colleagues could decrypt
-# every personal credential in this repo; company secrets now live in the
-# workRobot repo and are encrypted to those keys there instead.
+# Personal recipients only. Company secrets live in the company repo, encrypted
+# to the company keys there, so colleagues cannot decrypt anything in here.
 keys:
   - &xiongchenyu 4EDE451FC10722D0C6662C6FB99B8189C7C153F6
   - &yubikey 5AF06033B3CC0104450B4F25F438D971EBE848EE

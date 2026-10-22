@@ -43,7 +43,7 @@ A more detailed working reference (host inventory, deploy targets, peripheral sy
 
 ## Using This Flake as an Upstream
 
-You don't need to fork — the cleanest way to reuse these modules is to pull the flake in as an input and import only the pieces you want, the way [`work/nixos`](https://github.com/workRobot) does internally. Your own repo only contains your hosts, your `shares.toml`, and your `secrets/` — every shared module stays in lockstep with upstream via `nix flake update`.
+You don't need to fork — the cleanest way to reuse these modules is to pull the flake in as an input and import only the pieces you want. Your own repo only contains your hosts, your `shares.toml`, and your `secrets/` — every shared module stays in lockstep with upstream via `nix flake update`.
 
 ### 1. Bootstrap a thin flake
 
@@ -236,7 +236,6 @@ Because `inputs.follows` is mirrored, upstream updates only change behavior of t
 | `mac-pro` | aarch64-darwin | macOS laptop |
 | `oracle-{amd,arm}-00{1,2}` | x86/arm-linux | Oracle Cloud servers |
 | `tcloud` | x86_64-linux | Tencent Cloud |
-| `work-robot-260` | x86_64-linux | Robot onboard host (minimal bootstrap) |
 
 `lubancat` (RK3588 SBC) runs Ubuntu — no mainline device tree — and is managed only via standalone home-manager (user `cat`) plus `ansible/`, not as a NixOS host.
 Its self-hosted services live under `ansible/<service>/`: Tuwunel (Matrix), Huly and AFFiNE sign in through Auth0, registered by `scripts/auth0-setup.sh`; ntfy stays on its own tokens because it has no OIDC support. `scripts/cloudflare-matrix-delegation.sh` publishes the apex `/.well-known/matrix` delegation that lets Matrix IDs read `@user:starslab.qzz.io`.

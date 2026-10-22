@@ -4,7 +4,7 @@
   become: yes
   vars:
     # Profile selects which vars/secrets bundle to load. starslab is the only
-    # one left here; the company deployment moved to the work repo.
+    # one left here; the company deployment moved to the company repo.
     profile: starslab
     netbird_oidc_client_id: "{{ netbird.oidc_client_id }}"
     netbird_oidc_client_secret: "{{ netbird.oidc_client_secret }}"

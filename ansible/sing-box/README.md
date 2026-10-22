@@ -8,7 +8,7 @@ This directory deploys sing-box (Shadowsocks on 8388 plus hysteria2 on
 | `lubancat` | Ubuntu 24.04 / ARM64 | `linux-arm64` | SSH key plus the existing SOPS-encrypted sudo password |
 
 `sg-office` used to be deployed from here too. It is not any more: its
-sing-box is now declared in the work nixos repo
+sing-box is now declared in the company nixos repo
 (`nixos-configurations/sg-office/default.nix`, `services.sing-box`) and
 deployed with `nixos-rebuild`. Do not add it back to `singbox_servers` —
 this playbook installs a unit under `/etc/systemd/system/`, which takes

@@ -1,6 +1,6 @@
 ---
 name: nixos-deploy
-description: dotfiles 仓库(个人主机)的 NixOS/darwin 部署、远程构建、主机迁移、secrets 管理、ISO 构建惯例。用于 nixos-rebuild、部署个人主机、本机太慢要借远程机编译、sops 密钥操作、做安装 ISO 时。work 服务器(gz/sg-office 等)的部署也优先用 nixos-rebuild,业务侧惯例见 work-ops。
+description: dotfiles 仓库(个人主机)的 NixOS/darwin 部署、远程构建、主机迁移、secrets 管理、ISO 构建惯例。用于 nixos-rebuild、部署个人主机、本机太慢要借远程机编译、sops 密钥操作、做安装 ISO 时。公司服务器的部署也优先用 nixos-rebuild。
 ---
 
 # NixOS 部署与迁移(dotfiles 仓库)
@@ -56,7 +56,7 @@ nixos-rebuild switch --flake .#<host> \
   由 home-manager 在 rebuild 时解到本地明文路径供直接 Read(省 token),
   仓库里始终只有密文
 - 有些操作要 yubikey 触碰,做之前先提醒用户插上,别静默卡住
-- work 相关的 secrets 放 ansible/公司仓库侧的 sops,不放本仓库
+- 公司相关的东西(secrets、主机、域名)放公司仓库,本仓库是公开的,一个字都别提
 
 ## 服务迁移模式(A 机 → B 机)
 

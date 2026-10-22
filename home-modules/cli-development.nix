@@ -7,7 +7,6 @@
   ...
 }:
 let
-  sub2apiBaseUrl = "https://sub2api.work.ai/v1";
   codexPackage = inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.codex;
 in
 {
@@ -123,11 +122,6 @@ in
       settings = {
         model = "openai/gpt-5.6-sol";
         small_model = "openai/gpt-5.6-luna";
-        provider.openai.options = {
-          baseURL = sub2apiBaseUrl;
-          apiKey = "{env:OPENAI_API_KEY}";
-          headers."x-openai-actor-authorization" = "local-image-extension";
-        };
       };
     };
     k9s = {
@@ -723,18 +717,8 @@ in
     '';
   };
 
-  home.file = {
-    # Pi keeps user preferences mutable, while provider routing stays declarative.
-    ".pi/agent/models.json".text = builtins.toJSON {
-      providers.openai = {
-        baseUrl = sub2apiBaseUrl;
-        apiKey = "$OPENAI_API_KEY";
-        headers."x-openai-actor-authorization" = "local-image-extension";
-      };
-    };
-  }
   # Electron flags config files — Linux/Wayland only
-  // lib.optionalAttrs pkgs.stdenv.hostPlatform.isLinux {
+  home.file = lib.optionalAttrs pkgs.stdenv.hostPlatform.isLinux {
     ".config/electron-flags.conf" = {
       text = ''
         --enable-wayland-ime

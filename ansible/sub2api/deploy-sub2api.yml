@@ -6,7 +6,7 @@
     - vars/main.yml
 
   # The remaining deployment (starslab/lubancat) connects as root, so there is
-  # no sudo password to load. The work profile, which needed one from sops,
+  # no sudo password to load. The company profile, which needed one from sops,
   # moved to the company repo.
 
   tasks:

@@ -7,7 +7,6 @@ let
   # too), so each skill is linked individually.
   codexSkills = [
     "asset-gen"
-    "work-docs"
     "browser-automation"
     "game-balance-sim"
     "game-polish"

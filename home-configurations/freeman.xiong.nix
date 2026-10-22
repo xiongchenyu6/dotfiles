@@ -5,7 +5,6 @@
   ezModules,
   osConfig,
   lib,
-  inputs,
   ...
 }:
 let
@@ -57,20 +56,31 @@ in
           ]
       );
 
-  # work-ops-data 的密文在 workDevOpsSkills 仓库(store 外),关掉 eval 期校验
+  # work-ops-data 的密文不在本仓库(store 外),关掉 eval 期校验
   sops.validateSopsFiles = false;
 
   # Only enable SOPS secrets on desktop (Darwin/GUI) - not on VPS servers
   sops.secrets = lib.mkIf enableHomeSops {
-    # work skills 敏感数据:rebuild 时解密到固定路径,agent 直接读明文
-    # (见 workDevOpsSkills 的 work-ops skill;密文用 sops 编辑)
+    # Work skills' data: decrypted to a fixed path on rebuild so agents read
+    # plaintext. ~/.config/work/ops-data.sops.yaml is a local symlink to the
+    # ciphertext in the work skills checkout.
     "work-ops-data" = lib.mkIf (!isDarwin) {
-      sopsFile = "${
-        osConfig.users.users."freeman.xiong".home
-      }/Documents/github/work/workDevOpsSkills/skills/work-ops/ops-data.sops.yaml";
+      sopsFile = "${config.home.homeDirectory}/.config/work/ops-data.sops.yaml";
       format = "yaml";
       key = "";
-      path = "${osConfig.users.users."freeman.xiong".home}/.config/work/ops-data.yaml";
+      path = "${config.home.homeDirectory}/.config/work/ops-data.yaml";
+    };
+    # Work hosts and the work OpenAI-compatible gateway; kept encrypted
+    # because this repo is public.
+    "work-ssh-config" = {
+      sopsFile = ../secrets/work.yaml;
+      key = "ssh-config";
+      path = "${config.home.homeDirectory}/.ssh/config.d/work";
+      mode = "600";
+    };
+    "work-openai-base-url" = {
+      sopsFile = ../secrets/work.yaml;
+      key = "openai-base-url";
     };
     "ssh/freeman.xiong/id_ed25519" = {
       path = "${osConfig.users.users."freeman.xiong".home}/.ssh/id_ed25519";
@@ -98,6 +108,24 @@ in
     '';
     path = "${config.home.homeDirectory}/.config/environment.d/50-api-keys.conf";
     mode = "600";
+  };
+
+  # opencode and pi talk to the work OpenAI-compatible gateway; its URL is in
+  # sops (work-openai-base-url). Pi keeps its other preferences mutable.
+  sops.templates."pi-models.json" = lib.mkIf enableHomeSops {
+    path = "${config.home.homeDirectory}/.pi/agent/models.json";
+    content = builtins.toJSON {
+      providers.openai = {
+        baseUrl = config.sops.placeholder."work-openai-base-url";
+        apiKey = "$OPENAI_API_KEY";
+        headers."x-openai-actor-authorization" = "local-image-extension";
+      };
+    };
+  };
+  programs.opencode.settings.provider.openai.options = lib.mkIf enableHomeSops {
+    baseURL = "{file:${config.sops.secrets."work-openai-base-url".path}}";
+    apiKey = "{env:OPENAI_API_KEY}";
+    headers."x-openai-actor-authorization" = "local-image-extension";
   };
 
   home = {
@@ -192,6 +220,8 @@ in
     };
 
     ssh = {
+      # Work hosts, from sops (work-ssh-config above).
+      includes = [ "config.d/*" ];
       settings = {
         # Plain key, no agent: gpg-agent's ssh support refuses to sign when the
         # YubiKey is absent and git then aborts instead of trying the file key.
@@ -217,28 +247,12 @@ in
         "oracle-amd-002" = {
           HostName = "213.35.117.232";
         };
-        "huoshan-bj-001" = {
-          HostName = "115.190.173.250";
-        };
         "game" = {
           HostName = "172.22.240.99";
         };
         "jtti-sg" = {
           HostName = "45.194.18.75";
           User = "root";
-        };
-        "sg-office" = {
-          HostName = "101.78.126.6";
-        };
-        "sz-office" = {
-          HostName = "113.90.155.31";
-          User = "work";
-          Port = 2222;
-        };
-        "gz-office" = {
-          HostName = "admin.gz.work.ai";
-          User = "work";
-          Port = 2222;
         };
         "lubancat" = {
           HostName = "203.116.95.146";
