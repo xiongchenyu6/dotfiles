@@ -186,6 +186,15 @@
 
   systemd.services.ModemManager.enable = false;
 
+  # patchelf 0.19 leaves bin/nvidia-powerd with overlapping LOAD segments and
+  # the glibc 2.44 loader segfaults in dl_main. Hand the unpatched copy in
+  # origBin to the loader directly instead.
+  systemd.services.nvidia-powerd.serviceConfig.ExecStart =
+    let
+      nvidia = config.hardware.nvidia.package;
+    in
+    lib.mkForce "${pkgs.stdenv.cc.bintools.dynamicLinker} --library-path ${nvidia}/lib:${nvidia.libPath} ${nvidia.bin}/origBin/nvidia-powerd";
+
   # Hardware watchdog configuration: prefer automatic reboot over staying frozen.
   systemd.settings.Manager = {
     RuntimeWatchdogSec = "30s"; # Reboot if system hangs for 30 seconds
