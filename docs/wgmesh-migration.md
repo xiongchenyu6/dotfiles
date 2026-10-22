@@ -104,8 +104,13 @@ wgmesh 仓库已经不再有自己的 Rust 守护进程,只剩一个 NixOS 模�
   早已在线)。workRobot/nixos 删了 wgmesh import、`wgmesh` input 和 sops 里的
   `wireguard/sg-office`、`wgmesh/gossip-secret`;本仓库 shares.toml 删了它的条目
 - [x] 各节点接口上残留的 office / office-mac 两个 peer 已手动 `wg set … remove`(hub、game、amd-001、sg-office、mac-pro,2026-10-20)
+  中期检查(2026-10-22 14:xx):hub、amd-001、game 的 `wgautomesh` `NRestarts=0`,启动只出现在部署和重启时。
+  hub 和 amd-001 自 2026-10-20 16:39(部署 88609a7)起没有再 Configure 任何 peer。之前上千次的
+  `Configure … with no known endpoint` 全是已卖掉的 office/office-mac 两把 key,2026-10-20 删除后归零。
+  game 在 10-21 之后的 Configure 只有 mac-pro(已知例外)和它自己的重启/部署。mac-pro 的
+  `/var/log/wgautomesh.log` 从 2026-10-20 17:12 起没有新行,和 hub 那边对它没有变更一致。
 **Tests**: Mac 上 `ssh game` 正常;Moonlight 推流正常;DN42 检查清单通过。
-**Status**: In Progress(观察期 2026-10-19 → 2026-10-26)
+**Status**: In Progress(观察期 2026-10-19 → 2026-10-26;中期检查通过)
 
 ## Stage 5: 收缩旧 mesh
 **Goal**: wg-quick 只保留 wgmesh 做不了的部分。

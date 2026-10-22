@@ -8,6 +8,6 @@ pkgs.writeShellScriptBin "update-roa" ''
   # picks them up on start. Only a running bird needs an explicit reload.
   if ${pkgs.systemd}/bin/systemctl is-active --quiet bird.service; then
     ${pkgs.bird3}/bin/birdc configure
-    ${pkgs.bird3}/bin/birdc reload in all
+    ${pkgs.bird3}/bin/birdc reload filters in all
   fi
 ''
