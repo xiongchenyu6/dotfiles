@@ -34,20 +34,10 @@
         }
       ];
     };
-    oci-containers.containers = {
-      mysql.autoStart = false;
-      dnf-1.autoStart = false;
-    };
     podman = {
       dockerCompat = lib.mkForce false;
       dockerSocket.enable = lib.mkForce false;
     };
-  };
-
-  # Keep the DNF environment available on demand without waking Docker at boot.
-  systemd.services = {
-    create-dnf-env.wantedBy = lib.mkForce [ ];
-    create-dnf-network.wantedBy = lib.mkForce [ ];
   };
 
   # Per upstream 1995chen/dnf FAQ: 统一登陆器5.x requires start.dnf.tw to
@@ -62,7 +52,6 @@
     enable = true;
     # Advertise game as the LAN address so clients on 192.168.50.0/24 can join.
     publicIP = "192.168.50.90";
-    mysqlHost = "host.containers.internal"; # Use host network from container
     mysqlPort = 3000;
     rootPasswordFile = config.sops.secrets."dnf/root_password".path;
     gmAccount = "gmuser";
@@ -74,6 +63,8 @@
     clientPoolSize = 10;
     openChannels = "11,52";
     backend = "docker";
+    # On demand only (`systemctl start dnf-server`), so Docker stays asleep at boot.
+    autoStart = false;
   };
 
   # Convenience packages
@@ -90,7 +81,9 @@
     dnf-logs-mysql = "docker logs mysql -f";
     dnf-mysql = "mysql -h 127.0.0.1 -P 3000 -u root -p";
     dnf-shell = "docker exec -it dnf-1 /bin/bash";
-    dnf-restart = "systemctl restart docker-mysql && systemctl restart docker-dnf-1";
+    dnf-start = "sudo systemctl start dnf-server";
+    dnf-stop = "sudo systemctl stop dnf-server dnf-mysql";
+    dnf-restart = "sudo systemctl restart dnf-mysql dnf-server";
     dnf-supervisor = "xdg-open http://localhost:2000"; # Open supervisor web interface
   };
 }
