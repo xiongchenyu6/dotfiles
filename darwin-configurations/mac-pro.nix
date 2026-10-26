@@ -36,6 +36,7 @@
     casks = [
       "nextcloud"
       "nextcloud-talk"
+      "obs"
       # Company NetBird: upstream's signed UI; its postflight installs the
       # daemon from the netbird formula as a launchd service. Log in once with
       # `netbird up --management-url <company>`.
