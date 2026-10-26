@@ -98,7 +98,7 @@ wgmesh 仓库已经不再有自己的 Rust 守护进程,只剩一个 NixOS 模�
 **Success Criteria**:
 - [x] game(Sunshine、ssh 等)、office(2222)、amd-001(4002)的防火墙端口从 `wg_ora` 挪到 `interfaces.wgmesh`
 - [x] ssh matchBlocks、Sunshine `csrf_allowed_origins` 用的就是原地址,无需改
-- [ ] 观察 7 天(到 2026-10-26):`wgautomesh` 没有重启循环,`journalctl -u wgautomesh` 里同一个 peer 没有反复 `Configure … with endpoint`。
+- [x] 观察 7 天(到 2026-10-26):`wgautomesh` 没有重启循环,`journalctl -u wgautomesh` 里同一个 peer 没有反复 `Configure … with endpoint`。
   已知例外:mac-pro 在 SG 办公室 NAT 后面端口会变,它的直连会周期性重新握手。
 - [x] sg-office `.102` 于 2026-10-22 退出 wgmesh:它是公司机器,改走公司的 NetBird(`wt0`,
   早已在线)。公司仓库删了 wgmesh import、`wgmesh` input 和 sops 里的
@@ -111,7 +111,11 @@ wgmesh 仓库已经不再有自己的 Rust 守护进程,只剩一个 NixOS 模�
   `/var/log/wgautomesh.log` 从 2026-10-20 17:12 起没有新行,和 hub 那边对它没有变更一致。
   Mac 经 wgmesh `ssh 172.22.240.99 hostname` 回 `game`;DN42 清单里只有 Kioubit 未过(见 Stage 0,需本人登录后台)。
 **Tests**: Mac 上 `ssh game` 正常;Moonlight 推流正常;DN42 检查清单通过。
-**Status**: In Progress(观察期 2026-10-19 → 2026-10-26;中期检查通过)
+  终检(2026-10-26):三台 `NRestarts=0`,10-22 部署后没有任何重启。反复 Configure 的只有 mac-pro
+  (hub/amd-001 各约 1750 次,在 SG 办公室 NAT、广州出口等几个地址之间换,已知例外)。game 在
+  10-26 03:20–03:35 UTC 短暂断了直连,把 amd-001 在 VCN 内网 10.0.0.199 的两个候选轮了 16 次,
+  之后自己回到公网 213.35.97.233:51821(2.6 ms),不是循环。
+**Status**: Complete(2026-10-26)
 
 ## Stage 5: 收缩旧 mesh
 **Goal**: wg-quick 只保留 wgmesh 做不了的部分。
