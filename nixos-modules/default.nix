@@ -54,7 +54,6 @@ in
           )
         ) (lib.mkDefault true);
 
-        boot.initrd.systemd.enable = lib.mkDefault (!config.boot.swraid.enable && !config.boot.isContainer);
         environment.ldso32 = null;
         boot.tmp.cleanOnBoot = lib.mkDefault true;
       }

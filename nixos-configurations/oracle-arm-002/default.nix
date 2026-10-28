@@ -30,6 +30,7 @@
     xiongchenyu6.nixosModules.quant-collectors
     ./disk-config.nix
     ./hardware-configuration.nix
+    ./auto-update.nix
     ./hashtopolis.nix
     ./postgres.nix
     ./freqtrade-ohlc.nix

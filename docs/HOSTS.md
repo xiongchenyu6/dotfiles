@@ -177,7 +177,9 @@ for API-level details of the backend stack.
 
 **Password cracking** (`hashtopolis.nix`)
 - **Hashtopolis server** at `hashtopolis.panda.qzz.io` with local MariaDB;
-  patched package (upstream lock-path/composer fixes); 1 GB PHP memory limit.
+  stable releases from NUR, automatic database migrations; 1 GB PHP memory limit.
+- `nixos-upgrade` checks the CI-reviewed `main` configuration hourly and
+  switches without rebooting (`auto-update.nix`).
 
 **Quant stack** (`nautilus.nix`, `freqtrade-ohlc.nix`)
 - `freqtrade-ohlc-sync` timer: pulls BTC/ETH/BNB/SOL 1-minute OHLC into
