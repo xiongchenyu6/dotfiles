@@ -16,7 +16,7 @@ from .engine import tick
 from .errors import RunnerValidationError
 from .exchange import HTX
 from .journal import Journal
-from .reporting import report, paused_report, rpc, upload
+from .reporting import report, paused_report, rpc, upload, signal_snapshot
 from .signals import validate_snapshot, timestamp
 
 
@@ -114,7 +114,7 @@ def run(home, config, once=False):
                 if not venue.reconcile(store):
                     status = 'pending'
                 stage = 'signal_feed'
-                snapshot = rpc(config['api_base'],'runner_signals',{})
+                snapshot = signal_snapshot(config['api_base'])
                 held = {row['asset'] for row in store.holdings() if row['quantity']>1e-12}
                 prices = validate_snapshot(snapshot,set(config['assets']) | held)['prices']
                 stage = 'execution'
@@ -122,7 +122,7 @@ def run(home, config, once=False):
             except Exception as cause:
                 # Exchange exception messages can include signed URLs and keys.
                 decisions.append({'strategy':'account','asset':None,'reason':cause.reason if isinstance(cause,RunnerValidationError) else stage+'_failed','error_class':type(cause).__name__})
-                print(f'Execution paused ({type(cause).__name__}); pending intents are preserved.',flush=True)
+                print(f'Execution paused (stage={stage}, error={type(cause).__name__}); pending intents are preserved.',flush=True)
             private_json(home/'decisions.json',{'observed_at':datetime.now(timezone.utc).isoformat(),
                 'status':status,'decisions':decisions})
             display = None

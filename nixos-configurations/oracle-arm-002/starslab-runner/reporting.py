@@ -8,6 +8,25 @@ from urllib.parse import urlparse
 from .config import read_private_json
 from .fills import fee_value
 import re
+import time
+from urllib.error import HTTPError, URLError
+
+
+def signal_snapshot(base):
+    """Retry only the public read RPC, never uploads or exchange orders."""
+    for attempt in range(2):
+        try:
+            return rpc(base,'runner_signals',{})
+        except HTTPError as exc:
+            if attempt or exc.code not in (429,502,503,504):
+                raise
+        except URLError as exc:
+            if attempt or isinstance(exc.reason,ssl.SSLCertVerificationError):
+                raise
+        except (TimeoutError, ConnectionError):
+            if attempt:
+                raise
+        time.sleep(1)
 
 
 def rpc(base, function, body):

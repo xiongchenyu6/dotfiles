@@ -100,12 +100,24 @@ class HTX:
         market = self.ex.market(symbol)
         if not market.get('spot') or market.get('active') is False:
             raise ValueError('Inactive spot market')
-        ticker = self.ex.fetch_ticker(symbol)
-        price = number(ticker.get('ask') if side=='buy' else ticker.get('bid'))
         minimum = float((market.get('limits',{}).get('cost') or {}).get('min') or 0)
         min_qty = float((market.get('limits',{}).get('amount') or {}).get('min') or 0)
         if any(not math.isfinite(v) or v<0 for v in (minimum,min_qty)):
             raise ValueError('Invalid exchange order limits')
+        if not math.isfinite(allocation):
+            raise ValueError('Invalid allocation')
+        # An upper bound below the minimum cannot become tradeable after
+        # checking the wallet. Avoid private requests for these residuals.
+        if allocation<=0 or (side=='sell' and allocation<min_qty):
+            return False
+        if side=='buy' and allocation/1.003<minimum:
+            return False
+        ticker = self.ex.fetch_ticker(symbol)
+        price = number(ticker.get('ask') if side=='buy' else ticker.get('bid'))
+        if side=='sell' and allocation*price<minimum:
+            return False
+        if side=='buy' and allocation/1.003/price<min_qty:
+            return False
         if self.mode=='live':
             fee = self.ex.fetch_trading_fee(symbol)
             try:
