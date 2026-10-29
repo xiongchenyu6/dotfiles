@@ -589,11 +589,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1793282939,
-        "narHash": "sha256-PKbNqjD+iqRPEWXSNw9NU7dnkg5ygDIC2yR+x5olVhs=",
+        "lastModified": 1793302472,
+        "narHash": "sha256-eWiHbYTj8xAlA8YydCZGghUCkrl+uyV70wK+e74UqXE=",
         "owner": "nix-community",
         "repo": "NUR",
-        "rev": "f16aeeb241510623668c21501558fa4e22d68557",
+        "rev": "3220e320f7aa5ff16f5f38881ea8e36d4fef3917",
         "type": "github"
       },
       "original": {
@@ -691,11 +691,11 @@
     "rime-frost": {
       "flake": false,
       "locked": {
-        "lastModified": 1793247216,
-        "narHash": "sha256-7nzZtSDN6YuZFdNyTcAzH4YgIz55oBeev4qLKv3el4Y=",
+        "lastModified": 1793290008,
+        "narHash": "sha256-Us12UsDL9ObOoiqt6g4q1vvUQp/i2xC4glBOo5Ewqwk=",
         "owner": "gaboolic",
         "repo": "rime-frost",
-        "rev": "b9c16c813445377bbbbbced77e542f2dd643c91f",
+        "rev": "af721ca066a85b3f93e612dccb06600ca502a0ab",
         "type": "github"
       },
       "original": {
@@ -950,11 +950,11 @@
         "pkgs-by-name-for-flake-parts": "pkgs-by-name-for-flake-parts"
       },
       "locked": {
-        "lastModified": 1793283079,
-        "narHash": "sha256-Ses2M6T+abSknNNDzD7XOW/1s/vqRwN8hZzHp6U07Xg=",
+        "lastModified": 1793305068,
+        "narHash": "sha256-XdNZkPlk14f1Ulfe0SBFz2o5sy2hNMfcdEdt/6/ddxk=",
         "owner": "xiongchenyu6",
         "repo": "nur-packages",
-        "rev": "43be7593d80600714d66d94c7a5791a6db2653e9",
+        "rev": "2cc0651af87bd215c9708d1d5b97aefdec8f38ea",
         "type": "github"
       },
       "original": {
