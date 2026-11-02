@@ -76,10 +76,6 @@
     #   updater = { enable = true; };
     #   daemon = { enable = true; };
     # };
-    onedrive = {
-      enable = true;
-    };
-
     usbmuxd.enable = true;
 
     usbguard = {
