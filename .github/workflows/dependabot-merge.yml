@@ -1,0 +1,26 @@
+name: Dependabot auto-merge
+
+# Dependabot here only bumps Actions, and no workflow runs on pull requests, so
+# there is nothing to wait for: a broken bump surfaces as a failing update.yml
+# run, which opens an issue. Merging workflow edits needs DEPENDABOT_MERGE_TOKEN,
+# a PAT with the Workflows permission stored as a Dependabot secret.
+on: pull_request
+
+permissions:
+  contents: read
+
+jobs:
+  merge:
+    if: github.event.pull_request.user.login == 'dependabot[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Merge the Dependabot PR
+        env:
+          GH_TOKEN: ${{ secrets.DEPENDABOT_MERGE_TOKEN }}
+          PR_URL: ${{ github.event.pull_request.html_url }}
+        run: |
+          if [ -z "${GH_TOKEN:-}" ]; then
+            echo "::error::Dependabot secret DEPENDABOT_MERGE_TOKEN is not set"
+            exit 1
+          fi
+          gh pr merge "$PR_URL" --squash
