@@ -11,7 +11,7 @@ in {
       StateDirectory = "quant-trend-shadow";
       StateDirectoryMode = "0700";
       UMask = "0077";
-      ExecStart = "${python}/bin/python ${source}/scripts/trend_shadow.py --home /var/lib/quant-trend-shadow --plan ${source}/research/trend-shadow-plan.json";
+      ExecStart = "${python}/bin/python ${source}/scripts/trend_shadow.py --home /var/lib/quant-trend-shadow/v2 --plan ${source}/research/trend-shadow-plan.json";
       RuntimeMaxSec = 900;
       NoNewPrivileges = true;
       PrivateTmp = true;

@@ -169,6 +169,9 @@ def main(argv=None):
     fund.add_argument('--month',default=datetime.now(timezone.utc).strftime('%Y-%m-01'))
     fund.add_argument('--trend',type=float)
     fund.add_argument('--dca',type=float)
+    entries = commands.add_parser('entries',help='Enable or pause new entries; exits of existing holdings continue')
+    entries.add_argument('--trend',choices=['on','off'])
+    entries.add_argument('--dca',choices=['on','off'])
     execute = commands.add_parser('run')
     execute.add_argument('--once',action='store_true')
     commands.add_parser('status')
@@ -290,6 +293,16 @@ def main(argv=None):
             config['display_file']='display.json'
             private_json(home/'config.json',config)
             print('Upload-only display connection saved locally. Execution settings are unchanged.')
+            return 0
+        if args.command=='entries':
+            if args.trend is None and args.dca is None:
+                parser.error('entries needs --trend and/or --dca')
+            for key in ('trend','dca'):
+                if getattr(args,key) is not None:
+                    config[key]=getattr(args,key)=='on'
+            private_json(home/'config.json',validate(config))
+            print(f"New entries: trend {'on' if config['trend'] else 'off'}, BTC DCA {'on' if config['dca'] else 'off'}. "
+                  'Existing trend holdings still exit on their signals. Restart a running service to apply.')
             return 0
         if args.command=='run':
             return run(home,config,args.once)

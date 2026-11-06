@@ -10,6 +10,8 @@ class Rule:
     entry: int = 168
     exit: int = 72
     buffer: float = 0
+    regime: int = 0             # BTC prior close must exceed its N-hour close average; 0 = off
+    max_daily_entries: int = 0  # new buys allowed per rolling 24 hours; 0 = unlimited
 
 
 def replay(frames, rule, start, end, *, fee=.002, slippage=.0005,
@@ -24,6 +26,11 @@ def replay(frames, rule, start, end, *, fee=.002, slippage=.0005,
         raise ValueError('Missing frames or invalid lookbacks')
     if rule.entry<=0 or rule.exit<=0 or rule.exit>rule.entry:
         raise ValueError('Invalid lookbacks')
+    if (not isinstance(rule.regime,int) or not isinstance(rule.max_daily_entries,int)
+            or rule.regime<0 or rule.max_daily_entries<0):
+        raise ValueError('Invalid regime or entry cap')
+    if rule.regime and 'BTC' not in frames:
+        raise ValueError('BTC regime requires BTC bars')
     if any(not math.isfinite(x) or x<0 for x in (fee,slippage,monthly,order_cap,minimum,rule.buffer)):
         raise ValueError('Invalid replay parameter')
     if fee>=1 or slippage>=1 or monthly<=0 or order_cap<=0 or minimum<=0:
@@ -52,15 +59,22 @@ def replay(frames, rule, start, end, *, fee=.002, slippage=.0005,
             'signal_close':d.close.shift(1),
             'entry':d.high.shift(2).rolling(rule.entry).max(),
             'exit':d.low.shift(2).rolling(rule.exit).min()})
-        warm=pd.date_range(start-pd.Timedelta(hours=rule.entry+1),end,freq='h',inclusive='left')
+        lookback=max(rule.entry,rule.regime if asset=='BTC' else 0)
+        warm=pd.date_range(start-pd.Timedelta(hours=lookback+1),end,freq='h',inclusive='left')
         if not warm.isin(d.index).all():
             raise ValueError(f'Missing hourly bars or warmup for {asset}')
         p=p.reindex(index)
         if p.isna().any().any(): raise ValueError(f'Incomplete data for {asset}')
         prepared[asset]=p.to_numpy()
+        if asset=='BTC' and rule.regime:
+            # Prior close versus the average of the closes up to and including it.
+            average=d.close.shift(1).rolling(rule.regime).mean()
+            regime_on=(d.close.shift(1)>average).reindex(index)
+            if average.reindex(index).isna().any(): raise ValueError('Incomplete BTC regime data')
+            regime_on=regime_on.to_numpy()
     cash=monthly;funded=monthly;units=monthly;peak=1.;drawdown=0.
     held={};target={};processed=set();fills=[];fee_total=0.;last_month=index[0].strftime('%Y-%m')
-    history=[];target_counter=0
+    history=[];target_counter=0;buy_times=[]
     for i,ts in enumerate(index):
         opens={a:p[i,0] for a,p in prepared.items()}
         before=cash+sum(v['quantity']*opens[v['asset']] for v in held.values())
@@ -72,7 +86,7 @@ def replay(frames, rule, start, end, *, fee=.002, slippage=.0005,
             _,_,previous,entry,exit=p[i]
             if a in target:
                 if previous<exit: del target[a]
-            elif previous>entry*(1+rule.buffer):
+            elif previous>entry*(1+rule.buffer) and (not rule.regime or regime_on[i]):
                 target_counter+=1;target[a]=target_counter
         for position in list(held):
             h=held[position]
@@ -87,12 +101,15 @@ def replay(frames, rule, start, end, *, fee=.002, slippage=.0005,
         for a in prepared:
             tid=target.get(a)
             if tid is None or tid in processed: continue
+            if rule.max_daily_entries and sum(t>ts-pd.Timedelta(hours=24) for t in buy_times)>=rule.max_daily_entries:
+                continue
             allocation=min(order_cap,cash)
             # Match the live adapter's conservative 0.3% fee reservation.
             cost=allocation/1.003
             if cost<minimum: continue
             price=opens[a]*(1+slippage);gross_qty=cost/price
             quantity=gross_qty*(1-fee);cash-=cost;fee_total+=cost*fee
+            buy_times.append(ts)
             held[tid]={'asset':a,'target':tid,'quantity':quantity,'cost':cost};processed.add(tid)
             fills.append({'asset':a,'side':'buy','time':ts.isoformat(),'price':price,'cash':-cost})
         equity=cash+sum(v['quantity']*prepared[v['asset']][i,1] for v in held.values())
@@ -103,6 +120,7 @@ def replay(frames, rule, start, end, *, fee=.002, slippage=.0005,
     liquidation=cash+sum(v['quantity']*prepared[v['asset']][-1,1]*(1-slippage)*(1-fee) for v in held.values())
     sells=[f for f in fills if f['side']=='sell']
     return {'rule':rule.name,'entry_lookback':rule.entry,'exit_lookback':rule.exit,'buffer':rule.buffer,
+            'btc_regime_hours':rule.regime,'max_daily_entries':rule.max_daily_entries,
             'start':index[0].isoformat(),'end_exclusive':end.isoformat(),'assets':list(prepared),
             'fee_per_side':fee,'slippage_per_side':slippage,'monthly_usdt':monthly,'order_cap_usdt':order_cap,
             'funded_usdt':funded,'equity_usdt':equity,'cash_usdt':cash,'pnl_usdt':equity-funded,

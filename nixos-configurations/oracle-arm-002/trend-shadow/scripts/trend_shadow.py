@@ -44,7 +44,7 @@ def evaluate(home,plan,now,download):
         if result['plan_hash']!=digest(plan): raise ValueError('Checkpoint plan changed')
         write(home/'latest.json',result);return result
     previous=json.loads((home/'latest.json').read_text()) if (home/'latest.json').exists() else {}
-    warm=start-timedelta(hours=max(r['entry'] for r in plan['rules'])+1)
+    warm=start-timedelta(hours=max(max(r['entry'],r.get('regime',0)) for r in plan['rules'])+1)
     download(home/'bars',warm,end,plan['assets'])
     frames={};hashes={}
     for asset in plan['assets']:

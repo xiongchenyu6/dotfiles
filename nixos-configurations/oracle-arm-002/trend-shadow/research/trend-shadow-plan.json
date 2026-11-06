@@ -1,6 +1,6 @@
 {
-  "version": 1,
-  "start": "2026-10-07T18:00:00+00:00",
+  "version": 2,
+  "start": "2026-11-09T00:00:00+00:00",
   "assets": [
     "BTC",
     "ETH",
@@ -24,19 +24,33 @@
       "name": "baseline",
       "entry": 168,
       "exit": 72,
-      "buffer": 0
+      "buffer": 0,
+      "regime": 0,
+      "max_daily_entries": 0
     },
     {
-      "name": "slower",
-      "entry": 336,
-      "exit": 144,
-      "buffer": 0
-    },
-    {
-      "name": "cost_buffer",
+      "name": "btc_regime",
       "entry": 168,
       "exit": 72,
-      "buffer": 0.005016546369417174
+      "buffer": 0,
+      "regime": 4800,
+      "max_daily_entries": 0
+    },
+    {
+      "name": "entry_cap",
+      "entry": 168,
+      "exit": 72,
+      "buffer": 0,
+      "regime": 0,
+      "max_daily_entries": 2
+    },
+    {
+      "name": "btc_regime_entry_cap",
+      "entry": 168,
+      "exit": 72,
+      "buffer": 0,
+      "regime": 4800,
+      "max_daily_entries": 2
     }
   ],
   "costs": [
@@ -49,5 +63,5 @@
       "slippage": 0.001
     }
   ],
-  "implementation_sha256": "6df02b46481ff1b07724b6385df41285f1cd09cf39508a0f26c26d4e7af6459e"
+  "implementation_sha256": "9c5f77c6dc6adf9bac0a7aac0614b745423352d8a2319b35aff1ff282372d9d0"
 }
