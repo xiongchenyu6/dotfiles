@@ -14,10 +14,7 @@
         #appimage-run
         inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.mcporter
         inputs.xiongchenyu6.packages.${pkgs.stdenv.hostPlatform.system}.cc-switch
-        # llm-agents pins electron_42, which nixpkgs now refuses as EOL.
-        (inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.aperant.override {
-          electron_42 = electron;
-        })
+        inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.aperant
         inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.agentsview
         kitty.kitten # 独立的 kitten 二进制（icat/ssh/clipboard 等小工具），不装 kitty 本体
         bitwarden-cli
