@@ -13,7 +13,17 @@ in
     pkgs.mosh
     messaging.wacli
     messaging.tg
-  ];
+  ]
+  ++
+    lib.optionals
+      (builtins.elem pkgs.stdenv.hostPlatform.system [
+        "aarch64-darwin"
+        "x86_64-linux"
+        "aarch64-linux"
+      ])
+      [
+        (pkgs.callPackage ../packages/agent-wechat.nix { })
+      ];
 
   editorconfig = {
     enable = true;

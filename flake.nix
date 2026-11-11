@@ -243,6 +243,7 @@
         { pkgs, system, ... }:
         {
           packages = (pkgs.callPackage ./packages/messaging-cli.nix { }) // {
+            agent-wechat = pkgs.callPackage ./packages/agent-wechat.nix { };
             # 两个安装 ISO：海外用官方源，大陆用 ustc/cernet/tuna。
             # 各自烧盘各自分发——做成一个带 flag 的镜像，烧的时候没人记得传 flag。
             iso = self.nixosConfigurations.iso.config.system.build.isoImage;

@@ -57,3 +57,36 @@ directory, and stores macOS sessions in the login Keychain by default.
 If an older manually installed `~/.local/bin/wacli` or `~/.local/bin/tg` shadows
 the managed command, inspect `type -a wacli tg` after activation and remove only
 the obsolete manually installed executable. Keep all session data.
+
+## WeChat: agent-wechat (`wx`)
+
+The CLI tier also installs `agent-wechat` 2.3.1 on Apple Silicon macOS and
+x86_64/aarch64 Linux. Run it separately with `nix run .#agent-wechat -- --help`.
+This is an unofficial independent client, not a wrapper around the Mac app.
+The package installs commands only; it does not start a service or log in during activation.
+
+```sh
+wx daemon start
+wx accounts create --alias personal
+wx --account personal auth login
+wx --account personal chats list
+wx --account personal messages list filehelper --limit 1
+# Stop when not needed:
+wx daemon stop
+```
+
+Phone approval is required. A new profile has no complete old history; it collects
+messages received after login. Existing official Mac/Windows profile reuse is
+unverified; do not use `--official` on those platforms. The separately documented
+Linux takeover mode needs the official client stopped and a backup, and is not
+part of this setup. Do not re-sign, downgrade, or modify the main WeChat app.
+
+State, API credentials and login QR files stay in the per-device data directory
+(default `~/.local/share/agent-wechat` on this Mac), outside dotfiles. The local
+service is not exposed to other machines by this configuration. Other devices
+can install the same CLI and authenticate separately. Login acceptance and
+simultaneous-client behavior depend on WeChat; installation alone does not
+establish account connectivity. FFmpeg/FFprobe are needed for some media features.
+
+Sources: https://github.com/thisnick/agent-wechat and
+https://thisnick.github.io/agent-wechat/setup/connect/ .
