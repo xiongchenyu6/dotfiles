@@ -5,9 +5,14 @@
   lib,
   ...
 }:
+let
+  messaging = pkgs.callPackage ../packages/messaging-cli.nix { };
+in
 {
   home.packages = [
     pkgs.mosh
+    messaging.wacli
+    messaging.tg
   ];
 
   editorconfig = {
