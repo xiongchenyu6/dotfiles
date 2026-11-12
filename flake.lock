@@ -589,11 +589,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1794453921,
-        "narHash": "sha256-S55rmmWsOsayC39A1HQ+Se9QCxuU3N9M/EBkndfrvlA=",
+        "lastModified": 1794475847,
+        "narHash": "sha256-zUMoL8Jsa21CQJ26Bo3SR/MS60oixcT2RVYV2o/Fp0w=",
         "owner": "nix-community",
         "repo": "NUR",
-        "rev": "fa1a0fdb157ee612ab6f2d85acc6495abb4fa601",
+        "rev": "7b921c747644347cbb458826f751416c2a7d96d3",
         "type": "github"
       },
       "original": {
@@ -691,11 +691,11 @@
     "rime-frost": {
       "flake": false,
       "locked": {
-        "lastModified": 1794369984,
-        "narHash": "sha256-96AN++3byNFvo53tSB2bVQikW+AAeKdMtNIteKLbc1M=",
+        "lastModified": 1794456436,
+        "narHash": "sha256-9e7APyygqhccw5Oo8EJCEVADvd0zY0/Q0DgKudE3qEc=",
         "owner": "gaboolic",
         "repo": "rime-frost",
-        "rev": "d6214cafa4aacf9c69d2d739d8af31d6c4614eb9",
+        "rev": "e2e488c15d70f37569108ef3d5211acc7b61e3ed",
         "type": "github"
       },
       "original": {
@@ -707,7 +707,7 @@
     "rime-wanxiang-gram": {
       "flake": false,
       "locked": {
-        "narHash": "sha256-ez6vCaayry1O8W739fk3mnrAA+HtXvTzC9oTjIBpiTQ=",
+        "narHash": "sha256-3Drvw4Q/1dI3gjBoy8Xxwnbgysba5TYHNuyMmrMTL1k=",
         "type": "file",
         "url": "https://github.com/amzxyz/RIME-LMDG/releases/download/LTS/wanxiang-lts-zh-hans.gram"
       },
@@ -950,11 +950,11 @@
         "pkgs-by-name-for-flake-parts": "pkgs-by-name-for-flake-parts"
       },
       "locked": {
-        "lastModified": 1794447778,
-        "narHash": "sha256-u+URNcijhy83V/9CE2exAZaVO0nHsvdQUTS4Vkv4lk4=",
+        "lastModified": 1794476721,
+        "narHash": "sha256-g/XDq3rV3DkLISo8SVD5bpnRYRNBmu8ATaUe7eMUxEg=",
         "owner": "xiongchenyu6",
         "repo": "nur-packages",
-        "rev": "fee76e408c65ef5a47056617eab88dbe4f8a0c0b",
+        "rev": "9dbcc73f9323e07da8421fa95215b3034eef53a9",
         "type": "github"
       },
       "original": {
