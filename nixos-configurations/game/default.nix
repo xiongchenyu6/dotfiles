@@ -489,20 +489,33 @@
             };
           };
 
-          programs = {
-            # Codex remote control lives in the ChatGPT desktop app (llm-agents
-            # `chatgpt`, bundles Codex). Launch it with the session so the phone
-            # can reach this machine without anyone opening the app first.
-            niri.settings.spawn-at-startup = [
-              {
-                command = [
-                  # From home.packages (cli-development.nix patches it), not
-                  # the raw llm-agents build.
-                  "chatgpt"
-                ];
-              }
-            ];
+          # Codex remote control lives in the ChatGPT desktop app (llm-agents
+          # `chatgpt`, bundles Codex). Run it as a session service so the phone
+          # can reach this machine without anyone opening the app first, and so
+          # it comes back if it crashes or gets quit. niri imports
+          # WAYLAND_DISPLAY/NIXOS_OZONE_WL into the user manager, which the
+          # wrapper needs to pick the Wayland backend.
+          systemd.user.services.chatgpt = {
+            Unit = {
+              Description = "ChatGPT desktop (Codex remote control)";
+              After = [ "graphical-session.target" ];
+              PartOf = [ "graphical-session.target" ];
+            };
 
+            Service = {
+              # The home.packages wrapper (cli-development.nix patches it), not
+              # the raw llm-agents build.
+              ExecStart = "/etc/profiles/per-user/%u/bin/chatgpt";
+              Restart = "always";
+              RestartSec = 5;
+            };
+
+            Install = {
+              WantedBy = [ "graphical-session.target" ];
+            };
+          };
+
+          programs = {
             # eno1 lives on the office segment (see networkmanager.ensureProfiles
             # office-eno1, autoconnected at boot). officeoff swaps it to an
             # unsaved DHCP profile until the next reboot; officeon puts it back.

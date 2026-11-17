@@ -7,7 +7,12 @@
   ...
 }:
 let
-  codexPackage = inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.codex;
+  codexPackage =
+    inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.codex.overrideAttrs
+      (old: {
+        # openssl-sys needs openssl.pc; the upstream package omits OpenSSL.
+        buildInputs = (old.buildInputs or [ ]) ++ [ pkgs.openssl ];
+      });
 in
 {
   imports = [
@@ -58,7 +63,6 @@ in
         "ck"
         "openspec"
         "jscpd"
-        "workmux"
         "pi"
       ]
       # ChatGPT desktop is a brew cask on macOS; the llm-agents build there
@@ -109,9 +113,6 @@ in
     claude-code = {
       enable = true;
       package = inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.claude-code;
-    };
-    antigravity-cli = {
-      enable = true;
     };
     codex = {
       enable = true;

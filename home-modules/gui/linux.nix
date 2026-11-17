@@ -17,14 +17,16 @@ let
     && builtins.elem "nvidia" osConfig.system.nixos.tags;
   whisperCppPackage =
     if hasNvidiaTag then
-      (pkgs.whisper-cpp.override {
+      pkgs.whisper-cpp.override {
         cudaSupport = true;
-      }).overrideAttrs
-        (old: {
+        # Whisper now gets its GGML compute backends from llama-cpp.
+        # Apply the RTX 3070 target to the package compiling the CUDA kernels.
+        llama-cpp = pkgs.llama-cpp.overrideAttrs (old: {
           cmakeFlags = (old.cmakeFlags or [ ]) ++ [
             (lib.cmakeFeature "CMAKE_CUDA_ARCHITECTURES" "86")
           ];
-        })
+        });
+      }
     else
       pkgs.whisper-cpp;
   whisperCppModel = "large-v3-turbo-q5_0";
@@ -467,6 +469,9 @@ in
         #localstack
         desktop-file-utils
         claudeDesktopPackage
+        # Google AI Ultra: Antigravity agent manager and IDE
+        inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.antigravity-hub
+        antigravity-ide
         gnome-software
         gws
         google-cloud-sdk

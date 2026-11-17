@@ -26,15 +26,6 @@ in
   # RustDesk's GStreamer pipeline needs SHM buffers; niri's native Mutter
   # stream is DMA-BUF-only. The wlr bridge also offers SHM capture.
   xdg.portal.config.niri."org.freedesktop.impl.portal.ScreenCast" = lib.mkForce [ "wlr" ];
-  # With PipeWire 1.6.9 the driving wlr stream sends one frame and then
-  # receives no process callback. Explicitly trigger after returning a frame.
-  nixpkgs.overlays = [
-    (_: prev: {
-      xdg-desktop-portal-wlr = prev.xdg-desktop-portal-wlr.overrideAttrs (old: {
-        patches = (old.patches or [ ]) ++ [ ../../packages/xdg-desktop-portal-wlr-trigger.patch ];
-      });
-    })
-  ];
 
   # Seed writable settings once; RustDesk owns passwords and login state.
   home-manager.users."freeman.xiong" = { lib, ... }: {

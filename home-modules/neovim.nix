@@ -1769,14 +1769,7 @@ in
         ]
         ++ lib.optionals (!cfg.lightweight) [
           # Language servers (desktop only)
-          # nixos-unstable 7fd4004 ships a wrong pnpm hash for 6.0.2; the
-          # value below is nixpkgs ac7b1aae's fix. Drop once the input moves
-          # past that commit.
-          (typescript-language-server.overrideAttrs (old: {
-            pnpmDeps = old.pnpmDeps.overrideAttrs {
-              outputHash = "sha256-xR/EF60lVBsITKgH7wCM2wHM46PFQevD51KfCENSUH4=";
-            };
-          }))
+          typescript-language-server
           vscode-langservers-extracted
           pyright
           gopls

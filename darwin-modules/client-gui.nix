@@ -48,6 +48,11 @@
       "rustdesk"
       "chatgpt"
       "claude"
+      # Google AI Ultra: Gemini desktop, Drive storage, Antigravity
+      "google-gemini"
+      "google-drive"
+      "antigravity"
+      "antigravity-ide"
     ];
     global = {
       autoUpdate = true;

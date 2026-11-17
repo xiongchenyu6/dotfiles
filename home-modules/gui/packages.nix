@@ -15,6 +15,7 @@
         inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.mcporter
         inputs.xiongchenyu6.packages.${pkgs.stdenv.hostPlatform.system}.cc-switch
         inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.aperant
+        inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.jules
         inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.agentsview
         kitty.kitten # 独立的 kitten 二进制（icat/ssh/clipboard 等小工具），不装 kitty 本体
         bitwarden-cli
@@ -57,8 +58,14 @@
         nixd
         #v4l-utils
         dotnetCorePackages.sdk_8_0
-        foundry
-        surfpool
+        # nixpkgs' cargo hook now makes aws-lc-sys and zstd-sys link system
+        # libraries, which these two packages do not list yet.
+        (foundry.overrideAttrs (old: {
+          buildInputs = old.buildInputs ++ [ aws-lc ];
+        }))
+        (surfpool.overrideAttrs (old: {
+          buildInputs = old.buildInputs ++ [ zstd ];
+        }))
         #record_screen
         apg
         #cava # audio visualizer
