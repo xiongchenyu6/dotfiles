@@ -42,6 +42,8 @@ in
 
   config = {
     sops.secrets = lib.optionalAttrs cfg.enable {
+      # Existing phone clients remain on 8443 until they migrate to 8444.
+      # The rotated listener has its own secret and does not restart this unit.
       "sing-box/HYSTERIA2_PASSWORD" = {
         owner = config.users.users.sing-box.name or "root";
         mode = "0400";
