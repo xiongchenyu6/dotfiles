@@ -18,6 +18,7 @@
     ezModules.server
     ezModules.acme
     ezModules.sing-box
+    ../../nixos-modules/sing-box-rotated.nix
     srvos.nixosModules.server
     ezModules.mixins-nginx
     srvos.nixosModules.mixins-trusted-nix-caches
