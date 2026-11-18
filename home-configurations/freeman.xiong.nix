@@ -42,12 +42,14 @@ in
             ezModules.zsh
             ezModules.cli-development
             ezModules.darwin-skills
+            ezModules.shared-agent-skills
             ezModules.gui
           ]
         else if hasGuiTag then
           [
             ezModules.workstation
             ezModules.stow-config
+            ezModules.shared-agent-skills
           ]
         else
           [
