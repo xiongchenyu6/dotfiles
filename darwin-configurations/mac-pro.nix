@@ -4,6 +4,16 @@
   imports = [ ezModules.wgmesh ];
 
   nixpkgs.hostPlatform = "aarch64-darwin";
+  nixpkgs.overlays = [
+    (_: prev: {
+      # Zed uses cargo-bundle on macOS. Nixpkgs' Cargo hook requires a
+      # system AWS-LC, but cargo-bundle does not declare it.
+      cargo-bundle = prev.cargo-bundle.overrideAttrs (old: {
+        nativeBuildInputs = (old.nativeBuildInputs or [ ]) ++ [ prev.pkg-config ];
+        buildInputs = (old.buildInputs or [ ]) ++ [ prev.aws-lc ];
+      });
+    })
+  ];
   system.darwinLabel = "gui";
   system.primaryUser = "freeman.xiong";
 
@@ -34,6 +44,7 @@
     # Nextcloud's desktop clients (Files, Talk) are not in the App Store; the
     # casks track upstream releases. Calendar/Contacts go through the native apps.
     casks = [
+      "baidunetdisk"
       "nextcloud"
       "nextcloud-talk"
       "obs"

@@ -1,6 +1,10 @@
 # macOS system defaults — keyboard, Finder, Dock, trackpad
-{ ... }:
+{ inputs, pkgs, ... }:
 {
+  environment.systemPackages = [
+    inputs.xiongchenyu6.packages.${pkgs.stdenv.hostPlatform.system}.larksuite-cli
+  ];
+
   system = {
     defaults = {
       NSGlobalDomain = {
