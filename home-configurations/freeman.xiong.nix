@@ -41,6 +41,7 @@ in
           [
             ezModules.zsh
             ezModules.cli-development
+            ezModules.darwin-skills
             ezModules.gui
           ]
         else if hasGuiTag then
