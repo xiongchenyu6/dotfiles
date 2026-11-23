@@ -22,7 +22,7 @@ zram swap, nftables firewall, and systemd-resolved.
 | Host | Platform | Role | Highlights |
 |---|---|---|---|
 | `game` | x86_64-linux | Gaming desktop (Legion 16ACH6h) | niri desktop, NVIDIA + VFIO passthrough, Sunshine, Waydroid, sing-box travel VPN, Hashtopolis agent, DNF private server, codexpro tunnel |
-| `tcloud` | x86_64-linux | Tencent Cloud VPS | **Now runs Ubuntu (seen 2026-10-19), not deployable with this config.** Was: coturn TURN, deepseek-free-api container, HE.net IPv6 tunnel |
+| `tcloud` | x86_64-linux | Tencent Cloud VPS | coturn TURN, deepseek-free-api container, HE.net IPv6 tunnel |
 | `oracle-amd-001` | x86_64-linux | Oracle Cloud, IB sidecar | IB Gateway (paper) container, mesh peer, hysteria2 inbound |
 | `oracle-amd-002` | x86_64-linux | Oracle Cloud, mesh hub | WireGuard hub, wgmesh relay (`172.22.240.97`), DN42 border router, RustDesk relay, hysteria2 inbound, s3fs docs mount |
 | `oracle-arm-001` | aarch64-linux | Oracle Cloud, mostly idle | Base server profile, Node.js 24 |

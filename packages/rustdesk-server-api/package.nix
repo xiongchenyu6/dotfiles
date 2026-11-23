@@ -5,6 +5,7 @@
   pkg-config,
   libsodium,
   sqlite,
+  zstd,
 }:
 
 rustPlatform.buildRustPackage rec {
@@ -26,6 +27,7 @@ rustPlatform.buildRustPackage rec {
   buildInputs = [
     libsodium
     sqlite
+    zstd
   ];
 
   meta = {
