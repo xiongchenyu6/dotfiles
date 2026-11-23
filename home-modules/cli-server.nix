@@ -3,6 +3,7 @@
   config,
   pkgs,
   lib,
+  inputs,
   ...
 }:
 let
@@ -10,6 +11,7 @@ let
 in
 {
   home.packages = [
+    inputs.xiongchenyu6.packages.${pkgs.stdenv.hostPlatform.system}.google-colab-cli
     pkgs.mosh
     messaging.wacli
     messaging.tg
