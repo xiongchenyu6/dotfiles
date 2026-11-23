@@ -43,6 +43,7 @@ in
             ezModules.cli-development
             ezModules.darwin-skills
             ezModules.shared-agent-skills
+            ezModules.antigravity-computer-use
             ezModules.gui
           ]
         else if hasGuiTag then

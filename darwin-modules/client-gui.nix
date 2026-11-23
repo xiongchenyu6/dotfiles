@@ -61,7 +61,9 @@
     onActivation = {
       autoUpdate = true;
       cleanup = "zap";
-      upgrade = true;
+      # Keep false so `brew bundle` passes `--no-upgrade` and doesn't fail on
+      # `mas` upgrades when the Mac App Store is switched to another region.
+      upgrade = false;
     };
   };
 
