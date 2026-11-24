@@ -114,6 +114,7 @@ in
       enable = true;
       package = inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.claude-code;
     };
+    antigravity-cli.enable = true;
     codex = {
       enable = true;
       package = codexPackage;
