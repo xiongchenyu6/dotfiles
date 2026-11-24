@@ -406,6 +406,26 @@
         "type": "github"
       }
     },
+    "nix-craftapps": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1795411503,
+        "narHash": "sha256-a2B6mHjUdtd0Oo7ULSxTCPKBmKFPlxC6o3xpx7YWowA=",
+        "owner": "olafkfreund",
+        "repo": "nix-craftapps",
+        "rev": "feab2c135472d8c8781854102b1d698f87917aaf",
+        "type": "github"
+      },
+      "original": {
+        "owner": "olafkfreund",
+        "repo": "nix-craftapps",
+        "type": "github"
+      }
+    },
     "nix-github-actions": {
       "inputs": {
         "nixpkgs": [
@@ -732,6 +752,7 @@
         "llm-agents": "llm-agents",
         "niri": "niri",
         "nix-alien": "nix-alien",
+        "nix-craftapps": "nix-craftapps",
         "nix-topology": "nix-topology",
         "nixos-hardware": "nixos-hardware",
         "nixos-wsl": "nixos-wsl",

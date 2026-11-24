@@ -156,6 +156,11 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    nix-craftapps = {
+      url = "github:olafkfreund/nix-craftapps";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     # LazyNixOS - lazy evaluation and deployment
     lazynixos = {
       url = "github:xiongchenyu6/lazynixos";

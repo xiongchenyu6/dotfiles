@@ -169,6 +169,16 @@
         kube-score
         kubelogin-oidc
       ]
+      ++
+        lib.optionals
+          (
+            pkgs.stdenv.hostPlatform.isLinux
+            && inputs ? nix-craftapps
+            && inputs.nix-craftapps.packages ? ${pkgs.stdenv.hostPlatform.system}
+          )
+          [
+            inputs.nix-craftapps.packages.${pkgs.stdenv.hostPlatform.system}.craft-anything
+          ]
       ++ lib.optionals pkgs.stdenv.hostPlatform.isLinux [
         # GUI apps: on macOS these come from Homebrew casks (darwin-modules/client-gui.nix)
         opencode-desktop

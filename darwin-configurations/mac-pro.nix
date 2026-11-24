@@ -1,7 +1,19 @@
 # mac-pro: M5 Max MacBook Pro, personal daily driver.
-{ config, ezModules, ... }:
+{
+  config,
+  ezModules,
+  inputs,
+  pkgs,
+  ...
+}:
 {
   imports = [ ezModules.wgmesh ];
+
+  environment.systemPackages = [
+    # Packaged from upstream signed/notarized DMG + CLI zip (not in Homebrew);
+    # systemPackages lets nix-darwin link Craft Anything.app into /Applications/Nix Apps.
+    inputs.nix-craftapps.packages.${pkgs.stdenv.hostPlatform.system}.craft-anything
+  ];
 
   nixpkgs.hostPlatform = "aarch64-darwin";
   nixpkgs.overlays = [
