@@ -71,7 +71,7 @@ lib.mkIf (pkgs.stdenv.hostPlatform.isDarwin && platformSource != null) {
       else
         tmp_dir=$(${pkgs.coreutils}/bin/mktemp -d)
         trap 'rm -rf "$tmp_dir"' EXIT
-        $DRY_RUN_CMD ${pkgs.gnutar}/bin/tar -xzf "${archive}" -C "$tmp_dir"
+        $DRY_RUN_CMD ${pkgs.gnutar}/bin/tar -I "${pkgs.gzip}/bin/gzip" -xf "${archive}" -C "$tmp_dir"
         $DRY_RUN_CMD "$tmp_dir/macos-bundle/install.command"
         rm -rf "$tmp_dir"
         trap - EXIT
