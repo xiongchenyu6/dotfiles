@@ -51,6 +51,7 @@ in
             ezModules.workstation
             ezModules.stow-config
             ezModules.shared-agent-skills
+            ezModules.computer-use-linux
           ]
         else
           [
