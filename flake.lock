@@ -609,11 +609,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1795572692,
-        "narHash": "sha256-csOyUXRCzH5sJUP3Bz5gDjb5t3O8Lq+vo4pjDDvQyek=",
+        "lastModified": 1795582790,
+        "narHash": "sha256-B5mY0npJki4x/kG/h0gczL1WuoB5yEEcA7TCfcfwsFg=",
         "owner": "nix-community",
         "repo": "NUR",
-        "rev": "a29a3d2a9354854280845e0e6b9d9e0ba92ddd7a",
+        "rev": "8cd3b2aac280c60fec7cbbae76a75f5c24d3760c",
         "type": "github"
       },
       "original": {
@@ -711,11 +711,11 @@
     "rime-frost": {
       "flake": false,
       "locked": {
-        "lastModified": 1795568798,
-        "narHash": "sha256-3I8Y9H3pWT35P34E2AYgfD8/cAjW/Zy10Z3iGoO+gmk=",
+        "lastModified": 1795579456,
+        "narHash": "sha256-XXSLhZ8fmBx4ypH070QpYDoqu1Mfq6OgLfz7CDC7gZs=",
         "owner": "gaboolic",
         "repo": "rime-frost",
-        "rev": "ff77d3237406bf06d63e18bb2bacfd02dc520848",
+        "rev": "e1fd05f559f5bec46424b0a685b6b795c6aab3ae",
         "type": "github"
       },
       "original": {
