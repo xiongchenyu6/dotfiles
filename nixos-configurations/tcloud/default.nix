@@ -23,6 +23,9 @@ in
     srvos.nixosModules.mixins-trusted-nix-caches
     srvos.nixosModules.mixins-nix-experimental
     srvos.nixosModules.mixins-tracing
+    ../../nixos-modules/remote-resilience.nix
+    ../../nixos-modules/sing-box-rotated.nix
+    ./netbird-relay.nix
     ./hardware-configuration.nix
   ];
 
