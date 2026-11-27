@@ -23,6 +23,9 @@
     srvos.nixosModules.mixins-trusted-nix-caches
     srvos.nixosModules.mixins-nix-experimental
     srvos.nixosModules.mixins-tracing
+    ../../nixos-modules/remote-resilience.nix
+    ../../nixos-modules/sing-box-rotated.nix
+    ./network-v3-relay.nix
     ./disk-config.nix
     ./hardware-configuration.nix
   ];
